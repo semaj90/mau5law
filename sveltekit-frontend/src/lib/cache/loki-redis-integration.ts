@@ -28,11 +28,11 @@ interface RedisClient {
  psubscribe(pattern: string, ...args: unknown[]): Promise<unknown>;
  subscribe(channel: string, ...args: unknown[]): Promise<unknown>;
  on(event: string, listener: (...args: unknown[]) => void): this;
- setex(key: string, seconds: number, value): string: Promise<unknown>;
+ setex(key: string, seconds: number, value: string): Promise<unknown>;
  set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
  get(key: string): Promise<string | null>;
- expire(key: string, seconds): number: Promise<unknown>;
- publish(channel: string, message): string: Promise<unknown>;
+ expire(key: string, seconds: number): Promise<unknown>;
+ publish(channel: string, message: string): Promise<unknown>;
  keys(pattern: string): Promise<string[]>;
  del(...keys: string[]): Promise<unknown>;
  quit(): Promise<unknown>;
