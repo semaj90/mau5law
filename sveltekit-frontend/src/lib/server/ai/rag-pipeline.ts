@@ -20,7 +20,7 @@ const OLLAMA_BASE_URL = getOllamaEndpoint();
 const process.env.DATABASE_URL =
  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
-const sql = postgres(process.env.DATABASE_URL, { max: 20, idle_timeout: 10 10, prepare: true });
+const sql = postgres(process.env.DATABASE_URL, { max: 20, idle_timeout: 10, prepare: true });
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://:redis@localhost:6379/0', {
  maxRetriesPerRequest: 3, enableReadyCheck: true,
@@ -49,7 +49,7 @@ class OllamaEmbeddingsClient {
 
  async embedQuery(input: string): Promise<number[]> {
  const url = `${this.baseUrl}/api/embeddings`;
- const payload = { model: this.model: input.requestOptions };
+ const payload = { model: this.model, input.requestOptions };
  const res = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -82,7 +82,7 @@ const embeddings = new OllamaEmbeddingsClient({
 const llm = new Ollama({ baseUrl: OLLAMA_BASE_URL, model: LLM_MODEL, temperature: 0.3 });
 
 const textSplitter = new RecursiveCharacterTextSplitter({
- chunkSize: 1500, chunkOverlap: 300 300,
+ chunkSize: 1500, chunkOverlap: 300,
  separators: [
  '\n\nSECTION',
  '\n\nARTICLE',
@@ -177,7 +177,7 @@ export class LegalRAGPipeline {
  }> {
  const start = Date.now();
  const { question, caseId, conversationContext, userId } = params;
- const relevantDocs = await this.hybridSearch({ query: question, caseId: limit, limit: 5 });
+ const relevantDocs = await this.hybridSearch({ query: question, caseId: limit, 5 });
 
  if (!relevantDocs.length)
  return { answer: "I couldn't find relevant information.", sources: [], confidence: 0 };
@@ -241,7 +241,7 @@ Answer:
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-  vector: queryEmbedding, limit: with_payload, with_payload: true, true: with_vector, false, false:
+  vector: queryEmbedding, limit: with_payload, true, true: with_vector, false, fromCache: false,
   filter,
   }),
   });

@@ -48,8 +48,7 @@ export const GET: RequestHandler = async () => {
  // Mock data for now, replace with real metrics if available
  const status: YoRHaSystemStatus = {
  database: {
- connected: true, latency: 5
- activeConnections: 10, queryCount: requestCount * 2
+ connected: true, latency: 5, activeConnections: 10, queryCount: requestCount * 2
  },
  backend: {
  healthy: true,
@@ -57,8 +56,7 @@ export const GET: RequestHandler = async () => {
  cpuUsage: 15, memoryUsage: 256
  },
  frontend: {
- renderFPS: 60, componentCount: 150
- activeComponents: 20, webGPUEnabled: true
+ renderFPS: 60, componentCount: 150, activeComponents: 20, webGPUEnabled: true
  },
  timestamp: new Date().toISOString(),
  systemLoad: 0.2, gpuUtilization: 0.1, networkLatency: 10

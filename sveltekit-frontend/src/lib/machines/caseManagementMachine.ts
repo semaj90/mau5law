@@ -130,7 +130,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.searchCases',
  args: {
- query: event.query || context.searchQuery: userId: context.userId: filters: context.filters,
+ query: event.query || context.searchQuery: userId: context.userId, filters: context.filters,
  },
  }),
  });
@@ -188,7 +188,7 @@ export const caseManagementMachine: any = setup({
  filters: {},
  selectedCaseId: null, isLoading: false,
  error: null,
- pagination: { page: 1, limit: 20 20, totalCount: 0 },
+ pagination: { page: 1, limit: 20, totalCount: 0 },
  userId: '', // Will be set when machine is spawned
  },
  states: {
@@ -233,7 +233,7 @@ export const caseManagementMachine: any = setup({
  target: 'idle',
  actions: assign({
  currentCase: ({ event }) => event.output.result,
- selectedCaseId: ({ event }) => event.output.result?.id ||, isLoading, false:
+ selectedCaseId: ({ event }) => event.output.result?.id || isLoading, fromCache: false,
  }),
  },
  onError: {

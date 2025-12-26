@@ -32,8 +32,7 @@ export const routeMetadata = pgTable(
   'route_metadata',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    routeId: varchar('route_id', { length: 255 }).unique().notNull(), // e.g., "/cases/[id]/overview"
-    path: varchar('path', { length: 255 }).notNull(),
+    routeId: varchar('route_id', { length: 255 }).unique().notNull(), // e.g., "/cases/[id]/overview", path: varchar('path', { length: 255 }).notNull(),
     kind: varchar('kind', { length: 50 }).notNull(), // page, layout, server, endpoint
     group: varchar('group', { length: 100 }), // (app), (yorha), etc.
     status: varchar('status', { length: 50 }).default('healthy'), // healthy, flaky, broken

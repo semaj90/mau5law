@@ -2,33 +2,26 @@ import type { Project, SourceFile, SyntaxKind, Node, TypeChecker } from 'ts-morp
 import { getOllamaEndpoint } from '$lib/utils/ollama-endpoints';
 
 export interface ASTNode {
- id: string;
- kind: SyntaxKind;
- text: string;
- start: number;
- end: number;
- children: ASTNode[];
+ id: string; kind: SyntaxKind;
+ text: string; start: number;
+ end: number; children: ASTNode[];
  type?: string;
  symbol?: string;
 }
 
 export interface AutosuggestContext {
- filePath: string;
- position: number;
- prefix: string;
- scope: 'global' | 'class' | 'function' | 'method';
+ filePath: string; position: number;
+ prefix: string; scope: 'global' | 'class' | 'function' | 'method';
  contextNode?: ASTNode;
 }
 
 export interface AutosuggestResult {
- suggestions: Autosuggestion[];
- confidence: number;
+ suggestions: Autosuggestion[]; confidence: number;
  context: AutosuggestContext;
 }
 
 export interface Autosuggestion {
- text: string;
- kind: 'variable' | 'function' | 'class' | 'interface' | 'import' | 'property';
+ text: string; kind: 'variable' | 'function' | 'class' | 'interface' | 'import' | 'property';
  type?: string;
  description?: string;
  score: number;
@@ -395,8 +388,7 @@ export class ASTProcessor {
 
  const prompt = `You are a TypeScript code completion AI. Based on the following context, suggest the most likely code completion:
 
-Context: ${context.scope} scope, prefix: "${context.prefix}"
-File: ${context.filePath}
+Context: ${context.scope} scope, prefix: "${context.prefix}", File: ${context.filePath}
 
 Suggest 3 most likely completions in JSON format:
 [{"text": "completion1", "description": "reason1"}, {"text": "completion2", "description": "reason2"}]
@@ -424,7 +416,7 @@ Response:`;
  kind: 'function' as const,
  description: suggestion.description,
  score: 0.6 - index * 0.1, // Decreasing score for AI suggestions
- }));: 'function' as const: description: suggestion.description: score, 0.6 - index * 0.1, // Decreasing score for AI suggestions
+ }));: 'function' as const: description: suggestion.description, 0.6 - index * 0.1, // Decreasing score for AI suggestions
  }));
  } catch (error) {
  console.warn('AI suggestion failed:', error);
@@ -449,15 +441,13 @@ Response:`;
  * Get completion statistics for monitoring
  */
  getStats(): {
- filesProcessed: number;
- suggestionsGenerated: number;
+ filesProcessed: number; suggestionsGenerated: number;
  return {
  filesProcessed: this.project.getSourceFiles().length,
  suggestionsGenerated: 0, // Would track this in a real implementation
  averageConfidence: 0.8,
  };turn {
- filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated // Would track this in a real implementation
- averageConfidence: 0.8,
+ filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated // Would track this in a real implementation, averageConfidence: 0.8,
  };
  }
 }

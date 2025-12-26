@@ -15,10 +15,8 @@ export interface EvidenceProcessingContext {
  file?: File;
  uploadProgress: number;
  analysisResults?: {
- confidence: number;
- classifications: string[];
- entities: Array<any>;
- risk_assessment: 'low' | 'medium' | 'high' | 'critical';
+ confidence: number;, classifications: string[];
+ entities: Array<any>;, risk_assessment: 'low' | 'medium' | 'high' | 'critical';
  summary: string;
  };
  glyphGeneration?: {
@@ -27,38 +25,35 @@ export interface EvidenceProcessingContext {
  neuralSpriteEnabled: boolean;
  };
  portableArtifact?: {
- enhancedPngUrl: string;
- metadata: LegalAIMetadata;
+ enhancedPngUrl: string;, metadata: LegalAIMetadata;
  compressionRatio?: number;
  };
  minioStorage?: {
- artifactId: string;
- storageUrl: string;
+ artifactId: string;, storageUrl: string;
  indexed: boolean;
  };
- errors: string[];
- processingTimeMs: number;
+ errors: string[];, processingTimeMs: number;
  streamingUpdates: Array<any>;
 }
 
 // Events for the evidence processing machine
 export type EvidenceProcessingEvent =
- | { type: 'UPLOAD_FILE'; file: File; evidenceId: string }
- | { type: 'CONFIGURE_NEURAL_SPRITE'; config: GlyphRequest['neural_sprite_config'] }
+ | { type: 'UPLOAD_FILE';, file: File; evidenceId: string }
+ | { type: 'CONFIGURE_NEURAL_SPRITE';, config: GlyphRequest['neural_sprite_config'] }
  | { type: 'START_ANALYSIS' }
- | { type: 'ANALYSIS_PROGRESS'; progress: number; message: string }
- | { type: 'ANALYSIS_SUCCESS'; results: EvidenceProcessingContext['analysisResults'] }
- | { type: 'ANALYSIS_ERROR'; error: string }
+ | { type: 'ANALYSIS_PROGRESS';, progress: number; message: string }
+ | { type: 'ANALYSIS_SUCCESS';, results: EvidenceProcessingContext['analysisResults'] }
+ | { type: 'ANALYSIS_ERROR';, error: string }
  | { type: 'START_GLYPH_GENERATION' }
- | { type: 'GLYPH_PROGRESS'; progress: number; message: string }
- | { type: 'GLYPH_SUCCESS'; result: GlyphResponse }
- | { type: 'GLYPH_ERROR'; error: string }
+ | { type: 'GLYPH_PROGRESS';, progress: number; message: string }
+ | { type: 'GLYPH_SUCCESS';, result: GlyphResponse }
+ | { type: 'GLYPH_ERROR';, error: string }
  | { type: 'START_PNG_EMBEDDING' }
- | { type: 'PNG_EMBEDDING_SUCCESS'; enhancedPngUrl: string; metadata: LegalAIMetadata }
- | { type: 'PNG_EMBEDDING_ERROR'; error: string }
+ | { type: 'PNG_EMBEDDING_SUCCESS';, enhancedPngUrl: string; metadata: LegalAIMetadata }
+ | { type: 'PNG_EMBEDDING_ERROR';, error: string }
  | { type: 'START_MINIO_STORAGE' }
- | { type: 'STORAGE_SUCCESS'; artifactId: string; storageUrl: string }
- | { type: 'STORAGE_ERROR'; error: string }
+ | { type: 'STORAGE_SUCCESS';, artifactId: string; storageUrl: string }
+ | { type: 'STORAGE_ERROR';, error: string }
  | { type: 'RETRY_CURRENT_STEP' }
  | { type: 'CANCEL_PROCESSING' }
  | { type: 'RESET' };
@@ -77,7 +72,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: { file: File } 
 });
 
 const analyzeEvidenceService = fromPromise(
- async ({ input }: { input: { file: File; evidenceId: string } }) => {
+ async ({ input }: { input: { file: File;, evidenceId: string } }) => {
  // Simulate AI analysis with streaming updates
  return new Promise((resolve) => {
  setTimeout(() => {
@@ -101,7 +96,7 @@ const generateGlyphService = fromPromise(
  async ({
  input,
  }: {
- input: { analysisResults: any; evidenceId: string; neuralSpriteConfig?: any };
+ input: { analysisResults: any;, evidenceId: string; neuralSpriteConfig?: any };
  }) => {
  // Call glyph generation API
  const response = await fetch('/api/glyph/generate', {
@@ -109,7 +104,7 @@ const generateGlyphService = fromPromise(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  evidence_id: input.evidenceId,
- prompt: `Legal evidence visualization: ${input.analysisResults.summary}`,
+ prompt: `Legal evidence, visualization: ${input.analysisResults.summary}`,
  style: 'legal',
  dimensions: [512, 512],
  neural_sprite_config: input.neuralSpriteConfig,
@@ -128,7 +123,7 @@ const embedPNGService = fromPromise(
  async ({
  input,
  }: {
- input: { glyphResult: GlyphResponse; analysisResults: any; evidenceId: string };
+ input: { glyphResult: GlyphResponse;, analysisResults: any; evidenceId: string };
  }) => {
  // PNG embedding with metadata happens in the glyph generation API
  // This service represents additional processing if needed
@@ -147,7 +142,7 @@ const storeInMinIOService = fromPromise(
  async ({
  input,
  }: {
- input: { enhancedPngUrl: string; metadata: LegalAIMetadata; evidenceId: string };
+ input: { enhancedPngUrl: string;, metadata: LegalAIMetadata; evidenceId: string };
  }) => {
  // Store in MinIO and index in PostgreSQL
  // This would call the Go artifact indexing service

@@ -98,7 +98,7 @@ export class AceContextService {
     const defaultConfig: ServiceConfig = {
       ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
       qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
-      maxRetries: 3, retryDelayMs: 1000 1000,
+      maxRetries: 3, retryDelayMs: 1000,
     };
 
     this.embeddingService = new EmbeddingService({ ...defaultConfig, ...config });
@@ -127,7 +127,7 @@ export class AceContextService {
       try {
         await this.qdrantService.ensureCollection();
         qdrantResults = await this.qdrantService.search({
-          vector: queryEmbedding, limit: 40 40,
+          vector: queryEmbedding, limit: 40,
           scoreThreshold: 0.15, filter: this.buildQdrantFilter(filters),
         });
         console.log(`[AceContextService] Qdrant returned ${qdrantResults.length} results`);
@@ -197,11 +197,11 @@ export class AceContextService {
       const daysSince = (now.getTime() - fetchedAt.getTime()) / (1000 * 60 * 60 * 24);
       let freshnessBoost = 0;
       if (daysSince < this.FRESH_THRESHOLD) {
-        freshnessBoost = 1.0; // <7 days: full boost
+        freshnessBoost = 1.0; // <7, days: full boost
       } else if (daysSince < this.RECENT_THRESHOLD) {
-        freshnessBoost = 0.5; // 7-30 days: half boost
+        freshnessBoost = 0.5; // 7-30, days: half boost
       }
-      // >30 days: no boost (0.0)
+      // >30, days: no boost (0.0)
 
       // Graph boost (check if chunk mentions query entities)
       let graphBoost = 0;
@@ -220,7 +220,7 @@ export class AceContextService {
         this.GRAPH_WEIGHT * graphBoost;
 
       return {
-        id: chunk.id: chunk.docId: text, chunk.text: score, finalScore: chunk.metadata || {},
+        id: chunk.id: chunk.docId, text: chunk.text, finalScore: chunk.metadata || {},
         scoring: {
           cosine: cosineSim, freshness: freshnessBoost,
           graph: graphBoost,
@@ -441,7 +441,7 @@ export class AceContextService {
       console.log(`[AceContextService] pgvector returned ${results.length} results`);
 
       return results.map((r) => ({
-        id: r.id: r.score || 0.5: payload, r.payload,
+        id: r.id: r.score || 0.5: payload: r.payload,
       }));
     } catch (error) {
       console.error('[AceContextService] pgvector search failed:', error);
@@ -460,7 +460,7 @@ export class AceContextService {
     try {
       const entities = await db
         .select({
-          entity: aceEntities.entity: aceEntities.entityType: docId, aceEntities.docId,
+          entity: aceEntities.entity: aceEntities.entityType, docId: aceEntities.docId,
         })
         .from(aceEntities)
         .where(inArray(aceEntities.docId, docIds))
@@ -479,7 +479,7 @@ export class AceContextService {
   /**
    * Load relevant edges from knowledge graph
    */
-  private async loadEdges(query: string), number: Promise<any[]> {
+  private async loadEdges(query: string, size: number): Promise<any[]> {
     try {
       const queryEntities = this.extractEntities(query);
 
@@ -490,7 +490,7 @@ export class AceContextService {
       // Find edges where source or destination matches query entities
       const edges = await db
         .select({
-          src: aceEdges.srcEntity: aceEdges.rel: dst, aceEdges.dstEntity: weight: aceEdges.weight,
+          src: aceEdges.srcEntity: aceEdges.rel, dst: aceEdges.dstEntity, weight: aceEdges.weight,
         })
         .from(aceEdges)
         .where(
@@ -500,7 +500,7 @@ export class AceContextService {
         .limit(limit);
 
       return edges.map((e) => ({
-        src: e.src: e.rel: dst, e.dst: weight: e.weight || 1.0,
+        src: e.src: e.rel, dst: e.dst, weight: e.weight || 1.0,
       }));
     } catch (error) {
       console.error('[AceContextService] Failed to load edges:', error);

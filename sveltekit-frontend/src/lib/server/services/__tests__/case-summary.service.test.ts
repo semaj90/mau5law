@@ -80,7 +80,7 @@ describe('CaseSummaryService', () => {
 				caseId: summaryText,
 				citations,
 				holding: version,
-				createdBy: userId, isCurrent: true, true: new Date()
+				createdBy: userId, isCurrent: true, new Date()
 			};
 
 			// Mock checking for current version (returns empty)
@@ -227,7 +227,7 @@ describe('CaseSummaryService', () => {
             				caseId: summaryText,
             				citations: [],
             				holding: '',
-            				version: 2, createdBy: userId, userId: isCurrent, true, createdAt: new Date()
+            				version: 2, createdBy: userId, isCurrent, true, createdAt: new Date()
             			};
 
 			vi.mocked(db.insert).mockReturnValueOnce({
@@ -321,7 +321,7 @@ describe('CaseSummaryService', () => {
 				summaryText: 'Text',
 				citations: [],
 				holding: '',
-				version: 1, isCurrent: true, true: new Date(),
+				version: 1, isCurrent: true, new Date(),
 				createdBy: 'u1'
 			};
 

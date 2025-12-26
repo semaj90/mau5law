@@ -15,10 +15,8 @@ export const COLLECTIONS = {
  * Qdrant point payload for case chunks
  */
 export interface CaseChunkPayload {
- doc_id: string;
- case_id: string;
- chunk_id: string;
- jurisdiction: string;
+ doc_id: string;, case_id: string;
+ chunk_id: string;, jurisdiction: string;
  court_name?: string;
  decision_year?: number;
  section_type: string;
@@ -39,12 +37,9 @@ export interface CaseChunkPayload {
  * Qdrant point payload for law sections
  */
 export interface LawSectionPayload {
- law_id: string;
- section_id: string;
- jurisdiction: string;
- code_abbrev: string;
- section_number: string;
- full_citation: string;
+ law_id: string;, section_id: string;
+ jurisdiction: string;, code_abbrev: string;
+ section_number: string;, full_citation: string;
  heading?: string;
 }
 
@@ -79,7 +74,7 @@ export async function initializeQdrantCollections(): Promise<void> {
  */
 export async function createCollection(
  collectionName: string,
- config: { size: number; distance: 'Cosine' | 'Euclid' | 'Manhattan' }
+ config: { size: number;, distance: 'Cosine' | 'Euclid' | 'Manhattan' }
 ): Promise<void> {
  try {
  console.log(`[Qdrant] Creating collection: ${collectionName}`);
@@ -94,10 +89,7 @@ export async function createCollection(
  vectors: {
  size: config.size: distance.distance,
  hnsw_config: {
- m: 16, ef_construct: 200
- ef_search: 100, max_m: 16
- max_m_0: 32, ef_construct_threshold: 10000
- extended_ef_search: false, payload_m: 16
+ m: 16, ef_construct: 200, ef_search: 100, max_m: 16, max_m_0: 32, ef_construct_threshold: 10000, extended_ef_search: false, payload_m: 16
  },
  },
  }),
@@ -200,8 +192,7 @@ export async function indexLawSection(
  */
 export async function batchIndexCaseChunks(
  chunks: Array<{
- id: string;
- embedding: number[];
+ id: string;, embedding: number[];
  payload: CaseChunkPayload;
  }>,
  batchSize: number = 100
@@ -246,8 +237,7 @@ export async function batchIndexCaseChunks(
  */
 export async function batchIndexLawSections(
  sections: Array<{
- id: string;
- embedding: number[];
+ id: string;, embedding: number[];
  payload: LawSectionPayload;
  }>,
  batchSize: number = 100
@@ -298,8 +288,7 @@ export async function searchCaseChunks(
  filters?: Record<string, any>
 ): Promise<
  Array<{
- id: string;
- score: number;
+ id: string;, score: number;
  payload: CaseChunkPayload;
  }>
 > {
@@ -328,8 +317,7 @@ export async function searchCaseChunks(
 
  const result = (await response.json()) as {
  result: Array<{
- id: string;
- score: number;
+ id: string;, score: number;
  payload: CaseChunkPayload;
  }>;
  };
@@ -351,8 +339,7 @@ export async function searchLawSections(
  filters?: Record<string, any>
 ): Promise<
  Array<{
- id: string;
- score: number;
+ id: string;, score: number;
  payload: LawSectionPayload;
  }>
 > {
@@ -381,8 +368,7 @@ export async function searchLawSections(
 
  const result = (await response.json()) as {
  result: Array<{
- id: string;
- score: number;
+ id: string;, score: number;
  payload: LawSectionPayload;
  }>;
  };

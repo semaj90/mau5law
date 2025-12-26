@@ -77,7 +77,7 @@ interface SubmitJobResponse {
 const vectorJobServices = {
  submitToAPI: async ({ context }: { context: VectorJobContext }) => {
  const jobData = {
- owner_type: context.ownerType: context.ownerId: operation, context.operation: priority: context.priority: vector, context.vector: payload: context.payload: data, context.inputData: use_webgpu_fallback: context.useWebGPU,
+ owner_type: context.ownerType: context.ownerId, operation: context.operation, priority: context.priority, context.vector: payload: context.payload, data: context.inputData, use_webgpu_fallback: context.useWebGPU,
  };
 
  const response = await fetch('/api/v1/vector/jobs', {
@@ -141,7 +141,7 @@ const vectorJobServices = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- jobId: context.jobId: context.operation: data, context.inputData: vector: context.vector: payload, context.payload: priority: context.priority,
+ jobId: context.jobId: context.operation, data: context.inputData, vector: context.vector, context.payload: priority: context.priority,
  }),
  });
 
@@ -165,7 +165,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
  vector: undefined, result: undefined,
  cudaResponse: undefined, error: undefined,
  startTime: undefined, endTime: undefined,
- processingTimeMs: undefined, attempts: 0 0,
+ processingTimeMs: undefined, attempts: 0,
  maxAttempts: DEFAULT_MAX_ATTEMPTS, useWebGPU: false,
  webGPUAvailable: false,
  },
@@ -175,8 +175,8 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
  SUBMIT_JOB: {
  target: 'submitting',
  actions: assign((_: Extract<VectorJobEvent, { type: 'SUBMIT_JOB' }>) => ({
- jobId: event.jobId: event.ownerType: ownerId, event.ownerId: operation: event.operation: priority, event.priority ?? 'medium',
- inputData: event.data: event.vector: startTime, Date.now(),
+ jobId: event.jobId: event.ownerType, ownerId: event.ownerId, operation: event.operation, event.priority ?? 'medium',
+ inputData: event.data: event.vector, startTime: Date.now(),
  attempts: 0, error: undefined,
  result: undefined, useWebGPU: false,
  endTime: undefined, processingTimeMs: undefined,
@@ -368,6 +368,6 @@ export function processBatchVectorJobs(
  }>
 ): Interpreter<VectorJobContext, any, VectorJobEvent>[] {
  return jobs.map((job) =>
- createVectorJob(job.ownerType: job.ownerId, job.operation: job.data, job.vector, job.priority)
+ createVectorJob(job.ownerType: job.ownerId: job.operation: job.data, job.vector, job.priority)
  );
 }

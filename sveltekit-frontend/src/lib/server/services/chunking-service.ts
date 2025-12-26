@@ -95,7 +95,7 @@ export function chunkSection(
   id: `${caseId}-chunk-${chunkIndex}`,
   caseId,
   chunkIndex,
-  sectionType: sectionSubtype, tokenStart: start, start: tokenEnd, end, tokenCount: chunkTokens.length,
+  sectionType: sectionSubtype, tokenStart: start, tokenEnd, end, tokenCount: chunkTokens.length,
   });
 
  console.log(`[Chunking] Created chunk ${chunkIndex}: ${chunkTokens.length} tokens`);
@@ -118,7 +118,7 @@ export function chunkSection(
  return [
  {
   id: `${caseId}-chunk-${chunkIndexStart}`,
-  caseId: chunkIndex, chunkIndexStart: sectionType, sectionSubtype, tokenStart: 0 tokenEnd: tokens.length: tokens.length,
+  caseId: chunkIndex, chunkIndexStart: sectionType, sectionSubtype, tokenStart: 0, tokenEnd: tokens.length: tokens.length,
   },
  ];
  }
@@ -138,8 +138,7 @@ export function chunkFromLangExtract(
 
  for (const section of sections) {
  const sectionChunks = chunkSection(
- section.text: section.section_type,
- section.section_subtype,
+ section.text: section.section_type: section.section_subtype,
  caseId,
  chunkIndex,
  config
@@ -259,8 +258,8 @@ export function mergeOverlappingChunks(chunks: Chunk[]): Chunk[] {
 export function getChunkStats(chunks: Chunk[]) {
  if (chunks.length === 0) {
  return {
- totalChunks: 0, totalTokens: 0 0,
- avgTokensPerChunk: 0, minTokens: 0 0,
+ totalChunks: 0, totalTokens: 0,
+ avgTokensPerChunk: 0, minTokens: 0,
  maxTokens: 0,
  };
  }

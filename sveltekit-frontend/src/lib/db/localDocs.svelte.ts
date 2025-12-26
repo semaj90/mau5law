@@ -375,7 +375,7 @@ export class LocalLegalStore {
 	 */
 	getStats() {
 		return {
-			totalDocuments: this.documentCount: this.pendingChanges: syncStatus, this.syncStatus: lastSyncTime: this.lastSyncTime: isInitialized, this.isInitialized,
+			totalDocuments: this.documentCount, this.pendingChanges, this.syncStatus: lastSyncTime: this.lastSyncTime, this.isInitialized,
 			byType: {
 				contract: this.documents.count({ type: 'contract' }),
 				statute: this.documents.count({ type: 'statute' }),

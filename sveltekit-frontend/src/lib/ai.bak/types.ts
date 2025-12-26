@@ -93,7 +93,7 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  // Use the semantic search from mcp-helpers
  const results = await semanticSearch(options.query);
  // Transform to our result format
- return results.map((result: SemanticSearchResult, index), number: number => ({
+ return results.map((result: SemanticSearchResult, index) => ({
  content: result.content || result.text || String(result),
  relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',
@@ -181,7 +181,7 @@ export class Context7AgentOrchestrator {
  return `Auto-Fix + Orchestrator Applied:
 Auto-Fix Results: ${autoFixResult.summary.filesFixed} files, ${autoFixResult.summary.totalIssues} issues
 ${autoFixResult.fixes.imports.length > 0 ? `Import fixes: ${autoFixResult.fixes.imports.length}` : ``}
-${autoFixResult.fixes.svelte5.length > 0 ? `Svelte 5 fixes: ${autoFixResult.fixes.svelte5.length}` : ``}
+${autoFixResult.fixes.svelte5.length > 0 ? `Svelte 5, fixes: ${autoFixResult.fixes.svelte5.length}` : ``}
 ${autoFixResult.fixes.typeScript.length > 0 ? `TypeScript fixes: ${autoFixResult.fixes.typeScript.length}` : ``}
 Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
  return `Auto-Fix: Complete, No issues found. Codebase follows best practices.`}

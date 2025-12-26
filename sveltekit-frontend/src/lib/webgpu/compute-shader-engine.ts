@@ -42,8 +42,7 @@ export class ComputeShaderEngine {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: [],
  requiredLimits: {
- maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize, this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX
- maxComputeWorkgroupSizeY: 256,
+ maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize, this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX, maxComputeWorkgroupSizeY: 256,
  },
  });
 
@@ -110,7 +109,7 @@ export class ComputeShaderEngine {
  });
 
  const readBuffer = this.device.createBuffer({
- size: dimension * 3 * 4: usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+ size: dimension * 3 *, 4, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
  });
 
  // Upload data

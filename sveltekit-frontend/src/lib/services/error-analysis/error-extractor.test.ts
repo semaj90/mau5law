@@ -26,8 +26,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3, retryDelayMs: 100
- contextLines: 5,
+ maxRetries: 3, retryDelayMs: 100, contextLines: 5,
  };
  extractor = new ErrorExtractor(config);
  });
@@ -45,8 +44,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '1',
  file: 'src/routes/+page.svelte',
- line: 10, column: 5
- message: 'Type error: expected string',
+ line: 10, column: 5, message: 'Type error: expected string',
  type: 'svelte',
  severity: 'error',
  code: 'TS2322',
@@ -57,8 +55,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '2',
  file: 'src/lib/utils.ts',
- line: 25, column: 12
- message: 'Cannot find name "foo"',
+ line: 25, column: 12, message: 'Cannot find name "foo"',
  type: 'typescript',
  severity: 'error',
  code: 'TS2304',
@@ -110,8 +107,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  const errorWithMetadata: Error = {
  id: 'test-1',
  file: 'src/test.ts',
- line: 42, column: 15
- message: 'Test error message',
+ line: 42, column: 15, message: 'Test error message',
  type: 'typescript',
  severity: 'error',
  code: 'TS1234',
@@ -139,8 +135,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '1',
  file: 'src/App.svelte',
- line: 5, column: 10
- message: 'Svelte error',
+ line: 5, column: 10, message: 'Svelte error',
  type: 'svelte',
  severity: 'error',
  status: 'new',
@@ -150,8 +145,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '2',
  file: 'src/utils.ts',
- line: 20, column: 8
- message: 'TypeScript error',
+ line: 20, column: 8, message: 'TypeScript error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -179,8 +173,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '1',
  file: 'src/test.ts',
- line: 10, column: 5
- message: 'Error message',
+ line: 10, column: 5, message: 'Error message',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -190,8 +183,7 @@ describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
  {
  id: '2',
  file: 'src/test.ts',
- line: 20, column: 5
- message: 'Warning message',
+ line: 20, column: 5, message: 'Warning message',
  type: 'typescript',
  severity: 'warning',
  status: 'new',

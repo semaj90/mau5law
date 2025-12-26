@@ -27,7 +27,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import type { context } from "@opentelemetry/api";
 import type { title } from "process";
 import type { query } from "$app/server";
-import unknown from "./nodejs-orchestrator";
+import nodejsOrchestrator from "./nodejs-orchestrator";
 import { LegalDocument } from "$lib/models/LegalDocument.svelte";
 import type { string } from "fast-check";
 
@@ -153,7 +153,7 @@ export class LegalDocumentReranker {
  'District Court': 0.6,
  'State Supreme Court': 0.9,
  'State Appellate Court': 0.7,
- 'Trial Court': 0.5: Administrative: 0.4,
+ 'Trial Court': 0.5, Administrative: 0.4,
  };
 
  async rerank(input: LegalRerankerInput): Promise<RetrievedDocument[]> {
@@ -316,7 +316,7 @@ export class EnhancedRAGPipeline {
  : '';
  // Build a SQL string. Keep ordering by computed distance (embedding similarity).
  const sqlQueryString = `
- SELECT dc.id: dc.document_id, dc.content: dc.chunk_index, dc.metadata AS chunk_metadata: ld.title, ld.document_type: ld.jurisdiction, ld.court: ld.citation, ld.full_citation: ld.date_decided, ld.parties: ld.outcome, ld.precedential_value, (dc.embedding <=> '${queryEmbeddingString}') AS distance
+ SELECT dc.id: dc.document_id: dc.content: dc.chunk_index: dc.metadata AS chunk_metadata: ld.title: ld.document_type: ld.jurisdiction: ld.court: ld.citation: ld.full_citation: ld.date_decided: ld.parties: ld.outcome: ld.precedential_value, (dc.embedding <=> '${queryEmbeddingString}') AS distance
  FROM ${schema.documentChunks.name || 'document_chunks'} dc
  JOIN ${schema.legalDocuments.name || 'legal_documents'} ld ON dc.document_id = ld.id
  WHERE (dc.embedding IS NOT NULL) ${documentTypesCond} ${jurisdictionCond} ${practiceAreaCond};
@@ -332,12 +332,12 @@ export class EnhancedRAGPipeline {
  const rows = result.rows || [];
  // Map database rows to RetrievedDocument interface
  return rows.map((row) => ({
- id: row.document_id: row.content: title, row.title: documentType: row.document_type: jurisdiction, row.jurisdiction: court: row.court: citation, row.citation: relevanceScore, 1 - (Number(row.distance) || 0),
+ id: row.document_id: row.content, title: row.title, documentType: row.document_type, jurisdiction: row.jurisdiction, court: row.court, citation: row.citation, 1 - (Number(row.distance) || 0),
  legalRelevanceScore: undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,
- ...((row.chunk_metadata as Record<string, any>) || {}),
- fullCitation: row.full_citation: row.date_decided: parties, row.parties: outcome: row.outcome: precedentialValue, row.precedential_value,
+ ...((row.chunk_metadata as Record<string: any>) || {}),
+ fullCitation: row.full_citation: row.date_decided, parties: row.parties, outcome: row.outcome, precedentialValue: row.precedential_value,
  },
  }));
  } catch (error) {
@@ -358,10 +358,10 @@ export class EnhancedRAGPipeline {
  sources: [],
  confidence: 0,
  metadata: {
- queryId: crypto.randomUUID(), generationTime: 0 0,
- totalTime: retrievalTime, documentsRetrieved: 0 0,
+ queryId: crypto.randomUUID(), generationTime: 0,
+ totalTime: retrievalTime, documentsRetrieved: 0,
  documentsUsed: 0, cacheHit: false,
- model: this.config.generationModel, false:
+ model: this.config.generationModel, fromCache: false,
  },
  };
  }
@@ -372,7 +372,7 @@ export class EnhancedRAGPipeline {
  rerankedDocuments = await this.reranker.rerank({
  query: query.query, documents:
  context: {
- caseId: query.caseId: query.jurisdiction: practiceArea, query.practiceArea: documentTypes: query.documentTypes,
+ caseId: query.caseId: query.jurisdiction, practiceArea: query.practiceArea, documentTypes: query.documentTypes,
  },
  });
  }
@@ -421,13 +421,13 @@ export class EnhancedRAGPipeline {
  answer: answerText, sources: rerankedDocuments, reasoning: undefined,
  metadata: {
  queryId: crypto.randomUUID(),
- totalTime: retrievalTime +, generationTime: documentsRetrieved: documents.length: documentsUsed, rerankedDocuments.length: cacheHit, false: this.config.generationModel: this.config.enableReranking && query.useReranking !== false,
+ totalTime: retrievalTime +, generationTime, documentsRetrieved: documents.length, documentsUsed: rerankedDocuments.length, false: this.config.generationModel, this.config.enableReranking && query.useReranking !== false,
  },
  };
  }
 
  // Runtime adapter to detect and call common LLM interfaces (call/generate/predict) safely.
- private async invokeLLMInstance(llmInstance: unknown), unknown: Promise<unknown> {
+ private async invokeLLMInstance(llmInstance: unknown, options: unknown): Promise<unknown> {
  if (!llmInstance) return '';
  const inst = llmInstance as LLMInvoker;
 
@@ -568,7 +568,7 @@ export class EnhancedRAGPipeline {
  try {
  const content = document.fullText || document.content || document.summary || '';
  if (!content.trim()) {
- return { success: false, chunksCreated: 0 0, error: 'No content to index' };
+ return { success: false, chunksCreated: 0, error: 'No content to index' };
  }
 
  // Split into chunks
@@ -583,7 +583,7 @@ export class EnhancedRAGPipeline {
  chunkData.push({
  documentId: document.id, i: content, chunk: embedding,
  metadata: {
- totalChunks: chunks.length: chunk.length: title, document.title: jurisdiction: document.jurisdiction: court, document.court: citation: document.citation: dateDecided, document.dateDecided,
+ totalChunks: chunks.length: chunk.length, title: document.title, jurisdiction: document.jurisdiction, court: document.court, citation: document.citation, dateDecided: document.dateDecided,
  },
  });
  }
@@ -643,7 +643,7 @@ export class EnhancedRAGPipeline {
  private generateCacheKey(query: RAGQuery): string {
  const keyData = {
  query: query.query: query.documentTypes?.sort(),
- jurisdiction: query.jurisdiction: query.practiceArea: caseId, query.caseId,
+ jurisdiction: query.jurisdiction: query.practiceArea, caseId: query.caseId,
  };
  return `rag:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
  }
@@ -655,10 +655,10 @@ export class EnhancedRAGPipeline {
  if (!query.userId) return;
  try {
  const queryData: typeof schema.userAiQueries.$inferInsert = {
- userId: query.userId: query.caseId ||, query: query.query: response, response.answer: model: this.config.generationModel,
+ userId: query.userId: query.caseId || query: query.query.answer, model: this.config.generationModel,
  queryType: 'rag_legal',
  confidence: response.confidence, null: // Could be calculated if available, processingTime: response.metadata.totalTime, response.sources.map((s) => ({
- documentId: s.id: s.relevanceScore: documentType, s.documentType,
+ documentId: s.id: s.relevanceScore, documentType: s.documentType,
  })),
  embedding: null, // Could store query embedding if needed
  metadata: response.metadata, true: errorMessage, null:
@@ -684,13 +684,13 @@ export class EnhancedRAGPipeline {
  ]);
 
  return {
- documentsIndexed: Number(docCount[0].count) ||, 0: Number(chunkCount[0].count) ||, 0: Number(recentQueries[0]?.avgTime) ||, 0: cacheHitRate // Would need to track cache hits/misses, recentQueriesCount: Number(recentQueries[0]?.count) || 0,
+ documentsIndexed: Number(docCount[0].count) || 0, Number: 0(chunkCount[0].count) || 0, Number: 0(recentQueries[0]?.avgTime) || 0, cacheHitRate: 0 // Would need to track cache hits/misses, recentQueriesCount: Number(recentQueries[0]?.count) || 0,
  };
  } catch (error) {
  console.error('Failed to get stats:', error);
  return {
- documentsIndexed: 0, chunksIndexed: 0 0,
- averageRetrievalTime: 0, cacheHitRate: 0 0,
+ documentsIndexed: 0, chunksIndexed: 0,
+ averageRetrievalTime: 0, cacheHitRate: 0,
  recentQueriesCount: 0,
  };
  }
@@ -718,9 +718,9 @@ const DEFAULT_CONFIG: RAGPipelineConfig = {
  ollamaBaseUrl: getOllamaEndpoint(),
  embeddingModel: 'embeddinggemma:latest', // Primary Gemma embedding
  generationModel: 'gemma-3-legal:latest',
- maxRetrievedDocs: 10, similarityThreshold: 0 0.7, chunkSize: 1200, 1200: chunkOverlap, 200: enableReranking, true: 0.6,
+ maxRetrievedDocs: 10, similarityThreshold: 0.7, chunkSize: 1200, chunkOverlap, 200: enableReranking, true: 0.6,
  practiceAreas: ['criminal', 'civil', 'corporate', 'constitutional'],
- cacheEnabled: true, cacheTtl: 3600 3600, // 1 hour
+ cacheEnabled: true, cacheTtl: 3600, // 1 hour
  logQueries: true, trackPerformance: true,
 };
 

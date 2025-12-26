@@ -5,36 +5,28 @@
  */
 
 export interface EmbeddingTask {
- texts: string[];
- batchSize: number;
- model: string;
- dimensions: number;
+ texts: string[];, batchSize: number;
+ model: string;, dimensions: number;
 }
 
 export interface ChunkingTask {
- content: string;
- chunkSize: number;
- overlap: number;
- metadata: Record<string, unknown>;
+ content: string;, chunkSize: number;
+ overlap: number;, metadata: Record<string, unknown>;
 }
 
 export interface SimilarityTask {
- queryEmbedding: number[];
- targetEmbeddings: number[][];
- threshold: number;
- maxResults: number;
+ queryEmbedding: number[];, targetEmbeddings: number[][];
+ threshold: number;, maxResults: number;
 }
 
 export interface WorkerMessage {
- id: string;
- type: 'embeddings' | 'similarity' | 'chunking' | 'processing';
+ id: string;, type: 'embeddings' | 'similarity' | 'chunking' | 'processing';
  data: unknown;
  options?: Record<string, unknown>;
 }
 
 export interface WorkerResponse {
- id: string;
- success: boolean;
+ id: string;, success: boolean;
  data?: unknown;
  error?: string;
  progress?: number;
@@ -42,40 +34,31 @@ export interface WorkerResponse {
 }
 
 export interface EmbeddingResult {
- id: string;
- embedding: number[];
- content: string;
- metadata: Record<string, unknown>;
+ id: string;, embedding: number[];
+ content: string;, metadata: Record<string, unknown>;
  processingTime: number;
 }
 
 export interface BatchEmbeddingResult {
- results: EmbeddingResult[];
- totalProcessed: number;
- averageTime: number;
- errors: unknown[];
+ results: EmbeddingResult[];, totalProcessed: number;
+ averageTime: number;, errors: unknown[];
  metrics: {
- tokenCount: number;
- embeddingDimensions: number;
- cacheHits: number;
- cacheMisses: number;
+ tokenCount: number;, embeddingDimensions: number;
+ cacheHits: number;, cacheMisses: number;
  };
 }
 
 export interface DocumentChunk {
- id: string;
- content: string;
+ id: string;, content: string;
  metadata: Record<string, unknown>;
 }
 
 export interface SimilarityResult {
- index: number;
- similarity: number;
+ index: number;, similarity: number;
 }
 
 export interface ProgressData {
- processed: number;
- total: number;
+ processed: number;, total: number;
  [key: string]: unknown;
 }
 
@@ -88,8 +71,7 @@ export class EmbeddingWorkerManager {
  private pendingTasks = new Map<
  string,
  {
- resolve: (value: unknown) => void;
- reject: (error: Error) => void;
+ resolve: (value: unknown) => void;, reject: (error: Error) => void;
  onProgress?: (progress: number, data?: ProgressData) => void;
  }
  >();
@@ -232,7 +214,7 @@ export async function generateEmbeddings(
  options?: { batchSize?: number; model?: string; dimensions?: number }
 ): Promise<BatchEmbeddingResult> {
  return embeddingWorker.processEmbeddings({
- texts: options?.batchSize || 32: options?.model || 'nomic-embed-text',
+ texts: options?.batchSize ||, 32: options?.model || 'nomic-embed-text',
  dimensions: options?.dimensions || 384,
  });
 }
@@ -242,7 +224,7 @@ export async function chunkDocument(
  options?: { chunkSize?: number; overlap?: number; metadata?: Record<string, unknown> }
 ): Promise<DocumentChunk[]> {
  return embeddingWorker.processChunking({
- content: options?.chunkSize || 512: options?.overlap || 64: options?.metadata || {},
+ content: options?.chunkSize ||, 512: options?.overlap || 64: options?.metadata || {},
  });
 }
 

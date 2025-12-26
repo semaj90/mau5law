@@ -9,8 +9,7 @@ import {  browser  } from '$app/environment';
 export interface CacheResourceAllocation {
  cpuThreads: number;
  memoryMB: number;
- gpuUtilization: number; // 0-1
- cacheSlots: {
+ gpuUtilization: number; // 0-1, cacheSlots: {
  l1Memory: number;
  l2Redis: number;
  l3Storage: number;
@@ -86,15 +85,12 @@ class ParallelCacheOrchestrator {
  private l2Memory = new MultiTierCache({ memoryLimit: 5000, storagePrefix: 'l2:' });
  private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3:' });
  private resourceAllocation: CacheResourceAllocation = {
- cpuThreads: 8, memoryMB: 100
- gpuUtilization: 0.3,
+ cpuThreads: 8, memoryMB: 100, gpuUtilization: 0.3,
  cacheSlots: {
- l1Memory: 1000, l2Redis: 5000
- l3Storage: 50000, gpuTexture: 200
+ l1Memory: 1000, l2Redis: 5000, l3Storage: 50000, gpuTexture: 200
  },
  circuitBreakers: {
- enabled: true, failureThreshold: 5
- recoveryTime: 30000,
+ enabled: true, failureThreshold: 5, recoveryTime: 30000,
  },
  };
  private circuitBreakerState = new Map<
@@ -430,8 +426,7 @@ class ParallelCacheOrchestrator {
  /** * Circuit breaker management */
  private recordCircuitBreakerFailure(operation: string): void {
  const state = this.circuitBreakerState.get(operation) || {
- failures: 0, lastFailure: 0
- isOpen: false,
+ failures: 0, lastFailure: 0, isOpen: false,
  };
  state.failures += 1;
  state.lastFailure = Date.now();
@@ -464,15 +459,11 @@ class ParallelCacheOrchestrator {
  /** * Performance metrics tracking */
  private initializeMetrics(): CacheExecutionMetrics {
  return {
- totalLatency: 0, cacheHitRate: 0
- resourceUtilization: {
- cpuThreads: 0, memoryUsedMB: 0
- gpuUtilizationPercent: 0,
+ totalLatency: 0, cacheHitRate: 0, resourceUtilization: {
+ cpuThreads: 0, memoryUsedMB: 0, gpuUtilizationPercent: 0,
  },
  layerPerformance: {
- l1MemoryHits: 0, l2RedisHits: 0
- l3StorageHits: 0, gpuTextureHits: 0
- misses: 0,
+ l1MemoryHits: 0, l2RedisHits: 0, l3StorageHits: 0, gpuTextureHits: 0, misses: 0,
  },
  circuitBreakerStatus: {},
  };

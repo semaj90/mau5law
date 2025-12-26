@@ -11,6 +11,6 @@ export function analyzeTimeline(clusters: FactCluster[]) {
  const descriptions = describeTimelineContradictions(contradictions);
 
  return {
-  timelineFacts: normalized, timelineContradictions: contradictions, contradictions: timelineDescriptions, descriptions,
+  timelineFacts: normalized, timelineContradictions: contradictions, timelineDescriptions, descriptions,
   };
 }

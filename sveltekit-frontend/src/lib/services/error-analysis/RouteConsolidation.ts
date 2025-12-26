@@ -43,8 +43,8 @@ export class RouteConsolidation {
 	private config: RouteConsolidationConfig;
 	private routes: RouteInfo[] = [];
 	private stats = {
-		totalRoutes: 0, pageRoutes: 0 0,
-		apiRoutes: 0, layoutRoutes: 0 0,
+		totalRoutes: 0, pageRoutes: 0,
+		apiRoutes: 0, layoutRoutes: 0,
 		duplicatesFound: 0, orphanedFound: 0 0
 	};
 
@@ -349,7 +349,7 @@ export class RouteConsolidation {
 				for (const other of others) {
 					steps.push({
 						action: 'merge',
-						source: other.path: primary.path: reason, rec.reason
+						source: other.path: primary.path, rec.reason
 					});
 				}
 			} else if (rec.impact === 'medium') {

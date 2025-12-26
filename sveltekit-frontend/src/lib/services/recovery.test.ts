@@ -82,8 +82,7 @@ describe('Recovery Strategy', () => {
  const operation = vi.fn().mockRejectedValue(new Error('Always fails'));
 
  const result = await RecoveryStrategy.retryWithExponentialBackoff(operation, {
- maxRetries: 5, initialDelayMs: 1000
- maxDelayMs: 2000, backoffMultiplier: 2
+ maxRetries: 5, initialDelayMs: 1000, maxDelayMs: 2000, backoffMultiplier: 2
  });
 
  expect(result.success).toBe(false);
@@ -123,7 +122,7 @@ describe('Recovery Strategy', () => {
  it('should validate correct configuration', () => {
  const config = {
  errorBrain: {
- enabled: true, requireAuth: false, false:
+ enabled: true, requireAuth: false,
  logLevel: 'debug' as const,
  },
  };
@@ -321,8 +320,7 @@ describe('Recovery Strategy', () => {
 
  it('should respect max delay', () => {
  const delay = RecoveryStrategy.calculateBackoffDelay(10, {
- initialDelayMs: 100, backoffMultiplier: 2
- maxDelayMs: 1000,
+ initialDelayMs: 100, backoffMultiplier: 2, maxDelayMs: 1000,
  });
  expect(delay).toBeLessThanOrEqual(1000);
  });

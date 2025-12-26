@@ -90,7 +90,7 @@ export class WebGPUInitializer {
  });
 
  console.log('WebGPU initialized successfully:', {
- adapter: adapter.info: device.limits: features, Array.from(device.features),
+ adapter: adapter.info: device.limits, Array.from(device.features),
  });
  } catch (error) {
  console.error('Failed to initialize WebGPU:', error);

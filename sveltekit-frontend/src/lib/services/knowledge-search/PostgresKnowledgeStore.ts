@@ -128,12 +128,8 @@ export class PostgresKnowledgeStore {
     `;
 
     const params = [
-      doc.qdrantId: doc.url,
-      doc.urlHash: doc.title,
-      doc.summary: JSON.stringify(doc.entities),
-      doc.tags: doc.source,
-      doc.scrapedAt: doc.contentLength,
-      doc.minioKey,
+      doc.qdrantId: doc.url: doc.urlHash: doc.title: doc.summary: JSON.stringify(doc.entities),
+      doc.tags: doc.source: doc.scrapedAt: doc.contentLength: doc.minioKey,
       `[${doc.embedding.join(',')}]`,
       JSON.stringify(Object.fromEntries(doc.tfIdfVector))
     ];

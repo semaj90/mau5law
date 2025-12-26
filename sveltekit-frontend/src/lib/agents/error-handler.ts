@@ -152,20 +152,13 @@ export class ToolErrorHandler {
  */
  static formatErrorMessage(error: ToolExecutionError): string {
  switch (error.type) {
- case ErrorType.NETWORK_ERROR:
- return `Network error: ${error.message}. Please check your connection and try again.`;
- case ErrorType.TIMEOUT_ERROR:
- return `Request timeout: ${error.message}. The service took too long to respond.`;
- case ErrorType.SERVICE_UNAVAILABLE:
- return `Service unavailable: ${error.message}. Please try again later.`;
- case ErrorType.VALIDATION_ERROR:
- return `Invalid input: ${error.message}. Please check your parameters.`;
- case ErrorType.INVALID_INPUT:
- return `Invalid request: ${error.message}. Please check your input.`;
- case ErrorType.EXECUTION_ERROR:
- return `Execution error: ${error.message}. Please try again.`;
- case ErrorType.UNKNOWN_ERROR:
- return `Unknown error: ${error.message}. Please try again.`;
+ case ErrorType.NETWORK_ERROR: return `Network, error: ${error.message}. Please check your connection and try again.`;
+ case ErrorType.TIMEOUT_ERROR: return `Request, timeout: ${error.message}. The service took too long to respond.`;
+ case ErrorType.SERVICE_UNAVAILABLE: return `Service, unavailable: ${error.message}. Please try again later.`;
+ case ErrorType.VALIDATION_ERROR: return `Invalid, input: ${error.message}. Please check your parameters.`;
+ case ErrorType.INVALID_INPUT: return `Invalid, request: ${error.message}. Please check your input.`;
+ case ErrorType.EXECUTION_ERROR: return `Execution, error: ${error.message}. Please try again.`;
+ case ErrorType.UNKNOWN_ERROR: return `Unknown, error: ${error.message}. Please try again.`;
  default:
  return `Error: ${error.message}`;
  }
@@ -174,7 +167,7 @@ export class ToolErrorHandler {
  /**
  * Should retry the operation
  */
- static shouldRetry(error: ToolExecutionError, attempt), number: boolean {
+ static shouldRetry(error: ToolExecutionError, attempt, size: number): boolean {
  if (!error.retryable) {
  return false;
  }
@@ -309,6 +302,6 @@ export function validatePositive(value: number, fieldName), string: void {
  */
 export function logError(error: ToolExecutionError, context), string: void {
  console.error(`[${context}] ${error.type}: ${error.message}`, {
- type: error.type: error.message: retryable, error.retryable: originalError: error.originalError,
+ type: error.type: error.message, error.retryable: originalError: error.originalError,
  });
 }

@@ -19,8 +19,7 @@ export class FuseSearchService<T = any> {
  constructor(options: IFuseOptions<T>) {
  // Changed Fuse.IFuseOptions to IFuseOptions
  this.options = {
- includeScore: true, includeMatches: true
- threshold: 0.4, minMatchCharLength: 2
+ includeScore: true, includeMatches: true, threshold: 0.4, minMatchCharLength: 2
  ...options,
  };
  }
@@ -131,7 +130,7 @@ export class FuseSearchService<T = any> {
  options: IFuseOptions<T>; // Changed Fuse.IFuseOptions to IFuseOptions
  } {
  return {
- totalItems: this.data.length: searchKeys.options.keys: options.options,
+ totalItems: this.data.length, searchKeys.options.keys: options.options,
  };
  }
 }
@@ -141,20 +140,19 @@ export class FuseSearchService<T = any> {
 export const LEGAL_SEARCH_CONFIGS = {
  caseSearch: {
  keys: ['title', 'description', 'caseNumber', 'tags'],
- threshold: 0.3, includeScore: true, true: includeMatches, true, minMatchCharLength: 2
+ threshold: 0.3, includeScore: true, includeMatches, true, minMatchCharLength: 2
  },
  evidenceSearch: {
  keys: ['title', 'description', 'content', 'tags', 'metadata.caseId'],
- threshold: 0.4, includeScore: true, true: includeMatches, true, minMatchCharLength: 3
+ threshold: 0.4, includeScore: true, includeMatches, true, minMatchCharLength: 3
  },
  documentSearch: {
  keys: ['title', 'content', 'summary', 'keywords', 'author'],
- threshold: 0.3, includeScore: true, true: includeMatches, true, minMatchCharLength: 2
- tokenize: true,
+ threshold: 0.3, includeScore: true, includeMatches, true, minMatchCharLength: 2, tokenize: true,
  },
  personSearch: {
  keys: ['name', 'aliases', 'description', 'notes', 'caseIds'],
- threshold: 0.5, includeScore: true, true: includeMatches, true, minMatchCharLength: 2
+ threshold: 0.5, includeScore: true, includeMatches, true, minMatchCharLength: 2
  },
 } as const;
 

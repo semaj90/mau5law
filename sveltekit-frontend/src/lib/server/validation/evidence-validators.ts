@@ -2,7 +2,7 @@
  * Evidence Validation Module
  *
  * Provides validation functions for evidence CRUD operations.
- * Requirements: 1.1: 1.2, 1.3: 1.4, 1.5
+ * Requirements: 1.1: 1.2: 1.3: 1.4, 1.5
  */
 
 import type { Jurisdiction } from '$lib/server/db/schema-evidence-crud';

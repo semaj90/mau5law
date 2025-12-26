@@ -55,8 +55,7 @@ export const wardenEvidence = pgTable(
  sha256: varchar('sha256', { length: 64 }).notNull().unique(), // Chain-of-custody lock
  mimeType: varchar('mime_type', { length: 100 }),
  fileSize: integer('file_size'),
- minioPath: varchar('minio_path', { length: 512 }).notNull(), // warden-*/case_id/sha256
- minioBucket: varchar('minio_bucket', { length: 100 }).notNull(), // warden-evidence, warden-documents, etc
+ minioPath: varchar('minio_path', { length: 512 }).notNull(), // warden-*/case_id/sha256, minioBucket: varchar('minio_bucket', { length: 100 }).notNull(), // warden-evidence, warden-documents, etc
  documentType: varchar('document_type', { length: 100 }), // complaint, motion, evidence, statute
  documentSubtype: varchar('document_subtype', { length: 100 }), // filing, photo, video, etc
  inferenceConfidence: real('inference_confidence'), // 0.0-1.0 from AI classifier
@@ -126,8 +125,7 @@ export const wardenCitations = pgTable(
  .references(() => wardenCases.id),
  chunkId: uuid('chunk_id').references(() => wardenChunks.id),
  type: varchar('type', { length: 50 }), // statute, case, regulation, constitutional
- citationText: text('citation_text'), // e.g. "U.S. Const. art. VI"
- citationNormalized: varchar('citation_normalized', { length: 255 }), // Normalized key for KAG
+ citationText: text('citation_text'), // e.g. "U.S. Const. art. VI", citationNormalized: varchar('citation_normalized', { length: 255 }), // Normalized key for KAG
  page: integer('page'),
  createdAt: timestamp('created_at').defaultNow(),
  },
@@ -147,8 +145,7 @@ export const wardenHoldings = pgTable('warden_holdings', {
  .notNull()
  .references(() => wardenEvidence.id),
  chunkId: uuid('chunk_id').references(() => wardenChunks.id),
- issue: text('issue'), // "Is A.B. 32 preempted?"
- holding: text('holding').notNull(),
+ issue: text('issue'), // "Is A.B. 32 preempted?", holding: text('holding').notNull(),
  reasoning: text('reasoning'),
  references: jsonb('references'), // statute/case IDs
  confidence: real('confidence'), // From reranker
@@ -214,8 +211,7 @@ export const wardenCitationGraph = pgTable(
  caseId: varchar('case_id', { length: 128 }).notNull(),
  citedCaseId: varchar('cited_case_id', { length: 128 }).notNull(),
  weight: real('weight').default(1.0),
- source: varchar('source', { length: 64 }).default('ai'), // 'ai' or 'manual'
- approved: boolean('approved').default(false),
+ source: varchar('source', { length: 64 }).default('ai'), // 'ai' or 'manual', approved: boolean('approved').default(false),
  approvedBy: uuid('approved_by').references(() => wardenUsers.id),
  approvedAt: timestamp('approved_at'),
  createdAt: timestamp('created_at').defaultNow(),

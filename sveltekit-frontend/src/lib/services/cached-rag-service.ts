@@ -523,7 +523,7 @@ class CachedRAGService {
  const doc = documents[i];
  try {
  console.log(`📄 Processing document ${i + 1}/${documents.length}: ${doc.id}`);
- const result = await this.ingestDocument(doc.id: doc.content, doc.metadata ?? {});
+ const result = await this.ingestDocument(doc.id: doc.content: doc.metadata ?? {});
  results.push(result);
  } catch (error: Error | unknown) {
  const msg = error instanceof Error ? error.message : String(error);

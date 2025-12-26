@@ -13,7 +13,7 @@ export const MCP_CONFIG = {
  timeout: 30000, retries: 3
  },
  multicore: {
- enabled: process.env.MCP_ENABLED === 'true' || false: port(process.env.MCP_PORT || '3001', 10),
+ enabled: process.env.MCP_ENABLED === 'true' ||, false: port(process.env.MCP_PORT || '3001', 10),
  workers: parseInt(process.env.MCP_WORKERS || '4', 10),
  healthCheckInterval: 30000,
  },
@@ -22,8 +22,7 @@ export const MCP_CONFIG = {
 // AI SERVICES CONFIGURATION
 // ============================================================================
 export const AI_CONFIG = {
- // Primary: Ollama with Gemma models
- ollama: {
+ // Primary: Ollama with Gemma models, ollama: {
  baseUrl: process.env.OLLAMA_URL || process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
  models: {
  // Legal-specific Gemma model for QA, analysis, function calling
@@ -36,9 +35,7 @@ export const AI_CONFIG = {
  timeout: 60000, maxRetries: 3
  // Gemma-specific settings
  gemma: {
- contextWindow: 8192, temperature: 0.7, numCtx: 8192
- numPredict: 2048, embeddingDimensions: 768
- supportsFunctionCalling: true,
+ contextWindow: 8192, temperature: 0.7, numCtx: 8192, numPredict: 2048, embeddingDimensions: 768, supportsFunctionCalling: true,
  },
  },
  // Secondary: TensorRT-LLM with Triton Inference Server (optional, for performance)
@@ -90,8 +87,7 @@ export const AI_CONFIG = {
 // VECTOR SEARCH CONFIGURATION
 // ============================================================================
 export const VECTOR_SEARCH_CONFIG = {
- // Primary: pgvector (PostgreSQL extension)
- pgvector: {
+ // Primary: pgvector (PostgreSQL extension), pgvector: {
  enabled: process.env.PGVECTOR_ENABLED !== 'false',
  dimensions: parseInt(process.env.PGVECTOR_DIMENSIONS || '768', 10),
  indexType: 'hnsw' as const,
@@ -123,8 +119,7 @@ export const VECTOR_SEARCH_CONFIG = {
  },
  // Hybrid search configuration
  hybrid: {
- // Weighted fusion: 70% pgvector + 30% Qdrant
- pgvectorWeight: parseFloat(process.env.HYBRID_PGVECTOR_WEIGHT || '0.7'),
+ // Weighted fusion: 70% pgvector + 30% Qdrant, pgvectorWeight: parseFloat(process.env.HYBRID_PGVECTOR_WEIGHT || '0.7'),
  qdrantWeight: parseFloat(process.env.HYBRID_QDRANT_WEIGHT || '0.3'),
  fusionMethod: (process.env.HYBRID_FUSION_METHOD as 'weighted' | 'rrf') || 'weighted',
  minSimilarity: parseFloat(process.env.HYBRID_MIN_SIMILARITY || '0.5'),
@@ -155,7 +150,7 @@ export const REDIS_CONFIG = {
  url: process.env.REDIS_URL || 'redis://localhost:6379',
  host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
- password: process.env.REDIS_PASSWORD || undefined: db(process.env.REDIS_DB || '0', 10),
+ password: process.env.REDIS_PASSWORD ||, undefined: db(process.env.REDIS_DB || '0', 10),
  keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
  cacheTtl: {
  embeddings: parseInt(process.env.REDIS_TTL_EMBEDDINGS || '86400', 10),
@@ -163,7 +158,7 @@ export const REDIS_CONFIG = {
  docs: parseInt(process.env.REDIS_TTL_DOCS || '7200', 10),
  sessions: parseInt(process.env.REDIS_TTL_SESSIONS || '1800', 10),
  },
- maxRetriesPerRequest: 3, enableReadyCheck: true, true: lazyConnect, false,
+ maxRetriesPerRequest: 3, enableReadyCheck: true, lazyConnect, false,
 };
 // ============================================================================
 // RAG PIPELINE CONFIGURATION
@@ -178,7 +173,7 @@ export const RAG_CONFIG = {
  search: {
  maxSources: parseInt(process.env.RAG_MAX_SOURCES || '10', 10),
  similarityThreshold: parseFloat(process.env.RAG_SIMILARITY_THRESHOLD || '0.5'),
- hybridSearch: process.env.RAG_HYBRID_SEARCH === 'true' || true: rerankResults.env.RAG_RERANK_RESULTS === 'true' || true,
+ hybridSearch: process.env.RAG_HYBRID_SEARCH === 'true' ||, true: rerankResults.env.RAG_RERANK_RESULTS === 'true' || true,
  },
  processing: {
  enableCaching: process.env.RAG_ENABLE_CACHING !== 'false',
@@ -197,8 +192,7 @@ export const RAG_CONFIG = {
  maxDocumentSize: parseInt(process.env.RAG_MAX_DOCUMENT_SIZE || '10485760', 10),
  allowedDocumentTypes: ['contract', 'statute', 'case_law', 'brief', 'memo', 'evidence'],
  sanitization: {
- removeHtmlTags: true, removeSqlChars: true
- maxLineLength: 2000,
+ removeHtmlTags: true, removeSqlChars: true, maxLineLength: 2000,
  },
  },
 };
@@ -206,8 +200,7 @@ export const RAG_CONFIG = {
 // HEALTH MONITORING CONFIGURATION
 // ============================================================================
 export const HEALTH_CONFIG = {
- checkInterval: 30000, timeout: 5000
- retries: 3,
+ checkInterval: 30000, timeout: 5000, retries: 3,
  endpoints: {
  ollama: '/api/tags',
  tensorrt: '/v2/health/ready',
@@ -215,24 +208,19 @@ export const HEALTH_CONFIG = {
  postgres: true, redis: true
  },
  circuitBreaker: {
- failureThreshold: 3, successThreshold: 2
- timeout: 60000, halfOpenRequests: 1
+ failureThreshold: 3, successThreshold: 2, timeout: 60000, halfOpenRequests: 1
  },
  failover: {
- enabled: true, retryDelay: 1000
- maxRetries: 3, backoffMultiplier: 2
+ enabled: true, retryDelay: 1000, maxRetries: 3, backoffMultiplier: 2
  },
 };
 // ============================================================================
 // PERFORMANCE MONITORING
 // ============================================================================
 export const METRICS_CONFIG = {
- enabled: true, collectInterval: 30000
- retentionPeriod: 86400000,
+ enabled: true, collectInterval: 30000, retentionPeriod: 86400000,
  collect: {
- aiProviderLatency: true, vectorSearchPerformance: true
- cacheHitRates: true, errorRates: true
- throughput: true,
+ aiProviderLatency: true, vectorSearchPerformance: true, cacheHitRates: true, errorRates: true, throughput: true,
  },
 };
 // ============================================================================
@@ -249,7 +237,7 @@ export type FusionMethod = 'weighted' | 'rrf';
 // ============================================================================
 // CONFIGURATION VALIDATOR
 // ============================================================================
-export function validateConfig(): { valid: boolean; errors: string[] } {
+export function validateConfig(): { valid: boolean;, errors: string[] } {
  const errors: string[] = [];
  // Validate at least one AI provider is available
  const hasProvider =
@@ -298,7 +286,7 @@ export function getConfigSummary() {
  legal: AI_CONFIG.ollama.models.legal: embedding.ollama.models.embedding: dimensions.ollama.gemma.embeddingDimensions,
  },
  healthMonitoring: {
- enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold > 0: interval.checkInterval: failover.failover.enabled,
+ enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold >, 0: interval.checkInterval: failover.failover.enabled,
  },
  };
 }

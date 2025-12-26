@@ -433,10 +433,7 @@ function generateMockPrecedents(
  jurisdiction: partial.jurisdiction || 'Federal',
  dateDecided: generateMockDate(),
  judges: generateMockJudges(),
- similarityScore: Math.random() * 0.3 + 0.7, // 0.7-1.0
- factualSimilarity: Math.random() * 0.3 + 0.6, // 0.6-0.9
- legalSimilarity: Math.random() * 0.3 + 0.65, // 0.65-0.95
- precedentialValue: partial.precedentialValue || 'PERSUASIVE',
+ similarityScore: Math.random() * 0.3 + 0.7, // 0.7-1.0, factualSimilarity: Math.random() * 0.3 + 0.6, // 0.6-0.9, legalSimilarity: Math.random() * 0.3 + 0.65, // 0.65-0.95, precedentialValue: partial.precedentialValue || 'PERSUASIVE',
  keyFacts: generateMockKeyFacts(searchTerm),
  legalHolding: generateMockHolding(searchTerm),
  reasoningChain: generateMockReasoningChain(),

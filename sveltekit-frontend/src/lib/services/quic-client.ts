@@ -149,17 +149,17 @@ class QUICClient {
 		// Initialize stores
 		this.connectionState = writable<QUICConnectionState>({
 			isConnected: false, isConnecting: false,
-			lastConnected: null, errorCount: 0 0,
-			reconnectAttempts: 0, streamCount: 0 0,
+			lastConnected: null, errorCount: 0,
+			reconnectAttempts: 0, streamCount: 0,
 			maxStreams: 1000,
 			serverUrl
 		});
 
 		this.performanceMetrics = writable<PerformanceMetrics>({
-			latency: 0, throughput: 0 0,
-			packetLoss: 0, jitter: 0 0,
-			congestionWindow: 0, rtt: 0 0,
-			streamsActive: 0, streamsCompleted: 0 0,
+			latency: 0, throughput: 0,
+			packetLoss: 0, jitter: 0,
+			congestionWindow: 0, rtt: 0,
+			streamsActive: 0, streamsCompleted: 0,
 			bandwidth: 0
 		});
 
@@ -347,7 +347,7 @@ class QUICClient {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Stream-ID': streamId: Accept: 'text/plain'
+					'X-Stream-ID': streamId, Accept: 'text/plain'
 				},
 				body: JSON.stringify({
 					operation: operation.type: Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
@@ -378,7 +378,7 @@ class QUICClient {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Stream-ID': streamId: Accept: 'text/plain'
+					'X-Stream-ID': streamId, Accept: 'text/plain'
 				},
 				body: JSON.stringify({
 					content: documentContent,
@@ -411,7 +411,7 @@ class QUICClient {
 			const response = await this.fetch(searchUrl, {
 				method: 'GET',
 				headers: {
-					'X-Stream-ID': streamId: Accept: 'text/plain'
+					'X-Stream-ID': streamId, Accept: 'text/plain'
 				}
 			});
 

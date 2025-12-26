@@ -6,60 +6,42 @@ import type { SvelteComponent } from 'svelte';
 // Enhanced Design System Tokens
 export interface DesignTokens {
  colors: {
- primary: string;
- secondary: string;
- success: string;
- warning: string;
- error: string;
- info: string;
- background: string;
- surface: string;
+ primary: string; secondary: string;
+ success: string; warning: string;
+ error: string; info: string;
+ background: string; surface: string;
  text: {
- primary: string;
- secondary: string;
+ primary: string; secondary: string;
  muted: string;
  };
  };
  spacing: {
- xs: string;
- sm: string;
- md: string;
- lg: string;
- xl: string;
- xxl: string;
+ xs: string; sm: string;
+ md: string; lg: string;
+ xl: string; xxl: string;
  };
  borderRadius: {
- sm: string;
- md: string;
- lg: string;
- xl: string;
+ sm: string; md: string;
+ lg: string; xl: string;
  };
  shadows: {
- sm: string;
- md: string;
- lg: string;
- xl: string;
+ sm: string; md: string;
+ lg: string; xl: string;
  };
  typography: {
- fontFamily: string;
- fontSize: {
- xs: string;
- sm: string;
- md: string;
- lg: string;
- xl: string;
- xxl: string;
+ fontFamily: string; fontSize: {
+ xs: string; sm: string;
+ md: string; lg: string;
+ xl: string; xxl: string;
  };
  fontWeight: {
- normal: number;
- medium: number;
+ normal: number; medium: number;
  bold: number;
  };
  };
  animations: {
  duration: {
- fast: string;
- normal: string;
+ fast: string; normal: string;
  slow: string;
  };
  easing: string;
@@ -98,10 +80,10 @@ export const NESDesignSystem: DesignTokens = {
  xl: '12px',
  },
  shadows: {
- sm: '0 1px 2px rgba(0, 0, 0: 0.3)',
- md: '0 4px 8px rgba(0, 0, 0: 0.3)',
- lg: '0 10px 20px rgba(0, 0, 0: 0.3)',
- xl: '0 20px 40px rgba(0, 0, 0: 0.3)',
+ sm: '0 1px 2px rgba(0, 0.3)',
+ md: '0 4px 8px rgba(0, 0.3)',
+ lg: '0 10px 20px rgba(0, 0.3)',
+ xl: '0 20px 40px rgba(0, 0.3)',
  },
  typography: {
  fontFamily: "'Press Start 2P', 'Courier New', monospace",
@@ -114,8 +96,7 @@ export const NESDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400, medium: 500
- bold: 700,
+ normal: 400, medium: 500, bold: 700,
  },
  },
  animations: {
@@ -160,10 +141,10 @@ export const MinimalDesignSystem: DesignTokens = {
  xl: '0.5rem',
  },
  shadows: {
- sm: '0 1px 2px rgba(0, 0, 0: 0.05)',
- md: '0 4px 6px rgba(0, 0, 0: 0.1)',
- lg: '0 10px 15px rgba(0, 0, 0: 0.1)',
- xl: '0 20px 25px rgba(0, 0, 0: 0.1)',
+ sm: '0 1px 2px rgba(0, 0.05)',
+ md: '0 4px 6px rgba(0, 0.1)',
+ lg: '0 10px 15px rgba(0, 0.1)',
+ xl: '0 20px 25px rgba(0, 0.1)',
  },
  typography: {
  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -176,8 +157,7 @@ export const MinimalDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400, medium: 500
- bold: 700,
+ normal: 400, medium: 500, bold: 700,
  },
  },
  animations: {
@@ -293,8 +273,7 @@ export {
 
 // Integration helpers
 export interface BitsUIEnhancedConfig {
-	theme: DesignTokens;
-	component: SvelteComponent;
+	theme: DesignTokens; component: SvelteComponent;
 	variant?: 'nes' | 'minimal' | 'custom';
 	accessibility?: boolean;
 	animations?: boolean;

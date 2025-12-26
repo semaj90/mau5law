@@ -37,8 +37,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error: expected string but got number',
+ line: 10, column: 5, message: 'Type error: expected string but got number',
  type: 'typescript',
  severity: 'error',
  code: 'const x: string = 123;',
@@ -62,8 +61,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -94,8 +92,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -144,8 +141,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -324,8 +320,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -352,8 +347,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -374,8 +368,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -397,8 +390,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5
- message: 'Type error',
+ line: 10, column: 5, message: 'Type error',
  type: 'typescript',
  severity: 'error',
  status: 'new',

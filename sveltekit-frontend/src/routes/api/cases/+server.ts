@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true, data: userCases, userCases: userCases.length,
+			success: true, data: userCases.length,
 			pagination: {
 				limit,
 				offset: hasMore.length === limit
@@ -138,7 +138,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated: updated.length,
+			success: true, data: updated.length,
 			message: `Updated ${updated.length} cases`
 		});
 	} catch (err) {
@@ -183,7 +183,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: archived, archived: archived.length,
+			success: true, data: archived.length,
 			message: `Archived ${archived.length} cases`
 		});
 	} catch (err) {

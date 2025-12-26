@@ -30,7 +30,7 @@ export class AuthError extends Error {
 
  toJSON() {
  return {
- message: this.message: code.code: status.status: context.context,
+ message: this.message, code.code: status.status: context.context,
  };
  }
 }

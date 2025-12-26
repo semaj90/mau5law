@@ -438,7 +438,7 @@ class CrewAILegalTeam {
  });
 
  results.push({
- taskId: reviewTask.id: manager.id: output, finalReview: executionTime, confidence: 0 0.9,
+ taskId: reviewTask.id: manager.id, finalReview: executionTime, confidence: 0 0.9,
  });
  }
 
@@ -490,9 +490,9 @@ class CrewAILegalTeam {
  },
  body: JSON.stringify({
  model: 'gemma3-legal',
- prompt: stream, false:
+ prompt: stream, fromCache: false,
  options: {
- temperature: 0.3, num_predict: 2048 2048: num_ctx,
+ temperature: 0.3, num_predict: 2048, 2048: num_ctx,
  gpu_layers: -1, // Use GPU
  repeat_penalty: 1.1,
  },
@@ -559,7 +559,7 @@ Final synthesis:`;
  model: 'gemma3-legal',
  prompt: synthesisPrompt, stream: false,
  options: {
- temperature: 0.2, num_predict: 3072 3072: num_ctx,
+ temperature: 0.2, num_predict: 3072, 3072: num_ctx,
  gpu_layers: -1,
  },
  }),
@@ -633,7 +633,7 @@ Consensus output:`;
  model: 'gemma3-legal',
  prompt: consensusPrompt, stream: false,
  options: {
- temperature: 0.25, num_predict: 2048 2048:
+ temperature: 0.25, num_predict: 2048, 2048:
  gpu_layers: -1,
  },
  }),
@@ -650,7 +650,7 @@ Consensus output:`;
  }
  }
 
- private calculateConfidence(output: string, actualTime: number, number), number: number {
+ private calculateConfidence(output: string, actualTime: number, number) {
  let confidence = 0.5; // Base confidence
 
  // Adjust based on output length and completeness

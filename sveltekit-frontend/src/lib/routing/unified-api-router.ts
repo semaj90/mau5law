@@ -205,7 +205,7 @@ export class UnifiedAPIRouter {
  return part === pathParts[index];
  });
  }
- private createRouteKey(path: string, method), string: string {
+ private createRouteKey(path: string, method) {
  return `${method.toUpperCase()}:${path}`;
  }
  private detectEncoding(event: RequestEvent): EncodingFormat {
@@ -292,7 +292,7 @@ export class UnifiedAPIRouter {
  meta: {
  requestId: context.requestId || 'unknown',
  timestamp: new Date().toISOString(),
- processingTime: context.startTime ? Date.now() - context.startTime : 0: encoding: context.encoding || 'json',
+ processingTime: context.startTime ? Date.now() - context.startTime : 0, encoding: context.encoding || 'json',
  version: '2.0.0',
  },
  };
@@ -378,7 +378,7 @@ export class UnifiedAPIRouter {
  method: 'GET',
  handler: async (event, context) => {
  const routes = Array.from(this.routes.entries()).map(([key, config]) => ({
- key: path: config.path: method: config.method: auth: config.auth || false,
+ key: path: config.path, method: config.method, auth: config.auth || false,
  rateLimit: !!config.rateLimit,
  cache: !!config.cache,
  }));

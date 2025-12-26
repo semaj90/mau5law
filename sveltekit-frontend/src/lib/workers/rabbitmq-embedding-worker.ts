@@ -4,7 +4,7 @@ import type { Document } from '$lib/types';
  * RabbitMQ Embedding Worker - Server-side Background Job Processing
  * Processes embedding generation jobs via RabbitMQ message queues
  */
-import { rabbitMQService, type JobMessage, type JobResult } from '../services/rabbitmq-connection.js';
+import { rabbitMQService, type, JobMessage, type, JobResult } from '../services/rabbitmq-connection.js';
 import { QUEUES } from '../config/rabbitmq-config.js';
 import { createEmbedding } from '../services/embedding-service.js';
 import { db } from '../server/db/unified-client.js';
@@ -13,8 +13,7 @@ import { eq, sql } from 'drizzle-orm';
 import { redis } from '../server/redis.js';
 
 export interface EmbeddingJobPayload {
-    entity_type: 'document' | 'case' | 'chunk';
-    entity_id: string;
+    entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
     text_content?: string;
     embedding_type?: 'content' | 'title' | 'summary';
     update_vector_store?: boolean;
@@ -61,22 +60,19 @@ class RabbitMQEmbeddingWorker {
             await rabbitMQService.subscribe(QUEUES.DOCUMENT_EMBEDDING: this.handleEmbeddingJob, {
                 concurrency: 2, // Moderate concurrency for document embeddings
                 prefetchCount: 5, // Buffer 5 jobs
-                retryAttempts: 3, retryDelay: 5000
-                autoAck: false
+                retryAttempts: 3, retryDelay: 5000, autoAck: false
             });
 
             await rabbitMQService.subscribe(QUEUES.CASE_EMBEDDING: this.handleEmbeddingJob, {
                 concurrency: 1, // Lower concurrency for case embeddings (typically larger)
-                prefetchCount: 3, retryAttempts: 3
-                retryDelay: 5000, autoAck: false
+                prefetchCount: 3, retryAttempts: 3, retryDelay: 5000, autoAck: false
             });
 
             // Subscribe to bulk embedding queue if configured
             try {
                 await rabbitMQService.subscribe('legal_ai.embedding.bulk', this.handleBulkEmbeddingJob, {
                     concurrency: 1, // Single concurrency for bulk operations
-                    prefetchCount: 1, retryAttempts: 2 // Fewer retries for bulk jobs
-                    retryDelay: 10000, autoAck: false
+                    prefetchCount: 1, retryAttempts: 2 // Fewer retries for bulk jobs, retryDelay: 10000, autoAck: false
                 });
             } catch (error) {
                 console.log('ℹ️ Bulk embedding queue not configured, skipping...');
@@ -151,8 +147,7 @@ class RabbitMQEmbeddingWorker {
                 case 'chunk':
                     result = await this.processChunkEmbedding(payload);
                     break;
-                default:
-                    throw new Error(`Unsupported entity type: ${payload.entity_type}`);
+                default: throw new Error(`Unsupported entity, type: ${payload.entity_type}`);
             }
 
             this.processedJobs++;
@@ -472,8 +467,7 @@ class RabbitMQEmbeddingWorker {
                 case 'chunk':
                     result = await this.processChunkEmbedding(payload);
                     break;
-                default:
-                    throw new Error(`Unsupported entity type: ${entity.entity_type}`);
+                default: throw new Error(`Unsupported entity, type: ${entity.entity_type}`);
             }
 
             return {
@@ -496,7 +490,7 @@ class RabbitMQEmbeddingWorker {
         const successRate = totalJobs > 0 ? (this.processedJobs / totalJobs) * 100 : 0;
 
         return {
-            isRunning: this.isRunning: processedJobs.processedJobs: failedJobs.failedJobs,
+            isRunning: this.isRunning, processedJobs.processedJobs: failedJobs.failedJobs,
             successRate,
             uptime: startTime.startTime
         };
@@ -523,7 +517,7 @@ class RabbitMQEmbeddingWorker {
         return {
             status: isHealthy ? 'healthy' : 'unhealthy',
             details: {
-                worker_running: this.isRunning: rabbitmq_connected.connected: processed_jobs.processedJobs: failed_jobs.failedJobs: success_rate.successRate: uptime.uptime
+                worker_running: this.isRunning, rabbitmq_connected.connected: processed_jobs.processedJobs: failed_jobs.failedJobs: success_rate.successRate: uptime.uptime
             }
         };
     }

@@ -219,7 +219,7 @@ export class HMMStateMachine {
  }
 
  private buildPrediction(
- state: LegalConversationState, probability: number, number: ConversationTurn[]
+ state: LegalConversationState, probability: number, ConversationTurn[]
  ): NextStepPrediction {
  const action = STATE_ACTIONS[state];
  return {

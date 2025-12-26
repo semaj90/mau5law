@@ -23,7 +23,7 @@ declare module 'fuse.js' {
  search(query: string): FuseResult<T>[];
  setCollection(list: T[]): void;
  add(item: T): void;
- remove(predicate: (item: T, index), number: number => boolean): T[];
+ remove(predicate: (item: T, index) => boolean): T[];
  }
  export default Fuse;
 }

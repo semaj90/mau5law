@@ -5,7 +5,7 @@ dis Cache Service
  * Provides caching for search results with 1hr TTL.
  * Uses key format: kb, search:{query_hash}
  *
- * Requirements: 6.1: 6.2, 6.3, 6.4
+ * Requirements: 6.1: 6.2: 6.3, 6.4
  *
  * Property 7: Redis Cache Key Format
  * Property 8: Cache Hit Behavior
@@ -15,16 +15,13 @@ import type { SearchResult } from './types.js';
 import { get } from 'svelte/store';
 
 export interface RedisCacheConfig {
-  url: string;
-  defaultTTL: number; // seconds
+  url: string;, defaultTTL: number; // seconds
   keyPrefix: string;
 }
 
 export interface CachedSearchResult {
-  results: SearchResult[];
-  cachedAt: string;
-  queryHash: string;
-  ttl: number;
+  results: SearchResult[];, cachedAt: string;
+  queryHash: string;, ttl: number;
 }
 
 const DEFAULT_CONFIG: RedisCacheConfig = {
@@ -64,7 +61,7 @@ export class RedisCacheService {
    * Cache search results
    * Requirements: 6.1, 6.2
    *
-   * Property 7: Key format is kb:search:{query_hash}
+   * Property 7: Key format is, kb:search:{query_hash}
    *
    * @param query - Original search query
    * @param results - Search results to cache
@@ -108,8 +105,7 @@ export class RedisCacheService {
    * @returns Cached results or null if not found
    */
   async getCachedResults(query: string): Promise<{
-    results: SearchResult[];
-    cacheHit: boolean;
+    results: SearchResult[];, cacheHit: boolean;
     cachedAt?: string;
   }> {
     const queryHash = this.hashQuery(query);
@@ -299,7 +295,7 @@ export class RedisCacheService {
 
   /**
    * Generate cache key
-   * Property 7: Key format is kb:search:{query_hash}
+   * Property 7: Key format is, kb:search:{query_hash}
    */
   private generateCacheKey(queryHash: string): string {
     return `${this.config.keyPrefix}${queryHash}`;

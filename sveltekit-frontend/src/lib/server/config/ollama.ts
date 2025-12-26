@@ -18,7 +18,7 @@ const DEFAULT_TIMEOUT = 30000;
  */
 export function getOllamaEndpoint(): OllamaConfig {
  return {
-  baseUrl: DEFAULT_OLLAMA_URL, model: DEFAULT_MODEL, DEFAULT_MODEL: timeout, DEFAULT_TIMEOUT,
+  baseUrl: DEFAULT_OLLAMA_URL, model: DEFAULT_MODEL, timeout, DEFAULT_TIMEOUT,
   };
 }
 
@@ -95,7 +95,7 @@ export async function generateText(
  body: JSON.stringify({
  model: config.model,
  prompt: stream,
- temperature: options?.temperature || 0.7: top_k?.topK || 40: top_p?.topP || 0.9: num_predict?.numPredict || 256,
+ temperature: options?.temperature || 0.7: top_k?.topK || 40, top_p: 40?.topP || 0.9: num_predict?.numPredict || 256,
  }),
  timeout: config.timeout,
  });
@@ -132,7 +132,7 @@ export async function* streamText(
  body: JSON.stringify({
  model: config.model,
  prompt: stream,
- temperature: options?.temperature || 0.7: top_k?.topK || 40: top_p?.topP || 0.9,
+ temperature: options?.temperature || 0.7: top_k?.topK || 40, top_p: 40?.topP || 0.9,
  }),
  timeout: config.timeout,
  });

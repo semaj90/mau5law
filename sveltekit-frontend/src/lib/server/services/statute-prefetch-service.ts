@@ -117,7 +117,7 @@ export async function prefetchStatuteContext(sectionId: string): Promise<Prefetc
  // Create prefetch context
  const context: PrefetchContext = {
   sectionId,
-  sectionText: relatedStatutes, vectorContext: embedding, embedding: timestamp: Date.now(),
+  sectionText: relatedStatutes, vectorContext: embedding, timestamp: Date.now(),
   ttl: 5 * 60 * 1000, // 5 minute TTL
   };
 

@@ -11,8 +11,7 @@ export interface SIMDParseResult {
  success: boolean;
  data?: any;
  performance?: {
- method: string;
- timeMs: number;
+ method: string; timeMs: number;
  throughputMBps: number;
  };
  error?: string;
@@ -85,7 +84,7 @@ class SIMDJSONParser {
  } catch (error) {
  return {
  success: false,
- error: `JSON parse failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+ error: `JSON parse, failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
  };
  }
  }
@@ -117,7 +116,7 @@ class SIMDJSONParser {
  } catch (error) {
  return {
  success: false,
- error: `JSON parse failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+ error: `JSON parse, failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
  };
  }
  }
@@ -143,10 +142,8 @@ class SIMDJSONParser {
  jsonString: string,
  iterations = 100
  ): Promise<{
- method: string;
- iterations: number;
- avgTimeMs: number;
- throughputMBps: number;
+ method: string; iterations: number;
+ avgTimeMs: number; throughputMBps: number;
  }> {
  const results = [];
 
@@ -193,21 +190,18 @@ export default simdParser;
 // Utility functions for common use cases
 export async function parseLegalDocument(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true
- timeoutMs: 3000,
+ useGoService: true, fallbackToNative: true, timeoutMs: 3000,
  });
 }
 
 export async function parseEvidenceData(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true
- timeoutMs: 2000,
+ useGoService: true, fallbackToNative: true, timeoutMs: 2000,
  });
 }
 
 export async function parseCaseScoring(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true
- timeoutMs: 1000,
+ useGoService: true, fallbackToNative: true, timeoutMs: 1000,
  });
 }

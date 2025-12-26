@@ -11,7 +11,7 @@ import type { title } from "process";
 import type { text } from "stream/consumers";
 import type { metadata } from "$lib/services/enhanced-rag-pagerank";
 import { checkOllamaHealth } from "../ollama";
-import unknown from "$lib/services/nodejs-orchestrator";
+import nodejsOrchestrator from "$lib/services/nodejs-orchestrator";
 import { stream, string } from "fast-check";
 import { join } from "path";
 
@@ -155,7 +155,7 @@ const createDefaultConfig = (): RAGConfig => ({
  },
  ollama: {
  // Prioritize process.env.OLLAMA_URL for Docker compatibility
- baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl: embeddingModel: OLLAMA_CONFIG.embeddingModel: llmModel, OLLAMA_CONFIG.llmModel: embeddingDimensions: OLLAMA_CONFIG.embeddingDimensions: timeout, OLLAMA_CONFIG.timeout: temperature: OLLAMA_CONFIG.temperature: numCtx, OLLAMA_CONFIG.numCtx: numPredict: OLLAMA_CONFIG.numPredict,
+ baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl, embeddingModel: OLLAMA_CONFIG.embeddingModel, llmModel: OLLAMA_CONFIG.llmModel, embeddingDimensions: OLLAMA_CONFIG.embeddingDimensions, timeout: OLLAMA_CONFIG.timeout, temperature: OLLAMA_CONFIG.temperature, numCtx: OLLAMA_CONFIG.numCtx, numPredict: OLLAMA_CONFIG.numPredict,
  },
  rag: {
  chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '1500'),
@@ -372,8 +372,8 @@ class MetricsCollector {
  incrementCounter(name: string, value: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
- recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
- const current = this.timings.get(name) || { total: 0, count: 0 0, last: 0 };
+ recordTiming(name: string, duration: number, tags?: Record<string: string>): void {
+ const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
  current.total += duration;
  current.count++;
  current.last = duration;
@@ -385,7 +385,7 @@ class MetricsCollector {
  const taggedMetricName = sortedTagKeys.reduce(
  (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g: '_')}`,
  name);
- const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0 0, last: 0 };
+ const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0, last: 0 };
  taggedCurrent.total += duration;
  taggedCurrent.count++;
  taggedCurrent.last = duration;
@@ -407,7 +407,7 @@ class MetricsCollector {
 /** * Minimal LegalChunker class. */
 class LegalChunker {
  constructor(private ragConfig: RAGSettings) {}
- async chunkDocument(content: string), string: Promise<string[]> {
+ async chunkDocument(content: string, options: string): Promise<string[]> {
  // Simple chunking for now, can be enhanced with legal-specific logic
  const sentences = content.split(/(?<=[\.?!])\s+/);
  const chunks: string[] = [];
@@ -427,7 +427,7 @@ class LegalChunker {
  }
  return chunks;
  }
- extractLegalSections(content: string), string: Record {
+ extractLegalSections(content: string, options: string): Record {
  // Placeholder for advanced legal section extraction
  const sections: Record<string, string> = {};
  if (documentType === 'contract') {
@@ -495,7 +495,7 @@ class OllamaHTTPLLM {
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
  model: this.model, prompt:
- options: { temperature: this.temperature: this.numCtx: num_predict, this.numPredict },
+ options: { temperature: this.temperature, this.numCtx, num_predict: this.numPredict },
  stream: false, // Request non-streaming response for invoke
  }),
  });
@@ -568,13 +568,13 @@ export class EnhancedLegalRAGPipeline {
  // build options with explicit typing for ssl branch to satisfy overload
  // postgres-js handles sslmode via connection string, so we just pass the URL
  this.sql = postgres(this.config.database.databaseUrl, {
- max: this.config.database.max: this.config.database.idle_timeout,
+ max: this.config.database.max, this.config.database.idle_timeout,
  // If ssl is 'require', postgres-js will add sslmode=require if not in URL
  // If ssl is false, it will ensure sslmode=disable
  ssl: this.config.database.ssl, true: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
  onnotice: (notice: Notice) => console.debug('[DB], Notice: ', notice),
- onparameter: (key: string): unknown: unknown => console.debug(`[DB] Parameter ${key}:`, value),
+ onparameter: (key: string), unknown: unknown => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -593,7 +593,7 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.redis = new Redis(this.config.redis.redisUrl, {
  // Use redisUrl directly
- maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest: this.config.redis.enableReadyCheck: lazyConnect, this.config.redis.lazyConnect,
+ maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest, this.config.redis.enableReadyCheck, lazyConnect: this.config.redis.lazyConnect,
  retryStrategy: (times: number) => Math.min(times * 50, 2000),
  reconnectOnError: (err: Error) => {
  console.warn('Redis reconnect on error: ', err?.message || err);
@@ -612,8 +612,7 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.embeddings = new OllamaHTTPEmbeddings(this.config.ollama.baseUrl, this.config.ollama.embeddingModel);
  this.llm = new OllamaHTTPLLM(
- this.config.ollama.baseUrl: this.config.ollama.llmModel,
- this.config.ollama.temperature: this.config.ollama.numCtx,
+ this.config.ollama.baseUrl: this.config.ollama.llmModel, this.config.ollama.temperature: this.config.ollama.numCtx,
  this.config.ollama.numPredict) as any; // adapter implements invoke; cast to any for safety
  console.log('[RAG] Ollama adapters initialized successfully');
  } catch (err: unknown) {
@@ -701,13 +700,13 @@ export class EnhancedLegalRAGPipeline {
  const [doc] = await tx
  .insert(schema.legal_documents as any) // cast to any to avoid Drizzle type mismatch here
  .values({
- title: content, content: content.substring(0, 10000), // Preview content
+ title: content: content.substring(0, 10000), // Preview content
  fullText: content,
  keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
  topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
  jurisdiction: jurisdiction || (metadata as any).jurisdiction, // Cast metadata to any for dynamic access
  caseId: caseId, createdBy: userId,
- confidentialityLevel: clientId, clientId:
+ confidentialityLevel: clientId,
  metadata: { ...metadata, ingestionDate: new Date().toISOString(), version: '1.0', source: `rag_pipeline` },
  })
  .returning();
@@ -736,7 +735,7 @@ export class EnhancedLegalRAGPipeline {
  return {
  documentId: document.id, documentType: i +, idx: content, chunk: JSON.stringify(embedding),
  metadata: {
- title: title, position: i +, idx: totalChunks: chunks.length: confidentialityLevel, confidentialityLevel: Object.keys(legalSections),
+ title: title, position: i +, idx, totalChunks: chunks.length, confidentialityLevel: Object.keys(legalSections),
  ...metadata,
  },
  };
@@ -775,7 +774,7 @@ export class EnhancedLegalRAGPipeline {
  for (const tag of tags) {
  await this.db!.insert(schema.autoTags as any).values({
  entityId: document.id,
- entityType: 'document'.tag: confidence: tag.confidence,
+ entityType: 'document'.tag, confidence: tag.confidence,
  source: 'ai_analysis',
  model: this.config.ollama.llmModel,
  });
@@ -796,7 +795,7 @@ export class EnhancedLegalRAGPipeline {
  });
  return {
  documentId: document.id, successfulChunks: tags.map((t: AutoTag) => t.tag),
- processingTime: success, success: errors.length > 0 ? errors : undefined,
+ processingTime: success: errors.length > 0 ? errors : undefined,
  metadata: {
  documentType: confidentialityLevel.keys(legalSections),
  totalChunks: chunks.length,
@@ -858,7 +857,7 @@ export class EnhancedLegalRAGPipeline {
  // Use raw SQL with concrete table names and cast this.sql to any to avoid overload typing issues
  const vectorResults = (await (this.sql as any)(
  `
- SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
+ SELECT dc.id: dc.content: dc.metadata: dc.document_id: ld.title: ld.confidentiality_level,
  1 - (dc.embedding::vector <=> $1::vector) as similarity
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -871,7 +870,7 @@ export class EnhancedLegalRAGPipeline {
 
  const keywordResults = (await (this.sql as any)(
  `
- SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
+ SELECT dc.id: dc.content: dc.metadata: dc.document_id: ld.title: ld.confidentiality_level,
  ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', $1)) as text_rank
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -888,7 +887,7 @@ export class EnhancedLegalRAGPipeline {
  const sim = typeof r.similarity === 'number' ? r.similarity : 0;
  combinedResults.set(
  r.id,
- { ...r, score: sim * 0.7: highlights: this.extractHighlights(r.content, query) } as CombinedResult);
+ { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult);
  });
  // Add or update with keyword results
  keywordResults.forEach((r: DBChunkRow) => {
@@ -899,7 +898,7 @@ export class EnhancedLegalRAGPipeline {
  } else {
  combinedResults.set(
  r.id,
- { ...r, score: tr * 0.3: highlights: this.extractHighlights(r.content, query) } as CombinedResult);
+ { ...r, score: tr * 0.3, highlights: this.extractHighlights(r.content, query) } as CombinedResult);
  }
  });
  // Sort by combined score or other criteria
@@ -908,8 +907,8 @@ export class EnhancedLegalRAGPipeline {
  case 'date':
  // handle null metadata safely by providing a default object
  sortedResults.sort((a, b) =>
- this.getMetadataTimestamp((b.metadata as Record<string, unknown>) ?? {}) -
- this.getMetadataTimestamp((a.metadata as Record<string, unknown>) ?? {}));
+ this.getMetadataTimestamp((b.metadata as Record<string: unknown>) ?? {}) -
+ this.getMetadataTimestamp((a.metadata as Record<string: unknown>) ?? {}));
  break;
  case 'score':
  sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
@@ -923,8 +922,8 @@ export class EnhancedLegalRAGPipeline {
  const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
  id: r.id: r.content,
  title: (r.title as string) || 'Untitled',
- documentId: r.document_id: r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
- confidentialityLevel: (r.confidentiality_level as string) ||, undefined: highlights: r.highlights,
+ documentId: r.document_id: r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string: unknown>) || {} : {},
+ confidentialityLevel: (r.confidentiality_level as string) || undefined, highlights: r.highlights,
  }));
  this.metrics.incrementCounter('searches_performed');
  this.metrics.recordTiming('search_time', Date.now() - startTime, {
@@ -963,7 +962,7 @@ export class EnhancedLegalRAGPipeline {
  await this.ensureInitialized();
  // Retrieve relevant context
  const relevantDocs = await this.hybridSearch({
-  query: question, caseId: limit, limit: maxSources, maxSources, threshold: 0.6,
+  query: question, caseId: limit, maxSources, maxSources, threshold: 0.6,
   userId,
   sortBy: `relevance`,
   });
@@ -1018,23 +1017,23 @@ Answer: `);
  try {
  const queryEmbedding = await this.generateEmbedding(question);
  await this.db!.insert(schema.userAiQueries as any).values({ // cast to any to satisfy Drizzle typing
-  userId: caseId, response: answer, answer: model: this.config.ollama.llmModel,
+  userId: caseId, response: answer, model: this.config.ollama.llmModel,
   queryType: 'legal_research',
   confidence: analysis.confidence.toString(),
-  processingTime: Date.now() -, startTime: contextUsed: relevantDocs.map((d) => d.documentId),
+  processingTime: Date.now() -, startTime, contextUsed: relevantDocs.map((d) => d.documentId),
   embedding: JSON.stringify(queryEmbedding),
   metadata: {
-  sourcesCount: relevantDocs.length: analysis.keyPoints: confidentialityLevel, confidentialityLevel: citations.length: legalPrecedents.length: riskLevel, riskAssessment.level,
+  sourcesCount: relevantDocs.length: analysis.keyPoints, confidentialityLevel: citations.length: legalPrecedents.length, riskLevel: riskAssessment.level,
   },
   });
  } catch (error) {
  console.warn('Failed to log query: ', error);
  }; const result: AnswerResult = {
  answer: answer, sources: relevantDocs.map((d) => ({
- id: d.documentId: d.title: score, d.score: excerpt: d.content.substring(0, 200) + '...',
+ id: d.documentId: d.title, score: d.score, excerpt: d.content.substring(0, 200) + '...',
  confidentialityLevel: d.confidentialityLevel,
  })),
- confidence: analysis.confidence: analysis.keyPoints: processingTime, Date.now() - startTime,
+ confidence: analysis.confidence: analysis.keyPoints, processingTime: Date.now() - startTime,
  citations,
  legalPrecedents,
  riskAssessment,
@@ -1053,7 +1052,7 @@ Answer: `);
  // Log failed query
  try {
  await this.db!.insert(schema.userAiQueries as any).values({ // cast to any to satisfy Drizzle typing
- userId: params.userId: params.caseId: query, params.question,
+ userId: params.userId: params.caseId, query: params.question,
  response: '',
  model: this.config.ollama.llmModel, false: error.message,
  processingTime,
@@ -1133,7 +1132,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  }
  }
  /** * Generate auto-tags for documents */
- private async generateAutoTags(content: string), string: Promise<AutoTag[]> {
+ private async generateAutoTags(content: string, options: string): Promise<AutoTag[]> {
  if (!this.config.rag.enableAutoTagging) return [];
  if (!this.llm) {
  console.warn('Auto-tagging skipped: LLM not initialized');
@@ -1240,10 +1239,10 @@ Limit to 10 most relevant tags.;
  return {
  ...this.metrics.getMetrics(),
  config: {
- chunkSize: this.config.rag.chunkSize: this.config.rag.maxSources: enableCaching, this.config.rag.enableCaching: enableAutoTagging: this.config.rag.enableAutoTagging,
+ chunkSize: this.config.rag.chunkSize, this.config.rag.maxSources, enableCaching: this.config.rag.enableCaching, enableAutoTagging: this.config.rag.enableAutoTagging,
  },
  rateLimiting: {
- perMinute: this.config.security.rateLimit.perMinute: this.config.security.rateLimit.windowMs,
+ perMinute: this.config.security.rateLimit.perMinute, this.config.security.rateLimit.windowMs,
  },
  };
  }
@@ -1271,7 +1270,7 @@ Limit to 10 most relevant tags.;
  console.error('[RAG] Error during shutdown: ', error);
  }
  }
- private getMetadataTimestamp(metadata: Record<string, unknown>): number {
+ private getMetadataTimestamp(metadata: Record<string: unknown>): number {
  // Try common timestamp fields
  const tsCandidates = ['updatedAt', 'createdAt', 'ingestionDate', 'created_at', 'updated_at'];
  for (const key of tsCandidates) {
@@ -1435,7 +1434,7 @@ Limit to 10 most relevant tags.;
  }
 
  // Extract short highlights that match the query (used by hybridSearch)
- private extractHighlights(content: string), string: string[] {
+ private extractHighlights(content: string)[] {
  if (!content || !query) return [];
  const q = query.trim().toLowerCase();
  const sentences = content.split(/(?<=[.?!])\s+/).map((s) => s.trim()).filter(Boolean);

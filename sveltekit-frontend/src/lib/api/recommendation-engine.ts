@@ -67,15 +67,13 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
  title: 'Sample Case #1',
  status: 'active',
  lastAccessed: new Date().toISOString(),
- confidence: 0.8, priority: 150
- caseType: 'litigation',
+ confidence: 0.8, priority: 150, caseType: 'litigation',
  urgency: 'high',
  glyphSignature: 'fb001',
  metadata: {
  clientName: 'Sample Client',
  practiceArea: 'General Practice',
- daysOpen: 30, documentCount: 25
- lastActivity: 'Document review',
+ daysOpen: 30, documentCount: 25, lastActivity: 'Document review',
  },
  },
  ];

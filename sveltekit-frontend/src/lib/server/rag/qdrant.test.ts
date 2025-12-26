@@ -188,7 +188,7 @@ describe('Qdrant Operations', () => {
  try {
  await qdrantSearch({
  vector: [],
- limit: 10, withPayload: true, true:
+ limit: 10, withPayload: true,
  });
  } catch (error) {
  expect(error).toBeInstanceOf(Error);

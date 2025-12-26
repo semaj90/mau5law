@@ -177,8 +177,7 @@ export type ProsecutionCaseForm = z.infer<typeof ProsecutionCaseFormSchema>;
 // ============================================================================
 
 export const ProsecutionCaseServerSchema = ProsecutionCaseFormSchema.omit({
- id: true, createdAt: true
- updatedAt: true,
+ id: true, createdAt: true, updatedAt: true,
 });
 
 export type ProsecutionCaseServerData = z.infer<typeof ProsecutionCaseServerSchema>;
@@ -188,25 +187,19 @@ export type ProsecutionCaseServerData = z.infer<typeof ProsecutionCaseServerSche
 // ============================================================================
 
 export const Step1_BasicInfoSchema = ProsecutionCaseFormSchema.pick({
- caseNumber: true, title: true
- status: true, priority: true
- type: true, jurisdiction: true
+ caseNumber: true, title: true, status: true, priority: true, type: true, jurisdiction: true
 });
 
 export const Step2_5W1HSchema = ProsecutionCaseFormSchema.pick({
- who: true, what: true
- when: true, where: true
- why: true, how: true
+ who: true, what: true, when: true, where: true, why: true, how: true
 });
 
 export const Step3_NarrativeSchema = ProsecutionCaseFormSchema.pick({
- narrative: true, facts: true
- statutes: true, charges: true
+ narrative: true, facts: true, statutes: true, charges: true
 });
 
 export const Step4_PartiesSchema = ProsecutionCaseFormSchema.pick({
- defendants: true, victims: true
- witnesses: true, officers: true
+ defendants: true, victims: true, witnesses: true, officers: true
 });
 
 export const Step5_EvidenceSchema = ProsecutionCaseFormSchema.pick({
@@ -214,13 +207,11 @@ export const Step5_EvidenceSchema = ProsecutionCaseFormSchema.pick({
 });
 
 export const Step6_AssessmentSchema = ProsecutionCaseFormSchema.pick({
- prosecutionStrength: true, riskFactors: true
- mitigatingFactors: true, recommendedActions: true
+ prosecutionStrength: true, riskFactors: true, mitigatingFactors: true, recommendedActions: true
 });
 
 export const Step7_AdminSchema = ProsecutionCaseFormSchema.pick({
- assignedProsecutor: true, supervisingADA: true
- notes: true, tags: true
+ assignedProsecutor: true, supervisingADA: true, notes: true, tags: true
 });
 
 // ============================================================================

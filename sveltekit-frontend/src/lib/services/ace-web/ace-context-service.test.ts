@@ -129,7 +129,7 @@ describe('AceContextService', () => {
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
         vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0.15, filter: undefined, undefined:
+        limit: 40, scoreThreshold: 0.15, filter: undefined,
       });
     });
 

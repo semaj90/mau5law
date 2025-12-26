@@ -249,8 +249,7 @@ describe('Phase 8: Error Display', () => {
  path: '/test',
  kind: 'page' as const,
   errorCount: 5,
- warningCount: 0, infoCount: 0
- errorState: 'broken' as const,
+ warningCount: 0, infoCount: 0, errorState: 'broken' as const,
  status: 'error' as const,
  };
 
@@ -275,8 +274,7 @@ describe('Phase 8: Error Display', () => {
  path: '/test',
  kind: 'page' as const,
   errorCount: 0,
- warningCount: 0, infoCount: 0
- errorState: 'healthy' as const,
+ warningCount: 0, infoCount: 0, errorState: 'healthy' as const,
  status: 'ok' as const,
  };
 
@@ -290,8 +288,7 @@ describe('Phase 8: Error Display', () => {
  path: '/test',
  kind: 'page' as const,
   errorCount: 2,
- warningCount: 3, infoCount: 1
- errorState: 'flaky' as const,
+ warningCount: 3, infoCount: 1, errorState: 'flaky' as const,
  status: 'warning' as const,
  };
 

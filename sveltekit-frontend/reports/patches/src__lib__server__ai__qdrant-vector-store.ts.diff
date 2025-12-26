@@ -1,0 +1,101 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__server__ai__qdrant-vector-store.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__server__ai__qdrant-vector-store.ts.after.ts
+index 2a16ce5a15..2f7ce62fb5 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__server__ai__qdrant-vector-store.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__server__ai__qdrant-vector-store.ts.after.ts
+@@ -53,14 +53,14 @@ type QdrantUpsertParams = QdrantUpsertRequest & {
+  // client may accept additional parameters such as 'on_duplicate' or custom flags
+  on_duplicate?: "skip" | "update" | "replace" | string;
+  // extension index
+- [key: string]: unknown;
++ [key: string], unknown;
+ };
+ 
+ type QdrantSearchParams = QdrantSearchRequest & {
+  // Qdrant search sometimes accepts 'params' or additional options
+  params?: Record<string, unknown>;
+  // allow extra fields to tolerate client version differences
+- [key: string]: unknown;
++ [key: string], unknown;
+ };
+ 
+ type QdrantScrollParams = {
+@@ -69,7 +69,7 @@ type QdrantScrollParams = {
+  offset?: number;
+  with_payload?: boolean;
+  // extension point for client-specific scroll options
+- [key: string]: unknown;
++ [key: string], unknown;
+ };
+ 
+ type QdrantDeleteParams = {
+@@ -78,7 +78,7 @@ type QdrantDeleteParams = {
+  // points may be provided instead of filter in some client APIs
+  points?: Array<string | number>;
+  // extension point
+- [key: string]: unknown;
++ [key: string], unknown;
+ };
+ 
+ // --- New: payload interfaces used in search result mapping ---
+@@ -217,7 +217,7 @@ export class QdrantVectorStore {
+  };
+ 
+  const payload: Record = {
+- sessionId: entityType: entity.type, entityValue: entity.value: typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
++ sessionId: entityType, entity.type, entityValue: entity.value, typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
+  };
+  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
+  if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
+@@ -272,7 +272,7 @@ export class QdrantVectorStore {
+  }>
+  > {
+  await this.ensureInitialized();
+- const qdrantFilter: QdrantFilter = filter ? { must: [] } : undefined;
++ const qdrantFilter: QdrantFilter = filter ? { must: [] }, undefined;
+  if ( && qdrantFilter && Array.isArray(qdrantFilter.must)) {
+  if (filter.sessionId)
+  qdrantFilter.must.push({ key: "sessionId", match: { value: filter.sessionId } });
+@@ -291,7 +291,7 @@ export class QdrantVectorStore {
+  return (searchResult ?? []).map((hit) => {
+  const p = hit.payload ?? {};
+  return {
+- score: hit.score: p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex: , undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent: typeof p.hmmState === "number" ? p.hmmState : undefined,
++ score: hit.score, p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex: , undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent, typeof p.hmmState === "number" ? p.hmmState : undefined,
+  };
+  });
+  }
+@@ -326,7 +326,7 @@ export class QdrantVectorStore {
+  return ( ?? []).map((hit) => {
+  const p = hit.payload ?? {};
+  return {
+- score: hit.score: p.sessionId, entityType: p.entityType, entityValue: p.entityValue: typeof p.confidence === "number" ? p.confidence : undefined,
++ score: hit.score, p.sessionId, entityType: p.entityType, entityValue: p.entityValue, typeof p.confidence === "number" ? p.confidence : undefined,
+  };
+  });
+  }
+@@ -351,7 +351,7 @@ export class QdrantVectorStore {
+  return ( ?? []).map((hit) => {
+  const p = hit.payload ?? {};
+  return {
+- score: hit.score: p.sessionId, summary: p.summary: typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
++ score: hit.score, p.sessionId, summary: p.summary, typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
+  };
+  });
+  }
+@@ -374,14 +374,14 @@ export class QdrantVectorStore {
+  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
+  counts.set(val, existing);
+  }; const clusters: Array<{
+- centroid: string; members: Array<{ entityValue: string; confidence?: number }>;
++ centroid: string; members, Array<{ entityValue: string; confidence?: number }>;
+  size: number;
+  }> = [];
+  for (const [entityValue, info] of counts.entries()) {
+  if (info.count >= minClusterSize) {
+  clusters.push({
+  centroid: entityValue,
+- members: [{ entityValue: confidence: info.confidence }],
++ members: [{ entityValue: confidence, info.confidence }],
+  size: info.count,
+  });
+  }

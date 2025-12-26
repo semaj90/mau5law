@@ -12,8 +12,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3, retryDelayMs: 100
- contextLines: 3,
+ maxRetries: 3, retryDelayMs: 100, contextLines: 3,
 };
 
 describe('DiffStorage', () => {
@@ -42,8 +41,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -62,8 +60,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -88,8 +85,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -122,8 +118,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -135,8 +130,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -171,8 +165,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -200,8 +193,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -220,8 +212,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -255,8 +246,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -268,8 +258,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'applied',
+ lineStart: 2, lineEnd: 2, status: 'applied',
  createdAt: new Date(),
  };
 
@@ -290,8 +279,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -303,8 +291,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -326,8 +313,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -339,8 +325,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'applied',
+ lineStart: 2, lineEnd: 2, status: 'applied',
  createdAt: new Date(),
  };
 
@@ -362,8 +347,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -375,8 +359,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -424,8 +407,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -460,8 +442,7 @@ describe('DiffStorage', () => {
  modified: 'new1',
  context: 'context',
  explanation: 'Fix 1',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -473,8 +454,7 @@ describe('DiffStorage', () => {
  modified: 'new2',
  context: 'context',
  explanation: 'Fix 2',
- lineStart: 2, lineEnd: 2
- status: 'applied',
+ lineStart: 2, lineEnd: 2, status: 'applied',
  createdAt: new Date(),
  };
 
@@ -508,8 +488,7 @@ describe('DiffStorage', () => {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 

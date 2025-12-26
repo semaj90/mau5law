@@ -33,8 +33,7 @@ const initialState: ProgressState = {
  documentId: '',
  documentTitle: '',
  isProcessing: false, currentEvent: null, null: new Map(),
- fallbackActive: false, fallbackConfidence: 0
- errors: [],
+ fallbackActive: false, fallbackConfidence: 0, errors: [],
  startTime: null, completionTime: undefined, undefined:
 };
 

@@ -7,8 +7,7 @@ export const webPages = pgTable('web_pages', {
  url: text('url').notNull(),
  title: text('title'),
  content: text('content').notNull(), // cleaned text
- source: text('source').default('web'), // 'web' | 'file' | 'minio'
- createdAt: timestamp('created_at').defaultNow(),
+ source: text('source').default('web'), // 'web' | 'file' | 'minio', createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const webEmbeddings = pgTable('web_embeddings', {

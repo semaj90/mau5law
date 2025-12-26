@@ -182,7 +182,7 @@ export const crewAIOrchestrationMachine = setup({
  if (context.agentResponses.length === 0) return 0;
  const avgConfidence =
  context.agentResponses.reduce(
- (sum: number, r), AgentResponse: AgentResponse => sum + r.analysis.confidence,
+ (sum: number, r) => sum + r.analysis.confidence,
  0
  ) / context.agentResponses.length;
  return Math.round(avgConfidence * 100);

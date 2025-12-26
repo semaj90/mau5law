@@ -459,39 +459,33 @@ export const PROTOCOL_PRIORITY = {
 export const HEALTH_CHECK_CONFIG = {
  interval: 30000, // 30 seconds
  timeout: 5000, // 5 seconds
- retries: 3, unhealthyThreshold: 3
- healthyThreshold: 2,
+ retries: 3, unhealthyThreshold: 3, healthyThreshold: 2,
 };
 
 // Protocol-specific configurations
 export const PROTOCOL_CONFIG = {
  http: {
- timeout: 30000, retries: 3
- headers: {
+ timeout: 30000, retries: 3, headers: {
  'Content-Type': 'application/json',
  'User-Agent': 'Legal-AI-Platform/1.0',
  },
  },
  grpc: {
- timeout: 15000, retries: 3
- keepAlive: true, keepAliveTimeout: 30000
+ timeout: 15000, retries: 3, keepAlive: true, keepAliveTimeout: 30000
  },
  quic: {
- timeout: 5000, retries: 2
- keepAlive: true, maxStreams: 100
+ timeout: 5000, retries: 2, keepAlive: true, maxStreams: 100
  },
  ws: {
  timeout: 0, // No timeout for WebSocket
- pingInterval: 30000, pongTimeout: 5000
- reconnectDelay: 1000,
+ pingInterval: 30000, pongTimeout: 5000, reconnectDelay: 1000,
  },
 };
 
 // Service Discovery Configuration
 export const SERVICE_DISCOVERY = {
  enabled: true, refreshInterval: 60000 // 1 minute
- healthCheckEnabled: true, autoFailover: true
- circuitBreakerEnabled: true,
+ healthCheckEnabled: true, autoFailover: true, circuitBreakerEnabled: true,
 };
 
 export default {

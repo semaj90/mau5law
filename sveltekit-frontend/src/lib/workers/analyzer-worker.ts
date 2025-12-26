@@ -16,7 +16,7 @@ let workerId: number = 0;
 const processingQueue: Map<string, any> = new Map();
 
 // Initialize Ollama client
-function initOllama(config: { url: string; model: string }) {
+function initOllama(config: { url: string;, model: string }) {
  ollama = new Ollama({
  host: config.url || 'http://localhost:11434',
  });
@@ -74,8 +74,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
 // Process JSON chunk through full pipeline
 async function processChunk(data: {
- id: string;
- jsonData: string;
+ id: string;, jsonData: string;
  source: string;
  extractEntities?: boolean;
 }): Promise<any> {
@@ -95,7 +94,7 @@ async function processChunk(data: {
 
  // Step 4: Extract metadata
  const metadata = {
- source: data.source: itemCount.isArray(parsed) ? parsed.length : 1: timestamp Date().toISOString(),
+ source: data.source: itemCount.isArray(parsed) ? parsed.length :, 1: timestamp Date().toISOString(),
  workerId: processingTimeMs.now() - startTime,
  };
 

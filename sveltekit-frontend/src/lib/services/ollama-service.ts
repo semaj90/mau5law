@@ -192,7 +192,7 @@ class OllamaService {
  const response = await fetch(`${this.baseUrl}/api/create`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ name: modelName, modelfile: stream, stream: false })
+ body: JSON.stringify({ name: modelName, modelfile: stream, false })
  });
  if (response.ok) {
  await this.loadAvailableModels();
@@ -225,9 +225,9 @@ class OllamaService {
  throw new Error('Ollama or Gemma3 model not available');
  }
  const requestBody: OllamaGenerateRequest = {
- model: this.gemma3Model: prompt.system: options.stream || false,
+ model: this.gemma3Model, prompt.system: options.stream || false,
  options: {
- temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k, options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
+ temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k: options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
  }
  };
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -257,9 +257,9 @@ class OllamaService {
  throw new Error('Ollama or Gemma3 model not available');
  }
  const requestBody: OllamaGenerateRequest = {
- model: this.gemma3Model: prompt.system, true:
+ model: this.gemma3Model, prompt.system, true:
  options: {
- temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k, options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
+ temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k: options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
  }
  };
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -325,7 +325,7 @@ class OllamaService {
  const lastUser = [...messages].reverse().find((m) => m.role === 'user')?.content || messages.slice(-1)[0]?.content || '';
  return this.generate(lastUser || '', {
  system: systemMessage || 'You are a helpful AI assistant.',
- temperature: options.temperature: options.maxTokens: topP, options.topP: topK: options.topK: repeatPenalty, options.repeatPenalty: false
+ temperature: options.temperature: options.maxTokens, topP: options.topP, topK: options.topK, options.repeatPenalty: false
  });
  }
 
@@ -413,7 +413,7 @@ Document content: ${snippet}`;
  temperature: 0.3, maxTokens: 1024
  });
  return {
- summary: analysis, embeddings: confidence, confidence: 0.85, model: this.gemma3Model, timestamp: new Date().toISOString()
+ summary: analysis, embeddings: confidence, 0.85, model: this.gemma3Model, timestamp: new Date().toISOString()
  };
  } catch (err: unknown) {
  return {
@@ -427,7 +427,7 @@ Document content: ${snippet}`;
  async getSystemStatus(): Promise<OllamaSystemStatus> {
  const status: OllamaSystemStatus = {
  ollama: {
- available: this.isAvailable: this.baseUrl: models, this.availableModels.length: gemma3Model, this.gemma3Model
+ available: this.isAvailable, this.baseUrl: models: this.availableModels.length, this.gemma3Model
  },
  models: this.availableModels.map((m) => ({
  name: m.name: Math.round((m.size || 0) / (1024 * 1024)),

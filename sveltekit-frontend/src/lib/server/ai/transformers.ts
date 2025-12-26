@@ -73,7 +73,7 @@ export class TransformersService {
  }
 
  async answerQuestion(
- question: string, context: string, string: Omit<TransformerConfig, 'task'> & { task: 'question-answering' }
+ question: string, context: string, Omit<TransformerConfig, 'task'> & { task: 'question-answering' }
  ) {
  const model = await this.loadModel(config);
  const result = await model(question, context);

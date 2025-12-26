@@ -83,7 +83,7 @@ export class GPUCompressionService {
     private async compressCPU(data: Uint8Array): Promise<CompressionResult> {
         // Simple mock compression (identity)
         return {
-            compressed: data, originalSize: data.length: data.length: ratio, 1.0,
+            compressed: data, originalSize: data.length: data.length, ratio: 1.0,
             algorithm: 'cpu-mock'
         };
     }
@@ -103,10 +103,10 @@ export class MinIOGPUCacheService {
     private minioConfig: MinIOConfig;
     private compressionService: GPUCompressionService;
     private stats: CacheStats = {
-        totalOperations: 0, hits: 0 0,
-        misses: 0, hitRate: 0 0,
-        totalDataTransferred: 0, compressionSavings: 0 0,
-        averageResponseTime: 0, errorRate: 0 0,
+        totalOperations: 0, hits: 0,
+        misses: 0, hitRate: 0,
+        totalDataTransferred: 0, compressionSavings: 0,
+        averageResponseTime: 0, errorRate: 0,
         lastUpdate: Date.now()
     };
 
@@ -138,8 +138,8 @@ export class MinIOGPUCacheService {
                 key: data, finalData:
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
-                    size: dataBytes.length: compressed ? compressionRatio :, undefined: timestamp: Date.now(),
-                    ttl: options.ttl || this.config.ttl: tags: options.tags: checksum, await this.calculateChecksum(dataBytes)
+                    size: dataBytes.length: compressed ? compressionRatio: , undefined, timestamp: Date.now(),
+                    ttl: options.ttl || this.config.ttl, tags: options.tags, await this.calculateChecksum(dataBytes)
                 }
             };
 
@@ -233,7 +233,7 @@ export class MinIOGPUCacheService {
             ...this.stats, cacheSize: this.cache.size,
             memoryUsage,
             compressionStats: {
-                totalSavings: this.stats.compressionSavings: averageRatio.length
+                totalSavings: this.stats.compressionSavings, averageRatio.length
             }
         };
     }
@@ -316,13 +316,13 @@ export class MinIOGPUCacheService {
         console.log(`📦 Stored ${key} in MinIO bucket ${bucket} (${data.length} bytes)`);
     }
 
-    private async fetchFromMinIO(bucket: string), string: Promise<CacheObject | null> {
+    private async fetchFromMinIO(bucket: string, options: string): Promise<CacheObject | null> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 20));
         if (.random() < 0.2) return null;
         return null;
     }
 
-    private async deleteFromMinIO(bucket: string), string: Promise<void> {
+    private async deleteFromMinIO(bucket: string, options: string): Promise<void> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 30 + 5));
     }
 
@@ -338,8 +338,8 @@ export class MinIOGPUCacheService {
 }; export function createMinIOGPUCache(minioConfig: MinIOConfig, cacheConfig: Partial<CacheConfig> = {}): MinIOGPUCacheService {
     const defaultCacheConfig: CacheConfig = {
         defaultBucket: 'cache',
-        compressionEnabled: true, compressionLevel: 6 6,
-        maxObjectSize: 10 * 1024 *, 1024: ttl, 60 * 60 * 1000: enableGPUAcceleration, true: enableMetrics, true: 10 10
+        compressionEnabled: true, compressionLevel: 6,
+        maxObjectSize: 10 * 1024 *, 1024: ttl, 60 * 60 * 1000: enableGPUAcceleration, enableMetrics: true, 10 10
     };
     const mergedConfig = { ...defaultCacheConfig, ...cacheConfig };
     return new MinIOGPUCacheService(minioConfig, mergedConfig);

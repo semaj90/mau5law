@@ -59,7 +59,7 @@ export interface LangExtractOutput {
  * Call LangExtract API to extract sections from document text
  */
 export async function extractSectionsFromText(
- documentText: string, documentId: string, string:
+ documentText: string, documentId: string,
  documentType: 'statute' | 'case' = 'case'
 ): Promise<LangExtractOutput> {
  try {
@@ -74,7 +74,7 @@ export async function extractSectionsFromText(
   'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-  text: documentText, doc_id: documentId, documentId: prompt, extract_metadata, extract_crimes: documentType === 'case',
+  text: documentText, doc_id: documentId, prompt, extract_metadata, extract_crimes: documentType === 'case',
   }),
   });
 

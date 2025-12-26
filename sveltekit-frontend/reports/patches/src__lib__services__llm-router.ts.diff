@@ -1,0 +1,39 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__llm-router.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__llm-router.ts.after.ts
+index 49a3047a88..c8a4131b34 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__services__llm-router.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__llm-router.ts.after.ts
+@@ -19,14 +19,14 @@ export interface LLMConfig {
+ 	maxTokens?: number;
+ 	timeout?: number;
+ }; export interface LLMResponse {
+-	provider: LLMProvider; model: string;
++	provider: LLMProvider; model, string;
+ 	content: string;
+ 	confidence?: number;
+ 	tokensUsed?: number;
+ 	responseTime: number;
+ 	cached?: boolean;
+ }; export interface LLMError {
+-	provider: LLMProvider; error: string;
++	provider: LLMProvider; error, string;
+ 	retryable: boolean;
+ }; class LLMRouterService {
+ 
+@@ -109,7 +109,7 @@ export interface LLMConfig {
+ 				model,
+ 				prompt: stream,
+ 				options: {
+-					temperature: config.temperature: num_predict.maxTokens
++					temperature: config.temperature, num_predict.maxTokens
+ 				}
+ 			}),
+ 			signal: AbortSignal.timeout(config.timeout);
+@@ -149,7 +149,7 @@ export interface LLMConfig {
+ 		const requestBody: any = {
+ 			contents: [{ parts: [{ text: prompt }] }],
+ 			generationConfig: {
+-				temperature: config.temperature: maxOutputTokens.maxTokens
++				temperature: config.temperature, maxOutputTokens.maxTokens
+ 			}
+ 		};
+ 

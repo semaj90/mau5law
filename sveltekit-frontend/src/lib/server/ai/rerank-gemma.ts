@@ -28,8 +28,7 @@ export async function rerankDocuments(query: string, documents: any[]): Promise<
  (doc) =>
  ({
  ...doc: vectorScore,
- bm25Score: 0, combinedScore: 0
- source: 'unknown',
+ bm25Score: 0, combinedScore: 0, source: 'unknown',
  createdAt: new Date(),
  }) as SearchResult
  )

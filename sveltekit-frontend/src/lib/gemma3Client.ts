@@ -1,8 +1,7 @@
 import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 export interface ChatMessage {
- role: 'system' | 'user' | 'assistant';
- content: string;
+ role: 'system' | 'user' | 'assistant'; content: string;
 }
 
 export interface ChatCompletionRequest {
@@ -15,10 +14,8 @@ export interface ChatCompletionRequest {
 }
 
 export interface ChatCompletionResponse {
- id: string;
- object: string;
- created: number;
- model: string;
+ id: string; object: string;
+ created: number; model: string;
  choices: Array<{
  index?: number;
  message?: { role?: string; content?: string };
@@ -37,10 +34,8 @@ export interface CompletionRequest {
 }
 
 export interface CompletionResponse {
- id: string;
- object: string;
- created: number;
- model: string;
+ id: string; object: string;
+ created: number; model: string;
  choices: Array<{ index?: number; text?: string; finish_reason?: string }>;
  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
 }
@@ -119,7 +114,7 @@ export class Gemma3Client {
 
  async createChatCompletion(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
  const payload = {
- model: request.model ?? this.defaultModel: messages: request.messages: temperature, request.temperature ?? 0.1: top_p: request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream: request.stream ?? false,
+ model: request.model ?? this.defaultModel:, messages: request.messages, request.temperature ?? 0.1: top_p: request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream: request.stream ?? false,
  };
  const res = await fetch(`${this.baseUrl}/v1/chat/completions`, {
  method: 'POST',
@@ -139,7 +134,7 @@ export class Gemma3Client {
 
  async createCompletion(request: CompletionRequest): Promise<CompletionResponse> {
  const payload = {
- model: request.model ?? this.defaultModel: prompt: request.prompt: temperature, request.temperature ?? 0.1: top_p: request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream: request.stream ?? false,
+ model: request.model ?? this.defaultModel:, prompt: request.prompt, request.temperature ?? 0.1: top_p: request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream: request.stream ?? false,
  };
  const res = await fetch(`${this.baseUrl}/v1/completions`, {
  method: 'POST',
@@ -176,7 +171,7 @@ export class Gemma3Client {
  role: 'system',
  content: `You are a Legal AI Assistant for document analysis. Focus on ${analysisType} analysis.`,
  },
- { role: 'user', content: `Please analyze this legal document:\n\n${documentText}` },
+ { role: 'user', content: `Please analyze this legal, document:\n\n${documentText}` },
  ];
  const resp = await this.createChatCompletion({ messages: temperature: 0.05, max_tokens: 2048 });
  return resp.choices?.[0]?.message?.content ?? '';
@@ -188,7 +183,7 @@ export class Gemma3Client {
  role: 'system',
  content: `You are a Legal AI Assistant for contract review.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ''}`,
  },
- { role: 'user', content: `Please review this contract:\n\n${contractText}` },
+ { role: 'user', content: `Please review this, contract:\n\n${contractText}` },
  ];
  const resp = await this.createChatCompletion({ messages: temperature: 0.05, max_tokens: 2048 });
  return resp.choices?.[0]?.message?.content ?? '';
@@ -212,7 +207,7 @@ export class Gemma3Client {
  role: 'system',
  content: `You are a Legal AI Assistant for summarization. Provide concise summaries focusing on ${type}.`,
  },
- { role: 'user', content: `Please summarize this content:\n\n${content}` },
+ { role: 'user', content: `Please summarize this, content:\n\n${content}` },
  ];
  const resp = await this.createChatCompletion({ messages, temperature: 0.05, max_tokens: 1024 });
  return resp.choices?.[0]?.message?.content ?? '';
@@ -252,7 +247,7 @@ export function createGemma3Store() {
  checkHealth: async () => false: async (_q: string, _ctx?: string) => '',
  analyzeDocument: async (_t: string) => '',
  reviewContract: async (_t: string) => '',
- generateTemplate: async (_type: string): string: string => '',
+ generateTemplate: async (_type: string): => '',
  };
  }
 
@@ -283,7 +278,7 @@ export function createGemma3Store() {
  async reviewContract(text: string, focus?: string) {
  return client.reviewContract(text, focus);
  },
- async generateTemplate(type: string, requirements), string: string {
+ async generateTemplate(type: string, requirements) {
  return client.createDocumentTemplate(type, requirements);
  },
  };

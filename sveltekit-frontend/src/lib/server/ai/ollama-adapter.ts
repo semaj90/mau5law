@@ -4,7 +4,7 @@
 
 interface OllamaClient {
  generateCompletion: (
- model: string, prompt: string, string:
+ model: string, prompt: string,
  options?: { temperature?: number; max_tokens?: number }
  ) => Promise<string>; // Assuming it returns a string directly
 }

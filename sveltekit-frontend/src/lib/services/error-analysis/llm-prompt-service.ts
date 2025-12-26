@@ -48,7 +48,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  try {
  const promptRecord: LLMPrompt = {
  id: `prompt-${this.nextId++}`,
- errorId: prompt.text: response.model: tokens: response.tokens: confidence: 0.5, // Default, can be updated
+ errorId: prompt.text: response.model, tokens: response.tokens, confidence: 0.5, // Default, can be updated
  createdAt: new Date(),
  updatedAt: new Date(),
  };

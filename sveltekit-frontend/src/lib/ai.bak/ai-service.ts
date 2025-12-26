@@ -269,7 +269,7 @@ class AIService {
  }
 
  async annotateEvidence(
- caseId: string, evidenceId: string, string: string
+ caseId: string, evidenceId: string
  ): Promise<AIServiceResponse> {
  const prompt = `Review and enhance this annotation for the evidence: "${annotation}". Provide additional context, legal implications, or suggestions for further analysis.`;
  return this.sendToAI({

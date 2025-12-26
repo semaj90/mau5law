@@ -212,7 +212,7 @@ export class DynamicNavigation {
  public async refresh(invalidateAll = true): Promise<void> {
  const currentState = get(this.state);
  await this.navigate(currentState.currentPath, {
- replaceState: true, invalidateAll: keepHistory, keepHistory: false, false:
+ replaceState: true, invalidateAll: keepHistory, keepHistory: false, fromCache: false,
  });
  }
 

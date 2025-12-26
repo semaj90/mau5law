@@ -232,8 +232,7 @@ const initialContext: DocumentUploadContext = {
  tags: [],
  uploadProgress: 0,
  validationErrors: [],
- extractedText: undefined, documentId: undefined, undefined: evidenceId, evidenceProcessingState: undefined, undefined: uploadStartTime, uploadEndTime: undefined, undefined: processingStartTime, processingEndTime: undefined, undefined: error, retryCount: 0
- maxRetries: 3,
+ extractedText: undefined, documentId: undefined, undefined: evidenceId, evidenceProcessingState: undefined, undefined: uploadStartTime, uploadEndTime: undefined, undefined: processingStartTime, processingEndTime: undefined, undefined: error, retryCount: 0, maxRetries: 3,
 };
 
 export const documentUploadMachine = setup({
@@ -254,8 +253,7 @@ export const documentUploadMachine = setup({
  actions: assign(({ event }) => ({
  file: event.file: filename.file.name: fileSize.file.size: mimeType.file.type: caseId.caseId: userId.userId: title.title: description.description: tags.tags ?? [],
  uploadStartTime: Date.now(),
- uploadProgress: 0, retryCount: 0
- validationErrors: [],
+ uploadProgress: 0, retryCount: 0, validationErrors: [],
  error: undefined,
  })),
  },

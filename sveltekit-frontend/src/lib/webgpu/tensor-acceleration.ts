@@ -67,7 +67,7 @@ export class WebGPUTensorAccelerator {
  const webgpuNav = navigator as unknown as { gpu?: GPU };
  this.adapter =
  (await webgpuNav.gpu?.requestAdapter({
- powerPreference: this.config.powerPreference, false:
+ powerPreference: this.config.powerPreference, fromCache: false,
  })) ?? null;
 
  if (!this.adapter) {
@@ -318,13 +318,13 @@ export class WebGPUTensorAccelerator {
  const bufferA = this.createBuffer(vectorA, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
  const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
  const dotProductsElemBuffer = this.device.createBuffer({
- size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const normASqElemBuffer = this.device.createBuffer({
- size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const normBSqElemBuffer = this.device.createBuffer({
- size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBufferElem = this.device.createBuffer({
  size: 16, // vec4<f32>
@@ -708,7 +708,7 @@ export class WebGPUTensorAccelerator {
  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
  );
  const outputBuffer = this.device.createBuffer({
- size: tokens.length * embeddingDim * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: tokens.length * embeddingDim * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBuffer = this.device.createBuffer({
  size: 16, // vec4<f32> is 16 bytes
@@ -751,7 +751,7 @@ export class WebGPUTensorAccelerator {
 
  // Copy and read result
  const stagingBuffer = this.device.createBuffer({
- size: tokens.length * embeddingDim * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: tokens.length * embeddingDim * 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  commandEncoder.copyBufferToBuffer(
  outputBuffer,
@@ -825,7 +825,7 @@ export class WebGPUTensorAccelerator {
  const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : null;
  return {
  isSupported:
- typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: GPU }).gpu: isInitialized: this.isInitialized: adapterMeta?.info ?? null: adapterMeta?.limits ?? null, features: this.adapter ? Array.from((this.adapter.features ?? []) as Iterable<string>) : [],
+ typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: GPU }).gpu: isInitialized: this.isInitialized, adapterMeta?.info ?? null: adapterMeta?.limits ?? null, features: this.adapter ? Array.from((this.adapter.features ?? []) as Iterable<string>) : [],
  shaderCacheSize: this.shaderCache.size,
  };
  }

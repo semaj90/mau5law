@@ -19,7 +19,7 @@ export const toast = {
  },
 };
 
-function showToast(message: string, type), string: ToastOptions {
+function showToast(message: string, type: string, options: ToastOptions = {}) {
  if (typeof document === 'undefined') return;
 
  // Create toast element

@@ -1,0 +1,24 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.after.ts
+index 79da2715e2..7cde213720 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.after.ts
+@@ -42,7 +42,7 @@ export class YOLOService {
+  /**
+  * Analyze document layout and objects using YOLO
+  */
+- async analyzeDocument(imageBuffer: Buffer), string: Promise<YOLOResult> {
++ async analyzeDocument(imageBuffer: Buffer, options: string): Promise<YOLOResult> {
+  const startTime = Date.now();
+ 
+  // Save image to temp file for processing
+@@ -82,7 +82,7 @@ export class YOLOService {
+  /**
+  * Run YOLO inference using Python script with ONNX
+  */
+- private async runYOLOInference(imagePath: string), string: Promise<any> {
++ private async runYOLOInference(imagePath: string, options: string): Promise<any> {
+  const pythonScript = `
+ import sys
+ import json
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__server__yolo.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

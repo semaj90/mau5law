@@ -66,7 +66,7 @@ export class OllamaService {
  }
 
  async generate(
- model: string, prompt: string, string:
+ model: string, prompt: string,
  options: { temperature?: number; max_tokens?: number; stream?: boolean } = {}
  ): Promise<string> {
  try {
@@ -97,7 +97,7 @@ export class OllamaService {
 
  // Backwards-compatible alias
  async generateCompletion(
- model: string, prompt: string, string:
+ model: string, prompt: string,
  options?: { temperature?: number; max_tokens?: number }
  ) {
  return this.generate(model, prompt, options);

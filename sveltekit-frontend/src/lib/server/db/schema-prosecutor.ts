@@ -22,9 +22,7 @@ export const prosecutorCases = pgTable('prosecutor_cases', {
 
  // optional
  primaryStatute: varchar('primary_statute', { length: 64 }),
- severityLevel: integer('severity_level'), // 1-5
-
- prosecutorUserId: uuid('prosecutor_user_id'),
+ severityLevel: integer('severity_level'), // 1-5, prosecutorUserId: uuid('prosecutor_user_id'),
  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });

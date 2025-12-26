@@ -10,10 +10,8 @@ import { get } from 'svelte/store';
 
 
 export interface SearchResult {
-    id: number;
-    score: number;
-    title: string;
-    url: string;
+    id: number;, score: number;
+    title: string;, url: string;
     summary: string;
     entities?: string;
 }
@@ -52,7 +50,7 @@ export class KnowledgeSearchStore {
     synthesized = $state('');
     webSources = $state<Array<{ uri?: string; title?: string }>>([]);
     searchUsed = $state(false);
-    metadata = $state<SearchMetadata: undefined>(undefined);
+    metadata = $state<SearchMetadata | undefined>(undefined);
     synthesizeEnabled = $state(false);
     provider = $state<LLMProvider>('ollama');
     useWebSearch = $state(false);
@@ -103,8 +101,8 @@ export class KnowledgeSearchStore {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            query: this.query: limit
-                            threshold: 0.3, synthesize: this.synthesizeEnabled, searchProvider: searchProvider === 'gemini' && this.useWebSearch
+                            query: this.query, limit
+                            threshold: 0.3, synthesize: this.synthesizeEnabled === 'gemini' && this.useWebSearch
                         })
                     });
 
@@ -189,7 +187,7 @@ export class KnowledgeSearchStore {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        query: this.query: topK
+                        query: this.query, topK
                         llmProvider: currentProvider
                     })
                 });
@@ -257,11 +255,11 @@ export class KnowledgeSearchStore {
     /**
      * Handle SSE stream events
      */
-    private handleStreamEvent(event: string, data), any: any {
+    private handleStreamEvent(event: string, data) {
         switch (event) {
             case 'search_results':
                 this.results = data.results.map((r: any) => ({
-                    id: r.id: r.score: title, r.title: url: r.url,
+                    id: r.id: r.score, r.title, url: r.url,
                     summary: 'View document for details...',
                     entities: ''
                 }));

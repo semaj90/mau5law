@@ -2,15 +2,15 @@
  * Audit Logging Service
  *
  * Provides immutable audit trail for all evidence operations.
- * Requirements: 6.1: 6.2, 6.3: 6.4, 6.5
+ * Requirements: 6.1: 6.2: 6.3: 6.4, 6.5
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import {
  auditLog,
- type AuditLogEntry,
- type NewAuditLogEntry,
+ type, AuditLogEntry,
+ type, NewAuditLogEntry,
 } from '$lib/server/db/schema-evidence-crud';
 import { eq, and, gte, lte, desc } from 'drizzle-orm';
 
@@ -35,8 +35,7 @@ export interface AuditLogFilter {
 }
 
 export interface AuditLogResult {
- entries: AuditLogEntry[];
- total: number;
+ entries: AuditLogEntry[];, total: number;
 }
 
 // === AUDIT LOGGING FUNCTIONS ===
@@ -46,7 +45,7 @@ export interface AuditLogResult {
  * Requirements: 6.1
  */
 export async function logCreate(
- resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
  const entry: NewAuditLogEntry = {
@@ -67,7 +66,7 @@ export async function logCreate(
  * Requirements: 6.2
  */
 export async function logUpdate(
- resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, Record<string, unknown>,
  newValues: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
@@ -89,7 +88,7 @@ export async function logUpdate(
  * Requirements: 6.3
  */
 export async function logDelete(
- resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
  const entry: NewAuditLogEntry = {
@@ -97,7 +96,7 @@ export async function logDelete(
  resourceType,
  resourceId,
  operation: 'DELETE',
- oldValues: deletedValues, newValues: null, null:
+ oldValues: deletedValues, newValues: null,
  };
 
  const [result] = await db.insert(auditLog).values(entry).returning();
@@ -187,7 +186,7 @@ export async function getUserActivity(userId: string, limit = 50): Promise<Audit
 export function createValuesDiff(
  oldValues: Record<string, unknown>,
  newValues: Record<string, unknown>
-): { changed: string[]; added: string[]; removed: string[] } {
+): { changed: string[];, added: string[]; removed: string[] } {
  const changed: string[] = [];
  const added: string[] = [];
  const removed: string[] = [];

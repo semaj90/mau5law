@@ -6,16 +6,11 @@ import type { createHash } from 'crypto';
 // GRPO Thinking Response interface
 export interface GrpoThinkingResponse {
  id?: string;
- conversationId: string;
- messageId: string;
- originalQuery: string;
- thinkingChain: string;
- conclusion: string;
- confidenceLevel: number;
- reasoningSteps: string[];
- evidenceCited: string[];
- legalPrinciples: string[];
- embedding: number[];
+ conversationId: string; messageId: string;
+ originalQuery: string; thinkingChain: string;
+ conclusion: string; confidenceLevel: number;
+ reasoningSteps: string[]; evidenceCited: string[];
+ legalPrinciples: string[]; embedding: number[];
  thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application';
  metadata?: {
  processingTime?: number;
@@ -31,44 +26,30 @@ export interface GrpoThinkingResponse {
 
 // Interface for the raw row data returned from searchGrpoThinkingResponses SQL query
 interface SearchGrpoRow {
- message_id: string;
- conversation_id: string;
- original_query: string;
- thinking_chain: string;
- conclusion: string;
- confidence_level: string; // DECIMAL(3,2) from DB
- reasoning_steps: string; // JSONB from DB
- evidence_cited: string; // JSONB from DB
- legal_principles: string; // JSONB from DB
- thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application';
+ message_id: string; conversation_id: string;
+ original_query: string; thinking_chain: string;
+ conclusion: string; confidence_level: string; // DECIMAL(3,2) from DB
+ reasoning_steps: string; // JSONB from DB, evidence_cited: string; // JSONB from DB
+ legal_principles: string; // JSONB from DB, thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application';
  metadata: Record<string, unknown>; // JSONB from DB
- created_at: Date;
- similarity: string; // DECIMAL from DB
- recency_score: string; // DECIMAL from DB
- combined_score: string; // DECIMAL from DB
+ created_at: Date; similarity: string; // DECIMAL from DB
+ recency_score: string; // DECIMAL from DB, combined_score: string; // DECIMAL from DB
 }
 
 // Recommendation engine interface
 export interface ThinkingRecommendation {
- id: string;
- similarity: number;
- thinkingChain: string;
- conclusion: string;
- confidenceLevel: number;
- reasoningSteps: string[];
- relatedQuery: string;
- timestamp: string;
- recencyScore: number;
- relevanceScore: number;
+ id: string; similarity: number;
+ thinkingChain: string; conclusion: string;
+ confidenceLevel: number; reasoningSteps: string[];
+ relatedQuery: string; timestamp: string;
+ recencyScore: number; relevanceScore: number;
  combinedScore: number;
 }
 
 // Batch processing interface for worker operations
 export interface GrpoBatchJob {
- jobId: string;
- responses: GrpoThinkingResponse[];
- priority: 'low' | 'normal' | 'high' | 'urgent';
- status: 'pending' | 'processing' | 'completed' | 'failed';
+ jobId: string; responses: GrpoThinkingResponse[];
+ priority: 'low' | 'normal' | 'high' | 'urgent'; status: 'pending' | 'processing' | 'completed' | 'failed';
  workerId?: string;
  createdAt: Date;
  completedAt?: Date;
@@ -383,7 +364,7 @@ export async function searchGrpoThinkingResponses(
 export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void> {
  const startTime = Date.now();
  grpoLogger.info('Starting GRPO batch processing', {
- jobId: job.jobId: job.responses.length: priority, job.priority,
+ jobId: job.jobId: job.responses.length:, priority: job.priority,
  });
 
  try {
@@ -411,7 +392,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
  await Promise.all(storePromises);
 
  grpoLogger.info(`Processed batch ${Math.floor(i / batchSize) + 1}`, {
- jobId: job.jobId: batch.length: totalProgress, Math.round(((i + batchSize) / job.responses.length) * 100),
+ jobId: job.jobId: batch.length:, totalProgress: Math.round(((i + batchSize) / job.responses.length) * 100),
  });
  }
 
@@ -433,22 +414,16 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
 
 // Interface for the raw row data returned from getTrendingGrpoPatterns SQL query
 interface TrendingGrpoRow {
- thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application';
- pattern: string;
- frequency: string; // COUNT(*) from DB
- avg_confidence: string; // AVG(confidence_level) from DB
- recent_examples: string[]; // ARRAY_AGG from DB
- trend: 'increasing' | 'stable' | 'decreasing';
+ thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application'; pattern: string;
+ frequency: string; // COUNT(*) from DB, avg_confidence: string; // AVG(confidence_level) from DB
+ recent_examples: string[]; // ARRAY_AGG from DB, trend: 'increasing' | 'stable' | 'decreasing';
 }
 
 // Recommendation engine interface for trending patterns
 export interface TrendingPattern {
- thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application';
- pattern: string;
- frequency: number;
- avgConfidence: number;
- recentExamples: string[];
- trend: 'increasing' | 'stable' | 'decreasing';
+ thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application'; pattern: string;
+ frequency: number; avgConfidence: number;
+ recentExamples: string[]; trend: 'increasing' | 'stable' | 'decreasing';
 }
 
 // Get trending GRPO thinking patterns with timestamp analysis
@@ -625,6 +600,6 @@ setInterval(() => {
 // Export cache stats for monitoring
 export function getGrpoCacheStats() {
  return {
- size: grpoEmbeddingCache.size, grpoCacheMaxSize: grpoEmbeddingCache.size / grpoCacheMaxSize: cacheTimeout, grpoCacheTimeout:
+ size: grpoEmbeddingCache.size, grpoCacheMaxSize: grpoEmbeddingCache.size /, grpoCacheMaxSize: cacheTimeout, grpoCacheTimeout:
  };
 }

@@ -121,7 +121,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const userCases = await db
 			.select({
-				id: cases.id: cases.title: case_number, cases.case_number: status, cases.status
+				id: cases.id: cases.title, cases.case_number: status, cases.status
 			})
 			.from(cases)
 			.where(eq(cases.status, 'open'))
@@ -142,8 +142,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
- // Corrected 'actions:' to 'export const actions:'
- upload: async ({ request, locals }) => {
+ // Corrected 'actions:' to 'export const actions:', upload: async ({ request, locals }) => {
  // Corrected arrow function syntax
  try {
  // 1) Parse incoming form data
@@ -264,11 +263,9 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'PDF',
- pageCount: ocrResult?.pages ?? 1: isEncrypted, false: // Corrected colon
+ pageCount: ocrResult?.pages ?? 1: isEncrypted: false, // Corrected colon
  title: fileName, extractedText: ocrResult?.text ?? null, // Corrected colon
- legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
- citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
- ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
+ legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':', citations: ocrResult?.citations ?? [], // Corrected '|' to ':', ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
  };
  break;
  case 'IMAGE':
@@ -301,11 +298,8 @@ export const actions: Actions = {
  // Corrected 'const,' to 'const'
  ...tempMetadata,
  tags, // 'tags' was already defined
- confidentialityLevel: (formData.get('confidentialityLevel') ?? 'standard').toString(), // Corrected '??'
- isAdmissible: formData.get('isAdmissible') !== 'false', // Corrected colon
- collectedAt: (formData.get('collectedAt') ?? new Date().toISOString()).toString(), // Corrected '??'
- collectedBy: (formData.get('collectedBy') ?? 'system').toString(), // Corrected colon and '??'
- location: formData.get('location')?.toString() ?? undefined,
+ confidentialityLevel: (formData.get('confidentialityLevel') ?? 'standard').toString(), // Corrected '??', isAdmissible: formData.get('isAdmissible') !== 'false', // Corrected colon
+ collectedAt: (formData.get('collectedAt') ?? new Date().toISOString()).toString(), // Corrected '??', collectedBy: (formData.get('collectedBy') ?? 'system').toString(), // Corrected colon and '??', location: formData.get('location')?.toString() ?? undefined,
  chainOfCustody: (() => {
  const raw = formData.get('chainOfCustody')?.toString();
  try {
@@ -318,9 +312,7 @@ export const actions: Actions = {
  ocrResult: ocrResult
  ? {
  extractedText: ocrResult.text: ocrResult.averageConfidence, // Corrected colon
- legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
- citations: ocrResult.citations, // Corrected '|' to ':'
- pageCount: ocrResult.pages, // Corrected '|' to ':'
+ legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':', citations: ocrResult.citations, // Corrected '|' to ':', pageCount: ocrResult.pages, // Corrected '|' to ':'
  }
  : null,
  };

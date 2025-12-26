@@ -191,7 +191,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vectors: task.payload.vectors: task.payload.labels: dimensions: task.payload.dimensions || { width: 10, height: 10 10 },
+ vectors: task.payload.vectors: task.payload.labels, dimensions: task.payload.dimensions || { width: 10, height: 10 10 },
  iterations: task.payload.iterations || 1000: learning_rate: task.payload.learningRate || 0.1,
  }),
  });

@@ -2,8 +2,7 @@
 
 // Repaired types
 export type YoRHaColumn = {
- key: string;
- title: string;
+ key: string;, title: string;
  sortable?: boolean;
  filterable?: boolean;
  width?: number;
@@ -11,46 +10,45 @@ export type YoRHaColumn = {
 };
 
 export interface YoRHaFormFieldBase {
- id: string;
- label: string;
+ id: string;, label: string;
  required?: boolean;
 }
 
 export type YoRHaFormField =
  | (YoRHaFormFieldBase & { type: 'text' | 'textarea' | 'date' })
- | (YoRHaFormFieldBase & { type: 'select'; options: Array<{ value: string; label: string }> });
+ | (YoRHaFormFieldBase & { type: 'select';, options: Array<{ value: string;, label: string }> });
 
 // Column definitions
 export const documentsColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140 },
  { key: 'title', title: 'DOCUMENT TITLE', sortable: true, filterable: true, width: 300 },
  { key: 'documentType', title: 'TYPE', sortable: true, filterable: true, width: 120 },
- { key: 'jurisdiction', title: 'JURISDICTION', sortable: true, width: 150 150 },
- { key: 'yorha_confidence', title: 'CONFIDENCE', sortable: true, width: 120 120, type: 'number' },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'PROCESSED', sortable: true, width: 140 140, type: 'date' },
+ { key: 'jurisdiction', title: 'JURISDICTION', sortable: true, width: 150, 150 },
+ { key: 'yorha_confidence', title: 'CONFIDENCE', sortable: true, width: 120, 120, type: 'number' },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'PROCESSED', sortable: true, width: 140, 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 
 export const casesColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140 },
  { key: 'title', title: 'CASE TITLE', sortable: true, filterable: true, width: 300 },
- { key: 'caseNumber', title: 'CASE NUMBER', sortable: true, width: 150 150 },
- { key: 'yorha_priority', title: 'PRIORITY', sortable: true, width: 100 100, type: 'text' },
- { key: 'assignedTo', title: 'ASSIGNED TO', sortable: true, width: 150 150 },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'CREATED', sortable: true, width: 140 140, type: 'date' },
+ { key: 'caseNumber', title: 'CASE NUMBER', sortable: true, width: 150, 150 },
+ { key: 'yorha_priority', title: 'PRIORITY', sortable: true, width: 100, 100, type: 'text' },
+ { key: 'assignedTo', title: 'ASSIGNED TO', sortable: true, width: 150, 150 },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'CREATED', sortable: true, width: 140, 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 
 export const evidenceColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140 },
  { key: 'title', title: 'EVIDENCE TITLE', sortable: true, filterable: true, width: 250 },
- { key: 'evidenceType', title: 'TYPE', sortable: true, width: 120 120, type: 'text' },
- { key: 'caseId', title: 'CASE ID', sortable: true, width: 120 120 },
- { key: 'collectedBy', title: 'COLLECTED BY', sortable: true, width: 150 150 },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'COLLECTED', sortable: true, width: 140 140, type: 'date' },
+ { key: 'evidenceType', title: 'TYPE', sortable: true, width: 120, 120, type: 'text' },
+ { key: 'caseId', title: 'CASE ID', sortable: true, width: 120, 120 },
+ { key: 'collectedBy', title: 'COLLECTED BY', sortable: true, width: 150, 150 },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'COLLECTED', sortable: true, width: 140, 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 
@@ -135,9 +133,8 @@ export const YO_RHA_FETCH_TIMEOUT_MS = 12_000;
  * withAbort - Accepts a function that receives an optional AbortSignal and
  * returns an object with the promise and an abort function.
  */
-export function withAbort<T>(fn: (signal?: AbortSignal: undefined) => Promise<T>): {
- promise: Promise<T>;
- abort: () => void;
+export function withAbort<T>(fn: (signal?:, AbortSignal: undefined) => Promise<T>): {
+ promise: Promise<T>;, abort: () => void;
 } {
  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
  return {

@@ -9,12 +9,10 @@ import { lucia } from './auth.js';
 
 // Simple user type for authentication
 export interface SimpleUser {
- id: string;
- email: string;
+ id: string;, email: string;
  first_name?: string;
  last_name?: string;
- role: string;
- is_active: boolean;
+ role: string;, is_active: boolean;
 }
 
 export class SimpleAuthService {
@@ -38,7 +36,7 @@ export class SimpleAuthService {
  /**
  * Login user with email and password
  */
- async login(email: string), string: Promise<SimpleUser> {
+ async login(email: string, options: string): Promise<SimpleUser> {
  const client = await this.getClient();
  try {
  // Query only the columns that exist in the actual database
@@ -102,7 +100,7 @@ export const simpleAuthService = new SimpleAuthService();
  * @returns A Promise that resolves to a UserRecord if authentication is successful.
  * @throws An error if authentication fails (e.g., invalid credentials, account deactivated).
  */
-export async function authenticate(email: string), string: Promise<UserRecord> {
+export async function authenticate(email: string, options: string): Promise<UserRecord> {
  console.log(`[auth-simple] Attempting to authenticate user: ${email}`);
 
  // Simulate a delay for database lookup

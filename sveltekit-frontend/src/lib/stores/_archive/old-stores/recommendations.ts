@@ -12,8 +12,7 @@ export interface Recommendation {
  | 'workflow_optimization';
  title: string;
  description: string;
- confidence: number; // 0-1
- priority: 'low' | 'medium' | 'high' | 'urgent';
+ confidence: number; // 0-1, priority: 'low' | 'medium' | 'high' | 'urgent';
  category: string;
  actionUrl?: string;
  metadata: {

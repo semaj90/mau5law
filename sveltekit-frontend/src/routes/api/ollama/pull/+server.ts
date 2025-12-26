@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
  }
  }
 
- return json({ ok: true, done: true last: lastLine });
+ return json({ ok: true, done: true, last: lastLine });
  } catch (e: unknown) {
  const msg = e instanceof Error ? e.message : 'pull failed';
  return json({ ok: false, error: msg }, { status: 500 });

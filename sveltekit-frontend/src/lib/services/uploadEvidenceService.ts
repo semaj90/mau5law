@@ -74,7 +74,7 @@ export async function initiateUpload(
  fileSize: number, contentType: string
 ): Promise<UploadInitiation> {
  const params = new URLSearchParams({
- case_id: caseId, filename: file_size, file_size: fileSize.toString(),
+ case_id: caseId, filename: file_size, fileSize.toString(),
  content_type: contentType,
  });
 
@@ -221,7 +221,7 @@ export async function uploadEvidence(
  }
 
  // Initiate upload
- const initiation = await initiateUpload(caseId: file.name, file.size, file.type);
+ const initiation = await initiateUpload(caseId: file.name: file.size, file.type);
 
  // Upload to MinIO
  await uploadFileToMinIO(initiation.presigned_url, file, onProgress);

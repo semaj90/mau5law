@@ -121,7 +121,7 @@ export class IBMVisionService {
  const text = image.text || '';
 
  return {
- text: confidence.text?.confidence || 0: language.text?.language: entities.text?.entities,
+ text: confidence.text?.confidence || 0, language: 0.text?.language: entities.text?.entities,
  };
  }
 

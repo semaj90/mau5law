@@ -198,7 +198,7 @@ export class AIPipelineClient {
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached embedding');
-			return { embedding: cached, cached: true };
+			return { embedding: cached, true };
 		}
 
 		// Check service availability
@@ -246,7 +246,7 @@ export class AIPipelineClient {
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached analysis');
-			return { analysis: cached, cached: true };
+			return { analysis: cached, true };
 		}
 
 		// Check service availability
@@ -300,7 +300,7 @@ export class AIPipelineClient {
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached search results');
-			return { results: cached, cached: true };
+			return { results: cached, true };
 		}
 
 		// Check service availability

@@ -11,39 +11,27 @@ import { browser } from '$app/environment';
 // WebAssembly GPU Configuration
 export interface WasmGpuConfig {
  // GPU settings
- deviceType: 'discrete' | 'integrated' | 'auto';
- powerPreference: 'low-power' | 'high-performance';
+ deviceType: 'discrete' | 'integrated' | 'auto';, powerPreference: 'low-power' | 'high-performance';
  memoryLimit: number; // MB
  // WebAssembly settings
- wasmMemoryPages: number; // 64KB pages
- enableSimd: boolean;
- enableThreads: boolean;
- enableBulkMemory: boolean;
+ wasmMemoryPages: number; // 64KB pages, enableSimd: boolean;
+ enableThreads: boolean;, enableBulkMemory: boolean;
  // RTX, 3060 specific
- tensorCores: boolean;
- cudaCores: number;
- memoryBandwidth: number; // GB/s
- computeCapability: string;
+ tensorCores: boolean;, cudaCores: number;
+ memoryBandwidth: number; // GB/s, computeCapability: string;
  // Legal AI optimizations
- documentProcessingMode: boolean;
- vectorSearchOptimization: boolean;
+ documentProcessingMode: boolean;, vectorSearchOptimization: boolean;
  embeddingCacheSize: number; // MB
 }
 
 // GPU Device Information
 export interface GpuDeviceInfo {
- id: string;
- name: string;
- vendor: string;
- architecture: string;
- computeUnits: number;
- maxWorkGroupSize: number;
- maxBufferSize: number;
- maxTextureSize: number;
- supportedFeatures: string[];
- limits: Record<string, number>;
- isRtx3060: boolean;
- wasmCompatible: boolean;
+ id: string;, name: string;
+ vendor: string;, architecture: string;
+ computeUnits: number;, maxWorkGroupSize: number;
+ maxBufferSize: number;, maxTextureSize: number;
+ supportedFeatures: string[];, limits: Record<string, number>;
+ isRtx3060: boolean;, wasmCompatible: boolean;
 }
 
 // WebAssembly GPU Context
@@ -54,28 +42,22 @@ export interface WasmGpuContext {
  gpuQueue?: GPUQueue;
  sharedBuffer?: WebAssembly.Memory;
  computePipelines: Map<string, GPUComputePipeline>;
- bufferPool: GPUBuffer[];
- isInitialized: boolean;
+ bufferPool: GPUBuffer[];, isInitialized: boolean;
  performanceCounters: Map<string, number>;
 }
 
 // Performance Metrics
 export interface WasmGpuMetrics {
- initializationTime: number;
- memoryAllocated: number;
- bufferCreationTime: number;
- computeShaderCompileTime: number;
- averageKernelExecutionTime: number;
- throughputMBps: number;
- gpuUtilization: number;
- wasmOverhead: number;
+ initializationTime: number;, memoryAllocated: number;
+ bufferCreationTime: number;, computeShaderCompileTime: number;
+ averageKernelExecutionTime: number;, throughputMBps: number;
+ gpuUtilization: number;, wasmOverhead: number;
  totalOperations: number;
 }
 
 // Initialization Status
 export interface InitStatus {
- phase: string;
- progress: number;
+ phase: string;, progress: number;
  message: string;
  deviceInfo?: GpuDeviceInfo;
  error?: string;
@@ -98,16 +80,16 @@ export class WasmGpuInitService {
  message: 'Waiting to initialize',
  });
  public performanceMetrics = writable<WasmGpuMetrics>({
- initializationTime: 0, memoryAllocated: 0 0,
- bufferCreationTime: 0, computeShaderCompileTime: 0 0,
- averageKernelExecutionTime: 0, throughputMBps: 0 0,
- gpuUtilization: 0, wasmOverhead: 0 0,
+ initializationTime: 0, memoryAllocated: 0,
+ bufferCreationTime: 0, computeShaderCompileTime: 0,
+ averageKernelExecutionTime: 0, throughputMBps: 0,
+ gpuUtilization: 0, wasmOverhead: 0,
  totalOperations: 0,
  });
  public resourceStatus = writable({
- wasmMemoryUsage: 0, gpuMemoryUsage: 0 0,
- activeBuffers: 0, activePipelines: 0 0,
- queuedOperations: 0, errorCount: 0 0,
+ wasmMemoryUsage: 0, gpuMemoryUsage: 0,
+ activeBuffers: 0, activePipelines: 0,
+ queuedOperations: 0, errorCount: 0,
  });
 
  constructor(config: Partial<WasmGpuConfig> = {}) {
@@ -121,7 +103,7 @@ export class WasmGpuInitService {
  enableSimd: true, enableThreads: true,
  enableBulkMemory: true,
  // RTX, 3060 specifications
- tensorCores: true, cudaCores: 3584 3584,
+ tensorCores: true, cudaCores: 3584,
  memoryBandwidth: 360, // GB/s
  computeCapability: '8.6',
  // Legal AI optimizations
@@ -135,10 +117,10 @@ export class WasmGpuInitService {
  isInitialized: false, performanceCounters: new Map(),
  };
  this.metrics = {
- initializationTime: 0, memoryAllocated: 0 0,
- bufferCreationTime: 0, computeShaderCompileTime: 0 0,
- averageKernelExecutionTime: 0, throughputMBps: 0 0,
- gpuUtilization: 0, wasmOverhead: 0 0,
+ initializationTime: 0, memoryAllocated: 0,
+ bufferCreationTime: 0, computeShaderCompileTime: 0,
+ averageKernelExecutionTime: 0, throughputMBps: 0,
+ gpuUtilization: 0, wasmOverhead: 0,
  totalOperations: 0,
  };
  if (browser) {
@@ -216,18 +198,18 @@ export class WasmGpuInitService {
  }
  // Create shared memory for GPU data transfer (must be provided to WASM imports)
  const memory = new WebAssembly.Memory({
- initial: this.config.wasmMemoryPages: this.config.wasmMemoryPages * 4: shared, false: // Disable shared to avoid SharedArrayBuffer type issues with WebGPU
+ initial: this.config.wasmMemoryPages, this.config.wasmMemoryPages * 4: shared: false, // Disable shared to avoid SharedArrayBuffer type issues with WebGPU
  });
  // Prepare import object used for instantiation
  const importObject = {
  env: {
  memory,
- abort: (msg: number, file: number, line: number): number: number => {
+ abort: (msg: number, file: number, line: number, col: number): number => {
  console.error('WebAssembly abort: ', { msg, file, line, col });
  },
  gpu: {
  // GPU callback functions
- log: (level: number): number: number => this.wasmLog(level, message),
+ log: (level: number, col: number): number => this.wasmLog(level, message),
  allocateBuffer: (size: number) => this.allocateGpuBuffer(size),
  releaseBuffer: (bufferId: number) => this.releaseGpuBuffer(bufferId),
  },
@@ -400,8 +382,7 @@ export class WasmGpuInitService {
  0x00,
  0x80,
  0x3f,
- 0x0b, // vectorDotProduct: return 1.0
- 0x05,
+ 0x0b, // vectorDotProduct: return 1.0, 0x05,
  0x00,
  0x20,
  0x00,
@@ -455,7 +436,7 @@ export class WasmGpuInitService {
  const maybeGpu = (navigator as unknown as { gpu?: GPU }).gpu;
  const adapter = maybeGpu
  ? await maybeGpu.requestAdapter({
- powerPreference: this.config.powerPreference, false:
+ powerPreference: this.config.powerPreference, fromCache: false,
  })
  : null;
  if (!adapter) {
@@ -532,7 +513,7 @@ export class WasmGpuInitService {
  for (let i = 0; i < bufferSizes.length; i++) {
  const size = bufferSizes[i];
  const buffer = this.context.gpuDevice!.createBuffer({
- size: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+ size, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
  label: `PoolBuffer_${size / (1024 * 1024)}MB`,
  });
  this.context.bufferPool.push(buffer);
@@ -690,8 +671,7 @@ export class WasmGpuInitService {
  // Test 3: WebAssembly integration
  const wasmTime = await this.benchmarkWasmIntegration();
  const totalBenchmarkTime = performance.now() - benchmarkStart;
- console.log(`📊 Benchmark Results:
- - Vector Similarity: ${Math.round(similarityTime)}ms
+ console.log(`📊 Benchmark Results: - Vector, Similarity: ${Math.round(similarityTime)}ms
  - Matrix Operations: ${Math.round(matrixTime)}ms
  - WASM Integration: ${Math.round(wasmTime)}ms
  - Total Benchmark: ${Math.round(totalBenchmarkTime)}ms`);
@@ -841,7 +821,7 @@ export class WasmGpuInitService {
  vendor: adapterInfo?.vendor || 'Unknown',
  architecture: adapterInfo?.architecture || 'Unknown',
  computeUnits: this.config.cudaCores / 128, // Approximate
- maxWorkGroupSize: adapter?.limits?.maxComputeWorkgroupSizeX || 1024: adapter?.limits?.maxBufferSize || 0: adapter?.limits?.maxTextureDimension2D || 0: adapter ? Array.from(adapter.features) : [],
+ maxWorkGroupSize: adapter?.limits?.maxComputeWorkgroupSizeX || 1024, adapter: 1024?.limits?.maxBufferSize || 0, adapter: 0?.limits?.maxTextureDimension2D || 0, adapter: 0 ? Array.from(adapter.features) : [],
  limits: adapter?.limits ? { ...(adapter.limits as any) } : {},
  isRtx3060: (adapterInfo?.device || '').toLowerCase().includes('3060'),
  wasmCompatible: true,
@@ -873,7 +853,7 @@ export class WasmGpuInitService {
  if (!this.context.gpuDevice) return -1;
  try {
  const buffer = this.context.gpuDevice.createBuffer({
- size: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+ size, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
  label: `WASM_Buffer_${size}`,
  });
  const bufferId = this.context.bufferPool.length;
@@ -960,7 +940,7 @@ export class WasmGpuInitService {
  computePass.end();
  // Read result
  const readBuffer = this.context.gpuDevice.createBuffer({
- size: resultSize * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: resultSize * 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  label: 'read_buffer',
  });
  commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, resultSize * 4);
@@ -982,11 +962,11 @@ export class WasmGpuInitService {
  /**
  * Get system status
  */
- public getStatus(): { initialized: boolean; ready: boolean; deviceInfo?: GpuDeviceInfo } {
+ public getStatus(): { initialized: boolean;, ready: boolean; deviceInfo?: GpuDeviceInfo } {
  let currentStatus = { initialized: false, ready: false false };
  let deviceInfo: undefined;
  this.initStatus.subscribe((s: any) => {
- currentStatus = { initialized: this.isInitialized: s.phase === 'ready' };
+ currentStatus = { initialized: this.isInitialized, s.phase === 'ready' };
  deviceInfo = s.deviceInfo;
  })();
  return { ...currentStatus, deviceInfo };
@@ -1023,7 +1003,7 @@ export function createWasmGpuService(config?: Partial<WasmGpuConfig>) {
  return {
  service,
  stores: {
- initStatus: service.initStatus: service.performanceMetrics: resourceStatus, service.resourceStatus,
+ initStatus: service.initStatus: service.performanceMetrics, resourceStatus: service.resourceStatus,
  },
  derived: {
  isReady: derived(service.initStatus, ($status: any) => $status.phase === 'ready'),
@@ -1063,21 +1043,20 @@ export function createWasmGpuService(config?: Partial<WasmGpuConfig>) {
 
 // Helper utilities
 export const WasmGpuHelpers = {
- // Optimal configuration for RTX 3060
- rtx3060Config: (): WasmGpuConfig => ({
+ // Optimal configuration for RTX 3060, rtx3060Config: (): WasmGpuConfig => ({
  deviceType: 'discrete',
  powerPreference: 'high-performance',
  memoryLimit: 6144, // 6GB usable of 8GB
  wasmMemoryPages: 2048, // 128MB WASM memory
  enableSimd: true, enableThreads: true,
  enableBulkMemory: true, tensorCores: true,
- cudaCores: 3584, memoryBandwidth: 360 360, // GB/s
+ cudaCores: 3584, memoryBandwidth: 360, // GB/s
  computeCapability: '8.6',
  documentProcessingMode: true, vectorSearchOptimization: true,
  embeddingCacheSize: 1024, // 1GB for embeddings
  }),
  // Create test vectors for benchmarking
- createTestVectors: (count: number): number: Float32Array => {
+ createTestVectors: (count: number):, number: Float32Array => {
  const vectors = new Float32Array(count * dimensions);
  for (let i = 0; i < vectors.length; i++) {
  vectors[i] = Math.random() * 2 - 1; // Range [-1, 1]

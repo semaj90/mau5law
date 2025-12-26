@@ -5,14 +5,12 @@ const REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:6379';
 
 // Single shared client for SSR
 export const redis = new IORedis(REDIS_URL, {
-	lazyConnect: true, maxRetriesPerRequest: 2
-	enableReadyCheck: true
+	lazyConnect: true, maxRetriesPerRequest: 2, enableReadyCheck: true
 });
 
 export function createRedisConnection() {
 	return new IORedis(REDIS_URL, {
-		lazyConnect: true, maxRetriesPerRequest: 2
-		enableReadyCheck: true
+		lazyConnect: true, maxRetriesPerRequest: 2, enableReadyCheck: true
 	});
 }
 

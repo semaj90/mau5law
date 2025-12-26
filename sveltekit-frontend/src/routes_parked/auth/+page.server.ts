@@ -78,7 +78,7 @@ export const actions: Actions = {
  cookies.set('session', `demo-register-${Date.now()}`, {
  path: '/',
  maxAge: 60 * 60 * 24 * 7, // 1 week
- httpOnly: true, secure: false, false:
+ httpOnly: true, secure: false, fromCache: false,
  sameSite: 'lax',
  });
 
@@ -103,7 +103,7 @@ export const actions: Actions = {
  cookies.set('session', `demo-login-${Date.now()}`, {
  path: '/',
  maxAge: 60 * 60 * 24 * 7, // 1 week
- httpOnly: true, secure: false, false:
+ httpOnly: true, secure: false, fromCache: false,
  sameSite: 'lax',
  });
 

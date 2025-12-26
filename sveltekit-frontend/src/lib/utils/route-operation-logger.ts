@@ -12,20 +12,15 @@
  */
 
 export interface RouteOperation {
- timestamp: string;
- route: string;
- category: string;
- priority: 'high' | 'medium' | 'low';
- phase: 72 | 82;
- operation: string;
- status: 'success' | 'warning' | 'error';
- details: Record<string, any>;
+ timestamp: string; route: string;
+ category: string; priority: 'high' | 'medium' | 'low';
+ phase: 72 | 82; operation: string;
+ status: 'success' | 'warning' | 'error'; details: Record<string, any>;
  duration?: number;
 }
 
 export interface OperationReport {
- timestamp: string;
- totalOperations: number;
+ timestamp: string; totalOperations: number;
  byPhase: Record<number, number>;
  byStatus: Record<string, number>;
  byCategory: Record<string, number>;
@@ -44,8 +39,7 @@ export class RouteOperationLogger {
  route: string, category: string, string:
  priority: 'high' | 'medium' | 'low',
  error: {
- code: string;
- message: string;
+ code: string; message: string;
  count: number;
  },
  suggestion?: string
@@ -71,8 +65,7 @@ export class RouteOperationLogger {
  route: string, category: string, string:
  priority: 'high' | 'medium' | 'low',
  result: {
- filesUpgraded: number;
- patternsFixed: string[];
+ filesUpgraded: number; patternsFixed: string[];
  errors?: string[];
  },
  duration?: number
@@ -98,8 +91,7 @@ export class RouteOperationLogger {
  fromRoute: string, toRoute: string, string: category,
  priority: 'high' | 'medium' | 'low',
  result: {
- redirectCreated: boolean;
- filesUpdated: number;
+ redirectCreated: boolean; filesUpdated: number;
  errors?: string[];
  }
  ) {
@@ -124,8 +116,7 @@ export class RouteOperationLogger {
  route: string, category: string, string:
  priority: 'high' | 'medium' | 'low',
  result: {
- archived: boolean;
- archivePath: string;
+ archived: boolean; archivePath: string;
  errors?: string[];
  }
  ) {
@@ -173,9 +164,9 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  totalOperations: this.operations.length,
  byPhase: { 72: 0, 0 },
- byStatus: { success: 0, warning: 0 error: 0 },
+ byStatus: { success: 0, warning: 0, error: 0 },
  byCategory: {},
- byPriority: { high: 0, medium: 0 low: 0 },
+ byPriority: { high: 0, medium: 0, low: 0 },
  operations: this.operations,
  };
 

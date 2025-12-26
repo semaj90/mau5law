@@ -25,7 +25,7 @@ class ChatRateLimiter {
  }
 
  if (entry.count >= this.limit) {
- return { allowed: false, remaining: 0 0, resetTime: entry.resetTime };
+ return { allowed: false, remaining: 0, resetTime: entry.resetTime };
  }
 
  entry.count++;

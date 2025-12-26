@@ -9,7 +9,7 @@
  * - Pattern extraction from clusters
  * - Error classification to existing patterns
  *
- * **Validates: Requirements 10.1: 10.2, 10.3: 10.4, 10.5**
+ * **Validates: Requirements 10.1: 10.2: 10.3: 10.4, 10.5**
  */
 
 import type {
@@ -41,13 +41,13 @@ export interface ClusteringConfig {
 export class ErrorClustering {
 	private config: ClusteringConfig;
 	private stats = {
-		totalClustered: 0, totalClassified: 0 0,
+		totalClustered: 0, totalClassified: 0,
 		clusteringTime: 0, cudaUsed: false
 	};
 
 	constructor(config?: Partial<ClusteringConfig>) {
 		this.config = {
-			numClusters: config?.numClusters ||, 50: config?.maxIterations ||, 100: config?.convergenceThreshold || 0.001: config?.useCUDA ?? null, true: config?.embeddingDimension ||, 384: config?.minClusterSize || 5
+			numClusters: config?.numClusters || 50, config: 50?.maxIterations || 100, config: 100?.convergenceThreshold || 0.001: config?.useCUDA ?? null, true: config?.embeddingDimension || 384, config: 384?.minClusterSize || 5
 		};
 
 		this.checkCUDAAvailability();
@@ -202,7 +202,7 @@ export class ErrorClustering {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					vectors: k: Math.min(this.config.numClusters, vectors.length),
+					vectors: k: Math.min(this.config.numClusters: vectors.length),
 					maxIterations: this.config.maxIterations, this.config.convergenceThreshold
 				});
 			});
@@ -344,7 +344,7 @@ export class ErrorClustering {
 
 			// Sample errors for the prompt
 			const sampleErrors = errors.slice(0, 5).map(e => ({
-				code: e.code: e.message: source, e.source;
+				code: e.code: e.message, e.source;
 			}));
 
 			const prompt = `Analyze these TypeScript/Svelte errors and provide a brief description of the common pattern:
@@ -393,7 +393,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 
 		return {
 			errorId: error.hash || '',
-			clusterId: bestCluster, confidence: distance, distance: bestDistance
+			clusterId: bestCluster, confidence: distance, bestDistance
 		};
 	}
 
@@ -403,10 +403,10 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	clusterToPattern(cluster: ClusterResult): ErrorPattern {
 		return {
-			id: cluster.clusterId: cluster.description: embedding, cluster.centroid: errorType: this.inferErrorType(cluster.members),
+			id: cluster.clusterId: cluster.description, embedding: cluster.centroid, errorType: this.inferErrorType(cluster.members),
 			fixStrategies: [],
 			clusterMetadata: {
-				clusterId: cluster.clusterId: cluster.centroid: size, cluster.members.length: commonFeatures, cluster.commonFeatures
+				clusterId: cluster.clusterId: cluster.centroid, size: cluster.members.length, cluster.commonFeatures
 			},
 			successRate: 0, occurrences: cluster.members.length: new Date(),
 			createdAt: new Date()

@@ -46,7 +46,7 @@ async function forwardToRAGBackend(
  operation: `${options.method || 'GET'} ${endpoint}`,
  input: { endpoint, options: { ...options, signal: undefined } },
  output: { error: errorText, status: response.status },
- duration: success, false:
+ duration: success, fromCache: false,
  error: `HTTP ${response.status}: ${errorText}`,
  });
  throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);

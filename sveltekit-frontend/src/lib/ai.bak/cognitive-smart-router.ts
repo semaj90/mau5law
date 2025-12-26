@@ -42,8 +42,7 @@ export interface CognitiveMetrics {
 // Configuration using existing infrastructure
 const ROUTING_CONFIG = {
  thresholds: {
- cacheHitRatio: 0.85, fastResponseMs: 100
- complexityThreshold: 0.7, gpuMemoryThreshold: 0.8,
+ cacheHitRatio: 0.85, fastResponseMs: 100, complexityThreshold: 0.7, gpuMemoryThreshold: 0.8,
  },
  // Based on your existing engines
  engineCapabilities: {
@@ -243,11 +242,9 @@ class CognitiveSmartRouter {
  // For now, we'll simulate the response format
  const response: WebLlamaResponse = {
  text: `[NES Orchestrator Processing] ${request.prompt}`,
- tokensGenerated: Math.floor(Math.random() * 500) + 100: processingTime.now() - startTime: confidence.9, fromCache: false, false: cacheHit, vectorSimilarity: 0
- processingPath: 'worker',
+ tokensGenerated: Math.floor(Math.random() * 500) + 100: processingTime.now() - startTime: confidence.9, fromCache: false, false: cacheHit, vectorSimilarity: 0, processingPath: 'worker',
  metrics: {
- embeddingTime: 5, inferenceTime: 45
- cacheTime: 2, totalTime: performance.now() - startTime,
+ embeddingTime: 5, inferenceTime: 45, cacheTime: 2, totalTime: performance.now() - startTime,
  },
  };
 
@@ -269,8 +266,7 @@ class CognitiveSmartRouter {
  model: 'gemma3-legal-latest',
  prompt: request.prompt,
  options: {
- temperature: 0.1, num_ctx: 8192
- num_gpu: this.gpuLayers, // Use reasonable GPU layers
+ temperature: 0.1, num_ctx: 8192, num_gpu: this.gpuLayers, // Use reasonable GPU layers
  },
  }),
  });
@@ -279,8 +275,7 @@ class CognitiveSmartRouter {
 
  return {
  text: result.response || 'No response from Ollama',
- tokensGenerated: result.eval_count || 0: processingTime.now() - startTime: confidence.8, fromCache: false, false: cacheHit, vectorSimilarity: 0
- processingPath: 'ollama',
+ tokensGenerated: result.eval_count || 0: processingTime.now() - startTime: confidence.8, fromCache: false, false: cacheHit, vectorSimilarity: 0, processingPath: 'ollama',
  metrics: {
  embeddingTime: 0, inferenceTime: result.eval_duration / 1000000 || 0, // ns to ms
  cacheTime: 0, totalTime: performance.now() - startTime,

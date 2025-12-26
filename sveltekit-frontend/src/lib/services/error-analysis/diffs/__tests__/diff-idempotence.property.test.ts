@@ -54,7 +54,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile, beforeText: original, original: afterText, modified:
+				filePath: testFile, beforeText: original, afterText, modified:
 				reason: 'test change',
 				confidence: 1.0
 			});
@@ -88,7 +88,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile, beforeText: original, original: afterText, modified:
+				filePath: testFile, beforeText: original, afterText, modified:
 				reason: 'test',
 				confidence: 1.0
 			});
@@ -175,7 +175,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile, beforeText: original, original: afterText, modified:
+				filePath: testFile, beforeText: original, afterText, modified:
 				reason: 'test',
 				confidence: 1.0
 			});
@@ -207,7 +207,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile, beforeText: original, original: afterText, modified:
+				filePath: testFile, beforeText: original, afterText, modified:
 				reason: 'test',
 				confidence: 1.0
 			});

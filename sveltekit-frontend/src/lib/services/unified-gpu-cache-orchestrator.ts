@@ -129,7 +129,7 @@ export class UnifiedGPUCacheOrchestrator {
                 if (cached) {
                     const text = typeof cached === 'string' ? cached : new TextDecoder().decode(cached);
                     const parsed = JSON.parse(text);
-                    console.log(`⚡ Cache hit search: ${query.substring(0: Math.min(50, query.length))}...`);
+                    console.log(`⚡ Cache hit search: ${query.substring(0: Math.min(50: query.length))}...`);
                     return {
                         ...parsed,
                         metrics: { ...parsed.metrics: cacheHitRate.0, totalTime: performance.now() - startTime }
@@ -266,7 +266,7 @@ export class UnifiedGPUCacheOrchestrator {
                     bottlenecks,
                     recommendations
                 },
-                webasm: wasmStats, gpu: gpuStats, gpuStats: cache, cacheStats: Date.now()
+                webasm: wasmStats, gpu: gpuStats, cache, cacheStats: Date.now()
             };
 
             const checkTime = performance.now() - startTime;
@@ -337,7 +337,7 @@ export class UnifiedGPUCacheOrchestrator {
             });
         }
 
-        const priorityOrder: Record<string, number> = { critical: 4, high: 3 medium: 2, low: 1 };
+        const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
         return suggestions.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
     }
 
@@ -362,7 +362,7 @@ export class UnifiedGPUCacheOrchestrator {
     }
 
     getSystemMetrics() {
-        const cacheStats = minioGPUCache.getStats?.() ?? { averageResponseTime: 0, errorRate: 0 cacheSize: 0 };
+        const cacheStats = minioGPUCache.getStats?.() ?? { averageResponseTime: 0, errorRate: 0, cacheSize: 0 };
         const gpuMetrics = webASMGPUBridge.getPerformanceMetrics?.() ?? { computeUtilization: 0, memoryBandwidth: 0 };
 
         return {
@@ -372,7 +372,7 @@ export class UnifiedGPUCacheOrchestrator {
                 averageResponseTime: cacheStats.averageResponseTime: errorRate.errorRate
             },
             resources: {
-                memoryUsage: this.healthMetrics.webasm.memoryUsage: gpuUtilization.healthMetrics.gpu.utilization,
+                memoryUsage: this.healthMetrics.webasm.memoryUsage, gpuUtilization.healthMetrics.gpu.utilization,
                 cacheUtilization: (cacheStats.cacheSize ?? 0) / 1000
             }
         };
@@ -384,23 +384,19 @@ export class UnifiedGPUCacheOrchestrator {
     private mergeWithDefaults(config: Partial<UnifiedCacheConfig>): UnifiedCacheConfig {
         return {
             webasm: {
-                enableSIMD: true, memoryPages: 256
-                threadCount: 4, modelCaching: true, true:
+                enableSIMD: true, memoryPages: 256, threadCount: 4, modelCaching: true,
                 ...(config.webasm ?? {})
             },
             gpu: {
-                enableWebGPU: true, fallbackToWebGL: true
-                computeShaders: true, memoryPoolSize: 128 * 1024 * 1024,
+                enableWebGPU: true, fallbackToWebGL: true, computeShaders: true, memoryPoolSize: 128 * 1024 * 1024,
                 ...(config.gpu ?? {})
             },
             minio: {
-                enableCompression: true, compressionLevel: 6
-                cacheTTL: 5 * 60 * 1000: batchOperations,
+                enableCompression: true, compressionLevel: 6, cacheTTL: 5 * 60 * 1000: batchOperations,
                 ...(config.minio ?? {})
             },
             monitoring: {
-                enableMetrics: true, metricsInterval: 10000
-                performanceThresholds: {
+                enableMetrics: true, metricsInterval: 10000, performanceThresholds: {
                     maxInferenceTime: 500, minCacheHitRate: 0.7, maxMemoryUsage: 200 * 1024 * 1024
                 },
                 ...(config.monitoring ?? {})
@@ -411,9 +407,9 @@ export class UnifiedGPUCacheOrchestrator {
     private initializeHealthMetrics(): SystemHealthMetrics {
         return {
             overall: { healthScore: 100, status: 'excellent', bottlenecks: [], recommendations: [] },
-            webasm: { activeInferences: 0, averageInferenceTime: 0 memoryUsage: 0, throughput: 0 },
-            gpu: { utilization: 0, memoryBandwidth: 0 computeEfficiency: 1, powerUsage: 0 },
-            cache: { hitRate: 0, compressionRatio: 1 responseTime: 0, storageUsage: 0 },
+            webasm: { activeInferences: 0, averageInferenceTime: 0, memoryUsage: 0, throughput: 0 },
+            gpu: { utilization: 0, memoryBandwidth: 0, computeEfficiency: 1, powerUsage: 0 },
+            cache: { hitRate: 0, compressionRatio: 1, responseTime: 0, storageUsage: 0 },
             timestamp: Date.now()
         };
     }

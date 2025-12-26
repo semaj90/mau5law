@@ -42,7 +42,7 @@ async function getCachedEmbedding(text: string), string: Promise<number[] | null
  return entry.value.slice();
 }
 
-async function cacheEmbedding(text: string, model: string, string: number[]): Promise<void> {
+async function cacheEmbedding(text: string, model: string, number[]): Promise<void> {
  const key = makeCacheKey(text, model);
  // Store a clone to avoid external mutation
  const stored = embedding.slice();

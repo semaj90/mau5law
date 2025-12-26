@@ -3,20 +3,17 @@
  * Coordinates semantic search, keyword search, and reranking
  */
 
-import { PGVectorSearch, type SearchResult as VectorSearchResult } from './pgvector-search.js';
-import { ElasticsearchSearch, type KeywordSearchResult } from './elasticsearch-search.js';
-import { RerankerClient, type RerankResponse } from './reranker-client.js';
+import { PGVectorSearch, type, SearchResult as, VectorSearchResult } from './pgvector-search.js';
+import { ElasticsearchSearch, type, KeywordSearchResult } from './elasticsearch-search.js';
+import { RerankerClient, type, RerankResponse } from './reranker-client.js';
 
 export interface SearchQuery {
- text: string;
- embedding: number[];
+ text: string;, embedding: number[];
 }
 
 export interface OrchestrationResult {
- semantic_results: VectorSearchResult[];
- keyword_results: KeywordSearchResult[];
- reranked_results: any[];
- latency_ms: number;
+ semantic_results: VectorSearchResult[];, keyword_results: KeywordSearchResult[];
+ reranked_results: any[];, latency_ms: number;
 }
 
 export class SearchOrchestrator {
@@ -25,7 +22,7 @@ export class SearchOrchestrator {
  private reranker: RerankerClient;
 
  constructor(
- pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch, ElasticsearchSearch: RerankerClient
+ pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch, RerankerClient
  ) {
  this.pgvector = pgvector;
  this.elasticsearch = elasticsearch;
@@ -54,7 +51,7 @@ export class SearchOrchestrator {
  const latency = Date.now() - startTime;
 
  return {
-  semantic_results: semanticResults, keyword_results: keywordResults, keywordResults: reranked_results, rerankedResults, latency_ms: latency, latency:
+  semantic_results: semanticResults, keyword_results: keywordResults, reranked_results, rerankedResults, latency_ms: latency,
   };
  } catch (error) {
  console.error('Search orchestration error:', error);
@@ -112,8 +109,7 @@ export class SearchOrchestrator {
  * Get search statistics
  */
  async getStats(): Promise<{
- pgvector_chunks: number;
- elasticsearch_documents: number;
+ pgvector_chunks: number;, elasticsearch_documents: number;
  }> {
  const [pgvectorCount, elasticsearchCount] = await Promise.all([
  this.pgvector.getChunkCount(),
@@ -121,7 +117,7 @@ export class SearchOrchestrator {
  ]);
 
  return {
- pgvector_chunks: pgvectorCount, elasticsearch_documents: elasticsearchCount, elasticsearchCount:
+ pgvector_chunks: pgvectorCount, elasticsearch_documents: elasticsearchCount,
  };
  }
 
@@ -137,7 +133,7 @@ export class SearchOrchestrator {
  * Create search orchestrator
  */
 export async function createSearchOrchestrator(
- pgvectorConnectionString: string, elasticsearchNode: string, string: string
+ pgvectorConnectionString: string, elasticsearchNode: string, string
 ): Promise<SearchOrchestrator> {
  const pgvector = new PGVectorSearch(pgvectorConnectionString);
  await pgvector.initialize();

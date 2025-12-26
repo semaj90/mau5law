@@ -89,9 +89,7 @@ export interface FixStrategy {
 	description: string; // What the fix does
 	code: string; // Actual code change
 	applicablePatterns: string[]; // Error pattern IDs
-	successRate: number; // 0-1
-	confidence: number; // 0-1
-	validationRules: ValidationRule[];
+	successRate: number; // 0-1, confidence: number; // 0-1, validationRules: ValidationRule[];
 	appliedCount: number;
 	lastApplied: Date;
 	createdAt: Date;
@@ -140,8 +138,7 @@ export interface Experience {
   errorId: string; // Reference to error pattern
   strategyId: string; // Reference to fix strategy
   outcome: 'success' | 'failure';
-  confidence: number; // 0-1
-  context: ErrorContext;
+  confidence: number; // 0-1, context: ErrorContext;
   toolsInvoked: string[]; // List of tools used
   humanIntervention: boolean;
   feedback?: string; // Human feedback if escalated
@@ -168,11 +165,9 @@ export interface ErrorPattern {
   id: string; // UUID
   pattern: string; // Natural language description
   embedding: number[]; // 384-dim or 768-dim vector
-  errorType: string; // 'type' | 'syntax' | 'runtime' | 'svelte'
-  fixStrategies: FixStrategy[]; // Ranked list of fixes
+  errorType: string; // 'type' | 'syntax' | 'runtime' | 'svelte', fixStrategies: FixStrategy[]; // Ranked list of fixes
   clusterMetadata: ClusterMetadata;
-  successRate: number; // 0-1
-  occurrences: number; // How many times seen
+  successRate: number; // 0-1, occurrences: number; // How many times seen
   lastSeen: Date;
   createdAt: Date;
 }
@@ -229,9 +224,7 @@ export interface SystemMetrics {
 	errorDetectionRate: number;
 	cacheHitRate: number;
 	confidenceDistribution: {
-		high: number; // >0.85
-		medium: number; // 0.7-0.85
-		low: number; // <0.7
+		high: number; // >0.85, medium: number; // 0.7-0.85, low: number; // <0.7
 	};
 	fixSuccessRate: number;
 	escalationRate: number;

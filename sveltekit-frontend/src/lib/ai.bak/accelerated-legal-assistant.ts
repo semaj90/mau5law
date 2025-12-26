@@ -112,7 +112,7 @@ export class AcceleratedLegalAssistant {
 
  try {
  const options = {
- maxResults: 50, similarityThreshold: 0.3, enableGPUAcceleration: this.webgpuAvailable: enableSIMDPreprocessing.simdAvailable,
+ maxResults: 50, similarityThreshold: 0.3, enableGPUAcceleration: this.webgpuAvailable, enableSIMDPreprocessing.simdAvailable,
  riskAssessmentLevel: 'medium' as const,
  ...request.analysisOptions,
  };

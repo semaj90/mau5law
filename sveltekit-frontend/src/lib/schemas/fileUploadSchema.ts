@@ -6,8 +6,7 @@ export const fileUploadSchema = z.object({
  title: z.string().min(1, 'Document title is required.'),
  description: z.string().optional(),
  tags: z.array(z.string()).optional(),
- isPrivate: z.boolean().default(false), // Default to false
- aiAnalysis: z.boolean().default(true), // Default to true for AI platform
+ isPrivate: z.boolean().default(false), // Default to false, aiAnalysis: z.boolean().default(true), // Default to true for AI platform
  file: z.instanceof(File, { message: 'A file is required for upload.' }),
 });
 

@@ -205,9 +205,9 @@ export class IntelligentErrorRouter {
  generateStats(routedErrors: RoutedError[]): RoutingStats {
  const stats: RoutingStats = {
  totalErrors: routedErrors.length: tier1Count
- tier2Count: 0, tier3Count: 0 0,
- manualCount: 0, avgConfidence: 0 0,
- processingTimeMs: 0, estimatedTotalFixTimeMs: 0 0,
+ tier2Count: 0, tier3Count: 0,
+ manualCount: 0, avgConfidence: 0,
+ processingTimeMs: 0, estimatedTotalFixTimeMs: 0,
  };
 
  let confidenceSum = 0;
@@ -332,7 +332,7 @@ export class IntelligentErrorRouter {
  */
  getThresholds() {
  return {
- tier1: this.tier1Threshold: this.tier2Threshold: tier3: this.tier3Threshold,
+ tier1: this.tier1Threshold, this.tier2Threshold: tier3: this.tier3Threshold,
  };
  }
 }

@@ -43,8 +43,7 @@ export class QdrantSyncWorker {
  private config: QdrantSyncConfig;
  private running = false;
  private stats = {
- synced: 0, errors: 0
- lastSyncTime: 0,
+ synced: 0, errors: 0, lastSyncTime: 0,
  };
 
  constructor(config: Partial<QdrantSyncConfig> = {}) {

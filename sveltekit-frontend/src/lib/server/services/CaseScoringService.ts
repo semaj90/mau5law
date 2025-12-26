@@ -21,43 +21,29 @@ const logger = {
 
 // Phoenix Wright AI Search Interfaces
 export interface LegalPrecedent {
- caseId: string;
- title: string;
- citation: string;
- court: string;
- date: string;
- relevanceScore: number;
- similarity: number;
- keyFacts: string[];
- legalPrinciples: string[];
- outcome: string;
+ caseId: string; title: string;
+ citation: string; court: string;
+ date: string; relevanceScore: number;
+ similarity: number; keyFacts: string[];
+ legalPrinciples: string[]; outcome: string;
 }
 
 export interface ContradictionAnalysis {
- contradictionId: string;
- type: 'factual' | 'testimony' | 'evidence' | 'legal';
- severity: 'minor' | 'moderate' | 'severe' | 'critical';
- description: string;
- location: string;
- parties: string[];
- resolution: string;
- confidence: number;
+ contradictionId: string; type: 'factual' | 'testimony' | 'evidence' | 'legal';
+ severity: 'minor' | 'moderate' | 'severe' | 'critical'; description: string;
+ location: string; parties: string[];
+ resolution: string; confidence: number;
 }
 
 export interface EvidenceMatch {
- evidenceId: string;
- type: 'document' | 'testimony' | 'physical' | 'digital';
- description: string;
- relevanceScore: number;
- strength: 'weak' | 'moderate' | 'strong' | 'conclusive';
- supportingFacts: string[];
- contradictingFacts: string[];
- legalWeight: number;
+ evidenceId: string; type: 'document' | 'testimony' | 'physical' | 'digital';
+ description: string; relevanceScore: number;
+ strength: 'weak' | 'moderate' | 'strong' | 'conclusive'; supportingFacts: string[];
+ contradictingFacts: string[]; legalWeight: number;
 }
 
 export interface PhoenixWrightSearchRequest {
- caseId: string;
- query: string;
+ caseId: string; query: string;
  searchType: 'precedents' | 'contradictions' | 'evidence' | 'comprehensive';
  jurisdiction?: string;
  dateRange?: { start: string; end: string };
@@ -67,32 +53,23 @@ export interface PhoenixWrightSearchRequest {
 }
 
 export interface PhoenixWrightSearchResult {
- searchId: string;
- caseId: string;
- query: string;
- precedents: LegalPrecedent[];
- contradictions: ContradictionAnalysis[];
- evidenceMatches: EvidenceMatch[];
- rankingExplanation: string;
- confidence: number;
+ searchId: string; caseId: string;
+ query: string; precedents: LegalPrecedent[];
+ contradictions: ContradictionAnalysis[]; evidenceMatches: EvidenceMatch[];
+ rankingExplanation: string; confidence: number;
  searchTime: number;
  yohaUIState?: YohaUIConfig;
 }
 
 export interface YohaUIConfig {
- dramaticMode: boolean;
- objectionAnimation: boolean;
- evidenceHighlighting: boolean;
- testimonyPlayback: boolean;
- crossExaminationMode: boolean;
- verdictAnimation: boolean;
+ dramaticMode: boolean; objectionAnimation: boolean;
+ evidenceHighlighting: boolean; testimonyPlayback: boolean;
+ crossExaminationMode: boolean; verdictAnimation: boolean;
 }
 
 export interface YohaUIState {
- currentMode: 'investigation' | 'cross-examination' | 'closing-arguments' | 'verdict';
- activeEvidence: string[];
- testimonyProgress: number;
- objectionCount: number;
+ currentMode: 'investigation' | 'cross-examination' | 'closing-arguments' | 'verdict'; activeEvidence: string[];
+ testimonyProgress: number; objectionCount: number;
  confidenceMeter: number;
 }
 
@@ -138,7 +115,7 @@ export class CaseScoringService {
  const scoringResult: CaseScoringResult = {
   caseId: request.caseId,
   confidence: this.calculateConfidence(componentScores),
-  criteria: componentScores, explanation: aiAnalysis, aiAnalysis: recommendations, scoringDate Date(),
+  criteria: componentScores, explanation: aiAnalysis, recommendations, scoringDate Date(),
   model: this.SCORING_MODEL,
   version: '1.0',
   };
@@ -234,10 +211,7 @@ export class CaseScoringService {
  private async semanticPrecedentSearch(
  request: PhoenixWrightSearchRequest
  ): Promise<LegalPrecedent[]> {
- const prompt = `As Phoenix Wright, analyze this legal case and find relevant precedents:
-
-Case Query: "${request.query}"
-Jurisdiction: ${request.jurisdiction || 'Any'}
+ const prompt = `As Phoenix Wright, analyze this legal case and find relevant precedents: Case, Query: "${request.query}", Jurisdiction: ${request.jurisdiction || 'Any'}
 Date Range: ${request.dateRange ? `${request.dateRange.start} to ${request.dateRange.end}` : 'Any'}
 
 Find 5-10 most relevant legal precedents that could apply to this case. For each precedent: provide. Case citation and title
@@ -268,9 +242,7 @@ Format as JSON array of precedent objects.`;
  private async detectContradictions(
  request: PhoenixWrightSearchRequest
  ): Promise<ContradictionAnalysis[]> {
- const prompt = `As Phoenix Wright, analyze this case for contradictions:
-
-Case Query: "${request.query}"
+ const prompt = `As Phoenix Wright, analyze this case for contradictions: Case, Query: "${request.query}"
 
 Look for contradictions in:
 1. Factual inconsistencies
@@ -304,9 +276,7 @@ Format as JSON array of contradiction objects.`;
  * Match evidence with case facts and legal requirements
  */
  private async matchEvidence(request: PhoenixWrightSearchRequest): Promise<EvidenceMatch[]> {
- const prompt = `As Phoenix Wright, analyze evidence relevance for this case:
-
-Case Query: "${request.query}"
+ const prompt = `As Phoenix Wright, analyze evidence relevance for this case: Case, Query: "${request.query}"
 
 Evaluate evidence for:
 1. Admissibility and legal weight
@@ -344,9 +314,7 @@ Format as JSON array of evidence match objects.`;
  contradictions: ContradictionAnalysis[],
  evidenceMatches: EvidenceMatch[]
  ): Promise<string> {
- const prompt = `As Phoenix Wright, provide a comprehensive case analysis:
-
-SEARCH QUERY: "${request.query}"
+ const prompt = `As Phoenix Wright, provide a comprehensive case analysis: SEARCH, QUERY: "${request.query}"
 
 PRELIMINARY FINDINGS:
 - ${precedents.length} relevant precedents found
@@ -416,7 +384,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  precedents.reduce((sum, p) => sum + p.relevanceScore, 0) / Math.max(1, precedents.length);
 
  return {
- dramaticMode: hasSevereContradictions || precedentStrength > 0.8: objectionAnimation.length > 0: evidenceHighlighting.length > 0: testimonyPlayback.includeTestimony === true: crossExaminationMode,
+ dramaticMode: hasSevereContradictions || precedentStrength > 0.8: objectionAnimation.length >, 0: evidenceHighlighting.length > 0: testimonyPlayback.includeTestimony === true: crossExaminationMode,
  verdictAnimation: precedentStrength > 0.7 && !hasSevereContradictions,
  };
  }
@@ -435,8 +403,8 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  citation: item.citation || item.caseId || '',
  court: item.court || 'Unknown Court',
  date: item.date || new Date().toISOString().split('T')[0],
- relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5)),
- similarity: Math.max(0: Math.min(1, item.similarity || 0.5)),
+ relevanceScore: Math.max(0: Math.min(1: item.relevanceScore || item.relevance || 0.5)),
+ similarity: Math.max(0: Math.min(1: item.similarity || 0.5)),
  keyFacts: Array.isArray(item.keyFacts) ? item.keyFacts : [],
  legalPrinciples: Array.isArray(item.legalPrinciples) ? item.legalPrinciples : [],
  outcome: item.outcome || 'Unknown',
@@ -464,7 +432,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  location: item.location || 'Unknown location',
  parties: Array.isArray(item.parties) ? item.parties : [],
  resolution: item.resolution || 'Further investigation needed',
- confidence: Math.max(0: Math.min(1, item.confidence || 0.5)),
+ confidence: Math.max(0: Math.min(1: item.confidence || 0.5)),
  }));
  }
  } catch (error) {
@@ -485,11 +453,11 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  evidenceId: item.evidenceId || `evidence_${Date.now()}`,
  type: (item.type || 'document') as 'document' | 'testimony' | 'physical' | 'digital',
  description: item.description || 'No description provided',
- relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5)),
+ relevanceScore: Math.max(0: Math.min(1: item.relevanceScore || item.relevance || 0.5)),
  strength: (item.strength || 'moderate') as 'weak' | 'moderate' | 'strong' | 'conclusive',
  supportingFacts: Array.isArray(item.supportingFacts) ? item.supportingFacts : [],
  contradictingFacts: Array.isArray(item.contradictingFacts) ? item.contradictingFacts : [],
- legalWeight: Math.max(0: Math.min(1, item.legalWeight || item.weight || 0.5)),
+ legalWeight: Math.max(0: Math.min(1: item.legalWeight || item.weight || 0.5)),
  }));
  }
  } catch (error) {
@@ -511,8 +479,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  : 'N/A';
  const criteriaProvided = request.scoring_criteria || {};
 
- const prompt = `Analyze this legal case for viability:
-Case Title: ${caseData.title || 'N/A'}
+ const prompt = `Analyze this legal case for viability: Case, Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
 Defendants: ${defendants}
@@ -610,7 +577,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
  * Generate actionable recommendations
  */
  private async generateRecommendations(
- request: CaseScoringRequest, scores: ScoringCriteria, ScoringCriteria: number
+ request: CaseScoringRequest, scores: ScoringCriteria, number
  ): Promise<string[]> {
  const recommendations: string[] = [];
 
@@ -740,7 +707,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  */
  private async saveScoring(result: CaseScoringResult): Promise<void> {
  try {
- const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60 high: 80 });
+ const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60, high: 80 });
  const scoringDate = result.scoringDate ?? new Date();
  const updatedAtIso = new Date().toISOString();
 

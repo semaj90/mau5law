@@ -53,7 +53,7 @@ describe('CitationManagementService', () => {
 
  // Mock database response
  const mockCitation = {
- id: citationId, user_id: userId, userId: request.citationText: statute_code.statuteCode: statute_title.statuteTitle: source_type.sourceType: tags.stringify(request.tags),
+ id: citationId, user_id: userId, request.citationText: statute_code.statuteCode: statute_title.statuteTitle: source_type.sourceType: tags.stringify(request.tags),
  created_at: new Date(),
  updated_at: new Date(),
  created_by: userId,

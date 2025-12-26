@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       document: {
-        id: document.id: document.title: url, document.url: content: document.content: summary, document.summary: entities: document.entities: tags, document.tags: scrapedAt: document.scrapedAt.toISOString(),
+        id: document.id: document.title, document.url: content: document.content, document.summary: entities: document.entities, document.tags: scrapedAt: document.scrapedAt.toISOString(),
         minioKey: document.minioKey
       }
     });

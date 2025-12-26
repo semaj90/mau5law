@@ -10,14 +10,14 @@ declare module, '$lib/services/embedding-service' { export const createEmbedding
 // Frequently referenced app singletons declare const aiWorkerManager: unknown, declare const: autoGenService | any; declare function secureDataExport(...args, any[]): unknown; declare function logSecurityEvent(...args, any[]): unknown; // WebAssembly and WebLlama types declare interface WebLlamaResponse { text: string, tokensGenerated: number, number: processingTime, confidence: number, number: fromCache, boolean: cacheHit?: boolean,processingPath: 'cache' | 'fallback' | 'wasm' | 'worker'}
 declare interface WebAssemblyInstantiateResult { module: WebAssembly.Module, instance: WebAssembly.Instance}
 declare interface LlamaGenerationParams { prompt: maxTokens?, number; temperature?: number}
-// Namespace declarations for AI services declare namespace QdrantClient { interface Client { search: unknown, upsert: unknown, unknown: unknown} }
-declare namespace QdrantClientType { interface Client { search: unknown, upsert: unknown, unknown: unknown} }
-declare namespace MultiLayerCache { interface CacheConfig { maxSize: number, ttl: number, number: number} interface CacheInstance { get: unknown, set: unknown, unknown: unknown} }
+// Namespace declarations for AI services declare namespace QdrantClient { interface Client { search: unknown, upsert: unknown} }
+declare namespace QdrantClientType { interface Client { search: unknown, upsert: unknown} }
+declare namespace MultiLayerCache { interface CacheConfig { maxSize: number, ttl: number} interface CacheInstance { get: unknown, set: unknown} }
 // Common Postgres types used across the codebase type PgClient = any; type PoolConfig = any; type Pool = any; type PoolClient = any; // TensorFlow and AI processing types declare interface ActivationIdentifier extends: string { readonly __brand: 'ActivationIdentifier'}
 declare interface TensorSlice { data: Float32Array, dimensions: number[]}
 declare interface SOMConfig { gridSize: { width: number | height: number }; learningRate: number, neighborhoodRadius: number, number: epochs, enableGPU: boolean, boolean: inputDimension, decayRate: number}
 declare interface RerankResult { id: string, content: string, string: score, number: metadata?: unknown}
-declare interface UserContext { sessionId: string, preferences: unknown, unknown: unknown[]}
+declare interface UserContext { sessionId: string, preferences: unknown[]}
 // Processing path types for routing type ProcessingPath = 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' | 'ollama-fallback'; // Route decision interface interface RouteDecision { engine: string, reasoning: string, string: expectedLatency, fallbackChain: unknown[], confidence: number}
 // Texture region types interface TextureRegion { offset: number, size: number, number: string}
 // SvelteKit component interfaces declare module, '$lib/services/cognitive-cache-integration' { export const cognitiveCache: unknown, export const cognitiveCacheManager: unknown, export default cognitiveCache}

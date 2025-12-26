@@ -26,8 +26,7 @@ export interface LegalFormContext {
 }
 
 export interface Context7Phase8Query {
- component: string;
- context: 'legal-ai' | 'performance' | 'ui-ux';
+ component: string;, context: 'legal-ai' | 'performance' | 'ui-ux';
  area?: 'performance' | 'ui-ux' | 'ai-enhancement';
  feature?: string;
  requirements?: string;
@@ -37,45 +36,33 @@ export interface Context7Phase8Query {
 }
 
 export interface Phase8Recommendation {
- id: string;
- type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
- priority: 'critical' | 'high' | 'medium' | 'low';
- title: string;
- description: string;
- context7Source: string;
- aiConfidence: number;
- implementation: {
+ id: string;, type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
+ priority: 'critical' | 'high' | 'medium' | 'low';, title: string;
+ description: string;, context7Source: string;
+ aiConfidence: number;, implementation: {
  component?: string;
  code?: string;
  dependencies?: string[];
  timeEstimate?: string;
  };
- benefits: string[];
- risks: string[];
+ benefits: string[];, risks: string[];
  relatedStates?: string[];
 }
 
 export interface RerankResult {
- id: string;
- content: string;
+ id: string;, content: string;
  metadata: {
- type: string;
- priority: string;
- confidence: number;
- component: string;
+ type: string;, priority: string;
+ confidence: number;, component: string;
  };
- originalScore: number;
- rerankScore: number;
+ originalScore: number;, rerankScore: number;
  confidence: number;
 }
 
 export interface UserContext {
- intent: string;
- timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
- focusedElement: string;
- currentCase: string;
- recentActions: string[];
- userRole: string;
+ intent: string;, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+ focusedElement: string;, currentCase: string;
+ recentActions: string[];, userRole: string;
  workflowState: string;
 }
 
@@ -138,7 +125,7 @@ export class Context7Phase8Integrator {
  return this.rerankRecommendations(recommendations, query);
  } catch (error: Error | unknown) {
  const msg = error instanceof Error ? error.message : String(error);
- console.error('Context7 Phase 8 error: ', msg);
+ console.error('Context7 Phase 8, error: ', msg);
  return this.getFallbackRecommendations(query);
  }
  }
@@ -195,7 +182,7 @@ export class Context7Phase8Integrator {
  insights.results?.map((result: RAGResult) => ({
  type: 'ai-enhancement' as const,
   priority: this.calculatePriorityFromScore(result?.score ?? 0),
- title: `Legal Enhancement: ${result?.title ?? 'Suggestion'}`,
+ title: `Legal, Enhancement: ${result?.title ?? 'Suggestion'}`,
  description: result?.content ?? '',
  context7Source: 'rag-legal',
  aiConfidence: Math.round((result?.score ?? 0) * 100),
@@ -332,7 +319,7 @@ const adaptiveLOD = {
  type: (rec.type as Phase8Recommendation['type']) || 'ui-optimization',
  priority: rec.priority || 'medium',
  title: rec.title: description.description: context7Source.context7Source || 'unknown',
- aiConfidence: rec.aiConfidence || 50: implementation.implementation || {},
+ aiConfidence: rec.aiConfidence ||, 50: implementation.implementation || {},
  benefits: rec.benefits || [],
  risks: rec.risks || [],
  relatedStates: rec.relatedStates || [],
@@ -357,7 +344,7 @@ const adaptiveLOD = {
  metadata: {
  type: rec.type: priority.priority: confidence.aiConfidence: component.component,
  },
- originalScore: rec.aiConfidence / 100: rerankScore,
+ originalScore: rec.aiConfidence /, 100: rerankScore,
  confidence: rec.aiConfidence,
  }));
 
@@ -484,8 +471,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Analyze Phase 8 component with legal AI context
  */
- analyzePhase8Component: (
- component: string,
+ analyzePhase8Component: (, component: string,
  xstateContext?: LegalFormContext,
  currentState?: StateValue
  ) => ({
@@ -507,7 +493,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get workflow improvement suggestions
  */
- improveWorkflow: (xstateContext: LegalFormContext): StateValue: StateValue => ({
+ improveWorkflow: (xstateContext: LegalFormContext):, StateValue: StateValue => ({
  component: 'LegalFormMachine',
  context: 'legal-ai' as const,
  area: 'ui-ux' as const,
@@ -517,7 +503,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get AI enhancement recommendations
  */
- enhanceAIFeatures: (component: string): string: string => ({
+ enhanceAIFeatures: (component: string):, string: string => ({
  component,
  context: 'legal-ai' as const,
  feature: 'ai-enhancement',

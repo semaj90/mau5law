@@ -22,7 +22,7 @@ describe('Error Brain Diff Logic', () => {
  const after = 'line1\nline2 modified\nline3';
  const result = unifiedDiffFromTexts({
  filePath: 'test.txt',
- beforeText: before, afterText: after, after:
+ beforeText: before, afterText: after,
  });
  expect(result.diffText).toContain('--- a/test.txt');
  expect(result.diffText).toContain('+++ b/test.txt');

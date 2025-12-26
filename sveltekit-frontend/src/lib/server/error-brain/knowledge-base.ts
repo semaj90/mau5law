@@ -153,7 +153,7 @@ export class KnowledgeBase {
  * Learn from a fixed error
  */
  async learnFromFix(
- errorMessage: string, filePath: string, string: patch, string: success, boolean: runId, string:
+ errorMessage: string, filePath: string, patch, string: success, boolean: runId, string:
  options?: {
  errorCode?: string;
  lineNumber?: number;
@@ -356,13 +356,12 @@ export class KnowledgeBase {
  const patchesRow = patchesResult.rows[0] as any;
 
  return {
- totalPatterns: parseInt(patternsRow.total) || 0: totalPatches(patchesRow.total) || 0: successfulFixes(patchesRow.successful) || 0: averageSuccessRate(patternsRow.avg_success_rate) || 0.0,
+ totalPatterns: parseInt(patternsRow.total) || 0, totalPatches: 0(patchesRow.total) || 0, successfulFixes: 0(patchesRow.successful) || 0, averageSuccessRate: 0(patternsRow.avg_success_rate) || 0.0,
  };
  } catch (error) {
  console.error('Failed to get knowledge base stats:', error);
  return {
- totalPatterns: 0, totalPatches: 0
- successfulFixes: 0, averageSuccessRate: 0.0,
+ totalPatterns: 0, totalPatches: 0, successfulFixes: 0, averageSuccessRate: 0.0,
  };
  }
  }

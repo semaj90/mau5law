@@ -22,8 +22,7 @@ export interface QueryFilters {
 }
 
 export interface PaginationParams {
- page: number;
- limit: number;
+ page: number;, limit: number;
  offset: number;
 }
 
@@ -58,8 +57,7 @@ type QueryLike = {
  where?: (clause: Condition) => QueryLike;
  orderBy?: (clause: SQL<unknown> | undefined) => QueryLike;
  limit?: (n: number) => QueryLike;
- offset?: (n: number) => QueryLike;
- select: (s: Record<string, AnyColumn | SQL<unknown>>) => QueryLike; // Made select mandatory and more specific
+ offset?: (n: number) => QueryLike;, select: (s: Record<string, AnyColumn | SQL<unknown>>) => QueryLike; // Made select mandatory and more specific
  execute: () => Promise<unknown>;
 };
 
@@ -164,7 +162,7 @@ export class QueryBuilder {
  static async executeQuery<T>(
  baseQuery: QueryLike, filters: QueryFilters,
  table: TableLike
- ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
+ ): Promise<{ data: T;, total: number; pagination: PaginationParams }> {
  // Build filter conditions
  const conditions = this.buildFilters(table, filters);
  const whereClause = this.applyFilters(conditions);
@@ -182,7 +180,7 @@ export class QueryBuilder {
  if (sortClause && query.orderBy) query = query.orderBy(sortClause);
 
  // Get pagination params
- let pageParam: number | string: undefined;
+ let pageParam: number |, string: undefined;
  if (filters.page != null) {
  pageParam = filters.page;
  } else if (typeof filters.offset === 'number' && typeof filters.limit === 'number') {

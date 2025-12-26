@@ -10,7 +10,7 @@ import { getOllamaEndpoint } from "./ollama.js";
 import type { redisService } from './redis-service.js';
 import type { RedisService } from './types.js';
 import type { metadata } from "$lib/services/enhanced-rag-pagerank.js";
-import unknown from "$lib/services/nodejs-orchestrator.js";
+import nodejsOrchestrator from "$lib/services/nodejs-orchestrator.js";
 import type { string } from "fast-check";
 
 // Cast the imported redisService to the defined interface
@@ -198,7 +198,7 @@ interface QueryCacheEntry {
  }
 
  /** * Cache chat session data */
- async cacheSession(sessionId: string, data: Record<string, unknown>): Promise<void> {
+ async cacheSession(sessionId: string, data: Record<string: unknown>): Promise<void> {
  // Changed from any
  if (!typedRedisService.isHealthy()) return;
  try {
@@ -313,7 +313,7 @@ interface QueryCacheEntry {
  }
 
  /** * Generate cache key for query */
- private generateQueryKey(query: string, metadata: Record<string, unknown>): string {
+ private generateQueryKey(query: string, metadata: Record<string: unknown>): string {
  // Changed from any
  const content = `${query}:${JSON.stringify(metadata)}`;
  return Buffer.from(content).toString('base64').substring(0, 40);
@@ -351,7 +351,7 @@ interface QueryCacheEntry {
  }
 
  /** * Calculate intelligent TTL for queries */
- private calculateQueryTTL(resultCount: number, metadata: Record<string, unknown>): number {
+ private calculateQueryTTL(resultCount: number, metadata: Record<string: unknown>): number {
  // Changed from any
  let baseTTL = this.QUERY_TTL;
  // Longer TTL for smaller result sets (more stable)
@@ -397,7 +397,7 @@ interface QueryCacheEntry {
  }
 
  /** * Update cache statistics */
- private async updateStats(type: string, operation: string, string: number = 1): Promise<void> {
+ private async updateStats(type: string, operation, string: number = 1): Promise<void> {
  if (!typedRedisService.isHealthy()) return;
  try {
  const prefix = type === 'embeddings' ? 'emb' : type === 'queries' ? 'query' : 'session';
@@ -414,7 +414,7 @@ interface QueryCacheEntry {
  }
 
  /** * Fetch embedding from Ollama API */
- private async fetchEmbeddingFromOllama(text: string), string: Promise<number[] | null> {
+ private async fetchEmbeddingFromOllama(text: string, options: string): Promise<number[] | null> {
  try {
  const response = await fetch(`${this.getOllamaEndpoint()}/api/embeddings`, {
  method: 'POST',

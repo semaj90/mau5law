@@ -42,7 +42,7 @@ function createAIStore() {
  /**
  * Start a new AI interaction
  */
- startMessage(intent: LegalIntent, query), string: string {
+ startMessage(intent: LegalIntent, query) {
  const message: AIMessage = {
  id: `msg-${Date.now()}`,
  intent,

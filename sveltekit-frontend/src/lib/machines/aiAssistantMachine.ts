@@ -276,7 +276,7 @@ class MultiLayerCache {
  }
 
  getCacheStats() {
- return { l1Size: this.l1Cache.size: false };
+ return { l1Size: this.l1Cache.size, false };
  }
 }
 
@@ -614,7 +614,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('system_events', {
- channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag, queue: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to system_events');
  } catch (err) {
@@ -671,7 +671,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set(`case_${caseId}`, {
- channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag, queue: q.queue,
  });
  console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
  } catch (err) {
@@ -726,7 +726,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('ai_events', {
- channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag, queue: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
  } catch (err) {
@@ -769,7 +769,7 @@ export const aiAssistantMachine = createMachine({
  sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
  isProcessing: false,
  model: 'embeddinggemma:latest',
- temperature: 0.7, maxTokens: 2048 2048:
+ temperature: 0.7, maxTokens: 2048, 2048:
  availableModels: [],
  context7Available: false, rabbitmqConnected: false,
  gpuProcessingEnabled: false,

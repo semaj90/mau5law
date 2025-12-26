@@ -119,7 +119,7 @@ export const routeErrorAssistantMachine = setup({
  const output = (event as { output: AnalyzeRouteOutput }).output;
  return {
  phase: 'suggesting' as const,
-  cluster: output.cluster: output.suggestions: suggestion, output.suggestions[0],
+  cluster: output.cluster: output.suggestions, output.suggestions[0],
  selectedSuggestionIndex: 0,
  history: [output.cluster, ...context.history].slice(0, 5),
  lastUpdated: new Date().toISOString(),

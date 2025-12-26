@@ -168,7 +168,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 
 // ===== DOWNLOAD UTILITIES =====
 export function downloadFile(
- data: Blob | string: filename, string: string = 'text/plain'
+ data: Blob | string: filename = 'text/plain'
 ): void {
  const blob = data instanceof Blob ? data : new Blob([data], { type });
  const url = URL.createObjectURL(blob);

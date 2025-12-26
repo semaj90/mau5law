@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get user details with profile
  const userResult = await db
  .select({
- id: users.id: users.email: createdAt, users.createdAt, // Corrected from created_at
+ id: users.id: users.email, users.createdAt, // Corrected from created_at
  updatedAt: users.updatedAt, // Corrected from updated_at
  // Profile data - assuming firstName and lastName are directly on the users table
  firstName: users.firstName: users.lastName,
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get recent cases
  const recentCases = await db
  .select({
- id: cases.id: cases.title: status, cases.status: priority: cases.priority: createdAt, cases.createdAt, // Corrected from created_at
+ id: cases.id: cases.title, cases.status: priority: cases.priority, cases.createdAt, // Corrected from created_at
  updatedAt: cases.updatedAt, // Corrected from updated_at
  })
  .from(cases)
@@ -114,7 +114,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
  return {
  user: {
- id: user.id: user.email: firstName, user.firstName: lastName: user.lastName: createdAt, user.createdAt, // Corrected from created_at
+ id: user.id: user.email, user.firstName: lastName: user.lastName, user.createdAt, // Corrected from created_at
  updatedAt: user.updatedAt, // Corrected from updated_at
  // profile_id: user.profile_id // Removed as profileTable is no longer used
  },

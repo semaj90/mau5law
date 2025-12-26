@@ -97,7 +97,7 @@ export function getUserFromToken(
  if (!payload || !payload.sub || !payload.email) return null;
 
  return {
- id: payload.sub: payload.email: role, payload.role,
+ id: payload.sub: payload.email, payload.role,
  };
 }
 

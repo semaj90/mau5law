@@ -172,7 +172,7 @@ export class AnonymousSessionManager {
 		});
 
 		return {
-			sessionId: this.session.sessionId: messageCount.session.chats.size
+			sessionId: this.session.sessionId, messageCount.session.chats.size
 		};
 	}
 

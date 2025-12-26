@@ -86,7 +86,7 @@ export const sessionMachine = createMachine({
  // Primary: Use SvelteKit page data
  persistSession(event.pageData.user, event.pageData.session);
  return {
- user: event.pageData.user: event.pageData.session: lastSyncAt, Date.now(),
+ user: event.pageData.user: event.pageData.session, Date.now(),
  error: null,
  };
  }
@@ -101,7 +101,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user: event.session: lastSyncAt, Date.now(),
+ user: event.user: event.session, Date.now(),
  error: null,
  };
  }),
@@ -139,7 +139,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user: event.session: lastSyncAt, Date.now(),
+ user: event.user: event.session, Date.now(),
  error: null,
  };
  }),
@@ -174,7 +174,7 @@ export const sessionMachine = createMachine({
  if (cached) {
  const parsedCache = JSON.parse(cached);
  return {
- user: parsedCache.user: parsedCache.session: lastSyncAt, Date.now(),
+ user: parsedCache.user: parsedCache.session, Date.now(),
  error: null,
  };
  }
@@ -233,7 +233,7 @@ export const sessionMachine = createMachine({
  if (altSession) {
  const parsed = JSON.parse(altSession);
  return {
- user: parsed.user: parsed.session: lastSyncAt, Date.now(),
+ user: parsed.user: parsed.session, Date.now(),
  error: null,
  };
  }
@@ -268,7 +268,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user: event.session: lastSyncAt, Date.now(),
+ user: event.user: event.session, Date.now(),
  error: null,
  };
  }),
@@ -282,7 +282,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user: event.session: lastSyncAt, Date.now(),
+ user: event.user: event.session, Date.now(),
  error: null,
  };
  }),

@@ -200,7 +200,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload.html: payload.ast: tokens, payload.tokens: frontMatter: payload.frontMatter: extractedText, payload.text,
+ success: true, html: payload.html: payload.ast, payload.tokens: frontMatter: payload.frontMatter, payload.text,
  performance: [],
  attempts: [],
  };
@@ -248,7 +248,7 @@ export class SimdMarkdownParser {
 
  return {
  success: Boolean(result.success ?? true),
- html: result.html: result.ast: tokens, result.tokens: frontMatter: result.frontMatter: diagnostics, result.diagnostics,
+ html: result.html: result.ast, result.tokens: frontMatter: result.frontMatter, result.diagnostics,
  performance: [],
  attempts: [],
  };
@@ -285,7 +285,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload.html: payload.ast: tokens, payload.tokens,
+ success: true, html: payload.html: payload.ast, payload.tokens,
  performance: [],
  attempts: [],
  };
@@ -359,7 +359,7 @@ export class SimdMarkdownParser {
  const ast = basicMarkdownToAst(markdown);
  const html = output === 'ast' ? undefined : basicMarkdownToHtml(markdown);
  const tokens = ast.map((node) => ({
- type: node.type: node.text: depth, node.depth,
+ type: node.type: node.text, node.depth,
  }));
 
  return {

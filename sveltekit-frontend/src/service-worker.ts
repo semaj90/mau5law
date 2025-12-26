@@ -452,7 +452,7 @@ async function processCacheWarmingQueue(): Promise<void> {
 
  // Get highest priority tasks
  const tasksToProcess = warmingQueue
- .sort((a: CacheWarmingTask, b), CacheWarmingTask: CacheWarmingTask => b.priority - a.priority)
+ .sort((a: CacheWarmingTask, b) => b.priority - a.priority)
  .slice(0, maxConcurrent - currentRunning);
 
  for (const task of tasksToProcess) {

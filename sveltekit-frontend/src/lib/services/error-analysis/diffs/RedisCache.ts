@@ -6,8 +6,7 @@
  * 2. Validation results - avoid re-checking valid files
  * 3. Diff proposals - deduplication across runs
  *
- * TTL Strategy:
- * - Content hashes: 1 hour
+ * TTL Strategy: * - Content, hashes: 1 hour
  * - Validation results: 24 hours
  * - Diff proposals: 1 hour
  */
@@ -176,8 +175,7 @@ export class RedisCache {
  * Get cache statistics
  */
  async getStats(): Promise<{
- fileHashes: number;
- validations: number;
+ fileHashes: number; validations: number;
  proposals: number;
  }> {
  const [fileHashes, validations, proposals] = await Promise.all([

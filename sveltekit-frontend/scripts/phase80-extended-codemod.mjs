@@ -122,6 +122,42 @@ const patterns = [
     regex: /case_id:\s*([^,]+),\s*(this\.serializeCaseMetadata)/g,
     replace: 'case_id: $1, metadata: $2',
   },
+  // Fix duplicate value corruption: key: value value, => key: value,
+  {
+    name: 'duplicate-value-corruption',
+    regex: /(\w+):\s*(\d+|true|false|'[^']*'|"[^"]*")\s+\2(?=[,}])/g,
+    replace: '$1: $2',
+  },
+  // Fix import unknown: import unknown from => import nodejsOrchestrator from
+  {
+    name: 'import-unknown',
+    regex: /import\s+unknown\s+from/g,
+    replace: 'import nodejsOrchestrator from',
+  },
+  // Fix or-comma corruption: ||, => ||
+  {
+    name: 'or-comma',
+    regex: /\|\|,\s*/g,
+    replace: '|| ',
+  },
+  // Fix number-key corruption: || 4: batchSize => || 4, batchSize: 4
+  {
+    name: 'number-key-corruption',
+    regex: /\|\|\s*(\d+):\s*(\w+)/g,
+    replace: '|| $1, $2: $1',
+  },
+  // Fix duplicate key-value corruption: contextSize: 8192, 8192: => contextSize: 8192,
+  {
+    name: 'duplicate-key-value',
+    regex: /(\w+):\s*([^,]+),\s*\2:/g,
+    replace: '$1: $2,',
+  },
+  // Fix numeric sequence corruption: temperature: 0 0.7 => temperature: 0.7
+  {
+    name: 'numeric-sequence-corruption',
+    regex: /(\w+):\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?=[,}])/g,
+    replace: '$1: $3',
+  },
 ];
 
 function processFile(filePath, dryRun = false) {

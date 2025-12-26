@@ -7,22 +7,17 @@ import { assign, fromPromise, setup } from 'xstate';
 
 // Types for the state machine
 export interface EvidenceProcessingContext {
- evidenceId: string;
- caseId: string;
- userId: string;
- filename: string;
- content: string;
- metadata: Record<string, unknown>;
+ evidenceId: string;, caseId: string;
+ userId: string;, filename: string;
+ content: string;, metadata: Record<string, unknown>;
 
  // Processing results
  extractedText?: string;
  chunks?: Array<{ text: string; embedding?: number[] }>;
  embeddings?: number[][];
  analysis?: {
- summary: string;
- entities: unknown[];
- sentiment: string;
- classification: string;
+ summary: string;, entities: unknown[];
+ sentiment: string;, classification: string;
  riskAssessment?: string;
  recommendations?: string[];
  };
@@ -33,40 +28,34 @@ export interface EvidenceProcessingContext {
  analysisJobId?: string;
 
  // Progress tracking
- progress: number;
- stage: string;
+ progress: number;, stage: string;
 
  // Error handling
  error?: string;
- retryCount: number;
- maxRetries: number;
+ retryCount: number;, maxRetries: number;
 
  // Performance metrics
- startTime: number;
- stageStartTime: number;
+ startTime: number;, stageStartTime: number;
  processingTimes: Record<string, number>;
 }
 
 export type EvidenceProcessingEvent =
  | {
- type: 'START_PROCESSING';
- evidenceId: string;
- caseId: string;
- userId: string;
- filename: string;
- content: string;
+ type: 'START_PROCESSING';, evidenceId: string;
+ caseId: string;, userId: string;
+ filename: string;, content: string;
  metadata?: Record<string, unknown>;
  }
  | { type: 'RETRY' }
  | { type: 'CANCEL' }
  | { type: 'FORCE_COMPLETE' }
- | { type: 'UPDATE_PROGRESS'; progress: number; stage: string }
+ | { type: 'UPDATE_PROGRESS';, progress: number; stage: string }
  | { type: 'PROCESSING_COMPLETE' }
- | { type: 'PROCESSING_FAILED'; error: string }
+ | { type: 'PROCESSING_FAILED';, error: string }
  | { type: 'EMBEDDING_COMPLETE' }
- | { type: 'EMBEDDING_FAILED'; error: string }
+ | { type: 'EMBEDDING_FAILED';, error: string }
  | { type: 'ANALYSIS_COMPLETE' }
- | { type: 'ANALYSIS_FAILED'; error: string };
+ | { type: 'ANALYSIS_FAILED';, error: string };
 
 // Helper function for API calls
 async function callProcessingAPI(
@@ -100,7 +89,7 @@ export const evidenceProcessingMachine: any = setup({
  performAnalysis: true,
  },
  metadata: {
- userId: input.userId: input.caseId: filename, input.filename,
+ userId: input.userId: input.caseId, input.filename,
  ...input.metadata,
  },
  });
@@ -124,7 +113,7 @@ export const evidenceProcessingMachine: any = setup({
  });
 
  return result as {
- chunks: Array<{ text: string; embedding: number[] }>;
+ chunks: Array<{ text: string;, embedding: number[] }>;
  };
  }),
 
@@ -137,10 +126,8 @@ export const evidenceProcessingMachine: any = setup({
  });
 
  return result as {
- summary: string;
- entities: unknown[];
- sentiment: string;
- classification: string;
+ summary: string;, entities: unknown[];
+ sentiment: string;, classification: string;
  riskAssessment?: string;
  recommendations?: string[];
  };
@@ -150,7 +137,7 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Caching final results for evidence: ${input.evidenceId}`);
 
  const finalResult = {
- evidenceId: input.evidenceId: input.caseId: filename, input.filename: extractedText: input.extractedText: chunks, input.chunks: embeddings: input.embeddings: analysis, input.analysis: processingTimes: input.processingTimes: new Date().toISOString(),
+ evidenceId: input.evidenceId: input.caseId, input.filename: extractedText: input.extractedText, input.chunks: embeddings: input.embeddings, input.analysis: processingTimes: input.processingTimes: new Date().toISOString(),
  };
 
  await callProcessingAPI('cache', {
@@ -322,7 +309,7 @@ export const evidenceProcessingMachine: any = setup({
  target: 'completed',
  actions: assign({
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime: total: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime:, total: Date.now() - context.startTime,
  }),
  progress: () => 100,
  stage: () => 'completed',
@@ -333,7 +320,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Caching results failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime: total: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime:, total: Date.now() - context.startTime,
  }),
  }),
  },
@@ -390,8 +377,7 @@ export type EvidenceProcessingMachine = typeof evidenceProcessingMachine;
 
 // State type helper
 type MachineState = {
- value: string;
- context: EvidenceProcessingContext;
+ value: string;, context: EvidenceProcessingContext;
 };
 
 // Export convenience functions

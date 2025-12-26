@@ -119,8 +119,8 @@ export async function mirrorQuery(
 
     const startTime = Date.now();
     const performance = {
-        qdrant_ms: 0, couchdb_ms: 0 0,
-        postgres_ms: 0, minio_ms: 0 0,
+        qdrant_ms: 0, couchdb_ms: 0,
+        postgres_ms: 0, minio_ms: 0,
         total_ms: 0
     };
 
@@ -148,7 +148,7 @@ export async function mirrorQuery(
             .filter((id): id is string => id !== null);
 
         const vector_results = qdrantResults.map((r) => ({
-            postgres_id: r.payload.postgres_id: r.payload.couchdb_id: score, r.score: title: r.payload.title: type, r.payload.type: source, r.payload.source
+            postgres_id: r.payload.postgres_id: r.payload.couchdb_id, score: r.score, title: r.payload.title, type: r.payload.type, r.payload.source
         }));
 
         // ========================================
@@ -205,7 +205,7 @@ export async function mirrorQuery(
         );
 
         const metadata = metadataResult.rows.map((row) => ({
-            id: row.id: row.title: content, row.content: source_url: row.source_url: metadata, row.metadata: blob_url: row.blob_url: created_at, row.created_at: updated_at, row.updated_at
+            id: row.id: row.title, content: row.content, source_url: row.source_url, metadata: row.metadata, blob_url: row.blob_url, created_at: row.created_at, row.updated_at
         }));
 
         performance.postgres_ms = Date.now() - postgresStart;
@@ -363,7 +363,7 @@ export async function findRelatedDocuments(
 
         return {
             vector_results: relatedPostgresIds.map((id) => ({
-                postgres_id: id, couchdb_id: relatedCouchdbIds.find((cid) => cid.includes(String(id))) ||, score: 1.0,
+                postgres_id: id, couchdb_id: relatedCouchdbIds.find((cid) => cid.includes(String(id))) || score: 1.0,
                 title: '',
                 type: 'related',
                 source: 'graph-traversal'

@@ -3,7 +3,7 @@
  * Handles both case and law searches with streaming support
  */
 
-import { fetchWithStreaming, type StreamingOptions } from './streaming-handler.js';
+import { fetchWithStreaming, type, StreamingOptions } from './streaming-handler.js';
 
 export interface SearchQuery {
  query: string;
@@ -15,18 +15,14 @@ export interface SearchQuery {
 }
 
 export interface SearchResult {
- id: string;
- title: string;
- text: string;
- score: number;
+ id: string;, title: string;
+ text: string;, score: number;
  metadata: Record<string, any>;
 }
 
 export interface SearchResponse {
- results: SearchResult[];
- total: number;
- query: string;
- executionTimeMs: number;
+ results: SearchResult[];, total: number;
+ query: string;, executionTimeMs: number;
 }
 
 /**

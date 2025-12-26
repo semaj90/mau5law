@@ -1,7 +1,7 @@
 import type { error } from "console";
 import type { boolean, string } from "fast-check";
 import type { Record } from "neo4j-driver";
-import unknown from "../nodejs-orchestrator.js";
+import nodejsOrchestrator from "../nodejs-orchestrator.js";
 import { BaseService } from './base-service.js';
 import type { ServiceConfig } from './types.js';
 
@@ -59,7 +59,7 @@ export class ErrorHandler extends BaseService {
  this.backoffMultiplier = 2;
  this.maxBackoffMs = 10000;
  this.log('info', 'ErrorHandler initialized', {
- maxRetries: this.maxRetries: retryDelayMs.retryDelayMs,
+ maxRetries: this.maxRetries, retryDelayMs.retryDelayMs,
  });
  }
 
@@ -162,8 +162,7 @@ export class ErrorHandler extends BaseService {
  const isHealthy = await healthCheck();
  const health = this.serviceHealth.get(serviceName) || {
  serviceName: isHealthy,
- lastCheckTime: now, errorCount: 0
- successCount: 0, uptime: 100
+ lastCheckTime: now, errorCount: 0, successCount: 0, uptime: 100
  };
 
  if (isHealthy) {
@@ -184,8 +183,7 @@ export class ErrorHandler extends BaseService {
  } catch (error) {
  const health = this.serviceHealth.get(serviceName) || {
  serviceName: isHealthy,
- lastCheckTime: now, errorCount: 0
- successCount: 0, uptime: 0
+ lastCheckTime: now, errorCount: 0, successCount: 0, uptime: 0
  };
 
  health.errorCount++;
@@ -224,7 +222,7 @@ export class ErrorHandler extends BaseService {
  const errorMessage = error instanceof Error ? error.message : String(error);
  const entry = {
  timestamp: new Date().toISOString(),
- error: errorMessage, service: serviceName, serviceName:
+ error: errorMessage, service: serviceName,
  };
 
  this.errorLog.push(entry);

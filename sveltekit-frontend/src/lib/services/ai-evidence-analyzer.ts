@@ -42,7 +42,7 @@ export interface PostgresJsonStore {
 // ADDED: Redis Cache Adapter interface
 export interface RedisCacheAdapter {
     get(key: string): Promise<string | null>;
-    setex(key: string, ttl: number), number: Promise<void>;
+    setex(key: string, ttl: number, size: number): Promise<void>;
 }
 
 /* ===== Domain types ===== */
@@ -391,7 +391,7 @@ export class AIEvidenceAnalyzer {
         return null;
     }
 
-    private async redisSetex(key: string, ttl: number), number: Promise<void> {
+    private async redisSetex(key: string, ttl: number, size: number): Promise<void> {
         if (this.redisCacheAdapter) {
             try {
                 await this.redisCacheAdapter.setex(key, ttl, value);
@@ -453,10 +453,10 @@ export class AIEvidenceAnalyzer {
     }
 
     private async parseSentiment(raw: string): Promise<SentimentAnalysis> {
-        const sentiment = await this.parseJsonSafe<SentimentAnalysis>(raw, { overall: 0, emotions: { anger: 0, fear: 0 0, joy: 0, sadness: 0 0, surprise: 0, trust: 0 0 }, subjectivity: 0, formality: 0 0 });
+        const sentiment = await this.parseJsonSafe<SentimentAnalysis>(raw, { overall: 0, emotions: { anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 0 }, subjectivity: 0, formality: 0 0 });
         if (!isRecord(sentiment) || typeof sentiment.overall !== 'number') {
             console.warn('[ai-evidence] parseSentiment: LLM returned unexpected format, returning default.');
-            return { overall: 0, emotions: { anger: 0, fear: 0 0, joy: 0, sadness: 0 0, surprise: 0, trust: 0 0 }, subjectivity: 0, formality: 0 0 };
+            return { overall: 0, emotions: { anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 0 }, subjectivity: 0, formality: 0 0 };
         }
         return sentiment;
     }

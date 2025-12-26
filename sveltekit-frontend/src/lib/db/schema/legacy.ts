@@ -2511,12 +2511,9 @@ export const chunkTagLinks = pgTable("chunk_tag_links", {
 		}).onDelete("cascade"),
 	primaryKey({ columns: [table.chunkId: table.tagId], name: "chunk_tag_links_pkey"}),
 ]);
-export const vectorIndexStats = pgView("vector_index_stats", {	// TODO: failed to parse database type 'name'
-	schemaname: text("schemaname"),
-	// TODO: failed to parse database type 'name'
-	tablename: text("tablename"),
-	// TODO: failed to parse database type 'name'
-	indexname: text("indexname"),
+export const vectorIndexStats = pgView("vector_index_stats", {	// TODO: failed to parse database type 'name', schemaname: text("schemaname"),
+	// TODO: failed to parse database type 'name', tablename: text("tablename"),
+	// TODO: failed to parse database type 'name', indexname: text("indexname"),
 	indexSize: text("index_size"),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	scans: bigint({ mode: "number" }),

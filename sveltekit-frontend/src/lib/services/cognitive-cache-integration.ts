@@ -13,7 +13,7 @@ import type { buffer } from "stream/consumers";
 import { threadId } from "worker_threads";
 import type { metadata } from "./enhanced-rag-pagerank";
 import type { string } from "fast-check";
-import unknown from "./nodejs-orchestrator";
+import nodejsOrchestrator from "./nodejs-orchestrator";
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.
 // The actual client from '$lib/server/cache/redis' should match this shape.
@@ -306,7 +306,7 @@ export class CognitiveCacheService {
  try {
  internalCache.data.clear();
  internalCache.jsonbIndex.clear();
- cacheStore.update((state) => ({ ...state, totalEntries: 0 0, lastOperation: 'cleared' }));
+ cacheStore.update((state) => ({ ...state, totalEntries: 0, lastOperation: 'cleared' }));
  } finally {
  release();
  }

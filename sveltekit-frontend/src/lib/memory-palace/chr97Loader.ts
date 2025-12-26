@@ -29,7 +29,7 @@ export type Chr97Cartridge = {
 export async function loadChr97Cartridge(url: string): Promise<Chr97Cartridge> {
  const res = await fetch(url);
  if (!res.ok) {
- throw new Error(`Failed to load CHR97 cartridge: ${res.status} ${res.statusText}`);
+ throw new Error(`Failed to load CHR97, cartridge: ${res.status} ${res.statusText}`);
  }
  const data = await res.json();
  return data as Chr97Cartridge;

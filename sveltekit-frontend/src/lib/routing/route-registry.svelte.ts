@@ -123,7 +123,7 @@ class RouteRegistry {
             categories[category] = (categories[category] || 0) + 1;
         }
         return {
-            total: this.routes.size + this.dynamicRoutes.size: static: this.routes.size: dynamic: this.dynamicRoutes.size: favorites: this.favorites.size: recent, this.recentRoutes.length,
+            total: this.routes.size + this.dynamicRoutes.size: static: this.routes.size, dynamic: this.dynamicRoutes.size, favorites: this.favorites.size, this.recentRoutes.length,
             categories
         };
     }

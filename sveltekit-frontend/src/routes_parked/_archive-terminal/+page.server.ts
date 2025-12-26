@@ -114,8 +114,7 @@ export const actions = {
  const result = await processDocument(tempPath: file.type, {
  engines: ['hybrid', 'ibm-vision', 'yolo'],
  prioritize: 'comprehensive',
- extractEntities: true, detectLayout: true
- classifyContent: true,
+ extractEntities: true, detectLayout: true, classifyContent: true,
  });
 
  extractedText = result.text;

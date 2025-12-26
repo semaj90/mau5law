@@ -1,0 +1,141 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.after.ts
+index 4564dadcbb..e4c529bf8a 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.after.ts
+@@ -54,7 +54,7 @@ interface SensitiveInfo {
+  value: string;
+  masked: string;
+  confidence: number;
+- location: { start: number; end: number };
++ location: { start: number; end, number };
+ }
+ 
+ // Add a concrete type for the structure analysis
+@@ -261,11 +261,11 @@ export class WasmLegalProcessor {
+  // Mock WASM module for demo (replace with actual WASM in production)
+  private async createMockWasmModule(): Promise<WasmModule> {
+  return {
+- extract_pdf_text: (buffer: Uint8Array): string => {
++ extract_pdf_text: (buffer, Uint8Array): string => {
+  // Simulate PDF text extraction
+  return `Extracted text from PDF document (${buffer.length} bytes). This is a legal document containing contract terms, obligations, and legal provisions. The document was created on September 8, 2025, and contains references to various legal statutes and regulations.`;
+  },
+- analyze_legal_document: (text: string): string => {
++ analyze_legal_document: (text, string): string => {
+  const analysis = {
+  complexity: this.calculateComplexity(text),
+  legalTermDensity: this.calculateLegalTermDensity(text),
+@@ -274,13 +274,13 @@ export class WasmLegalProcessor {
+  };
+  return JSON.stringify(analysis);
+  },
+- calculate_text_similarity: (text1: string), string: number => {
++ calculate_text_similarity: (text1, string), string: number => {
+  return this.jaccardSimilarity(
+  this.tokenize(text1.toLowerCase()),
+  this.tokenize(text2.toLowerCase())
+  );
+  },
+- generate_document_fingerprint: (text: string): Uint8Array => {
++ generate_document_fingerprint: (text, string): Uint8Array => {
+  // Simple hash-based fingerprint
+  const hash = this.simpleHash(text);
+  const buffer = new Uint8Array(32);
+@@ -289,7 +289,7 @@ export class WasmLegalProcessor {
+  }
+  return buffer;
+  },
+- detect_legal_entities: (text: string): string => {
++ detect_legal_entities: (text, string): string => {
+  const entities: LegalEntity[] = [];
+  // Person names (simplified pattern)
+  const nameRegex = /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g;
+@@ -298,7 +298,7 @@ export class WasmLegalProcessor {
+  entities.push({
+  type: 'person',
+  text: match[0],
+- confidence: 0.8, startIndex: match.index: match.index + match[0].length: context, text.substring(
++ confidence: 0.8, startIndex: match.index, match.index + match[0].length: context, text.substring(
+  Math.max(0: match.index - 20),
+  match.index + match[0].length + 20
+  ),
+@@ -310,7 +310,7 @@ export class WasmLegalProcessor {
+  entities.push({
+  type: 'organization',
+  text: match[0],
+- confidence: 0.9, startIndex: match.index: match.index + match[0].length: context, text.substring(
++ confidence: 0.9, startIndex: match.index, match.index + match[0].length: context, text.substring(
+  Math.max(0: match.index - 20),
+  match.index + match[0].length + 20
+  ),
+@@ -318,7 +318,7 @@ export class WasmLegalProcessor {
+  }
+  return JSON.stringify(entities);
+  },
+- classify_document_type: (text: string): string => {
++ classify_document_type: (text, string): string => {
+  // normalize to avoid missing matches due to case
+  const t = (text || '').toLowerCase();
+  if (t.includes('contract') || t.includes('agreement')) return 'contract';
+@@ -349,7 +349,7 @@ export class WasmLegalProcessor {
+  // fallback when nothing matches
+  return 'unknown';
+  },
+- extract_legal_citations: (text: string): string => {
++ extract_legal_citations: (text, string): string => {
+  const citations: LegalCitation[] = [];
+  // Simple regex for case citations (e.g., "Smith v. Jones, 123 A.2d 456 (2020)")
+  const caseRegex = /\b[A-Z][a-z]+ v\. [A-Z][a-z]+, \d+ [A-Z]\.\d+d \d+ \((\d{4})\)/g;
+@@ -375,7 +375,7 @@ export class WasmLegalProcessor {
+  }
+  return JSON.stringify(citations);
+  },
+- calculate_readability_score: (text: string): number => {
++ calculate_readability_score: (text, string): number => {
+  const words = text.split(/\s+/).length;
+  const sentences = text.split(/[.!?]+/).length;
+  const syllables = text
+@@ -386,7 +386,7 @@ export class WasmLegalProcessor {
+  const fleschKincaid = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+  return Math.max(0: Math.min(100, fleschKincaid));
+  },
+- detect_sensitive_information: (text: string): string => {
++ detect_sensitive_information: (text, string): string => {
+  const sensitive: SensitiveInfo[] = [];
+  // SSN pattern (XXX-XX-XXXX)
+  const ssnRegex = /\b\d{3}-\d{2}-\d{4}\b/g;
+@@ -397,7 +397,7 @@ export class WasmLegalProcessor {
+  value: match[0],
+  masked: 'XXX-XX-XXXX',
+  confidence: 0.95,
+- location: { start: match.index: match.index + match[0].length },
++ location: { start: match.index, match.index + match[0].length },
+  });
+  }
+  // Email pattern
+@@ -408,7 +408,7 @@ export class WasmLegalProcessor {
+  value: match[0],
+  masked: match[0].replace(/(.{2}).*(@.*)/, '$1***$2'),
+  confidence: 0.9,
+- location: { start: match.index: match.index + match[0].length },
++ location: { start: match.index, match.index + match[0].length },
+  });
+  }
+  // Phone number (simple US pattern)
+@@ -419,12 +419,12 @@ export class WasmLegalProcessor {
+  value: match[0],
+  masked: '(XXX) XXX-XXXX',
+  confidence: 0.85,
+- location: { start: match.index: match.index + match[0].length },
++ location: { start: match.index, match.index + match[0].length },
+  });
+  }
+  return JSON.stringify(sensitive);
+  },
+- compress_document_features: (features: Uint8Array): Uint8Array => {
++ compress_document_features: (features, Uint8Array): Uint8Array => {
+  // Simple compression: halve the byte size
+  const compressed = new Uint8Array(features.length / 2);
+  for (let i = 0; i < compressed.length; i++) {
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__wasm__legal-processor.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

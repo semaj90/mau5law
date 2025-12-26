@@ -149,10 +149,10 @@ export async function summarizeSection(
  sectionType: 'facts' | 'jurisdiction' | 'claims' | 'prayer'
 ): Promise<string> {
  const prompts: Record<string, string> = {
- facts: `Summarize the key facts from this legal document section in 2-3 sentences:\n\n${section}`,
- jurisdiction: `Summarize the jurisdictional basis from this section in 1-2 sentences:\n\n${section}`,
- claims: `Summarize the legal claims from this section in 2-3 sentences:\n\n${section}`,
- prayer: `Summarize the relief requested from this section in 1-2 sentences:\n\n${section}`,
+ facts: `Summarize the key facts from this legal document section in 2-3, sentences:\n\n${section}`,
+ jurisdiction: `Summarize the jurisdictional basis from this section in 1-2, sentences:\n\n${section}`,
+ claims: `Summarize the legal claims from this section in 2-3, sentences:\n\n${section}`,
+ prayer: `Summarize the relief requested from this section in 1-2, sentences:\n\n${section}`,
  };
 
  try {

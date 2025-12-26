@@ -109,8 +109,7 @@ export const shaderDependencies = pgTable('shader_dependencies', {
  onDelete: 'cascade',
  }), // fixed .references usage
  // Dependency metadata
- dependencyType: text('dependency_type').notNull(), // 'include', 'texture', 'uniform', 'buffer'
- dependencyStrength: real('dependency_strength'), // 0-1 how critical this dependency is
+ dependencyType: text('dependency_type').notNull(), // 'include', 'texture', 'uniform', 'buffer', dependencyStrength: real('dependency_strength'), // 0-1 how critical this dependency is
  loadOrder: integer('load_order'), // Relative load order
  // Performance impact
  parallelLoadSafe: boolean('parallel_load_safe').default(true),
@@ -140,8 +139,7 @@ export function isValidShaderCompilationStatus(status: string): status is Shader
 export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
  id: serial('id').primaryKey(), // Queue identification
  queueKey: text('queue_key').notNull().unique(),
- priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload'
- status: text('status').notNull().$type<ShaderCompilationStatus>(), // restrict to valid status values
+ priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload', status: text('status').notNull().$type<ShaderCompilationStatus>(), // restrict to valid status values
  // Shader information
  shaderKey: text('shader_key').notNull(),
  sourceCode: text('source_code').notNull(),
@@ -172,8 +170,7 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
  id: serial('id').primaryKey(),
  userId: text('user_id').notNull(),
  shaderKey: text('shader_key').notNull(),
- recommendationType: text('recommendation_type').notNull(), // 'similar', 'next', 'popular', 'optimal'
- confidence: real('confidence').notNull(),
+ recommendationType: text('recommendation_type').notNull(), // 'similar', 'next', 'popular', 'optimal', confidence: real('confidence').notNull(),
  reasoning: text('reasoning'), // Recommendation context
  baseContext: jsonb('base_context').$type<Record<string, unknown> | null>(), // Context that triggered this recommendation
  expectedBenefit: real('expected_benefit'), // Expected performance/satisfaction improvement

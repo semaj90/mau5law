@@ -3,43 +3,32 @@ import vectorWasm from '../wasm/vector-wasm-wrapper.js';
 import {  browser  } from '$app/environment';
 
 export interface CacheEntry<T = unknown> {
- // Changed default type parameter from 'any' to 'unknown'
- key: string;
- data: T;
- timestamp: number;
- ttl: number;
+ // Changed default type parameter from 'any' to 'unknown', key: string; data: T;
+ timestamp: number; ttl: number;
  version: string;
  embedding?: Float32Array;
  metadata?: {
- size: number;
- hits: number;
- lastAccess: number;
- source: 'server' | 'client' | 'hybrid';
+ size: number; hits: number;
+ lastAccess: number; source: 'server' | 'client' | 'hybrid';
  computeCost: number; // Relative cost to regenerate
  };
 }
 
 export interface CacheStrategy {
  // Memory tiers (fastest to slowest)
- memory: boolean; // In-memory Map cache
- indexeddb: boolean; // Browser IndexedDB
+ memory: boolean; // In-memory Map cache, indexeddb: boolean; // Browser IndexedDB
  localStorage: boolean; // Browser localStorage (limited size)
  // Intelligent eviction
- lru: boolean; // Least Recently Used
- semantic: boolean; // Semantic similarity-based eviction
+ lru: boolean; // Least Recently Used, semantic: boolean; // Semantic similarity-based eviction
  cost: boolean; // Evict by regeneration cost
  // Sync with server
- syncWithRedis: boolean; // Sync with server-side Redis
- conflictResolution: 'client' | 'server' | 'merge';
+ syncWithRedis: boolean; // Sync with server-side Redis, conflictResolution: 'client' | 'server' | 'merge';
 }
 
 export interface CacheConfig {
- maxMemorySize: number; // Max memory cache size (bytes)
- maxIndexedDBSize: number; // Max IndexedDB size (bytes)
- maxLocalStorageSize: number; // Max localStorage size (bytes)
- defaultTTL: number; // Default TTL in milliseconds
- embeddingDimensions: number; // For semantic caching
- syncInterval: number; // Sync with server interval (ms)
+ maxMemorySize: number; // Max memory cache size (bytes), maxIndexedDBSize: number; // Max IndexedDB size (bytes)
+ maxLocalStorageSize: number; // Max localStorage size (bytes), defaultTTL: number; // Default TTL in milliseconds
+ embeddingDimensions: number; // For semantic caching, syncInterval: number; // Sync with server interval (ms)
  strategy: CacheStrategy;
 }
 
@@ -498,7 +487,7 @@ export class HeadlessUICache {
  }; Export cache statistics for monitoring
  getStats() {
  return {
- hitRatio: this.hitRatio: this.totalRequests: cacheHits, this.cacheHits: memorySize: this.calculateMemorySize(),
+ hitRatio: this.hitRatio, this.totalRequests, this.cacheHits: memorySize: this.calculateMemorySize(),
  };
  }
 

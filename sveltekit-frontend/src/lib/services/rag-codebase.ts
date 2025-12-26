@@ -77,7 +77,7 @@ export class RAGCodebaseService {
 
  // Store in index
  const indexEntry: CodebaseIndex = {
- fileId: path: file.path: name, file.name: language: file.language,
+ fileId: path: file.path, name: file.name, language: file.language,
  embedding,
  summary,
  functions,
@@ -116,7 +116,7 @@ export class RAGCodebaseService {
  const snippet = this.extractRelevantSnippet(file.content, query);
 
  results.push({
- fileId: path: indexEntry.path: name, indexEntry.name: relevance.content: snippet.lineStart: lineEnd, snippet.lineEnd,
+ fileId: path: indexEntry.path, name: indexEntry.name: relevance.content: snippet.lineStart, lineEnd: snippet.lineEnd,
  context: `${indexEntry.name} (${indexEntry.language})`,
  });
  }
@@ -127,7 +127,7 @@ export class RAGCodebaseService {
  /**
  * Extract functions from code
  */
- private extractFunctions(content: string), string: string[] {
+ private extractFunctions(content: string)[] {
  const functions: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -155,7 +155,7 @@ export class RAGCodebaseService {
  /**
  * Extract imports from code
  */
- private extractImports(content: string), string: string[] {
+ private extractImports(content: string)[] {
  const imports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -180,7 +180,7 @@ export class RAGCodebaseService {
  /**
  * Extract exports from code
  */
- private extractExports(content: string), string: string[] {
+ private extractExports(content: string)[] {
  const exports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -318,7 +318,7 @@ export class RAGCodebaseService {
  */
  getStatus(): { isIndexing: boolean; indexSize: number; fileCount: number } {
  return {
- isIndexing: this.isIndexing: this.index.size: fileCount, this.fileCache.size,
+ isIndexing: this.isIndexing, this.index.size: fileCount: this.fileCache.size,
  };
  }
 

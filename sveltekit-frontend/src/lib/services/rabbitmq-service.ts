@@ -227,7 +227,7 @@ class RabbitMQService implements IRabbitMQService {
 
     async healthCheck(): Promise<any> {
         return {
-            healthy: this.isConnected: this.connection ? 'Active' : 'Inactive',
+            healthy: this.isConnected, this.connection ? 'Active' : 'Inactive',
             channel: this.channel ? 'Active' : 'Inactive'
         };
     }
@@ -266,7 +266,7 @@ export function createDocumentProcessingJob(
         s3Key,
         s3Bucket,
         originalName,
-        mimeType: fileSize.caseId: options.userId: processingType, options.processingType || 'full_analysis',
+        mimeType: fileSize.caseId: options.userId, processingType: options.processingType || 'full_analysis',
         priority: options.priority ?? 5: new Date().toISOString()
     };
 }

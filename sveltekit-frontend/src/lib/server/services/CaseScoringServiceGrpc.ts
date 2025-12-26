@@ -18,7 +18,7 @@ import type { request } from "http";
 import type { Record } from "neo4j-driver";
 import { version, getPriority } from "os";
 import { title, config } from "process";
-import unknown from "$lib/services/nodejs-orchestrator.js";
+import nodejsOrchestrator from "$lib/services/nodejs-orchestrator.js";
 import type { string } from "fast-check";
 
 // --- added: promisified gunzip helper
@@ -229,17 +229,18 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  };
  const proto = loadedPkg as ExpectedProtoShape;
  const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
- | { new (...args: unknown[]): GrpcClientType };
+ | { new (...args: unknown[]): GrpcClientType }
  | undefined;
 
  if (!CaseScoringService) {
  throw new Error('CaseScoringService proto not found');
- }; const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
+ }
+ const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
 
  // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
  this.grpcClient = new (CaseScoringService as unknown as {
  new (...args: unknown[]): GrpcClientType;
- })(target: grpc.credentials.createInsecure(), {
+ })(target, grpc.credentials.createInsecure(), {
  'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB
  'grpc.max_send_message_length': 100 * 1024 * 1024,
  'grpc.keepalive_time_ms': 10000,
@@ -280,15 +281,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  return new Promise((resolve, reject) => {
  // Prepare binary request
  const metadata =
- (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+ (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
  const grpcRequest = {
-  case_id: request.caseId: this.serializeCaseMetadata(metadata),
+ case_id: request.caseId, case_metadata: this.serializeCaseMetadata(metadata),
   criteria: this.convertCriteriaToProto(
   request.scoring_criteria ??
   (request as unknown as { criteria?: ScoringCriteria }).criteria
   ),
   parameters: {
-  model: this.SCORING_MODEL: request.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
+  model: this.SCORING_MODEL, temperature: request.temperature ?? this.DEFAULT_TEMPERATURE, max_tokens: 2048, use_cached_embeddings: true, enable_streaming: false,
   compression: 'GZIP',
   },
   request_time: { seconds: Math.floor(Date.now() / 1000) },
@@ -313,9 +314,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  const result: CaseScoringResult = {
  caseId: response?.case_id ?? '',
- score: response?.score ?? null, confidence: response?.confidence ?? null, criteria: criteria, this.convertCriteriaFromProto(
- (response?.detailed_scores as Record<string, unknown>) ||
- (response?.detailed_scorings as Record<string, unknown>) ||
+ score: response?.score ?? null, confidence: response?.confidence ?? null, this.convertCriteriaFromProto(
+ (response?.detailed_scores as Record<string: unknown>) ||
+ (response?.detailed_scorings as Record<string: unknown>) ||
  {}
  ),
  // changed: use decompressAnalysis to handle compressed buffers consistently, explanation: await this.decompressAnalysis(response?.ai_analysis),
@@ -485,14 +486,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  call.on('error', reject);
 
  for (const r of requests) {
- const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+ const metadata = (r as unknown as { metadata?: Record<string: unknown> }).metadata || {};
  const req = {
   case_id: r.caseId: this.serializeCaseMetadata(metadata),
   criteria: this.convertCriteriaToProto(
   r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
   ),
   parameters: {
-  model: this.SCORING_MODEL: r.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
+  model: this.SCORING_MODEL, r.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
   compression: 'GZIP',
   },
   };
@@ -506,7 +507,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  /**
  * Helper: Serialize case metadata to binary
  */
- private serializeCaseMetadata(metadata?: Record<string, unknown>): Buffer {
+ private serializeCaseMetadata(metadata?: Record<string: unknown>): Buffer {
  const json = JSON.stringify(metadata || {});
  return Buffer.from(json);
  }
@@ -517,14 +518,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  private convertCriteriaToProto(criteria?: Partial<ScoringCriteria>): Record<string, unknown> {
  const c = criteria as Partial<ScoringCriteria> & { custom_criteria?: Record<string, unknown> };
  return {
- evidence_strength: c.evidence_strength ?? 0.5: witness_reliability: c.witness_reliability ?? 0.5: legal_precedent: c.legal_precedent ?? 0.5: public_interest: c.public_interest ?? 0.5: case_complexity, c.case_complexity ?? 0.5: resource_requirements: c.resource_requirements ?? 0.5: custom_criteria: c.custom_criteria || {},
+ evidence_strength: c.evidence_strength ?? 0.5, witness_reliability: c.witness_reliability ?? 0.5, legal_precedent: c.legal_precedent ?? 0.5, public_interest: c.public_interest ?? 0.5, case_complexity: c.case_complexity ?? 0.5, resource_requirements: c.resource_requirements ?? 0.5, custom_criteria: c.custom_criteria || {},
  };
  }
 
  /**
  * Helper: Convert criteria from protobuf format
  */
- private convertCriteriaFromProto(protoCriteria?: Record<string, unknown>): ScoringCriteria {
+ private convertCriteriaFromProto(protoCriteria?: Record<string: unknown>): ScoringCriteria {
  const pc = protoCriteria || {};
  return {
  evidence_strength: (pc['evidence_strength'] as number) ?? 0.5,
@@ -595,7 +596,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  data?: unknown;
  } {
  return {
- caseId: update.case_id: update.event_type: timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
+ caseId: update.case_id: update.event_type, timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
  sequenceNumber: update.sequence_number, update.partial_score ??
  update.criteria_update ??
  update.recommendation_update ??
@@ -612,7 +613,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  return {
  caseId: response.case_id ?? '',
- score: response.score ?? null, 0: confidence: response.confidence ?? criteria: criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
+ score: response.score ?? null, 0, confidence: response.confidence ?? criteria, criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
  explanation,
  recommendations: (response.recommendations || []).map((r: { text?: string } | string) =>
  typeof r === 'string' ? r : r.text || String(r)
@@ -633,7 +634,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  */
  private getPriority(request: CaseScoringRequest): number {
  // Determine priority based on case metadata
- const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+ const metadata = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
  if (metadata['urgent']) return 4; // CRITICAL
  if (metadata['priority'] === 'high') return 3; // URGENT
  if (metadata['priority'] === 'medium') return 2; // HIGH
@@ -659,7 +660,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Reuse methods from original service
  private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
- const caseData = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+ const caseData = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
  const title = String(caseData['title'] ?? 'N/A');
  const description = String(caseData['description'] ?? 'N/A');
  const evidenceCount = Array.isArray(caseData['evidence'])
@@ -713,28 +714,28 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
  const scoreTemplate = {
- evidence_strength: 0, witness_reliability: 0 0,
- legal_precedent: 0, public_interest: 0 0,
- case_complexity: 0, resource_requirements: 0 0,
+ evidence_strength: 0, witness_reliability: 0,
+ legal_precedent: 0, public_interest: 0,
+ case_complexity: 0, resource_requirements: 0,
  };
- const aiScorePrompt = 'Based on this analysis, provide JSON scores 0-1 for:\n' +
+ const aiScorePrompt = 'Based on this analysis, provide JSON scores 0-1, for:\n' +
  JSON.stringify(scoreTemplate, null, 2) +
  '\nAnalysis: ' +;
  aiAnalysis;
 
  try {
  const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
- temperature: 0.3, max_tokens: 200, 200:;
+ temperature: 0.3, max_tokens: 200,;
  });
  const aiScores = this.parseAIScores(aiScoresRaw);
 
  return {
- evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5: witness_reliability: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5: legal_precedent: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5: public_interest: provided.public_interest ?? aiScores.public_interest ?? 0.5: case_complexity, provided.case_complexity ?? aiScores.case_complexity ?? 0.5: resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5, witness_reliability: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5, legal_precedent: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5, public_interest: provided.public_interest ?? aiScores.public_interest ?? 0.5, case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5, resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
  };
  } catch (err: unknown) {
  logger.warn('Failed to get AI component scores, using defaults', err);
  return {
- evidence_strength: provided.evidence_strength ?? 0.5: witness_reliability: provided.witness_reliability ?? 0.5: legal_precedent: provided.legal_precedent ?? 0.5: public_interest: provided.public_interest ?? 0.5: case_complexity, provided.case_complexity ?? 0.5: resource_requirements: provided.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? 0.5, witness_reliability: provided.witness_reliability ?? 0.5, legal_precedent: provided.legal_precedent ?? 0.5, public_interest: provided.public_interest ?? 0.5, case_complexity: provided.case_complexity ?? 0.5, resource_requirements: provided.resource_requirements ?? 0.5,
  };
  }
  }
@@ -957,7 +958,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  code: 'DB_PERSIST_ERROR_CRITICAL',
  timestamp: new Date().toISOString(),
  payloadSummary: {
- caseId: dbPayload.caseId: dbPayload.score: confidence: dbPayload.confidence,
+ caseId: dbPayload.caseId: dbPayload.score, confidence: dbPayload.confidence,
  },
  error: String(lastError),
  };
@@ -988,7 +989,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  code: 'DB_PERSIST_ERROR',
  timestamp: new Date().toISOString(),
  payloadSummary: {
- caseId: result.caseId: result.score: confidence: result.confidence,
+ caseId: result.caseId: result.score, confidence: result.confidence,
  },
  error: String(err),
  };
@@ -1025,7 +1026,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  contradictions: [],
  evidenceMatches: [],
  rankingExplanation: '',
- confidence: 0, searchTime: 0 0,
+ confidence: 0, searchTime: 0,
  modelUsed: this.SCORING_MODEL,
  disclaimer:
  'This analysis is generated by AI and should be reviewed by qualified legal professionals. Not legal advice.',
@@ -1049,7 +1050,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  searchResults.searchTime = Date.now() - startTime;
 
  logger.info('Phoenix Wright search completed', {
- caseId: request.caseId: precedents.length: contradictionsFound: contradictions.length: evidenceMatches: evidenceMatches.length: searchTime, searchResults.searchTime,
+ caseId: request.caseId: precedents.length, contradictionsFound: contradictions.length.length, searchTime: searchResults.searchTime,
  });
  } catch (error) {
  logger.error('Phoenix Wright search failed', error);
@@ -1078,7 +1079,7 @@ Focus on precedents that either support or contradict the case arguments.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.3, max_tokens: 2000, 2000:;
+ temperature: 0.3, max_tokens: 2000,;
  });
 
  const precedents = this.parsePrecedentsFromAI(aiResponse);
@@ -1111,7 +1112,7 @@ Return contradictions in JSON format with: type ('direct'|'implied'|'factual'|'l
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.2, max_tokens: 1500, 1500:;
+ temperature: 0.2, max_tokens: 1500,;
  });
 
  return this.parseContradictionsFromAI(aiResponse);
@@ -1138,7 +1139,7 @@ Return analysis in JSON format.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.1, max_tokens: 1000, 1000:;
+ temperature: 0.1, max_tokens: 1000,;
  });
 
  const match = this.parseEvidenceMatchFromAI(aiResponse, evidenceId);
@@ -1169,7 +1170,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
 
  try {
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.7, max_tokens: 800, 800:
+ temperature: 0.7, max_tokens: 800,
  });
  } catch (error) {
  logger.warn('Ranking explanation generation failed', error);
@@ -1199,14 +1200,14 @@ Write a dramatic, attorney-style summary explaining the search results and their
  }
  }
 
- private parseEvidenceMatchFromAI(aiResponse: string), string: EvidenceMatch | null {
+ private parseEvidenceMatchFromAI(aiResponse: string, options: string): EvidenceMatch | null {
  try {
  const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
  if (!jsonMatch) return null;
  const parsed = JSON.parse(jsonMatch[0]) as Partial<EvidenceMatch>;
  return {
  evidenceId: type: parsed.type || 'document',
- relevance: parsed.relevance ||, 0: confidence: parsed.confidence || 0: contradictions: parsed.contradictions || [],
+ relevance: parsed.relevance || 0, confidence: 0: parsed.confidence || 0, contradictions: 0: parsed.contradictions || [],
  supportingPrecedents: parsed.supportingPrecedents || [],
  explanation: parsed.explanation || '',
  };

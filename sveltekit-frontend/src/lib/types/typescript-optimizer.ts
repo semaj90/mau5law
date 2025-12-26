@@ -211,8 +211,7 @@ export interface OptimizerConfig {
 export interface ProcessingPriority {
  level: 'low' | 'normal' | 'high' | 'urgent';
  timeout_multiplier: number;
- resource_allocation: number; // 0.0 - 1.0
- queue_priority: number;
+ resource_allocation: number; // 0.0 - 1.0, queue_priority: number;
 }
 
 // Error Categories & Analysis

@@ -23,13 +23,12 @@ type SessionRow = {
 };
 
 type QueryResultRow = {
- user: UserRow;
- session: SessionRow;
+ user: UserRow;, session: SessionRow;
 };
 // --- end new types ---
 
 // Helper: safely convert DB values to Date, or null
-function toDate(value: Date | string: null): Date | null {
+function toDate(value: Date |, string: null): Date | null {
  if (value == null) return null;
  if (value instanceof Date) {
  return isNaN(value.getTime()) ? null : value;
@@ -112,7 +111,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  id: String(user.id),
  attributes: {
  email: user.email ?? null, firstName: user.first_name ?? null, lastName: user.last_name ?? null, role: user.role ?? 'user',
- isActive: user.is_active ?? true: avatarUrl: user.avatar_url ?? null,
+ isActive: user.is_active ??, true: avatarUrl: user.avatar_url ?? null,
  // name: user.name ?? null, // Removed as it's not a standard Lucia DatabaseUser attribute
  },
  };

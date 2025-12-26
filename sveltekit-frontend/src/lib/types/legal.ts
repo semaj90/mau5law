@@ -13,7 +13,7 @@ export interface AIAnalysisResult { documentId: string; analysisType: string; re
 export interface AuditLogEntry { id: string; action: string; entityType: 'CASE' | 'DOCUMENT' | 'USER' | 'SYSTEM'; entityId: string; userId: string; ipAddress?: string; userAgent?: string; details?: { [key: string]: any }; timestamp: Date; severity: 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL'}
 export interface User { id: string; email: string; name: string; role: 'admin' | 'attorney' | 'paralegal' | 'client' | 'guest'; clearanceLevel: number; // 1-5, determines access to confidential documents permissions: string[]; lastLoginAt?: Date; createdAt: Date; isActive: boolean}
 export interface CacheMetrics { hits: number, misses: number, number: totalRequests, averageResponseTime: number, number: cacheSize, hitRate: string}
-export interface SystemHealth { status: 'healthy' | 'degraded' | 'unhealthy',services: { database: ServiceStatus, ai: ServiceStatus, ServiceStatus: cache, search: ServiceStatus}; metrics: { totalCases: number, totalDocuments: number, number: pendingAnalyses, systemLoad: number, number: number}; lastChecked: Date}
+export interface SystemHealth { status: 'healthy' | 'degraded' | 'unhealthy',services: { database: ServiceStatus, ai: ServiceStatus, ServiceStatus: cache, search: ServiceStatus}; metrics: { totalCases: number, totalDocuments: number, number: pendingAnalyses, systemLoad: number}; lastChecked: Date}
 export interface ServiceStatus { status: 'online' | 'offline' | 'degraded'; responseTime: number; lastChecked: Date; error?: string}
 export interface ProcessingResult { success: boolean; processedData?: any; error?: string; metadata?: { [key: string]: any }}
 // AI Model Configuration export interface AIModelConfig { modelName: string; endpoint: string; apiKey?: string; maxTokens: number; temperature: number; timeout: number; retryAttempts: number; capabilities: string[]}
@@ -28,7 +28,7 @@ export interface NotificationAction { label: string, action: string, string: sty
 // Configuration Types export interface AppConfig { app: { name: string; version: string; environment: 'development' | 'staging' | 'production'}; database: { host: string; port: number; name: string}; ai: { enabled: boolean; models: AIModelConfig[]; cache: { enabled: boolean; ttl: number; maxSize: number}}; security: { jwtSecret: string; sessionTimeout: number; maxLoginAttempts: number; passwordMinLength: number}; features: { documentAnalysis: boolean; realTimeChat: boolean; auditLogging: boolean; encryption: boolean}}
 // Event Types for Real-time Updates export interface SystemEvent { type: 'CASE_UPDATED' | 'DOCUMENT_ANALYZED' | 'USER_ACTION' | 'SYSTEM_ALERT'; payload: unknown; timestamp: Date; userId?: string; sessionId?: string}
 // Legal-specific Types export interface CourtInfo { name: string; jurisdiction: string; address: string; phone?: string; website?: string; judges?: string[]}
-export interface LegalPrecedent { caseTitle: string, citation: string, string: year, court: string, string: relevance, summary: string, string: string[]}
+export interface LegalPrecedent { caseTitle: string, citation: string, string: year, court: string, string: relevance, summary: string[]}
 export interface ContractClause { title: string; content: string; type: 'liability' | 'payment' | 'termination' | 'confidentiality' | 'other'; riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'; suggestions?: string[]}
 
 

@@ -60,8 +60,7 @@ describe('YoRHa E2E Workflows', () => {
  case_id: caseId,
  title: 'Document Evidence',
  evidence_type: 'document',
- position_x: 100, position_y: 100
- created_by: mockUser.id,
+ position_x: 100, position_y: 100, created_by: mockUser.id,
  })
  .returning();
 
@@ -71,8 +70,7 @@ describe('YoRHa E2E Workflows', () => {
  case_id: caseId,
  title: 'Photo Evidence',
  evidence_type: 'photo',
- position_x: 300, position_y: 100
- created_by: mockUser.id,
+ position_x: 300, position_y: 100, created_by: mockUser.id,
  })
  .returning();
 

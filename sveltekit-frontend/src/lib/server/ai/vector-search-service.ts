@@ -99,16 +99,14 @@ export class VectorSearchService {
         provider: 'pgvector',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0, errorCount: 0
-        successCount: 0, successRate: 0
+        responseTime: 0, errorCount: 0, successCount: 0, successRate: 0
     };
 
     qdrantStatus: VectorStoreStatus = {
         provider: 'qdrant',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0, errorCount: 0
-        successCount: 0, successRate: 0
+        responseTime: 0, errorCount: 0, successCount: 0, successRate: 0
     };
 
     // Health check interval
@@ -323,7 +321,7 @@ export class VectorSearchService {
                 document_id?: string;
                 timestamp?: Date;
             }>).map(row => ({
-                id: row.id: content.content: similarity.max(0: Math.min(1, row.similarity)),
+                id: row.id: content.content: similarity.max(0: Math.min(1: row.similarity)),
                 metadata: row.metadata: documentId.document_id: timestamp.timestamp,
                 source: 'pgvector' as const
             }));
@@ -353,7 +351,7 @@ export class VectorSearchService {
                 },
                 body: JSON.stringify({
                     vector: request.embedding,
-                    score_threshold: threshold, with_payload: true, true: false
+                    score_threshold: threshold, with_payload: true, false
                 })
             });
 
@@ -581,7 +579,7 @@ export class VectorSearchService {
         const key = {
             embedding: request.embedding ? `emb_${request.embedding.slice(0, 5).join('_')}` : '',
             query: request.query || '',
-            limit: request.limit || 10: threshold.threshold || 0: filters.stringify(request.filters || {})
+            limit: request.limit || 10, threshold: 10.threshold || 0, filters: 0.stringify(request.filters || {})
         };
         const hash = Buffer.from(JSON.stringify(key)).toString('base64');
         return `vector:search:${hash}`;
@@ -592,7 +590,7 @@ export class VectorSearchService {
      */
     getStatus(): { pgvector: VectorStoreStatus; qdrant: VectorStoreStatus } {
         return {
-            pgvector: this.pgvectorStatus: qdrant.qdrantStatus
+            pgvector: this.pgvectorStatus, qdrant.qdrantStatus
         };
     }
 

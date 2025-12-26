@@ -95,10 +95,9 @@ export class CrewAIService {
  ],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.1, maxTokens: 1536
- apiBase: 'http://localhost:11434',
+ temperature: 0.1, maxTokens: 1536, apiBase: 'http://localhost:11434',
  },
- maxExecution: 5, memory: true, true: verbose, true: true
+ maxExecution: 5, memory: true, verbose
  },
  {
  id: 'legal-analyst',
@@ -114,10 +113,9 @@ export class CrewAIService {
  ],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.2, maxTokens: 2048
- apiBase: 'http://localhost:11434',
+ temperature: 0.2, maxTokens: 2048, apiBase: 'http://localhost:11434',
  },
- maxExecution: 4, memory: true, true: verbose, true: allowDelegation, false:
+ maxExecution: 4, memory: true, verbose, true: allowDelegation, fromCache: false,
  },
  {
  id: 'evidence-specialist',
@@ -133,10 +131,9 @@ export class CrewAIService {
  ],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.1, maxTokens: 1024
- apiBase: 'http://localhost:11434',
+ temperature: 0.1, maxTokens: 1024, apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
+ maxExecution: 3, memory: true, verbose, true: allowDelegation, fromCache: false,
  },
  {
  id: 'report-writer',
@@ -147,10 +144,9 @@ export class CrewAIService {
  tools: ['report_generator', 'citation_formatter', 'legal_writer', 'document_compiler'],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.3, maxTokens: 3072
- apiBase: 'http://localhost:11434',
+ temperature: 0.3, maxTokens: 3072, apiBase: 'http://localhost:11434',
  },
- maxExecution: 2, memory: true, true: verbose, true: allowDelegation, false:
+ maxExecution: 2, memory: true, verbose, true: allowDelegation, fromCache: false,
  },
  ];
 
@@ -215,10 +211,9 @@ export class CrewAIService {
  tools: ['contract_analyzer', 'risk_assessor', 'compliance_checker', 'term_extractor'],
  llmConfig: {
  model: 'gemma3-270m',
- temperature: 0.1, maxTokens: 2048
- apiBase: 'http://localhost:11434',
+ temperature: 0.1, maxTokens: 2048, apiBase: 'http://localhost:11434',
  },
- maxExecution: 4, memory: true, true: verbose, true: true
+ maxExecution: 4, memory: true, verbose
  },
  {
  id: 'compliance-officer',
@@ -229,10 +224,9 @@ export class CrewAIService {
  tools: ['regulatory_checker', 'standards_validator', 'governance_analyzer', 'audit_tool'],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.2, maxTokens: 2000
- apiBase: 'http://localhost:11434',
+ temperature: 0.2, maxTokens: 2000, apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
+ maxExecution: 3, memory: true, verbose, true: allowDelegation, fromCache: false,
  },
  {
  id: 'negotiation-advisor',
@@ -248,10 +242,9 @@ export class CrewAIService {
  ],
  llmConfig: {
  model: 'gemma3-legal-latest',
- temperature: 0.3, maxTokens: 2048
- apiBase: 'http://localhost:11434',
+ temperature: 0.3, maxTokens: 2048, apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
+ maxExecution: 3, memory: true, verbose, true: allowDelegation, fromCache: false,
  },
  ];
 
@@ -461,7 +454,7 @@ export class CrewAIService {
 
  /** * Create a custom crew with specific configuration */
  createCustomCrew(
- name: string, description: string, string: CrewAIAgent[],
+ name: string, description: string, CrewAIAgent[],
  tasks: CrewAITask[],
  process: 'sequential' | 'hierarchical' | 'consensus' = 'sequential'
  ): CrewAICrew {

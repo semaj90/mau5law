@@ -4,24 +4,23 @@ import { createHash } from 'crypto';
 import type { Readable } from 'stream';
 import { db } from '../db';
 
-import { redis as ensureRedisReady } from '$lib/server/redis-client';
+import { redis, as ensureRedisReady } from '$lib/server/redis-client';
 import {
 	legalDocumentChunks,
 	embeddingCache512,
 	caseEmbeddings,
 	evidenceEmbeddings,
-	type NewLegalDocumentChunk,
-	type NewEmbeddingCache512,
-	type NewCaseEmbedding,
-	type NewEvidenceEmbedding,
+	type, NewLegalDocumentChunk,
+	type, NewEmbeddingCache512,
+	type, NewCaseEmbedding,
+	type, NewEvidenceEmbedding,
 	EMBEDDING_MODELS
 } from '../db/schema-pgvector-512';
 import { eq, and, lt, sql } from 'drizzle-orm';
 import Redis from 'ioredis';
 
 interface DocumentMetadata {
- documentId: string;
- documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
+ documentId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
  caseId?: string;
  evidenceId?: string;
  practiceArea?: string[];
@@ -30,19 +29,14 @@ interface DocumentMetadata {
 }
 
 interface ChunkingOptions {
- maxTokens: number;
- overlapTokens: number;
- preserveSentences: boolean;
- minChunkSize: number;
+ maxTokens: number;, overlapTokens: number;
+ preserveSentences: boolean;, minChunkSize: number;
 }
 
 interface ProcessingResult {
- documentId: string;
- totalChunks: number;
- totalTokens: number;
- embeddingsGenerated: number;
- cacheHits: number;
- processingTimeMs: number;
+ documentId: string;, totalChunks: number;
+ totalTokens: number;, embeddingsGenerated: number;
+ cacheHits: number;, processingTimeMs: number;
  errors: string[];
 }
 
@@ -338,8 +332,7 @@ export class StreamingIngestionPipeline {
 
 // Supporting classes and interfaces
 interface DocumentChunk {
- index: number;
- text: string;
+ index: number;, text: string;
  tokenCount: number;
  pageNumber?: number;
  entities?: unknown[];

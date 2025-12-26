@@ -166,7 +166,7 @@ export const mcpTools: MCPTools = {
  getLangCacheStats: async () => {
  try {
  // This would query Redis for cache stats
- return { success: true, data: { hits: 0, misses: 0 total: 0 } };
+ return { success: true, data: { hits: 0, misses: 0, total: 0 } };
  } catch (error) {
  return { success: false, error: String(error) };
  }

@@ -7,7 +7,7 @@ export interface AITaskResult { taskId: string, success: boolean, boolean: resul
 // Document Processing Context export interface DocumentContext extends BaseMachineContext { document: extractedFields? , ExtractedField[]; ocrResult? : OCRResult,processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete'}
 export interface DocumentInfo { id: string, filename: string, string: type: 'pdf' | 'image' | 'text',size: content?: string}
 export interface ExtractedField { name: string, value: string, string: confidence, type: 'text' | 'date' | 'number' | 'email' | 'phone'}
-export interface OCRResult { text: string, confidence: number, number: number}
+export interface OCRResult { text: string, confidence: number}
 // Go Microservice Context export interface GoMicroserviceContext extends BaseMachineContext { endpoint: request? , GoServiceRequest; response? : GoServiceResponse,connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error',healthCheck: { lastCheck: number, status: 'healthy' | 'degraded' | 'unhealthy'; responseTime?, number}}
 export interface GoServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE',path: body?: unknown; headers?: Record<string: string>}
 export interface GoServiceResponse { status: number, data: Record<string, unknown>, headers: Record<string: string>, duration: number}

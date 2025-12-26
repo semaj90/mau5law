@@ -43,13 +43,13 @@ try {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10 total: 0 },
- loading: false, error: null, null:
+ pagination: { page: 1, limit: 10, total: 0 },
+ loading: false, error: null,
  },
  ai: {
  isProcessing: false,
  currentQuery: '',
- lastResponse: null, error: null, null:
+ lastResponse: null, error: null,
  models: {
  primary: 'gemma3-legal',
  embedding: 'nomic-embed-text',
@@ -59,16 +59,13 @@ try {
  system: {
  connected: false,
  services: {
- database: false, redis: false
- ollama: false, gpu: false
- pgvector: false, qdrant: false
- neo4j: false,
+ database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false,
  },
- metrics: { errorCount: 0, performanceScore: 0 uptime: 0 },
+ metrics: { errorCount: 0, performanceScore: 0, uptime: 0 },
  },
  },
  status: 'active' as const,
-  output: undefined, undefined: error,
+  output: undefined, error,
  } as Snapshot<LegalAIContext>);
  }
 } catch (error) {
@@ -82,7 +79,7 @@ try {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10 total: 0 },
+ pagination: { page: 1, limit: 10, total: 0 },
  loading: false,
  error: 'XState initialization failed',
  },
@@ -100,16 +97,13 @@ try {
  system: {
  connected: false,
  services: {
- database: false, redis: false
- ollama: false, gpu: false
- pgvector: false, qdrant: false
- neo4j: false,
+ database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0 uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0, uptime: 0 },
  },
  },
  status: 'active' as const,
-  output: undefined, undefined: error,
+  output: undefined, error,
  } as Snapshot<LegalAIContext>);
 }
 
@@ -135,7 +129,7 @@ export const xstateIntegration = {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10 total: 0 },
+ pagination: { page: 1, limit: 10, total: 0 },
  loading: false,
  error: 'XState unavailable',
  },
@@ -149,16 +143,13 @@ export const xstateIntegration = {
  system: {
  connected: false,
  services: {
- database: false, redis: false
- ollama: false, gpu: false
- pgvector: false, qdrant: false
- neo4j: false,
+ database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0 uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0, uptime: 0 },
  },
  },
  status: 'active' as const,
-  output: undefined, undefined: error,
+  output: undefined, error,
  } as Snapshot<LegalAIContext>;
  }
  },
@@ -176,7 +167,7 @@ export const xstateIntegration = {
  legalAIActor.send(event);
  } else {
  console.warn(
- `[XState] Cannot send event: actor not available or unknown machine ID: ${machineId}`
+ `[XState] Cannot send event: actor not available or unknown machine, ID: ${machineId}`
  );
  }
  } catch (error) {

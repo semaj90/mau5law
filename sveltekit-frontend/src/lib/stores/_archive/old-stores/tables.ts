@@ -109,7 +109,7 @@ class TableManager {
  });
  }
 
- updateSearch(tableId: string, query), string: string {
+ updateSearch(tableId: string, query) {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => ({
@@ -118,7 +118,7 @@ class TableManager {
  }));
  }
 
- updateFilter(tableId: string, column: string, string), string: string {
+ updateFilter(tableId: string, column: string, string) {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {

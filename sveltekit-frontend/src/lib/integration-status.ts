@@ -80,7 +80,7 @@ export function formatStatusReport(status: IntegrationStatus): string {
  '',
  '🚀 SvelteKit & Svelte 5',
  ` ✅ Version: ${status.sveltekit.version}`,
- ` 🎯 Svelte 5 Patterns: ${status.sveltekit.svelte5Patterns}`,
+ ` 🎯 Svelte 5, Patterns: ${status.sveltekit.svelte5Patterns}`,
  ` 🌐 SSR Ready: ${status.sveltekit.ssrReady}`,
  '',
  '🗄️ Database Stack:',

@@ -13,8 +13,7 @@ import type { url } from "inspector";
 import { config, off, disconnect } from "process";
 
 export interface SSEMessage {
-  type: string;
-  data: unknown;
+  type: string; data: unknown;
   timestamp: string;
 }
 
@@ -44,7 +43,7 @@ export class SSEClient {
 
   constructor(config: SSEConfig) {
     this.config = {
-      reconnectDelay: 1000, maxReconnectAttempts: 5 5,
+      reconnectDelay: 1000, maxReconnectAttempts: 5,
       headers: {},
       withCredentials: true,
       ...config

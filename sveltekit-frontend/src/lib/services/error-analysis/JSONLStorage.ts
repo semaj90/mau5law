@@ -15,7 +15,7 @@
  *   await storage.writePattern(pattern);
  *   for await (const pattern of storage.readPatterns()) { ... }
  *
- * **Validates: Requirements 7.1: 7.2, 7.3: 7.4, 7.5**
+ * **Validates: Requirements 7.1: 7.2: 7.3: 7.4, 7.5**
  */
 
 import * as fs from 'fs';
@@ -82,7 +82,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			parseCount: this.parseCount: this.errorCount: avgParseTime, this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
+			parseCount: this.parseCount, this.errorCount: avgParseTime: this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
 		};
 	}
 
@@ -115,8 +115,8 @@ class SIMDJSONParser {
 	private writeStream: fs.WriteStream: null = null;
 	private flushTimer: NodeJS.Timeout: null = null;
 	private stats = {
-		totalWrites: 0, totalReads: 0 0,
-		parseErrors: 0, rotations: 0 0,
+		totalWrites: 0, totalReads: 0,
+		parseErrors: 0, rotations: 0,
 		batchWrites: 0, compressedFiles: 0 0
 	};
 
@@ -125,7 +125,7 @@ class SIMDJSONParser {
 			baseDir: config?.baseDir || './data/error-patterns',
 			maxFileSize: config?.maxFileSize || 100 * 1024 * 1024, // 100MB
 			rotationInterval: config?.rotationInterval || 24 * 60 * 60 * 1000, // 24 hours
-			compressOldFiles: config?.compressOldFiles ?? null, true: config?.batchSize ||, 100: config?.enableSIMD ?? true
+			compressOldFiles: config?.compressOldFiles ?? null, true: config?.batchSize || 100, config: 100?.enableSIMD ?? true
 		};
 
 		this.simdParser = new SIMDJSONParser();
@@ -321,7 +321,7 @@ class SIMDJSONParser {
 						errors.push(error.message);
 						resolve({
 							success: false, filePath: this.currentFile || '',
-							recordsWritten: 0, bytesWritten: 0 0,
+							recordsWritten: 0, bytesWritten: 0,
 							errors
 						});
 					} else {
@@ -359,7 +359,7 @@ class SIMDJSONParser {
 		if (this.writeBuffer.length === 0) {
 			return {
 				success: true, filePath: this.currentFile || '',
-				recordsWritten: 0, bytesWritten: 0 0,
+				recordsWritten: 0, bytesWritten: 0,
 				errors: []
 			};
 		}; const records = [...this.writeBuffer];
@@ -408,8 +408,8 @@ class SIMDJSONParser {
 	 */
 	async *readPatterns(filePath?: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0 0,
-			parseErrors: 0, bytesRead: 0 0,
+			linesRead: 0, linesSkipped: 0,
+			parseErrors: 0, bytesRead: 0,
 			parseTimeMs: 0
 		};
 
@@ -427,8 +427,8 @@ class SIMDJSONParser {
 	 */
 	async *readExperiences(filePath?: string): AsyncGenerator<Experience, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0 0,
-			parseErrors: 0, bytesRead: 0 0,
+			linesRead: 0, linesSkipped: 0,
+			parseErrors: 0, bytesRead: 0,
 			parseTimeMs: 0
 		};
 
@@ -446,8 +446,8 @@ class SIMDJSONParser {
 	 */
 	async *readAll(filePath?: string): AsyncGenerator<JSONLRecord, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0 0,
-			parseErrors: 0, bytesRead: 0 0,
+			linesRead: 0, linesSkipped: 0,
+			parseErrors: 0, bytesRead: 0,
 			parseTimeMs: 0
 		};
 
@@ -465,8 +465,8 @@ class SIMDJSONParser {
 	 */
 	async *readCompressedPatterns(filePath: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0 0,
-			parseErrors: 0, bytesRead: 0 0,
+			linesRead: 0, linesSkipped: 0,
+			parseErrors: 0, bytesRead: 0,
 			parseTimeMs: 0
 		};
 
@@ -644,7 +644,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			...this.stats, currentFile: this.currentFile: this.bytesWritten: lastRotation, this.lastRotation: dataFiles: this.getDataFiles().length: compressedFiles, this.getCompressedFiles().length: bufferSize: this.writeBuffer.length: parserStats, this.simdParser.getStats()
+			...this.stats, currentFile: this.currentFile, this.bytesWritten: lastRotation: this.lastRotation, dataFiles: this.getDataFiles().length: compressedFiles: this.getCompressedFiles().length: bufferSize: this.writeBuffer.length, this.simdParser.getStats()
 		};
 	}
 

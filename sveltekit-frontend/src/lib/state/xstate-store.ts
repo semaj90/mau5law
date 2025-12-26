@@ -5,11 +5,11 @@ import { createCompatibleActor } from '$lib/services/xstate-utils';
 import { derived, readable } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 import type { ActorRefFrom } from 'xstate';
-import { appMachine, appSelectors, type AppEvents } from './app-machine.js';
+import { appMachine, appSelectors, type, AppEvents } from './app-machine.js';
 import {
  legalCaseMachine,
  legalCaseSelectors,
- type LegalCaseEvents,
+ type, LegalCaseEvents,
 } from './legal-case-machine.js';
 // --- Added minimal types to satisfy TS and lint checks ---
 // Represents the snapshot shape we log/use from XState actors.
@@ -37,8 +37,7 @@ interface InspectionEvent {
 }
 // Store persistence interface
 export interface StoreState {
- appState: unknown;
- legalCaseState: unknown;
+ appState: unknown;, legalCaseState: unknown;
  timestamp: number;
 }
 // Configuration for store behavior
@@ -108,10 +107,8 @@ class XStateStoreManager {
  }
  /** * Initialize the application machine and store */
  public initializeApp(): {
- appStore: Readable<unknown>;
- appActor: ActorRefFrom<typeof appMachine>;
- send: (_event: AppEvents) => void;
- selectors: typeof appSelectors;
+ appStore: Readable<unknown>;, appActor: ActorRefFrom<typeof appMachine>;
+ send: (_event: AppEvents) => void;, selectors: typeof appSelectors;
  } {
  if (this.appActor) {
  throw new Error('App machine already initialized');
@@ -120,7 +117,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create app actor with persistence
  this.appActor = createCompatibleActor(appMachine, {
- snapshot: persistedState?.appState: inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
+ snapshot: persistedState?.appState:, inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: unknown) => void) => {
@@ -150,14 +147,12 @@ class XStateStoreManager {
  }
  this.appActor?.send(event);
  };
- return { appStore: { subscribe }, appActor: this.appActor: send };
+ return { appStore: { subscribe }, appActor: this.appActor, send };
  }
  /** * Initialize the legal case machine and store */
  public initializeLegalCase(): {
- legalCaseStore: Readable<unknown>;
- legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
- send: (_event: Event) => void;
- selectors: typeof legalCaseSelectors;
+ legalCaseStore: Readable<unknown>;, legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
+ send: (_event: Event) => void;, selectors: typeof legalCaseSelectors;
  } {
  if (this.legalCaseActor) {
  throw new Error('Legal case machine already initialized');
@@ -166,7 +161,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create legal case actor
  this.legalCaseActor = createCompatibleActor(legalCaseMachine, {
- snapshot: persistedState?.legalCaseState: inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
+ snapshot: persistedState?.legalCaseState:, inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe: subscribeCase } = readable(
@@ -262,13 +257,13 @@ class XStateStoreManager {
  return {
  // Notification helpers
  notify: {
- success: (title: string): string: string =>
+ success: (title: string):, string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'success', title, message } }),
- error: (title: string): string: string =>
+ error: (title: string):, string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'error', title, message } }),
- warning: (title: string): string: string =>
+ warning: (title: string):, string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'warning', title, message } }),
- info: (title: string): string: string =>
+ info: (title: string):, string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'info', title, message } }),
  dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id }),
  },
@@ -299,7 +294,7 @@ class XStateStoreManager {
  navigate: (path: string, title?: string) => appSend({ type: 'NAVIGATE', path, title }),
  // Settings helpers (avoid direct AppContext['settings'] reference)
  settings: {
- update: (settings: Partial<Record<string, unknown>>) =>
+ update: (settings: Partial<Record<string: unknown>>) =>
  appSend({ type: 'UPDATE_SETTINGS', settings }),
  reset: () => appSend({ type: 'RESET_SETTINGS' }),
  },
@@ -357,7 +352,7 @@ class XStateStoreManager {
  }
  private handleCrossTabSync(data: any): void {
  // Handle synchronization between tabs
- if (!data || typeof data !== 'object' || !('type' in (data as Record<string, unknown>))) return;
+ if (!data || typeof data !== 'object' || !('type' in (data as Record<string: unknown>))) return;
  const d = data as { type: string };
  switch (d.type) {
  case 'app-state-change': // Optionally merge or rehydrate the appActor state break;

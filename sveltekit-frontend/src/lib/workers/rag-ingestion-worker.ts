@@ -385,7 +385,7 @@ class RAGIngestionWorker {
  });
  } catch (err: unknown) {
  this.post({
- id: success, false:
+ id: success, fromCache: false,
  stage: 'graph',
  status: 'error',
  error: String(err),

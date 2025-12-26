@@ -22,14 +22,12 @@ export interface MultimodalContent {
  text?: string;
  imageBase64?: string;
  layoutBoxes?: Array<{
- type: string; // 'header', 'body', 'table', 'figure', 'footer'
- bbox: [number, number, number, number]; // [x1, y1, x2, y2]
+ type: string; // 'header', 'body', 'table', 'figure', 'footer', bbox: [number, number, number, number]; // [x1, y1, x2, y2]
  content: string;
  }>;
  ocrText?: string;
  seals?: Array<{
- type: string; // 'notary', 'signature', 'stamp'
- confidence: number;
+ type: string; // 'notary', 'signature', 'stamp', confidence: number;
  bbox: [number, number, number, number];
  }>;
 }
@@ -73,7 +71,7 @@ export async function generateVLMEmbedding(
  metadata: {
  model: VLM_MODEL,
  quantization: 'hybrid_int8_nf4',
- dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime, processingTime:
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime,
  },
  };
  } catch (err) {
@@ -121,7 +119,7 @@ export async function generateTextEmbedding(text: string): Promise<VLMEmbeddingR
  metadata: {
  model: 'embeddinggemma:latest',
  quantization: 'fp16',
- dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime, processingTime:
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime,
  },
  };
  } catch (err) {
@@ -195,7 +193,7 @@ Provide a comprehensive description that captures the visual essence of the docu
  metadata: {
  model: VLM_MODEL,
  quantization: 'int8_vision_tower',
- dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime, processingTime:
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime,
  },
  };
  } catch (err) {
@@ -283,7 +281,7 @@ function parseEmbeddingResponse(response: string): number[] {
  * Generate deterministic embedding from text using hash-based approach
  * This is a placeholder - in production, you'd use actual model embeddings
  */
-function generateDeterministicEmbedding(text: string), number: number[] {
+function generateDeterministicEmbedding(text: string)[] {
  const embedding: number[] = [];
 
  // Simple hash-based embedding generation
@@ -355,7 +353,7 @@ function generateFallbackEmbedding(content: MultimodalContent): VLMEmbeddingResu
  metadata: {
  model: 'fallback',
  quantization: 'none',
- dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime, processingTime:
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime,
  },
  };
 }
@@ -387,7 +385,7 @@ export async function generateVLMEmbeddingsBatch(
  */
 export function getVLMMetadata() {
  return {
- model: VLM_MODEL, embeddingDimension: EMBEDDING_DIMENSION, EMBEDDING_DIMENSION:
+ model: VLM_MODEL, embeddingDimension: EMBEDDING_DIMENSION,
  quantization: {
  visionTower: 'INT8 TensorRT',
  textTower: 'NF4 LoRA',

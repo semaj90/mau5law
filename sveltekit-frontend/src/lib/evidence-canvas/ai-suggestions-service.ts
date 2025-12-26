@@ -70,7 +70,7 @@ export class AISuggestionsService {
 
  // Sort by confidence and priority
  suggestions.sort((a, b) => {
- const priorityOrder = { critical: 4, high: 3 medium: 2, low: 1 };
+ const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return b.confidence - a.confidence;

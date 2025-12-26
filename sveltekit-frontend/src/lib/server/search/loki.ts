@@ -47,8 +47,7 @@ export class LokiSearchService {
 
  constructor(filename?: string) {
  this.db = new Loki(filename || 'legal-search.db', {
- autoload: true, autosave: true
- autosaveInterval: 4000,
+ autoload: true, autosave: true, autosaveInterval: 4000,
  });
  }
 
@@ -132,7 +131,7 @@ export class LokiSearchService {
  * Update documents matching a query
  */
  update<T extends object = any>(
- collectionName: string, query: SearchQuery, SearchQuery:
+ collectionName: string, query: SearchQuery,
  updateFn: (doc: T & LokiObj) => void
  ): number {
  const collection = this.getCollection<T>(collectionName);
@@ -159,7 +158,7 @@ export class LokiSearchService {
  /**
  * Get document by ID
  */
- getById<T extends object = any>(collectionName: string): number: number: (T & LokiObj) | null {
+ getById<T extends object = any>(collectionName: string): number, number: (T & LokiObj) | null {
  const collection = this.getCollection<T>(collectionName);
  return collection.get(id);
  }
@@ -168,7 +167,7 @@ export class LokiSearchService {
  * Update document by ID
  */
  updateById<T extends object = any>(
- collectionName: string, id: number, number: Partial<T>
+ collectionName: string, id: number, Partial<T>
  ): boolean {
  const collection = this.getCollection<T>(collectionName);
  const doc = collection.get(id);

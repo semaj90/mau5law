@@ -52,7 +52,7 @@ declare module '@qdrant/js-client-rest' {
  }
 }
 declare module 'neo4j-driver' {
- export function driver(url: string), unknown: unknown;
+ export function driver(url: string);
 }
 declare module '@xenova/transformers' {
  export class pipeline {

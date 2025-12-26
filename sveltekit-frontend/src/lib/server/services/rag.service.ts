@@ -38,7 +38,7 @@ export class RAGService {
  * Uses cache-aside pattern for both queries
  */
  async retrieveRAGContext(
- query: string, jurisdiction: string, string: number = 10
+ query: string, jurisdiction: string, number = 10
  ): Promise<RAGResult> {
  const startTime = Date.now();
 
@@ -65,7 +65,7 @@ export class RAGService {
  * Retrieve statutes with caching
  */
  private async retrieveStatutes(
- query: string, jurisdiction: string, string: number
+ query: string, jurisdiction: string, number
  ): Promise<Statute[]> {
  try {
  const cacheKey = `${jurisdiction}:${query}`;
@@ -91,7 +91,7 @@ export class RAGService {
  * Retrieve case law with caching
  */
  private async retrieveCaseLaw(
- query: string, jurisdiction: string, string: number
+ query: string, jurisdiction: string, number
  ): Promise<CaseLaw[]> {
  try {
  const cacheKey = `${jurisdiction}:${query}`;
@@ -117,7 +117,7 @@ export class RAGService {
  * Query statutes from backend
  */
  private async queryStatutes(
- _query: string, _jurisdiction: string, string: number
+ _query: string, _jurisdiction: string, number
  ): Promise<Statute[]> {
  try {
  // TODO: Implement actual statute query
@@ -138,7 +138,7 @@ export class RAGService {
  * Query case law from backend
  */
  private async queryCaseLaw(
- _query: string, _jurisdiction: string, string: number
+ _query: string, _jurisdiction: string, number
  ): Promise<CaseLaw[]> {
  try {
  // TODO: Implement actual case law query
@@ -182,7 +182,7 @@ export class RAGService {
  /**
  * Query statute context from pgvector
  */
- private async queryStatuteContext(_code: string), number: Promise<string[]> {
+ private async queryStatuteContext(_code: string, size: number): Promise<string[]> {
  try {
  // TODO: Implement pgvector query for statute context
  // In production, this would:

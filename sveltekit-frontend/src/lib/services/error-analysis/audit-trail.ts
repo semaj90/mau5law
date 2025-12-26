@@ -159,7 +159,7 @@ export class AuditTrail extends BaseService {
  * Log a feature flag operation
  */
  async logFeatureFlagChange(
- flag: string, enabled: boolean, boolean:
+ flag: string, enabled: boolean,
  status: 'success' | 'failure',
  errorMessage?: string
  ): Promise<AuditEntry> {

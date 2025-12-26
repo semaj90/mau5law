@@ -47,9 +47,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
 
  const defaultOptions: RedisConnectionOptions = {
  host: 'localhost',
- port: 6379, connectTimeout: 5000
- retryDelayOnFailover: 100, maxRetriesPerRequest: 3
- lazyConnect: false,
+ port: 6379, connectTimeout: 5000, retryDelayOnFailover: 100, maxRetriesPerRequest: 3, lazyConnect: false,
  };
 
  // Only add password if it's actually set and not empty
@@ -107,9 +105,7 @@ export default createRedisInstance;
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
  const finalOptions: RedisConnectionOptions = {
  host: 'localhost',
- port: 6379, connectTimeout: 5000
- retryDelayOnFailover: 100, maxRetriesPerRequest: 3
- lazyConnect: false,
+ port: 6379, connectTimeout: 5000, retryDelayOnFailover: 100, maxRetriesPerRequest: 3, lazyConnect: false,
  ...(options || {}),
  } as RedisConnectionOptions;
 

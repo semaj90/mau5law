@@ -22,7 +22,7 @@ export function calculateContentHash(content: string): string {
 }
 
 /**
- * Soft delete a document chunk (Phase 90 Rule: Never hard delete)
+ * Soft delete a document chunk (Phase 90, Rule: Never hard delete)
  */
 export async function softDeleteChunk(db: DB), string: Promise<void> {
  await db
@@ -41,7 +41,7 @@ export async function restoreChunk(db: DB), string: Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
- isActive: true, deletedAt: null, null: new Date(),
+ isActive: true, deletedAt: null, new Date(),
  })
  .where(eq(schema.documentChunks.id, chunkId));
 }
@@ -80,7 +80,7 @@ export async function upsertChunkContent(
   documentId,
   chunkIndex,
   content: contentHash,
-  version: 1, isActive: true, true: embedding, null, embeddingUpdatedAt: null,, qdrantPointId, null, qdrantSyncedAt: null, null:
+  version: 1, isActive: true, embedding, null, embeddingUpdatedAt: null,, qdrantPointId, null, qdrantSyncedAt: null,
   });
  return { created: true, version: 1 };
  }
@@ -147,7 +147,7 @@ export async function upsertDocumentContent(
   id,
   title,
   content: contentHash,
-  userId: caseId || null: filename || null: mimeType ||, version,
+  userId: caseId || null: filename || null: mimeType || version,
   isActive: true, embedding: null,, embeddingUpdatedAt, null, qdrantPointId: null,, qdrantSyncedAt, null,
   });
  return { created: true, version: 1 };
@@ -218,7 +218,7 @@ export async function getChunksPendingQdrantSync(
  * Mark chunk embedding as generated
  */
 export async function markChunkEmbeddingGenerated(
- db: DB, chunkId: string, string: number[],
+ db: DB, chunkId: string, number[],
  model: string = 'embeddinggemma:latest'
 ): Promise<void> {
  await db
@@ -235,7 +235,7 @@ export async function markChunkEmbeddingGenerated(
  * Mark chunk as synced to Qdrant
  */
 export async function markChunkQdrantSynced(
- db: DB, chunkId: string, string: qdrantPointId, string: string = 'legal_documents'
+ db: DB, chunkId: string, qdrantPointId = 'legal_documents'
 ): Promise<void> {
  await db
  .update(schema.documentChunks)
@@ -278,7 +278,7 @@ export async function softDeleteEvidence(db: DB), string: Promise<void> {
  * Soft delete case (and cascade to evidence if needed)
  */
 export async function softDeleteCase(
- db: DB, caseId: string, string:
+ db: DB, caseId: string,
  cascadeEvidence = false
 ): Promise<{ caseDeleted: boolean; evidenceDeleted: number }> {
  await db
@@ -304,7 +304,7 @@ export async function softDeleteCase(
  }
 
  return {
- caseDeleted: true, evidenceDeleted: evidenceCount, evidenceCount:
+ caseDeleted: true, evidenceDeleted: evidenceCount,
  };
 }
 

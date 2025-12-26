@@ -133,7 +133,7 @@ export class DiffRunner {
  this.checkAbort();
 
  const result = this.generator.createPatchCandidate({
- runId: this.config.runId: filePath.filePath: beforeText.originalContent: afterText.proposedContent: reason.reason: confidence.confidence,
+ runId: this.config.runId, filePath.filePath: beforeText.originalContent: afterText.proposedContent: reason.reason: confidence.confidence,
  });
 
  if (result) {

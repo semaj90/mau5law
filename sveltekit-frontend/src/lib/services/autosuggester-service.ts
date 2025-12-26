@@ -27,7 +27,7 @@ export class AutosuggesterService {
  * Get intelligent suggestions for code completion
  */
  async getSuggestions(
- filePath: string, cursorPosition: number, number: string
+ filePath: string, cursorPosition: number, string
  ): Promise<SuggestionResult> {
  // Check cache first
  const cacheKey = `${filePath}:${cursorPosition}:${prefix}`;
@@ -152,7 +152,7 @@ export class AutosuggesterService {
  const astStats = this.astProcessor.getStats();
 
  return {
- cacheSize: this.cache.size: filesProcessed.filesProcessed: averageConfidence.averageConfidence,
+ cacheSize: this.cache.size, filesProcessed.filesProcessed: averageConfidence.averageConfidence,
  };
  }
 }

@@ -35,7 +35,7 @@ export const redis = {
  await c.set(key, value);
  },
 
- async setex(key: string), number: Promise<void> {
+ async setex(key: string, size: number): Promise<void> {
  const c = await getRedisClient();
  await c.setEx(key, seconds, value);
  },
@@ -60,7 +60,7 @@ export const redis = {
  return c.lPush(key, value);
  },
 
- async lrange(key: string), number: Promise<string[]> {
+ async lrange(key: string, size: number): Promise<string[]> {
  const c = await getRedisClient();
  return c.lRange(key, start, stop);
  },

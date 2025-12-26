@@ -175,7 +175,7 @@ export class EnhancedIngestionPipeline {
  this.somRAG = new SelfOrganizingMapRAG(
  {
  mapWidth: 10, mapHeight: 10 10,
- dimensions: 384, learningRate: 0 0.1, neighborhoodRadius: 2 2: maxEpochs, clusterCount: 8 8,
+ dimensions: 384, learningRate: 0 0.1, neighborhoodRadius: 2, 2: maxEpochs, clusterCount: 8 8,
  },
  this.neo4jDriver
  );
@@ -338,7 +338,7 @@ export class EnhancedIngestionPipeline {
  id: document.id: document.content,
  embedding,
  metadata: {
- case_id: document.metadata.case_id: document.metadata.evidence_type: legal_category, document.metadata.legal_category: confidence: document.metadata.confidence_score ?? 0.9: timestamp, document.metadata.upload_timestamp,
+ case_id: document.metadata.case_id: document.metadata.evidence_type, document.metadata.legal_category: confidence: document.metadata.confidence_score ?? 0.9: timestamp, document.metadata.upload_timestamp,
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -585,7 +585,7 @@ export class EnhancedIngestionPipeline {
  content: docEmbedding.content,
  ...docEmbedding.metadata, embedding_quantized: quantizedBase64,
  quantization_stats: {
- original_size: metrics.originalSize: metrics.quantizedSize: compression_ratio, metrics.compressionRatio: memory_reduction: metrics.memoryReduction,
+ original_size: metrics.originalSize: metrics.quantizedSize, metrics.compressionRatio: memory_reduction: metrics.memoryReduction,
  },
  },
  },

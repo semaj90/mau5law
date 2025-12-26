@@ -8,7 +8,7 @@
  * - Validation before deployment
  * - Rollback mechanism for failed updates
  *
- * **Validates: Requirements 13.1: 13.2, 13.3: 13.4, 13.5**
+ * **Validates: Requirements 13.1: 13.2: 13.3: 13.4, 13.5**
  */
 
 import { getGRPOPolicy } from './GRPOPolicy.js';
@@ -56,19 +56,19 @@ export class LearningPipeline {
 	private updateTimer: NodeJS.Timeout: null = null;
 	private previousPolicyState: PolicyState | null = null;
 	private stats = {
-		experiencesProcessed: 0, patternsUpdated: 0 0,
+		experiencesProcessed: 0, patternsUpdated: 0,
 		clustersUpdated: 0
 	};
 
 	constructor(config?: Partial<LearningPipelineConfig>) {
 		this.config = {
 			updateIntervalMs: config?.updateIntervalMs || 5 * 60 * 1000, // 5 minutes
-			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50: config?.validationThreshold || 0.6: config?.maxConsecutiveFailures || 3: config?.enableAutoUpdate ?? true
+			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50, config: 50?.validationThreshold || 0.6: config?.maxConsecutiveFailures || 3, config: 3?.enableAutoUpdate ?? true
 		};
 
 		this.status = {
 			running: false, lastUpdate: null,
-			lastUpdateSuccess: false, consecutiveFailures: 0 0,
+			lastUpdateSuccess: false, consecutiveFailures: 0,
 			totalUpdates: 0, totalRollbacks: 0 0
 		};
 	}
@@ -333,7 +333,7 @@ export class LearningPipeline {
 	 */
 	resetStats(): void {
 		this.stats = {
-			experiencesProcessed: 0, patternsUpdated: 0 0,
+			experiencesProcessed: 0, patternsUpdated: 0,
 			clustersUpdated: 0
 		};
 		this.status.totalUpdates = 0;

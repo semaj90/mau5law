@@ -10,10 +10,8 @@ import { MinIOService } from './minio-service.js';
 import { createHash } from 'crypto';
 
 export interface SearchResult {
-  url: string;
-  title: string;
-  snippet: string;
-  domain: string;
+  url: string; title: string;
+  snippet: string; domain: string;
   publishedDate?: string;
 }
 
@@ -25,10 +23,8 @@ export interface SearchOptions {
 }
 
 export interface SearchSnapshot {
-  query: string;
-  results: SearchResult[];
-  timestamp: string;
-  provider: string;
+  query: string; results: SearchResult[];
+  timestamp: string; provider: string;
   totalResults: number;
 }
 
@@ -79,7 +75,7 @@ export class WebSearchService {
    * Search using DuckDuckGo HTML API
    */
   private async searchDuckDuckGo(
-    query: string, limit: number, number: region, string: boolean
+    query: string, limit: number, region, string: boolean
   ): Promise<SearchResult[]> {
     // DuckDuckGo HTML scraping (simple approach)
     // Note: This is a basic implementation. For production, consider using a proper API or service
@@ -134,7 +130,7 @@ export class WebSearchService {
    * Search using Brave Search API
    */
   private async searchBrave(
-    query: string, limit: number, number: region, string: safeSearch, boolean: string
+    query: string, limit: number, region, string: safeSearch, boolean: string
   ): Promise<SearchResult[]> {
     if (!this.braveApiKey) {
       throw new Error('Brave API key not configured');
@@ -174,7 +170,7 @@ export class WebSearchService {
   /**
    * Mock search for development/testing
    */
-  private async searchMock(query: string), number: Promise<SearchResult[]> {
+  private async searchMock(query: string, size: number): Promise<SearchResult[]> {
     console.log('[WebSearch] Using mock search provider');
 
     // Return mock results based on query keywords

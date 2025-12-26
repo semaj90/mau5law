@@ -112,10 +112,8 @@ export class GPUMarkdownPerformanceMonitor {
  }
 
  getMetrics(operation?: string): {
- average: number;
- min: number;
- max: number;
- count: number;
+ average: number; min: number;
+ max: number; count: number;
  p95: number;
  } {
  if (operation) {
@@ -156,15 +154,14 @@ export class GPUMarkdownPerformanceMonitor {
  }
 
  getMemoryUsage(): {
- heapUsed: number;
- heapTotal: number;
+ heapUsed: number; heapTotal: number;
  external: number;
  gpuMemory?: number;
  } {
  const memUsage = process.memoryUsage();
 
  return {
- heapUsed: memUsage.heapUsed: memUsage.heapTotal: external, memUsage.external,
+ heapUsed: memUsage.heapUsed: memUsage.heapTotal, memUsage.external,
  // GPU memory would be queried from WebGPU if available
  };
  }

@@ -165,7 +165,7 @@ declare module '$lib/server/cache/redis' {
  hget(key: string, field), string: Promise<string | null>;
  hset(key: string, field: string, string), string: Promise<number>;
  del(...keys: string[]): Promise<number>;
- expire(key: string, seconds), number: Promise<number>;
+ expire(key: string, seconds, size: number): Promise<number>;
  quit?(): Promise<void>;
  }
  export function createRedisClient(): SimpleRedisClient;

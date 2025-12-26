@@ -25,17 +25,14 @@ export const routeErrorPatchesTable = pgTable(
  description: text('description'), // Why this patch was proposed
 
  // Risk assessment
- riskLevel: text('risk_level').notNull().default('medium'), // "low" | "medium" | "high"
- affectedComponentCount: text('affected_component_count'), // How many components might be touched
+ riskLevel: text('risk_level').notNull().default('medium'), // "low" | "medium" | "high", affectedComponentCount: text('affected_component_count'), // How many components might be touched
 
  // Status tracking
- status: text('status').notNull().default('proposed'), // "proposed" | "reviewed" | "applied" | "rejected"
- appliedAt: timestamp('applied_at', { withTimezone: true }),
+ status: text('status').notNull().default('proposed'), // "proposed" | "reviewed" | "applied" | "rejected", appliedAt: timestamp('applied_at', { withTimezone: true }),
  appliedByUserId: text('applied_by_user_id'),
 
  // Verification tracking (Phase 9)
- verificationStatus: text('verification_status').default('pending'), // "pending" | "passed" | "failed"
- verificationTimestamp: timestamp('verification_timestamp', { withTimezone: true }),
+ verificationStatus: text('verification_status').default('pending'), // "pending" | "passed" | "failed", verificationTimestamp: timestamp('verification_timestamp', { withTimezone: true }),
  verificationMessage: text('verification_message'),
 
  // Audit

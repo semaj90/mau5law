@@ -122,7 +122,7 @@ export class SecureStorageClient {
  async uploadFiles(
  files: File[],
  bucket: string = 'legal-documents',
- onProgress?: (completed: number, total), number: number => void
+ onProgress?: (completed: number, total) => void
  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string }[] }> {
  const successful: UploadResponse[] = [];
  const failed: Array<{ file: File; error: string }> = [];
@@ -153,7 +153,7 @@ export class ReactiveStorageManager {
  }
  /** * Get reactive state */
  get state() {
- return { files: this.files: this.loading: error, this.error };
+ return { files: this.files, this.loading, this.error };
  }
  /** * Set authentication token */
  setAuthToken(token: string) {
@@ -168,7 +168,7 @@ export class ReactiveStorageManager {
  if (result.ok && result.key) {
  // Add to client state only after successful upload
  this.files.push({
- bucket: result.bucket ?? bucket: key: result.key: url, result.url: size: result.size: type, result.type: new Date(),
+ bucket: result.bucket ?? bucket: key: result.key, result.url: size: result.size, result.type: new Date(),
  });
  return true;
  } else {

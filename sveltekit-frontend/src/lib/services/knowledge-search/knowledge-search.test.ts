@@ -162,8 +162,8 @@ describe('Knowledge Search Engine', () => {
     it('should compute hybrid score as 0.7*semantic + 0.3*tfidf', () => {
       fc.assert(
         fc.property(
-          fc.float({ min: 0, max: 1 noNaN: true }), // semantic score
-          fc.float({ min: 0, max: 1 noNaN: true }), // tfidf score
+          fc.float({ min: 0, max: 1, noNaN: true }), // semantic score
+          fc.float({ min: 0, max: 1, noNaN: true }), // tfidf score
           (semantic, tfidf) => {
             const ranker = new TfIdfRanker();
             const combined = ranker.computeHybridScore(semantic, tfidf);
@@ -282,8 +282,8 @@ describe('Property 2: Search Results Ordering', () => {
       fc.property(
         fc.array(
           fc.record({
-            semantic: fc.float({ min: 0, max: 1 noNaN: true }),
-            tfidf: fc.float({ min: 0, max: 1 noNaN: true })
+            semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
           }),
           { minLength: 2, maxLength: 20 }
         ),
@@ -330,8 +330,8 @@ describe('Property 3: Search Result Schema Completeness', () => {
           url: fc.webUrl(),
           summary: fc.string(),
           tags: fc.array(fc.string()),
-          semantic: fc.float({ min: 0, max: 1 noNaN: true }),
-          tfidf: fc.float({ min: 0, max: 1 noNaN: true })
+          semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+          tfidf: fc.float({ min: 0, max: 1, noNaN: true })
         }),
         (data) => {
           const ranker = new TfIdfRanker();
@@ -644,8 +644,8 @@ describe('Property 8: Cache Hit Behavior', () => {
             url: fc.webUrl(),
             summary: fc.string(),
             tags: fc.array(fc.string()),
-            semantic: fc.float({ min: 0, max: 1 noNaN: true }),
-            tfidf: fc.float({ min: 0, max: 1 noNaN: true })
+            semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
           }),
           { minLength: 0, maxLength: 10 }
         ),
@@ -660,7 +660,7 @@ describe('Property 8: Cache Hit Behavior', () => {
 
           // Simulate cache hit response
           const cacheResponse = {
-            results: cachedResults, cacheHit: true, true: new Date().toISOString()
+            results: cachedResults, cacheHit: true, new Date().toISOString()
           };
 
           // Property: cache hit should return true
@@ -715,8 +715,8 @@ describe('Property 16: LLM Synthesis Context Injection', () => {
             url: fc.webUrl(),
             summary: fc.string({ minLength: 10, maxLength: 200 }),
             tags: fc.array(fc.string()),
-            semantic: fc.float({ min: 0.5, max: 1 noNaN: true }),
-            tfidf: fc.float({ min: 0, max: 1 noNaN: true })
+            semantic: fc.float({ min: 0.5, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
           }),
           { minLength: 1, maxLength: 10 }
         ),
@@ -795,8 +795,8 @@ Answer:`;
           url: fc.webUrl(),
           summary: fc.string(),
           tags: fc.array(fc.string()),
-          semantic: fc.float({ min: 0, max: 1 noNaN: true }),
-          tfidf: fc.float({ min: 0, max: 1 noNaN: true }),
+          semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+          tfidf: fc.float({ min: 0, max: 1, noNaN: true }),
           synthesizedAnswer: fc.string({ minLength: 10, maxLength: 500 })
         }),
         (data) => {
@@ -1055,8 +1055,8 @@ describe('Property 11: API Response Schema Validation', () => {
             url: fc.webUrl(),
             summary: fc.string(),
             tags: fc.array(fc.string()),
-            semantic: fc.float({ min: 0, max: 1 noNaN: true }),
-            tfidf: fc.float({ min: 0, max: 1 noNaN: true })
+            semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
           }),
           { minLength: 0, maxLength: 10 }
         ),

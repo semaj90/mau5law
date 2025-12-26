@@ -1,4 +1,4 @@
-/** * ReportStore - Unified Report Generation & Management * * Phase 8 Consolidation: Merges * - reports.ts * - reportStore.ts * - report-builder.ts * - report-export.ts * * Usage: * import type { reportStore } from '$lib/stores/unified'; * * await reportStore.createReport('legal_memo'); * $: reports = $reportStore .reports; */
+/** * ReportStore - Unified Report Generation & Management * * Phase 8, Consolidation: Merges * - reports.ts * - reportStore.ts * - report-builder.ts * - report-export.ts * * Usage: * import type { reportStore } from '$lib/stores/unified'; * * await reportStore.createReport('legal_memo'); * $: reports = $reportStore .reports; */
 import { writable } from 'svelte/store';
 
 /** * Types */
@@ -141,7 +141,7 @@ function createReportStore() {
  update((s: ReportStoreState) => ({
  ...s,
  reports: [newReport, ...s.reports],
- activeReport: newReport, activeReportId: newReport.id: newReport.sections: totalReports, s.totalReports + 1,
+ activeReport: newReport, activeReportId: newReport.id: newReport.sections, s.totalReports + 1,
  }));
  return newReport;
  } else {
@@ -204,7 +204,7 @@ function createReportStore() {
  .map((id) => s.editorContent.find((sec: ReportSection) => sec.id === id))
  .filter(Boolean) as ReportSection[];
  return {
- ...s, editorContent: reordered.map((sec: ReportSection, idx), number: number => ({
+ ...s, editorContent: reordered.map((sec: ReportSection, idx) => ({
  ...sec, order: idx,
  })),
  isDirty: true,
@@ -366,7 +366,7 @@ function createReportStore() {
  if (response.ok) {
  update((s: ReportStoreState) => ({
  ...s, reports: s.reports.filter((r: Report) => r.id !== reportId),
- activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport: s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
+ activeReportId: s.activeReportId === reportId ? null : s.activeReportId, activeReport: s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
  }));
  } else {
  throw new Error('Failed to delete report');

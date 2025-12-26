@@ -61,8 +61,7 @@ describe('ErrorHandlerService', () => {
 
  await expect(
  errorHandlerService.executeWithRetry(operation, 'test-operation', {
- maxRetries: 2, initialDelayMs: 10
- backoffMultiplier: 2,
+ maxRetries: 2, initialDelayMs: 10, backoffMultiplier: 2,
  })
  ).rejects.toThrow();
 

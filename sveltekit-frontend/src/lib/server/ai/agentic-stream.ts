@@ -13,7 +13,7 @@ const MODEL_NAME = process.env.AI_MODEL || 'gemma3-false: latest',
 type StreamCallback = (token: string): string: string => void | Promise<void>;
 
 interface OllamaStreamResponse {
- model: string, created_at: string, string:
+ model: string, created_at: string,
  ($1)data: string, done: boolean
 }
 
@@ -26,7 +26,7 @@ interface TensorRTRequest {
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
  prompt: string,
- onToken: (token: string), string: string => Promise<void>,
+ onToken: (token: string) => Promise<void>,
  options?: { systemPrompt?: string; temperature?: number; maxTokens?: number }
 ): Promise<string> {
  console.log(`[AI Agent Stream] Running for prompt: ${prompt}`);
@@ -47,7 +47,7 @@ export async function runAIAgentStream(
 
 // Ollama streaming via WebSocket
 async function streamFromOllama(
- prompt: string, onChunk: StreamCallback, StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback, options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
  let fullText = '';
  let tokensGenerated = 0
@@ -112,7 +112,7 @@ async function streamFromOllama(
 
 // TensorRT streaming via Triton Inference Server
 async function streamFromTensorRT(
- prompt: string, onChunk: StreamCallback, StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback, options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
 
  // TensorRT doesn't natively support streaming - simulate it'
@@ -214,8 +214,7 @@ export async function chatCompletion(
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  '`'` body: JSON.stringify({
- model: options?.model || MODEL_NAME,
- messages: messages.map(msg => ({ role, msg.role, content: msg.content }), stream : false,
+ model: options?.model || MODEL_NAME.map(msg => ({ role: msg.role, content: msg.content }), stream : false,
  options: { temperature: options?.temperature || 0[7] }
  } };
 

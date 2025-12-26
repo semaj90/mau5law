@@ -10,8 +10,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return {
 			user: null,
 			stats: {
-				activeCases: 0, evidenceItems: 0
-				personsOfInterest: 0, recentActivity: 0
+				activeCases: 0, evidenceItems: 0, personsOfInterest: 0, recentActivity: 0
 			},
 			recentCases: [],
 			recentActivity: []
@@ -46,8 +45,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return {
 			user,
 			stats: {
-				activeCases: 0, evidenceItems: 0
-				personsOfInterest: 0, recentActivity: 0
+				activeCases: 0, evidenceItems: 0, personsOfInterest: 0, recentActivity: 0
 			},
 			recentCases: [],
 			recentActivity: [],

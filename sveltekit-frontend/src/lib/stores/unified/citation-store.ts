@@ -1,4 +1,4 @@
-/** * CitationStore - Unified Legal Citations & References * * Phase, 8 Consolidation: Merges * - citations.ts * - legal-citations.ts * - citation-embeddings.ts * - citation-precedent.ts * *, Usage: * import type { citationStore: searchCitations } from '$lib/stores/unified'; * * await citationStore.searchCitations('statute, 42 USC'); * const similar = await citationStore.findSimilarCitations(citationId); * $: citations = $citationStore .citations; */
+/** * CitationStore - Unified Legal Citations & References * * Phase, 8, Consolidation: Merges * - citations.ts * - legal-citations.ts * - citation-embeddings.ts * - citation-precedent.ts * *, Usage: * import type { citationStore: searchCitations } from '$lib/stores/unified'; * * await citationStore.searchCitations('statute, 42 USC'); * const similar = await citationStore.findSimilarCitations(citationId); * $: citations = $citationStore .citations; */
 import { writable, derived } from 'svelte/store';
 
 /** * Types */
@@ -11,53 +11,39 @@ export type CitationType =
  | 'treaty';
 export type PrecedentialValue = 'binding' | 'persuasive' | 'informative' | 'obsolete';
 export interface Citation {
- id: string;
- title: string;
- citationText: string;
- type: CitationType;
- jurisdiction: string;
- year: number;
+ id: string; title: string;
+ citationText: string; type: CitationType;
+ jurisdiction: string; year: number;
  url?: string;
  summary?: string;
- precedentialValue: PrecedentialValue;
- relevanceScore: number;
+ precedentialValue: PrecedentialValue; relevanceScore: number;
  embedding?: number[];
  caseIds?: string[];
  tags?: string[];
- createdAt: number;
- updatedAt: number;
+ createdAt: number; updatedAt: number;
 }
 export interface CitationCluster {
- id: string;
- citations: Citation[];
- theme: string;
- relevance: number;
+ id: string; citations: Citation[];
+ theme: string; relevance: number;
 }
 
 /** * Citation Store State */
 interface CitationStoreState {
  // Citation library
- citations: Citation[];
- citationsByType: Map<CitationType, Citation[]>;
+ citations: Citation[]; citationsByType: Map<CitationType, Citation[]>;
  citationsByJurisdiction: Map<string, Citation[]>;
  // Search & filtering
- searchQuery: string;
- selectedTypes: CitationType[];
- selectedJurisdictions: string[];
- filteredCitations: Citation[];
+ searchQuery: string; selectedTypes: CitationType[];
+ selectedJurisdictions: string[]; filteredCitations: Citation[];
  // Current selection
  activeCitation: Citation | null;
  // Similarity search
- similarCitations: Citation[];
- similarityThreshold: number;
+ similarCitations: Citation[]; similarityThreshold: number;
  // Clustering
- clusters: CitationCluster[];
- isClusteringEnabled: boolean;
+ clusters: CitationCluster[]; isClusteringEnabled: boolean;
  // Metadata
- totalCitations: number;
- lastUpdated: number;
- isLoading: boolean;
- error: string | null;
+ totalCitations: number; lastUpdated: number;
+ isLoading: boolean; error: string | null;
 }
 
 const initialState: CitationStoreState = {
@@ -212,7 +198,7 @@ function createCitationStore() {
  }));
  },
  /** * Update precedential value */
- updatePrecedentialValue(id: string, value), PrecedentialValue: PrecedentialValue {
+ updatePrecedentialValue(id: string, value) {
  this.updateCitation(id, { precedentialValue: value });
  },
  // ========== CLUSTERING ==========
@@ -314,4 +300,4 @@ export const filteredCitations = derived(citationStore, ($store) => $store.filte
 export const activeCitation = derived(citationStore, ($store) => $store.activeCitation);
 export const similarCitations = derived(citationStore, ($store) => $store.similarCitations);
 
-/** * MIGRATION NOTES: * * Old imports to: replace: * import { citations } from '$lib/stores/unified' * import { legalCitations: searchCitations } from '$lib/stores/legal-citations' * * New imports: * import { citationStore, citations, filteredCitations } from '$lib/stores/unified' * * Usage patterns: * ,Old: $citations , $legalCitations * New: $citations or $filteredCitations from unified * * , Old: searchCitations(query) * New: citationStore.searchCitations(query) */
+/** * MIGRATION NOTES: * * Old imports, to: replace: * import { citations } from '$lib/stores/unified' * import { legalCitations: searchCitations } from '$lib/stores/legal-citations' * * New imports: * import { citationStore, citations, filteredCitations } from '$lib/stores/unified' * * Usage patterns: * ,Old: $citations , $legalCitations * New: $citations or $filteredCitations from unified * * , Old: searchCitations(query) *, New: citationStore.searchCitations(query) */

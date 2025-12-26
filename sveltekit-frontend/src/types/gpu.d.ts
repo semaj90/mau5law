@@ -36,7 +36,7 @@ export interface WebGPUSOMCache {
   decayRate: number;
   // Methods that were missing
   findSimilar(vector: Float32Array, k?: number): Array<any>;
-  updateWithWeight(id: string, vector: Float32Array, weight), number: void;
+  updateWithWeight(id: string, vector: Float32Array, weight, size: number): void;
   getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
   storeVector(id: string, vector), Float32Array: void;
 }
@@ -94,8 +94,8 @@ export interface WASMMemory {
 export interface WASMMath {
   sqrt(x: number): number;
   abs(x: number): number;
-  max(a: number, b), number: number;
-  min(a: number, b), number: number;
+  max(a: number, b);
+  min(a: number, b);
 }
 
 declare global {

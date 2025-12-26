@@ -19,8 +19,7 @@ import type { ContextBundle, ToolPlan } from './ace-context-service.js';
 export interface AceRequest {
   userRequest: string;
   errorContext?: {
-    message: string;
-    filePath: string;
+    message: string; filePath: string;
     lineNumber: number;
     code?: string;
   };
@@ -30,18 +29,14 @@ export interface AceRequest {
 }
 
 export interface AceResponse {
-  response: string;
-  context: ContextBundle;
+  response: string; context: ContextBundle;
   toolCalls: Array<{
-    tool: string;
-    params: Record<string, unknown>;
+    tool: string; params: Record<string, unknown>;
     reason: string;
   }>;
   metadata: {
-    sessionId: string;
-    timestamp: string;
-    contextQuality: 'sufficient' | 'stale' | 'insufficient';
-    webSearchTriggered: boolean;
+    sessionId: string; timestamp: string;
+    contextQuality: 'sufficient' | 'stale' | 'insufficient'; webSearchTriggered: boolean;
     llmProvider: string;
   };
 }
@@ -138,7 +133,7 @@ export class AceAdapter {
 
     // Step 7: Return complete response
     return {
-      response: llmResponse, context: bundle, bundle: plan.actions,
+      response: llmResponse, context: bundle, plan.actions,
       metadata: {
         sessionId,
         timestamp,

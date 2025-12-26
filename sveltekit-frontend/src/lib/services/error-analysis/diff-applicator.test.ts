@@ -12,8 +12,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3, retryDelayMs: 100
- contextLines: 3,
+ maxRetries: 3, retryDelayMs: 100, contextLines: 3,
 };
 
 describe('DiffApplicator', () => {
@@ -41,8 +40,7 @@ describe('DiffApplicator', () => {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -66,8 +64,7 @@ line 3`;
  modified: 'import { x, z } from "y";',
  context: 'context',
  explanation: 'Add import',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -89,8 +86,7 @@ line 3`;
  modified: 'export default App as any;',
  context: 'context',
  explanation: 'Fix export',
- lineStart: 3, lineEnd: 3
- status: 'pending',
+ lineStart: 3, lineEnd: 3, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -112,8 +108,7 @@ export default App;`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -135,8 +130,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 100, lineEnd: 100
- status: 'pending',
+ lineStart: 100, lineEnd: 100, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -162,8 +156,7 @@ line 3`;
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -181,8 +174,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -206,8 +198,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -229,8 +220,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 100, lineEnd: 100
- status: 'pending',
+ lineStart: 100, lineEnd: 100, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -252,8 +242,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -275,8 +264,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -298,8 +286,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 100, lineEnd: 100
- status: 'pending',
+ lineStart: 100, lineEnd: 100, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -321,8 +308,7 @@ line 3`;
  modified: 'const x: string = 123;',
  context: 'context',
  explanation: 'No change',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -346,8 +332,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -369,8 +354,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -394,8 +378,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -417,8 +400,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -440,8 +422,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -466,8 +447,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -494,8 +474,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -522,8 +501,7 @@ line 3`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 2, lineEnd: 2
- status: 'pending',
+ lineStart: 2, lineEnd: 2, status: 'pending',
  createdAt: new Date(),
  };
 

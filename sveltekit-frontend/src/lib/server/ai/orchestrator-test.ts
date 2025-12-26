@@ -4,8 +4,7 @@ import * as bridgeModule from './llm-orchestrator-bridge.js';
 
 /** Minimal local request type to avoid hard dependency on external named types. */
 type LLMBridgeRequest = {
- id: string;
- type: string;
+ id: string;, type: string;
  content: string;
  context?: Record<string, unknown>;
  options?: Record<string, unknown>;
@@ -74,16 +73,14 @@ function resolveBridge(): LLMOrchestratorBridge | undefined {
 const llmOrchestratorBridge = resolveBridge();
 
 type TestResult = {
- test: string;
- success: boolean;
+ test: string;, success: boolean;
  details?: Record<string, unknown>;
  error?: string;
 };
 
 /** Main integration test runner */
 export async function testOrchestratorIntegration(): Promise<{
- success: boolean;
- results: TestResult[];
+ success: boolean;, results: TestResult[];
  summary: string;
 }> {
  const results: TestResult[] = [];
@@ -189,12 +186,12 @@ export async function testOrchestratorIntegration(): Promise<{
  const realtimeRequest: LLMBridgeRequest = {
  id: 'test-realtime-1',
  type: 'chat',
- content: 'Quick question: Is a verbal agreement legally binding?',
+ content: 'Quick, question: Is a verbal agreement legally binding?',
  context: { userId: 'test-user', sessionId: 'test-session' },
  options: {
  model: 'auto',
  priority: 'realtime',
- maxLatency: 500, temperature: 0 0.4, maxTokens: 150 150:
+ maxLatency: 500, temperature: 0.4, maxTokens: 150, 150:
  },
  metadata: { source: 'api', timestamp: Date.now() },
  };
@@ -250,7 +247,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Bridge Status',
  success: true,
  details: {
- bridgeStatus: status?.bridge?.status: status?.serverOrchestrator?.status: status?.clientOrchestrator?.modelsLoaded ?? 0: totalRequests, totalRequestsNum:
+ bridgeStatus: status?.bridge?.status: status?.serverOrchestrator?.status: status?.clientOrchestrator?.modelsLoaded ??, 0: totalRequests, totalRequestsNum:
  successRate,
  },
  });
@@ -271,8 +268,7 @@ export async function testOrchestratorIntegration(): Promise<{
 
 /** Run a quick health check against the bridge */
 export async function quickHealthCheck(): Promise<{
- healthy: boolean;
- status: unknown;
+ healthy: boolean;, status: unknown;
  timestamp: string;
 }> {
  try {
@@ -297,8 +293,7 @@ export async function testSpecificOrchestrator(
  orchestratorType: 'server' | 'client' | 'mcp',
  content: string = 'Test message'
 ): Promise<{
- success: boolean;
- expectedOrchestrator: string;
+ success: boolean;, expectedOrchestrator: string;
  orchestratorUsed?: unknown;
  response?: unknown;
  executionMetrics?: unknown;
@@ -313,7 +308,7 @@ export async function testSpecificOrchestrator(
  options: {
  model: modelFor[orchestratorType],
  priority: 'normal',
- temperature: 0.3, maxTokens: 200 200:
+ temperature: 0.3, maxTokens: 200, 200:
  },
  metadata: { source: 'api', timestamp: Date.now() },
  };

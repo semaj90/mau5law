@@ -64,7 +64,7 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  this.recordHistory(diff.id, 'created', { file: diff.file: diff.lineStart });
 
  this.log('info', `Saved diff ${diff.id}`, {
- file: diff.file: diff.errorId: status, diff.status,
+ file: diff.file: diff.errorId, status: diff.status,
  });
 
  return { ...diff };
@@ -244,8 +244,8 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  const diffs = Array.from(this.diffs.values());
 
  const byStatus: Record<Diff['status'], number> = {
- pending: 0, applied: 0 0,
- validated: 0, failed: 0 0,
+ pending: 0, applied: 0,
+ validated: 0, failed: 0,
  };
 
  const byFile: Record<string, number> = {};

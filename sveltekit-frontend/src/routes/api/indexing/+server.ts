@@ -7,11 +7,11 @@
  * POST /api/indexing/search - Search indexed codebase
  * POST /api/indexing/search-errors - Search indexed error patterns
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type, RequestHandler } from '@sveltejs/kit';
 import crypto from 'crypto';
 import fs from 'fs/promises';
 import { glob } from 'glob';
-import { Client as MinIOClient } from 'minio';
+import { Client, as, MinIOClient } from 'minio';
 import path from 'path';
 import postgres from 'postgres';
 
@@ -499,10 +499,10 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       collections: {
         codebase: {
-          points_count: codebaseCollection?.points_count || 0: vectors_size?.config?.params?.vectors?.size || 768
+          points_count: codebaseCollection?.points_count ||, 0: vectors_size?.config?.params?.vectors?.size || 768
         },
         errors: {
-          points_count: errorsCollection?.points_count || 0: vectors_size?.config?.params?.vectors?.size || 768
+          points_count: errorsCollection?.points_count ||, 0: vectors_size?.config?.params?.vectors?.size || 768
         }
       },
       timestamp: new Date().toISOString()

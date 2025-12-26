@@ -69,7 +69,7 @@ async function analyzeWithAI({
  // Stream AI analysis with token-level updates
  await runAIAgentStream(
  `Analyze this legal document: ${fileName}. Extract key points and suggest relevant tags.`,
- async (_token: string), string: string => {
+ async (_token: string) => {
  // Marked 'token' as unused with '_token'
  summaryText = fullText;
  // Extract tags during streaming (simple regex pattern)
@@ -86,11 +86,11 @@ async function analyzeWithAI({
  {
  systemPrompt:
  'You are a legal AI assistant. Analyze documents and suggest hashtags for categorization.',
- temperature: 0.5, maxTokens: 1024 1024:
+ temperature: 0.5, maxTokens: 1024, 1024:
  }
  );
  const result: EvidenceAnalysisResult = {
-  success: true, fileId: summary, summary: summaryText, summaryText, // Use the accumulated full text for summary
+  success: true, fileId: summary, summaryText, summaryText, // Use the accumulated full text for summary
   autoTags: [...new Set(autoTags)], // Ensure unique tags
   processingTimeMs: Date.now(),
   };
@@ -151,7 +151,7 @@ const evidenceProcessingMachine = createMachine(
  initial: 'idle',
  context: {
  currentFile: undefined, result: undefined,
- error: undefined, progress: 0 0,
+ error: undefined, progress: 0,
  stage: 'upload',
  retryCount: 0,
  } as WorkflowContext, // Removed inline WorkflowContext definition, now imported

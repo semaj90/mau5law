@@ -6,9 +6,7 @@
 export type RouteKind = 'page' | 'endpoint' | 'layout';
 
 export type RouteEntry = {
- id: string; // "cases/[id]"
- path: string; // "/cases/[id]"
- files: {
+ id: string; // "cases/[id]", path: string; // "/cases/[id]", files: {
  page?: string;
  page_server?: string;
  server?: string;

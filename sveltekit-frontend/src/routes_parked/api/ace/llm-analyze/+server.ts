@@ -36,8 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  metadata: {
  llmModel: 'gemma3:12b',
- ragEnabled: true, contextWindow: 8192
- temperature: 0.1,
+ ragEnabled: true, contextWindow: 8192, temperature: 0.1,
  },
  });
  } catch (error) {

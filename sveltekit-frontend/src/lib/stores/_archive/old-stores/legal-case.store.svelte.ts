@@ -46,8 +46,7 @@ export function createLegalCaseStore() {
  const aiInsights = $state<Record<string, AIInsights>>({});
  let auditLog: AuditLogEntry[] = $state([]);
  let currentUser = $state<User: null>({
- // Changed to 'let'
- id: 'demo-user-001',
+ // Changed to 'let', id: 'demo-user-001',
  clearanceLevel: 3,
  role: 'legal-analyst',
  });

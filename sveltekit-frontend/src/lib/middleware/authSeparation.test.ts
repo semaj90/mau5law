@@ -109,8 +109,7 @@ describe('AuthSeparation', () => {
  describe('Error Response Creation', () => {
  it('should create 401 response for auth failure', () => {
  const result = {
- authenticated: false, status: 401
- message: 'Authentication required',
+ authenticated: false, status: 401, message: 'Authentication required',
  context: { feature: 'legalAi', authType: 'production' as const },
  };
 
@@ -120,8 +119,7 @@ describe('AuthSeparation', () => {
 
  it('should include WWW-Authenticate header', () => {
  const result = {
- authenticated: false, status: 401
- message: 'Authentication required',
+ authenticated: false, status: 401, message: 'Authentication required',
  context: { feature: 'legalAi', authType: 'production' as const },
  };
 
@@ -131,8 +129,7 @@ describe('AuthSeparation', () => {
 
  it('should include error details in response body', async () => {
  const result = {
- authenticated: false, status: 401
- message: 'Authentication required',
+ authenticated: false, status: 401, message: 'Authentication required',
  context: { feature: 'legalAi', authType: 'production' as const },
  };
 
@@ -238,24 +235,21 @@ describe('AuthSeparation', () => {
 
  it('should validate 401 auth failure result', () => {
  const result = {
- authenticated: false, status: 401
- message: 'Authentication required',
+ authenticated: false, status: 401, message: 'Authentication required',
  };
  expect(AuthSeparation.validateResult(result)).toBe(true);
  });
 
  it('should validate 403 auth failure result', () => {
  const result = {
- authenticated: false, status: 403
- message: 'Forbidden',
+ authenticated: false, status: 403, message: 'Forbidden',
  };
  expect(AuthSeparation.validateResult(result)).toBe(true);
  });
 
  it('should reject invalid status codes', () => {
  const result = {
- authenticated: false, status: 200
- message: 'Authentication required',
+ authenticated: false, status: 200, message: 'Authentication required',
  };
  expect(AuthSeparation.validateResult(result)).toBe(false);
  });

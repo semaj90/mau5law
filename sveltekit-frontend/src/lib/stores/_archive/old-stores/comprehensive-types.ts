@@ -44,16 +44,16 @@ export interface TransitionConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number): number: number => string;
- tick?: (t: number): number: number => void;
+ css?: (t: number, col: number): number => string;
+ tick?: (t: number, col: number): number => void;
 }
 // Animation types
 export interface AnimationConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number): number: number => string;
- tick?: (t: number): number: number => void;
+ css?: (t: number, col: number): number => string;
+ tick?: (t: number, col: number): number => void;
 }
 
 // ===== SVELTEKIT: 2 TYPES =====

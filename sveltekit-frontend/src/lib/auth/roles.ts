@@ -42,12 +42,9 @@ export type Permission =
 	| 'manage_integrations';
 
 export interface RoleDefinition {
-	name: UserRole;
-	displayName: string;
-	description: string;
-	permissions: Permission[];
-	hierarchyLevel: number; // Higher number = more authority
-	canDelegate: boolean;
+	name: UserRole; displayName: string;
+	description: string; permissions: Permission[];
+	hierarchyLevel: number; // Higher number = more authority, canDelegate: boolean;
 	maxCasesAssigned?: number;
 }
 // Role definitions with complete permission sets

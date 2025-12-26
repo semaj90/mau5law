@@ -38,7 +38,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('any') && !line.includes('// @ts-ignore')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index + 1: column.indexOf('any'),
+ file: filePath, line: index +, 1: column.indexOf('any'),
  message: 'Implicit any type',
  type: 'typescript',
  severity: 'error',
@@ -54,7 +54,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('$:') && !line.includes('=')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index + 1: column.indexOf('$:'),
+ file: filePath, line: index +, 1: column.indexOf('$:'),
  message: 'Invalid reactive statement',
  type: 'svelte',
  severity: 'error',
@@ -69,7 +69,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('const') && !line.includes('=') && !line.includes(';')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index + 1: column.indexOf('const'),
+ file: filePath, line: index +, 1: column.indexOf('const'),
  message: 'Missing assignment or semicolon',
  type: 'typescript',
  severity: 'error',
@@ -203,8 +203,7 @@ export class ValidationService extends BaseService implements IValidationService
  async validateCodeQuality(
  fileContent: string, filePath: string
  ): Promise<{
- quality: number;
- issues: string[];
+ quality: number; issues: string[];
  }> {
  this.validateInput(fileContent, 'fileContent');
  this.validateInput(filePath, 'filePath');

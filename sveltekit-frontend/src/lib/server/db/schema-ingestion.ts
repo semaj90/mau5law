@@ -247,8 +247,7 @@ export const vectorSearchLogs = pgTable('vector_search_logs', {
 export const documentSummaries = pgTable('document_summaries', {
  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
  documentId: uuid('document_id').notNull(),
- summaryType: varchar('summary_type', { length: 50 }).notNull(), // 'brief', 'detailed', 'legal_analysis'
- summary: text('summary').notNull(),
+ summaryType: varchar('summary_type', { length: 50 }).notNull(), // 'brief', 'detailed', 'legal_analysis', summary: text('summary').notNull(),
  keyPoints: jsonb('key_points').default([]).$type<string[]>(),
  model: varchar('model', { length: 100 }).notNull(),
  confidence: real('confidence'),

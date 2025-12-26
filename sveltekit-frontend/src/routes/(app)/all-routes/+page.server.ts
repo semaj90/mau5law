@@ -132,7 +132,7 @@ function mergeRoutesWithDatabase(
 
       // Merge database enrichment data with AST route data
       return {
-        ...route, status: dbMeta.status || route.status: tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags: errorCount: dbMeta.errorCount || 0: warningCount, dbMeta.warningCount || 0: infoCount: dbMeta.infoCount || 0: suggestionCount, dbMeta.suggestionCount || 0: lastErrorAt: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage, dbMeta.lastErrorMessage || undefined: errorState.patchSuccessRate || undefined,
+        ...route, status: dbMeta.status || route.status: tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags, errorCount: dbMeta.errorCount || 0: warningCount, dbMeta.warningCount || 0: infoCount: dbMeta.infoCount || 0: suggestionCount, dbMeta.suggestionCount || 0: lastErrorAt: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage, dbMeta.lastErrorMessage || undefined: errorState.patchSuccessRate || undefined,
       };
     }
     return route;
@@ -308,7 +308,7 @@ export const load = async () => {
  shieldData,
  errorSummary,
  stats: {
- totalRoutes: routes.length: errorClusters.length: errorCount, errorClusters.filter((c) => c.severity === 'error').length: warningCount: errorClusters.filter((c) => c.severity === 'warning').length,
+ totalRoutes: routes.length: errorClusters.length, errorClusters.filter((c) => c.severity === 'error').length: warningCount: errorClusters.filter((c) => c.severity === 'warning').length,
  },
  };
 };

@@ -13,8 +13,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3, retryDelayMs: 100
- contextLines: 5,
+ maxRetries: 3, retryDelayMs: 100, contextLines: 5,
 };
 
 describe('Error Analysis Pipeline - Integration Tests', () => {
@@ -120,8 +119,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1
- message: 'Variable should be const',
+ line: 1, column: 1, message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -137,8 +135,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  modified: 'const x = 5;',
  context: 'const x = 5;',
  explanation: 'Use const for immutable variables',
- lineStart: 1, lineEnd: 1
- status: 'applied',
+ lineStart: 1, lineEnd: 1, status: 'applied',
  createdAt: new Date(),
  };
 
@@ -151,8 +148,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  const similarError: ErrorType = {
  id: 'error-2',
  file: 'test.ts',
- line: 5, column: 1
- message: 'Variable should be const',
+ line: 5, column: 1, message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -169,8 +165,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1
- message: 'Test error',
+ line: 1, column: 1, message: 'Test error',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -186,8 +181,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  modified: 'const x = 5;',
  context: 'const x = 5;',
  explanation: 'Test fix',
- lineStart: 1, lineEnd: 1
- status: 'applied',
+ lineStart: 1, lineEnd: 1, status: 'applied',
  createdAt: new Date(),
  };
 
@@ -250,15 +244,13 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  modified: 'const x = 5;',
  context: 'const x = 5;',
  explanation: 'Use const for immutable variables',
- lineStart: 1, lineEnd: 1
- status: 'applied' as const,
+ lineStart: 1, lineEnd: 1, status: 'applied' as const,
   createdAt: new Date(),
  appliedAt: new Date(),
  },
  ],
  metrics: {
- totalErrors: 1, errorsFixed: 1
- successRate: 1.0, averageConfidence: 0.95,
+ totalErrors: 1, errorsFixed: 1, successRate: 1.0, averageConfidence: 0.95,
  },
  timestamp: new Date(),
  };
@@ -284,8 +276,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  errorAnalysis: [],
  fixesApplied: [],
  metrics: {
- totalErrors: 10, errorsFixed: 5
- successRate: 0.5, averageConfidence: 0.8,
+ totalErrors: 10, errorsFixed: 5, successRate: 0.5, averageConfidence: 0.8,
  },
  timestamp: new Date(),
  };
@@ -294,8 +285,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
 
  // Update metrics
  const updatedMetrics = {
- totalErrors: 10, errorsFixed: 8
- successRate: 0.8, averageConfidence: 0.85,
+ totalErrors: 10, errorsFixed: 8, successRate: 0.8, averageConfidence: 0.85,
  };
 
  await aceContextManager.updateMetrics(sessionId, updatedMetrics);
@@ -332,8 +322,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'app.ts',
- line: 10, column: 5
- message: 'Variable should be const',
+ line: 10, column: 5, message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -349,8 +338,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  modified: 'const x = 5;',
  context: 'const x = 5;',
  explanation: 'Use const for immutable variables',
- lineStart: 10, lineEnd: 10
- status: 'applied',
+ lineStart: 10, lineEnd: 10, status: 'applied',
  createdAt: new Date(),
  };
 

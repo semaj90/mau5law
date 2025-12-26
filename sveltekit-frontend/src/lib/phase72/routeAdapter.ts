@@ -6,10 +6,8 @@
 export type Phase72RouteKind = 'page' | 'layout' | 'endpoint' | 'api';
 
 export interface Phase72RouteNode {
- id: string; // e.g. "/cases/[id]/overview"
- path: string; // same as id for now
- kind: Phase72RouteKind; // "page", "layout", "endpoint", "api"
- file: string; // e.g. "src/routes/cases/[id]/overview/+page.svelte"
+ id: string; // e.g. "/cases/[id]/overview", path: string; // same as id for now
+ kind: Phase72RouteKind; // "page", "layout", "endpoint", "api", file: string; // e.g. "src/routes/cases/[id]/overview/+page.svelte"
  ai?: boolean; // imports $lib/ai/*
  hasStateMachine?: boolean;
  errorCount?: number; // from Phase 72 error summary (optional)

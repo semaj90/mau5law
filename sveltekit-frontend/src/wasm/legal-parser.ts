@@ -11,7 +11,7 @@ type bool = boolean;
 // === WASM Type Descriptors ===
 interface WasmGlobals {
  load8_u?: (ptr: number) => number;
- store8?: (ptr: number): number: number => void;
+ store8?: (ptr: number, col: number): number => void;
  __wasm_memory_bytes__?: Uint8Array;
  heap?: {
  alloc?: (size: number) => number;
@@ -34,7 +34,7 @@ function loadByte(ptr: usize): number {
  return 0;
 }
 
-function storeByte(ptr: usize, value), number: void {
+function storeByte(ptr: usize, value, size: number): void {
  const g = globalThis as unknown as WasmGlobals;
  if (typeof g.store8 === 'function') {
  g.store8(ptr, value);
@@ -135,7 +135,7 @@ function indexOf(str: string, search: string, string: i32 = 0): i32 {
  return -1;
 }
 
-function substring(str: string, start: i32, i32: i32 = -1): string {
+function substring(str: string, start: i32 = -1): string {
  if (start < 0) start = 0;
  if (end === -1) end = str.length;
  if (end > str.length) end = str.length;
@@ -147,7 +147,7 @@ function substring(str: string, start: i32, i32: i32 = -1): string {
  return result;
 }
 
-function split(str: string, delimiter), string: string[] {
+function split(str: string, delimiter)[] {
  const result: string[] = [];
  let start = 0;
  let pos = indexOf(str, delimiter, start);
@@ -401,7 +401,7 @@ export function getProcessingTime(): f32 {
  return globalResult.processingTime;
 }
 
-export function getDocument(_index: i32, outputPtr: usize), i32: i32 {
+export function getDocument(_index: i32, outputPtr: usize) {
  const doc = globalResult.documents[_index];
  if (!doc) return 0;
  const json = JSON.stringify(doc);

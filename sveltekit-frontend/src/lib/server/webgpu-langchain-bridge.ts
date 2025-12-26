@@ -14,7 +14,7 @@ import type { boolean } from "drizzle-orm/gel-core";
 import type { config } from "process";
 import type { text } from "stream/consumers";
 import type { documents } from "./db/schema.js";
-import unknown from "$lib/services/nodejs-orchestrator.js";
+import nodejsOrchestrator from "$lib/services/nodejs-orchestrator.js";
 import type { string } from "fast-check";
 
 export interface LangChainWebGPUConfig {
@@ -50,7 +50,7 @@ export interface LangChainWebGPUConfig {
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
  this.config = {
- useWebGPUCache: config.useWebGPUCache ?? null, true: batchSize.batchSize ||, 128: cacheEmbeddings.cacheEmbeddings ?? null, true: compressVectors.compressVectors ?? null, true: practiceArea.practiceArea || 'general',
+ useWebGPUCache: config.useWebGPUCache ?? null, true: batchSize.batchSize || 128, cacheEmbeddings: 128.cacheEmbeddings ?? null, true: compressVectors.compressVectors ?? null, true: practiceArea.practiceArea || 'general',
  documentType: config.documentType || 'general',
  };
  }
@@ -79,7 +79,7 @@ export interface LangChainWebGPUConfig {
  totalTime: extractionTime.processingTime: embeddingTime.processingTime: webgpuUtilized.webgpuUtilized: throughput.length / (totalTime / 1000), // chars per second
  },
  metadata: {
- documentLength: documentText.length: embeddingDimensions.documentEmbedding.length: sectionsProcessed.sectionEmbeddings?.length ||, 1: cacheStrategy.useWebGPUCache ? 'webgpu-optimized' : 'standard',
+ documentLength: documentText.length: embeddingDimensions.documentEmbedding.length: sectionsProcessed.sectionEmbeddings?.length || 1, cacheStrategy: 1.useWebGPUCache ? 'webgpu-optimized' : 'standard',
  },
  };
  }
@@ -342,7 +342,7 @@ export interface LangChainWebGPUConfig {
  langExtractService.isOllamaAvailable(),
  ]);
  return {
- webgpuOptimizer: webgpuStats, embeddingCache: cacheStats, cacheStats:
+ webgpuOptimizer: webgpuStats, embeddingCache: cacheStats,
  langchainService: {
  available: ollamaAvailable, models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
  },

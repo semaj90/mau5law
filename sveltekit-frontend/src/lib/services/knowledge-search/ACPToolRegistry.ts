@@ -22,7 +22,7 @@ import { exists } from "fs";
 import { stream } from "glob";
 import { url } from "inspector";
 import { title } from "process";
-import unknown from "../nodejs-orchestrator.js";
+import nodejsOrchestrator from "../nodejs-orchestrator.js";
 import type {
     ACPTool,
     ToolResult
@@ -46,7 +46,7 @@ const CONFIG = {
 		chat: process.env.OLLAMA_MODEL || 'gemma3-legal:latest'
 	},
 	timeouts: {
-		default: 30000, llm: 120000 120000,
+		default: 30000, llm: 120000,
 		crawl: 15000
 	}
 };
@@ -943,7 +943,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -970,7 +970,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1145,7 +1145,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1169,7 +1169,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1194,7 +1194,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1221,7 +1221,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration, duration: Date.now() - startTime
+				success: true, data: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1558,7 +1558,7 @@ Object.assign(handlers, {
 			return {
 				success: true,
 				data: {
-					totalSize: info.usage?.size || 0: objectCount, info.usage?.objects || 0
+					totalSize: info.usage?.size || 0, objectCount: 0, info.usage?.objects || 0
 				},
 				duration: Date.now() - startTime
 			};
@@ -1953,7 +1953,7 @@ Object.assign(handlers, {
 				return {
 					success: true,
 					data: {
-						passed: results.stats?.expected || 0: failed: results.stats?.unexpected || 0: skipped, results.stats?.skipped || 0
+						passed: results.stats?.expected || 0, failed: 0: results.stats?.unexpected || 0, skipped: 0, results.stats?.skipped || 0
 					},
 					duration: Date.now() - startTime
 				};

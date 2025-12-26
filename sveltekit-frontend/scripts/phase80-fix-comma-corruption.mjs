@@ -37,23 +37,43 @@ const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const verbose = args.includes('--verbose');
 const maxFiles = parseInt(args.find(a => a.startsWith('--max='))?.split('=')[1] || '100');
+const singleFile = args.find(a => a.startsWith('--file='))?.split('=')[1];
 
 console.log(`🔧 Phase 80 Chunk 12: Comma Corruption Fixer${dryRun ? ' (DRY RUN)' : ''}\n`);
 
-// Read stratification report
-const reportPath = join(root, 'phase80-stratification-report.json');
-const report = JSON.parse(readFileSync(reportPath, 'utf-8'));
+let topFiles = [];
 
-// Get files with comma errors
-const commaPattern = report.topPatterns.find(p => p.exampleMessage === "',' expected.");
-console.log(`🎯 Target: ${commaPattern.count.toLocaleString()} comma errors across ${commaPattern.filesAffected} files\n`);
+if (singleFile) {
+  // Single file mode (Phase 81 compatible)
+  const fullPath = singleFile.startsWith('/') || singleFile.match(/^[a-zA-Z]:/)
+    ? singleFile
+    : join(process.cwd(), singleFile);
 
-// Get top broken files (these have the most comma errors)
-const topFiles = report.topFiles
-  .slice(0, maxFiles)
-  .map(f => ({ path: join(root, f.file), errors: f.errorCount }));
+  topFiles = [{ path: fullPath, errors: '?' }];
+  console.log(`🎯 Target: Single file ${singleFile}\n`);
+} else {
+  // Batch mode (Legacy Phase 80)
+  try {
+    const reportPath = join(root, 'phase80-stratification-report.json');
+    const report = JSON.parse(readFileSync(reportPath, 'utf-8'));
 
-console.log(`📋 Processing top ${topFiles.length} broken files\n`);
+    // Get files with comma errors
+    const commaPattern = report.topPatterns.find(p => p.exampleMessage === "',' expected.");
+    if (commaPattern) {
+      console.log(`🎯 Target: ${commaPattern.count.toLocaleString()} comma errors across ${commaPattern.filesAffected} files\n`);
+    }
+
+    // Get top broken files
+    topFiles = report.topFiles
+      .slice(0, maxFiles)
+      .map(f => ({ path: join(root, f.file), errors: f.errorCount }));
+  } catch (e) {
+    console.warn("⚠️ Could not load phase80-stratification-report.json. Use --file to run on specific files.");
+    process.exit(1);
+  }
+}
+
+console.log(`📋 Processing ${topFiles.length} files\n`);
 
 const COMMA_PATTERNS = [
   // Pattern 1: Object property without comma (most common)

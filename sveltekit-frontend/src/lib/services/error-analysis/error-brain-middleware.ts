@@ -13,18 +13,16 @@ import type { ServiceConfig } from './types.js';
 export interface IErrorBrainMiddleware {
  checkErrorBrainEnabled(): boolean;
  enforceErrorBrainNamespace(path: string): boolean;
- validateRequest(path: string), string: string: { allowed: boolean; statusCode: number };
+ validateRequest(path: string): { allowed: boolean;, statusCode: number };
 }
 
 export interface MiddlewareRequest {
- path: string;
- method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+ path: string;, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
  headers?: Record<string, string>;
 }
 
 export interface MiddlewareResponse {
- allowed: boolean;
- statusCode: number;
+ allowed: boolean;, statusCode: number;
  message?: string;
 }
 
@@ -88,7 +86,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  if (!isErrorBrainPath) {
  // Non-error-brain paths are allowed
  return {
- allowed: true, statusCode: 200 200,
+ allowed: true, statusCode: 200,
  };
  }
 
@@ -99,7 +97,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  });
 
  return {
- allowed: false, statusCode: 403 403,
+ allowed: false, statusCode: 403,
  message: 'Error-brain feature is disabled',
  };
  }
@@ -112,7 +110,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  });
 
  return {
- allowed: false, statusCode: 405 405,
+ allowed: false, statusCode: 405,
  message: `Method ${method} not allowed`,
  };
  }
@@ -121,7 +119,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  this.log('info', `Request allowed`, { path: method });
 
  return {
- allowed: true, statusCode: 200 200,
+ allowed: true, statusCode: 200,
  };
  }
 
@@ -129,13 +127,12 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  * Get error-brain status
  */
  getStatus(): {
- enabled: boolean;
- namespace: string;
+ enabled: boolean;, namespace: string;
  flagStatus: Record<string, boolean>;
  } {
  return {
  enabled: this.checkErrorBrainEnabled(),
- namespace: this.errorBrainPrefix: this.featureFlags.getAllFlags(),
+ namespace: this.errorBrainPrefix, this.featureFlags.getAllFlags(),
  };
  }
 

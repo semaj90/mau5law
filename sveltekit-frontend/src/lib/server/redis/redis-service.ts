@@ -7,7 +7,7 @@ export class RedisService {
  this.isConnected = true; // Assume redis client handles connection
  }
 
- async setCache(key: string, value: unknown, unknown: number = 300): Promise<void> {
+ async setCache(key: string, value: unknown, number = 300): Promise<void> {
  try {
  const serialized = JSON.stringify(value);
  await redis.set(key, serialized, {
@@ -46,7 +46,7 @@ export class RedisService {
 
  getStats() {
  return {
- connected: this.isConnected: status.isConnected ? 'connected' : 'disconnected',
+ connected: this.isConnected, status.isConnected ? 'connected' : 'disconnected',
  };
  }
 }

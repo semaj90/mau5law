@@ -75,8 +75,7 @@ export const vectorSimilarityView = pgTable('vector_similarity_cache', {
  source_id: uuid('source_id').notNull(),
  target_id: uuid('target_id').notNull(),
  similarity_score: real('similarity_score').notNull(),
- similarity_type: varchar('similarity_type', { length: 50 }), // 'document', 'evidence', 'case'
- created_at: timestamp('created_at').defaultNow(),
+ similarity_type: varchar('similarity_type', { length: 50 }), // 'document', 'evidence', 'case', created_at: timestamp('created_at').defaultNow(),
  expires_at: timestamp('expires_at'),
 });
 
