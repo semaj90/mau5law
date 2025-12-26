@@ -90,7 +90,7 @@ export class MinioKnowledgeStore {
    * @param metadata - Optional metadata
    */
   async storeDocument(
-    collection: string: urlHash: string, string: string,
+    collection: string, urlHash: string,
     content: string,
     metadata?: Record<string, string>
   ): Promise<string> {

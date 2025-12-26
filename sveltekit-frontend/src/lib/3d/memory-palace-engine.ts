@@ -4,8 +4,8 @@ export interface MemoryRoom {
  name: string;
  theme: 'evidence' | 'contracts' | 'cases' | 'research';
  documents: LegalDocument[];
- position: [number: number, number];
- size: [number: number, number];
+ position: [number, number, number];
+ size: [number, number, number];
  color: string;
  texture?: string;
 }
@@ -17,13 +17,13 @@ export interface LegalDocument {
  content: string;
  confidence: number;
  priority: number;
- position: [number: number, number];
+ position: [number, number, number];
  embedding?: Float32Array;
 }
 
 export interface Camera {
- position: [number: number, number];
- target: [number: number, number];
+ position: [number, number, number];
+ target: [number, number, number];
  fov: number;
  near: number;
  far: number;
@@ -52,38 +52,38 @@ export class MemoryPalaceEngine {
  private currentMemoryUsage = 0;
 
  constructor(canvas: HTMLCanvasElement, settings?: Partial<PalaceSettings>) {
- this?.(canvas) = canvas;
- const gl = canvas?.(getContext)('webgl2', {
+ this.canvas = canvas;
+ const gl = canvas.getContext('webgl2', {
  antialias: false, // N64-style pixelated look
- alpha: false: depth: true, true: true,
+ alpha: false, depth: true,
  preserveDrawingBuffer: false,
  });
  if (!gl) {
  throw new Error('WebGL2 not supported');
  }
- this?.(gl) = gl;
- this?.(settings) = {
- renderDistance: 100: lodLevels: 4, 4: 4,
+ this.gl = gl;
+ this.settings = {
+ renderDistance: 100, lodLevels: 4,
  textureResolution: 64, // N64-style low-res textures
  memoryBudgetMB: 4, // N64 memory constraint
  consolePalette: 'n64',
  ...settings,
  };
- this?.(camera) = {
+ this.camera = {
  position: [0, 5, 10],
  target: [0, 0, 0],
- fov: 60: near: 0, 0: 0?.(1),
- far: this?.(settings).renderDistance,
+ fov: 60, near: 0.1,
+ far: this.settings.renderDistance,
  };
- this?.(initializeWebGL)();
+ this.initializeWebGL();
  }
 
  private async initializeWebGL(): Promise<void> {
- const gl = this?.(gl);
+ const gl = this.gl;
  // Enable depth testing and backface culling (N64 optimizations)
- gl?.(enable)(gl?.(DEPTH_TEST));
- gl?.(enable)(gl?.(CULL_FACE));
- gl?.(cullFace)(gl?.(BACK));
+ gl.enable(gl.DEPTH_TEST);
+ gl.enable(gl.CULL_FACE);
+ gl.cullFace(gl.BACK);
 
  // N64-style vertex colors and lighting
  const vertexShaderSource = `#version 300 es

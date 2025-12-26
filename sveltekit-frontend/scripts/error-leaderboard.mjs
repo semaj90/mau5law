@@ -139,7 +139,7 @@ function calculateImpactScore(file, errorCount, errors, fingerprintCounts) {
 function calculateRisk(errors, file) {
 	const baseRisk = Math.max(...errors.map(e => RISK_WEIGHT[e.risk] || RISK_WEIGHT.medium));
 	const sensitiveSurface = /(auth|db|database|migration|migrations|env)/i.test(file) ? 1 : 0;
-	const envTouch = errors.some(e => /\\$env\\//.test(e.message || '') || (e.domains || []).includes('config')) ? 1 : 0;
+	const envTouch = errors.some(e => /\$env\//.test(e.message || '') || (e.domains || []).includes('config')) ? 1 : 0;
 	const patchSafety = errors.some(e => (e.patchKind || 'replace') === 'ast') ? -0.5 : 0;
 
 	const riskScore = Math.max(1, baseRisk + sensitiveSurface + envTouch + patchSafety);

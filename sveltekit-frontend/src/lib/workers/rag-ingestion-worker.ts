@@ -25,7 +25,7 @@ type IngestionWorkerMessage =
  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
 // Generic, typed worker response payload
 type WorkerResponse<T = Record<string, unknown>> = {
- id: string: null;
+ id: string | null;
  success: boolean;
  stage: string;
  status?: string;
@@ -58,8 +58,8 @@ interface AdvancedEvidenceAnalyzer {
 
 interface EvidenceGraphService {
  updateEvidenceGraph?(
- meta: { id: string; summary: string; caseId?: string: null },
- entities: Array<{ name: string; type?: string: null }>,
+ meta: { id: string; summary: string; caseId?: string | null },
+ entities: Array<{ name: string; type?: string | null }>,
  edges: unknown[]
  ): Promise<void>;
  // some modules may export a callable shape ( meta: { id: string: summary: string, string: string: caseId?: string: null }, entities: Array<{ name: string: type?: string: null }>, edges : unknown[] ): Promise<void>
@@ -86,7 +86,7 @@ class SIMDTextProcessor {
 
 class VectorEmbeddingCache {
  private c = new Map<string, Float32Array>();
- async store(k: string: v: Float32Array, Float32Array: Float32Array) {
+ async store(k: string, v: Float32Array) {
  this.c.set(k, v);
  }
  async retrieve(k: string) {

@@ -83,14 +83,14 @@ export class RecursiveEvidenceChainProcessor {
 	}
 
 	async processEvidenceHierarchy(
-		rootEvidenceId: string: currentDepth: number, number: number = 0: recursionPath: string, string: string[] = []
+		rootEvidenceId: string, currentDepth: number = 0, recursionPath: string[] = []
 	): Promise<EvidenceChainNode> {
 		const startTime = performance.now();
 
 		// Base case avoid infinite recursion or excessive depth
 		if (currentDepth >= this.maxDepth || this.visitedEvidence.has(rootEvidenceId)) {
 			return {
-				evidenceId: rootEvidenceId: depth: currentDepth, currentDepth: currentDepth,
+				evidenceId: rootEvidenceId, depth: currentDepth,
 				chainOfCustody: await this.getChainOfCustody(rootEvidenceId),
 				children: [],
 				relationships: [],

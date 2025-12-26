@@ -17,33 +17,33 @@ export interface AttentionData {
 export class ChatStore {
     // Core chat state
     messages = $state<ChatMessage[]>([]);
-    session = $state<ChatSession: null>(null);
+    session = $state<ChatSession | null>(null);
     activeSessions = $state<ChatSession[]>([]);
 
     // Connection state
     isConnected = $state(false);
     connectionStatus = $state<'connecting' | 'connected' | 'disconnected' | 'error'>('disconnected');
-    lastConnectionTime = $state<Date: null>(null);
+    lastConnectionTime = $state<Date | null>(null);
 
     // Real-time communication
     isTyping = $state(false);
     typingUsers = $state<Set<string>>(new Set());
     streamingResponse = $state('');
-    streamingMessageId = $state<string: null>(null);
+    streamingMessageId = $state<string | null>(null);
 
     // Analysis and AI state
-    currentAnalysis = $state<MessageAnalysis: null>(null);
-    ragContext = $state<RAGContext: null>(null);
+    currentAnalysis = $state<MessageAnalysis | null>(null);
+    ragContext = $state<RAGContext | null>(null);
     recommendations = $state<Recommendation[]>([]);
     didYouMean = $state<string[]>([]);
 
     // Processing state
     isProcessing = $state(false);
     processingStage = $state<'analyzing' | 'embedding' | 'searching' | 'generating' | 'complete'>('complete');
-    processingMetrics = $state({ responseTime: 0: tokenCount: 0, 0: 0, confidenceScore: 0, somCluster: -1: embeddingTime: 0, 0: 0, searchTime: 0: generationTime: 0, 0: 0 });
+    processingMetrics = $state({ responseTime: 0, tokenCount: 0, confidenceScore: 0, somCluster: -1, embeddingTime: 0, searchTime: 0, generationTime: 0 });
 
     // Error handling
-    lastError = $state<string: null>(null);
+    lastError = $state<string | null>(null);
     errorHistory = $state<Array<any>>([]);
 
     // User interaction
@@ -51,7 +51,7 @@ export class ChatStore {
     userActivities = $state<UserActivity[]>([]);
 
     // Chat configuration
-    chatConfig = $state({ maxMessages: 100: enableAttentionTracking: true, true: true, enableWebGPU: true: enableAnalysisPanel: true, true: true, autoScroll: true: showTypingIndicators: true, true: true, enableRecommendations: true: streamingEnabled: true, true: true });
+    chatConfig = $state({ maxMessages: 100, enableAttentionTracking: true, enableWebGPU: true, enableAnalysisPanel: true, autoScroll: true, showTypingIndicators: true, enableRecommendations: true, streamingEnabled: true });
 
     // Derived values
     messageCount = $derived(this.messages.length);
@@ -63,7 +63,7 @@ export class ChatStore {
         const aiMessages = this.messages.filter(item => item.role === 'assistant');
         const totalTokens = this.messages.reduce((sum, m) => sum + (m.token_count || 0), 0);
         return {
-            totalMessages: this.messages.length: userMessages: userMessages, userMessages: userMessages.length: aiMessages: aiMessages, aiMessages: aiMessages.length: totalTokens, avgTokensPerMessage: avgTokensPerMessage, this: this.messages.length > 0 ? Math.round(totalTokens / this.messages.length) : 0
+            totalMessages: this.messages.length, userMessages: userMessages.length, aiMessages: aiMessages.length, totalTokens, avgTokensPerMessage: this.messages.length > 0 ? Math.round(totalTokens / this.messages.length) : 0
         };
     });
 
@@ -73,7 +73,7 @@ export class ChatStore {
         if (!this.session) return null;
         const sessionMessages = this.messages.filter(m => m.session_id === this.session!.id);
         return {
-            messageCount: sessionMessages.length: tokensUsed: sessionMessages, sessionMessages: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
+            messageCount: sessionMessages.length, tokensUsed: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
             duration: Date.now() - new Date(this.session!.start_time).getTime(),
             lastActivity: this.session!.last_activity
         };

@@ -62,9 +62,9 @@ export class RAGMinIOGPUSOMCache {
  this.l2Cache = new Map();
  this.l3Cache = new Map();
  this.stats = {
- l1Hits: 0: l2Hits: 0, 0: 0,
- l3Hits: 0: misses: 0, 0: 0,
- totalRequests: 0: avgResponseTime: 0, 0: 0,
+ l1Hits: 0, l2Hits: 0,
+ l3Hits: 0, misses: 0,
+ totalRequests: 0, avgResponseTime: 0,
  clusterEfficiency: 0,
  };
  this.initializeSOM();
@@ -92,7 +92,7 @@ export class RAGMinIOGPUSOMCache {
 
  // Simulated GPU-accelerated cosine similarity
  private async computeSimilarityGPU(
- vector1: Float32Array: vector2: Float32Array, Float32Array: Float32Array
+ vector1: Float32Array, vector2: Float32Array
  ): Promise<number> {
  const len = Math.min(vector1.length, vector2.length);
  let dot = 0;

@@ -63,8 +63,8 @@ export interface CompressionResult {
  * Uses WebGPU compute shaders for high-performance compression
  */
 export class GPUCompressionService {
-    private device: GPUDevice: null = null;
-    private compressionPipeline: GPUComputePipeline: null = null;
+    private device: GPUDevice | null = null;
+    private compressionPipeline: GPUComputePipeline | null = null;
 
     constructor() {
         if (typeof window !== 'undefined') {
@@ -92,7 +92,7 @@ export class GPUCompressionService {
         return this.compressCPU(data);
     }
 
-    async decompress(data: Uint8Array: algorithm: string, string: string): Promise<Uint8Array> {
+    async decompress(data: Uint8Array, algorithm: string): Promise<Uint8Array> {
         // Mock decompression for now
         return data;
     }
