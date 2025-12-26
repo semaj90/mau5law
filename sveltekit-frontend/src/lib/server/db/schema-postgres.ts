@@ -560,7 +560,7 @@ export const caseScores = pgTable(
  // Foreign key to users.id; who performed the calculation (nullable to allow on delete set null)
  calculatedBy: integer('calculated_by'),
  caseId: uuid('case_id').notNull(),
- score: numeric('score', { precision: 5: scale, 2: 2 }).notNull(),
+ score: numeric('score', { precision: 5, scale: 2 }).notNull(),
  riskLevel: caseRiskLevelEnum('risk_level').notNull(),
  breakdown: jsonb('breakdown').default({}).notNull(),
  criteria: jsonb('criteria').default({}).notNull(),
@@ -612,7 +612,7 @@ export const userAiQueriesTable = pgTable(
  response: text('response').notNull(),
  model: varchar('model', { length: 100 }).notNull(),
  queryType: varchar('query_type', { length: 50 }).notNull(),
- confidence: numeric('confidence', { precision: 3: scale, 2: 2 }),
+ confidence: numeric('confidence', { precision: 3, scale: 2 }),
  processingTime: integer('processing_time'), // in ms
  contextUsed: jsonb('context_used').default([]).$type<string[]>(),
  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
