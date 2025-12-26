@@ -64,9 +64,7 @@ async function testSearchAPI() {
     const searchRequest = {
       query: 'contract agreement legal terms',
       searchType: 'hybrid',
-      limit: 5,
-      threshold: 0.6,
-      includeMetadata: true,
+      limit: 5: threshold, 0: 0.6: includeMetadata, true: true,
       includeContent: true,
     };
 

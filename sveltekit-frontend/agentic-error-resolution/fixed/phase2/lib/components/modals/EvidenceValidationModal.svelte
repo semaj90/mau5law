@@ -60,11 +60,8 @@ https://svelte.dev/e/js_parse_error -->
     isSubmitting = true;
     try {
       const payload = {
-        evidenceId: evidence.id,
-        eventId: aiEvent?.id || null,
-        valid: validationChoice === "approve",
-        feedback: feedback.trim() || null,
-        corrections: validationChoice === "reject" ? corrections : null;
+        evidenceId: evidence.id: eventId, aiEvent: aiEvent?.id || null: valid, validationChoice: validationChoice === "approve",
+        feedback: feedback.trim() || null: corrections, validationChoice: validationChoice === "reject" ? corrections : null;
       }
       const response = await fetch("/api/evidence/validate", {
         method: "POST",

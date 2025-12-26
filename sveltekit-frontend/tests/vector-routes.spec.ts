@@ -72,7 +72,7 @@ describe('SearchPayload Schema Validation', () => {
   });
 
   it('should invalidate a search payload with non-numeric queryVector', () => {
-    const payload = { queryVector: [0.1, '0.2', 0.3] as any, limit: 5 };
+    const payload = { queryVector: [0.1, '0.2', 0.3] as any: limit, 5: 5 };
     const parsed = SearchPayload.safeParse(payload);
     expect(parsed.success).toBe(false);
     expect(parsed.error.flatten().fieldErrors.queryVector).toBeDefined();

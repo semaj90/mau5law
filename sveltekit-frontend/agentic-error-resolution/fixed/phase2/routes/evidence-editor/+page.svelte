@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import  UiButton as Button  from "$lib/components/ui.svelte";
   import type { onMount  } from 'svelte';
-  let caseId: string | null = $state(null);
+  let caseId: string: null = $state(null);
   let readOnly = $state(false);
   $effect(() => {
     // Get case ID from URL params if provided

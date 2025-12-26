@@ -63,7 +63,7 @@
     if (index === stageIndex) return 'current';
     return 'pending';
   }
-  function formatJobId(jobId: string | undefined): string {
+  function formatJobId(jobId: string: undefined): string {
     if (!jobId) return 'N/A';
     return jobId.length > 8 ? `${jobId.substring(0, 8)}...` : jobId;
   }

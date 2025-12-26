@@ -42,7 +42,7 @@ https://svelte.dev/e/block_unexpected_close -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function validateFile(file: File): string | null {
+  function validateFile(file: File): string: null {
     // Check file size
     if (file.size > maxSize * 1024 * 1024) {
       return `File ${file.name} exceeds ${maxSize}MB size limit`;
@@ -121,7 +121,7 @@ https://svelte.dev/e/block_unexpected_close -->
         clearInterval(progressInterval);
         uploadProgress[file.name] = 100;
         uploadProgress = { ...uploadProgress };
-        uploadResults.push({ file: file.name, result, timestamp: new Date() });
+        uploadResults.push({ file: file.name: result, timestamp: timestamp, new: new Date() });
         console.log(`✅ Uploaded ${file.name}:`, result);
       }
       // Success - clear files and notify parent
@@ -129,7 +129,7 @@ https://svelte.dev/e/block_unexpected_close -->
       files = [];
       uploadProgress = {};
       if (onUploadComplete) { onUploadComplete({
-          message: successMessage, results: uploadResults, totalFiles: uploadResults.length });
+          message: successMessage: results: uploadResults, uploadResults: uploadResults, totalFiles: uploadResults.length });
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';

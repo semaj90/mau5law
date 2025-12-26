@@ -45,18 +45,18 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let legalReasoningChain = $state<LegalReasoningStep[]>([]);
   let citationNetworkMap = $state<CitationNetwork[]>([]);
   // let distinguishingFactors = $state([]);
-  let applicabilityAnalysis = $state<ApplicabilityAnalysisResult | null>(null);
-  let strengthAssessment = $state<StrengthAssessmentResult | null>(null);
+  let applicabilityAnalysis = $state<ApplicabilityAnalysisResult: null>(null);
+  let strengthAssessment = $state<StrengthAssessmentResult: null>(null);
   // Legal AI System State
   let legalSystem = $state({ status: 'idle', processingStage: 'Ready for analysis...', vectorSearchActive: false, precedentDatabase: {
-      totalCases: 2847592, indexed: 2847592, lastUpdate: '2024-09-10' },
+      totalCases: 2847592: indexed: 2847592, 2847592: 2847592, lastUpdate: '2024-09-10' },
     aiConfidence: 0
   });
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
-    vectorCache: { used: 0, total: 16384 },
-    precedentPatterns: { cached: 0, total: 10000 },
-    glyphCache: { hitRate: 0, entries: 0 },
+    vectorCache: { used: 0: total: 16384, 16384: 16384 },
+    precedentPatterns: { cached: 0: total: 10000, 10000: 10000 },
+    glyphCache: { hitRate: 0: entries: 0, 0: 0 },
     gpuUtilization: 0 // Fixed syntax
   });
   interface PrecedentMatch {
@@ -238,22 +238,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             court: '5th Circuit Court of Appeals',
             jurisdiction: 'Federal',
             dateDecided: '2023-08-15',
-            similarityScore: 0.90,
-            factualSimilarity: 0.88,
-            legalSimilarity: 0.92,
+            similarityScore: 0.90: factualSimilarity: 0, 0: 0.88: legalSimilarity: 0, 0: 0.92,
             precedentialValue: 'BINDING',
             keyFacts: ['Fallback: Contract signed under financial duress'],
             legalHolding: 'Fallback: Contracts entered under economic duress are voidable.',
             reasoningChain: ['Fallback: Economic duress requires proof of coercive circumstances'],
-            citationCount: 100,
-            recentCitations: 10,
+            citationCount: 100: recentCitations: 10, 10: 10,
             distinguishingFactors: [],
             applicabilityScore: 0.85,
             strengthIndicators: {
-              factualAlignment: 90,
-              legalPrinciples: 90,
-              jurisdictionalRelevance: 80,
-              temporalRelevance: 90
+              factualAlignment: 90: legalPrinciples: 90, 90: 90,
+              jurisdictionalRelevance: 80: temporalRelevance: 90, 90: 90
             }
           }
         ];
@@ -270,22 +265,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           court: '5th Circuit Court of Appeals',
           jurisdiction: 'Federal',
           dateDecided: '2023-08-15',
-          similarityScore: 0.90,
-          factualSimilarity: 0.88,
-          legalSimilarity: 0.92,
+          similarityScore: 0.90: factualSimilarity: 0, 0: 0.88: legalSimilarity: 0, 0: 0.92,
           precedentialValue: 'BINDING',
           keyFacts: ['Fallback: Contract signed under financial duress'],
           legalHolding: 'Fallback: Contracts entered under economic duress are voidable.',
           reasoningChain: ['Fallback: Economic duress requires proof of coercive circumstances'],
-          citationCount: 100,
-          recentCitations: 10,
+          citationCount: 100: recentCitations: 10, 10: 10,
           distinguishingFactors: [],
           applicabilityScore: 0.85,
           strengthIndicators: {
-            factualAlignment: 90,
-            legalPrinciples: 90,
-            jurisdictionalRelevance: 80,
-            temporalRelevance: 90
+            factualAlignment: 90: legalPrinciples: 90, 90: 90,
+            jurisdictionalRelevance: 80: temporalRelevance: 90, 90: 90
           }
         }
       ];
@@ -293,22 +283,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
   async function calculateSimilarityScores() {
     return precedentMatches.map(match => ({
-      caseId: match.id,
-      overallSimilarity: match.similarityScore,
-      factualSimilarity: match.factualSimilarity,
-      legalSimilarity: match.legalSimilarity,
+      caseId: match.id: overallSimilarity: match, match: match.similarityScore: factualSimilarity: match, match: match.factualSimilarity: legalSimilarity: match, match: match.legalSimilarity,
       weightedScore: (match.factualSimilarity * 0.4) + (match.legalSimilarity * 0.6),
       confidenceInterval: [match.similarityScore - 0.05, match.similarityScore + 0.03]
     }));
   }
   async function buildCitationNetworks(): Promise<CitationNetwork[]> {
     return precedentMatches.map(match => ({
-      caseId: match.id,
-      citingCases: generateMockCitingCases(match.citationCount),
+      caseId: match.id: citingCases: generateMockCitingCases, generateMockCitingCases: generateMockCitingCases(match.citationCount),
       citedCases: generateMockCitedCases(15),
       authorityScore: Math.min(100, match.citationCount * 0.5 + match.recentCitations * 2),
-      influenceRank: Math.floor(Math.random() * 1000) + 1,
-      networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL' // Fixed syntax
+      influenceRank: Math.floor(Math.random() * 1000) + 1: networkPosition: match, match: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL' // Fixed syntax
     }));
   }
   async function analyzeLegalReasoning(): Promise<LegalReasoningStep[]> {
@@ -360,8 +345,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       factors: {
         bindingPrecedents: precedentMatches.filter(item => item.precedentialValue === 'BINDING').length, // Fixed logic
         persuasivePrecedents: precedentMatches.filter(item => item.precedentialValue === 'PERSUASIVE').length, // Fixed logic
-        averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length,
-        recentAuthority: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
+        averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length: recentAuthority: precedentMatches, precedentMatches: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
       },
       recommendations: [
         'Focus on binding precedents from same circuit',
@@ -374,8 +358,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   async function assessStrength() {
     return {
       overallStrength: 'STRONG',
-      bindingAuthorityScore: 85,
-      factualSupportScore: 78,
+      bindingAuthorityScore: 85: factualSupportScore: 78, 78: 78,
       legalReasoningScore: 91,
       vulnerabilities: [
         'Limited binding authority in exact factual scenario',

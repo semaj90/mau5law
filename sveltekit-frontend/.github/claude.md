@@ -1,5 +1,156 @@
 # Claude AI Context: Phase 72 SvelteKit Error Analysis
 
+## ⚠️ Phase 79 Pattern Fixer - Critical Safety Protocol
+
+### Background: Dec 25, 2025 Regression Incident
+- **Trigger**: Applied 4,546 pattern-based changes without dry-run preview
+- **Impact**: Error count exploded from 14,511 → 81,562 (+67,051 errors)
+- **Culprit**: Untested "auth-machine-garbage" patterns corrupted state machine files
+- **Recovery**: Full rollback via `.phase79.bak` backup files (system worked perfectly)
+- **Outcome**: Restored to 50,827 error baseline
+
+### Mandatory Safety Protocol
+
+#### Step 0: ALWAYS Dry-Run First (Non-Negotiable)
+```bash
+# BEFORE applying ANY pattern:
+node scripts/phase79-pattern-fixer.mjs --dry-run
+
+# Review output → Assess impact → Then proceed:
+node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
+```
+
+**Why This Matters**: The incident happened because we skipped dry-run. Never skip it again.
+
+#### Step 1: Single Pattern Application
+```bash
+# ❌ WRONG: Apply all patterns at once
+node scripts/phase79-pattern-fixer.mjs --apply
+
+# ✅ CORRECT: Apply one pattern, verify, repeat
+node scripts/phase79-pattern-fixer.mjs --pattern="safe-import-fix" --apply
+npx svelte-check --output machine  # Check error count
+node scripts/phase79-pattern-fixer.mjs --pattern="type-annotation" --apply
+npx svelte-check --output machine  # Check again
+```
+
+#### Step 2: Immediate Verification Gate
+```powershell
+# After EVERY pattern application:
+$result = npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+Write-Host $result
+
+# Parse error count - if INCREASED, rollback:
+if ($result -match '(\d+)\s+ERRORS') {
+    $errorCount = [int]$matches[1]
+    if ($errorCount -gt 50827) {  # Baseline
+        Write-Host "🚨 REGRESSION DETECTED - Rolling back..." -ForegroundColor Red
+        Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+            Copy-Item $_.FullName ($_.FullName -replace '\.phase79\.bak$', '') -Force
+        }
+    }
+}
+```
+
+#### Step 3: Pattern Risk Assessment
+Every pattern in `scripts/patterns.json` must have a risk level:
+
+```typescript
+type PatternRisk =
+  | "safe"      // Whitespace, comments, simple imports (auto-apply OK)
+  | "medium"    // Type changes, refactors (dry-run + manual review)
+  | "high"      // AST transforms, state machines (manual only)
+  | "disabled"; // Known to cause corruption (NEVER apply)
+```
+
+**Currently Disabled Patterns**:
+```json
+[
+  {
+    "id": "env-type-declarations",
+    "risk": "disabled",
+    "reason": "Injects garbage $env/static/private imports → 259k errors",
+    "incident": "2025-12-24"
+  },
+  {
+    "id": "auth-machine-garbage-7",
+    "risk": "disabled",
+    "reason": "Corrupts XState machines → 67k errors",
+    "incident": "2025-12-25",
+    "affected_files": 2412
+  },
+  {
+    "id": "auth-machine-garbage-6",
+    "risk": "disabled",
+    "reason": "Corrupts XState machines → part of 67k error spike",
+    "incident": "2025-12-25",
+    "affected_files": 1132
+  }
+]
+```
+
+#### Step 4: Emergency Rollback Procedure
+```powershell
+# One-liner rollback (keep this handy):
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    $orig = $_.FullName -replace '\.phase79\.bak$', ''
+    Copy-Item $_.FullName $orig -Force
+    Write-Host "Restored: $orig"
+}
+
+# Verify restoration:
+npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+
+# Clean backups ONLY after verification:
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | Remove-Item -Force
+```
+
+#### Step 5: Pattern Testing Workflow (Before Production)
+1. **Unit Test**: Apply pattern to 1-2 sample files manually
+2. **Preview**: Run `--dry-run` to see all matches
+3. **Pilot**: Apply to 10 files with `--limit=10`
+4. **Verify**: Check error count didn't increase
+5. **Gradual Rollout**: Apply to 100 files, verify, then full codebase
+6. **Continuous Monitoring**: Watch error count during entire process
+
+### Lessons Learned (Post-Mortem)
+
+**What Went Wrong**:
+1. ❌ Skipped dry-run preview
+2. ❌ Applied all patterns simultaneously (hard to identify culprit)
+3. ❌ Didn't verify error count immediately after
+4. ❌ Patterns were untested on sample files first
+
+**What Went Right**:
+1. ✅ Backup system worked perfectly (`.phase79.bak` files)
+2. ✅ Quick detection of regression (error count monitoring)
+3. ✅ Fast rollback capability (PowerShell one-liner)
+4. ✅ Audit trail in `fix-log-*.jsonl` for analysis
+
+**Prevention Going Forward**:
+- 🛡️ Dry-run is now MANDATORY (no exceptions)
+- 🛡️ Incremental application with verification gates
+- 🛡️ Pattern risk classification system
+- 🛡️ Test-first development for new patterns
+- 🛡️ Keep backups until 100% verified
+
+### Quick Reference
+```bash
+# Safe workflow:
+node scripts/phase79-pattern-fixer.mjs --dry-run          # Preview
+node scripts/phase79-pattern-fixer.mjs --risk=safe --apply # Apply safe only
+npx svelte-check --output machine                          # Verify
+
+# Emergency rollback:
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    Copy-Item $_.FullName ($_.FullName -replace '\.phase79\.bak$', '') -Force
+}
+```
+
+**Golden Rule**: When in doubt, dry-run. Always.
+
+---
+
 ## Project Architecture
 
 ### Technology Stack

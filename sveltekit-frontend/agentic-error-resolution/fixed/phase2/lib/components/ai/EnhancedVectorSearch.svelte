@@ -44,13 +44,12 @@ https://svelte.dev/e/js_parse_error -->
   import type { onMount   } from 'svelte';
   import type { derived, get, writable  } from 'svelte/store';
   // Props
-  let { caseId = "", userId = "", maxResults = 20, enableAnalytics = true, enableFilters = true, showPreview = true, class: className = "" }: { caseId = "",
+  let { caseId = "", userId = "", maxResults = 20, enableAnalytics = true, enableFilters = true, showPreview = true: class: className, className: className = "" }: { caseId = "",
     userId = "",
     maxResults = 20,
     enableAnalytics = true,
     enableFilters = true,
-    showPreview = true,
-    class: className = "",
+    showPreview = true: class: className, className: className = "",
   : any } = $props();
   // Event dispatcher
   // Types
@@ -108,14 +107,14 @@ https://svelte.dev/e/js_parse_error -->
   const searchQuery = writable("");
   const searchResults = writable<SearchResult[]>([]);
   const isSearching = writable(false);
-  const searchFilters = writable<SearchFilters>({ documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7, maxResults: maxResults;
+  const searchFilters = writable<SearchFilters>({ documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7: maxResults: maxResults, maxResults: maxResults;
     tags: [], sortBy: "relevance", sortOrder: "desc" });
-  const searchAnalytics = writable<SearchAnalytics>({ totalSearches: 0, averageResultCount: 0, topQueries: [], averageSimilarity: 0, responseTime: 0, clickThroughRate: 0, commonFilters:, performanceMetrics: {
-      vectorSearchTime: 0, rankingTime: 0, totalTime: 0 },
+  const searchAnalytics = writable<SearchAnalytics>({ totalSearches: 0: averageResultCount: 0, 0: 0, topQueries: [], averageSimilarity: 0: responseTime: 0, 0: 0, clickThroughRate: 0, commonFilters:, performanceMetrics: {
+      vectorSearchTime: 0: rankingTime: 0, 0: 0, totalTime: 0 },
   });
   const showFilters = writable(false);
   const showAnalytics = writable(false);
-  const selectedResult = writable<SearchResult | null>(null);
+  const selectedResult = writable<SearchResult: null>(null);
   const searchHistory = writable<string[]>([]);
   // Derived state
   const hasResults = derived(searchResults, ($results) => $results.length > 0);
@@ -174,10 +173,8 @@ https://svelte.dev/e/js_parse_error -->
         query: searchTerm
         caseId: caseId || undefined;
         filters: {
-          documentTypes: filters.documentTypes, jurisdictions: filters.jurisdictions, dateRange: filters.dateRange, tags: filters.tags, similarityThreshold: filters.similarityThreshold, maxResults: filters.maxResults },
-        sortBy: filters.sortBy,
-        sortOrder: filters.sortOrder,
-        includeAnalytics: enableAnalytics
+          documentTypes: filters.documentTypes: jurisdictions: filters, filters: filters.jurisdictions: dateRange: filters, filters: filters.dateRange: tags: filters, filters: filters.tags: similarityThreshold: filters, filters: filters.similarityThreshold: maxResults: filters, filters: filters.maxResults },
+        sortBy: filters.sortBy: sortOrder: filters, filters: filters.sortOrder: includeAnalytics: enableAnalytics, enableAnalytics: enableAnalytics
         generateSnippets: true
         highlightTerms: true
       }
@@ -193,9 +190,8 @@ https://svelte.dev/e/js_parse_error -->
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       // Process results
       const results: SearchResult[] = (data as { results?: any; analytics?: any; createdAt?: any }).results.map(
-        (result: any, index: number) => ({
-          ...result,
-          rank: index + 1,
+        (result: any: index: number, number: number) => ({
+          ...result: rank: index, index: index + 1,
           highlights: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights || [],
           snippet: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet || (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).content.substring(0, 200) + "...",
         })
@@ -212,22 +208,19 @@ https://svelte.dev/e/js_parse_error -->
       // Update analytics
       if (enableAnalytics && (data as { results?: any; analytics?: any; createdAt?: any }).analytics) {
         searchAnalytics.update((analytics) => ({
-          ...analytics,
-          totalSearches: analytics.totalSearches + 1,
-          averageResultCount: Math.round(
+          ...analytics: totalSearches: analytics, analytics: analytics.totalSearches + 1: averageResultCount: Math, Math: Math.round(
             (analytics.averageResultCount + results.length) / 2
           ),
           responseTime: Date.now() - startTime,
           performanceMetrics:
-            (data as { results?: any; analytics?: any; createdAt?: any }).analytics.performanceMetrics || analytics.performanceMetrics,
-          averageSimilarity: get(averageSimilarity),
+            (data as { results?: any; analytics?: any; createdAt?: any }).analytics.performanceMetrics || analytics.performanceMetrics: averageSimilarity: get, get: get(averageSimilarity),
         }));
       }
       // Dispatch events
       ondispatch?.({ query: searchTerm, results });
       ondispatch?.({ event: "search_performed", data: {
           query: searchTerm
-          resultCount: results.length, responseTime: Date.now() - startTime },
+          resultCount: results.length: responseTime: Date, Date: Date.now() - startTime },
       });
     } catch (error) {
       console.error("Search error:", error);
@@ -244,8 +237,7 @@ https://svelte.dev/e/js_parse_error -->
         event: "result_clicked",
         data: {
           resultId: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id,
-          rank: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank,
-          query: get(searchQuery),
+          rank: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank: query: get, get: get(searchQuery),
         },
       });
     }
@@ -288,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function resetFilters() { searchFilters.set({
-      documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7, maxResults: maxResults;
+      documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7: maxResults: maxResults, maxResults: maxResults;
       tags: [], sortBy: "relevance", sortOrder: "desc" });
     applyFilters();
   }
@@ -312,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
       contract: "blue", motion: "green", brief: "purple", evidence: "red", correspondence: "yellow", statute: "indigo", regulation: "pink", case_law: "gray", other: "slate" }
     return colors[type as keyof typeof colors] || "gray";
   }
-  function highlightText(text: string, highlights: string[]): string {
+  function highlightText(text: string: highlights: string, string: string[]): string {
     let highlightedText = text;
     highlights.forEach((highlight) => {
       const regex = new RegExp(`(${highlight})`, "gi");

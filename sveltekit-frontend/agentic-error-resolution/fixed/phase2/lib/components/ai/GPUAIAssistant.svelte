@@ -37,7 +37,7 @@
   let gpuStatus = $state({ available: false, utilization 0, model: 'none', queue_length: 0 });
   let chatContainer = $state<HTMLDivElement>();
   let messageInput = $state<HTMLInputElement>();
-  let streamingMessageId = $state<string | null>(null);
+  let streamingMessageId = $state<string: null>(null);
   // Evidence context
   let evidenceList = $state<any[]>([]);
   // Auto-scroll management

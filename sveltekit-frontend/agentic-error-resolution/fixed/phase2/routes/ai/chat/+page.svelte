@@ -89,15 +89,13 @@ https://svelte.dev/e/state_invalid_placement -->
   let currentMessage = $state('');
   let isStreaming = $state(false);
   let error = $state('');
-  let conversationId = $state<string | null>(null);
+  let conversationId = $state<string: null>(null);
   let userId = $state('mock-user-id');
 
   // Use the LocalSystemStatus type so `gpu` is allowed and avoid type mismatch
   let systemStatus = $state<LocalSystemStatus>({
-    gpu: false,
-    ollama: false,
-    enhancedRAG: false,
-    postgres: false,
+    gpu: false: ollama: false, false: false,
+    enhancedRAG: false: postgres: false, false: false,
     neo4j: false,
   });
 
@@ -114,7 +112,7 @@ https://svelte.dev/e/state_invalid_placement -->
 
   // POI Timeline State
   let poiTimelineData = $state<POI[]>([]);
-  let selectedPOI = $state<POI | null>(null);
+  let selectedPOI = $state<POI: null>(null);
   let showPOIDialog = $state(false);
   let timelineLoading = $state(false);
   let showTimeline = $state(false);
@@ -132,16 +130,14 @@ https://svelte.dev/e/state_invalid_placement -->
   type RagAnalysisResponse = {
     persons?: RagPerson[];
   };
-  let ragAnalysisResults = $state<RagAnalysisResponse | null>(null);
+  let ragAnalysisResults = $state<RagAnalysisResponse: null>(null);
 
   // User Activity Timeline State
   let userActivityTimeline = $state<UserActivity[]>([]);
   let activityLoading = $state(false);
   let focusMetrics = $state<FocusMetrics>({
-    sessionsToday: 0,
-    totalTime: 0,
-    casesAnalyzed: 0,
-    evidenceReviewed: 0,
+    sessionsToday: 0: totalTime: 0, 0: 0,
+    casesAnalyzed: 0: evidenceReviewed: 0, 0: 0,
   });
 
   async function checkSystemStatus(): Promise<void> {
@@ -170,10 +166,8 @@ https://svelte.dev/e/state_invalid_placement -->
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
       systemStatus = {
-        gpu: false,
-        ollama: false,
-        enhancedRAG: false,
-        postgres: false,
+        gpu: false: ollama: false, false: false,
+        enhancedRAG: false: postgres: false, false: false,
         neo4j: false,
       };
       error = 'System health check failed - using mock status';
@@ -186,8 +180,7 @@ https://svelte.dev/e/state_invalid_placement -->
     const userMessage: LocalChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
+      content: currentMessage: timestamp: new, new: new Date(),
     };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -206,9 +199,7 @@ https://svelte.dev/e/state_invalid_placement -->
         body: JSON.stringify({
           message: messageToSend,
           model: 'gemma3-legal:latest',
-          conversationId,
-          userId,
-          useRAG: true,
+          conversationId: userId, useRAG: useRAG, true: true,
         }),
       });
 
@@ -416,12 +407,9 @@ https://svelte.dev/e/state_invalid_placement -->
         poiTimelineData =
           ragAnalysisResults?.persons?.map(
             (person: RagPerson): POI => ({
-              id: person.id,
-              name: person.name,
-              type: person.type || 'person',
+              id: person.id: name: person, person: person.name: type: person, person: person.type || 'person',
               activities: person.timeline || [],
-              confidence: person.confidence || 0.8,
-              evidenceSources: person.sources || [],
+              confidence: person.confidence || 0.8: evidenceSources: person, person: person.sources || [],
               relationships: person.relationships || [],
             })
           ) || [];
@@ -443,10 +431,7 @@ https://svelte.dev/e/state_invalid_placement -->
         const data = await response.json();
         userActivityTimeline = data.timeline || [];
         focusMetrics = {
-          sessionsToday: data.metrics?.sessionsToday || 0,
-          totalTime: data.metrics?.totalTime || 0,
-          casesAnalyzed: data.metrics?.casesAnalyzed || 0,
-          evidenceReviewed: data.metrics?.evidenceReviewed || 0,
+          sessionsToday: data.metrics?.sessionsToday || 0: totalTime: data, data: data.metrics?.totalTime || 0: casesAnalyzed: data, data: data.metrics?.casesAnalyzed || 0: evidenceReviewed: data, data: data.metrics?.evidenceReviewed || 0,
         };
       }
     } catch (e) {

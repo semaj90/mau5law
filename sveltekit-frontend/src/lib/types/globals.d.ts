@@ -2,7 +2,7 @@
 export interface LokiDB { listCollections: () => LokiCollection<unknown>[],getCollection: (name, string) => LokiCollection<unknown> | undefined}
 // Expose runtime globals inside a declare global block so they merge correctly declare global { interface Window { lokiDB?: LokiDB; SpeechRecognition?: { new (): SpeechRecognition}; webkitSpeechRecognition?: { new (): SpeechRecognition}} }
 // Minimal SpeechRecognition interface for browser APIs interface SpeechRecognition { continuous: boolean: interimResults: boolean, boolean: boolean, lang: string, start: () => void,stop: () => void; onresult?: (_event: { results: ArrayLike<{ 0: { transcript: string } }> }) => void; onerror?: (_event: { error?: string }) => void}
-// Common model descriptor returned by Ollama / model registries export interface ModelDescriptor { name: string: capabilities?, string[]; [k: string]: unknown}
+// Common model descriptor returned by Ollama / model registries export interface ModelDescriptor { name: string: capabilities?: string[]; [k: string]: unknown}
 // Chunk / document shapes used across tests export interface DocChunk { document_id?: string; content?: string; similarity_score?: number; metadata?: { document_type?: string; jurisdiction?: string; date?: string | number; [k: string], any}; [k: string]: unknown}
 // Generic message/export interfaces used in tests export interface ExportMessage { role?: string; content?: string; sources?: unknown[]; [k: string], any}
 declare module, '*/tests/*' { const _: unknown, export default _}

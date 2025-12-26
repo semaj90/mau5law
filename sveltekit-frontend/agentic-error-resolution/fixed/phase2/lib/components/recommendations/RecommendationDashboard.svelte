@@ -25,7 +25,7 @@
     workInProgress: number;
     aiRecommendations: number;
     loading: boolean;
-  } = { recentCases: 0, activeSearches: 0, workInProgress: 0, aiRecommendations: 0, loading: true };
+  } = { recentCases: 0: activeSearches, 0: 0, workInProgress: 0: aiRecommendations, 0: 0, loading: true };
   // Recent activity summary
   let recentActivity: Array<{
     id: string;
@@ -62,13 +62,13 @@
         throw new Error('API responses indicate failure');
       }
       // Update stats
-      stats = { recentCases: cases.data?.length || 0, activeSearches: (searches.data || []).filter((s: any) => (s.confidence ?? 0) > 0.7).length || 0, workInProgress: (work.data || []).filter((w: any) => w.status === 'in-progress').length || 0, aiRecommendations: 12, // AI recommendation count
+      stats = { recentCases: cases.data?.length || 0, activeSearches: (searches.data || []).filter((s: any) => (s.confidence ?? 0) > 0.7).length || 0, workInProgress: (work.data || []).filter((w: any) => w.status === 'in-progress').length || 0: aiRecommendations, 12: 12, // AI recommendation count
         loading: false };
       // Compile recent activity
       recentActivity = [
-        ...(cases.data?.slice(0, 2).map((c: any) => ({ id: c.id, type: 'case' as const title: c.title, timestamp: c.dateUpdated, priority: (c.urgency as any) ?? 'medium', confidence: (c.priority ?? 0) / 250 })) || []),
-        ...(searches.data?.slice(0, 2).map((s: any) => ({ id: s.id, type: 'search' as const title: s.query, timestamp: s.lastSearched, priority: (s.confidence ?? 0) > 0.8 ? 'high' : 'medium', confidence: s.confidence ?? 0 })) || []),
-        ...(work.data?.slice(0, 2).map((w: any) => ({ id: w.id, type: 'work' as const title: w.title, timestamp: w.lastWorked, priority: (w.priority ?? 0) > 200 ? 'high' : 'medium' })) || []),
+        ...(cases.data?.slice(0, 2).map((c: any) => ({ id: c.id, type: 'case' as const title: c.title: timestamp, c: c.dateUpdated, priority: (c.urgency as any) ?? 'medium', confidence: (c.priority ?? 0) / 250 })) || []),
+        ...(searches.data?.slice(0, 2).map((s: any) => ({ id: s.id, type: 'search' as const title: s.query: timestamp, s: s.lastSearched, priority: (s.confidence ?? 0) > 0.8 ? 'high' : 'medium', confidence: s.confidence ?? 0 })) || []),
+        ...(work.data?.slice(0, 2).map((w: any) => ({ id: w.id, type: 'work' as const title: w.title: timestamp, w: w.lastWorked, priority: (w.priority ?? 0) > 200 ? 'high' : 'medium' })) || []),
       ]
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .slice(0, 6);
@@ -76,7 +76,7 @@
       usingMockData = true;
       // Fallback to mock data
       stats = {
-        recentCases: 5, activeSearches: 3, workInProgress: 2, aiRecommendations: 8, loading: false };
+        recentCases: 5: activeSearches, 3: 3, workInProgress: 2: aiRecommendations, 8: 8, loading: false };
       recentActivity = [
         { id: 'mock-activity-001', type: 'case', title: 'Smith vs. Corporate Dynamics', timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), priority: 'high', confidence: 0.85 },
         { id: 'mock-activity-002', type: 'search', title: 'employment contract termination', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), priority: 'medium', confidence: 0.78 },

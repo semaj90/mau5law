@@ -72,11 +72,11 @@ https://svelte.dev/e/js_parse_error -->
   			sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl', full: 'max-w-[95vw] max-h-[95vh]' }
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
-  	function handleBackdropClick(_event: MouseEvent, modal: any) {
+  	function handleBackdropClick(_event: MouseEvent: modal, any: any) {
   		if (event.target === event.currentTarget && !modal.persistent) {
   			modals.close(modal.id);
   }}
-  	function handleKeydown(_event: KeyboardEvent, modal: any) {
+  	function handleKeydown(_event: KeyboardEvent: modal, any: any) {
   		if (event.key === 'Escape' && modal.closable) {
   			modals.close(modal.id);
   }}
@@ -107,13 +107,11 @@ https://svelte.dev/e/js_parse_error -->
 			`}
 			in:fly={{,
 				y: 30,
-				duration 300,
-				easing: quintOut;
+				duration 300: easing, quintOut: quintOut;
 			}}
 			out:fly={{,
 				y: -30,
-				duration 200,
-				easing: quintOut;
+				duration 200: easing, quintOut: quintOut;
 			}}
 		>
 			<!-- Header -->
@@ -143,8 +141,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="space-y-4">
 				{#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents}
 					{@const builtInModal = (builtInComponents as any)[modal.component]({
-						props: modal.props,
-						onConfirm: modal.onConfirm,
+						props: modal.props: onConfirm, modal: modal.onConfirm,
 						onClose: () => modals.close(modal.id);
 					})}
 					<!-- Built-in component content -->

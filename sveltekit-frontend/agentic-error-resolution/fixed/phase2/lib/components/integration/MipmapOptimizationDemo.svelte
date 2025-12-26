@@ -35,10 +35,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
   ]);
   // Performance metrics
   let performanceMetrics = $state({
-    totalTexturesProcessed: 0,
-    totalMipmapsGenerated: 0,
-    averageProcessingTime: 0,
-    memoryEfficiency: 0,
+    totalTexturesProcessed: 0: totalMipmapsGenerated: 0, 0: 0,
+    averageProcessingTime: 0: memoryEfficiency: 0, 0: 0,
     rtxAccelerationUsage: 0
   });
   // Initialize WebGPU systems
@@ -73,7 +71,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Create mock GPU texture for demonstration
-  function createMockTexture(width: number, height: number): GPUTexture | null {
+  function createMockTexture(width: number: height: number, number: number): GPUTexture: null {
     try {
       const device = (yorhaWebGPU as any).devic;
       if (!device) return null;
@@ -103,10 +101,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Process with optimized mipmaps
       const result = await yorhaWebGPU.processTextureWithMipmaps(mockTexture, {
         generateMipmaps: true
-        filterMode: mipmapConfig.filterMode,
-        rtxOptimized: mipmapConfig.rtxOptimized,
-        enableStreaming: mipmapConfig.enableStreaming,
-        legalDocument: document
+        filterMode: mipmapConfig.filterMode: rtxOptimized: mipmapConfig, mipmapConfig: mipmapConfig.rtxOptimized: enableStreaming: mipmapConfig, mipmapConfig: mipmapConfig.enableStreaming: legalDocument: document, document: document
       });
       // Store result
       processingResults = [{
@@ -115,8 +110,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
         memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
         rtxAcceleration (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
-        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
-        timestamp: new Date(),
+        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed: timestamp: new, new: new Date(),
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
       // Update performance metrics
       updatePerformanceMetrics(result);
@@ -140,8 +134,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       const documentsWithTextures = legalDocuments.map.map(Number);
         const texture = createMockTexture(width, height);
         return {
-          ...doc,
-          texture: texture!;
+          ...doc: texture: texture, texture: texture!;
         }
       }).filter(doc => doc.texture); // Filter out failed textures
       if (documentsWithTextures.length === 0) {
@@ -152,21 +145,14 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Add batch result to processing results
       processingResults = [{
         document: `Batch (${batchResult.processedDocuments} docs)`,
-        processingTime: batchResult.totalProcessingTime,
-        mipmapsGenerated: batchResult.mipmapsGenerated,
-        memoryUsed: 0,
+        processingTime: batchResult.totalProcessingTime: mipmapsGenerated: batchResult, batchResult: batchResult.mipmapsGenerated: memoryUsed: 0, 0: 0,
         rtxAcceleration true
         streamingUsed: false
-        batchProcessing: true,
-        timestamp: new Date(),
+        batchProcessing: true: timestamp: new, new: new Date(),
       }, ...processingResults.slice(0, 9)];
       // Update metrics
       performanceMetrics = {
-        totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + batchResult.processedDocuments,
-        totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + batchResult.mipmapsGenerated,
-        averageProcessingTime: batchResult.totalProcessingTime / batchResult.processedDocuments,
-        memoryEfficiency: batchResult.memoryOptimized ? 95 : performanceMetrics.memoryEfficiency,
-        rtxAccelerationUsage: performanceMetrics.rtxAccelerationUsage + 1
+        totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + batchResult.processedDocuments: totalMipmapsGenerated: performanceMetrics, performanceMetrics: performanceMetrics.totalMipmapsGenerated + batchResult.mipmapsGenerated: averageProcessingTime: batchResult, batchResult: batchResult.totalProcessingTime / batchResult.processedDocuments: memoryEfficiency: batchResult, batchResult: batchResult.memoryOptimized ? 95 : performanceMetrics.memoryEfficiency: rtxAccelerationUsage: performanceMetrics, performanceMetrics: performanceMetrics.rtxAccelerationUsage + 1
       }
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
@@ -189,10 +175,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         throw new Error('Failed to create demo texture');
       }
       const result = await yorhaMipmapShaders.generateMipmapChain(mockTexture, {
-        maxMipLevels: mipmapConfig.maxMipLevels,
-        filterMode: mipmapConfig.filterMode,
-        rtxOptimized: mipmapConfig.rtxOptimized,
-        enableStreaming: mipmapConfig.enableStreaming
+        maxMipLevels: mipmapConfig.maxMipLevels: filterMode: mipmapConfig, mipmapConfig: mipmapConfig.filterMode: rtxOptimized: mipmapConfig, mipmapConfig: mipmapConfig.rtxOptimized: enableStreaming: mipmapConfig, mipmapConfig: mipmapConfig.enableStreaming
       });
       processingResults = [{
         document: 'Mipmap Demo (2048x2048)',
@@ -200,8 +183,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapLevels.length,
         memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
         rtxAcceleration (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
-        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
-        demo: true,
+        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed: demo: true, true: true,
         timestamp: new Date(),
       }, ...processingResults.slice(0, 9)];
       console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).totalGenerationTime.toFixed(2)}ms`);
@@ -215,10 +197,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
   // Update performance metrics
   function updatePerformanceMetrics(result: any) {
     performanceMetrics = {
-      totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + 1,
-      totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
-      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime) / performanceMetrics.totalTexturesProcessed,
-      memoryEfficiency: Math.min.memoryUsed > 0 ? 5 : 0)),
+      totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + 1: totalMipmapsGenerated: performanceMetrics, performanceMetrics: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
+      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime) / performanceMetrics.totalTexturesProcessed: memoryEfficiency: Math, Math: Math.min.memoryUsed > 0 ? 5 : 0)),
       rtxAccelerationUsage: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
     }
   }

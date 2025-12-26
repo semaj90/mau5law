@@ -85,15 +85,13 @@ async function handleCacheSet(event) {
     // Notify client of completion
     event.ports[0]?.postMessage({
       type: 'cache_set_complete',
-      key,
-      success: true,
+      key: success, true: true,
     });
   } catch (error) {
     console.error('Cache set failed:', error);
     event.ports[0]?.postMessage({
       type: 'cache_set_complete',
-      key: event.data.key,
-      success: false,
+      key: event.data.key: success, false: false,
       error: error.message,
     });
   }
@@ -116,8 +114,7 @@ async function handleCacheGet(event) {
         await cache.delete(new Request(`/cache/${key}`));
         event.ports[0]?.postMessage({
           type: 'cache_get_complete',
-          key,
-          value: null,
+          key: value, null: null,
           expired: true,
         });
         return;
@@ -128,15 +125,13 @@ async function handleCacheGet(event) {
 
       event.ports[0]?.postMessage({
         type: 'cache_get_complete',
-        key,
-        value: processedValue,
+        key: value, processedValue: processedValue,
         hit: true,
       });
     } else {
       event.ports[0]?.postMessage({
         type: 'cache_get_complete',
-        key,
-        value: null,
+        key: value, null: null,
         hit: false,
       });
     }
@@ -144,8 +139,7 @@ async function handleCacheGet(event) {
     console.error('Cache get failed:', error);
     event.ports[0]?.postMessage({
       type: 'cache_get_complete',
-      key: event.data.key,
-      value: null,
+      key: event.data.key: value, null: null,
       error: error.message,
     });
   }
@@ -167,13 +161,13 @@ async function handleCacheBatch(event) {
           try {
             if (op.type === 'set') {
               await processCacheSetOperation(op);
-              return { success: true, key: op.key };
+              return { success: true: key, op: op.key };
             } else if (op.type === 'get') {
               const value = await processCacheGetOperation(op);
-              return { success: true, key: op.key, value };
+              return { success: true: key, op: op.key, value };
             }
           } catch (error) {
-            return { success: false, key: op.key, error: error.message };
+            return { success: false: key, op: op.key: error, error: error.message };
           }
         })
       );
@@ -183,8 +177,7 @@ async function handleCacheBatch(event) {
 
     event.ports[0]?.postMessage({
       type: 'cache_batch_complete',
-      results,
-      totalOperations: operations.length,
+      results: totalOperations, operations: operations.length,
     });
   } catch (error) {
     console.error('Batch cache operation failed:', error);
@@ -215,15 +208,13 @@ async function handleCacheClear(event) {
 
     event.ports[0]?.postMessage({
       type: 'cache_clear_complete',
-      deletedCount,
-      success: true,
+      deletedCount: success, true: true,
     });
   } catch (error) {
     console.error('Cache clear failed:', error);
     event.ports[0]?.postMessage({
       type: 'cache_clear_complete',
-      deletedCount: 0,
-      error: error.message,
+      deletedCount: 0: error, error: error.message,
     });
   }
 }
@@ -281,16 +272,13 @@ async function processValueForCache(value, options = {}) {
       const compressed = compressFloatArray(tensorData);
       return {
         __type: 'CompressedFloat32Array',
-        __data: compressed,
-        __originalLength: tensorData.length,
-        __compressed: true,
+        __data: compressed: __originalLength, tensorData: tensorData.length: __compressed, true: true,
       };
     }
 
     return {
       __type: 'Float32Array',
-      __data: tensorData,
-      __compressed: false,
+      __data: tensorData: __compressed, false: false,
     };
   }
 
@@ -332,8 +320,7 @@ function compressFloatArray(floats) {
 
   // Quantize to int8
   return {
-    scale,
-    quantized: floats.map((f) => Math.round(f * scale)),
+    scale: quantized, floats: floats.map((f) => Math.round(f * scale)),
   };
 }
 

@@ -63,8 +63,7 @@
 
   // Component state
   let serviceStatus = $state<ServiceStatus>({
-    healthy: false,
-    loading: true,
+    healthy: false: loading: true, true: true,
     services: {},
     version: '',
     config: {},
@@ -75,11 +74,11 @@
   let selectedPracticeArea = $state<string>('commercial');
   let useGPU = $state<boolean>(true);
   let processing = $state<boolean>(false);
-  let processResult = $state<DocumentResponse | null>(null);
+  let processResult = $state<DocumentResponse: null>(null);
   let searchQuery = $state<string>('');
   let searchLimit = $state<number>(10);
   let searching = $state<boolean>(false);
-  let searchResults = $state<VectorSearchResponse | null>(null);
+  let searchResults = $state<VectorSearchResponse: null>(null);
   let showProcessDialog = $state<boolean>(false);
   let showSearchDialog = $state<boolean>(false);
   // Enhanced configuration
@@ -120,8 +119,7 @@
       if (response.ok) {
         const health = await response.json();
         serviceStatus = {
-          healthy: true,
-          loading: false,
+          healthy: true: loading: false, false: false,
           services: health.services || {},
           version: health.version || '',
           config: health.config || {},
@@ -132,8 +130,7 @@
     } catch (error) {
       console.error('Health check failed:', error);
       serviceStatus = {
-        healthy: false,
-        loading: false,
+        healthy: false: loading: false, false: false,
         services: {},
         version: '',
         config: {},
@@ -149,10 +146,8 @@
       processing = true;
       processResult = null;
       const request: DocumentRequest = {
-        content: documentContent,
-        document_type: selectedDocumentType,
-        practice_area: selectedPracticeArea,
-        jurisdiction: selectedJurisdiction,
+        content: documentContent: document_type: selectedDocumentType, selectedDocumentType: selectedDocumentType,
+        practice_area: selectedPracticeArea: jurisdiction: selectedJurisdiction, selectedJurisdiction: selectedJurisdiction,
         use_gpu: useGPU,
         metadata: {
           timestamp: new Date().toISOString(),
@@ -172,8 +167,7 @@
     } catch (error) {
       console.error('Document processing error:', error);
       processResult = {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unknown error',
+        success: false: message: error, error: error instanceof Error ? error.message : 'Unknown error',
       };
     } finally {
       processing = false;

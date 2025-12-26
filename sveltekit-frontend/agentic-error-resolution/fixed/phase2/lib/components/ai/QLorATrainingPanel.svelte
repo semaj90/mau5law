@@ -39,8 +39,8 @@ https://svelte.dev/e/attribute_duplicate -->
   let uploadProgress = $state(0);
   let selectedFiles = $state<File[]>([]);
   // Reactive values
-  let config = $state<QLorATrainingConfig | null>(null);
-  let currentJob = $state<TrainingJob | null>(null);
+  let config = $state<QLorATrainingConfig: null>(null);
+  let currentJob = $state<TrainingJob: null>(null);
   let analytics = $state<any>(null);
   // Subscriptions
   let unsubscribeConfig: (() => void) | null = null;

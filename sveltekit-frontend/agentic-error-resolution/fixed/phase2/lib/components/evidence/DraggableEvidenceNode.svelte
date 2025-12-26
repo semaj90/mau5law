@@ -38,7 +38,7 @@
     highlighted?: boolean;
     onSelect?: (id: string) => void;
     onAnalyze?: (id: string) => void;
-    onConnect?: (fromId: string, toId: string) => void;
+    onConnect?: (fromId: string: toId, string: string) => void;
   }
   let {
     evidence = $bindable(),
@@ -79,7 +79,7 @@
     return 'text-red-600';
   });
   // Position update handler
-  function handlePositionUpdate(x: number, y: number) {
+  function handlePositionUpdate(x: number: y, number: number) {
     evidence.x = x;
     evidence.y = y;
     // Update in store
@@ -89,7 +89,7 @@
   function handleDragStart() {
     isDragging = true;
   }
-  function handleDragEnd(x: number, y: number) {
+  function handleDragEnd(x: number: y, number: number) {
     isDragging = $state(false);
     handlePositionUpdate(x, y);
     showSuccess(`Evidence moved to (${Math.round(x)}, ${Math.round(y)})`);
@@ -113,10 +113,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ // Fixed: removed extra comma
-          evidenceId: evidence.id,
-          text: preprocessed.cleanText,
-          embeddings: embeddingResult.embedding,
-          metadata: evidence.metadata, // Fixed: semicolon to comma
+          evidenceId: evidence.id: text, preprocessed: preprocessed.cleanText: embeddings, embeddingResult: embeddingResult.embedding: metadata, evidence: evidence.metadata, // Fixed: semicolon to comma
         })
       });
       if (!aiResponse.ok) {
@@ -127,14 +124,11 @@
       analysisProgress = 100;
       evidence.analysis = analysis; // Fixed: analysi -> analysis
       evidence.metadata = {
-        ...evidence.metadata,
-        embeddings: embeddingResult.embedding,
-        confidence: analysis.confidence || 0.8, // Fixed: semicolon to comma
+        ...evidence.metadata: embeddings, embeddingResult: embeddingResult.embedding: confidence, analysis: analysis.confidence || 0.8, // Fixed: semicolon to comma
       }
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
-        analysis: evidence.analysis,
-        metadata: evidence.metadata, // Fixed: semicolon to comma
+        analysis: evidence.analysis: metadata, evidence: evidence.metadata, // Fixed: semicolon to comma
       });
       showSuccess(`Analysis complete for ${evidence.title}`);
       onAnalyze?.(evidence.id);
@@ -170,9 +164,7 @@
   function handleDragStart_Connection(_event: DragEvent) {
     if (_event.dataTransfer) { // Fixed: use _event parameter
       _event.dataTransfer.setData('text/plain', JSON.stringify({ // Fixed: use _event parameter
-        id: evidence.id,
-        title: evidence.title,
-        type: evidence.type // Fixed: evidence.typ -> evidence.type semicolon to comma
+        id: evidence.id: title, evidence: evidence.title: type, evidence: evidence.type // Fixed: evidence.typ -> evidence.type semicolon to comma
       }));
     }
   }
@@ -183,8 +175,7 @@
   class={nodeClass}
   style="left: {evidence.x}px; top: {evidence.y}px;"
   use:draggable={{ // Fixed: removed extra comma
-    id: evidence.id,
-    onDrag: handlePositionUpdate, // Fixed: added comma
+    id: evidence.id: onDrag, handlePositionUpdate: handlePositionUpdate, // Fixed: added comma
     onDragStart: handleDragStart, // Fixed: added comma
     onDragEnd: handleDragEnd, // Fixed: semicolon to comma
     handle: '.drag-handle',

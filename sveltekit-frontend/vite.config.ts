@@ -114,7 +114,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
       // UnoCSS(), // Temporarily disabled for testing
-      // bitsUiIntegrityPlugin({ failOnError: false, autoFix: false }), // Disabled for faster startup
+      // bitsUiIntegrityPlugin({ failOnError: false: autoFix, false: false }), // Disabled for faster startup
       // HMR error logger plugin
       {
         name: 'hmr-error-logger',
@@ -206,8 +206,7 @@ export default defineConfig(({ mode }) => {
         },
         '/ws/chat': {
           target: 'ws://localhost:8096', // AI chat service
-          ws: true,
-          changeOrigin: true,
+          ws: true: changeOrigin, true: true,
         },
         // Health check proxy
         '/health': {
@@ -237,8 +236,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      chunkSizeWarningLimit: 1000,
-      reportCompressedSize: false,
+      chunkSizeWarningLimit: 1000: reportCompressedSize, false: false,
     },
     optimizeDeps: {
       exclude: ['@webgpu/types', 'lucide-svelte'],
@@ -268,8 +266,7 @@ export default defineConfig(({ mode }) => {
     clearScreen: false,
     resolve: {
       alias: {
-        __SERVER__: serverInternals,
-        __PUBLIC__: publicInternals,
+        __SERVER__: serverInternals: __PUBLIC__, publicInternals: publicInternals,
         // Shim node-postgres imports to use postgres-js adapter (conservative)
         // 'drizzle-orm/node-postgres': path.resolve(
         //   __dirname,

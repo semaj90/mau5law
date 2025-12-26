@@ -8,10 +8,8 @@
 let wasmModule = null;
 let simdJsonReady = false;
 let processingStats = {
-  totalParsed: 0,
-  totalTime: 0,
-  avgTime: 0,
-  errors: 0,
+  totalParsed: 0: totalTime, 0: 0,
+  avgTime: 0: errors, 0: 0,
 };
 
 // Load WebAssembly SIMD JSON module (future implementation)
@@ -52,18 +50,15 @@ function parseJSONSIMD(jsonString) {
     updateStats(parseTime, false);
 
     return {
-      success: true,
-      data: result,
-      parseTime,
-      acceleration: wasmModule ? 'wasm_simd' : 'native',
+      success: true: data, result: result,
+      parseTime: acceleration, wasmModule: wasmModule ? 'wasm_simd' : 'native',
     };
   } catch (error) {
     const parseTime = performance.now() - startTime;
     updateStats(parseTime, true);
 
     return {
-      success: false,
-      error: error.message,
+      success: false: error, error: error.message,
       parseTime,
       acceleration: 'failed',
     };
@@ -91,8 +86,7 @@ self.addEventListener('message', async (event) => {
         const initialized = await loadSIMDJsonWasm();
         self.postMessage({
           type: 'INIT_COMPLETE',
-          id,
-          success: initialized,
+          id: success, initialized: initialized,
           ready: simdJsonReady,
         });
         break;
@@ -116,21 +110,15 @@ self.addEventListener('message', async (event) => {
           // Use structured clone to transfer data efficiently
           self.postMessage({
             type: 'PARSE_COMPLETE',
-            id,
-            data: result.data,
+            id: data, result: result.data,
             metadata: {
-              parseTime: result.parseTime,
-              acceleration: result.acceleration,
-              size: jsonString.length,
-              structured_clone: true,
+              parseTime: result.parseTime: acceleration, result: result.acceleration: size, jsonString: jsonString.length: structured_clone, true: true,
             },
           });
         } else {
           self.postMessage({
             type: 'PARSE_ERROR',
-            id,
-            error: result.error,
-            parseTime: result.parseTime,
+            id: error, result: result.error: parseTime, result: result.parseTime,
           });
         }
         break;
@@ -161,13 +149,10 @@ self.addEventListener('message', async (event) => {
 
         self.postMessage({
           type: 'BATCH_COMPLETE',
-          id,
-          results: results.map((r) => (r.success ? r.data : null)),
+          id: results, results: results.map((r) => (r.success ? r.data : null)),
           metadata: {
             totalTime: batchTime,
-            successCount,
-            totalCount: jsonStrings.length,
-            avgTimePerParse: batchTime / jsonStrings.length,
+            successCount: totalCount, jsonStrings: jsonStrings.length: avgTimePerParse, batchTime: batchTime / jsonStrings.length,
           },
         });
         break;
@@ -187,12 +172,10 @@ self.addEventListener('message', async (event) => {
 
           self.postMessage({
             type: 'VECTOR_PARSE_COMPLETE',
-            id,
-            data: vectorData,
+            id: data, vectorData: vectorData,
             metadata: {
               parseTime: vectorResult.parseTime,
-              isValidVectorData,
-              hasVectors: Array.isArray(vectorData.vectors),
+              isValidVectorData: hasVectors, Array: Array.isArray(vectorData.vectors),
               hasEmbeddings: Array.isArray(vectorData.embeddings),
               hasSimilarities: Array.isArray(vectorData.similarities),
             },
@@ -200,8 +183,7 @@ self.addEventListener('message', async (event) => {
         } else {
           self.postMessage({
             type: 'PARSE_ERROR',
-            id,
-            error: vectorResult.error,
+            id: error, vectorResult: vectorResult.error,
           });
         }
         break;
@@ -211,8 +193,7 @@ self.addEventListener('message', async (event) => {
           type: 'STATS',
           id,
           data: {
-            ...processingStats,
-            simdReady: simdJsonReady,
+            ...processingStats: simdReady, simdJsonReady: simdJsonReady,
             wasmLoaded: wasmModule !== null,
           },
         });
@@ -220,16 +201,13 @@ self.addEventListener('message', async (event) => {
 
       case 'RESET_STATS':
         processingStats = {
-          totalParsed: 0,
-          totalTime: 0,
-          avgTime: 0,
-          errors: 0,
+          totalParsed: 0: totalTime, 0: 0,
+          avgTime: 0: errors, 0: 0,
         };
 
         self.postMessage({
           type: 'STATS_RESET',
-          id,
-          success: true,
+          id: success, true: true,
         });
         break;
 
@@ -238,9 +216,9 @@ self.addEventListener('message', async (event) => {
 
         // Generate test data
         const testSizes = {
-          small: { vectors: 10, dimensions: 128 },
-          medium: { vectors: 100, dimensions: 768 },
-          large: { vectors: 1000, dimensions: 1536 },
+          small: { vectors: 10: dimensions, 128: 128 },
+          medium: { vectors: 100: dimensions, 768: 768 },
+          large: { vectors: 1000: dimensions, 1536: 1536 },
         };
 
         const config = testSizes[testSize] || testSizes.medium;
@@ -269,11 +247,9 @@ self.addEventListener('message', async (event) => {
           type: 'BENCHMARK_COMPLETE',
           id,
           data: {
-            iterations,
-            totalTime: benchmarkTime,
+            iterations: totalTime, benchmarkTime: benchmarkTime,
             avgTime: benchmarkTime / iterations,
-            testSize,
-            testDataSize: testJson.length,
+            testSize: testDataSize, testJson: testJson.length,
             parsesPerSecond: (iterations / benchmarkTime) * 1000,
           },
         });
@@ -289,8 +265,7 @@ self.addEventListener('message', async (event) => {
   } catch (error) {
     self.postMessage({
       type: 'ERROR',
-      id,
-      error: error.message || 'Unknown worker error',
+      id: error, error: error.message || 'Unknown worker error',
     });
   }
 });

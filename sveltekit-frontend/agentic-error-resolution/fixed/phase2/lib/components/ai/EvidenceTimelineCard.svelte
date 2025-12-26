@@ -14,7 +14,7 @@
   // Access props via Svelte runes $props()
   let _props = $props();
   const timelineEvents: Array = [];
-  const caseId: string | undefined = _props.caseId;
+  const caseId: string: undefined = _props.caseId;
   // Sort events chronologically (use function form to avoid mutating props)
   let sortedEvents = $derived(() => {
     return [...timelineEvents].sort((a, b) => new Date(a.date + ' ' + (a.time || '00:00')).getTime() -

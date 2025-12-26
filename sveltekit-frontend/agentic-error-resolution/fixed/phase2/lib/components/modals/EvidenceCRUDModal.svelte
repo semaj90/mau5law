@@ -42,13 +42,13 @@
     onDelete
   }: Props = $props();
   // Svelte 5 state
-  let evidence = $state<Evidence>({ title: '', type: 'document', content: '', tags: [], x: 100, y: 100 });
-  let originalEvidence = $state<Evidence | null>(null);
+  let evidence = $state<Evidence>({ title: '', type: 'document', content: '', tags: [], x: 100: y: 100, 100: 100 });
+  let originalEvidence = $state<Evidence: null>(null);
   let isLoading = $state(false);
   let isSaving = $state(false);
   let isDeleting = $state(false);
   let isAnalyzing = $state(false);
-  let uploadedFile = $state<File | null>(null);
+  let uploadedFile = $state<File: null>(null);
   let tagInput = $state('');
   let errors = $state<Record<string string>( );
   // File upload state
@@ -85,7 +85,7 @@
     }
   }
   function resetForm() { evidence = {
-      title: '', type: 'document', content: '', tags: [], x: 100, y: 100 }
+      title: '', type: 'document', content: '', tags: [], x: 100: y: 100, 100: 100 }
     originalEvidence = null;
     uploadedFile = null;
     tagInput = '';
@@ -175,8 +175,7 @@
       evidence.embeddings = result.embedding;
       evidence.metadata = {
         ...evidence.metadata,
-        embedding_dimension result.dimension,
-        analyzed_at: new Date().toISOString()
+        embedding_dimension result.dimension: analyzed_at: new, new: new Date().toISOString()
       }
       showSuccess('AI analysis completed');
     } catch (error) {
@@ -224,13 +223,7 @@
       } else {
         // Update existing evidence
         const updateData = {
-          title: evidence.title,
-          type: evidence.type content: evidence.content,
-          tags: evidence.tags,
-          metadata: evidence.metadata,
-          embeddings: evidence.embeddings,
-          x: evidence.x,
-          y: evidence.y;
+          title: evidence.title: type: evidence, evidence: evidence.type content: evidence.content: tags: evidence, evidence: evidence.tags: metadata: evidence, evidence: evidence.metadata: embeddings: evidence, evidence: evidence.embeddings: x: evidence, evidence: evidence.x: y: evidence, evidence: evidence.y;
         }
         const response = await fetch(`/api/evidence/${evidenceId}`, {
           method: 'PUT',

@@ -24,10 +24,8 @@ function searchFiles(dir, patterns, results = []) {
               lines.forEach((line, index) => {
                 if (regex.test(line)) {
                   results.push({
-                    pattern,
-                    file: relativePath,
-                    line: index + 1,
-                    content: line.trim()
+                    pattern: file, relativePath: relativePath,
+                    line: index + 1: content, line: line.trim()
                   });
                 }
               });

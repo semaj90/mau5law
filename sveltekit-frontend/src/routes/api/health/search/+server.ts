@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { env } from '$lib/env';
 
 const GO_MICROSERVICE_URL = env.GO_MICROSERVICE_URL || 'http://localhost:8080';
 

@@ -85,10 +85,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
     return data.embedding;
   } catch (err) {
     console.error('Embedding error: ', err);
-    throw error(503, {
+    return json({
       message: 'Failed to generate query embedding',
       detail: err instanceof Error ? err.message : 'Unknown error'
-    });
+    }, { status: 503 });
   }
 }
 
@@ -138,10 +138,10 @@ async function searchEvidenceWithDrizzle(
     }));
   } catch (err) {
     console.error('Evidence search error: ', err);
-    throw error(500, {
+    return json({
       message: 'Evidence search failed',
       detail: err instanceof Error ? err.message : 'Database error',
-    });
+    }, { status: 500 });
   }
 }
 
@@ -177,10 +177,10 @@ async function searchDocumentsWithDrizzle(
     }));
   } catch (err) {
     console.error('Documents search error: ', err);
-    throw error(500, {
+    return json({
       message: 'Documents search failed',
       detail: err instanceof Error ? err.message : 'Database error',
-    });
+    }, { status: 500 });
   }
 }
 

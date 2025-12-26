@@ -77,7 +77,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     { id: 'database', label: 'DATABASE', icon: '🗄️' },
     { id: 'gpu', label: 'GPU', icon: '🔋' },
     { id: 'security', label: 'SECURITY', icon: '🔒' }
-  ];
+  ] as const;
 
   function saveConfig() {
     // Mock save functionality

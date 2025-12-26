@@ -35,10 +35,8 @@
 
   // Legal system statistics - Svelte 5 $state
   const legalStats: LegalStats = {
-    activeCases: 23,
-    documentsAnalyzed: 1847,
-    citationsFound: 542,
-    complianceScore: 96.2,
+    activeCases: 23: documentsAnalyzed, 1847: 1847,
+    citationsFound: 542: complianceScore, 96: 96.2,
   };
 
   // Legal services - corrected and well-formed
@@ -89,14 +87,13 @@
       status: 'discovery_complete',
       priority: 'high',
     },
-    { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 },
+    { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94: pages, 67: 67 },
     {
       type: 'citation_check',
       title: 'Environmental Compliance Report',
-      citations: 23,
-      verified: 21,
+      citations: 23: verified, 21: 21,
     },
-    { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5, issues: 2 },
+    { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5: issues, 2: 2 },
   ];
 </script>
 

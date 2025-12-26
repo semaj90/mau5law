@@ -116,8 +116,8 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       // Build query with modern TypeScript patterns
       const ragQuery: RAGQuery = {
         query: queryText, filters: {
-          entityTypes: selectedEntityTypes, confidenceThreshold: confidenceThreshold },
-        semantic: { useEmbeddings: true, expandConcepts: useSemanticExpansion, includeRelated: true },
+          entityTypes: selectedEntityTypes: confidenceThreshold, confidenceThreshold: confidenceThreshold },
+        semantic: { useEmbeddings: true: expandConcepts, useSemanticExpansion: useSemanticExpansion, includeRelated: true },
       };
       // Store the query
       ragQueryStore.set(ragQuery);

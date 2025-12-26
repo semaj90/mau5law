@@ -1,5 +1,91 @@
 # Google Gemini Context: Phase 72 Knowledge Base & Embedding Pipeline
 
+## ⚠️ CRITICAL: Phase 79 Pattern Fixer Safety Protocol
+
+### Incident Summary (Dec 25, 2025)
+**Problem**: Automated pattern fixer regression caused 67k error spike (14,511 → 81,562 errors)
+**Cause**: Untested "auth-machine-garbage" patterns corrupted 4,546 files
+**Recovery**: `.phase79.bak` backup system enabled full rollback
+**Current State**: 50,827 errors (baseline restored)
+
+### Non-Negotiable Safety Rules
+
+#### Rule 1: Dry-Run is MANDATORY
+```bash
+# Step 1: ALWAYS preview changes first
+node scripts/phase79-pattern-fixer.mjs --dry-run
+
+# Step 2: Review the output carefully
+# Step 3: Only if safe, apply with safety flag
+node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
+```
+
+#### Rule 2: Incremental Application Only
+- Apply ONE pattern per run (never batch)
+- Check error count after each pattern
+- Never skip verification steps
+- Keep backup files until success confirmed
+
+#### Rule 3: Automatic Rollback on Regression
+```powershell
+# Check error count after pattern application:
+$before = 50827  # Record baseline
+npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+
+# If errors increased → IMMEDIATE ROLLBACK:
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    $original = $_.FullName -replace '\.phase79\.bak$', ''
+    Copy-Item $_.FullName $original -Force
+}
+```
+
+#### Rule 4: Pattern Risk Classification
+```json
+// scripts/patterns.json - Risk levels:
+{
+  "risk": "safe",      // ✅ Tested, low-impact (whitespace, imports)
+  "risk": "medium",    // ⚠️ Requires review (type changes)
+  "risk": "high",      // 🚨 Manual approval only (AST changes)
+  "risk": "disabled"   // ❌ Known to cause corruption
+}
+```
+
+**Disabled Patterns** (DO NOT RE-ENABLE):
+- `env-type-declarations`: Injects bad `$env/static/private` imports (259k errors)
+- `auth-machine-garbage-*`: Corrupts XState machine code (67k errors)
+
+#### Rule 5: Test-First Pattern Development
+1. Write pattern regex in `patterns.json`
+2. Test manually on 2-3 sample files
+3. Run `--dry-run` to see all affected files
+4. Apply to 10 files, verify no errors
+5. If successful, apply to full codebase
+6. Monitor error count continuously
+
+### Recovery Playbook
+```bash
+# 1. Detect regression (error count spike)
+npx svelte-check --output machine
+
+# 2. Immediate rollback from backups
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    Copy-Item $_.FullName ($_.FullName -replace '\.phase79\.bak$', '') -Force
+}
+
+# 3. Verify restoration
+npx svelte-check --output machine
+
+# 4. Clean backups after confirmation
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | Remove-Item -Force
+
+# 5. Analyze what went wrong (check fix-log-*.jsonl)
+node scripts/error-search.mjs --query "pattern regression"
+```
+
+**Key Lesson**: Backup system is last resort. Prevention through dry-run testing is PRIMARY defense.
+
+---
+
 ## Mission: Semantic Error Clustering with Ollama + Qdrant
 
 ### Architecture Overview

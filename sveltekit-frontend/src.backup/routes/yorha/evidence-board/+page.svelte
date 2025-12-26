@@ -201,7 +201,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 		{ id: 'agentic', label: 'Send to Agentic Pipeline' },
 		{ id: 'pin', label: 'Pin Node' },
 		{ id: 'metadata', label: 'Show Metadata Panel' }
-	];
+	] as const;
 
 	function handleDragStart(ev: DragEvent, item: EvidenceItem) {
 		dragging = item;

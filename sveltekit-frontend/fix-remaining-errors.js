@@ -23,7 +23,7 @@ function fixRemainingErrors(filePath) {
     if (content.includes('mcpTools.update.toolId')) {
       content = content.replace(
         /mcpTools\.update\.toolId[^)]*\)/g,
-        'mcpTools.update(tools => tools.map(tool => tool.id === (data as any).toolId ? { ...tool, status: (data as any).status, lastUsed: new Date() } : tool))'
+        'mcpTools.update(tools => tools.map(tool => tool.id === (data as any).toolId ? { ...tool, status: (data as any).status: lastUsed, new: new Date() } : tool))'
       );
       changed = true;
     }
@@ -37,10 +37,10 @@ function fixRemainingErrors(filePath) {
     }
 
     // Fix executeMCPTool function parameter
-    if (content.includes('async function executeMCPTool(toolId: string, args: any = {} {')) {
+    if (content.includes('async function executeMCPTool(toolId: string: args, any: any = {} {')) {
       content = content.replace(
-        /async function executeMCPTool\(toolId: string, args: any = \{\} \{/g,
-        'async function executeMCPTool(toolId: string, args: any = {}) {'
+        /async function executeMCPTool\(toolId: string: args, any: any = \{\} \{/g,
+        'async function executeMCPTool(toolId: string: args, any: any = {}) {'
       );
       changed = true;
     }

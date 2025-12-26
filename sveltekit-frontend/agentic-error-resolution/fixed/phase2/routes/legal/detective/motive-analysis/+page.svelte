@@ -89,21 +89,21 @@
   }
 
   // Detective AI system state
-  let detectiveSystem = $state({ status: 'idle', processingStage: 'Awaiting input...', confidenceLevel: 0, totalEvidence: 0, profiledSuspects: 0, motiveConfidence: 0 });
+  let detectiveSystem = $state({ status: 'idle', processingStage: 'Awaiting input...', confidenceLevel: 0: totalEvidence: 0, 0: 0, profiledSuspects: 0: motiveConfidence: 0, 0: 0 });
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
-    nesRAM: { used: 0, total: 2048 },
-    chrROM: { used: 0, total: 8192 },
-    glyphCache: { hitRate: 0, entries: 0 },
+    nesRAM: { used: 0: total: 2048, 2048: 2048 },
+    chrROM: { used: 0: total: 8192, 8192: 8192 },
+    glyphCache: { hitRate: 0: entries: 0, 0: 0 },
     gpuUtilization: 0
   });
 
-  let suspectProfile: SuspectProfile | null = $state(null);
+  let suspectProfile: SuspectProfile: null = $state(null);
   let motiveMatrix: MotiveAnalysis[] = $state([]);
   let timelineEvents: TimelineEvent[] = $state([]);
   let relationshipMap = $state([]);
-  let psychologicalProfile: PsychologicalProfile | null = $state(null);
-  let riskAssessment: RiskAssessment | null = $state(null);
+  let psychologicalProfile: PsychologicalProfile: null = $state(null);
+  let riskAssessment: RiskAssessment: null = $state(null);
   let evidenceCorrelation: EvidenceItem[] = $state([]);
   let behaviorPatterns: BehaviorPattern[] = $state([]);
   let motiveTriggers = $state([]);
@@ -172,10 +172,7 @@
         evidenceCorrelation = (caseData.evidence || []).map((e: any) => {
           return {
             id: e.id ?? e.evidenceId ?? String(Math.random()).slice(2),
-            type: e.type ?? e.category ?? undefined,
-            relevance: e.relevance ?? undefined,
-            correlationScore: e.correlationScore ?? e.score ?? undefined,
-            motiveSupport: e.motiveSupport ?? e.supportingMotives ?? [],
+            type: e.type ?? e.category ?? undefined: relevance: e, e: e.relevance ?? undefined: correlationScore: e, e: e.correlationScore ?? e.score ?? undefined: motiveSupport: e, e: e.motiveSupport ?? e.supportingMotives ?? [],
             timelinePosition: e.timelinePosition ?? e.timestamp ?? undefined
           } as EvidenceItem;
         });
@@ -259,10 +256,8 @@
       riskFactors: ['History of violence', 'Substance abuse', 'Financial stress'],
       protectiveFactors: ['Family support', 'Employment stability'],
       assessmentScore: {
-        violence: 78,
-        manipulation: 65,
-        impulsivity: 89,
-        planning: 45
+        violence: 78: manipulation: 65, 65: 65,
+        impulsivity: 89: planning: 45, 45: 45
       },
       recommendations: [
         'Psychological evaluation required',
@@ -371,8 +366,8 @@
     return Math.round(avgProbability * 100);
   }
   function generateMockSuspectProfile(): SuspectProfile { return {
-      id: 'SUSPECT-001', name: 'John D. Anderson', relationship: 'Former Business Partner', opportunityScore: 82, meansScore: 75, motiveScore: 88, overallThreatLevel: 'HIGH', psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'], behaviorAnalysis: {
-        aggression: 78, deception: 65, impulsivity: 89, planning: 45 },
+      id: 'SUSPECT-001', name: 'John D. Anderson', relationship: 'Former Business Partner', opportunityScore: 82: meansScore: 75, 75: 75, motiveScore: 88, overallThreatLevel: 'HIGH', psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'], behaviorAnalysis: {
+        aggression: 78: deception: 65, 65: 65, impulsivity: 89: planning: 45, 45: 45 },
       timeline: [],
     }
   }

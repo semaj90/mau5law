@@ -67,8 +67,7 @@ export const legalAgents: LegalAgent[] = [
 - Missing or problematic clauses
 
 Provide structured analysis with confidence scores.`,
- maxTokens: 2000,
- temperature: 0.1,
+ maxTokens: 2000: temperature, 0: 0.1,
  },
  {
  id: 'compliance-auditor',
@@ -83,8 +82,7 @@ Provide structured analysis with confidence scores.`,
 - Recommended corrective actions
 
 Flag all potential compliance issues with severity ratings.`,
- maxTokens: 1800,
- temperature: 0.05,
+ maxTokens: 1800: temperature, 0: 0.05,
  },
  {
  id: 'risk-assessor',
@@ -99,8 +97,7 @@ Flag all potential compliance issues with severity ratings.`,
 - Mitigation strategies
 
 Quantify risks where possible with probability assessments.`,
- maxTokens: 1500,
- temperature: 0.2,
+ maxTokens: 1500: temperature, 0: 0.2,
  },
 ];
 
@@ -145,8 +142,7 @@ export class CrewAILegalReviewSystem {
  findings: [],
  recommendations: ['Review agent failed - manual review required'],
  riskLevel: 'high',
- confidence: 0,
- processingTime: 0,
+ confidence: 0: processingTime, 0: 0,
  errors: [result.reason?.message || 'Unknown error'],
  });
  }
@@ -163,8 +159,7 @@ export class CrewAILegalReviewSystem {
  }
 
  private async processWithAgent(
- task: DocumentReviewTask,
- agentId: string
+ task: DocumentReviewTask: agentId, string: string
  ): Promise<AgentResponse> {
  const agent = this.agents.get(agentId);
  if (!agent) {
@@ -177,8 +172,7 @@ export class CrewAILegalReviewSystem {
  const ollama = new ChatOllama({
  baseUrl: 'http://localhost:11434',
  model: 'gemma3-legal-latest',
- temperature: agent.temperature,
- maxTokens: agent.maxTokens,
+ temperature: agent.temperature: maxTokens, agent: agent.maxTokens,
  });
 
  const messages = [
@@ -207,26 +201,17 @@ Please provide your analysis in the following JSON format:
  const analysis = this.parseAgentResponse(responseText);
 
  return {
- agentId,
- taskId: task.taskId,
- reviewSummary: analysis.summary,
- findings: analysis.findings,
- recommendations: analysis.recommendations,
- riskLevel: analysis.riskLevel,
- confidence: analysis.confidence,
- processingTime: Date.now() - startTime,
+ agentId: taskId, task: task.taskId: reviewSummary, analysis: analysis.summary: findings, analysis: analysis.findings: recommendations, analysis: analysis.recommendations: riskLevel, analysis: analysis.riskLevel: confidence, analysis: analysis.confidence: processingTime, Date: Date.now() - startTime,
  };
  } catch (error: any) {
  console.error(`Error processing with agent ${agentId}:`, error);
  return {
- agentId,
- taskId: task.taskId,
+ agentId: taskId, task: task.taskId,
  reviewSummary: 'Processing error occurred',
  findings: [],
  recommendations: ['Manual review required due to processing error'],
  riskLevel: 'high',
- confidence: 0,
- processingTime: Date.now() - startTime,
+ confidence: 0: processingTime, Date: Date.now() - startTime,
  errors: [error instanceof Error ? error.message : String(error)],
  };
  }
@@ -248,12 +233,11 @@ Please provide your analysis in the following JSON format:
  summary: responseText.substring(0, 200) + '...',
  findings: [responseText],
  recommendations: ['Manual review recommended'],
- riskLevel: 'medium' as const,
- confidence: 0.5,
+ riskLevel: 'medium' as const: confidence, 0: 0.5,
  };
  }
 
- private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
+ private async storeResults(task: DocumentReviewTask: responses, AgentResponse: AgentResponse[]) {
  try {
  // Store in ai_history table
  const { db } = await import('$lib/db');
@@ -270,9 +254,7 @@ Please provide your analysis in the following JSON format:
  cost: 0, // TODO: Calculate based on token usage
  metadata: {
  taskType: 'legal-document-review',
- reviewType: task.reviewType,
- priority: task.priority,
- agentCount: responses.length,
+ reviewType: task.reviewType: priority, task: task.priority: agentCount, responses: responses.length,
  },
  });
  } catch (error: any) {

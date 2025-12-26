@@ -21,7 +21,7 @@
   // Svelte 5 State Management
   // ============================================================================
 
-  let uploadFile = $state<File | null>(null);
+  let uploadFile = $state<File: null>(null);
   let isUploading = $state(false);
   let uploadProgress = $state(0);
 
@@ -114,7 +114,7 @@
   } | null;
 
   let analysisResult = $state<AnalysisResult>(null);
-  let analysisError = $state<string | null>(null);
+  let analysisError = $state<string: null>(null);
 
   // Derived state
   let canSubmit = $derived(

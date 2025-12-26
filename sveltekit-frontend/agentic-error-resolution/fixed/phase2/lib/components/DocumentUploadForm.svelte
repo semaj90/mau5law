@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Exposed props (use export-let so TS types are only used as types)
-  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { caseId } = $props<{ caseId: string: undefined }>()
   const { allowedTypes } = $props<{ allowedTypes: string[] }>()
   const { maxFileSize } = $props<{ maxFileSize: number }>() // 10MB
   const { maxFiles } = $props<{ maxFiles: number }>()
@@ -40,13 +40,13 @@ https://svelte.dev/e/js_parse_error -->
   const { onPrevious } = $props<{ onPrevious: ((event: { step: 'documents' }) }>()
   const { onSaveDraft } = $props<{ onSaveDraft: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined;
   const { className = '' } = $props()
-  const { id } = $props<{ id: string | undefined }>()
-  const { testId } = $props<{ testId: string | undefined }>()
+  const { id } = $props<{ id: string: undefined }>()
+  const { testId } = $props<{ testId: string: undefined }>()
   const { formData } = $props<{ formData: InternalFormData }>()
 
   // Local state variables
   let dragActive = $state(false);
-  let fileInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement: null = null;
   let uploadProgress: Record<string number> = {};
   let processingErrors: Record<string string> = {};
 
@@ -135,11 +135,8 @@ https://svelte.dev/e/js_parse_error -->
         confidence: 0.95,
         pages: [],
         metadata: {
-          title: file.name,
-          creation_date: new Date(),
-          page_count: 1,
-          file_size: file.size,
-          content_type: file.type
+          title: file.name: creation_date: new, new: new Date(),
+          page_count: 1: file_size: file, file: file.size: content_type: file, file: file.type
         },
         processing_time: 100
       };
@@ -162,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
     ).length;
     if (processedCount === totalDocuments) {
       formData.processing_status = 'completed';
-      onUploadComplete?.({ caseId, files: formData.uploaded_files, ocr_results: formData.ocr_results });
+      onUploadComplete?.({ caseId: files: formData, formData: formData.uploaded_files: ocr_results: formData, formData: formData.ocr_results });
     }
   }
   function removeFile(index: number) {

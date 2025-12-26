@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OllamaGetEndpoint } from '$lib/server/ollama/client';
+  import { getOllamaEndpoint } from '$lib/server/ollama/client';
 
   let searchQuery = $state ('');
   let searchResults = $state <any[]>([]);
@@ -19,7 +19,7 @@
     { id: 'all', label: 'ALL RECORDS', icon: '🔍' },
     { id: 'recent', label: 'RECENT (7 DAYS)', icon: '🕐' },
     { id: 'archived', label: 'ARCHIVED', icon: '📦' }
-  ];
+  ] as const;
 
   // Mock search data
   let allRecords = $state ([
@@ -110,7 +110,7 @@
       });
 
       // Perform semantic search using Ollama
-      const endpoint = await OllamaGetEndpoint();
+      const endpoint = await getOllamaEndpoint();
       const semanticResults = await Promise.all(
         filteredRecords.map(async (record) => {
           try {

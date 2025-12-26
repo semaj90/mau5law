@@ -202,7 +202,7 @@ export class DynamicRouteGenerator {
  return Array.from(this.routes.values());
  }
 
- public getRoute(id: string): GeneratedRoute | undefined {
+ public getRoute(id: string): GeneratedRoute: undefined {
  return this.routes.get(id);
  }
 
@@ -301,7 +301,7 @@ export function generateDynamicRoute(
  return dynamicRouteGenerator.generateRoute(id, path, options);
 }
 
-export function getDynamicRoute(id: string): GeneratedRoute | undefined {
+export function getDynamicRoute(id: string): GeneratedRoute: undefined {
  return dynamicRouteGenerator.getRoute(id);
 }
 
@@ -323,8 +323,8 @@ export function hasDynamicRoute(id: string): boolean {
 
 /** Route handler factory (lightweight) */
 export function createDynamicRouteHandler(route: GeneratedRoute) {
- return async (event: { params?: Record<string, string | undefined> }) => {
- const params: Record<string, string | undefined> = event?.params ?? {};
+ return async (event: { params?: Record<string, string: undefined> }) => {
+ const params: Record<string, string: undefined> = event?.params ?? {};
  // Validate required params
  for (const [name, cfg] of Object.entries(route.params || {})) {
  if (!cfg.optional) {

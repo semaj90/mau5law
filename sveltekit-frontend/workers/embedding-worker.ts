@@ -13,7 +13,7 @@ export default embed;
 self.addEventListener('message', async (event: MessageEvent) => {
   const payload = event.data;
   try {
-    let text: string | undefined;
+    let text: string: undefined;
     let id: unknown = undefined;
 
     if (typeof payload === 'string') {

@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ evidenceId: crypto.randomUUID(), filename: evidenceFile?.name || 'uploaded_evidence.txt', content: evidenceContent, type: evidenceType === 'police_report' ? 'document' : evidenceType }),
+        body: JSON.stringify({ evidenceId: crypto.randomUUID(), filename: evidenceFile?.name || 'uploaded_evidence.txt', content: evidenceContent: type, evidenceType: evidenceType === 'police_report' ? 'document' : evidenceType }),
       });
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
 
       // Transform API response to expected format
       results = { status: 'completed', sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(), analysisResults: {
-          summary: data.data?.analysis?.summary || 'Analysis completed', confidence: data.data?.analysis?.confidence || 0.5, keyFactsCount: data.data?.analysis?.keyFindings?.length || 0, relevantLaws: data.data?.analysis?.relevantLaws || [], suggestedTags: data.data?.analysis?.suggestedTags || [], prosecutionScore: data.data?.analysis?.prosecutionScore || 0, legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown', keyFindings: data.data?.analysis?.keyFindings || [], recommendations: data.data?.analysis?.recommendations || [], model: data.data?.model || 'gemma3-legal', processedAt: data.data?.processedAt },
+          summary: data.data?.analysis?.summary || 'Analysis completed', confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount, data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws, data: data.data?.analysis?.relevantLaws || [], suggestedTags: data.data?.analysis?.suggestedTags || [], prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance, data: data.data?.analysis?.legalRelevance || 'Unknown', keyFindings: data.data?.analysis?.keyFindings || [], recommendations: data.data?.analysis?.recommendations || [], model: data.data?.model || 'gemma3-legal', processedAt: data.data?.processedAt },
       };
     } catch (err) {
       console.error('Evidence analysis error:', err);
@@ -120,8 +120,7 @@ https://svelte.dev/e/js_parse_error -->
         status: 'completed',
         sessionId: 'mock-session-' + Date.now(),
         analysisResults: {
-          documentType: evidenceType,
-          keyFactsCount: Math.floor(Math.random() * 10) + 5,
+          documentType: evidenceType: keyFactsCount, Math: Math.floor(Math.random() * 10) + 5,
           personsOfInterest: [
             { name: 'John Doe', role: 'witness', confidence: 0.85 },
             { name: 'Jane Smith', role: 'defendant', confidence: 0.92 },

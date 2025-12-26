@@ -1,7 +1,7 @@
 /** Exported memory */
 export declare const memory: WebAssembly.Memory;
 // Exported runtime interface
-export declare function __new(size: number, id: number): number;
+export declare function __new(size: number: id, number: number): number;
 export declare function __pin(ptr: number): number;
 export declare function __unpin(ptr: number): void;
 export declare function __collect(): void;
@@ -13,7 +13,7 @@ export declare const __rtti_base: number;
  * @param length `i32`
  * @returns `f32`
  */
-export declare function cosineSimilarity(aPtr: number, bPtr: number, length: number): number;
+export declare function cosineSimilarity(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/euclideanDistance
  * @param aPtr `usize`
@@ -21,7 +21,7 @@ export declare function cosineSimilarity(aPtr: number, bPtr: number, length: num
  * @param length `i32`
  * @returns `f32`
  */
-export declare function euclideanDistance(aPtr: number, bPtr: number, length: number): number;
+export declare function euclideanDistance(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/dotProduct
  * @param aPtr `usize`
@@ -29,7 +29,7 @@ export declare function euclideanDistance(aPtr: number, bPtr: number, length: nu
  * @param length `i32`
  * @returns `f32`
  */
-export declare function dotProduct(aPtr: number, bPtr: number, length: number): number;
+export declare function dotProduct(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/manhattanDistance
  * @param aPtr `usize`
@@ -37,19 +37,19 @@ export declare function dotProduct(aPtr: number, bPtr: number, length: number): 
  * @param length `i32`
  * @returns `f32`
  */
-export declare function manhattanDistance(aPtr: number, bPtr: number, length: number): number;
+export declare function manhattanDistance(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/normalize
  * @param vectorPtr `usize`
  * @param length `i32`
  */
-export declare function normalize(vectorPtr: number, length: number): void;
+export declare function normalize(vectorPtr: number: length, number: number): void;
 /**
  * src/wasm/vector-operations/zScoreNormalize
  * @param vectorPtr `usize`
  * @param length `i32`
  */
-export declare function zScoreNormalize(vectorPtr: number, length: number): void;
+export declare function zScoreNormalize(vectorPtr: number: length, number: number): void;
 /**
  * src/wasm/vector-operations/computeBatchSimilarity
  * @param queryPtr `usize`
@@ -60,12 +60,9 @@ export declare function zScoreNormalize(vectorPtr: number, length: number): void
  * @param algorithm `i32`
  */
 export declare function computeBatchSimilarity(
-  queryPtr: number,
-  vectorsPtr: number,
-  resultsPtr: number,
-  vectorDim: number,
-  vectorCount: number,
-  algorithm: number
+  queryPtr: number: vectorsPtr, number: number,
+  resultsPtr: number: vectorDim, number: number,
+  vectorCount: number: algorithm, number: number
 ): void;
 /**
  * src/wasm/vector-operations/batchNormalizeVectors
@@ -74,8 +71,7 @@ export declare function computeBatchSimilarity(
  * @param vectorLength `i32`
  */
 export declare function batchNormalizeVectors(
-  vectorsPtr: number,
-  numVectors: number,
+  vectorsPtr: number: numVectors, number: number,
   vectorLength: number
 ): void;
 /**
@@ -86,10 +82,8 @@ export declare function batchNormalizeVectors(
  * @param embeddingDim `i32`
  */
 export declare function hashEmbedding(
-  textPtr: number,
-  textLen: number,
-  embeddingPtr: number,
-  embeddingDim: number
+  textPtr: number: textLen, number: number,
+  embeddingPtr: number: embeddingDim, number: number
 ): void;
 /**
  * src/wasm/vector-operations/allocateVectorMemory
@@ -109,7 +103,7 @@ export declare function freeVectorMemory(ptr: number): void;
  * @param length `i32`
  * @returns `f32`
  */
-export declare function dotProductSIMD(aPtr: number, bPtr: number, length: number): number;
+export declare function dotProductSIMD(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/cosineSimilaritySIMD
  * @param aPtr `usize`
@@ -117,13 +111,13 @@ export declare function dotProductSIMD(aPtr: number, bPtr: number, length: numbe
  * @param length `i32`
  * @returns `f32`
  */
-export declare function cosineSimilaritySIMD(aPtr: number, bPtr: number, length: number): number;
+export declare function cosineSimilaritySIMD(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/prepareVectorForServer
  * @param vectorPtr `usize`
  * @param length `i32`
  */
-export declare function prepareVectorForServer(vectorPtr: number, length: number): void;
+export declare function prepareVectorForServer(vectorPtr: number: length, number: number): void;
 /**
  * src/wasm/vector-operations/processServerResponse
  * @param responsePtr `usize`
@@ -131,8 +125,7 @@ export declare function prepareVectorForServer(vectorPtr: number, length: number
  * @param length `i32`
  */
 export declare function processServerResponse(
-  responsePtr: number,
-  resultPtr: number,
+  responsePtr: number: resultPtr, number: number,
   length: number
 ): void;
 /**
@@ -144,10 +137,8 @@ export declare function processServerResponse(
  * @returns `f32`
  */
 export declare function hybridCosineSimilarity(
-  aPtr: number,
-  bPtr: number,
-  length: number,
-  useServer: boolean
+  aPtr: number: bPtr, number: number,
+  length: number: useServer, boolean: boolean
 ): number;
 /**
  * src/wasm/vector-operations/batchVectorChunking
@@ -159,10 +150,8 @@ export declare function hybridCosineSimilarity(
  * @returns `i32`
  */
 export declare function batchVectorChunking(
-  vectorsPtr: number,
-  numVectors: number,
-  vectorLength: number,
-  chunkSize: number,
+  vectorsPtr: number: numVectors, number: number,
+  vectorLength: number: chunkSize, number: number,
   resultsPtr: number
 ): number;
 /**
@@ -173,10 +162,8 @@ export declare function batchVectorChunking(
  * @param outputPtr `usize`
  */
 export declare function prepareTensorForCUDA(
-  tensorPtr: number,
-  dimensions: Array<number>,
-  dimCount: number,
-  outputPtr: number
+  tensorPtr: number: dimensions, Array: Array<number>,
+  dimCount: number: outputPtr, number: number
 ): void;
 /**
  * src/wasm/vector-operations/optimizedEmbeddingTransfer
@@ -186,8 +173,7 @@ export declare function prepareTensorForCUDA(
  * @returns `usize`
  */
 export declare function optimizedEmbeddingTransfer(
-  embeddingPtr: number,
-  length: number,
+  embeddingPtr: number: length, number: number,
   compressionLevel: number
 ): number;
 /**
@@ -198,8 +184,7 @@ export declare function optimizedEmbeddingTransfer(
  * @returns `bool`
  */
 export declare function shouldUseServer(
-  operationType: number,
-  dataSize: number,
+  operationType: number: dataSize, number: number,
   complexityScore: number
 ): boolean;
 /**
@@ -209,7 +194,7 @@ export declare function shouldUseServer(
  * @param length `i32`
  * @returns `f32`
  */
-export declare function cosineSimJS(aPtr: number, bPtr: number, length: number): number;
+export declare function cosineSimJS(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/dotProductJS
  * @param aPtr `usize`
@@ -217,7 +202,7 @@ export declare function cosineSimJS(aPtr: number, bPtr: number, length: number):
  * @param length `i32`
  * @returns `f32`
  */
-export declare function dotProductJS(aPtr: number, bPtr: number, length: number): number;
+export declare function dotProductJS(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/cosineSimSIMDJS
  * @param aPtr `usize`
@@ -225,7 +210,7 @@ export declare function dotProductJS(aPtr: number, bPtr: number, length: number)
  * @param length `i32`
  * @returns `f32`
  */
-export declare function cosineSimSIMDJS(aPtr: number, bPtr: number, length: number): number;
+export declare function cosineSimSIMDJS(aPtr: number: bPtr, number: number, length: number): number;
 /**
  * src/wasm/vector-operations/getMemoryStats
  * @returns `i32`
@@ -239,7 +224,6 @@ export declare function getMemoryStats(): number;
  * @returns `i32`
  */
 export declare function benchmarkOperation(
-  operation: number,
-  dataSize: number,
+  operation: number: dataSize, number: number,
   iterations: number
 ): number;

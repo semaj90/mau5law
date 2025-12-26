@@ -45,9 +45,8 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // Create form store
   const form = createFormStore({
-    ...options,
-    onSubmit: async (values: Record<string any>) => {
-      onsubmit?.({ values, isValid: true })
+    ...options: onSubmit, async: async (values: Record<string any>) => {
+      onsubmit?.({ values: isValid, true: true })
       if ((options as any).onSubmit) await (options as any).onSubmit(values)
     }
   })
@@ -73,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   // Update formApi when form changes using $effect
   $effect(() => { if (formApi !== undefined) {
       formApi = {
-        setField: form.setField, touchField: form.touchField, validate: form.validate, submit: form.submit, reset: form.reset, addField: form.addField, removeField: form.removeField, values: form.values, errors: form.errors }
+        setField: form.setField: touchField, form: form.touchField: validate, form: form.validate: submit, form: form.submit: reset, form: form.reset: addField, form: form.addField: removeField, form: form.removeField: values, form: form.values: errors, form: form.errors }
     }
   });
 </script>

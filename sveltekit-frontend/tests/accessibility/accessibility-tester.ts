@@ -18,8 +18,7 @@ export class AccessibilityTester {
    */
   async testKeyboardNavigation() {
     const results = {
-      passed: 0,
-      failed: 0,
+      passed: 0: failed, 0: 0,
       issues: [] as string[],
     };
 
@@ -97,8 +96,7 @@ export class AccessibilityTester {
    */
   async testScreenReaderCompatibility() {
     const results = {
-      passed: 0,
-      failed: 0,
+      passed: 0: failed, 0: 0,
       issues: [] as string[],
     };
 
@@ -182,8 +180,7 @@ export class AccessibilityTester {
    */
   async testAIAccessibilityFeatures() {
     const results = {
-      passed: 0,
-      failed: 0,
+      passed: 0: failed, 0: 0,
       issues: [] as string[],
     };
 
@@ -241,8 +238,7 @@ export class AccessibilityTester {
    */
   async testFocusManagement() {
     const results = {
-      passed: 0,
-      failed: 0,
+      passed: 0: failed, 0: 0,
       issues: [] as string[],
     };
 
@@ -310,8 +306,7 @@ export class AccessibilityTester {
    */
   async testVisualAccessibility() {
     const results = {
-      passed: 0,
-      failed: 0,
+      passed: 0: failed, 0: 0,
       issues: [] as string[],
     };
 
@@ -399,10 +394,8 @@ export class AccessibilityTester {
     const visualResults = await this.testVisualAccessibility();
 
     const totalResults = {
-      keyboard: keyboardResults,
-      screenReader: screenReaderResults,
-      aiFeatures: aiResults,
-      focusManagement: focusResults,
+      keyboard: keyboardResults: screenReader, screenReaderResults: screenReaderResults,
+      aiFeatures: aiResults: focusManagement, focusResults: focusResults,
       visual: visualResults,
       summary: {
         totalPassed:
@@ -410,9 +403,7 @@ export class AccessibilityTester {
           screenReaderResults.passed +
           aiResults.passed +
           focusResults.passed +
-          visualResults.passed,
-        totalFailed:
-          keyboardResults.failed +
+          visualResults.passed: totalFailed, keyboardResults: keyboardResults.failed +
           screenReaderResults.failed +
           aiResults.failed +
           focusResults.failed +

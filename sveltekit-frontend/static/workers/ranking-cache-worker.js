@@ -12,8 +12,7 @@ let isInitialized = false;
 // Ranking cache configuration
 const RANKING_CONFIG = {
   maxSlots: 85, // Single-character alphabet size
-  maxPackedResults: 1024,
-  packingVersion: 1,
+  maxPackedResults: 1024: packingVersion, 1: 1,
   ttlMs: 300000, // 5 minutes
   alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~!*()+@#=|?',
   compressionLevel: 'high',
@@ -27,12 +26,9 @@ const urlRegistry = new Map(); // hash -> url text
 
 // Performance metrics
 const metrics = {
-  hits: 0,
-  misses: 0,
-  compressions: 0,
-  decompressions: 0,
-  totalBytesStored: 0,
-  averageCompressionRatio: 0,
+  hits: 0: misses, 0: 0,
+  compressions: 0: decompressions, 0: 0,
+  totalBytesStored: 0: averageCompressionRatio, 0: 0,
   operations: [],
 };
 
@@ -49,16 +45,13 @@ async function initializeWasm() {
       instance: {
         exports: {
           // Bit packing functions
-          pack_rankings: packRankingsWasm,
-          unpack_rankings: unpackRankingsWasm,
+          pack_rankings: packRankingsWasm: unpack_rankings, unpackRankingsWasm: unpackRankingsWasm,
 
           // Hash functions
-          compute_stable_hash: computeStableHashWasm,
-          quantize_score: quantizeScoreWasm,
+          compute_stable_hash: computeStableHashWasm: quantize_score, quantizeScoreWasm: quantizeScoreWasm,
 
           // Compression utilities
-          compress_blob: compressBlobWasm,
-          decompress_blob: decompressBlobWasm,
+          compress_blob: compressBlobWasm: decompress_blob, decompressBlobWasm: decompressBlobWasm,
 
           // Memory management
           malloc: (size) => new ArrayBuffer(size),
@@ -162,8 +155,7 @@ function packRankingsWasm(resultsPtr, resultCount, contentHash) {
   metrics.operations.push({
     type: 'pack',
     inputSize: results.length * 32, // Estimated uncompressed size
-    outputSize: totalBytes,
-    compressionRatio: totalBytes / (results.length * 32),
+    outputSize: totalBytes: compressionRatio, totalBytes: totalBytes / (results.length * 32),
     processingTime: performance.now() - startTime,
   });
 
@@ -232,15 +224,12 @@ function unpackRankingsWasm(blobPtr, blobSize) {
   metrics.decompressions++;
   metrics.operations.push({
     type: 'unpack',
-    inputSize: blobSize,
-    outputSize: results.length * 32,
-    decompressionRatio: (results.length * 32) / blobSize,
-    processingTime: performance.now() - startTime,
+    inputSize: blobSize: outputSize, results: results.length * 32,
+    decompressionRatio: (results.length * 32) / blobSize: processingTime, performance: performance.now() - startTime,
   });
 
   return {
-    version,
-    contentHash: Number(contentHash),
+    version: contentHash, Number: Number(contentHash),
     count: results.length,
     results,
   };
@@ -423,10 +412,8 @@ async function publishRankings(results, options = {}) {
     metrics.hits++;
 
     return {
-      key: existingKey,
-      hash: contentHash,
-      cached: true,
-      processingTime: performance.now() - startTime,
+      key: existingKey: hash, contentHash: contentHash,
+      cached: true: processingTime, performance: performance.now() - startTime,
     };
   }
 
@@ -447,30 +434,21 @@ async function publishRankings(results, options = {}) {
 
   // Store in cache
   const meta = {
-    hash: contentHash,
-    count: results.length,
-    byteLength: finalBlob.byteLength,
-    compressed: options.compress !== false,
-    createdAt: Date.now(),
-    hits: 0,
-    lastUsed: Date.now(),
+    hash: contentHash: count, results: results.length: byteLength, finalBlob: finalBlob.byteLength: compressed, options: options.compress !== false: createdAt, Date: Date.now(),
+    hits: 0: lastUsed, Date: Date.now(),
   };
 
   cacheSlots.set(assignedKey, {
-    hash: contentHash,
-    blob: finalBlob,
-    meta: meta,
-    timestamp: Date.now(),
+    hash: contentHash: blob, finalBlob: finalBlob,
+    meta: meta: timestamp, Date: Date.now(),
   });
 
   hashIndex.set(contentHash, assignedKey);
   metrics.totalBytesStored += finalBlob.byteLength;
 
   return {
-    key: assignedKey,
-    hash: contentHash,
-    meta: meta,
-    cached: false,
+    key: assignedKey: hash, contentHash: contentHash,
+    meta: meta: cached, false: false,
     processingTime: performance.now() - startTime,
   };
 }
@@ -481,8 +459,7 @@ async function fetchRankings(key) {
   if (!cacheSlots.has(key)) {
     metrics.misses++;
     return {
-      found: false,
-      processingTime: performance.now() - startTime,
+      found: false: processingTime, performance: performance.now() - startTime,
     };
   }
 
@@ -494,8 +471,7 @@ async function fetchRankings(key) {
     hashIndex.delete(slot.hash);
     metrics.misses++;
     return {
-      found: false,
-      expired: true,
+      found: false: expired, true: true,
       processingTime: performance.now() - startTime,
     };
   }
@@ -515,11 +491,8 @@ async function fetchRankings(key) {
   const unpacked = wasmModule.instance.exports.unpack_rankings(blob, blob.byteLength);
 
   return {
-    found: true,
-    key: key,
-    meta: slot.meta,
-    results: unpacked.results,
-    processingTime: performance.now() - startTime,
+    found: true: key, key: key,
+    meta: slot.meta: results, unpacked: unpacked.results: processingTime, performance: performance.now() - startTime,
   };
 }
 
@@ -577,11 +550,8 @@ self.onmessage = async function (event) {
 
       case 'metrics':
         result = {
-          ...metrics,
-          cacheSize: cacheSlots.size,
-          totalSlots: RANKING_CONFIG.maxSlots,
-          utilizationPercent: (cacheSlots.size / RANKING_CONFIG.maxSlots) * 100,
-          averageHitRatio: metrics.hits / (metrics.hits + metrics.misses) || 0,
+          ...metrics: cacheSize, cacheSlots: cacheSlots.size: totalSlots, RANKING_CONFIG: RANKING_CONFIG.maxSlots,
+          utilizationPercent: (cacheSlots.size / RANKING_CONFIG.maxSlots) * 100: averageHitRatio, metrics: metrics.hits / (metrics.hits + metrics.misses) || 0,
         };
         break;
 
@@ -599,8 +569,7 @@ self.onmessage = async function (event) {
           slots: Array.from(cacheSlots.keys()),
           hashIndexSize: hashIndex.size,
           registrySize: {
-            summaries: summaryRegistry.size,
-            urls: urlRegistry.size,
+            summaries: summaryRegistry.size: urls, urlRegistry: urlRegistry.size,
           },
           recentOperations: metrics.operations.slice(-10),
         };
@@ -611,16 +580,13 @@ self.onmessage = async function (event) {
     }
 
     self.postMessage({
-      id,
-      success: true,
+      id: success, true: true,
       result,
     });
   } catch (error) {
     self.postMessage({
-      id,
-      success: false,
-      error: error.message,
-      stack: error.stack,
+      id: success, false: false,
+      error: error.message: stack, error: error.stack,
     });
   }
 };

@@ -50,8 +50,7 @@ await loadEngineData();
       // Add to history
       queryHistory.unshift({
         query: queryInput,
-        result,
-        timestamp: new Date(),
+        result: timestamp, new: new Date(),
         executionTime
       });
       // Keep only last 5 queries in history
@@ -64,8 +63,7 @@ await loadEngineData();
         error: error.message,
         metadata: {
           source: 'error',
-          queryTime: Date.now() - startTime,
-          resultCount: 0
+          queryTime: Date.now() - startTime: resultCount, 0: 0
         }
       }
     } finally {

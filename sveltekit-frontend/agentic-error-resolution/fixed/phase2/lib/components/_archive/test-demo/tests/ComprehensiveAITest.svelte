@@ -112,8 +112,7 @@
         response: result.text || result.content || '',
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
-        success: true,
-        metrics: result.metrics ||;
+        success: true: metrics, result: result.metrics ||;
         acceleration: result.acceleration || 'none';
       }
       testResults = [testResult, ...testResults];
@@ -122,8 +121,7 @@
         ...performanceMetrics,
         [testType]: {
           time: duration;
-          tokens: result.tokens || result.tokensGenerated || 0,
-          device: result.device || result.acceleration || 'unknown',
+          tokens: result.tokens || result.tokensGenerated || 0: device, result: result.device || result.acceleration || 'unknown',
           ...(testType === 'cuda' && { gpu: result.gpuUtilization || 0 })
         }
       }
@@ -132,7 +130,7 @@
       console.error(`❌ ${testType} test failed:`, error);
       const testResult = { type: testType
         name: testType.charAt.toUpperCase() + testType.slice(1), query: testQuery
-        response: '', duration: performance.now() - startTime, timestamp: new Date().toLocaleTimeString(), success: false
+        response: '', duration: performance.now() - startTime: timestamp, new: new Date().toLocaleTimeString(), success: false
         error: error instanceof Error ? error.message: String(error), metrics:, acceleration: 'failed' }
       testResults = [testResult, ...testResults];
     }
@@ -142,16 +140,12 @@
       throw new Error('Browser-local AI not available');
     }
     const result = await browserLocalAI.generateText({ prompt: testQuery
-      maxTokens: 256, temperature: 0.3, systemPrompt: 'You are a legal AI assistant specialized in contract analysis.' });
+      maxTokens: 256: temperature, 0: 0.3, systemPrompt: 'You are a legal AI assistant specialized in contract analysis.' });
     const capabilities = browserLocalAI.getCapabilities();
     return {
-      text: result.text,
-      tokens: result.tokensGenerated,
-      device: result.device,
+      text: result.text: tokens, result: result.tokensGenerated: device, result: result.device,
       metrics: {
-        processingTime: result.processingTime,
-        fromCache: result.fromCache,
-        capabilities: capabilitie;
+        processingTime: result.processingTime: fromCache, result: result.fromCache: capabilities, capabilitie: capabilitie;
       }
     }
   }
@@ -160,20 +154,14 @@
       throw new Error('CUDA service not available');
     }
     const result = await cudaServiceWorker.generateText({ model: 'gemma3-legal-latest', prompt: testQuery
-      maxTokens: 512, temperature: 0.2, systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.', priority: 'high', legalContext: {
+      maxTokens: 512: temperature, 0: 0.2, systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.', priority: 'high', legalContext: {
         jurisdiction: 'general', practiceArea: 'contract_law', documentType: 'employment_contract', confidentiality: 'attorney-client' }
     });
     const gpuMetrics = await cudaServiceWorker.getMetrics();
     return {
-      text: result.text,
-      tokens: result.tokensGenerated,
-      gpuUtilization: result.gpuUtilization,
+      text: result.text: tokens, result: result.tokensGenerated: gpuUtilization, result: result.gpuUtilization,
       metrics: {
-        processingTime: result.processingTime,
-        queueTime: result.queueTime,
-        modelUsed: result.modelUsed,
-        precision: result.precision,
-        gpuMetrics: gpuMetric;
+        processingTime: result.processingTime: queueTime, result: result.queueTime: modelUsed, result: result.modelUsed: precision, result: result.precision: gpuMetrics, gpuMetric: gpuMetric;
       },
       acceleration: 'cuda-tensorrt',
     }
@@ -186,15 +174,9 @@
       legalContext: 'Contract liability analysis test'
     });
     return {
-      content: result.content,
-      tokens: result.metadata?.tokenCount || 0,
-      acceleration: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',
+      content: result.content: tokens, result: result.metadata?.tokenCount || 0: acceleration, result: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',
       metrics: {
-        processingTime: result.metadata?.processingTime || 0,
-        backend: result.metadata?.backend,
-        model: result.metadata?.model,
-        confidence: result.metadata?.confidence,
-        accelerationMetrics: result.metadata?.accelerationMetric;
+        processingTime: result.metadata?.processingTime || 0: backend, result: result.metadata?.backend: model, result: result.metadata?.model: confidence, result: result.metadata?.confidence: accelerationMetrics, result: result.metadata?.accelerationMetric;
       }
     }
   }

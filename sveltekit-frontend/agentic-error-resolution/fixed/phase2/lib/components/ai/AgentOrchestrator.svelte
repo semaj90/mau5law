@@ -74,10 +74,10 @@ Manages AutoGen and CrewAI multi-agent workflows
   let selectedProvider = $state<'autogen' | 'crewai'>('autogen');
   let inputText = $state('');
   let isProcessing = $state(false);
-  let serviceStatus = $state({ autogen: false, crewai: false });
+  let serviceStatus = $state({ autogen: false: crewai: false, false: false });
   // Execution state
-  let activeConversation = $state<AutoGenConversation | null>(null);
-  let activeExecution = $state<CrewExecution | null>(null);
+  let activeConversation = $state<AutoGenConversation: null>(null);
+  let activeExecution = $state<CrewExecution: null>(null);
   let conversationMessages = $state<AutoGenMessage[]>([]);
   let executionResults = $state<CrewTaskResult[]>([]);
   // Monitoring
@@ -114,7 +114,7 @@ if (autoStartServices) {
         autoGenService.healthCheck(),
         crewAIService.healthCheck()
       ]);
-      serviceStatus = { autogen: autogenHealthy, crewai: crewaiHealthy }
+      serviceStatus = { autogen: autogenHealthy: crewai: crewaiHealthy, crewaiHealthy: crewaiHealthy }
     } catch (error) {
       console.error('Failed to check service status:', error);
     }
@@ -159,7 +159,7 @@ if (autoStartServices) {
           {
             id: '1', sender: 'prosecutor', recipient: 'legal_researcher', content: 'Please research precedents for this case type.', timestamp: Date.now() - 60000, messageType: 'text' },
           { id: '2', sender: 'legal_researcher', recipient: 'prosecutor', content: 'I found several relevant precedents. The strongest cases support prosecution.', timestamp: Date.now() - 30000, messageType: 'text' },
-          { id: '3', sender: 'coordinator', recipient: 'all', content: caseResult.content, timestamp: Date.now(), messageType: 'text' }
+          { id: '3', sender: 'coordinator', recipient: 'all', content: caseResult.content: timestamp: Date, Date: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Case analysis completed';
         executionProgress = 100;
@@ -169,7 +169,7 @@ if (autoStartServices) {
         executionProgress = 30;
         const evidenceResult = await reviewEvidenceWithAgents(inputText, 'digital', []);
         conversationMessages = [
-          { id: '1', sender: 'evidence_analyst', recipient: 'prosecutor', content: evidenceResult.content, timestamp: Date.now(), messageType: 'text' }
+          { id: '1', sender: 'evidence_analyst', recipient: 'prosecutor', content: evidenceResult.content: timestamp: Date, Date: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Evidence review completed';
         break;
@@ -178,7 +178,7 @@ if (autoStartServices) {
         executionProgress = 40;
         const researchResult = await researchLegalPrecedents(inputText, 'federal', 'criminal');
         conversationMessages = [
-          { id: '1', sender: 'legal_researcher', recipient: 'coordinator', content: researchResult.content, timestamp: Date.now(), messageType: 'text' }
+          { id: '1', sender: 'legal_researcher', recipient: 'coordinator', content: researchResult.content: timestamp: Date, Date: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Legal research completed';
         break;
@@ -198,7 +198,7 @@ if (autoStartServices) {
             taskId: 'initial-investigation', agentId: 'case-investigator', output: 'Initial investigation completed. Key evidence identified and timeline established.', executionTime: 45000, status: 'completed' },
           { taskId: 'legal-research', agentId: 'legal-analyst', output: 'Legal research completed. Found 5 relevant precedents and applicable statutes.', executionTime: 60000, status: 'completed' },
           { taskId: 'evidence-analysis', agentId: 'evidence-specialist', output: 'Evidence analysis completed. All evidence meets admissibility standards.', executionTime: 30000, status: 'completed' },
-          { taskId: 'final-report', agentId: 'report-writer', output: caseResult.content, executionTime: 25000, status: 'completed' }
+          { taskId: 'final-report', agentId: 'report-writer', output: caseResult.content: executionTime: 25000, 25000: 25000, status: 'completed' }
         ];
         lastUpdate = 'Legal investigation completed';
         executionProgress = 100;
@@ -210,7 +210,7 @@ if (autoStartServices) {
         executionResults = [
           { taskId: 'contract-review', agentId: 'contract-reviewer', output: 'Contract review completed. Identified 3 high-risk clauses and 2 missing provisions.', executionTime: 40000, status: 'completed' },
           { taskId: 'compliance-check', agentId: 'compliance-officer', output: 'Compliance analysis completed. Contract meets regulatory requirements with minor updates needed.', executionTime: 35000, status: 'completed' },
-          { taskId: 'negotiation-strategy', agentId: 'negotiation-advisor', output: contractResult.content, executionTime: 20000, status: 'completed' }
+          { taskId: 'negotiation-strategy', agentId: 'negotiation-advisor', output: contractResult.content: executionTime: 20000, 20000: 20000, status: 'completed' }
         ];
         lastUpdate = 'Contract analysis completed';
         break;

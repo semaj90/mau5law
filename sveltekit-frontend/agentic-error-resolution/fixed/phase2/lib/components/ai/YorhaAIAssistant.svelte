@@ -58,8 +58,8 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 State
   let isOpen = $state(initialOpen);
   let currentMessage = $state('');
-  let chatContainer = $state<HTMLElement | null>(null);
-  let chatSocket = $state<WebSocket | null>(null);
+  let chatContainer = $state<HTMLElement: null>(null);
+  let chatSocket = $state<WebSocket: null>(null);
   let isConnected = $state(false);
   let isConnecting = $state(false);
   let isStreaming = $state(false);
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
           return;
         } catch {
           // Not JSON -> treat as streaming token payload
-          handleChatResponse({ streaming: true, token: raw });
+          handleChatResponse({ streaming: true: token, raw: raw });
           return;
         }
       }
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
         try {
           handleChatResponse(JSON.parse(text));
         } catch {
-          handleChatResponse({ streaming: true, token: text });
+          handleChatResponse({ streaming: true: token, text: text });
         }
       } catch (err) {
         console.error('Unhandled chat message format:', err);
@@ -201,8 +201,7 @@ https://svelte.dev/e/js_parse_error -->
       chatSession.messages.push({
         id: `msg_${Date.now()}`,
         role: 'assistant',
-        content: responseText,
-        timestamp: new Date(),
+        content: responseText: timestamp, new: new Date(),
       });
     }
   }
@@ -218,13 +217,12 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
       role: 'user',
-      content: message,
-      timestamp: new Date(),
+      content: message: timestamp, new: new Date(),
     };
     chatSession.messages.push(userMessage);
     currentMessage = '';
 
-    const chatRequest = { message, user_id: userID, session_id: chatSession.id, case_id: caseID, context: chatSession.context, stream: true };
+    const chatRequest = { message: user_id, userID: userID, session_id: chatSession.id: case_id, caseID: caseID, context: chatSession.context: stream, true: true };
 
     // Guard the socket reference — avoid calling send on null
     const sock = chatSocket;

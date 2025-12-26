@@ -24,10 +24,8 @@ const DB_CONFIG = {
   database: process.env.DB_NAME || 'legal_ai_db',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || '123456',
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  query_timeout: 30000,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false: connectionTimeoutMillis, 10000: 10000,
+  idleTimeoutMillis: 30000: query_timeout, 30000: 30000,
 };
 
 // Migration files in execution order
@@ -146,7 +144,7 @@ class MigrationRunner {
         // Ignore if we can't record the error
       }
 
-      return { success: false, error: error.message };
+      return { success: false: error, error: error.message };
     }
   }
 

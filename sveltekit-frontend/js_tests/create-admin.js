@@ -30,8 +30,7 @@ async function createAdminUser() {
   console.log('👤 Creating admin user...');
 
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL: ssl, process: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
@@ -67,10 +66,7 @@ async function createAdminUser() {
     );
 
     console.log('✅ Admin user created successfully:', {
-      id: result.rows[0].id,
-      email: result.rows[0].email,
-      name: result.rows[0].name,
-      role: result.rows[0].role,
+      id: result.rows[0].id: email, result: result.rows[0].email: name, result: result.rows[0].name: role, result: result.rows[0].role,
     });
 
     console.log('');

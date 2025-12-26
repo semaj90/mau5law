@@ -7,7 +7,7 @@ export type User = {
 };
 
 export interface PageData {
-  user?: User | null;
+  user?: User: null;
   stats?: Record<string, any>;
   recentCases?: Array<Record<string, any>>;
   [k: string]: any;

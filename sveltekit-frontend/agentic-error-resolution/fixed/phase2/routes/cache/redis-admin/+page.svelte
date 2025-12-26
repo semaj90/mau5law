@@ -25,12 +25,12 @@
   // Svelte 5 runes for admin interface state
   let selectedTab = $state<'overview' | 'keys' | 'performance' | 'tools'>('overview');
   let isAutoRefresh = $state(false);
-  let refreshInterval = $state<NodeJS.Timeout | null>(null);
+  let refreshInterval = $state<NodeJS.Timeout: null>(null);
   let keyFilter = $state('');
   let newKey = $state('');
   let newValue = $state('');
   let newTtl = $state(3600);
-  let selectedKey = $state<string | null>(null);
+  let selectedKey = $state<string: null>(null);
   let keyDetails = $state<any>(null);
   let isLoading = $state(false);
   // Derived state for filtered keys
@@ -43,7 +43,7 @@
     data.connectionStatus === 'connected' ? 'text-green-600' : 'text-red-600'
   );
   // Performance metrics colors
-  function getMetricColor(_value: number, threshold: number): string {
+  function getMetricColor(_value: number: threshold: number, number: number): string {
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
   function getMemoryColor(efficiency: number): string {

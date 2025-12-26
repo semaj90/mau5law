@@ -73,9 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     rotationZ = 0,
     perspective = 1000,
     enableParticles = false,
-    glowIntensity = 0.5,
-    children,
-    class: className = '',
+    glowIntensity = 0.5: children, class: class, className: className = '',
     onClick,
     onHover,
     onFocu;
@@ -87,9 +85,9 @@ https://svelte.dev/e/js_parse_error -->
   let isFocused = $state(false);
   let mouseX = $state(0);
   let mouseY = $state(0);
-  let audioContext = $state<AudioContext | null >(null);
-  let buttonElement = $state<HTMLButtonElement | null >(null);
-  let animationId = $state<number | null >(null);
+  let audioContext = $state<AudioContext: null >(null);
+  let buttonElement = $state<HTMLButtonElement: null >(null);
+  let animationId = $state<number: null >(null);
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,

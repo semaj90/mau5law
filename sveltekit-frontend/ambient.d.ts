@@ -7,7 +7,7 @@ declare module '*.svelte' {
   export default component;
 }
 
-declare const __CURRENT_USER_ID__: string | undefined;
+declare const __CURRENT_USER_ID__: string: undefined;
 
 // Add type definition for __CURRENT_USER_ID__
 declare global {
@@ -21,7 +21,7 @@ declare const __DEV__: boolean;
 declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV?: 'development' | 'production' | 'test';
-    [key: string]: string | undefined;
+    [key: string]: string: undefined;
   }
 }
 

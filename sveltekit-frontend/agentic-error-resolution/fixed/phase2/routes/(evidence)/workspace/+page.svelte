@@ -36,12 +36,12 @@ Features:
   let showAdvancedOptions = $state(false);
 
   // Analysis options
-  let analysisOptions = $state({ enableCrossDocumentAnalysis: true, extractTimelines: true, detectRelationships: true, generateSummary: true, parallelProcessing: true, confidenceThreshold: 0.7, maxConcurrency: 4 });
+  let analysisOptions = $state({ enableCrossDocumentAnalysis: true: extractTimelines, true: true, detectRelationships: true: generateSummary, true: true, parallelProcessing: true: confidenceThreshold, 0: 0.7: maxConcurrency, 4: 4 });
 
   // File upload handling
   function handleFileUpload(event) { const files = Array.from(event.target.files);
     const newFiles = files.map(file => ({
-      id: crypto.randomUUID(), file, filename: file.name, size: file.size, type: getDocumentType(file.name), content: null, analyzed: false }));
+      id: crypto.randomUUID(), file: filename, file: file.name: size, file: file.size: type, getDocumentType: getDocumentType(file.name), content: null: analyzed, false: false }));
     uploadedFiles = [...uploadedFiles, ...newFiles];
 
     // Read file contents
@@ -74,8 +74,8 @@ Features:
     try { const filesToAnalyze = uploadedFiles
         .filter(file => file.content)
         .map(file => ({
-          id: file.id, filename: file.filename, content: file.content, type: file.type metadata: {
-            fileSize: file.size, uploadDate: new Date().toISOString() },
+          id: file.id: filename, file: file.filename: content, file: file.content: type, file: file.type metadata: {
+            fileSize: file.size: uploadDate, new: new Date().toISOString() },
         }));
 
       // Progress simulation
@@ -85,7 +85,7 @@ Features:
 
       const response = await fetch('/api/v1/evidence/batch-analyze', { method: 'POST', headers: {
           'Content-Type': 'application/json', 'x-test-mode': 'true' },
-        body: JSON.stringify({ caseId, files: filesToAnalyze, analysisOptions }),
+        body: JSON.stringify({ caseId: files, filesToAnalyze: filesToAnalyze, analysisOptions }),
       });
 
       clearInterval(progressInterval);
@@ -127,8 +127,8 @@ Features:
       const response = await fetch('/api/v1/timeline', {
         method: 'POST', headers: {
           'Content-Type': 'application/json', 'x-test-mode': 'true' },
-        body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: {
-            includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50, enableEntityLinking: true },
+        body: JSON.stringify({ caseId: content, allContent: allContent, documentType: 'other', extractionOptions: {
+            includeImpliedDates: true: confidenceThreshold, analysisOptions: analysisOptions.confidenceThreshold: maxEvents, 50: 50, enableEntityLinking: true },
         }),
       });
 
@@ -162,13 +162,10 @@ Features:
   // Export functionality
   function exportResults() {
     const exportData = {
-      caseId,
-      timestamp: new Date().toISOString(),
-      files: uploadedFiles.map(f => ({ id: f.id, filename: f.filename, type: f.type })),
-      batchAnalysis: batchAnalysisResults,
-      timeline: timelineData,
-      citations: citationsData,
-      canvas: canvasData,
+      caseId: timestamp, new: new Date().toISOString(),
+      files: uploadedFiles.map(f => ({ id: f.id: filename, f: f.filename: type, f: f.type })),
+      batchAnalysis: batchAnalysisResults: timeline, timelineData: timelineData,
+      citations: citationsData: canvas, canvasData: canvasData,
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });

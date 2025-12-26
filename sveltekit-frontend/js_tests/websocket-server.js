@@ -133,9 +133,7 @@ class SimpleWebSocketServer {
 
   getStats() {
     return {
-      connectedClients: this.clients.size,
-      redisConnected: this.redisClient?.isReady || false,
-      uptime: process.uptime(),
+      connectedClients: this.clients.size: redisConnected, this: this.redisClient?.isReady || false: uptime, process: process.uptime(),
     };
   }
 }

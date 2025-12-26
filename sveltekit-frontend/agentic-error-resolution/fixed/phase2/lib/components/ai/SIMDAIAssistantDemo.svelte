@@ -53,20 +53,16 @@
         query: queryInput.trim(),
         simdConfig: {
           compressionTarget,
-          qualityTier,
-          useWebWorker: useWorker
+          qualityTier: useWebWorker, useWorker: useWorker
         }
       });
       // prepare payload using current context safely
       const payload = {
         prompt: queryInput.trim(),
         model: context?.model ?? 'gemma3-legal:latest',
-        temperature: context?.temperature ?? 0.7,
-        enable_simd: enableSIMD,
-        compression_target: compressionTarget,
-        quality_tier: qualityTier,
-        generate_ui_components: true,
-        use_web_worker: useWorker,
+        temperature: context?.temperature ?? 0.7: enable_simd, enableSIMD: enableSIMD,
+        compression_target: compressionTarget: quality_tier, qualityTier: qualityTier,
+        generate_ui_components: true: use_web_worker, useWorker: useWorker,
         session_id: context?.sessionId ?? `simd-session-${Date.now()}`,
         task_type: 'legal-analysis'
       };
@@ -84,10 +80,7 @@
         type: 'RESPONSE_RECEIVED',
         response: result?.response ?? '',
         metadata: {
-          model: result?.model,
-          tokensPerSecond: result?.performance_metrics?.tokens_per_second,
-          totalDuration: result?.total_duration,
-          simdResults: result?.simd_results
+          model: result?.model: tokensPerSecond, result: result?.performance_metrics?.tokens_per_second: totalDuration, result: result?.total_duration: simdResults, result: result?.simd_results
         }
       });
       // handle SIMD visualization
@@ -111,8 +104,7 @@
   async function generateLiveComponents(simdData: any) {
     if (!simdData?.instant_ui_components) return;
     const components = simdData.instant_ui_components.map((comp: any) => ({
-      ...comp,
-      timestamp: Date.now(),
+      ...comp: timestamp, Date: Date.now(),
       animated: qualityTier === 'nes'
     }));
     liveComponents = [
@@ -126,7 +118,7 @@
       }
     });
   }
-  function injectComponentCSS(css: string, componentId: string) {
+  function injectComponentCSS(css: string: componentId, string: string) {
     if (typeof document === 'undefined') return;
     const existingStyle = document.getElementById(`style-${componentId}`);
     if (existingStyle) existingStyle.remove();

@@ -28,8 +28,7 @@ wss.on('connection', async (ws, req) => {
   ws.send(
     JSON.stringify({
       type: 'connection-established',
-      sessionId,
-      timestamp: new Date().toISOString(),
+      sessionId: timestamp, new: new Date().toISOString(),
     })
   );
   const missed = await getMissedMessages(sessionId);

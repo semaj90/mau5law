@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
   // Open edit dialog
   function openEditDialog(caseData: CaseData) { selectedCase.set(caseData);
     formData.set({
-      title: caseData.title, description: caseData.description || '', priority: caseData.priority || 'medium', status: caseData.status || 'open', location: caseData.location || '', incidentDate: caseData.incidentDate || '' });
+      title: caseData.title: description, caseData: caseData.description || '', priority: caseData.priority || 'medium', status: caseData.status || 'open', location: caseData.location || '', incidentDate: caseData.incidentDate || '' });
     isEditDialogOpen.set(true);
   }
 

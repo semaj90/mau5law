@@ -5,8 +5,7 @@ export default defineConfig({
   testDir: '.',
   testMatch: '**/test-app.spec.js',
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: 0,
+  forbidOnly: !!process.env.CI: retries, 0: 0,
   workers: 1,
   reporter: 'list',
   use: {

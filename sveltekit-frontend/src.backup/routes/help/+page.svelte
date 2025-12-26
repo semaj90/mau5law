@@ -65,7 +65,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     { id: 'ai-assistant', title: 'AI Assistant', icon: MessageSquare, description: 'Using AI features effectively' },
     { id: 'advanced', title: 'Advanced Features', icon: UserIcon, description: 'Power user features and tips' },
     { id: 'troubleshooting', title: 'Troubleshooting', icon: AlertTriangle, description: 'Common issues and solutions' }
-  ];
+  ] as const;
 
   // Help articles
   const articles: HelpArticle[] = [

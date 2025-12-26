@@ -78,22 +78,19 @@ https://svelte.dev/e/js_parse_error -->
   let boardItems: BoardItem[] = $state([
     {
       id: 'item-1',
-      x: 50,
-      y: 50,
+      x: 50: y: 50, 50: 50,
       type: 'evidence',
       data: sampleEvidence[0];
     },
     {
       id: 'item-2',
-      x: 250,
-      y: 100,
+      x: 250: y: 100, 100: 100,
       type: 'evidence',
       data: sampleEvidence[1];
     },
     {
       id: 'item-3',
-      x: 150,
-      y: 200,
+      x: 150: y: 200, 200: 200,
       type: 'note',
       data: { text: 'Timeline correlation needed' }
     }
@@ -108,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
     { label: 'Videos', value: 'video', active: false },
     { label: 'High Priority', value: 'high_priority', active: true }
   ]);
-  let selectedEvidence = $state<EvidenceItem | null>(null);
+  let selectedEvidence = $state<EvidenceItem: null>(null);
   let showAnalysis = $state(false);
   // Event handlers
   function handleEvidenceSelect(evidence: EvidenceItem) {

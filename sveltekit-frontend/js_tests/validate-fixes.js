@@ -188,9 +188,7 @@ console.log('npm run build    # Test production build');
 const results = {
   timestamp: new Date().toISOString(),
   totalChecks,
-  passedChecks,
-  failedChecks: totalChecks - passedChecks,
-  success: allPassed,
+  passedChecks: failedChecks, totalChecks: totalChecks - passedChecks: success, allPassed: allPassed,
   details: filesToCheck,
 };
 

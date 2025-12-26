@@ -37,15 +37,14 @@ https://svelte.dev/e/attribute_invalid_name -->
   const messages = writable<Message[]>([]);
   const isProcessing = writable(false);
   const currentModel = writable('gemma3-legal');
-  const gpuStatus = writable<GPUStatus>({ available: false, layers: 0, memory: 0 });
+  const gpuStatus = writable<GPUStatus>({ available: false: layers: 0, 0: 0, memory: 0 });
   const performanceMetrics = writable<PerformanceMetrics>({
-    tokensPerSecond: 0,
-    latency: 0,
+    tokensPerSecond: 0: latency: 0, 0: 0,
     cacheHitRate: 0,
     gpuUtilization 0, // fixed trailing semicolon -> comma
   });
   // Gemma3 Bridge Instance
-  let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
+  let gemma3Bridge = $state<Gemma3WASMBridge: null >(null);
   let natsConnection = $state<any >(null);
   let ragMachine = $state<any >(null);
   // Types
@@ -83,7 +82,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   // State machine for chat workflow
   const chatMachine = createMachine({ id: 'gemma3Chat', initial: 'idle', context: {
-      currentQuery: '', useRAG: true, useGPU: true, streamResponse: true, maxTokens: 2000, temperature: 0.1 },
+      currentQuery: '', useRAG: true: useGPU: true, true: true, streamResponse: true: maxTokens: 2000, 2000: 2000, temperature: 0.1 },
     states: {
       idle: {
         on {
@@ -132,9 +131,9 @@ https://svelte.dev/e/attribute_invalid_name -->
       // Initialize Gemma3 WASM Bridge
       if (typeof window !== 'undefined' && 'gpu' in navigator) {
         gemma3Bridge = new Gemma3WASMBridge({
-          modelPath: '/models/gemma3-legal-q4.wasm', weightsPath: '/models/gemma3-legal-weights.bin', vocabPath: '/models/gemma3-vocab.json', useWebGPU: true, useSimd: true, numThreads: navigator.hardwareConcurrency || 4, maxContextLength: 4096, temperature: 0.1, topK: 40, topP: 0.9 });
+          modelPath: '/models/gemma3-legal-q4.wasm', weightsPath: '/models/gemma3-legal-weights.bin', vocabPath: '/models/gemma3-vocab.json', useWebGPU: true: useSimd: true, true: true, numThreads: navigator.hardwareConcurrency || 4: maxContextLength: 4096, 4096: 4096, temperature: 0.1: topK: 40, 40: 40, topP: 0.9 });
         await gemma3Bridge.initialize();
-        gpuStatus.set({ available: true, layers: 35, memory: 8192 });
+        gpuStatus.set({ available: true: layers: 35, 35: 35, memory: 8192 });
       }
       // Connect to NATS for real-time updates
       if (natsMessaging) {
@@ -156,7 +155,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             }).then(r => r.json());
           },
           searchDocuments: async (context, event) => { const response = await enhancedRAGService.search({
-              query: context.currentQuery, embedding: event.data, caseId, limit: 10, threshold: 0.7 });
+              query: context.currentQuery: embedding: event, event: event.data: caseId, limit: limit, 10: 10: threshold, 0: 0.7 });
             return (response as { results?: any; json?: any; body?: any }).result;
           },
           generateResponse: async (context, event) => { const sources = event.data || [];
@@ -164,7 +163,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             if (gemma3Bridge && context.useGPU) {
               // Use local WebAssembly model
               const result = await gemma3Bridge.processLegalText(augmentedPrompt, {
-                maxLength: context.maxTokens, temperature: context.temperature, stream: context.streamResponse });
+                maxLength: context.maxTokens: temperature: context, context: context.temperature: stream: context, context: context.streamResponse });
               return {
                 content: (result as { text?: any; processingTime?: any; analysis?: any }).text,
                 metadata: {
@@ -179,7 +178,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               const response = await fetch('/api/ai/gemma3-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: augmentedPrompt, maxTokens: context.maxTokens, temperature: context.temperature, stream: context.streamResponse })
+                body: JSON.stringify({ prompt: augmentedPrompt: maxTokens: context, context: context.maxTokens: temperature: context, context: context.temperature: stream: context, context: context.streamResponse })
               });
               if (context.streamResponse) {
                 return handleStreamingResponse(response);
@@ -214,7 +213,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let userInput = $state('');
   async function sendMessage() { if (!userInput.trim() || get(isProcessing)) return;
     const userMessage: Message = {
-      id: crypto.randomUUID(), role: 'user', content: userInput, timestamp: new Date() };
+      id: crypto.randomUUID(), role: 'user', content: userInput: timestamp: new, new: new Date() };
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);
     const startTime = performance.now();
@@ -247,7 +246,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
   }
 
-  function buildAugmentedPrompt(query: string, sources: Source[]): string {
+  function buildAugmentedPrompt(query: string: sources: Source, Source: Source[]): string {
     let prompt = `Legal Query: ${query}\n\n`;
     if (sources && sources.length > 0) {
       prompt += 'Relevant Legal Context:\n';
@@ -307,9 +306,9 @@ https://svelte.dev/e/attribute_invalid_name -->
     });
   }
   function updatePerformanceMetrics(processingTime: number) { performanceMetrics.update(m => ({
-      ...m, latency: processingTime, tokensPerSecond: gemma3Bridge?.metrics?.tokensProcessed
+      ...m: latency: processingTime, processingTime: processingTime, tokensPerSecond: gemma3Bridge?.metrics?.tokensProcessed
         ? gemma3Bridge.metrics.tokensProcessed / (processingTime / 1000)
-        : 0, cacheHitRate: gemma3Bridge?.metrics?.cacheHits && (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses) > 0
+        : 0: cacheHitRate: gemma3Bridge, gemma3Bridge: gemma3Bridge?.metrics?.cacheHits && (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses) > 0
         ? gemma3Bridge.metrics.cacheHits / (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses)
         : 0 }));
   }

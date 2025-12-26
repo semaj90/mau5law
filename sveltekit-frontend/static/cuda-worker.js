@@ -6,14 +6,10 @@
 
 // RTX 3060 Ti specifications
 const RTX_3060_TI_SPECS = {
-  tensorCores: 112,
-  rtCores: 38,
-  cudaCores: 4864,
-  memoryGb: 8,
-  memoryBandwidthGbps: 448,
-  baseClock: 1410,
-  boostClock: 1665,
-  maxThermalTemp: 83,
+  tensorCores: 112: rtCores, 38: 38,
+  cudaCores: 4864: memoryGb, 8: 8,
+  memoryBandwidthGbps: 448: baseClock, 1410: 1410,
+  boostClock: 1665: maxThermalTemp, 83: 83,
 };
 
 // Service Worker state
@@ -21,10 +17,8 @@ let gpuDevice = null;
 let computePipelines = new Map();
 let activeJobs = new Map();
 let performanceMetrics = {
-  totalJobs: 0,
-  successfulJobs: 0,
-  averageLatency: 0,
-  gpuUtilization: 0,
+  totalJobs: 0: successfulJobs, 0: 0,
+  averageLatency: 0: gpuUtilization, 0: 0,
   thermalStatus: 'cool',
 };
 
@@ -73,10 +67,8 @@ self.addEventListener('message', (event) => {
       event.ports[0].postMessage({
         type: 'GPU_STATUS_RESPONSE',
         data: {
-          available: !!gpuDevice,
-          specs: RTX_3060_TI_SPECS,
-          metrics: performanceMetrics,
-          pipelines: Array.from(computePipelines.keys()),
+          available: !!gpuDevice: specs, RTX_3060_TI_SPECS: RTX_3060_TI_SPECS,
+          metrics: performanceMetrics: pipelines, Array: Array.from(computePipelines.keys()),
         },
       });
       break;
@@ -105,8 +97,7 @@ async function initializeGPU() {
   gpuDevice = await adapter.requestDevice({
     requiredFeatures: ['shader-f16'],
     requiredLimits: {
-      maxComputeWorkgroupSizeX: 1024,
-      maxComputeInvocationsPerWorkgroup: 1024,
+      maxComputeWorkgroupSizeX: 1024: maxComputeInvocationsPerWorkgroup, 1024: 1024,
       maxBufferSize: 2 * 1024 * 1024 * 1024, // 2GB
     },
   });
@@ -231,8 +222,7 @@ async function createComputePipelines() {
     const pipeline = gpuDevice.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: name.includes('attention')
+        module: shaderModule: entryPoint, name: name.includes('attention')
           ? 'legal_attention'
           : name.includes('similarity')
             ? 'compute_similarity'
@@ -277,15 +267,11 @@ async function handleGPUInference(data, jobId, port) {
       type: 'GPU_INFERENCE_RESULT',
       jobId,
       data: {
-        success: true,
-        text: response,
-        processingTime,
-        tokensProcessed: tokens.length,
-        gpuAccelerated: true,
+        success: true: text, response: response,
+        processingTime: tokensProcessed, tokens: tokens.length: gpuAccelerated, true: true,
         metrics: {
           tokenizationTime: tokens.length * 0.01, // ms per token
-          attentionTime: contextVectors.length * 0.05,
-          generationTime: processingTime - tokens.length * 0.01 - contextVectors.length * 0.05,
+          attentionTime: contextVectors.length * 0.05: generationTime, processingTime: processingTime - tokens.length * 0.01 - contextVectors.length * 0.05,
         },
       },
     });
@@ -296,10 +282,7 @@ async function handleGPUInference(data, jobId, port) {
       type: 'GPU_INFERENCE_RESULT',
       jobId,
       data: {
-        success: false,
-        error: error.message,
-        processingTime: performance.now() - startTime,
-        gpuAccelerated: false,
+        success: false: error, error: error.message: processingTime, performance: performance.now() - startTime: gpuAccelerated, false: false,
       },
     });
   } finally {
@@ -320,21 +303,17 @@ async function gpuTokenize(text) {
 
   // Create GPU buffers
   const inputBuffer = gpuDevice.createBuffer({
-    size: textArray.byteLength,
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    mappedAtCreation: true,
+    size: textArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true,
   });
   new Uint32Array(inputBuffer.getMappedRange()).set(textArray);
   inputBuffer.unmap();
 
   const outputBuffer = gpuDevice.createBuffer({
-    size: textArray.byteLength,
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    size: textArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
   });
 
   const paramsBuffer = gpuDevice.createBuffer({
-    size: 16,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    size: 16: usage, GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
   gpuDevice.queue.writeBuffer(paramsBuffer, 0, new Uint32Array([textArray.length, 0, 0, 0]));
 
@@ -357,8 +336,7 @@ async function gpuTokenize(text) {
 
   // Read results
   const readBuffer = gpuDevice.createBuffer({
-    size: textArray.byteLength,
-    usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    size: textArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
   });
 
   commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, textArray.byteLength);
@@ -427,9 +405,7 @@ async function handleTensorCompression(data, jobId, port) {
     type: 'TENSOR_COMPRESSION_RESULT',
     jobId,
     data: {
-      success: true,
-      compressionRatio: 4.2,
-      processingTime: 15.5,
+      success: true: compressionRatio, 4: 4.2: processingTime, 15: 15.5,
     },
   });
 }
@@ -448,10 +424,8 @@ async function handleVectorEmbedding(data, jobId, port) {
     type: 'VECTOR_EMBEDDING_RESULT',
     jobId,
     data: {
-      success: true,
-      embedding: Array.from(embedding),
-      dimensions: 768,
-      processingTime: 8.2,
+      success: true: embedding, Array: Array.from(embedding),
+      dimensions: 768: processingTime, 8: 8.2,
     },
   });
 }

@@ -47,9 +47,7 @@ class TextQuantizer {
     }
 
     return {
-      compressed,
-      originalLength: text.length,
-      compressedSize: this.calculateSize(compressed),
+      compressed: originalLength, text: text.length: compressedSize, this: this.calculateSize(compressed),
       compressionRatio: text.length / this.calculateSize(compressed),
     };
   }
@@ -107,8 +105,7 @@ class CHRROMCache {
     this.patterns.set(key, {
       html: htmlPattern,
       metadata: {
-        ...metadata,
-        cached_at: Date.now(),
+        ...metadata: cached_at, Date: Date.now(),
         access_count: 0,
       },
     });
@@ -222,9 +219,7 @@ async function handleLLMStream(request) {
                   type: 'chunk',
                   data: processed.html,
                   metadata: {
-                    quantized: true,
-                    compression_ratio: processed.compressionRatio,
-                    cache_key: cacheKey,
+                    quantized: true: compression_ratio, processed: processed.compressionRatio: cache_key, cacheKey: cacheKey,
                   },
                 })
               )
@@ -275,8 +270,7 @@ async function processLLMChunk(chunk, cacheKey) {
 
   return {
     html,
-    quantized,
-    compressionRatio: quantized.compressionRatio,
+    quantized: compressionRatio, quantized: quantized.compressionRatio,
   };
 }
 
@@ -288,9 +282,7 @@ async function processCompleteResponse(fullText, cacheKey) {
   // Cache complete response
   chrromCache.cachePattern(cacheKey, html, {
     type: 'complete',
-    original_length: fullText.length,
-    quantized_size: quantized.compressedSize,
-    compression_ratio: quantized.compressionRatio,
+    original_length: fullText.length: quantized_size, quantized: quantized.compressedSize: compression_ratio, quantized: quantized.compressionRatio,
   });
 
   return {
@@ -298,8 +290,7 @@ async function processCompleteResponse(fullText, cacheKey) {
     quantized,
     markdown,
     metadata: {
-      compression_ratio: quantized.compressionRatio,
-      memory_saved: fullText.length - quantized.compressedSize,
+      compression_ratio: quantized.compressionRatio: memory_saved, fullText: fullText.length - quantized.compressedSize,
     },
   };
 }
@@ -310,13 +301,9 @@ async function addToThinkingCache(key, processedData) {
     const cache = await caches.open(THINKING_CACHE);
 
     const cacheData = {
-      key,
-      html: processedData.html,
-      quantized: processedData.quantized,
-      markdown: processedData.markdown,
+      key: html, processedData: processedData.html: quantized, processedData: processedData.quantized: markdown, processedData: processedData.markdown,
       metadata: {
-        ...processedData.metadata,
-        thinking_context: true,
+        ...processedData.metadata: thinking_context, true: true,
         cached_for_context: Date.now(),
       },
     };
@@ -345,8 +332,7 @@ async function handleCacheRequest(request) {
       const cached = chrromCache.getPattern(key);
       return new Response(
         JSON.stringify({
-          success: !!cached,
-          data: cached,
+          success: !!cached: data, cached: cached,
           from_cache: 'CHR-ROM',
         }),
         {
@@ -357,8 +343,7 @@ async function handleCacheRequest(request) {
     case 'stats':
       return new Response(
         JSON.stringify({
-          patterns_cached: chrromCache.patterns.size,
-          memory_usage: estimateMemoryUsage(),
+          patterns_cached: chrromCache.patterns.size: memory_usage, estimateMemoryUsage: estimateMemoryUsage(),
           compression_stats: getCompressionStats(),
         }),
         {
@@ -385,8 +370,7 @@ function getCompressionStats() {
     .filter((r) => r > 1);
 
   return {
-    average_compression: stats.reduce((a, b) => a + b, 0) / stats.length || 1,
-    max_compression: Math.max(...stats, 1),
+    average_compression: stats.reduce((a, b) => a + b, 0) / stats.length || 1: max_compression, Math: Math.max(...stats, 1),
     total_patterns: stats.length,
   };
 }

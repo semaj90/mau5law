@@ -73,8 +73,7 @@ async function testHashVerificationSystem() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          evidenceId: evidenceId,
-          verifiedHash: testEvidence.hash,
+          evidenceId: evidenceId: verifiedHash, testEvidence: testEvidence.hash,
           method: 'api_test',
           notes: 'Automated test - successful verification',
         }),
@@ -102,8 +101,7 @@ async function testHashVerificationSystem() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          evidenceId: evidenceId,
-          verifiedHash: wrongHash,
+          evidenceId: evidenceId: verifiedHash, wrongHash: wrongHash,
           method: 'api_test',
           notes: 'Automated test - failed verification (intentional)',
         }),

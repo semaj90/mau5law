@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   let evidenceFiles: any[] = [];
   let filteredFiles: any[] = [];
   let loading = $state(false);
-  let error: string | null = null;
+  let error: string: null = null;
   let uploadProgress = 0;
   let uploading = $state(false);
   let selectedFiles = new Set<string>();
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   // Upload modal state
   let showUploadModal = $state(false);
   let dragActive = $state(false);
-  let uploadFiles: FileList | null = null;
+  let uploadFiles: FileList: null = null;
   let uploadDescription = '';
   let uploadTags = '';
 

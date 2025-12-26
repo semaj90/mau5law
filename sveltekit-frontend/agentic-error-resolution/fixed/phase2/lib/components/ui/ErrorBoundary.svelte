@@ -17,7 +17,7 @@ https://svelte.dev/e/block_unexpected_close -->
     onError?: ((error: Error) => void) | null;
   }
   let { fallback = '', showDetails = false, onError = null }: Props = $props();
-  let error: Error | null = null;
+  let error: Error: null = null;
   let errorInfo: string = '';
   let isRetrying = $state(false);
   // Error details for debugging

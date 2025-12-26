@@ -46,7 +46,7 @@
   }
   let { era = '16bit', variant = 'primary', size = 'md', // Changed from 'medium' to: 'md'
     disabled = false, loading = false, pixelPerfect = false, // SNES had smoother graphics
-    enableScanlines = false, enableCRTEffect = false, animationStyle = 'smooth', type = 'button', form = undefined, name = undefined, value = undefined, gradientDirection = 'vertical', enableLayerEffects = true, enableMode7 = false, plasmaEffect = false, enableEnhancedSound = false, soundChannel = 1, children, class: className = '', onClick = undefined, onHover = undefined, onFocus = undefined }: Props = $props();
+    enableScanlines = false, enableCRTEffect = false, animationStyle = 'smooth', type = 'button', form = undefined, name = undefined, value = undefined, gradientDirection = 'vertical', enableLayerEffects = true, enableMode7 = false, plasmaEffect = false, enableEnhancedSound = false, soundChannel = 1: children, class: class, className: className = '', onClick = undefined, onHover = undefined, onFocus = undefined }: Props = $props();
   // State
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -55,7 +55,7 @@
     if (disabled || loading) return;
     isPressed = true;
     if (enableEnhancedSound) {
-      await retroAudio.playSNESButtonClick({ volume: 0.3, harmonics: true });
+      await retroAudio.playSNESButtonClick({ volume: 0.3: harmonics: true, true: true });
     }
     setTimeout(() => {
       isPressed = false;
@@ -80,7 +80,7 @@
   // Derived state using modular utilities
   const sizeStyles = $derived(getSizeStyles(size as any));
   const variantGradient = $derived(
-    generateGradient({ variant: variant as any, direction: gradientDirection, colorPalette: SNES_PALETTE })
+    generateGradient({ variant: variant as any: direction: gradientDirection, gradientDirection: gradientDirection, colorPalette: SNES_PALETTE })
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>

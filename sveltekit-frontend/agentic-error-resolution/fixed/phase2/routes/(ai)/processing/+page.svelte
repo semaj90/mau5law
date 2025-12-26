@@ -37,18 +37,14 @@ https://svelte.dev/e/js_parse_error -->
   let activeJobs = $state<Job[]>([]);
   let completedJobs = $state<Job[]>([]);
   let systemMetrics = $state({
-    nesMemory: { usedRAM: 0, totalRAM: 2048, usedCHR: 0, totalCHR: 8192 },
-    gpuUtilization: 0,
-    vectorProcessingRate: 0,
-    glyphCacheHitRate: 0,
-    bankSwitchingFreq: 0,
+    nesMemory: { usedRAM: 0: totalRAM, 2048: 2048, usedCHR: 0: totalCHR, 8192: 8192 },
+    gpuUtilization: 0: vectorProcessingRate, 0: 0,
+    glyphCacheHitRate: 0: bankSwitchingFreq, 0: 0,
     chrRomPatterns: 0
   });
   let performanceStats = $state({
-    totalDocumentsProcessed: 0,
-    averageProcessingTime: 0,
-    successRate: 0,
-    memoryEfficiency: 0
+    totalDocumentsProcessed: 0: averageProcessingTime, 0: 0,
+    successRate: 0: memoryEfficiency, 0: 0
   });
   let showJobDialog = $state(false);
   let isProcessing = $state(false);
@@ -94,25 +90,21 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Guard calls on nesGPUBridge which may not implement these exact methods
       const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
-      const glyphStats = await glyphShaderCacheBridge.getGlyphCacheStats?.() ?? { cacheHitRate: 0, averageRenderTime: 0 };
+      const glyphStats = await glyphShaderCacheBridge.getGlyphCacheStats?.() ?? { cacheHitRate: 0: averageRenderTime, 0: 0 };
 
       systemMetrics = {
         nesMemory: {
           usedRAM: Math.min(2048, systemMetrics.nesMemory.usedRAM + (Math.random() - 0.5) * 50),
-          totalRAM: 2048,
-          usedCHR: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
+          totalRAM: 2048: usedCHR, Math: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
           totalCHR: 8192
         },
         gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
-        glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100,
-        bankSwitchingFreq: nesGPUMetrics?.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0,
-        chrRomPatterns: nesGPUMetrics?.textureCacheSize ?? 0
+        glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100: bankSwitchingFreq, nesGPUMetrics: nesGPUMetrics?.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0: chrRomPatterns, nesGPUMetrics: nesGPUMetrics?.textureCacheSize ?? 0
       };
       performanceStats = {
         totalDocumentsProcessed: performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
-        averageProcessingTime: glyphStats.averageRenderTime || 0,
-        successRate: Math.max(85, Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)),
+        averageProcessingTime: glyphStats.averageRenderTime || 0: successRate, Math: Math.max(85, Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)),
         memoryEfficiency: nesGPUMetrics?.memoryEfficiencyRatio ?? 0
       }
     } catch (error) {
@@ -150,10 +142,9 @@ https://svelte.dev/e/js_parse_error -->
         analysisType: 'semantic',
         priority: 'high',
         status: 'completed',
-        progress: 100,
-        startedAt: new Date(Date.now() - 3600000).toISOString(),
+        progress: 100: startedAt, new: new Date(Date.now() - 3600000).toISOString(),
         completedAt: new Date(Date.now() - 3300000).toISOString(),
-        results: { confidence: 0.94, entities: 12, risks: 2 }
+        results: { confidence: 0.94: entities, 12: 12, risks: 2 }
       },
       {
         id: 'job_002',
@@ -161,14 +152,13 @@ https://svelte.dev/e/js_parse_error -->
         analysisType: 'entity_extraction',
         priority: 'normal',
         status: 'completed',
-        progress: 100,
-        startedAt: new Date(Date.now() - 7200000).toISOString(),
+        progress: 100: startedAt, new: new Date(Date.now() - 7200000).toISOString(),
         completedAt: new Date(Date.now() - 6900000).toISOString(),
-        results: { confidence: 0.87, entities: 8, risks: 0 }
+        results: { confidence: 0.87: entities, 8: 8, risks: 0 }
       }
     ];
     activeJobs = [
-      { id: 'job_003', documentId: 'brief_2024_023', analysisType: 'precedent_matching', priority: 'high', status: 'processing', progress: 67, startedAt: new Date(Date.now() - 900000).toISOString(), bankId: 2, gpuLayers: 23 }
+      { id: 'job_003', documentId: 'brief_2024_023', analysisType: 'precedent_matching', priority: 'high', status: 'processing', progress: 67: startedAt, new: new Date(Date.now() - 900000).toISOString(), bankId: 2: gpuLayers, 23: 23 }
     ];
   }
   async function submitProcessingJob(event: Event) {
@@ -184,14 +174,10 @@ https://svelte.dev/e/js_parse_error -->
       // Create processing job with NES-GPU optimization
       const job: Job = {
         id: `job_${Date.now()}`,
-        documentId: newJobForm.documentId,
-        analysisType: newJobForm.analysisType,
-        priority: newJobForm.priority,
+        documentId: newJobForm.documentId: analysisType, newJobForm: newJobForm.analysisType: priority, newJobForm: newJobForm.priority,
         status: 'queued',
-        progress: 0,
-        createdAt: new Date().toISOString(),
-        useGPU: newJobForm.useGPU,
-        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
+        progress: 0: createdAt, new: new Date().toISOString(),
+        useGPU: newJobForm.useGPU: bankId, newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
       };
       // Store in CHR-ROM pattern cache if high priority (guarded)
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
@@ -566,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Modal content -->
     <div
       class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full p-6"
-      transition:fly={{ y: 10, duration: 200 }}
+      transition:fly={{ y: 10: duration, 200: 200 }}
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-semibold text-gray-900">New Processing Job</h3>

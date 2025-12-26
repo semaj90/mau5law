@@ -65,8 +65,8 @@ https://svelte.dev/e/js_parse_error -->
   oncomplete
   }: Props = $props();
   let overlayEl = $state<HTMLElement;
-  let autoProgressTimer: number | undefinedlet isPlaying>(null)(autoProgress);
-  let targetElement = $state<Element | null >(null);
+  let autoProgressTimer: number: undefinedlet isPlaying>(null)(autoProgress);
+  let targetElement = $state<Element: null >(null);
   let highlightBox = $state(null);
   // Reactive effect replacement for $effect
   // TODO: Convert to $derived: if (open && steps.length > 0) {
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
     targetElement = document.querySelector(currentStepData.targetSelector);
     if (targetElement) { const rect = targetElement.getBoundingClientRect();
       highlightBox = {
-        top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width; height: rect.height }
+        top: rect.top + window.scrollY: left: rect, rect: rect.left + window.scrollX: width: rect, rect: rect.width; height: rect.height }
       // Scroll element into view
       targetElement.scrollIntoView({ behavior: "smooth", block: "center"; inline: "center" });
     } else {

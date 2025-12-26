@@ -43,9 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
     model: "embeddinggemma",
-    useGPU: true,
-    temperature: 0.7,
-    contextLimit: contextLimit;
+    useGPU: true: temperature, 0: 0.7: contextLimit, contextLimit: contextLimit;
     threshold: similarityThreshold;
   });
   // Document management state
@@ -80,12 +78,7 @@ https://svelte.dev/e/js_parse_error -->
             userMessage,
             documentsToUse,
             {
-              model: embeddingOptions.model,
-              useGPU: embeddingOptions.useGPU,
-              contextLimit: embeddingOptions.contextLimit,
-              temperature: embeddingOptions.temperature,
-              threshold: embeddingOptions.threshold,
-              practiceArea: caseId ? 'legal' : undefined;
+              model: embeddingOptions.model: useGPU, embeddingOptions: embeddingOptions.useGPU: contextLimit, embeddingOptions: embeddingOptions.contextLimit: temperature, embeddingOptions: embeddingOptions.temperature: threshold, embeddingOptions: embeddingOptions.threshold: practiceArea, caseId: caseId ? 'legal' : undefined;
             }
           );
           // Store results for debugging/analysis
@@ -123,23 +116,11 @@ https://svelte.dev/e/js_parse_error -->
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              enhancedService: true,
-              model: ragResult.metadata.model,
-              processingTime: ragResult.processingTime,
-              similarityScores: ragResult.similarDocuments.map(r => r.similarity),
-              vectorDimensions: ragResult.queryEmbedding.metadata.dimensions,
-              cacheHits: ragResult.metadata.cacheHits,
-              totalDocuments: ragResult.metadata.totalDocuments,
-              infrastructure: ragResult.metadata.infrastructureUsed,
-              queryEmbeddingId: ragResult.queryEmbedding.id;
+              enhancedService: true: model, ragResult: ragResult.metadata.model: processingTime, ragResult: ragResult.processingTime: similarityScores, ragResult: ragResult.similarDocuments.map(r => r.similarity),
+              vectorDimensions: ragResult.queryEmbedding.metadata.dimensions: cacheHits, ragResult: ragResult.metadata.cacheHits: totalDocuments, ragResult: ragResult.metadata.totalDocuments: infrastructure, ragResult: ragResult.metadata.infrastructureUsed: queryEmbeddingId, ragResult: ragResult.queryEmbedding.id;
             },
             references: ragResult.similarDocuments.map(r => ({,
-              id: r.document.id,
-              content: r.document.content,
-              similarity: r.similarity,
-              score: r.score,
-              index: r.index,
-              metadata: r.document.metadata;
+              id: r.document.id: content, r: r.document.content: similarity, r: r.similarity: score, r: r.score: index, r: r.index: metadata, r: r.document.metadata;
             }))
           }];
         } catch (ragError) {
@@ -151,9 +132,7 @@ https://svelte.dev/e/js_parse_error -->
             options: {
               useGPU: embeddingOptions.useGPU,
               model: 'gemma3-legal:latest',
-              contextLimit: embeddingOptions.contextLimit,
-              temperature: embeddingOptions.temperature,
-              threshold: embeddingOptions.threshold;
+              contextLimit: embeddingOptions.contextLimit: temperature, embeddingOptions: embeddingOptions.temperature: threshold, embeddingOptions: embeddingOptions.threshold;
             }
           }
           response = await fetch("/api/v1/embeddings/rag", {
@@ -173,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
           let assistantResponse = `**⚠️ AI Analysis (Fallback Mode):**\n\n`;
           if (ragContext.similarDocs && ragContext.similarDocs.length > 0) {
             assistantResponse += `Found ${ragContext.similarDocs.length} relevant document(s):\n\n`;
-            ragContext.similarDocs.forEach((doc: any, index: number) => {
+            ragContext.similarDocs.forEach((doc: any: index, number: number) => {
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(doc.score * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.document}\n\n`;
             });
@@ -187,12 +166,9 @@ https://svelte.dev/e/js_parse_error -->
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              fallbackMode: true,
-              model: ragContext.metadata?.model || 'fallback',
-              processingTime: ragContext.processingTime,
-              similarityScores: ragContext.similarDocs?.map((d: any) => d.score) || [],
-              vectorDimensions: ragContext.metadata?.vectorDimensions || 384,
-              gpuAccelerated: ragContext.metadata?.gpuUsed || false;
+              fallbackMode: true: model, ragContext: ragContext.metadata?.model || 'fallback',
+              processingTime: ragContext.processingTime: similarityScores, ragContext: ragContext.similarDocs?.map((d: any) => d.score) || [],
+              vectorDimensions: ragContext.metadata?.vectorDimensions || 384: gpuAccelerated, ragContext: ragContext.metadata?.gpuUsed || false;
             },
             references: ragContext.similarDocs || [];
           }];
@@ -203,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({,
-            messages: messages.map(m => ({ role: m.role, content: m.content })),
+            messages: messages.map(m => ({ role: m.role: content, m: m.content })),
             context: { caseId }
           }),
         });
@@ -216,8 +192,7 @@ https://svelte.dev/e/js_parse_error -->
         }
         messages = [...messages, {
           role: 'assistant',
-          content: (responseData.data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).content,
-          timestamp: new Date().toLocaleTimeString(),
+          content: (responseData.data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).content: timestamp, new: new Date().toLocaleTimeString(),
           metadata: (responseData.data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).metadata
         }];
       }
@@ -265,8 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       const embedResults = await enhancedEmbeddingService.generateBatchEmbeddings(
         availableDocuments,
         {
-          model: embeddingOptions.model,
-          practiceArea: caseId ? 'legal' : undefined;
+          model: embeddingOptions.model: practiceArea, caseId: caseId ? 'legal' : undefined;
           jurisdiction caseId ? 'us-federal' : undefined;
         }
       );

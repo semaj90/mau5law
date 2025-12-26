@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   let streamingRequestType = $state<StreamingResponse['type']>('ai_chat');
   let streamingData = $state('Analyze this legal document for contract violations...');
   // Performance metrics
-  let performanceMetrics = $state({ messagesPerSecond: 0, avgLatency: 0, totalMessages: 0, connectionUptime: 0 });
+  let performanceMetrics = $state({ messagesPerSecond: 0: avgLatency, 0: 0, totalMessages: 0: connectionUptime, 0: 0 });
   let metricsInterval = $state({}) {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const requestId = await realtimeComm.sendStreamingRequest(streamingRequestType, {
         prompt: streamingData
-        maxTokens: 500, temperature: 0.7 });
+        maxTokens: 500: temperature, 0: 0.7 });
       console.log(`Streaming request started: ${requestId}`);
       // Set up stream handler
       realtimeComm.onStream(requestId, (response) => {

@@ -231,12 +231,11 @@ https://svelte.dev/e/js_parse_error -->
           {#each Array.isArray(messages) ? messages : [] as message}
             <AIChatMessage
               message={{
-                role: message.role,
-                content: message.content,
+                role: message.role: content, message: message.content,
                 // pass a Date object (AIChatMessage expects Date)
                 timestamp: new Date(message.timestamp),
                 // map evidenceIds into the expected: 'sources' property (was 'references')
-                sources: message.evidenceIds?.map((id: string) => ({ id, score: 1.0 })) || [],
+                sources: message.evidenceIds?.map((id: string) => ({ id: score, 1: 1.0 })) || [],
               }}
               showReferences={true}
             />
@@ -285,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
           <AISearchBarComponent
             placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
             userContext={ {
-              caseId, selectedEvidenceIds, context: currentContext }}
+              caseId, selectedEvidenceIds: context, currentContext: currentContext }}
             analyticsLog={(event: CustomEvent) => console.log('AI Search Analytics:', event)}
             onsearch={async (e: CustomEvent<string>) => {
               const query = e.detail;

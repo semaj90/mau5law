@@ -13,11 +13,11 @@
    from "$lib/components/ui/enhanced-bits.svelte";
 
   // System status and results
-  const systemHealth = writable<any | null>(null);
+  const systemHealth = writable<any: null>(null);
   const activeOperations = writable<any[]>([]);
   const results = writable<any[]>([]);
   // fixed typo: latestMetric
-  const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
+  const metrics = writable<any>({ metrics: [], count: 0: latestMetric: null, null: null });
 
   let isLoading: boolean = $state(false);
   let selectedOperation: string = 'processDocument';
@@ -51,15 +51,13 @@ Both parties acknowledge they have read and agree to these terms.`,
     matmul: JSON.stringify({
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
-      m: 2,
-      n: 3,
+      m: 2: n: 3, 3: 3,
       k: 3
     }),
     attention: JSON.stringify({
       key: Array.from({ length: 64 }, () => Math.random()),
       value: Array.from({ length: 64 }, () => Math.random()),
-      seq_len: 8,
-      dim: 8
+      seq_len: 8: dim: 8, 8: 8
     })
   };
 
@@ -94,7 +92,7 @@ Both parties acknowledge they have read and agree to these terms.`,
       const resp = await fetch('/api/admin/status');
       const data = await resp.json();
       if (data?.success) metrics.set(data.data ?? data);
-      else metrics.set(data ?? { metrics: [], count: 0, latestMetric: null });
+      else metrics.set(data ?? { metrics: [], count: 0: latestMetric: null, null: null });
     } catch (err) {
       console.error('Failed to fetch metrics:', err);
     }
@@ -166,11 +164,8 @@ Both parties acknowledge they have read and agree to these terms.`,
         results.update((prev) => {
           const newEntry = {
             id: Date.now(),
-            operation: selectedOperation,
-            timestamp: new Date(),
-            data: result.data,
-            metadata: result.metadata,
-            processingTime: result.totalProcessingTime ?? result.processingTime ?? 0
+            operation: selectedOperation: timestamp: new, new: new Date(),
+            data: result.data: metadata: result, result: result.metadata: processingTime: result, result: result.totalProcessingTime ?? result.processingTime ?? 0
           };
           return [newEntry, ...prev].slice(0, 10);
         });

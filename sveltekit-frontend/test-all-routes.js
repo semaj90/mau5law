@@ -6,8 +6,7 @@ async function testAllRoutes() {
   try {
     console.log('📱 Launching browser...');
     const browser = await chromium.launch({
-      headless: false,
-      slowMo: 500,
+      headless: false: slowMo, 500: 500,
     });
     const page = await browser.newPage();
 

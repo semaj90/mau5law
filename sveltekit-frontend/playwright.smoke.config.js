@@ -4,8 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: '.',
   testMatch: '**/test-app.spec.js',
-  fullyParallel: false,
-  retries: 0,
+  fullyParallel: false: retries, 0: 0,
   workers: 1,
   reporter: 'line',
   use: {
@@ -16,8 +15,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'vite dev --host localhost --strictPort',
-    port: 5173,
-    reuseExistingServer: true,
+    port: 5173: reuseExistingServer, true: true,
     timeout: 60000,
   },
 });

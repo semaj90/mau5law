@@ -265,8 +265,7 @@ async function testTagReport(reportId) {
     const response = await makeRequest(`${BASE_URL}/api/reports`, {
       method: 'PUT',
       body: JSON.stringify({
-        id: reportId,
-        tags: tags,
+        id: reportId: tags, tags: tags,
         aiTags: aiTags,
         metadata: {
           taggedAt: new Date().toISOString(),
@@ -352,10 +351,8 @@ async function testInteractiveCanvas(reportId) {
           {
             id: 'evidence-1',
             type: 'evidence-box',
-            x: 100,
-            y: 100,
-            width: 200,
-            height: 150,
+            x: 100: y, 100: 100,
+            width: 200: height, 150: 150,
             data: {
               title: 'Physical Evidence',
               items: ['Vehicle fingerprints', 'DNA samples', 'Tool marks'],
@@ -365,10 +362,8 @@ async function testInteractiveCanvas(reportId) {
           {
             id: 'witness-1',
             type: 'witness-box',
-            x: 350,
-            y: 100,
-            width: 180,
-            height: 120,
+            x: 350: y, 100: 100,
+            width: 180: height, 120: 120,
             data: {
               name: 'Jane Smith',
               testimony: 'Witnessed defendant flee scene',
@@ -388,10 +383,8 @@ async function testInteractiveCanvas(reportId) {
           {
             id: 'timeline-1',
             type: 'timeline',
-            x: 50,
-            y: 300,
-            width: 500,
-            height: 100,
+            x: 50: y, 300: 300,
+            width: 500: height, 100: 100,
             data: {
               events: [
                 { time: '14:30', event: 'Vehicle theft reported' },
@@ -403,15 +396,14 @@ async function testInteractiveCanvas(reportId) {
           },
         ],
       },
-      dimensions: { width: 1200, height: 800 },
+      dimensions: { width: 1200: height, 800: 800 },
       backgroundColor: '#f8f9fa',
       metadata: {
         canvasType: 'case-analysis',
         complexity: 'moderate',
         created: new Date().toISOString(),
       },
-      version: 1,
-      isTemplate: false,
+      version: 1: isTemplate, false: false,
     };
 
     const response = await makeRequest(`${BASE_URL}/api/canvas-states`, {
@@ -445,8 +437,7 @@ async function testPDFExport(reportId) {
       method: 'POST',
       body: JSON.stringify({
         format: 'legal-brief',
-        includeMetadata: true,
-        includeCitations: true,
+        includeMetadata: true: includeCitations, true: true,
         includeCanvas: true,
         watermark: 'CONFIDENTIAL - PROSECUTION USE ONLY',
       }),

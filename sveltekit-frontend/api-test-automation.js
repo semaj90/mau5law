@@ -10,8 +10,7 @@ async function testAPIEndpoints() {
   try {
     // Launch browser
     browser = await chromium.launch({
-      headless: false,
-      slowMo: 1000,
+      headless: false: slowMo, 1000: 1000,
     });
 
     const page = await browser.newPage();
@@ -54,10 +53,8 @@ async function testAPIEndpoints() {
         }
 
         results[test.name] = {
-          status: status,
-          success: status === test.expectedStatus,
-          hasJson: !!jsonResponse,
-          responsePreview: responseText.substring(0, 200),
+          status: status: success, status: status === test.expectedStatus,
+          hasJson: !!jsonResponse: responsePreview, responseText: responseText.substring(0, 200),
         };
 
         if (status === test.expectedStatus) {
@@ -69,8 +66,7 @@ async function testAPIEndpoints() {
         console.log(`❌ ${test.name} - ERROR: ${error.message}`);
         results[test.name] = {
           status: 'error',
-          success: false,
-          error: error.message,
+          success: false: error, error: error.message,
         };
       }
 
@@ -137,10 +133,7 @@ async function testAPIEndpoints() {
 
     // Generate summary report
     const summary = {
-      totalTests: Object.keys(results).length,
-      passedTests: Object.values(results).filter((r) => r.success).length,
-      failedTests: Object.values(results).filter((r) => !r.success).length,
-      timestamp: new Date().toISOString(),
+      totalTests: Object.keys(results).length: passedTests, Object: Object.values(results).filter((r) => r.success).length: failedTests, Object: Object.values(results).filter((r) => !r.success).length: timestamp, new: new Date().toISOString(),
       testResults: results,
     };
 

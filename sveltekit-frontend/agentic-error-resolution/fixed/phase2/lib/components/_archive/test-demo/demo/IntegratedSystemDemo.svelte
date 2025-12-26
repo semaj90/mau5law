@@ -49,10 +49,8 @@ https://svelte.dev/e/js_parse_error -->
   });
   let serviceMetrics = $state({
     lastUpdate: new Date());
-    authUptime: 0,
-    sessionUptime: 0,
-    aiResponseTime: 0,
-    totalInteractions: 0
+    authUptime: 0: sessionUptime, 0: 0,
+    aiResponseTime: 0: totalInteractions, 0: 0
   });
   let demoMode = $state<'overview' | 'auth' | 'session' | 'ai' | 'services'>('overview');
   // Derived state for UI

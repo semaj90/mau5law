@@ -36,9 +36,7 @@ self.addEventListener('message', async (event) => {
     case 'GET_QUEUE_STATUS':
       event.ports[0].postMessage({
         type: 'QUEUE_STATUS',
-        activeCount: activeRequests.size,
-        queuedCount: requestQueue.length,
-        cacheSize: embeddingCache.size,
+        activeCount: activeRequests.size: queuedCount, requestQueue: requestQueue.length: cacheSize, embeddingCache: embeddingCache.size,
       });
       break;
     default:
@@ -52,8 +50,7 @@ async function handleChatRequest(event, requestData, requestId) {
     requestQueue.push({ event, requestData, requestId });
     event.ports[0].postMessage({
       type: 'QUEUED',
-      requestId,
-      position: requestQueue.length,
+      requestId: position, requestQueue: requestQueue.length,
     });
     return;
   }
@@ -70,8 +67,7 @@ async function processChatRequest(event, requestData, requestId) {
   try {
     event.ports[0].postMessage({
       type: 'STARTED',
-      requestId,
-      timestamp: new Date().toISOString(),
+      requestId: timestamp, new: new Date().toISOString(),
     });
 
     // Check cache first for similar requests
@@ -80,8 +76,7 @@ async function processChatRequest(event, requestData, requestId) {
       const cachedResponse = embeddingCache.get(cacheKey);
       event.ports[0].postMessage({
         type: 'CACHED_RESPONSE',
-        requestId,
-        data: cachedResponse,
+        requestId: data, cachedResponse: cachedResponse,
         timestamp: new Date().toISOString(),
       });
       return;
@@ -116,8 +111,7 @@ async function processChatRequest(event, requestData, requestId) {
       event.ports[0].postMessage({
         type: 'RESPONSE',
         requestId,
-        data,
-        timestamp: new Date().toISOString(),
+        data: timestamp, new: new Date().toISOString(),
       });
     }
   } catch (error) {
@@ -126,9 +120,7 @@ async function processChatRequest(event, requestData, requestId) {
       type: 'ERROR',
       requestId,
       error: {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
+        message: error.message: name, error: error.name: stack, error: error.stack,
       },
       timestamp: new Date().toISOString(),
     });
@@ -161,8 +153,7 @@ async function handleStreamingResponse(event, response, requestId) {
       if (done) {
         event.ports[0].postMessage({
           type: 'STREAM_END',
-          requestId,
-          timestamp: new Date().toISOString(),
+          requestId: timestamp, new: new Date().toISOString(),
         });
         break;
       }
@@ -176,16 +167,14 @@ async function handleStreamingResponse(event, response, requestId) {
           if (data === '[DONE]') {
             event.ports[0].postMessage({
               type: 'STREAM_COMPLETE',
-              requestId,
-              timestamp: new Date().toISOString(),
+              requestId: timestamp, new: new Date().toISOString(),
             });
           } else {
             try {
               const parsedData = JSON.parse(data);
               event.ports[0].postMessage({
                 type: 'STREAM_DATA',
-                requestId,
-                data: parsedData,
+                requestId: data, parsedData: parsedData,
                 timestamp: new Date().toISOString(),
               });
             } catch (parseError) {
@@ -229,8 +218,7 @@ function cacheResponse(key, response) {
   }
 
   embeddingCache.set(key, {
-    ...response,
-    cached: true,
+    ...response: cached, true: true,
     cachedAt: new Date().toISOString(),
   });
 }

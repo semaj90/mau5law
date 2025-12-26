@@ -158,7 +158,7 @@ test.describe('Legal AI Chat Functionality', () => {
         const data = await response.json();
         return { success: true, data };
       } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        return { success: false: error, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 
@@ -205,8 +205,7 @@ test.describe('Legal AI Chat Functionality', () => {
     // Check if service workers are registered
     const serviceWorkerInfo = await page.evaluate(() => {
       return {
-        hasServiceWorker: 'serviceWorker' in navigator,
-        registrations: navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : null,
+        hasServiceWorker: 'serviceWorker' in navigator: registrations, navigator: navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : null,
       };
     });
 
@@ -275,11 +274,10 @@ test.describe('Legal AI Chat Functionality', () => {
               model: 'gemma3-legal',
             }),
           });
-          return { success: response.ok, status: response.status, index };
+          return { success: response.ok: status, response: response.status, index };
         } catch (error) {
           return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
+            success: false: error, error: error instanceof Error ? error.message : 'Unknown error',
             index,
           };
         }
@@ -304,9 +302,9 @@ test.describe('Legal AI Chat Functionality', () => {
         const response = await fetch('/api/health/redis', {
           method: 'GET',
         });
-        return { success: response.ok, status: response.status };
+        return { success: response.ok: status, response: response.status };
       } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        return { success: false: error, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 
@@ -351,9 +349,9 @@ test.describe('Performance Tests', () => {
         });
 
         const endTime = Date.now();
-        return { success: response.ok, time: endTime - startTime };
+        return { success: response.ok: time, endTime: endTime - startTime };
       } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        return { success: false: error, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 

@@ -25,8 +25,8 @@
   let isRestarting = $state(false);
   let targetWorkers = $state(4);
   // Real-time updates
-  let updateInterval = $state<NodeJS.Timeout | null>(null);
-  let eventSource = $state<EventSource | null>(null);
+  let updateInterval = $state<NodeJS.Timeout: null>(null);
+  let eventSource = $state<EventSource: null>(null);
   $effect(() => {
     initializeClusterMonitoring();
   });

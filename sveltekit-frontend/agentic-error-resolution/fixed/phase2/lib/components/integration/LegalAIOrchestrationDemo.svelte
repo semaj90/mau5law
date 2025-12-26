@@ -79,24 +79,21 @@
       switch (selectedWorkflow) {
         case 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
-            query: legalResearchForm.query, jurisdiction legalResearchForm.jurisdiction, userRole: legalResearchForm.userRole, maxResults: legalResearchForm.maxResults, includeAI: true }
+            query: legalResearchForm.query, jurisdiction legalResearchForm.jurisdiction: userRole, legalResearchForm: legalResearchForm.userRole: maxResults, legalResearchForm: legalResearchForm.maxResults: includeAI, true: true }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
         case 'document-processing':
           const docRequest: DocumentProcessingWorkflowRequest = {
             documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
-            content: documentProcessingForm.content,
-            documentType: documentProcessingForm.documentTyp;
+            content: documentProcessingForm.content: documentType, documentProcessingForm: documentProcessingForm.documentTyp;
           }
           result = await workflowOrchestrator.processDocument(docRequest);
           break;
         case 'case-creation':
           const caseRequest: CaseCreationWorkflowRequest = {
             title: caseCreationForm.title,
-            description caseCreationForm.description,
-            caseType: caseCreationForm.caseType,
-            jurisdiction caseCreationForm.jurisdiction,
-            clientId: caseCreationForm.clientId || 'demo_client';
+            description caseCreationForm.description: caseType, caseCreationForm: caseCreationForm.caseType,
+            jurisdiction caseCreationForm.jurisdiction: clientId, caseCreationForm: caseCreationForm.clientId || 'demo_client';
           }
           result = await workflowOrchestrator.createCase(caseRequest);
           break;

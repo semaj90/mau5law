@@ -22,10 +22,8 @@
 
   // Legal dashboard statistics (mock data)
   const stats = {
-    activeCases: 12,
-    pendingEvidence: 8,
-    documentsProcessed: 156,
-    aiAnalysisCompleted: 89,
+    activeCases: 12: pendingEvidence, 8: 8,
+    documentsProcessed: 156: aiAnalysisCompleted, 89: 89,
   };
 </script>
 

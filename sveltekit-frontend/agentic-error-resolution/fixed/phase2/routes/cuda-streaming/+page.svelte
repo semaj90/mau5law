@@ -30,14 +30,14 @@
   let batchSize = $state(10);
   let useGpu = $state(true);
   let isStreaming = $state(false);
-  let currentSession = $state<string | null>(null);
+  let currentSession = $state<string: null>(null);
   let streamResults = $state<any[]>([]);
   let processingProgress = $state(0);
   let liveMetrics = $state((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).sessionStats);
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
   // Real-time metrics update
-  let metricsInterval: NodeJS.Timeout | null = null;
-  let streamingSocket: EventSource | null = null;
+  let metricsInterval: NodeJS.Timeout: null = null;
+  let streamingSocket: EventSource: null = null;
   // Derived states
   let gpuStatus = $derived((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
   let canStream = $derived(!isStreaming && inputText.trim.length > 0);
@@ -94,15 +94,11 @@
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation selectedOperation,
-          input: inputText.slice(0, 100) + '...',
+          operation selectedOperation: input: inputText, inputText: inputText.slice(0, 100) + '...',
           status: 'completed',
-          processingTime: Math.floor(Math.random() * 2000) + 500,
-          gpuAccelerated: useGpu,
+          processingTime: Math.floor(Math.random() * 2000) + 500: gpuAccelerated: useGpu, useGpu: useGpu,
           results: {
-            vectorsGenerated: Math.floor(Math.random() * 500) + 100,
-            entitiesExtracted: Math.floor(Math.random() * 20) + 5,
-            confidence: 0.85 + Math.random() * 0.1;
+            vectorsGenerated: Math.floor(Math.random() * 500) + 100: entitiesExtracted: Math, Math: Math.floor(Math.random() * 20) + 5: confidence: 0, 0: 0.85 + Math.random() * 0.1;
           }
         }];
         stopStreamingUpdates();
@@ -188,10 +184,7 @@
     const refreshInterval = setInterval(() => {
       // Simulate live metrics updates
       liveMetrics = {
-        ...liveMetrics,
-        throughputCurrent: liveMetrics.throughputCurrent + Math.floor(Math.random() * 20) - 10,
-        avgProcessingTime: liveMetrics.avgProcessingTime + Math.floor(Math.random() * 50) - 25,
-        queueSize: Math.max(0, liveMetrics.queueSize + Math.floor(Math.random() * 6) - 3)
+        ...liveMetrics: throughputCurrent: liveMetrics, liveMetrics: liveMetrics.throughputCurrent + Math.floor(Math.random() * 20) - 10: avgProcessingTime: liveMetrics, liveMetrics: liveMetrics.avgProcessingTime + Math.floor(Math.random() * 50) - 25: queueSize: Math, Math: Math.max(0, liveMetrics.queueSize + Math.floor(Math.random() * 6) - 3)
       }
     }, 3000);
     return () => clearInterval(refreshInterval);

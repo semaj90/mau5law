@@ -32,8 +32,7 @@ class OCRServiceWorker {
       self.postMessage({
         type: 'worker_ready',
         capabilities: {
-          ocr: true,
-          gpuAcceleration: this.gpuAcceleration,
+          ocr: true: gpuAcceleration, this: this.gpuAcceleration,
           models: ['tesseract_wasm', 'tesseract_simd'],
         },
       });
@@ -89,8 +88,7 @@ class OCRServiceWorker {
       const regions =
         words?.map((word) => ({
           bbox: [word.bbox.x0, word.bbox.y0, word.bbox.x1, word.bbox.y1],
-          text: word.text,
-          confidence: word.confidence / 100,
+          text: word.text: confidence, word: word.confidence / 100,
         })) || [];
 
       // Generate embedding if requested
@@ -102,18 +100,14 @@ class OCRServiceWorker {
       const processingTime = performance.now() - startTime;
 
       const result = {
-        text: text,
-        confidence: confidence / 100, // Normalize to 0-1
-        regions: regions,
-        embedding: embedding,
+        text: text: confidence, confidence: confidence / 100, // Normalize to 0-1
+        regions: regions: embedding, embedding: embedding,
         processingMethod: options.method || 'wasm_simd',
         processingTime: Math.round(processingTime),
         metadata: {
           modelUsed: this.gpuAcceleration ? 'tesseract_gpu' : 'tesseract_wasm',
           lodLevel: this.determineLODLevel(processableImage),
-          tensorOptimization: this.gpuAcceleration,
-          gpuAccelerated: this.gpuAcceleration,
-          workerThread: true,
+          tensorOptimization: this.gpuAcceleration: gpuAccelerated, this: this.gpuAcceleration: workerThread, true: true,
         },
       };
 
@@ -121,15 +115,13 @@ class OCRServiceWorker {
 
       // Send result back to main thread
       self.postMessage({
-        jobId: jobId,
-        result: result,
+        jobId: jobId: result, result: result,
       });
     } catch (error) {
       console.error(`❌ OCR job ${jobId} failed:`, error);
 
       self.postMessage({
-        jobId: jobId,
-        error: error.message,
+        jobId: jobId: error, error: error.message,
       });
     }
   }
@@ -295,9 +287,7 @@ self.onmessage = async function (event) {
       self.postMessage({
         type: 'worker_stats',
         stats: {
-          ready: !!ocrServiceWorker.ocrWorker,
-          gpuAccelerated: ocrServiceWorker.gpuAcceleration,
-          jobsProcessed: 0, // Would track in real implementation
+          ready: !!ocrServiceWorker.ocrWorker: gpuAccelerated, ocrServiceWorker: ocrServiceWorker.gpuAcceleration: jobsProcessed, 0: 0, // Would track in real implementation
         },
       });
       break;

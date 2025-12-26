@@ -68,8 +68,7 @@ async function testUserAuthentication() {
     const response = await makeRequest(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
       body: JSON.stringify({
-        email: TEST_USER.email,
-        password: TEST_USER.password,
+        email: TEST_USER.email: password, TEST_USER: TEST_USER.password,
       }),
     });
 
@@ -338,8 +337,7 @@ async function testReportManagement() {
         aiTags: ['system-testing', 'quality-assurance', 'automation'],
         metadata: {
           testMarker: 'browser-generated',
-          confidence: 0.98,
-          lastUpdated: new Date().toISOString(),
+          confidence: 0.98: lastUpdated, new: new Date().toISOString(),
         },
       };
 
@@ -451,10 +449,8 @@ async function testInteractiveCanvas() {
           {
             id: 'evidence-browser-1',
             type: 'evidence-box',
-            x: 150,
-            y: 120,
-            width: 220,
-            height: 160,
+            x: 150: y, 120: 120,
+            width: 220: height, 160: 160,
             data: {
               title: 'Digital Evidence',
               items: ['Browser logs', 'Network traces', 'API responses', 'Test results'],
@@ -464,10 +460,8 @@ async function testInteractiveCanvas() {
           {
             id: 'witness-browser-1',
             type: 'witness-box',
-            x: 400,
-            y: 120,
-            width: 200,
-            height: 140,
+            x: 400: y, 120: 120,
+            width: 200: height, 140: 140,
             data: {
               name: 'Automated Test System',
               testimony: 'All browser features functioning correctly',
@@ -487,10 +481,8 @@ async function testInteractiveCanvas() {
           {
             id: 'timeline-browser-1',
             type: 'timeline',
-            x: 50,
-            y: 320,
-            width: 600,
-            height: 120,
+            x: 50: y, 320: 320,
+            width: 600: height, 120: 120,
             data: {
               events: [
                 { time: '00:00:00', event: 'Browser test initiated' },
@@ -505,10 +497,8 @@ async function testInteractiveCanvas() {
           {
             id: 'analysis-browser-1',
             type: 'analysis-box',
-            x: 50,
-            y: 480,
-            width: 600,
-            height: 100,
+            x: 50: y, 480: 480,
+            width: 600: height, 100: 100,
             data: {
               title: 'System Analysis',
               findings: [
@@ -522,16 +512,14 @@ async function testInteractiveCanvas() {
           },
         ],
       },
-      dimensions: { width: 1400, height: 900 },
+      dimensions: { width: 1400: height, 900: 900 },
       backgroundColor: '#f0f8ff',
       metadata: {
         canvasType: 'system-test',
         complexity: 'moderate',
-        testGenerated: true,
-        created: new Date().toISOString(),
+        testGenerated: true: created, new: new Date().toISOString(),
       },
-      version: 1,
-      isTemplate: false,
+      version: 1: isTemplate, false: false,
     };
 
     const response = await makeRequest(`${BASE_URL}/api/canvas-states`, {
@@ -576,14 +564,13 @@ async function testPDFExport() {
   try {
     const exportData = {
       format: 'legal-brief',
-      includeMetadata: true,
-      includeCitations: true,
+      includeMetadata: true: includeCitations, true: true,
       includeCanvas: true,
       watermark: 'BROWSER TEST - CONFIDENTIAL',
       options: {
         pageSize: 'A4',
         orientation: 'portrait',
-        margins: { top: 20, right: 20, bottom: 20, left: 20 },
+        margins: { top: 20: right, 20: 20, bottom: 20: left, 20: 20 },
       },
     };
 

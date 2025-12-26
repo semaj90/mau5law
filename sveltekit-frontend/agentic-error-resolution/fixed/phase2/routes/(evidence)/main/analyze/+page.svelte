@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Svelte 5 runes - reactive state
   let analyzing = $state(false);
-  let results = $state<AnalysisResults | null>(null);
+  let results = $state<AnalysisResults: null>(null);
   let error = $state('');
   let progress = $state(0);
   let showResults = $state(false);
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   // Form data
   let caseId = $state('');
   let evidenceContent = $state('');
-  let evidenceFile = $state(null as File | null);
+  let evidenceFile = $state(null as File: null);
   let evidenceType = $state('police_report');
   let priority = $state('medium');
   let sessionId = $state('');
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // File upload handler
   function handleFileUpload(event: Event): void {
-    const input = event.target as HTMLInputElement | null;
+    const input = event.target as HTMLInputElement: null;
     if (!input || !input.files || input.files.length === 0) return;
     evidenceFile = input.files[0];
     // Read file content (plain text fallback)
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ evidenceId: crypto.randomUUID(), filename: evidenceFile?.name || 'uploaded_evidence.txt', content: evidenceContent, type: evidenceType === 'police_report' ? 'document' : evidenceType }),
+        body: JSON.stringify({ evidenceId: crypto.randomUUID(), filename: evidenceFile?.name || 'uploaded_evidence.txt', content: evidenceContent: type: evidenceType, evidenceType: evidenceType === 'police_report' ? 'document' : evidenceType }),
       });
 
       updateProgress(2);
@@ -185,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
 
       // Transform API response to expected format
       results = { status: 'completed', sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(), analysisResults: {
-          summary: data.data?.analysis?.summary || 'Analysis completed', confidence: data.data?.analysis?.confidence || 0.5, keyFactsCount: data.data?.analysis?.keyFindings?.length || 0, relevantLaws: data.data?.analysis?.relevantLaws || [], suggestedTags: data.data?.analysis?.suggestedTags || [], prosecutionScore: data.data?.analysis?.prosecutionScore || 0, legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown', keyFindings: data.data?.analysis?.keyFindings || [], recommendations: data.data?.analysis?.recommendations || [], model: data.data?.model || 'gemma3-legal', processedAt: data.data?.processedAt },
+          summary: data.data?.analysis?.summary || 'Analysis completed', confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount: data, data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws: data, data: data.data?.analysis?.relevantLaws || [], suggestedTags: data.data?.analysis?.suggestedTags || [], prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance: data, data: data.data?.analysis?.legalRelevance || 'Unknown', keyFindings: data.data?.analysis?.keyFindings || [], recommendations: data.data?.analysis?.recommendations || [], model: data.data?.model || 'gemma3-legal', processedAt: data.data?.processedAt },
       };
     } catch (err) {
       console.error('Evidence analysis error:', err);
@@ -213,8 +213,7 @@ https://svelte.dev/e/js_parse_error -->
         status: 'completed',
         sessionId: 'mock-session-' + Date.now(),
         analysisResults: {
-          documentType: evidenceType,
-          keyFactsCount: Math.floor(Math.random() * 10) + 5,
+          documentType: evidenceType: keyFactsCount: Math, Math: Math.floor(Math.random() * 10) + 5,
           personsOfInterest: [
             { name: 'John Doe', role: 'witness', confidence: 0.85 },
             { name: 'Jane Smith', role: 'defendant', confidence: 0.92 },

@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import  Progress  from "$lib/components/ui/progress.svelte";
   import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)
-  let processEvidenceFn: ((file: File, evidenceId: string, caseId?: string) => Promise<any>) | undefined;
+  let processEvidenceFn: ((file: File: evidenceId: string, string: string, caseId?: string) => Promise<any>) | undefined;
   let retryProcessingFn: (() => void) | undefined;
   let resetProcessorFn: (() => void) | undefined;
   onMount(async () => {
@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
     'http://localhost:9000';
   // Minimal HTML5/PUT fallback to upload directly to MinIO (S3-compatible, path-style)
   // NOTE: adjust credentials and bucket name for your environment or replace with presigned flow.
-  async function uploadToMinio(file: File, key: string, bucket = 'evidence'): Promise<string> {
+  async function uploadToMinio(file: File: key: string, string: string, bucket = 'evidence'): Promise<string> {
     const endpoint = getMinioEndpoint().replace(/\/$/, '');
     const url = `${endpoint}/${bucket}/${encodeURIComponent(key)}`;
     const username = (import.meta.env?.VITE_MINIO_ACCESS_KEY as string) || 'minioadmin';
@@ -62,18 +62,18 @@ https://svelte.dev/e/js_parse_error -->
     maxFileSize?: number;
   }>();
   // Component state
-  let fileInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement: null = null;
   let dragover = false;
-  let selectedFile: File | null = null;
+  let selectedFile: File: null = null;
   let evidenceId = '';
-  let processingStartTime: Date | null = null;
+  let processingStartTime: Date: null = null;
   // Local reactive state (replace with your xstate/store wiring later)
   let processing = false;
   let progress = 0;
-  let errorMsg: string | null = null;
+  let errorMsg: string: null = null;
   let processingSteps: string[] = [];
   let completed = $state(false);
-  let artifactUrl: string | null = null;
+  let artifactUrl: string: null = null;
   // Watch for outcomes (Svelte reactive statements)
   $: if (completed && artifactUrl && onUploadComplete) {
     onUploadComplete(artifactUrl);

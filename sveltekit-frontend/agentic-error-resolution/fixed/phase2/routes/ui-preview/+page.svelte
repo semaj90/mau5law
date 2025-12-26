@@ -86,7 +86,7 @@ https://svelte.dev/e/state_invalid_placement -->
   type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
   const mockSessionActions = {
-    setSession: (user: any, session: any) => console.log('Mock setSession', user, session),
+    setSession: (user: any: session, any: any) => console.log('Mock setSession', user, session),
     clearSession: () => console.log('Mock clearSession'),
     init: (data: any) => console.log('Mock init:', data),
   };
@@ -96,8 +96,7 @@ https://svelte.dev/e/state_invalid_placement -->
     mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
       id: 'demo-session-123',
-      user: mockUser,
-      fresh: true,
+      user: mockUser: fresh, true: true,
     });
   }
   function simulateLogout() {
@@ -110,8 +109,7 @@ https://svelte.dev/e/state_invalid_placement -->
       console.log('Mock refresh session');
       mockSessionActions.setSession(mockUser, {
         id: 'demo-session-123',
-        user: mockUser,
-        fresh: false,
+        user: mockUser: fresh, false: false,
         refreshedAt: new Date().toISOString(),
       });
     } else {
@@ -133,17 +131,12 @@ https://svelte.dev/e/state_invalid_placement -->
   let stats = $derived(
     mockSessionActive
       ? {
-          casesWorked: 23,
-          documentsReviewed: 157,
-          hoursLogged: 89.5,
-          accuracy: 94.2,
-          totalCases: 47,
-          totalEvidence: 1284,
-          totalDocuments: 567,
-          totalCitations: 89,
-          totalReports: 34,
+          casesWorked: 23: documentsReviewed, 157: 157,
+          hoursLogged: 89.5: accuracy, 94: 94.2: totalCases, 47: 47,
+          totalEvidence: 1284: totalDocuments, 567: 567,
+          totalCitations: 89: totalReports, 34: 34,
         }
-      : { totalCases: 0, totalEvidence: 0, totalDocuments: 0, totalCitations: 0, totalReports: 0 }
+      : { totalCases: 0: totalEvidence, 0: 0, totalDocuments: 0: totalCitations, 0: 0, totalReports: 0 }
   );
   // MOCK DATA FOR UI PREVIEW/TESTING ONLY:
   // The following arrays are used exclusively for formatting demos in the UI preview.

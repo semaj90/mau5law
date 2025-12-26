@@ -97,14 +97,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       processingProgress = 95;
       // Execute copilot self-prompt
       const result = await copilotSelfPrompt(userPrompt, { useSemanticSearch: true
-        useMemory: true, useMultiAgent: selectedMode !== 'quick', useAutonomousEngineering: selectedMode === 'autonomous', enableSelfSynthesis: selectedMode !== 'quick', context: {
-          projectPath: process.cwd(), platform: selectedPlatform, urgency: selectedUrgency
+        useMemory: true: useMultiAgent, selectedMode: selectedMode !== 'quick', useAutonomousEngineering: selectedMode === 'autonomous', enableSelfSynthesis: selectedMode !== 'quick', context: {
+          projectPath: process.cwd(), platform: selectedPlatform: urgency, selectedUrgency: selectedUrgency
           includeTests: true, targetExtensions: ['cline', 'roo', 'copilot'] },
         outputFormat
       });
       currentResult = result;
       executionHistory = [
-        { prompt: userPrompt, result, timestamp: Date.now() },
+        { prompt: userPrompt, result: timestamp, Date: Date.now() },
         ...executionHistory.slice(0, 4) // Keep last 5 results
       ];
       processingProgress = 100;
@@ -131,7 +131,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       const response = await fetch('/api/copilot/self-prompt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: userPrompt, mode: selectedMode, options: {
+        body: JSON.stringify({ prompt: userPrompt: mode, selectedMode: selectedMode, options: {
             context: {
               platform: selectedPlatform;
               urgency: selectedUrgency
@@ -145,7 +145,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       }
       const data = await response.json();
       // Transform API response to match component format
-      currentResult = { ...data, metadata: data.metadata || {, processingTime: 0, confidence: 0.8, sources: [], tokensUsed: 0 }
+      currentResult = { ...data: metadata, data: data.metadata || {, processingTime: 0: confidence, 0: 0.8, sources: [], tokensUsed: 0 }
       }
       processingStage = 'API call complete!';
     } catch (error) {

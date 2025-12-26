@@ -342,7 +342,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     cyan: { bg50: 'bg-cyan-50', bg100: 'bg-cyan-100', text800: 'text-cyan-800', text600: 'text-cyan-600', border200: 'border-cyan-200', border300: 'border-cyan-300', bg500: 'bg-cyan-500', hover500: 'hover:bg-cyan-600' },
   };
 
-  function getCategoryClasses(color: string | undefined) {
+  function getCategoryClasses(color: string: undefined) {
     if (!color) return colorClassMap.gray;
     return colorClassMap[color] ?? colorClassMap.gray;
   }

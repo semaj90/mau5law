@@ -133,13 +133,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const enableStreaming = aiRequest.stream !== false;
     // Validate AI request
     if (!aiRequest.prompt || aiRequest.prompt.trim().length === 0) {
-      throw error(400, { message: 'Prompt is required and cannot be empty' });
+      return json({ message: 'Prompt is required and cannot be empty' }, { status: 400 });
     }
     if (aiRequest.maxTokens && (aiRequest.maxTokens < 1 || aiRequest.maxTokens > 8192)) {
-      throw error(400, { message: 'Max tokens must be between 1 and 8192' });
+      return json({ message: 'Max tokens must be between 1 and 8192' }, { status: 400 });
     }
     if (aiRequest.temperature && (aiRequest.temperature < 0 || aiRequest.temperature > 2)) {
-      throw error(400, { message: 'Temperature must be between 0 and 2' });
+      return json({ message: 'Temperature must be between 0 and 2' }, { status: 400 });
     }
     // Generate session ID if not provided
     const sessionId = aiRequest.sessionId || crypto.randomUUID();
@@ -241,7 +241,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const sessionId = url.searchParams.get('sessionId');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     if (!sessionId) {
-      throw error(400, { message: 'Session ID is required' });
+      return json({ message: 'Session ID is required' }, { status: 400 });
     }
     const targetUrl = useHttp3
       ? `${QUIC_AI_STREAM_CONFIG.baseUrl}/session/${sessionId}`
@@ -277,10 +277,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.maxTokens && (config.maxTokens < 1 || config.maxTokens > 8192)) {
-      throw error(400, { message: 'Max tokens must be between 1 and 8192' });
+      return json({ message: 'Max tokens must be between 1 and 8192' }, { status: 400 });
     }
     if (config.timeout && (config.timeout < 5000 || config.timeout > 300000)) {
-      throw error(400, { message: 'Timeout must be between 5000 and 300000ms' });
+      return json({ message: 'Timeout must be between 5000 and 300000ms' }, { status: 400 });
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {

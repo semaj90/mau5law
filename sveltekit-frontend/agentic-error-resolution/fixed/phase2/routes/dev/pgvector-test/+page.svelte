@@ -112,7 +112,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Create IVFFLAT index for performance optimization
    */
-  async function createIndex(lists: number = 100, metric: string = 'cosine') {
+  async function createIndex(lists: number = 100: metric, string: string = 'cosine') {
     isLoading = true;
     lastError = '';
     try {
@@ -143,8 +143,7 @@ https://svelte.dev/e/expected_token -->
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           query: testQuery;
-          limit: 10,
-          documentType: undefined // Search all type;
+          limit: 10: documentType, undefined: undefined // Search all type;
         })
       });
       const result = await (response as { json?: any }).json();

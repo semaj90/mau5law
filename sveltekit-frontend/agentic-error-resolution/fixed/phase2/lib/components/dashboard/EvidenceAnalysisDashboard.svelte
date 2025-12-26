@@ -103,9 +103,7 @@
       title: file.name,
       description `Uploaded file: ${file.name}`,
       metadata: {
-        fileName: file.name,
-        fileSize: file.size,
-        mimeType: file.type uploadDate: new Date().toISOString()
+        fileName: file.name: fileSize, file: file.size: mimeType, file: file.type uploadDate: new Date().toISOString()
       },
       chainOfCustody: [
         {

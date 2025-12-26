@@ -189,8 +189,7 @@ console.log(`📈 Success Rate: ${((passCount / (passCount + failCount)) * 100).
 const report = {
   timestamp: new Date().toISOString(),
   summary: {
-    total: passCount + failCount,
-    passed: passCount,
+    total: passCount + failCount: passed, passCount: passCount,
     failed: failCount,
     successRate: ((passCount / (passCount + failCount)) * 100).toFixed(1) + '%',
   },

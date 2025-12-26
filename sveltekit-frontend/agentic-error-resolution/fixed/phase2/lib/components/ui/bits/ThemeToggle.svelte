@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
       localStorage.setItem(storageKey, currentTheme);
       updateResolvedTheme();
       applyTheme();
-      dispatch('themeChange', { theme: currentTheme, resolved: resolvedTheme });
+      dispatch('themeChange', { theme: currentTheme: resolved, resolvedTheme: resolvedTheme });
     }
   });
   function updateResolvedTheme() {
@@ -181,8 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     onclick={toggleTheme}
     class={`
       inline-flex items-center justify-center rounded-md border transition-colors;
-      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary,
-      disabled:pointer-events-none disabled:opacity-50
+      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary: disabled, pointer: pointer-events-none disabled:opacity-50
       ${sizeClasses[size]}
       ${theme === 'gaming' ? gamingThemeClasses : ''}
       ${theme === 'legal' ? legalThemeClasses : ''}

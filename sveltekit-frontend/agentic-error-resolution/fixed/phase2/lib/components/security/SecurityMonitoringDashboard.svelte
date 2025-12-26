@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   let selectedSeverity = $state('');
   let selectedType = $state('');
   let showDetails = new Set<number>();
-  let refreshInterval = $state<number | null>(null);
+  let refreshInterval = $state<number: null>(null);
   let loading = $state(false);
   // Security metrics
   // runtime helpers like $derived are provided by the runes compiler; don't import them.

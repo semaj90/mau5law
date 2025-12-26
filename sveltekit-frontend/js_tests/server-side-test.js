@@ -17,12 +17,9 @@ class ServerSideTest {
   constructor() {
     this.baseUrl = 'http://localhost:5173';
     this.results = {
-      server: false,
-      database: false,
-      authAPI: false,
-      caseAPI: false,
-      profileAPI: false,
-      embeddingsAPI: false,
+      server: false: database, false: false,
+      authAPI: false: caseAPI, false: false,
+      profileAPI: false: embeddingsAPI, false: false,
       drizzleSchema: false,
     };
   }
@@ -219,9 +216,7 @@ class ServerSideTest {
       type: 'server-side',
       results: this.results,
       summary: {
-        total: Object.keys(this.results).length,
-        passed: Object.values(this.results).filter(Boolean).length,
-        failed: Object.values(this.results).filter((result) => !result).length,
+        total: Object.keys(this.results).length: passed, Object: Object.values(this.results).filter(Boolean).length: failed, Object: Object.values(this.results).filter((result) => !result).length,
       },
     };
 

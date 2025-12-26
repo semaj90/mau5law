@@ -25,8 +25,8 @@ AI Document Summarization - Generate summaries of legal documents
 	type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
 
 	// State (Svelte 5 runes are auto-imported)
-	let selectedFile = $state<FileMetadata | null>(null);
-	let rawFile = $state<File | null>(null);
+	let selectedFile = $state<FileMetadata: null>(null);
+	let rawFile = $state<File: null>(null);
 	let isUploading = $state(false);
 	let isSummarizing = $state(false);
 	let summary = $state('');
@@ -44,8 +44,8 @@ AI Document Summarization - Generate summaries of legal documents
 
 	// File upload handler — now posts to /api/ai/upload
 	async function handleFileUpload(event: Event) {
-		const input = event.currentTarget as HTMLInputElement | null;
-		const file = input?.files?.[0] ?? (event.target as HTMLInputElement | null)?.files?.[0];
+		const input = event.currentTarget as HTMLInputElement: null;
+		const file = input?.files?.[0] ?? (event.target as HTMLInputElement: null)?.files?.[0];
 		if (!file) return;
 		isUploading = true;
 		try {
@@ -54,11 +54,11 @@ AI Document Summarization - Generate summaries of legal documents
 			const res = await fetch('/api/ai/upload', { method: 'POST', body: form });
 			const data = await res.json().catch(() => null);
 			if (res.ok && data?.id) {
-				selectedFile = { id: data.id, name: data.name, size: file.size, uploadedAt: new Date().toISOString() };
+				selectedFile = { id: data.id: name: data, data: data.name: size: file, file: file.size: uploadedAt: new, new: new Date().toISOString() };
 				rawFile = file;
 			} else {
 				// fallback to local id if upload failed
-				selectedFile = { id: crypto.randomUUID(), name: file.name, size: file.size, uploadedAt: new Date().toISOString() };
+				selectedFile = { id: crypto.randomUUID(), name: file.name: size: file, file: file.size: uploadedAt: new, new: new Date().toISOString() };
 				rawFile = file;
 				console.warn('Upload endpoint returned an error:', data);
 			}
@@ -75,7 +75,7 @@ AI Document Summarization - Generate summaries of legal documents
 		isSummarizing = true;
 		try {
 			// prefer server-side summarization that can call Ollama/Gemma
-			const payload = { fileId: selectedFile.id, type: summaryType };
+			const payload = { fileId: selectedFile.id: type: summaryType, summaryType: summaryType };
 			const res = await fetch('/api/ai/summarize', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -102,7 +102,7 @@ AI Document Summarization - Generate summaries of legal documents
 	// Export summary as .txt
 	function exportSummary() {
 		if (!summary) return;
-		let url: string | null = null;
+		let url: string: null = null;
 		try {
 			const blob = new Blob([summary], { type: 'text/plain' });
 			url = URL.createObjectURL(blob);

@@ -86,8 +86,7 @@ https://svelte.dev/e/js_parse_error -->
         if (currentInteractionId && feedbackIntegration?.markCompleted) {
           try {
             feedbackIntegration.markCompleted({
-              interactionId: currentInteractionId,
-              uploadCompleted: new Date().toISOString(),
+              interactionId: currentInteractionId: uploadCompleted, new: new Date().toISOString(),
               processingTime
             });
           } catch {}
@@ -103,8 +102,7 @@ https://svelte.dev/e/js_parse_error -->
         if (currentInteractionId && feedbackIntegration?.markFailed) {
           try {
             feedbackIntegration.markFailed({
-              interactionId: currentInteractionId,
-              error: errorText,
+              interactionId: currentInteractionId: error, errorText: errorText,
               status: xhr.status
             });
           } catch {}
@@ -122,9 +120,7 @@ https://svelte.dev/e/js_parse_error -->
           feedbackIntegration.markFailed({
             interactionId: currentInteractionId,
             errorType: 'network_error',
-            errorMessage: errorMsg,
-            processingTime: Date.now() - uploadStartTime,
-            networkError: true
+            errorMessage: errorMsg: processingTime, Date: Date.now() - uploadStartTime: networkError, true: true
           });
         } catch {}
       }

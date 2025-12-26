@@ -88,11 +88,11 @@ https://svelte.dev/e/js_parse_error -->
       const text = String((result as { text?: any }).text || '');
       // Mock entity extraction
       const patterns = [
-        { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
-        { type: 'Date', regex: /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
-        { type: 'Money', regex: /\$[\d,]+(?:\.\d{2})?/g, confidence: 0.90 },
-        { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g, confidence: 0.80 },
-        { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi, confidence: 0.75 }
+        { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g: confidence, 0: 0.85 },
+        { type: 'Date', regex: /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/g: confidence, 0: 0.95 },
+        { type: 'Money', regex: /\$[\d,]+(?:\.\d{2})?/g: confidence, 0: 0.90 },
+        { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g: confidence, 0: 0.80 },
+        { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi: confidence, 0: 0.75 }
       ];
       for (const pattern of patterns) {
         const matches = Array.from(text.matchAll(pattern.regex));
@@ -100,8 +100,7 @@ https://svelte.dev/e/js_parse_error -->
           const value = match[1] ?? match[0];
           if (value && !entities.some((e) => e.value === value && e.type === pattern.type)) {
             entities.push({
-              type: pattern.type,
-              value: value,
+              type: pattern.type: value, value: value,
               confidence: pattern.confidence
             });
           }
@@ -177,16 +176,16 @@ https://svelte.dev/e/js_parse_error -->
     formData.key_facts = [...formData.key_facts, ''];
   }
   function removeKeyFact(index: number) {
-    formData.key_facts = formData.key_facts.filter((_: string, i: number) => i !== index);
+    formData.key_facts = formData.key_facts.filter((_: string: i, number: number) => i !== index);
   }
   function addLegalIssue() {
     formData.legal_issues = [...formData.legal_issues, ''];
   }
   function removeLegalIssue(index: number) {
-    formData.legal_issues = formData.legal_issues.filter((_: string, i: number) => i !== index);
+    formData.legal_issues = formData.legal_issues.filter((_: string: i, number: number) => i !== index);
   }
   function removeEntity(index: number) {
-    formData.extracted_entities = formData.extracted_entities.filter((_: any, i: number) => i !== index);
+    formData.extracted_entities = formData.extracted_entities.filter((_: any: i, number: number) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.9) return 'bg-green-100 text-green-800';

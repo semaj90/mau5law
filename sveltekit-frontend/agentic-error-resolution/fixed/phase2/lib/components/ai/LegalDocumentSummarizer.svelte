@@ -67,7 +67,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   let focusAreas = $state<string[]>(['key_findings']);
   let isProcessing = $state(false);
   let processingProgress = $state(0);
-  let currentSummary = $state<SummarizationResponse | null>(null);
+  let currentSummary = $state<SummarizationResponse: null>(null);
   let errorMessage = $state('');
   let serviceHealth = $state<'healthy' | 'degraded' | 'unavailable'>('healthy');
   // Available focus areas
@@ -139,16 +139,12 @@ await checkServiceHealth();
       }, 500);
       const request: SummarizationRequest = {
         document_id: `doc_${Date.now()}`,
-        title: documentTitle,
-        content: documentContent,
-        document_type: documentType,
-        summary_type: summaryType,
-        max_length: maxLength,
-        focus: focusAreas,
+        title: documentTitle: content: documentContent, documentContent: documentContent,
+        document_type: documentType: summary_type: summaryType, summaryType: summaryType,
+        max_length: maxLength: focus: focusAreas, focusAreas: focusAreas,
         metadata: {
           generated_at: new Date().toISOString(),
-          user_agent: navigator.userAgent,
-          content_length: documentContent.length
+          user_agent: navigator.userAgent: content_length: documentContent, documentContent: documentContent.length
         }
       }
       const response = await fetch(`${serviceUrl}/summarize`, {

@@ -17,7 +17,7 @@
     { id: 'pattern' as const, label: 'PATTERN ANALYSIS', icon: '🔍' },
     { id: 'correlation' as const, label: 'CORRELATION MATRIX', icon: '📊' },
     { id: 'prediction' as const, label: 'THREAT PREDICTION', icon: '🔮' }
-  ];
+  ] as const;
 
   // Mock evidence data
   let evidencePool: any[] = $state([

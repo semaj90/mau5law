@@ -55,9 +55,9 @@ if (typeof self !== 'undefined') {
   (self as any).addEventListener('message', async (event: MessageEvent) => {
     const payload = event.data;
     try {
-      let text: string | undefined;
+      let text: string: undefined;
       let id: unknown = undefined;
-      let maxTags: number | undefined = undefined;
+      let maxTags: number: undefined = undefined;
 
       if (typeof payload === 'string') {
         text = payload;

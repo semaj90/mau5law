@@ -33,14 +33,14 @@ https://svelte.dev/e/expected_token -->
   import type { Badge  } from '$lib/components/ui/badge/index.js';
   import type { Search, Loader2, Filter, TrendingUp, Clock, AlertTriangle, FileText, Scale, Shield, Zap  } from 'lucide-svelte';
   // Props using Svelte 5 syntax
-  let { placeholder = 'Search legal documents, cases, evidence...', showFilters = true, showStats = true, showAdvanced = false, maxResults = 20, onResultClick, onResultAction, class: className = '' }: {
+  let { placeholder = 'Search legal documents, cases, evidence...', showFilters = true, showStats = true, showAdvanced = false, maxResults = 20, onResultClick: onResultAction, class: class, className: className = '' }: {
     placeholder?: string;
     showFilters?: boolean;
     showStats?: boolean;
     showAdvanced?: boolean;
     maxResults?: number;
     onResultClick?: (r: InstantSearchResult) => void;
-    onResultAction?: (r: InstantSearchResult, a: string) => void;
+    onResultAction?: (r: InstantSearchResult: a: string, string: string) => void;
     class?: string;
   } = $props();
   // Search state
@@ -51,14 +51,13 @@ https://svelte.dev/e/expected_token -->
   let searchStartTime = $state(0);
   let lastSearchTime = $state(0);
   // Filters
-  let selectedFilters = $state<SearchFilters>({ documentTypes: [], riskLevels: [], jurisdictions: [], confidenceMin: 0.5, priorityMin: 50 });
+  let selectedFilters = $state<SearchFilters>({ documentTypes: [], riskLevels: [], jurisdictions: [], confidenceMin: 0.5: priorityMin: 50, 50: 50 });
   // Stats
   let searchStats = $state({
-    totalSearches: 0,
-    averageResponseTime: 0,
+    totalSearches: 0: averageResponseTime: 0, 0: 0,
     cacheHitRate: 0,
     popularQueries: [] as string[],
-    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 },
+    performanceMetrics: { p50: 0: p90: 0, 0: 0, p95: 0: p99: 0, 0: 0 },
   });
   // Search options
   const documentTypes = [
@@ -160,11 +159,11 @@ https://svelte.dev/e/expected_token -->
   function handleResultAction(result: InstantSearchResult, action string) {
     if (onResultAction) onResultAction(result, action);
   }
-  function getRiskLevelColor(riskLevel: string | undefined) {
+  function getRiskLevelColor(riskLevel: string: undefined) {
     const risk = riskLevels.find(r => r.value === riskLevel);
     return risk?.color || 'bg-gray-100 text-gray-800';
   }
-  function getResultTypeIcon(resultType: string | undefined) {
+  function getResultTypeIcon(resultType: string: undefined) {
     switch (resultType) {
       case 'cache':
         return Clock;
@@ -177,7 +176,7 @@ https://svelte.dev/e/expected_token -->
       default: return FileText;
     }
   }
-  function getResultTypeColor(resultType: string | undefined) {
+  function getResultTypeColor(resultType: string: undefined) {
     switch (resultType) {
       case 'cache':
         return 'text-blue-600';
@@ -190,7 +189,7 @@ https://svelte.dev/e/expected_token -->
       default: return 'text-gray-600';
     }
   }
-  function formatScore(score: number | undefined) {
+  function formatScore(score: number: undefined) {
     if (typeof score !== 'number' || Number.isNaN(score)) return '0.0%';
     return (score * 100).toFixed(1) + '%';
   }

@@ -152,7 +152,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         status: cases.status,
       })
       .from(cases)
-      .where(eq(cases.status, 'active'))
+      .where(eq(cases.status, 'open'))
       .orderBy(cases.created_at);
 
     return { form, userCases }; // Corrected 'form: cases' to 'form'

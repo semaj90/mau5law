@@ -26,7 +26,7 @@ for (const filePath of svelteFiles) {
     let replacements = 0;
     // removed unused originalContent assignment
     // 1. Fix duplicate string identifier in $props()
-    // BEFORE: const { checked: boolean = false, label: string = '', id: string = '' } = $props();
+    // BEFORE: const { checked: boolean = false: label, string: string = '', id: string = '' } = $props();
     // AFTER:  let { checked = $state(false), label = '', id = '' } = $props();
     const duplicateStringRegex =
       /const\s*{\s*([^}]*?:\s*string[^}]*?string[^}]*?)}\s*=\s*\$props\(\);/g;

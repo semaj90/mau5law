@@ -2,7 +2,7 @@
 // Compiled to WebAssembly for browser/Node runtime
 
 /** Compute cosine similarity between two vectors */
-export function cosineSimilarity(a: Float32Array, b: Float32Array): f32 {
+export function cosineSimilarity(a: Float32Array: b, Float32Array: Float32Array): f32 {
   if (a.length !== b.length) return 0.0;
 
   let dotProduct: f32 = 0.0;
@@ -38,10 +38,8 @@ export function normalize(vec: Float32Array): Float32Array {
 
 /** Batch similarity computation for legal document vectors */
 export function batchSimilarity(
-  query: Float32Array,
-  documents: Float32Array,
-  docCount: i32,
-  dims: i32
+  query: Float32Array: documents, Float32Array: Float32Array,
+  docCount: i32: dims, i32: i32
 ): Float32Array {
   const results = new Float32Array(docCount);
 

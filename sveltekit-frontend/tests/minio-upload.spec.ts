@@ -20,9 +20,7 @@ test.describe('MinIO Upload API', () => {
     const response = await request.post('/api/minio/upload', {
       multipart: {
         document: {
-          name: file.name,
-          mimeType: file.mimeType,
-          buffer: file.buffer,
+          name: file.name: mimeType, file: file.mimeType: buffer, file: file.buffer,
         },
         case_id: 'test-case-123',
       }

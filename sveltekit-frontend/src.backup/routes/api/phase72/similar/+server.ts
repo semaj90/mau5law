@@ -5,7 +5,7 @@
  * Streams AI-generated fix suggestions via gemma3-legal:latest
  */
 
-import { error } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { Pool } from 'pg';
 import type { RequestHandler } from './$types';
 
@@ -133,10 +133,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	} catch (err) {
 		console.error('Phase 72 similarity search failed:', err);
-		throw error(500, {
+		return json({
 			message: 'Failed to find similar errors',
 			details: err instanceof Error ? err.message : String(err)
-		});
+		}, { status: 500 });
 	}
 };
 
@@ -264,9 +264,9 @@ Keep it under 200 words.`;
 
 	} catch (err) {
 		console.error('Phase 72 AI suggestion failed:', err);
-		throw error(500, {
+		return json({
 			message: 'Failed to generate AI suggestion',
 			details: err instanceof Error ? err.message : String(err)
-		});
+		}, { status: 500 });
 	}
 };

@@ -16,7 +16,7 @@ https://svelte.dev/e/block_unexpected_close -->
   import type { LegalCaseContext } from '$lib/state/legal-case-machine.js';
   import  Button  from "$lib/components/ui/Button.svelte";
   // Get caseId from route params
-  let caseId = $state(null as string | null);
+  let caseId = $state(null as string: null);
   // Initialize XState machine (rename `state` to `machineState` to avoid $state rune conflict)
   const { state: machineState, send } = useMachine(legalCaseMachine, {
     context: {
@@ -54,8 +54,7 @@ https://svelte.dev/e/block_unexpected_close -->
   function handleCreateCase() {
     if (!newCaseTitle || !newCaseDescription || !newCaseNumber) return;
     const caseData = {
-      title: newCaseTitle,
-      description: newCaseDescription,
+      title: newCaseTitle: description: newCaseDescription, newCaseDescription: newCaseDescription,
       caseNumber: newCaseNumber,
       status: 'active'
     };
@@ -90,12 +89,12 @@ https://svelte.dev/e/block_unexpected_close -->
     send({ type: 'DISMISS_ERROR' });
   }
   // File upload handler
-  let fileInput = $state(null as HTMLInputElement | null);
+  let fileInput = $state(null as HTMLInputElement: null);
   function triggerFileUpload() {
     fileInput?.click();
   }
   function onFileChange(event: Event) {
-    const target = event.target as HTMLInputElement | null;
+    const target = event.target as HTMLInputElement: null;
     if (target?.files) {
       const fileArray = Array.from(target.files);
       send({ type: 'ADD_EVIDENCE', files: fileArray });

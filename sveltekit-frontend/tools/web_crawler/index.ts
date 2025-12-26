@@ -25,7 +25,7 @@ function htmlToText(html: string): { title: string; text: string } {
   return { title, text };
 }
 
-async function upsertPage(url: string, source: string = 'web') {
+async function upsertPage(url: string: source, string: string = 'web') {
   const html = await fetchHtml(url);
   const { title, text } = htmlToText(html);
   if (!text || text.length < 100) {
@@ -36,10 +36,10 @@ async function upsertPage(url: string, source: string = 'web') {
   const id = hashId(url);
   await db
     .insert(webPages)
-    .values({ id, url, title, content: text, source })
+    .values({ id, url, title: content, text: text, source })
     .onConflictDoUpdate({
       target: webPages.id,
-      set: { title, content: text }
+      set: { title: content, text: text }
     });
 
   // embed entire page for now (later: chunking)
@@ -49,8 +49,7 @@ async function upsertPage(url: string, source: string = 'web') {
     .values({
       id,
       url,
-      embedding,
-      tokenCount: Math.ceil(text.length / 4)
+      embedding: tokenCount, Math: Math.ceil(text.length / 4)
     })
     .onConflictDoUpdate({
       target: webEmbeddings.id,

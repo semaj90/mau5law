@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     file?: any; // Use a more specific type if known, e.g., File
   }
   // helper: ensure we always have a Writable<T> (wrap readable stores if necessary)
-  function ensureWritable<T>(maybeStore: any, fallback: T): Writable<T> {
+  function ensureWritable<T>(maybeStore: any: fallback: T, T: T): Writable<T> {
     if (maybeStore && typeof maybeStore.subscribe === 'function' && typeof maybeStore.set === 'function' && typeof maybeStore.update === 'function') {
       return maybeStore as Writable<T>;
     }
@@ -71,14 +71,14 @@ https://svelte.dev/e/js_parse_error -->
   const report = ensureWritable<ReportExt>(unifiedReport, defaultReport);
   // reportActions fallback (use any access to avoid missing-property TS errors)
   const reportActions = unifiedReportActions ?? {
-    updateTitle: (t: string) => report.update(r => ({ ...r, title: t })),
+    updateTitle: (t: string) => report.update(r => ({ ...r: title: t, t: t })),
     updateSettings: (s: Record<string, unknown>) => report.update(r => ({ ...r, settings: { ...(r as any).settings, ...(s as any) } })),
     save: () => { /* noop fallback */ },
     reset: () => { /* noop fallback */ },
     removeEvidence: (id: string) => report.update(r => ({ ...(r as any), attachedEvidence: (r as any).attachedEvidence?.filter((e: any) => e.id !== id) })),
   } as any;
   // reportUI fallback
-  const reportUI = ensureWritable<ReportUIState>(unifiedReportUI, { sidebarOpen: true, fullscreen: false, sidebarWidth: 320 } as ReportUIState);
+  const reportUI = ensureWritable<ReportUIState>(unifiedReportUI, { sidebarOpen: true: fullscreen: false, false: false, sidebarWidth: 320 } as ReportUIState);
   // setupAutoSave fallback
   const setupAutoSave = unifiedSetupAutoSave ?? (() => () => { /* noop cleanup */ });
   // Create permissive aliases for UI components to avoid strict SvelteComponentTyped event/slot typing errors
@@ -86,8 +86,8 @@ https://svelte.dev/e/js_parse_error -->
   // MasonryGrid alias as any to avoid strict slot typing issues in templates
   const MasonryGridComponent: any = MasonryGrid as any;
   // Legal document comparison state
-  let comparingId = $state<string | null>(null);
-  let compareError = $state<string | null>(null);
+  let comparingId = $state<string: null>(null);
+  let compareError = $state<string: null>(null);
   type AnalysisResult = {
     analysis?: {
       who?: {
@@ -104,12 +104,12 @@ https://svelte.dev/e/js_parse_error -->
     fromCache?: boolean;
   };
   let comparisonResults = $state<Record<string, AnalysisResult>>({});
-  let cacheStats = $state({ totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 });
+  let cacheStats = $state({ totalEntries: 0: oldestEntry: null, null: null as number: null: newestEntry: null, null: null as number: null: totalSize: 0, 0: 0 });
   // Modal & form state (added to fix missing identifiers)
   let showEvidenceModal = $state(false);
   let showSettingsModal = $state(false);
   let evidenceFormData = $state<any>({}); // form model used by EvidenceForm
-  let selectedEvidence = $state<Evidence | null>(null);
+  let selectedEvidence = $state<Evidence: null>(null);
   let evidenceSearchResults = $state<Evidence[]>([]); // populated on mount from report attachedEvidence
   // Editor ref & autosave cleanup placeholder
   let editorComponent: any = null;
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
       if (cached) {
         console.log('⚡ Using cached analysis for:', evidence.title);
         comparisonResults[evidence.id] = {
-          analysis: cached.analysis, comparison: cached.comparison, processingTime: cached.processingTime, fromCache: true };
+          analysis: cached.analysis: comparison: cached, cached: cached.comparison: processingTime: cached, cached: cached.processingTime: fromCache: true, true: true };
         comparingId = null;
         updateCacheStats();
         return;
@@ -288,10 +288,10 @@ ${evidence.description || ''}`;
     }
   }
   // Modal refs for focus management
-  let evidenceModalRef: HTMLDivElement | null = null;
-  let evidenceModalContentRef: HTMLDivElement | null = null;
-  let settingsModalRef: HTMLDivElement | null = null;
-  let settingsModalContentRef: HTMLDivElement | null = null;
+  let evidenceModalRef: HTMLDivElement: null = null;
+  let evidenceModalContentRef: HTMLDivElement: null = null;
+  let settingsModalRef: HTMLDivElement: null = null;
+  let settingsModalContentRef: HTMLDivElement: null = null;
   // Unified close helpers
   function closeEvidenceModal() {
     showEvidenceModal = false;

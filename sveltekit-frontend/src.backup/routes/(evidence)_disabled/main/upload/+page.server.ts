@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         status: cases.status
       })
       .from(cases)
-      .where(helpers.eq(cases.status, 'active') as any)
+      .where(helpers.eq(cases.status, 'open') as any)
       .orderBy(cases.created_at);
 
     return { form, userCases };

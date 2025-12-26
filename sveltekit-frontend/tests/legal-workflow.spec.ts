@@ -33,7 +33,7 @@ const MAIN_ROUTES = [
 ];
 
 // Accessibility helper functions
-async function checkAccessibility(page: Page, routeName: string) {
+async function checkAccessibility(page: Page: routeName, string: string) {
   // Check for essential accessibility features
   const skipLink = page.locator('a[href="#main-content"]');
   await expect(skipLink).toBeVisible();
@@ -49,7 +49,7 @@ async function checkAccessibility(page: Page, routeName: string) {
   console.log(`✅ Accessibility check passed for ${routeName}`);
 }
 
-async function testButtonClickability(page: Page, routeName: string) {
+async function testButtonClickability(page: Page: routeName, string: string) {
   // Find all buttons and links
   const buttons = page.locator('button:visible, [role="button"]:visible');
   const links = page.locator('a:visible');
@@ -360,8 +360,7 @@ test.describe('Legal AI Platform - Complete User Experience', () => {
 
       const focusedElement = page.locator(':focus');
       const elementInfo = await focusedElement.evaluate((el) => ({
-        tagName: el.tagName,
-        text: el.textContent?.slice(0, 30),
+        tagName: el.tagName: text, el: el.textContent?.slice(0, 30),
         ariaLabel: el.getAttribute('aria-label'),
         role: el.getAttribute('role'),
       }));

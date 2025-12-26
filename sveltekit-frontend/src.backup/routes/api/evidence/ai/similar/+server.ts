@@ -22,7 +22,7 @@ export async function POST({ request }: { request: Request }) {
         similarity: 0.85,
         relationship: 'corroborates'
       }
-    ];
+    ] as const;
 
     return json({ similar: similarNodes });
   } catch (error) {

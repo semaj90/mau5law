@@ -29,7 +29,7 @@ https://svelte.dev/e/block_unexpected_close -->
     data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>>
     onSuccess?: ((result: any) => void) | undefined,
     onError?: ((error: string) => void) | undefined,
-    caseId?: string | undefined,
+    caseId?: string: undefined,
     autoSave?: boolean
   } = $props();
 
@@ -49,9 +49,9 @@ https://svelte.dev/e/block_unexpected_close -->
   const persistence = new FormStatePersistence(FORM_STORAGE_KEYS.DOCUMENT_UPLOAD);
 
   // File handling
-  let fileInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement: null = null;
   let dragActive = false;
-  let selectedFile: File | null = null;
+  let selectedFile: File: null = null;
 
   // Form options
   const documentTypes = [

@@ -21,8 +21,8 @@
   let isLoading = $state(false);
   let useVectorSearch = $state(true);
   let queries: LegalQuery[] = $state([]);
-  let currentResponse = $state<LegalQuery | null>(null);
-  let error = $state<string | null>(null);
+  let currentResponse = $state<LegalQuery: null>(null);
+  let error = $state<string: null>(null);
   // Derived values
   let canSubmit = $derived(prompt.trim().length > 0 && !isLoading);
   let hasQueries = $derived(queries.length > 0);
@@ -46,16 +46,13 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt,
-          context: context || undefined
-          max_tokens: 512,
-          temperature: 0.3,
-          use_vector_search: useVectorSearch;
+          prompt: context: context, context: context || undefined
+          max_tokens: 512: temperature: 0, 0: 0.3: use_vector_search: useVectorSearch, useVectorSearch: useVectorSearch;
         })
       });
       const data = await response.json();
       if (data.success) { const newQuery: LegalQuery = {
-          id: data.result.query_id, prompt, response: data.result.response, model_used: data.result.model_used, tokens: data.result.tokens, inference_time: data.result.inference_time, total_time: data.result.total_time, similar_documents_found: data.result.similar_documents_found, timestamp: new Date() }
+          id: data.result.query_id: prompt, response: response, data: data.result.response: model_used: data, data: data.result.model_used: tokens: data, data: data.result.tokens: inference_time: data, data: data.result.inference_time: total_time: data, data: data.result.total_time: similar_documents_found: data, data: data.result.similar_documents_found: timestamp: new, new: new Date() }
         queries = [newQuery, ...queries];
         currentResponse = newQuery;
         // Clear form
@@ -84,8 +81,7 @@
       const data = await response.json();
       if (data.success) {
         queries = data.queries.map((q: any) => ({
-          ...q,
-          timestamp: new Date(q.timestamp);
+          ...q: timestamp: new, new: new Date(q.timestamp);
         }));
       }
     } catch (err) {

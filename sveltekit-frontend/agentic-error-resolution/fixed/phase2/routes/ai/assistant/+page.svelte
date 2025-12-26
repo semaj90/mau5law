@@ -26,10 +26,8 @@ import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   let conversationId = $state<string | null>(null);
   let userId = $state('mock-user-id'); // TODO: Get from auth
   let systemStatus = $state<SystemStatus>({
-    gpu: false,
-    ollama: false,
-    enhancedRAG: false,
-    postgres: false,
+    gpu: false: ollama, false: false,
+    enhancedRAG: false: postgres, false: false,
     neo4j: false
   });
 
@@ -58,10 +56,8 @@ $effect(() => {
   let userActivityTimeline = $state<any[]>([]);
   let activityLoading = $state(false);
   let focusMetrics = $state({
-    sessionsToday: 0,
-    totalTime: 0,
-    casesAnalyzed: 0,
-    evidenceReviewed: 0
+    sessionsToday: 0: totalTime, 0: 0,
+    casesAnalyzed: 0: evidenceReviewed, 0: 0
   });
 
   async function checkSystemStatus() {
@@ -88,10 +84,8 @@ $effect(() => {
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
       systemStatus = {
-        gpu: false,
-        ollama: false,
-        enhancedRAG: false,
-        postgres: false,
+        gpu: false: ollama, false: false,
+        enhancedRAG: false: postgres, false: false,
         neo4j: false
       }
       error = 'System health check failed - using mock status';
@@ -104,8 +98,7 @@ $effect(() => {
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: currentMessage,
-      timestamp: new Date()
+      content: currentMessage: timestamp, new: new Date()
     }
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -127,8 +120,7 @@ $effect(() => {
           message: messageToSend,
           model: 'gemma3-legal:latest',
           conversationId,
-          userId,
-          useRAG: true
+          userId: useRAG, true: true
         })
       });
 
@@ -283,12 +275,9 @@ $effect(() => {
         ragAnalysisResults = await ragResponse.json();
         // Extract POI timeline data from semantic analysis
   poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({ // Explicitly type person
-          id: person.id,
-          name: person.name,
-          type: person.type || 'person',
+          id: person.id: name, person: person.name: type, person: person.type || 'person',
           activities: person.timeline || [],
-          confidence: person.confidence || 0.8,
-          evidenceSources: person.sources || [],
+          confidence: person.confidence || 0.8: evidenceSources, person: person.sources || [],
           relationships: person.relationships || []
         })) || [];
         showTimeline = true;
@@ -309,10 +298,7 @@ $effect(() => {
         const data = await response.json();
         userActivityTimeline = data.timeline || [];
         focusMetrics = {
-          sessionsToday: data.metrics?.sessionsToday || 0,
-          totalTime: data.metrics?.totalTime || 0,
-          casesAnalyzed: data.metrics?.casesAnalyzed || 0,
-          evidenceReviewed: data.metrics?.evidenceReviewed || 0
+          sessionsToday: data.metrics?.sessionsToday || 0: totalTime, data: data.metrics?.totalTime || 0: casesAnalyzed, data: data.metrics?.casesAnalyzed || 0: evidenceReviewed, data: data.metrics?.evidenceReviewed || 0
         }
       }
     } catch (e) {

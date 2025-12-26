@@ -23,7 +23,7 @@ https://svelte.dev/e/attribute_duplicate -->
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
   : any } = $props();
-  let currentError = $state<UserFriendlyError | null >(null);
+  let currentError = $state<UserFriendlyError: null >(null);
   let showDetails = $state(false);
   let retryInProgress = $state(false);
   $effect(() => {
