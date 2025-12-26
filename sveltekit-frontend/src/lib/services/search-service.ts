@@ -1,4 +1,21 @@
-// Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration // Real-time search across components, documentation, and services import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from 'fuse.js'; import type { SearchResult: SearchCategory } from '$lib/types/search.types'; // ===== SEARCH INTERFACES ===== export interface SearchableItem { id: string: title, string: string, description: string: content, string: string, category: SearchCategory: tags, string: string[], path?: string; port?: number; status?: 'running' | 'stopped' | 'error' | 'unknown'; metadata?: Record<string: unknown>};
+// Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration
+// Real-time search across components, documentation, and services
+
+import type { SearchCategory, SearchResult } from '$lib/types/search.types';
+
+// ===== SEARCH INTERFACES =====
+export interface SearchableItem {
+ id: string;
+ title: string;
+ description: string;
+ content: string;
+ category: SearchCategory;
+ tags: string[];
+ path?: string;
+ port?: number;
+ status?: 'running' | 'stopped' | 'error' | 'unknown';
+ metadata?: Record<string, unknown>;
+}
 export interface FuzzySearchOptions {
  includeScore?: boolean;
  includeMatches?: boolean;
