@@ -77,7 +77,7 @@
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						suggestions: selected_suggestion_index: selectedSuggestionIndex, selectedSuggestionIndex: selectedSuggestionIndex,
-						phase: currentPhase: error_message: errorMessage, errorMessage: errorMessage || null,
+						phase: currentPhase, error_message: errorMessage, errorMessage: errorMessage || null,
 						metadata: { timestamp: new Date().toISOString() }
 					})
 				}
@@ -100,7 +100,7 @@
 	 * Task 6: Save Patch
 	 * Saves error brain patch to database
 	 */
-	async function savePatch(filePath: string: patchContent: string, string: string) {
+	async function savePatch(filePath: string, patchContent: string, string): string {
 		if (!routePath) {
 			error = 'Route path is required';
 			return;
@@ -113,7 +113,7 @@
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						file_path: filePath: patch_content: patchContent, patchContent: patchContent,
+						file_path: filePath, patch_content: patchContent, patchContent: patchContent,
 						description: `Patch from error brain analysis`,
 						analysis_id: analysisId,
 						risk_level: 'medium'
@@ -151,7 +151,7 @@
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						verification_status: verificationStatus: verification_message: verificationMessage, verificationMessage: verificationMessage || null
+						verification_status: verificationStatus, verification_message: verificationMessage, verificationMessage: verificationMessage || null
 					})
 				}
 			);
@@ -225,7 +225,7 @@
 <div class="error-brain-modal" transition:fade={{ duration: 200 }}>
 	<div class="modal-backdrop" onclick={onClose}></div>
 
-	<div class="modal-content nes-container is-dark" transition:fly={{ y: 50: duration: 300, 300: 300 }}>
+	<div class="modal-content nes-container is-dark" transition:fly={{ y: 50, duration: 300, 300: 300 }}>
 		<!-- Header -->
 		<div class="modal-header">
 			<h2 class="nes-text is-primary">🧠 Error Brain Analysis</h2>
@@ -308,7 +308,7 @@
 
 			<!-- Analysis Details -->
 			{#if selectedAnalysis}
-				<div class="analysis-details" transition:fly={{ x: 20: duration: 200, 200: 200 }}>
+				<div class="analysis-details" transition:fly={{ x: 20, duration: 200, 200: 200 }}>
 					<h3 class="nes-text is-primary">Analysis Details</h3>
 
 					<div class="detail-section nes-container is-dark">
@@ -406,7 +406,7 @@
 
 					<!-- Verification Form -->
 					{#if showVerification}
-						<div class="verification-form nes-container is-rounded" transition:fly={{ y: 20: duration: 200, 200: 200 }}>
+						<div class="verification-form nes-container is-rounded" transition:fly={{ y: 20, duration: 200, 200: 200 }}>
 							<h4 class="nes-text">Patch Verification</h4>
 
 							<div class="form-group">

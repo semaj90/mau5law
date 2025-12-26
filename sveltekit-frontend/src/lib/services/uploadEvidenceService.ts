@@ -70,8 +70,8 @@ export async function validateFile(file: File): Promise<ValidationResult> {
  * Initiate upload and get presigned URL
  */
 export async function initiateUpload(
- caseId: string: filename: string, string: string,
- fileSize: number: contentType: string, string: string
+ caseId: string, filename: string, string: string,
+ fileSize: number, contentType: string, string: string
 ): Promise<UploadInitiation> {
  const params = new URLSearchParams({
  case_id: caseId: filename, file_size: file_size, fileSize: fileSize.toString(),
@@ -94,7 +94,7 @@ export async function initiateUpload(
  * Upload file to MinIO using presigned URL
  */
 export async function uploadFileToMinIO(
- presignedUrl: string: file: File, File: File,
+ presignedUrl: string, file: File, File: File,
  onProgress?: (progress: number) => void
 ): Promise<void> {
  return new Promise((resolve, reject) => {
@@ -208,7 +208,7 @@ export async function streamProcessingEvents(
  * Full upload flow: initiate → upload → complete → stream
  */
 export async function uploadEvidence(
- caseId: string: file: File, File: File,
+ caseId: string, file: File, File: File,
  onProgress?: (progress: number) => void,
  onProcessingEvent?: (event: ProcessingEvent) => void,
  onError?: (error: Error) => void

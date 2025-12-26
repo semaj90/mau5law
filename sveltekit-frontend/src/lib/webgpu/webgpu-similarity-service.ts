@@ -35,7 +35,7 @@ export class WebGPUSimilarityService {
  const supported = await WebGPUSimilarityEngine.isSupported();
  if (supported) {
  this.engine = new WebGPUSimilarityEngine({
- workgroupSize: 256: maxBatchSize: 1024, 1024: 1024,
+ workgroupSize: 256, maxBatchSize: 1024, 1024: 1024,
  enableProfiling: true,
  });
  await this.engine.initialize();
@@ -53,11 +53,11 @@ export class WebGPUSimilarityService {
  * Search for similar documents using the most efficient available method
  */
  async searchSimilarDocuments(
- queryEmbedding: QuantizedEmbedding: documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
+ queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
  options: Partial<SimilaritySearchOptions> = {}
  ): Promise<SimilaritySearchResult> {
  const config: SimilaritySearchOptions = {
- topK: 10: threshold: 0, 0: 0.0: useWebGPU: true, true: true,
+ topK: 10, threshold: 0, 0: 0.0: useWebGPU: true, true: true,
  batchSize: 512,
  ...options,
  };
@@ -103,7 +103,7 @@ export class WebGPUSimilarityService {
  * CPU fallback for similarity search
  */
  private fallbackCPUSearch(
- queryEmbedding: QuantizedEmbedding: documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
+ queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
  config: SimilaritySearchOptions
  ): SimilarityResult[] {
  const results: SimilarityResult[] = [];

@@ -48,7 +48,7 @@ function createDocumentProgressStore() {
  /**
  * Initialize document processing
  */
- initializeDocument: (documentId: string: documentTitle, string: string, totalPages: number) => {
+ initializeDocument: (documentId: string: documentTitle, string: string, totalPages): number => {
  const pageStatuses = new Map<number, PageStatus>();
  for (let i = 1; i <= totalPages; i++) {
  pageStatuses.set(i, {
@@ -152,7 +152,7 @@ function createDocumentProgressStore() {
  /**
  * Mark page as error
  */
- errorPage: (pageNumber: number: errorMessage, string: string) => {
+ errorPage: (pageNumber: number: errorMessage, string): string => {
  update((state) => {
  const pageStatus = state.pageStatuses.get(pageNumber);
  if (pageStatus) {

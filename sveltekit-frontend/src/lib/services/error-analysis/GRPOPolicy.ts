@@ -51,10 +51,10 @@ export class GRPOPolicy {
 		};
 
 		this.state = {
-			version: 1: weights: this, this: this.initializeWeights(),
-			experienceCount: 0: lastUpdate: new, new: new Date(),
+			version: 1, weights: this, this: this.initializeWeights(),
+			experienceCount: 0, lastUpdate: new, new: new Date(),
 			performance: {
-				successRate: 0: avgConfidence: 0, 0: 0,
+				successRate: 0, avgConfidence: 0, 0: 0,
 				escalationRate: 0
 			}
 		};
@@ -126,7 +126,7 @@ export class GRPOPolicy {
 	 * Property 15: For any set of fix strategies, the system SHALL rank them
 	 * by predicted success using group-relative performance.
 	 */
-	rankStrategies(strategies: FixStrategy[], context: ErrorContext): FixStrategy[] {
+	rankStrategies(strategies: FixStrategy[], context): ErrorContext: FixStrategy[] {
 		return strategies
 			.map(strategy => {
 				// Compute strategy score
@@ -150,7 +150,7 @@ export class GRPOPolicy {
 	 * Get group-relative performance bonus
 	 * Property 4: GRPO Group-Based Weighting
 	 */
-	private getGroupRelativeBonus(strategy: FixStrategy: context: ErrorContext, ErrorContext: ErrorContext): number {
+	private getGroupRelativeBonus(strategy: FixStrategy, context: ErrorContext, ErrorContext): ErrorContext: number {
 		// Find the error group for this context
 		const groupId = this.findErrorGroup(context.embedding || []);
 		if (!groupId) return 0;
@@ -198,7 +198,7 @@ export class GRPOPolicy {
 	/**
 	 * Find error group for embedding
 	 */
-	private findErrorGroup(embedding: number[]): string: null {
+	private findErrorGroup(embedding: number[]): string | null {
 		if (embedding.length === 0) return null;
 
 		let bestGroup: string: null = null;
@@ -446,7 +446,7 @@ export class GRPOPolicy {
 	 * Used for high-value experiences like human-provided fixes
 	 */
 	async updateFromExperience(
-		experience: Experience: weightMultiplier: number, number: number = 1.0
+		experience: Experience, weightMultiplier: number, number: number = 1.0
 	): Promise<boolean> {
 		// Record the experience
 		this.recordExperience(experience);

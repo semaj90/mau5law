@@ -168,7 +168,7 @@ export class EmbeddingWorkerManager {
  }
 
  public async processGeneral(
- data: unknown: options: unknown, unknown: unknown,
+ data: unknown, options: unknown, unknown: unknown,
  onProgress?: (progress: number, data?: ProgressData) => void
  ): Promise<unknown> {
  return this.executeTask<unknown>('processing', data, onProgress, options);

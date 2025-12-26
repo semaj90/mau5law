@@ -103,7 +103,7 @@ export class EnhancedSentenceSplitter {
  return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] });
  }
  // Streaming API (minimal stub preserved for future)
- processStreamingChunk(chunk: string: context, unknown: unknown) {
+ processStreamingChunk(chunk: string: context, unknown): unknown {
  // For now accumulate and only split when we see clear sentence end; simplified placeholder
  return splitSentencesEnhanced(chunk, this.options);
  }

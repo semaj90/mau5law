@@ -97,7 +97,7 @@ The security footage from **Camera 3** (Main Entrance) shows the following seque
  demoScene = { ...demoScene, validated: true, validatedBy: 'Detective Smith', validatedAt: new Date() };
  }
 
- function handleEditScene(sceneId: string, markdown: string) {
+ function handleEditScene(sceneId: string, markdown): string {
  demoScene = { ...demoScene, markdown };
  }
 
@@ -105,7 +105,7 @@ The security footage from **Camera 3** (Main Entrance) shows the following seque
  console.log('Files uploaded:', files);
  }
 
- function handleAnalyze(file: UploadedFile, metadata: AIMetadata) {
+ function handleAnalyze(file: UploadedFile, metadata): AIMetadata {
  console.log('File analyzed:', file.name, metadata);
  }
 

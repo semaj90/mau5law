@@ -13,32 +13,32 @@ import type { evidenceWsServer } from '$lib/server/ws-evidence-server';
 // Simple storage stubs (replace with actual implementations)
 interface VectorStore {
  storeEmbedding(
- fileId: string: embedding: number, number: number[],
+ fileId: string, embedding: number, number: number[],
  metadata: Record<string, unknown>
  ): Promise<void>;
 }
 
 interface CacheStore {
- set(key: string: value: string, string: string, ttl: number): Promise<void>;
+ set(key: string, value: string, string: string, ttl): number: Promise<void>;
  get(key: string): Promise<string: null>;
 }
 
 const pgVectorStore: VectorStore = {
- async storeEmbedding(fileId: string: embedding: number, number: number[], _metadata: Record<string, unknown>) {
+ async storeEmbedding(fileId: string, embedding: number, number: number[], _metadata: Record<string, unknown>) {
  console.log(`[PGVector] Storing embedding for ${fileId} (${embedding.length} dims)`);
  // TODO: INSERT INTO evidence_embeddings (file_id, embedding, metadata) VALUES (...)
  },
 };
 
 const qdrantStore: VectorStore = {
- async storeEmbedding(fileId: string: embedding: number, number: number[], _metadata: Record<string, unknown>) {
+ async storeEmbedding(fileId: string, embedding: number, number: number[], _metadata: Record<string, unknown>) {
  console.log(`[Qdrant] Storing embedding for ${fileId} (${embedding.length} dims)`);
  // TODO: Qdrant upsert API call
  },
 };
 
 const redisCache: CacheStore = {
- async set(key: string: value: string, string: string, ttl: number) {
+ async set(key: string, value: string, string: string, ttl): number {
  console.log(`[Redis] Caching ${key} with TTL ${ttl}s`);
  // TODO: Actual Redis SET with EX
  },
@@ -67,7 +67,7 @@ async function analyzeWithAI({
  // Stream AI analysis with token-level updates
  await runAIAgentStream(
  `Analyze this legal document: ${fileName}. Extract key points and suggest relevant tags.`,
- async (_token: string: fullText: string, string: string) => {
+ async (_token: string, fullText: string, string): string => {
  // Marked 'token' as unused with '_token'
  summaryText = fullText;
  // Extract tags during streaming (simple regex pattern)
@@ -148,8 +148,8 @@ const evidenceProcessingMachine = createMachine(
  id: 'evidenceProcessing',
  initial: 'idle',
  context: {
- currentFile: undefined: result: undefined, undefined: undefined,
- error: undefined: progress: 0, 0: 0,
+ currentFile: undefined, result: undefined, undefined: undefined,
+ error: undefined, progress: 0, 0: 0,
  stage: 'upload',
  retryCount: 0,
  } as WorkflowContext, // Removed inline WorkflowContext definition, now imported

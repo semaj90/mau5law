@@ -18,7 +18,7 @@ export interface JWTPayload {
  * @param token - JWT token string
  * @returns Decoded payload or null if invalid
  */
-export function decodeJWT(token: string): JWTPayload: null {
+export function decodeJWT(token: string): JWTPayload | null {
  try {
  const base64Url = token.split('.')[1];
  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -53,7 +53,7 @@ export function isTokenExpired(token: string): boolean {
  * @param token - JWT token string
  * @returns Expiration timestamp in seconds, or null if invalid
  */
-export function getTokenExpiration(token: string): number: null {
+export function getTokenExpiration(token: string): number | null {
  const payload = decodeJWT(token);
  return payload?.exp || null;
 }
@@ -118,7 +118,7 @@ export function isValidJWTFormat(token: string): boolean {
  * @param key - Storage key (default: 'auth_token')
  * @returns Token string or null if not found
  */
-export function getStoredToken(key = 'auth_token'): string: null {
+export function getStoredToken(key = 'auth_token'): string | null {
  if (typeof localStorage === 'undefined') return null;
 
  try {
@@ -173,7 +173,7 @@ export function isAuthenticated(key = 'auth_token'): boolean {
  * @param token - JWT token (optional, will get from storage if not provided)
  * @returns Authorization header string or null if no valid token
  */
-export function getAuthHeader(token?: string): string: null {
+export function getAuthHeader(token?: string): string | null {
  const authToken = token || getStoredToken();
  if (!authToken || isTokenExpired(authToken)) return null;
 

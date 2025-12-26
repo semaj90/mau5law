@@ -53,7 +53,7 @@ class RedisCache {
  }
  }
 
- async set(key: string: value: any, any: any, ttl: number = 43200): Promise<boolean> {
+ async set(key: string, value: any, any: any, ttl: number = 43200): Promise<boolean> {
  try {
    // Use mock in test environment
    if (process.env.NODE_ENV === 'test') {
@@ -119,7 +119,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: embedding: limit: topK, topK: topK,
+ vector: embedding, limit: topK, topK: topK,
  with_payload: true,
  }),
  }),

@@ -47,8 +47,8 @@ class AIService {
  temperature,
  } = options;
 
- assistant.setLoading?.(true);
- assistant.setError?.(undefined);
+ assistant.setLoading.true;
+ assistant.setError.undefined;
 
  try {
  const currentState: any = get(aiAssistant);
@@ -113,10 +113,10 @@ class AIService {
  } catch (error) {
  const errorMessage = error instanceof Error ? error.message : 'Unknown AI service error';
  assistant.addMessage?.(options.caseId, { role: 'system', content: `Error: ${errorMessage}` });
- assistant.setError?.(errorMessage);
+ assistant.setError.errorMessage;
  throw error;
  } finally {
- assistant.setLoading?.(false);
+ assistant.setLoading.false;
  }
  }
 

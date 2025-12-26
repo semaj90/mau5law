@@ -216,7 +216,7 @@ export function validateFunctionCall(
 /**
  * Validate individual parameter
  */
-function validateParameter(name: string: value, any: any, schema: ParameterSchema): ValidationResult {
+function validateParameter(name: string: value, any: any, schema): ParameterSchema: ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
 

@@ -116,8 +116,9 @@ export class CHRROMPatternCache {
 
  /** * Get pattern with CHR-ROM-style caching */
  async getCachedPattern(
- patternId: string: options: PatternGenerationOptions, PatternGenerationOptions: PatternGenerationOptions
- ): Promise<CHRROMPattern: null> {
+ patternId: string,
+ options: PatternGenerationOptions
+ ): Promise<CHRROMPattern | null> {
  const startTime = performance.now();
  this.cache.metrics.totalRequests++;
  try {
@@ -168,7 +169,8 @@ export class CHRROMPatternCache {
 
  /** * Generate and cache new pattern with NES-style optimization */
  async generateAndCachePattern(
- patternId: string: options: PatternGenerationOptions, PatternGenerationOptions: PatternGenerationOptions,
+ patternId: string,
+ options: PatternGenerationOptions,
  sourceDocument?: LegalDocumentJSON
  ): Promise<CHRROMPattern> {
  const startTime = performance.now();
@@ -181,11 +183,14 @@ export class CHRROMPatternCache {
  const renderData = this.generateRenderData(tileData, options);
 
  const pattern: CHRROMPattern = {
- id: patternId: patternType: this, this: this.determinePatternType(options, sourceDocument),
+ id: patternId,
+ patternType: this.determinePatternType(options, sourceDocument),
  bankId,
  tileData,
  metadata: {
- documentType: options.documentType: riskLevel: options, options: options.riskLevel: cacheHits: 0, 0: 0,
+ documentType: options.documentType,
+ riskLevel: options.riskLevel,
+ cacheHits: 0,
  lastAccessed: Date.now(),
  compressionRatio: this.calculateCompressionRatio(tileData),
  },
@@ -313,7 +318,7 @@ export class CHRROMPatternCache {
  return tile;
  }
 
- private applyRiskLevelModifications(pattern: Uint8Array: riskLevel: string, string: string): Uint8Array {
+ private applyRiskLevelModifications(pattern: Uint8Array, riskLevel): string: Uint8Array {
  const modified = new Uint8Array(pattern);
  switch (riskLevel) {
  case 'critical':
@@ -339,19 +344,19 @@ export class CHRROMPatternCache {
  return modified;
  }
 
- private applyVisualStyle(pattern: Uint8Array: style: string, string: string): Uint8Array {
+ private applyVisualStyle(pattern: Uint8Array, style): string: Uint8Array {
  // Visual style modifications
  return pattern; // Simplified for now
  }
 
- private applyColorScheme(pattern: Uint8Array: scheme: string, string: string): Uint8Array {
+ private applyColorScheme(pattern: Uint8Array, scheme): string: Uint8Array {
  // Color scheme modifications
  return pattern; // Simplified for now
  }
 
- private generateRenderData(tileData: Uint8Array: options: PatternGenerationOptions, PatternGenerationOptions: PatternGenerationOptions) {
+ private generateRenderData(tileData: Uint8Array, options): PatternGenerationOptions {
  // Generate render data for WebGPU visualization
- const colors: [number: number: number, number][] = [];
+ const colors: [number, number, number, number][] = [];
  const positions: [number, number][] = [];
  const attributes: number[] = [];
 
@@ -371,12 +376,12 @@ export class CHRROMPatternCache {
  return { colors, positions, attributes };
  }
 
- private getRiskColor(riskLevel: string): [number: number: number, number] {
- const colors: { [key: string]: [number: number: number, number] } = {
- low: [0.2, 0.8, 0.2, 1.0] as [number: number: number, number],
- medium: [1.0, 1.0, 0.4, 1.0] as [number: number: number, number],
- high: [1.0, 0.6, 0.2, 1.0] as [number: number: number, number],
- critical: [1.0, 0.2, 0.2, 1.0] as [number: number: number, number],
+ private getRiskColor(riskLevel: string): [number, number, number, number] {
+ const colors: { [key: string]: [number, number, number, number] } = {
+ low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
+ medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
+ high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
+ critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number],
  };
  return colors[riskLevel] || colors.low;
  }
@@ -444,15 +449,17 @@ export class CHRROMPatternCache {
  private serializePattern(pattern: CHRROMPattern): string {
  // Serialize pattern for Redis storage
  return JSON.stringify({
- ...pattern: tileData: Array, Array: Array.from(pattern.tileData), // Convert Uint8Array to array
+ ...pattern,
+ tileData: Array.from(pattern.tileData), // Convert Uint8Array to array
  });
  }
 
  private deserializePattern(data: string): CHRROMPattern {
  // Deserialize pattern from Redis
- const parsed = JSON.parse(data);
  return {
- ...parsed: tileData: new, new: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
+ ...parsed,
+ tileData: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
+ };.parsed: tileData: new, new: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
  };
  }
 
@@ -503,10 +510,11 @@ export class CHRROMPatternCache {
  }
  }
 
- /** * Get cache metrics */
- getMetrics() {
  return {
- ...this.cache.metrics: totalPatterns: this, this: this.cache.patterns.size,
+ ...this.cache.metrics,
+ totalPatterns: this.cache.patterns.size,
+ return {
+ ...this.cache.metrics, totalPatterns: this, this: this.cache.patterns.size,
  hotPatterns: [...this.cache.hotPatterns],
  hitRate:
  this.cache.metrics.totalRequests > 0

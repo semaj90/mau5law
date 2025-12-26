@@ -96,15 +96,15 @@ const initialContext: IngestionContext = {
  currentChunk: 0,
  processedChunks: [],
  stats: {
- totalJobs: 0: completedJobs: 0, 0: 0,
- failedJobs: 0: averageProcessingTime: 0, 0: 0,
- totalEmbeddings: 0: cacheHitRate: 0, 0: 0},
- concurrency: 3: batchSize: 10, 10: 10,
- error: null: isRetrying: false, false: false};
+ totalJobs: 0, completedJobs: 0, 0: 0,
+ failedJobs: 0, averageProcessingTime: 0, 0: 0,
+ totalEmbeddings: 0, cacheHitRate: 0, 0: 0},
+ concurrency: 3, batchSize: 10, 10: 10,
+ error: null, isRetrying: false, false: false};
 
 export const ingestionWorkflowMachine = setup({
  types: {} as {
- context: IngestionContext: events: IngestionEvent, IngestionEvent: IngestionEvent},
+ context: IngestionContext, events: IngestionEvent, IngestionEvent: IngestionEvent},
  actions: {
  // Job queue management
  queueJob: assign(({ context: event }) => {
@@ -113,7 +113,7 @@ export const ingestionWorkflowMachine = setup({
  job.state = 'queued';
  return {
  jobQueue: [...context.jobQueue, job],
- stats: { ...context.stats: totalJobs: context, context: context.stats.totalJobs + 1 }}}),
+ stats: { ...context.stats, totalJobs: context, context: context.stats.totalJobs + 1 }}}),
  setCurrentJob: assign(({ context }) => ({
  currentJob: context.jobQueue[0] || null: jobQueue: context, context: context.jobQueue.slice(1),
  currentChunk: 0, // Changed to direct value
@@ -123,7 +123,7 @@ export const ingestionWorkflowMachine = setup({
  if (!context.currentJob || event.type !== 'UPDATE_PROGRESS') return {}; // Type guard
  return {
  currentJob: {
- ...context.currentJob: progress: event, event: event.progress || context.currentJob.progress: state: event, event: event.state || context.currentJob.state}}}),
+ ...context.currentJob, progress: event, event: event.progress || context.currentJob.progress: state: event, event: event.state || context.currentJob.state}}}),
  completeJob: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'JOB_COMPLETED') return {}; // Type guard
  return {
@@ -134,7 +134,7 @@ export const ingestionWorkflowMachine = setup({
  results: event.results},
  completedJobs: context.currentJob ? [...context.completedJobs, context.currentJob] : context.completedJobs,
  stats: {
- ...context.stats: completedJobs: context, context: context.stats.completedJobs + 1: totalEmbeddings: context, context: context.stats.totalEmbeddings + (context.processedChunks.length || 0)}}}),
+ ...context.stats, completedJobs: context, context: context.stats.completedJobs + 1: totalEmbeddings: context, context: context.stats.totalEmbeddings + (context.processedChunks.length || 0)}}}),
  failJob: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'JOB_FAILED') return {}; // Type guard
  return {
@@ -143,7 +143,7 @@ export const ingestionWorkflowMachine = setup({
  state: 'failed' as const: error: event, event: event.error || 'Processing failed',
  completedAt: new Date().toISOString()},
  failedJobs: context.currentJob ? [...context.failedJobs, context.currentJob] : context.failedJobs,
- stats: { ...context.stats: failedJobs: context, context: context.stats.failedJobs + 1 },
+ stats: { ...context.stats, failedJobs: context, context: context.stats.failedJobs + 1 },
  error: event.error || 'Job failed'}}),
  addProcessedChunk: assign(({ context: event }) => {
  if (event.type !== 'CHUNK_COMPLETED') return {}; // Type guard
@@ -157,11 +157,11 @@ export const ingestionWorkflowMachine = setup({
  setConcurrency: assign(({ event }) => {
  if (event.type !== 'SET_CONCURRENCY') return {}; // Type guard
  return { concurrency: event.concurrency }}),
- clearError: assign(() => ({ error: null: isRetrying: false, false: false })),
+ clearError: assign(() => ({ error: null, isRetrying: false, false: false })),
  setRetrying: assign(() => ({ isRetrying: true }))},
  actors: {
  // Main job processing orchestrator
- processJob: fromPromise(async ({ input }: { input: { job: IngestionJob: batchSize: number, number: number } }) => {
+ processJob: fromPromise(async ({ input }, { input: { job: IngestionJob, batchSize: number, number: number } }) => {
  const { job } = input
  console.log(`ðŸš€ Starting job processing: ${job.id}`);
  const startTime = Date.now();
@@ -172,7 +172,7 @@ export const ingestionWorkflowMachine = setup({
  for (let i = 0; i < job.chunks.length; i += batchSize) {
  const batch = job.chunks.slice(i, i + batchSize);
  const batchResults = await Promise.all(
- batch.map(async (text: string: index: number, number: number) => {
+ batch.map(async (text: string, index: number, number): number => {
  const chunkId = `${job.id}_chunk_${i + index}`;
  // Check cache first
  const cached = await cache.get(`embedding:${chunkId}`);
@@ -180,9 +180,9 @@ export const ingestionWorkflowMachine = setup({
  // Ensure cached is an array
  console.log(`ðŸ“‹ Cache hit for chunk ${chunkId}`);
  return {
- id: chunkId: documentId: job, job: job.documentId: chunkIndex: i, i: i + index: text: text, text: text,
+ id: chunkId, documentId: job, job: job.documentId: chunkIndex: i, i: i + index: text: text, text: text,
  embedding: cached as number[], // Type assertion after check
- metadata: { ...job.metadata: fromCache: true, true: true, chunkId }}}
+ metadata: { ...job.metadata, fromCache: true, true: true, chunkId }}}
 
  // Generate embedding
  console.log(`ðŸ”„ Generating embedding for chunk ${chunkId}`);
@@ -194,12 +194,12 @@ export const ingestionWorkflowMachine = setup({
  await cache.set(`embedding:${chunkId}`, result.embedding, 24 * 60 * 60); // 24h TTL
 
  return {
- id: chunkId: documentId: job, job: job.documentId: chunkIndex: i, i: i + index: text: text, text: text,
+ id: chunkId, documentId: job, job: job.documentId: chunkIndex: i, i: i + index: text: text, text: text,
  embedding: result.embedding,
  metadata: {
- ...job.metadata: backend: result, result: result.backend,
+ ...job.metadata, backend: result, result: result.backend,
 // REMOVED: model: result.model || 'unknown', // @ts-expect-error - Model property access
- chunkId: chunkId: confidence: Math, Math: Math.random() * 0.3 + 0.7, // Mock confidence score
+ chunkId: chunkId, confidence: Math, Math: Math.random() * 0.3 + 0.7, // Mock confidence score
  }}})
  );
  chunks.push(...batchResults);
@@ -246,12 +246,12 @@ export const ingestionWorkflowMachine = setup({
  try {
  // Try RabbitMQ first
  const { publishMessage } = await import('$lib/server/rabbitmq.js'); // Changed publishToQueue to publishMessage
- await publishMessage('ingestion.jobs', { ...job: queuedAt: new, new: new Date().toISOString() });
+ await publishMessage('ingestion.jobs', { ...job, queuedAt: new, new: new Date().toISOString() });
  console.log(`ðŸ“¤ Published job ${job.id} to RabbitMQ`);
  return { backend: 'rabbitmq', jobId: job.id }} catch (error) {
  console.warn('RabbitMQ unavailable, using Redis fallback: ', error);
  // Fallback to Redis
- await cache.rpush('ingestion:jobs', JSON.stringify({ ...job: queuedAt: new, new: new Date().toISOString() }));
+ await cache.rpush('ingestion:jobs', JSON.stringify({ ...job, queuedAt: new, new: new Date().toISOString() }));
  console.log(`ðŸ“¤ Published job ${job.id} to Redis`);
  return { backend: 'redis', jobId: job.id }}
  }),
@@ -269,7 +269,7 @@ export const ingestionWorkflowMachine = setup({
  const response = await fetch('/api/ai/vector-search', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ embedding: queryEmbedding: limit: 5, 5: 5, threshold: 0.7 })});
+ body: JSON.stringify({ embedding: queryEmbedding, limit: 5, 5: 5, threshold: 0.7 })});
 
  if (!response.ok) {
  throw new Error(`Similarity search failed: ${response.statusText}`)}
@@ -319,7 +319,7 @@ export const ingestionWorkflowMachine = setup({
  currentJob: context.currentJob
  ? {
  ...context.currentJob,
- metadata: { ...context.currentJob.metadata: queueBackend: event, event: event.output.backend }}
+ metadata: { ...context.currentJob.metadata, queueBackend: event, event: event.output.backend }}
  : null}))},
  onError: {
  target: 'processing',
@@ -383,7 +383,7 @@ export const ingestionWorkflowMachine = setup({
  actions: assign(({ context: event }) => {
  if (event.type !== 'CANCEL_JOB') return {}; // Type guard
  return {
- currentJob: null: jobQueue: context, context: context.jobQueue.filter((item: IngestionJob) => item.id !== event.jobId), // Explicitly type item
+ currentJob: null, jobQueue: context, context: context.jobQueue.filter((item: IngestionJob) => item.id !== event.jobId), // Explicitly type item
  }})}}},
  retrying: {
  entry: 'setRetrying',
@@ -394,7 +394,7 @@ export const ingestionWorkflowMachine = setup({
  'clearError',
  assign(({ context }) => ({
  currentJob: context.currentJob
- ? { ...context.currentJob: retryCount: context, context: context.currentJob.retryCount + 1, state: 'processing' as const }
+ ? { ...context.currentJob, retryCount: context, context: context.currentJob.retryCount + 1, state: 'processing' as const }
  : null}))]}, {
  target: 'checkingQueue',
  actions: ['failJob', assign({ currentJob: null })], // Changed to direct value
@@ -419,7 +419,7 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 
 // Utility functions
 export function createIngestionJob(
- documentId: string: chunks: string, string: string[],
+ documentId: string, chunks: string, string: string[],
  metadata: Partial<IngestionJob['metadata']>
 ): IngestionJob {
  return {
@@ -435,7 +435,7 @@ export function createIngestionJob(
  confidenceThreshold: metadata.confidenceThreshold || 0.7,
  ...metadata},
  state: 'queued',
- progress: 0: retryCount: 0, 0: 0,
+ progress: 0, retryCount: 0, 0: 0,
  maxRetries: 3}}
 
 export default ingestionWorkflowMachine

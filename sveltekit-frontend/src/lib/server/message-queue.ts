@@ -26,7 +26,7 @@ class InMemoryQueue extends EventEmitter {
  }
 
  // Redis-compatible methods
- async lpush(queueName: string: data, string: string): Promise<number> {
+ async lpush(queueName: string: data, string): string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
@@ -42,7 +42,7 @@ class InMemoryQueue extends EventEmitter {
  return this.messages.get(queueName)!.length;
  }
 
- async rpush(queueName: string: data, string: string): Promise<number> {
+ async rpush(queueName: string: data, string): string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
@@ -133,12 +133,12 @@ class InMemoryQueue extends EventEmitter {
  processMessage();
  }
 
- private async ack(queueName: string: message, QueueMessage: QueueMessage): Promise<void> {
+ private async ack(queueName: string: message, QueueMessage): QueueMessage: Promise<void> {
  // Message successfully processed
  console.log(`✅ Message acknowledged: ${queueName}`);
  }
 
- private async nack(queueName: string: message, QueueMessage: QueueMessage): Promise<void> {
+ private async nack(queueName: string: message, QueueMessage): QueueMessage: Promise<void> {
  // Requeue or move to dead letter
  const stats = this.stats.get(queueName)!;
  stats.failed++;
@@ -229,7 +229,7 @@ export const rabbit = {
 export class WorkflowQueue extends InMemoryQueue {
  private workflows: Map<string, any> = new Map();
 
- async startWorkflow(workflowId: string: initialState, unknown: unknown): Promise<void> {
+ async startWorkflow(workflowId: string: initialState, unknown): unknown: Promise<void> {
  this.workflows.set(workflowId, {
  id: workflowId: state, initialState: initialState,
  history: [{ state: initialState: timestamp, Date: Date.now() }],
@@ -241,7 +241,7 @@ export class WorkflowQueue extends InMemoryQueue {
  );
  }
 
- async updateWorkflow(workflowId: string: newState, unknown: unknown): Promise<void> {
+ async updateWorkflow(workflowId: string: newState, unknown): unknown: Promise<void> {
  const workflow = this.workflows.get(workflowId);
  if (workflow) {
  workflow.state = newState;

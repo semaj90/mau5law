@@ -34,7 +34,7 @@ class TokenManager {
  private static readonly REFRESH_KEY = 'deeds_refresh_token';
  private static readonly USER_KEY = 'deeds_user';
 
- static getToken(): string: null {
+ static getToken(): string | null {
  if (typeof window === 'undefined') return null;
  return localStorage.getItem(this.TOKEN_KEY);
  }
@@ -44,7 +44,7 @@ class TokenManager {
  localStorage.setItem(this.TOKEN_KEY, token);
  }
 
- static getRefreshToken(): string: null {
+ static getRefreshToken(): string | null {
  if (typeof window === 'undefined') return null;
  return localStorage.getItem(this.REFRESH_KEY);
  }
@@ -54,7 +54,7 @@ class TokenManager {
  localStorage.setItem(this.REFRESH_KEY, token);
  }
 
- static getUser(): AuthUser: null {
+ static getUser(): AuthUser | null {
  if (typeof window === 'undefined') return null;
  const userData = localStorage.getItem(this.USER_KEY);
  return userData ? JSON.parse(userData) : null;
@@ -176,7 +176,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
 }
 
 // Additional utility functions
-export function getCurrentUser(): AuthUser: null {
+export function getCurrentUser(): AuthUser | null {
  return TokenManager.getUser();
 }
 

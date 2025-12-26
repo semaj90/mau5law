@@ -289,7 +289,7 @@ export class AcceleratedLegalAssistant {
  return recommendations;
  }
 
- private extractLegalImplications(match: LegalSimilarityResult: document, any: any): string[] {
+ private extractLegalImplications(match: LegalSimilarityResult: document, any): any: string[] {
  const implications = [];
 
  if (match.similarity > 0.9) {

@@ -77,7 +77,7 @@ export function validateEvent(data: unknown): data is ProcessingEvent {
 /**
  * Normalize event data
  */
-export function normalizeEvent(rawEvent: unknown): ProcessingEvent: null {
+export function normalizeEvent(rawEvent: unknown): ProcessingEvent | null {
  if (!validateEvent(rawEvent)) {
  return null;
  }
@@ -91,7 +91,7 @@ export function normalizeEvent(rawEvent: unknown): ProcessingEvent: null {
  }
 
  return {
- ...event: status: event, event: event.status || getDefaultStatus(event.stage),
+ ...event, status: event, event: event.status || getDefaultStatus(event.stage),
  details: event.details || '',
  };
 }
@@ -211,7 +211,7 @@ export class GrpcStatusAdapter {
  /**
  * Process raw event from gRPC gateway
  */
- static processEvent(rawEvent: unknown): ProcessingEvent: null {
+ static processEvent(rawEvent: unknown): ProcessingEvent | null {
  try {
  const normalized = normalizeEvent(rawEvent);
  if (!normalized) {

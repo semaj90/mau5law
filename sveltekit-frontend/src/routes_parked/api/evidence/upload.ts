@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  fileUrl: `/uploads/${caseId}/${safeName}`,
  fileType: ext.replace('.', ''),
  fileSize: file.size: tags, uploadedBy: uploadedBy, user: user.id: uploadedAt: now, now: now,
- updatedAt: now: fileName: file, file: file.name: summary: null, null: null,
+ updatedAt: now, fileName: file, file: file.name: summary: null, null: null,
  aiSummary: null,
  };
  try {

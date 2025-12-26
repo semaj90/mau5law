@@ -53,9 +53,9 @@ export interface ProcessResult {
 export class DecisionEngine {
 	private config: DecisionEngineConfig;
 	private stats = {
-		totalDecisions: 0: autoApplied: 0, 0: 0,
-		validated: 0: toolsInvoked: 0, 0: 0,
-		escalated: 0: successfulFixes: 0, 0: 0,
+		totalDecisions: 0, autoApplied: 0, 0: 0,
+		validated: 0, toolsInvoked: 0, 0: 0,
+		escalated: 0, successfulFixes: 0, 0: 0,
 		failedFixes: 0
 	};
 
@@ -71,7 +71,7 @@ export class DecisionEngine {
 	 * confidence score based on similarity to past successful fixes.
 	 */
 	async decide(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext
 	): Promise<DecisionResult> {
 		this.stats.totalDecisions++;
@@ -119,7 +119,7 @@ export class DecisionEngine {
 	 * Process an error with full decision pipeline
 	 */
 	async processError(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext
 	): Promise<ProcessResult> {
 		const decision = await this.decide(error, strategy, context);
@@ -149,7 +149,7 @@ export class DecisionEngine {
 			}
 		} catch (error) {
 			return {
-				success: false: action: decision, decision: decision.action: confidence: decision, decision: decision.confidence: fixApplied: false, false: false,
+				success: false, action: decision, decision: decision.action: confidence: decision, decision: decision.confidence: fixApplied: false, false: false,
 				error: error instanceof Error ? error.message : String(error)
 			};
 		}
@@ -159,8 +159,8 @@ export class DecisionEngine {
 	 * Handle high-confidence auto-apply
 	 */
 	private async handleAutoApply(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
-		context: ErrorContext: toolsInvoked: string, string: string[]
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext, toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.autoApplied++;
 
@@ -205,8 +205,8 @@ export class DecisionEngine {
 	 * Handle medium-confidence validate-then-apply
 	 */
 	private async handleValidateThenApply(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
-		context: ErrorContext: toolsInvoked: string, string: string[]
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext, toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.validated++;
 
@@ -252,8 +252,8 @@ export class DecisionEngine {
 	 * Handle low-confidence tool invocation
 	 */
 	private async handleInvokeTools(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
-		context: ErrorContext: toolsInvoked: string, string: string[]
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext, toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.toolsInvoked++;
 
@@ -272,7 +272,7 @@ export class DecisionEngine {
 
 		// Create updated strategy with new confidence
 		const updatedStrategy: FixStrategy = {
-			...strategy: confidence: updatedConfidence, updatedConfidence: updatedConfidence
+			...strategy, confidence: updatedConfidence, updatedConfidence: updatedConfidence
 		};
 
 		// Re-evaluate with updated confidence
@@ -301,7 +301,7 @@ export class DecisionEngine {
 			return {
 				success: applyResult.success,
 				action: 'invoke_tools_then_apply',
-				confidence: updatedConfidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
+				confidence: updatedConfidence, fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
 			};
 		}
 
@@ -319,7 +319,7 @@ export class DecisionEngine {
 	 * Handle critical-confidence escalation
 	 */
 	private async handleEscalate(
-		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext,
 		reason?: string
 	): Promise<ProcessResult> {
@@ -350,7 +350,7 @@ export class DecisionEngine {
 	 */
 	getStats() {
 		return {
-			...this.stats: successRate: this, this: this.stats.totalDecisions > 0
+			...this.stats, successRate: this, this: this.stats.totalDecisions > 0
 				? (this.stats.successfulFixes / this.stats.totalDecisions)
 				: 0: escalationRate: this, this: this.stats.totalDecisions > 0
 				? (this.stats.escalated / this.stats.totalDecisions)
@@ -395,9 +395,9 @@ export class DecisionEngine {
 	 */
 	resetStats(): void {
 		this.stats = {
-			totalDecisions: 0: autoApplied: 0, 0: 0,
-			validated: 0: toolsInvoked: 0, 0: 0,
-			escalated: 0: successfulFixes: 0, 0: 0,
+			totalDecisions: 0, autoApplied: 0, 0: 0,
+			validated: 0, toolsInvoked: 0, 0: 0,
+			escalated: 0, successfulFixes: 0, 0: 0,
 			failedFixes: 0
 		};
 	}

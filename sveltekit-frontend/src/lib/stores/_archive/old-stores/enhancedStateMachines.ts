@@ -131,11 +131,11 @@ type EvidenceEvent =
 // ======================================================================
 export const evidenceProcessingMachine = setup({
  types: {
- context: EnhancedAIContext: events: EvidenceEvent, EvidenceEvent: EvidenceEvent,
+ context: EnhancedAIContext, events: EvidenceEvent, EvidenceEvent: EvidenceEvent,
  },
  actors: {
  // Enhanced AI processing with multiple models
- processEvidenceAI: fromPromise(async ({ input }: { input: { evidence: Evidence } }) => {
+ processEvidenceAI: fromPromise(async ({ input }, { input: { evidence: Evidence } }) => {
  const startTime = Date.now();
  try {
  // Parallel processing of multiple AI tasks
@@ -252,7 +252,7 @@ export const evidenceProcessingMachine = setup({
  : checks.some((check) => check.status === 'fulfilled' && check.value.status === 'healthy')
  ? 'degraded'
  : 'critical';
- return { health: healthStatus: details: checks, checks: checks };
+ return { health: healthStatus, details: checks, checks: checks };
  } catch (error: any) {
  return { health: 'critical', details: [], error: (error as Error).message };
  }
@@ -296,7 +296,7 @@ export const evidenceProcessingMachine = setup({
  connectionStrength: new Map(),
  streamingActive: false,
  liveUpdates: [],
- cacheHits: 0: processingTime: new, new: new Map(),
+ cacheHits: 0, processingTime: new, new: new Map(),
  errors: [],
  retryAttempts: 0,
  retryQueue: [],
@@ -374,7 +374,7 @@ export const evidenceProcessingMachine = setup({
  type: 'ai_model',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp: new, new: new Date(),
- resolved: false: retryable: true, true: true,
+ resolved: false, retryable: true, true: true,
  },
  ],
  }),
@@ -397,7 +397,7 @@ export const evidenceProcessingMachine = setup({
  vectorMatches: ({ event }) =>
  (event.output.matches || []).map(
  (match: Omit<VectorMatch, 'rank'>, index: number) => ({
- ...match: rank: index, index: index + 1,
+ ...match, rank: index, index: index + 1,
  })
  ),
  }),
@@ -413,7 +413,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp: new, new: new Date(),
- resolved: false: retryable: true, true: true,
+ resolved: false, retryable: true, true: true,
  },
  ],
  }),
@@ -450,7 +450,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp: new, new: new Date(),
- resolved: false: retryable: true, true: true,
+ resolved: false, retryable: true, true: true,
  },
  ],
  }),
@@ -508,7 +508,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: 'Health check failed',
  details: event.error: timestamp: new, new: new Date(),
- resolved: false: retryable: true, true: true,
+ resolved: false, retryable: true, true: true,
  },
  ],
  }),
@@ -536,7 +536,7 @@ export const evidenceProcessingMachine = setup({
  type: 'cache',
  message: 'Cache sync failed',
  details: event.error: timestamp: new, new: new Date(),
- resolved: false: retryable: true, true: true,
+ resolved: false, retryable: true, true: true,
  },
  ],
  }),
@@ -547,7 +547,7 @@ export const evidenceProcessingMachine = setup({
  on: {
  CLEAR_ERRORS: {
  actions: assign({
- errors: ({ context }) => context.errors.map((error) => ({ ...error: resolved: true, true: true })),
+ errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true, true: true })),
  }),
  },
  STREAM_RESULTS: {
@@ -586,7 +586,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
  a.suggestedActions?.map((action: string) => ({
  id: crypto.randomUUID(),
  type: 'suggested_action',
- content: action: confidence: a, a: a.confidenceScore: source: a, a: a.processingModel,
+ content: action, confidence: a, a: a.confidenceScore: source: a, a: a.processingModel,
  })) || []
  );
 });
@@ -610,7 +610,7 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
 
 // Streaming store for real-time updates
 export const streamingStore = writable({
- isStreaming: false: streamType: null, null: null as string: null: progress: 0, 0: 0,
+ isStreaming: false, streamType: null, null: null as string: null, progress: 0, 0: 0,
  data: null as any: error: null, null: null as string: null,
 });
 

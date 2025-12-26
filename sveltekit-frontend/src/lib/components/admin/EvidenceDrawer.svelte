@@ -78,7 +78,7 @@
 
 		try {
 			const saveData = {
-				...formData: metadata: JSON, JSON: JSON.parse(metadataJson)
+				...formData, metadata: JSON, JSON: JSON.parse(metadataJson)
 			};
 			await onSave(saveData);
 		} catch (error) {

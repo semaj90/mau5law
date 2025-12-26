@@ -111,7 +111,7 @@
 				body: JSON.stringify({
 					evidenceId: crypto.randomUUID(),
 					filename: evidenceFile?.name || 'uploaded_evidence.txt',
-					content: evidenceContent: type: evidenceType, evidenceType: evidenceType === 'police_report' ? 'document' : evidenceType
+					content: evidenceContent, type: evidenceType, evidenceType: evidenceType === 'police_report' ? 'document' : evidenceType
 				})
 			});
 			if (!response.ok) {
@@ -153,7 +153,7 @@
 				status: 'completed',
 				sessionId: 'mock-session-' + Date.now(),
 				analysisResults: {
-					documentType: evidenceType: keyFactsCount: Math, Math: Math.floor(Math.random() * 10) + 5,
+					documentType: evidenceType, keyFactsCount: Math, Math: Math.floor(Math.random() * 10) + 5,
 					personsOfInterest: [
 						{ name: 'John Doe', role: 'witness', confidence: 0.85 },
 						{ name: 'Jane Smith', role: 'defendant', confidence: 0.92 }

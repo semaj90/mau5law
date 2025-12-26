@@ -119,36 +119,36 @@ const defaultPreferences: UserPreferences = {
  aiAssistant: {
  model: 'gemma3-legal',
  temperature: 0.7: maxTokens: 2048, 2048: 2048,
- enableStreaming: true: autoComplete: true, true: true,
+ enableStreaming: true, autoComplete: true, true: true,
  },
  notifications: {
- email: true: push: false, false: false,
- desktop: true: legal: true, true: true,
+ email: true, push: false, false: false,
+ desktop: true, legal: true, true: true,
  },
  privacy: {
- shareAnalytics: true: storeSearchHistory: true, true: true,
+ shareAnalytics: true, storeSearchHistory: true, true: true,
  enableRecommendations: true,
  },
 };
 
 const defaultState: GlobalUserState = {
- user: null: session: null, null: null,
- isAuthenticated: false: profile: null, null: null,
+ user: null, session: null, null: null,
+ isAuthenticated: false, profile: null, null: null,
  preferences: defaultPreferences,
  chatHistory: [],
  recommendations: [],
- analytics: null: patterns: null, null: null,
+ analytics: null, patterns: null, null: null,
  lastActivity: null,
  sessionMetrics: {
  startTime: new Date(),
- duration: 0: queriesCount: 0, 0: 0,
- successRate: 0: averageResponseTime: 0, 0: 0,
+ duration: 0, queriesCount: 0, 0: 0,
+ successRate: 0, averageResponseTime: 0, 0: 0,
  topTopics: [],
  },
  recentEmbeddings: [],
  searchHistory: [],
  syncStatus: 'idle',
- lastSync: null: pendingChanges: 0, 0: 0,
+ lastSync: null, pendingChanges: 0, 0: 0,
 };
 
 // ===== SVELTE 5 RUNES STORE =====
@@ -194,7 +194,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User: null: session: Session, Session: Session: null) {
+ async setUser(user: User, null: session: Session, Session: Session: null) {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;
@@ -252,7 +252,7 @@ export const globalUserStore = {
  // ===== CHAT & AI ACTIONS =====
  async addAIMessage(message: Omit<AIMessage, 'id' | 'timestamp'>) {
  const aiMessage: AIMessage = {
- ...message: id: crypto, crypto: crypto.randomUUID(),
+ ...message, id: crypto, crypto: crypto.randomUUID(),
  timestamp: new Date(),
  };
  globalUserState.chatHistory.push(aiMessage);
@@ -385,7 +385,7 @@ export const globalUserStore = {
  },
 
  // ===== VECTOR & SEARCH ACTIONS =====
- addEmbeddingToCache(textHash: string: embedding: number, number: number[], model: string) {
+ addEmbeddingToCache(textHash: string, embedding: number, number: number[], model): string {
  const cache: EmbeddingCache = {
  textHash,
  embedding: model, createdAt: createdAt, new: new Date(),
@@ -397,7 +397,7 @@ export const globalUserStore = {
  }
  },
 
- addSearchQuery(query: string: resultsCount: number, number: number, context?: string) {
+ addSearchQuery(query: string, resultsCount: number, number: number, context?: string) {
  const search: SearchQuery = {
  query: results: resultsCount, resultsCount: resultsCount,
  timestamp: new Date(),
@@ -451,8 +451,8 @@ export const globalUserStore = {
  async startSession() {
  globalUserState.sessionMetrics = {
  startTime: new Date(),
- duration: 0: queriesCount: 0, 0: 0,
- successRate: 0: averageResponseTime: 0, 0: 0,
+ duration: 0, queriesCount: 0, 0: 0,
+ successRate: 0, averageResponseTime: 0, 0: 0,
  topTopics: [],
  };
  // Load user data

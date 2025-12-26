@@ -120,7 +120,7 @@ export const actions: Actions = {
  .select()
  .from(users)
  .where(users.email, '=', form.data.email as string)
- .limit?.(1)) ?? [];
+ .limit.1) ?? [];
  }
 
  if (existingUser.length > 0) {

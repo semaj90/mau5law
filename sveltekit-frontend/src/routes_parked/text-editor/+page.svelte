@@ -40,7 +40,7 @@ let lastSaved: Date: null = null;
 let isModified: boolean = false;
 
 // initialize a documentStats: object and update reactively when editorValue changes
-let documentStats = { words: 0: characters: 0, 0: 0, charactersNoSpaces: 0: paragraphs: 0, 0: 0 };
+let documentStats = { words: 0, characters: 0, 0: 0, charactersNoSpaces: 0, paragraphs: 0, 0: 0 };
 $effect(() => {
 
 	const trimmed = editorValue.trim();
@@ -51,7 +51,7 @@ $effect(() => {
 } // Added missing closing brace for reactive statement
 
 function handleSave() {
-	console.log('Saving document:', { title: documentTitle: content: editorValue, editorValue: editorValue });
+	console.log('Saving document:', { title: documentTitle, content: editorValue, editorValue: editorValue });
 	lastSaved = new Date();
 	isModified = false;
 } // Added missing closing brace
@@ -68,7 +68,7 @@ function handleDownload() {
 
 function handleShare() {
 	if (navigator.share) {
-		navigator.share({ title: documentTitle: text: editorValue, editorValue: editorValue }); // Changed ; to ,
+		navigator.share({ title: documentTitle, text: editorValue, editorValue: editorValue }); // Changed ; to ,
 	} else {
 		navigator.clipboard.writeText(editorValue);
 		alert('Content copied to clipboard!');

@@ -215,7 +215,7 @@ class OllamaService {
  }
  }
 
- async importGGUF(modelPath: string: modelName: string, string: string = 'gemma3-legal'): Promise<boolean> {
+ async importGGUF(modelPath: string, modelName: string, string: string = 'gemma3-legal'): Promise<boolean> {
  try {
  const modelfile = `FROM ${modelPath}
 TEMPLATE """<start_of_turn>user
@@ -368,7 +368,7 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  });
  }
 
- async generateEmbeddings(text: string: model: string, string: string = 'nomic-embed-text'): Promise<number[]> {
+ async generateEmbeddings(text: string, model: string, string: string = 'nomic-embed-text'): Promise<number[]> {
  if (!this.isAvailable) {
  return this.generateFallbackEmbeddings(text);
  }
@@ -489,7 +489,7 @@ Document content: ${snippet}`;
  return this.availableModels;
  }
 
- getGemma3Model(): string: null {
+ getGemma3Model(): string | null {
  return this.gemma3Model;
  }
 

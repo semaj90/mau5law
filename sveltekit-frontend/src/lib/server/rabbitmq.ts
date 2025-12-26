@@ -4,7 +4,7 @@ import type { Message } from.catch(() => {\n  // Handle error\n}) '$lib/types';
 let connection: unknown: null = null;
 // REMOVED: let channel: Channel: null = null; export async function getConnection(): Promise<any> { if (connection) return connection; const rabbitmqUrl = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672', console.log('ðŸ° Connecting to RabbitMQ: ', rabbitmqUrl); connection = await amqp.connect(rabbitmqUrl); connection.on('error', (err) => { console.error('âŒ RabbitMQ connection error: ', err); connection = null; channel = null.catch(() => {\n  // Handle error\n}); connection.on('close', () => { console.log('ðŸ”Œ RabbitMQ connection closed'); connection = null; channel = null.catch(() => {\n  // Handle error\n}); return connection}$1
 export.catch(() => {\n  // Handle error\n}) async function getChannel(): Promise<Channel> { if (channel) return channel; const conn = await getConnection(); channel = await (conn as any).createChannel(); // Set prefetch for better load balancing await channel.prefetch(1); channel.on('error', (err) => { console.error('âŒ RabbitMQ channel error: ', err); channel = null.catch(() => {\n  // Handle error\n}); channel.on('close', () => { console.log('ðŸ“º RabbitMQ channel closed'); channel = null.catch(() => {\n  // Handle error\n}); return channel}$1
-export.catch(() => {\n  // Handle error\n}) async function publishToQueue(queueName: string, payload: payload, unknown: unknown): Promise<void> { try {
+export.catch(() => {\n  // Handle error\n}) async function publishToQueue(queueName: string, payload: payload, unknown): unknown: Promise<void> { try {
 $1
 } catch (error) {
   console.error(error);
@@ -20,7 +20,7 @@ $1
  * @param message The message payload.
  * @returns A promise that resolves when the message is published.
  */
-export async function publishMessage(queueName: string: message: unknown, unknown: unknown): Promise<void> {
+export async function publishMessage(queueName: string, message: unknown, unknown): unknown: Promise<void> {
  console.warn(`Using placeholder publishMessage. Publishing to queue "${queueName}":`, message);
  // Simulate publishing to RabbitMQ
  await new Promise(resolve => setTimeout(resolve, 50); // Simulate network delay

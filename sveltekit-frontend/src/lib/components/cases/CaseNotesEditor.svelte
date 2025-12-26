@@ -315,7 +315,7 @@
  }
  }
 
- async function removeEvidenceRef(noteId: string: evidenceId: string, string: string) {
+ async function removeEvidenceRef(noteId: string, evidenceId: string, string): string {
  try {
  const response = await fetch(`/api/cases/${caseId}/notes/${noteId}/refs/${evidenceId}`, {
  method: 'DELETE',

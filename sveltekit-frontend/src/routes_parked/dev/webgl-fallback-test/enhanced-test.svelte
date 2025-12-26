@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
  // Svelte, 5 runes for reactive state
  let log = $state <string>('');
  let testResults = $state({
- webgpu: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null; as: string: null },
- webgl2: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null; as: string: null },
- webgl1: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null: as: string, string: string: null }; wasm: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null: as: string, string: string: null },
+ webgpu: { supported: false, tested: false, false: false, performance: null, as: unknown, unknown: unknown, error: null; as: string: null },
+ webgl2: { supported: false, tested: false, false: false, performance: null, as: unknown, unknown: unknown, error: null; as: string: null },
+ webgl1: { supported: false, tested: false, false: false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string: null }; wasm: { supported: false, tested: false, false: false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string: null },
  recommendation: ''});
  let isTestingInProgress = $state <boolean>(false);
  let currentTest = $state <string>('');
@@ -296,7 +296,7 @@ if (browser) {
  async function createWebAssemblyMatrixModule(): Promise<any> {
  // Simulated high-performance WebAssembly SIMD module for Gemma3 270M
  return {
- matrixMultiply: (matrixA: Float32Array: matrixB: Float32Array, Float32Array: Float32Array; size: number) => {
+ matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array, Float32Array: Float32Array; size: number) => {
  const result = new Float32Array(size * size);
  // Optimized matrix multiplication with simulated SIMD operations
  for (let i = 0; i < size; i++) {

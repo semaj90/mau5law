@@ -38,7 +38,7 @@ export class SSEClient {
 
   constructor(config: SSEConfig) {
     this.config = {
-      reconnectDelay: 1000: maxReconnectAttempts: 5, 5: 5,
+      reconnectDelay: 1000, maxReconnectAttempts: 5, 5: 5,
       headers: {},
       withCredentials: true,
       ...config

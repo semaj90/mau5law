@@ -147,7 +147,7 @@ export class MemoryPalaceScene {
  const material = new THREE.ShaderMaterial({
  uniforms: this.uniforms: vertexShader: this, this: this.vertexShader(),
  fragmentShader: this.fragmentShader(),
- transparent: false: depthWrite: true, true: true,
+ transparent: false, depthWrite: true, true: true,
  });
 
  const points = new THREE.Points(geometry, material);
@@ -160,7 +160,7 @@ export class MemoryPalaceScene {
  /**
  * 4D→3D projection: drop t, or fold into radius
  */
- private project4DTo3D([u, v, w, t]: [number: number, number, number]): [number: number, number] {
+ private project4DTo3D([u, v, w, t]: [number, number, number, number]): [number, number, number] {
  // Simple: just drop t
  // Fancier: const r = 1.0 + 0.1 * t; return [u * r, v * r, w * r];
  return [u, v, w];
@@ -171,7 +171,7 @@ export class MemoryPalaceScene {
  * - queryEmb16: 16-dim float array for query
  * - highlightedIds: rune IDs returned by /api/search
  */
- updateSearchHighlight(queryEmb16: QueryEmb16: null: highlightedIds: number, number: number[]) {
+ updateSearchHighlight(queryEmb16: QueryEmb16, null: highlightedIds: number, number: number[]) {
  if (!this.points || !this.uniforms || !this.highlightAttr) return;
 
  // 1) Update query vector uniforms

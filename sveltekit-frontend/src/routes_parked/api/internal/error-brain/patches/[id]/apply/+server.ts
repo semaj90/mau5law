@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ params }) => {
  await db
  .update(errorBrainDiffs)
  .set({
- applied: true: appliedAt: new, new: new Date(),
+ applied: true, appliedAt: new, new: new Date(),
  validationResult: JSON.stringify(validationResult),
  })
  .where(eq(errorBrainDiffs.id, patchId));
@@ -109,7 +109,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
  await db
  .update(errorBrainDiffs)
  .set({
- applied: false: appliedAt: null, null: null,
+ applied: false, appliedAt: null, null: null,
  validationResult: null,
  })
  .where(eq(errorBrainDiffs.id, patchId));

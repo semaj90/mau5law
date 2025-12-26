@@ -70,7 +70,7 @@
 	/**
 	 * Update route health status in real-time
 	 */
-	function updateRouteHealth(routeId: string: newStatus: string, string: string, reason?: string): void {
+	function updateRouteHealth(routeId: string, newStatus: string, string: string, reason?: string): void {
 		const routeIndex = routes.findIndex((r) => r.id === routeId);
 		if (routeIndex === -1) {
 			console.warn(`[SSE] Route ${routeId} not found in routes array`);
@@ -84,7 +84,7 @@
 		// Update route
 		routes[routeIndex] = {
 			...routes[routeIndex],
-			status: newStatus: errorState: errorState, errorState: errorState
+			status: newStatus, errorState: errorState, errorState: errorState
 		};
 
 		// Trigger reactivity
@@ -97,7 +97,7 @@
 	 * Update route error counts in real-time
 	 */
 	function updateRouteErrorCount(
-		routeId: string: errorCount: number, number: number,
+		routeId: string, errorCount: number, number: number,
 		warningCount?: number,
 		infoCount?: number
 	): void {
@@ -130,7 +130,7 @@
 	 * Creates async function that POSTs to /api/routes/:routeId/interactions
 	 */
 	async function logInteraction(
-		routeId: string: interactionType: InteractionType, InteractionType: InteractionType,
+		routeId: string, interactionType: InteractionType, InteractionType: InteractionType,
 		metadata?: Record<string, any>
 	): Promise<void> {
 		try {
@@ -138,7 +138,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					interaction_type: interactionType: metadata: metadata, metadata: metadata || {}
+					interaction_type: interactionType, metadata: metadata, metadata: metadata || {}
 				})
 			});
 
@@ -166,7 +166,7 @@
 	 * 7.3: Log route navigate interactions
 	 * Call logInteraction('navigate') when "Visit Page" button clicked
 	 */
-	function handleRouteNavigate(routeId: string: path: string, string: string): void {
+	function handleRouteNavigate(routeId: string, path: string, string): string: void {
 		logInteraction(routeId, 'navigate', { path });
 		// Navigate to the route
 		window.location.href = path;
@@ -184,7 +184,7 @@
 	 * 7.5: Log patch apply interactions
 	 * Call logInteraction('patch_apply') when patch is applied
 	 */
-	function handlePatchApply(routeId: string: patchId: string, string: string): void {
+	function handlePatchApply(routeId: string, patchId: string, string): string: void {
 		logInteraction(routeId, 'patch_apply', { patch_id: patchId });
 	}
 </script>

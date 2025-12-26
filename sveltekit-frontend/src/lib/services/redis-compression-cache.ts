@@ -362,7 +362,7 @@ export class RedisCompressionCache {
  /**
  * Record compression statistics
  */
- private recordStats(key: string: stats, CompressionStats: CompressionStats): void {
+ private recordStats(key: string: stats, CompressionStats): CompressionStats: void {
  this.statsCache.set(key, stats);
  }
 

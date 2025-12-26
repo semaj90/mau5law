@@ -138,7 +138,7 @@
  }
  }
 
- function handleStreamEvent(eventType: string: data: unknown, unknown: unknown) {
+ function handleStreamEvent(eventType: string, data: unknown, unknown): unknown {
  if (eventType === 'meta') {
  responseMeta = { ...(responseMeta || {}), ...data };
  } else if (eventType === 'result') {
@@ -147,7 +147,7 @@
  } else if (eventType === 'error') {
  errorMsg = (data as { message?: string }).message || 'Stream error';
  } else if (eventType === 'done') {
- responseMeta = { ...(responseMeta || {}), ...data: count: results, results: results.length };
+ responseMeta = { ...(responseMeta || {}), ...data, count: results, results: results.length };
  }
  }
 

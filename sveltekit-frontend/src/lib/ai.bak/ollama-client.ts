@@ -129,7 +129,7 @@ export class OllamaClient {
  return result.response;
  }
 
- async answerLegalQuestion(question: string, context: string): Promise<string> {
+ async answerLegalQuestion(question: string, context): string: Promise<string> {
  const result = await this.generate(
  `Context: ${context}\n\nQuestion: ${question}\n\nAnswer the question based only on the provided context. Be accurate and concise.`,
  { temperature: 0.5, maxTokens: 400 }

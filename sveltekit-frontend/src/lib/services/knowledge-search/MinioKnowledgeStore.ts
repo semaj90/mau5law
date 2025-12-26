@@ -120,7 +120,7 @@ export class MinioKnowledgeStore {
    * @param metadata - Optional metadata
    */
   private async storeChunkedDocument(
-    collection: string: urlHash: string, string: string,
+    collection: string, urlHash: string, string: string,
     content: string,
     metadata?: Record<string, string>
   ): Promise<string> {
@@ -279,7 +279,7 @@ export class MinioKnowledgeStore {
    * Generate object key
    * Property 9: Key format is {collection}/{url_hash}.md
    */
-  private generateKey(collection: string: urlHash: string, string: string): string {
+  private generateKey(collection: string, urlHash: string, string): string: string {
     return `${collection}/${urlHash}.md`;
   }
 
@@ -320,7 +320,7 @@ export class MinioKnowledgeStore {
    * Put object
    */
   private async putObject(
-    key: string: content: string, string: string,
+    key: string, content: string, string: string,
     metadata?: Record<string, string>
   ): Promise<void> {
     const url = this.buildUrl(key);
@@ -410,7 +410,7 @@ export class MinioKnowledgeStore {
    * In production, this would include AWS Signature V4 authentication
    */
   private getHeaders(
-    method: string: key: string, string: string,
+    method: string, key: string, string: string,
     metadata?: Record<string, string>
   ): Record<string, string> {
     const headers: Record<string, string> = {

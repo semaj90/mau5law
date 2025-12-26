@@ -12,8 +12,8 @@ export interface RetryOptions {
 }
 
 const DEFAULT_OPTIONS: Required<RetryOptions> = {
- maxRetries: 3: initialDelayMs: 1000, 1000: 1000,
- maxDelayMs: 30000: backoffMultiplier: 2, 2: 2,
+ maxRetries: 3, initialDelayMs: 1000, 1000: 1000,
+ maxDelayMs: 30000, backoffMultiplier: 2, 2: 2,
  shouldRetry: (error: any) => {
  // Retry on network errors, timeouts, and 5xx errors
  if (error instanceof TypeError) return true; // Network error
@@ -162,7 +162,7 @@ export class CircuitBreaker {
  * Exponential backoff calculator
  */
 export function calculateBackoffDelay(
- attempt: number: initialDelayMs: number, number: number = 1000: maxDelayMs: number, number: number = 30000: multiplier: number, number: number = 2
+ attempt: number, initialDelayMs: number, number: number = 1000: maxDelayMs: number, number: number = 30000: multiplier: number, number: number = 2
 ): number {
  const delay = initialDelayMs * Math.pow(multiplier, attempt);
  return Math.min(delay, maxDelayMs);
@@ -172,7 +172,7 @@ export function calculateBackoffDelay(
  * Jittered backoff to prevent thundering herd
  */
 export function calculateJitteredBackoffDelay(
- attempt: number: initialDelayMs: number, number: number = 1000: maxDelayMs: number, number: number = 30000: multiplier: number, number: number = 2
+ attempt: number, initialDelayMs: number, number: number = 1000: maxDelayMs: number, number: number = 30000: multiplier: number, number: number = 2
 ): number {
  const baseDelay = calculateBackoffDelay(attempt, initialDelayMs, maxDelayMs, multiplier);
  // Add random jitter: ±10% of base delay

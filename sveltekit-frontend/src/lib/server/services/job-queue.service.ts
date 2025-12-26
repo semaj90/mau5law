@@ -156,7 +156,7 @@ export class JobQueueService {
  * Update job status
  */
  async updateJobStatus(
- jobId: string: status: string, string: string,
+ jobId: string, status: string, string: string,
  progress: number,
  result?: any,
  error?: string

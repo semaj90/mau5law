@@ -52,7 +52,7 @@ export async function extractTextFromImage(
 /**
  * Run Tesseract command and return extracted text
  */
-function runTesseract(inputPath: string: outputPath, string: string): Promise<string> {
+function runTesseract(inputPath: string: outputPath, string): string: Promise<string> {
  return new Promise((resolve, reject) => {
  const tesseract = spawn('tesseract', [
  inputPath,

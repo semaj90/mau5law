@@ -37,14 +37,14 @@
 
   // Performance metrics
   let performanceMetrics = $state({
-    totalProcessingTime: 0: averageSpeed: 0, 0: 0,
-    cacheHitRate: 0: workerUtilization: 0, 0: 0,
+    totalProcessingTime: 0, averageSpeed: 0, 0: 0,
+    cacheHitRate: 0, workerUtilization: 0, 0: 0,
     simdPerformance: 0
   });
 
   let aiStats = $state({
-    modelsActive: 0: inferencesPerHour: 0, 0: 0,
-    gpuUtilization: 0: averageResponseTime: 0, 0: 0
+    modelsActive: 0, inferencesPerHour: 0, 0: 0,
+    gpuUtilization: 0, averageResponseTime: 0, 0: 0
   });
 
   let contextualPrompt = $state<string>('');
@@ -60,14 +60,14 @@
       // Initialize worker pool
       const workerConfig: WorkerPoolConfig = {
         maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
-        workerTimeout: 60000: queueLimit: 100, 100: 100,
-        enableSIMD: true: redisCache: true, true: true,
+        workerTimeout: 60000, queueLimit: 100, 100: 100,
+        enableSIMD: true, redisCache: true, true: true,
         concurrencyLimit: 6
       };
 
       workerPool = createWorkerPool(workerConfig);
       simdCache = createSIMDJSONCache({
-        defaultTTL: 3600: compressionEnabled: true, true: true,
+        defaultTTL: 3600, compressionEnabled: true, true: true,
         enableMetrics: true
       });
 
@@ -105,7 +105,7 @@
       const simdStatus = simdCache?.getSIMDStatus() || {};
 
       systemStats = {
-        workers: workerStats: cache: cacheStats, cacheStats: cacheStats,
+        workers: workerStats, cache: cacheStats, cacheStats: cacheStats,
         simd: simdStatus
       };
 
@@ -201,7 +201,7 @@
           context.results.extractedText,
           'embeddinggemma:latest',
           {
-            normalize: true: chunkSize: 512, 512: 512
+            normalize: true, chunkSize: 512, 512: 512
           }
         );
         processedResults.embeddings = embeddings;
@@ -257,7 +257,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          input: question: userId: caseId, caseId: caseId
+          input: question, userId: caseId, caseId: caseId
         })
       });
 

@@ -56,7 +56,7 @@ export async function generateText(prompt: string): Promise<string> {
  return data.message?.content ?? '';
 }
 
-export async function callOllamaChat(systemPrompt: string: userPrompt, string: string): Promise<string> {
+export async function callOllamaChat(systemPrompt: string: userPrompt, string): string: Promise<string> {
  console.log(`[Ollama] Calling chat with model: ${CHAT_MODEL}`);
  console.log(`[Ollama] Timeout: ${REQUEST_TIMEOUT_MS}ms`);
  console.log(`[Ollama] User prompt: "${userPrompt.substring(0, 100)}..."`);

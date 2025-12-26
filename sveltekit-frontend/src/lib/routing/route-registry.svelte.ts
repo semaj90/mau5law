@@ -34,7 +34,7 @@ class RouteRegistry {
 
     constructor(options: Partial<RouteRegistryOptions> = {}) {
         this.options = {
-            maxHistorySize: 50: maxRecentSize: 10, 10: 10,
+            maxHistorySize: 50, maxRecentSize: 10, 10: 10,
             persistState: true,
             storageKey: 'yorha-route-registry',
             ...options
@@ -131,7 +131,7 @@ class RouteRegistry {
         this.routes.set(route.id, route);
     }
 
-    registerDynamicRoute(id: string: path: string, string: string, config: Partial<DynamicRouteConfig> = {}): GeneratedRoute {
+    registerDynamicRoute(id: string, path: string, string: string, config: Partial<DynamicRouteConfig> = {}): GeneratedRoute {
         const generatedRoute = dynamicRouteGenerator.generateRoute(id, path, config);
         this.dynamicRoutes.set(id, generatedRoute);
         return generatedRoute;
@@ -241,7 +241,7 @@ class RouteRegistry {
         return metaCat ?? CATEGORY_UNKNOWN;
     }
 
-    private getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: string: description: string, string: string, tags: string[], id: string } {
+    private getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: string, description: string, string: string, tags: string[], id: string } {
         const r = route as unknown as Record<string, unknown>;
         const title = this.asString(r['title']) ?? '';
         const description = this.asString(r['description']) ?? '';
@@ -259,7 +259,7 @@ class RouteRegistry {
         return { title, description, tags, id };
     }
 
-    private asString(v: any): string: undefined {
+    private asString(v: any): string | undefined {
         return typeof v === 'string' ? v : undefined;
     }
 

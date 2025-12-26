@@ -112,21 +112,53 @@ const ConfigSchema = z.object({
 });
 
 const parsed = ConfigSchema.safeParse({
- NODE_ENV: env.NODE_ENV: POSTGRES_URL, env: env.POSTGRES_URL || env.DATABASE_URL: POSTGRES_USER, env: env.POSTGRES_USER: POSTGRES_PASSWORD, env: env.POSTGRES_PASSWORD: POSTGRES_DB, env: env.POSTGRES_DB: POSTGRES_HOST, env: env.POSTGRES_HOST: POSTGRES_PORT, env: env.POSTGRES_PORT: REDIS_URL, env: env.REDIS_URL: REDIS_PASSWORD, env: env.REDIS_PASSWORD: process.env.OLLAMA_URL, env: env.OLLAMA_URL: TRITON_URL, env: env.TRITON_URL: process.env.QDRANT_URL, env: env.QDRANT_URL: NEO4J_URL, env: env.NEO4J_URI: NEO4J_USER, env: env.NEO4J_USER: NEO4J_PASSWORD, env: env.NEO4J_PASSWORD,
- MINIO_URL: (() => {
- const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
- if (!raw) return undefined;
- // If already looks like a URL, return as-is
- if (/^https?:\/\//i.test(raw)) return raw;
- // If looks like host:port, prefix http:// for local/dev convenience
- if (/^[a-z0-9._-]+:\d+$/i.test(raw)) return `http://${raw}`;
- // Fallback: in non-production, prefix http://, in production: leave undefined to fail validation
- return env.NODE_ENV === 'production' ? raw : `http://${raw}`;
- })(),
- MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY: MINIO_SECRET_KEY, env: env.MINIO_SECRET_KEY: MINIO_BUCKET, env: env.MINIO_BUCKET: ENABLE_GPU, env: env.ENABLE_GPU: ENABLE_CUDA, env: env.ENABLE_CUDA: ENABLE_WEBGPU, env: env.ENABLE_WEBGPU: ENABLE_SIMD_JSON, env: env.ENABLE_SIMD_JSON: RTX_3060_OPTIMIZATION, env: env.RTX_3060_OPTIMIZATION: OCR_MODE, env: env.OCR_MODE: DEV_QUIC_PORT, env: env.DEV_QUIC_PORT: QUIC_ENABLED, env: env.QUIC_ENABLED: DEV_BYPASS_AUTH, env: env.DEV_BYPASS_AUTH: MEMORY_CACHE_TTL, env: env.MEMORY_CACHE_TTL: VECTOR_CACHE_SIZE, env: env.VECTOR_CACHE_SIZE: JWT_SECRET, env: env.JWT_SECRET: API_KEY, env: env.API_KEY: LOG_LEVEL, env: env.LOG_LEVEL: ENABLE_STRUCTURED_LOGGING, env: env.ENABLE_STRUCTURED_LOGGING: process.env.DATABASE_URL, env: env.DATABASE_URL: MINIO_ENDPOINT, env: env.MINIO_ENDPOINT: MINIO_REGION, env: env.MINIO_REGION,
-});
-
-if (!parsed.success) {
+	NODE_ENV: env.NODE_ENV,
+	POSTGRES_URL: env.POSTGRES_URL || env.DATABASE_URL,
+	POSTGRES_USER: env.POSTGRES_USER,
+	POSTGRES_PASSWORD: env.POSTGRES_PASSWORD,
+	POSTGRES_DB: env.POSTGRES_DB,
+	POSTGRES_HOST: env.POSTGRES_HOST,
+	POSTGRES_PORT: env.POSTGRES_PORT,
+	REDIS_URL: env.REDIS_URL,
+	REDIS_PASSWORD: env.REDIS_PASSWORD,
+	OLLAMA_URL: env.OLLAMA_URL,
+	TRITON_URL: env.TRITON_URL,
+	QDRANT_URL: env.QDRANT_URL,
+	NEO4J_URL: env.NEO4J_URI,
+	NEO4J_USER: env.NEO4J_USER,
+	NEO4J_PASSWORD: env.NEO4J_PASSWORD,
+	MINIO_URL: (() => {
+		const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
+		if (!raw) return undefined;
+		// If already looks like a URL, return as-is
+		if (/^https?:\/\//i.test(raw)) return raw;
+		// If looks like host:port, prefix http:// for local/dev convenience
+		if (/^[a-z0-9._-]+:\d+$/i.test(raw)) return `http://${raw}`;
+		// Fallback: in non-production, prefix http://, in production: leave undefined to fail validation
+		return env.NODE_ENV === 'production' ? raw : `http://${raw}`;
+	})(),
+	MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY,
+	MINIO_SECRET_KEY: env.MINIO_SECRET_KEY,
+	MINIO_BUCKET: env.MINIO_BUCKET,
+	ENABLE_GPU: env.ENABLE_GPU,
+	ENABLE_CUDA: env.ENABLE_CUDA,
+	ENABLE_WEBGPU: env.ENABLE_WEBGPU,
+	ENABLE_SIMD_JSON: env.ENABLE_SIMD_JSON,
+	RTX_3060_OPTIMIZATION: env.RTX_3060_OPTIMIZATION,
+	OCR_MODE: env.OCR_MODE,
+	DEV_QUIC_PORT: env.DEV_QUIC_PORT,
+	QUIC_ENABLED: env.QUIC_ENABLED,
+	DEV_BYPASS_AUTH: env.DEV_BYPASS_AUTH,
+	MEMORY_CACHE_TTL: env.MEMORY_CACHE_TTL,
+	VECTOR_CACHE_SIZE: env.VECTOR_CACHE_SIZE,
+	JWT_SECRET: env.JWT_SECRET,
+	API_KEY: env.API_KEY,
+	LOG_LEVEL: env.LOG_LEVEL,
+	ENABLE_STRUCTURED_LOGGING: env.ENABLE_STRUCTURED_LOGGING,
+	DATABASE_URL: env.DATABASE_URL,
+	MINIO_ENDPOINT: env.MINIO_ENDPOINT,
+	MINIO_REGION: env.MINIO_REGION,
+});if (!parsed.success) {
  console.error('❌ CONFIG validation failed: ', parsed.error.format());
  throw new Error('Invalid environment configuration');
 }
@@ -137,11 +169,19 @@ export type Config = typeof CONFIG;
 /** Convenience helpers */
 export const isDockerEnvironment = () => isDocker;
 export const getEnvironmentInfo = () => ({
- isDocker: nodeEnv, CONFIG: CONFIG.NODE_ENV: gpuEnabled, CONFIG: CONFIG.ENABLE_GPU: cudaEnabled, CONFIG: CONFIG.ENABLE_CUDA: quicEnabled, CONFIG: CONFIG.QUIC_ENABLED,
+	isDocker,
+	nodeEnv: CONFIG.NODE_ENV,
+	gpuEnabled: CONFIG.ENABLE_GPU,
+	cudaEnabled: CONFIG.ENABLE_CUDA,
+	quicEnabled: CONFIG.QUIC_ENABLED,
 });
 
 // Provide backward-compatible alias helpers for legacy call sites.
 // These mirror old env names to the canonical keys in CONFIG.
 export const LEGACY = {
- DATABASE_URL: CONFIG.DATABASE_URL ?? CONFIG.POSTGRES_URL: POSTGRES_URL, CONFIG: CONFIG.POSTGRES_URL: MINIO_ENDPOINT, CONFIG: CONFIG.MINIO_ENDPOINT ?? CONFIG.MINIO_URL: MINIO_URL, CONFIG: CONFIG.MINIO_URL: MINIO_REGION, CONFIG: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined,
+	DATABASE_URL: CONFIG.DATABASE_URL ?? CONFIG.POSTGRES_URL,
+	POSTGRES_URL: CONFIG.POSTGRES_URL,
+	MINIO_ENDPOINT: CONFIG.MINIO_ENDPOINT ?? CONFIG.MINIO_URL,
+	MINIO_URL: CONFIG.MINIO_URL,
+	MINIO_REGION: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined,
 };

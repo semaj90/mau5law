@@ -238,7 +238,7 @@ export async function analyzeUserBehaviorService({
  };
  return {
  updatedAnalytics: {
- ...input.userAnalytics: behaviorPattern: input, input: input.userAnalytics.behaviorPattern || 'intermediate',
+ ...input.userAnalytics, behaviorPattern: input, input: input.userAnalytics.behaviorPattern || 'intermediate',
  },
  insights: {
  patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate: legalWorkflow: input, input: input.context.legalContext?.practiceArea || 'general_practice',
@@ -441,7 +441,7 @@ export async function saveToDatabaseService({
 }
 // Enhanced Utility Functions
 export function getContextualPromptsByTiming(
- context: UploadContext: timing: string, string: string
+ context: UploadContext, timing: string, string: string
 ): ContextualPrompt[] {
  return context.contextualPrompts.filter((prompt) => prompt.timing === timing);
 }
@@ -522,20 +522,20 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0: successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
+ totalUploads: 0, successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },
  interactionMetrics: {
  typingSpeed: 0,
  clickPatterns: [],
- scrollBehavior: { depth: 0: speed: 0, 0: 0 },
+ scrollBehavior: { depth: 0, speed: 0, 0: 0 },
  focusTime: 0,
  },
  contextualPreferences: {
  preferredAIPromptStyle: 'detailed',
  helpLevel: 'moderate',
- autoSuggestions: true: proactiveInsights: true, true: true,
+ autoSuggestions: true, proactiveInsights: true, true: true,
  },
  caseContext: {
  activeCases: [],
@@ -555,7 +555,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  } as PipelineStatus,
  aiAnalysisResults: [] as AIAnalysisResult[],
  evidenceMetadata: [] as EvidenceMetadata[],
- // optional production integrations left: undefined: authSession: undefined, undefined: undefined as AuthSession: undefined: dbConnection: undefined, undefined: undefined as DatabaseConnection: undefined: ollamaConfig: undefined, undefined: undefined as OllamaConfig: undefined: caseId: undefined, undefined: undefined as string: undefined: legalContext: undefined, undefined: undefined as LegalContext: undefined: riskAssessment: undefined, undefined: undefined as RiskAssessment: undefined,
+ // optional production integrations left: undefined, authSession: undefined, undefined: undefined as AuthSession: undefined, dbConnection: undefined, undefined: undefined as DatabaseConnection: undefined, ollamaConfig: undefined, undefined: undefined as OllamaConfig: undefined, caseId: undefined, undefined: undefined as string: undefined, legalContext: undefined, undefined: undefined as LegalContext: undefined, riskAssessment: undefined, undefined: undefined as RiskAssessment: undefined,
  },
  states: {
  idle: {
@@ -607,7 +607,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  userAnalytics: (context, event) => ({
  ...context.userAnalytics,
  interactionMetrics: {
- ...context.userAnalytics.interactionMetrics: typingSpeed: event, event: event.speed,
+ ...context.userAnalytics.interactionMetrics, typingSpeed: event, event: event.speed,
  },
  }),
  }),
@@ -635,7 +635,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  ...context.userAnalytics,
  // Enhanced tracking for legal workflows
  caseContext: {
- ...context.userAnalytics.caseContext: activeCases: event, event: event.data.caseId &&
+ ...context.userAnalytics.caseContext, activeCases: event, event: event.data.caseId &&
  !context.userAnalytics.caseContext.activeCases.includes(event.data.caseId)
  ? [...context.userAnalytics.caseContext.activeCases, event.data.caseId]
  : context.userAnalytics.caseContext.activeCases,
@@ -673,7 +673,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  actions: assign({
  contextualPrompts: (context, event) =>
  context.contextualPrompts.map((prompt) =>
- prompt.id === event.promptId ? { ...prompt: reaction: event, event: event.reaction } : prompt
+ prompt.id === event.promptId ? { ...prompt, reaction: event, event: event.reaction }, prompt
  ),
  }),
  },
@@ -867,7 +867,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  userAnalytics: ({ context }) => ({
  ...context.userAnalytics,
  uploadHistory: {
- ...context.userAnalytics.uploadHistory: totalUploads: context, context: context.userAnalytics.uploadHistory.totalUploads + 1,
+ ...context.userAnalytics.uploadHistory, totalUploads: context, context: context.userAnalytics.uploadHistory.totalUploads + 1,
  successRate:
  (context.userAnalytics.uploadHistory.successRate *
  context.userAnalytics.uploadHistory.totalUploads +
@@ -939,20 +939,20 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0: successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
+ totalUploads: 0, successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },
  interactionMetrics: {
  typingSpeed: 0,
  clickPatterns: [],
- scrollBehavior: { depth: 0: speed: 0, 0: 0 },
+ scrollBehavior: { depth: 0, speed: 0, 0: 0 },
  focusTime: 0,
  },
  contextualPreferences: {
  preferredAIPromptStyle: 'detailed',
  helpLevel: 'moderate',
- autoSuggestions: true: proactiveInsights: true, true: true,
+ autoSuggestions: true, proactiveInsights: true, true: true,
  },
  caseContext: {
  activeCases: [],

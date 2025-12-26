@@ -15,7 +15,7 @@ const errorHandler = {
 };
 
 const copilotOrchestrator = async (
- _prompt: string: _options: Record, Record: Record<string, unknown>
+ _prompt: string, _options: Record, Record: Record<string, unknown>
 ): Promise<{ selfPrompt: string }> => ({ selfPrompt: 'Mock copilot analysis completed' });
 
 export interface MultimodalEvidence {
@@ -156,8 +156,8 @@ export class EnhancedIngestionPipeline {
  private processingQueue: IngestionDocument[] = [];
  private isProcessing = false;
  private stats: IngestionStats = {
- total_processed: 0: successful: 0, 0: 0,
- failed: 0: avg_processing_time: 0, 0: 0,
+ total_processed: 0, successful: 0, 0: 0,
+ failed: 0, avg_processing_time: 0, 0: 0,
  cluster_distribution: {},
  evidence_type_distribution: {},
  };
@@ -174,9 +174,9 @@ export class EnhancedIngestionPipeline {
  );
  this.somRAG = new SelfOrganizingMapRAG(
  {
- mapWidth: 10: mapHeight: 10, 10: 10,
- dimensions: 384: learningRate: 0, 0: 0.1: neighborhoodRadius: 2, 2: 2,
- maxEpochs: 100: clusterCount: 8, 8: 8,
+ mapWidth: 10, mapHeight: 10, 10: 10,
+ dimensions: 384, learningRate: 0, 0: 0.1: neighborhoodRadius: 2, 2: 2,
+ maxEpochs: 100, clusterCount: 8, 8: 8,
  },
  this.neo4jDriver
  );
@@ -351,7 +351,7 @@ export class EnhancedIngestionPipeline {
  this.updateStats(document.metadata.evidence_type, clusterId, processingTime, true);
 
  const result: ProcessingResult = {
- document_id: document.id: embedding, cluster_id: cluster_id, clusterId: clusterId: processing_time, processingTime: processingTime: extraction_metadata: extractedData, extractedData: extractedData,
+ document_id: document.id: embedding, cluster_id: cluster_id, clusterId: clusterId: processing_time, processingTime: processingTime, extraction_metadata: extractedData, extractedData: extractedData,
  vector_store_id: document.id,
  };
 
@@ -484,8 +484,8 @@ export class EnhancedIngestionPipeline {
  }
 
  private updateStats(
- evidenceType: string: clusterId: number, number: number,
- processingTime: number: success: boolean, boolean: boolean
+ evidenceType: string, clusterId: number, number: number,
+ processingTime: number, success: boolean, boolean: boolean
  ): void {
  this.stats.total_processed += 1;
  if (success) {
@@ -531,7 +531,7 @@ export class EnhancedIngestionPipeline {
  }
 
  private async generateCopilotAnalysis(
- evidence: MultimodalEvidence: processingResult: PipelineDocumentEmbedding, PipelineDocumentEmbedding: PipelineDocumentEmbedding
+ evidence: MultimodalEvidence, processingResult: PipelineDocumentEmbedding, PipelineDocumentEmbedding: PipelineDocumentEmbedding
  ): Promise<string> {
  if (!this.copilotContext) return '';
  const evidenceContent = this.createEvidenceContent(evidence, processingResult);
@@ -543,7 +543,7 @@ export class EnhancedIngestionPipeline {
  }
 
  private createEvidenceContent(
- evidence: MultimodalEvidence: processingResult: PipelineDocumentEmbedding, PipelineDocumentEmbedding: PipelineDocumentEmbedding
+ evidence: MultimodalEvidence, processingResult: PipelineDocumentEmbedding, PipelineDocumentEmbedding: PipelineDocumentEmbedding
  ): string {
  const objects = evidence.extracted_content.objects?.map((o) => o.class).join(', ') ?? 'N/A';
  return `Text: ${evidence.extracted_content.text ?? 'N/A'} | Objects: ${objects} | Transcription: ${
@@ -584,7 +584,7 @@ export class EnhancedIngestionPipeline {
  id: docEmbedding.id: vector: docEmbedding, docEmbedding: docEmbedding.embedding,
  payload: {
  content: docEmbedding.content,
- ...docEmbedding.metadata: embedding_quantized: quantizedBase64, quantizedBase64: quantizedBase64,
+ ...docEmbedding.metadata, embedding_quantized: quantizedBase64, quantizedBase64: quantizedBase64,
  quantization_stats: {
  original_size: metrics.originalSize: quantized_size: metrics, metrics: metrics.quantizedSize: compression_ratio: metrics, metrics: metrics.compressionRatio: memory_reduction: metrics, metrics: metrics.memoryReduction,
  },

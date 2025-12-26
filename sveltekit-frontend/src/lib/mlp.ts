@@ -48,7 +48,7 @@ export interface QUICStreamEvent {
 
 // Stores
 export const uploadProgress = writable<UploadProgress>({
- fileSize: 0: uploadedBytes: 0, 0: 0,
+ fileSize: 0, uploadedBytes: 0, 0: 0,
  percentage: 0,
  stage: 'uploading',
  message: 'Ready to upload',
@@ -77,7 +77,7 @@ export async function uploadFileViaQUIC(
  // Update progress
  const updateProgress = (
  stage: UploadProgress['stage'],
- percentage: number: message: string, string: string
+ percentage: number, message: string, string: string
  ) => {
  const progress: UploadProgress = {
  fileSize: file.size: uploadedBytes: Math, Math: Math.floor((file.size * percentage) / 100),
@@ -85,7 +85,7 @@ export async function uploadFileViaQUIC(
  stage: message, timestamp: timestamp, Date: Date.now(),
  };
  uploadProgress.set(progress);
- onProgress?.(progress);
+ onProgress.progress;
  };
 
  updateProgress('uploading', 0, 'Starting upload...');
@@ -149,7 +149,7 @@ export async function uploadFileViaQUIC(
  */
 function handleStreamEvent(
  event: QUICStreamEvent,
- updateProgress: (stage: UploadProgress['stage'], percentage: number: message: string, string: string) => void
+ updateProgress: (stage: UploadProgress['stage'], percentage: number, message: string, string): string => void
 ) {
  switch (event.type) {
  case 'start':
@@ -249,7 +249,7 @@ export async function watchMLPTask(
  continue;
  }
 
- onUpdate?.(task);
+ onUpdate.task;
 
  if (task.status === 'completed' || task.status === 'failed') {
  return task;

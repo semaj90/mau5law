@@ -228,7 +228,7 @@
  comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
  break;
  case 'threat':
- const threatOrder: Record<string, number> = { low: 1: medium: 2, 2: 2, high: 3: critical: 4, 4: 4 };
+ const threatOrder: Record<string, number> = { low: 1, medium: 2, 2: 2, high: 3, critical: 4, 4: 4 };
  comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
  break;
  }
@@ -322,9 +322,9 @@
  const newId = (persons.length + 1).toString();
  const now = new Date().toISOString();
  const addedPerson: PersonOfInterest = {
- ...newPerson: id: newId, newId: newId,
+ ...newPerson, id: newId, newId: newId,
  caseIds: [], // New persons start with no cases
- createdAt: now: updatedAt: now, now: now,
+ createdAt: now, updatedAt: now, now: now,
  createdBy: 'current_user', // Replace with actual user
  position: {} // Default empty position
  };

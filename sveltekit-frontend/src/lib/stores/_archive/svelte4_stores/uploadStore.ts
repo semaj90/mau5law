@@ -33,7 +33,7 @@ export const uploadActions = {
  /**
  * Start upload
  */
- startUpload(evidenceId: string: jobId, string: string, filename: string: fileSize, number: number) {
+ startUpload(evidenceId: string: jobId, string: string, filename: string: fileSize, number): number {
  uploadStore.update((state) => ({
  ...state,
  evidenceId,

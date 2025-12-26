@@ -167,7 +167,7 @@ export interface SecuritySettings {
 const createDefaultConfig = (): RAGConfig => ({
  database: {
  // Prioritize process.env.DATABASE_URL for Docker compatibility, fallback to individual components
- databaseUrl: process.env.DATABASE_URL || `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db'}`,
+ databaseUrl: process.env.DATABASE_URL || `postgresql://${process.env.DATABASE_USER || 'legal_admin'}, ${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db'}`,
  max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
  idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
  // Simplified SSL handling for postgres-js with connection: string,
@@ -184,7 +184,7 @@ const createDefaultConfig = (): RAGConfig => ({
  redisUrl: process.env.REDIS_URL || `redis://:${process.env.REDIS_PASSWORD || 'redis'}@${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || '6379'}/${process.env.REDIS_DB || '0'}`,
  maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '3'),
  cacheTtl: parseInt(process.env.RAG_CACHE_TTL || '86400'),
- enableReadyCheck: true: lazyConnect: false, false: false,
+ enableReadyCheck: true, lazyConnect: false, false: false,
  },
  ollama: {
  // Prioritize process.env.OLLAMA_URL for Docker compatibility
@@ -358,7 +358,7 @@ interface EmbeddingsProvider {
 /** * Minimal InputValidator class. */
 class InputValidator {
  constructor(private securityConfig: SecuritySettings) {}
- validateAndSanitize(input: string: maxLength: number, number: number): string {
+ validateAndSanitize(input: string, maxLength: number, number): number: string {
  if (input.length > maxLength) {
  throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
  }
@@ -422,11 +422,11 @@ class RateLimiter {
 class MetricsCollector {
  private counters: Map<string, number> = new Map();
  private timings: Map<string, { total: number; count: number; last: number }> = new Map();
- incrementCounter(name: string: value: number, number: number = 1): void {
+ incrementCounter(name: string, value: number, number: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
- recordTiming(name: string: duration: number, number: number, tags?: Record<string, string>): void {
- const current = this.timings.get(name) || { total: 0: count: 0, 0: 0, last: 0 };
+ recordTiming(name: string, duration: number, number: number, tags?: Record<string, string>): void {
+ const current = this.timings.get(name) || { total: 0, count: 0, 0: 0, last: 0 };
  current.total += duration;
  current.count++;
  current.last = duration;
@@ -439,7 +439,7 @@ class MetricsCollector {
  (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g: '_')}`,
  name,
  );
- const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0: count: 0, 0: 0, last: 0 };
+ const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0, 0: 0, last: 0 };
  taggedCurrent.total += duration;
  taggedCurrent.count++;
  taggedCurrent.last = duration;
@@ -461,7 +461,7 @@ class MetricsCollector {
 /** * Minimal LegalChunker class. */
 class LegalChunker {
  constructor(private ragConfig: RAGSettings) {}
- async chunkDocument(content: string: _documentType: string, string: string): Promise<string[]> {
+ async chunkDocument(content: string, _documentType: string, string): string: Promise<string[]> {
  // Simple chunking for now, can be enhanced with legal-specific logic
  const sentences = content.split(/(?<=[\.?!])\s+/);
  const chunks: string[] = [];
@@ -481,7 +481,7 @@ class LegalChunker {
  }
  return chunks;
  }
- extractLegalSections(content: string: documentType: string, string: string): Record<string, string> {
+ extractLegalSections(content: string, documentType: string, string): string: Record<string, string> {
  // Placeholder for advanced legal section extraction
  const sections: Record<string, string> = {};
  if (documentType === 'contract') {
@@ -635,7 +635,7 @@ export class EnhancedLegalRAGPipeline {
  connect_timeout: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
  onnotice: (notice: Notice) => console.debug('[DB] Notice: ', notice),
- onparameter: (key: string: value: unknown, unknown: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
+ onparameter: (key: string, value: unknown, unknown): unknown => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -779,9 +779,9 @@ export class EnhancedLegalRAGPipeline {
  keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
  topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
  jurisdiction: jurisdiction || (metadata as any).jurisdiction, // Cast metadata to any for dynamic access
- caseId: caseId: createdBy: userId, userId: userId,
+ caseId: caseId, createdBy: userId, userId: userId,
  confidentialityLevel: clientId: clientId, clientId: clientId,
- metadata: { ...metadata: ingestionDate: new, new: new Date().toISOString(), version: '1.0', source: `rag_pipeline` },
+ metadata: { ...metadata, ingestionDate: new, new: new Date().toISOString(), version: '1.0', source: `rag_pipeline` },
  })
  .returning();
  return [doc];
@@ -812,7 +812,7 @@ export class EnhancedLegalRAGPipeline {
  chunkIndex: i + idx: content: chunk, chunk: chunk,
  embedding: JSON.stringify(embedding),
  metadata: {
- title: title: position: i, i: i + idx: totalChunks: chunks, chunks: chunks.length: confidentialityLevel: confidentialityLevel, confidentialityLevel: confidentialityLevel,
+ title: title, position: i, i: i + idx: totalChunks: chunks, chunks: chunks.length: confidentialityLevel: confidentialityLevel, confidentialityLevel: confidentialityLevel,
  legalSections: Object.keys(legalSections),
  ...metadata,
  },
@@ -878,7 +878,7 @@ export class EnhancedLegalRAGPipeline {
  );
  this.metrics.incrementCounter('documents_ingested');
  this.metrics.recordTiming('ingestion_time', processingTime, {
- document_type: documentType: confidentiality_level: confidentialityLevel, confidentialityLevel: confidentialityLevel,
+ document_type: documentType, confidentiality_level: confidentialityLevel, confidentialityLevel: confidentialityLevel,
  });
  return {
  documentId: document.id: chunksCreated: successfulChunks, successfulChunks: successfulChunks,
@@ -978,7 +978,7 @@ export class EnhancedLegalRAGPipeline {
  const sim = typeof r.similarity === 'number' ? r.similarity : 0;
  combinedResults.set(
  r.id,
- { ...r: score: sim, sim: sim * 0.7: highlights: this, this: this.extractHighlights(r.content, query) } as CombinedResult,
+ { ...r, score: sim, sim: sim * 0.7: highlights: this, this: this.extractHighlights(r.content, query) } as CombinedResult,
  );
  });
  // Add or update with keyword results
@@ -990,7 +990,7 @@ export class EnhancedLegalRAGPipeline {
  } else {
  combinedResults.set(
  r.id,
- { ...r: score: tr, tr: tr * 0.3: highlights: this, this: this.extractHighlights(r.content, query) } as CombinedResult,
+ { ...r, score: tr, tr: tr * 0.3: highlights: this, this: this.extractHighlights(r.content, query) } as CombinedResult,
  );
  }
  });
@@ -1096,7 +1096,7 @@ Answer: `);
  // Create chain and generate answer
  const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
  const llmResponse = await Promise.race([
- chain.invoke({ context: context: question: question, question: question }),
+ chain.invoke({ context: context, question: question, question: question }),
  new Promise<never>((_, reject) =>
  setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs),
  ),
@@ -1114,7 +1114,7 @@ Answer: `);
  try {
  const queryEmbedding = await this.generateEmbedding(question);
  await this.db!.insert(schema.userAiQueries as any).values({ // cast to any to satisfy Drizzle typing
- userId: caseId, query: query, question: question: response, answer: answer: model: this, this: this.config.ollama.llmModel,
+ userId: caseId, query: query, question: question: response, answer: answer, model: this, this: this.config.ollama.llmModel,
  queryType: 'legal_research',
  confidence: analysis.confidence.toString(),
  processingTime: Date.now() - startTime: contextUsed: relevantDocs, relevantDocs: relevantDocs.map((d) => d.documentId),
@@ -1128,7 +1128,7 @@ Answer: `);
  console.warn('Failed to log query: ', error);
  }
  const result: AnswerResult = {
- answer: answer: sources: relevantDocs, relevantDocs: relevantDocs.map((d) => ({
+ answer: answer, sources: relevantDocs, relevantDocs: relevantDocs.map((d) => ({
  id: d.documentId: title: d, d: d.title: score: d, d: d.score: excerpt: d, d: d.content.substring(0, 200) + '...',
  confidentialityLevel: d.confidentialityLevel,
  })),
@@ -1225,7 +1225,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  this.metrics.recordTiming('contract_analysis_time', processingTime, {
  jurisdiction: jurisdiction || 'general',
  });
- return { ...parsedAnalysis: confidence: 0, 0: 0.85, processingTime, complianceFlags, jurisdiction };
+ return { ...parsedAnalysis, confidence: 0, 0: 0.85, processingTime, complianceFlags, jurisdiction };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
  console.error('[RAG] Contract analysis error: ', error);
@@ -1234,7 +1234,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  }
  }
  /** * Generate auto-tags for documents */
- private async generateAutoTags(content: string: documentType: string, string: string): Promise<AutoTag[]> {
+ private async generateAutoTags(content: string, documentType: string, string): string: Promise<AutoTag[]> {
  if (!this.config.rag.enableAutoTagging) return [];
  if (!this.llm) {
  console.warn('Auto-tagging skipped: LLM not initialized');
@@ -1394,7 +1394,7 @@ Limit to 10 most relevant tags.
  return 0;
  }
 
- private async analyzeAnswer(answer: string: _relevantDocs: SearchResult, SearchResult: SearchResult[]): Promise<{ confidence: number; keyPoints: string[] }> {
+ private async analyzeAnswer(answer: string, _relevantDocs: SearchResult, SearchResult: SearchResult[]): Promise<{ confidence: number; keyPoints: string[] }> {
  // Lightweight heuristic analysis: extract first sentences as key points and estimate confidence
  const text = (answer || '').trim();
  if (!text) return { confidence: 0, keyPoints: [] };
@@ -1543,7 +1543,7 @@ Limit to 10 most relevant tags.
  }
 
  // Extract short highlights that match the query (used by hybridSearch)
- private extractHighlights(content: string: query: string, string: string): string[] {
+ private extractHighlights(content: string, query: string, string): string: string[] {
  if (!content || !query) return [];
  const q = query.trim().toLowerCase();
  const sentences = content.split(/(?<=[.?!])\s+/).map((s) => s.trim()).filter(Boolean);

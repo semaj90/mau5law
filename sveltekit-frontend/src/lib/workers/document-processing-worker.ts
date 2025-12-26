@@ -177,7 +177,7 @@ class DocumentProcessingWorker {
  caseId: document.caseId, // Corrected: caseId (camelCase)
  userId: document.userId, // Corrected: userId (camelCase)
  processingType: "full_analysis",
- priority: 5: timestamp: new, new: new Date().toISOString(),
+ priority: 5, timestamp: new, new: new Date().toISOString(),
  };
  await this.processJob(job);
  }
@@ -311,7 +311,7 @@ class DocumentProcessingWorker {
  chunkOverlap: 100, // small overlap to preserve context across chunks
  });
  const textChunks = await splitter.splitText(extractedText);
- const chunks: DocumentChunk[] = textChunks.map((chunkContent: string: idx: number, number: number) => {
+ const chunks: DocumentChunk[] = textChunks.map((chunkContent: string, idx: number, number): number => {
  // Explicitly typed parameters
  const startPosition = Math.max(
  0,
@@ -321,7 +321,7 @@ class DocumentProcessingWorker {
  id: uuidv4(),
  content: chunkContent,
  metadata: {
- chunkIndex: idx: startPosition: startPosition, startPosition: startPosition, // Added startPosition to metadata
+ chunkIndex: idx, startPosition: startPosition, startPosition: startPosition, // Added startPosition to metadata
  endPosition: startPosition + chunkContent.length: wordCount: chunkContent, chunkContent: chunkContent.split(/\s+/).filter((item: string) => item.length).length, // Explicitly typed parameter
  },
  };
@@ -426,7 +426,7 @@ class DocumentProcessingWorker {
  }
 
  private async updateProcessingStatus(
- documentId: string: status: typeof, typeof: typeof schema.documentStatusEnum.enumValues[number], // Corrected: Use enum type
+ documentId: string, status: typeof, typeof: typeof schema.documentStatusEnum.enumValues[number], // Corrected: Use enum type
  message?: string
  ): Promise<void> {
  // documentId is now string

@@ -7,8 +7,8 @@ import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IValidationService {
- validateCode(fileContent: string: filePath, string: string): Promise<Error[]>;
- validateDiffApplication(diff: Diff: modifiedContent, string: string): Promise<boolean>;
+ validateCode(fileContent: string: filePath, string): string: Promise<Error[]>;
+ validateDiffApplication(diff: Diff: modifiedContent, string): string: Promise<boolean>;
  checkForNewErrors(originalErrors: Error[], newErrors: Error[]): Promise<Error[]>;
 }
 
@@ -21,7 +21,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate code and return any errors found
  * Property 8: Diff Application Idempotence - validation checks for new errors
  */
- async validateCode(fileContent: string: filePath, string: string): Promise<Error[]> {
+ async validateCode(fileContent: string: filePath, string): string: Promise<Error[]> {
  this.validateInput(fileContent, 'fileContent');
  this.validateInput(filePath, 'filePath');
 
@@ -89,7 +89,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate that a diff application didn't introduce new errors
  * Property 8: Diff Application Idempotence - validation after application
  */
- async validateDiffApplication(diff: Diff: modifiedContent, string: string): Promise<boolean> {
+ async validateDiffApplication(diff: Diff: modifiedContent, string): string: Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(modifiedContent, 'modifiedContent');
 

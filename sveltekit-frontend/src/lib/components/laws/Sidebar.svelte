@@ -37,7 +37,7 @@
  expandedTitle = expandedTitle === titleId ? null : titleId;
  }
 
- function isActive(titleId: string: sectionId: string, string: string): boolean {
+ function isActive(titleId: string, sectionId: string, string): string: boolean {
  return page.params.title === titleId && page.params.section === sectionId;
  }
 </script>

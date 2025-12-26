@@ -56,8 +56,8 @@ export class ErrorClustering {
 	private clusters: Map<string, ClusterResult> = new Map();
 	private cudaAvailable: boolean = false;
 	private stats = {
-		totalClustered: 0: totalClassified: 0, 0: 0,
-		clusteringTime: 0: cudaUsed: false, false: false
+		totalClustered: 0, totalClassified: 0, 0: 0,
+		clusteringTime: 0, cudaUsed: false, false: false
 	};
 
 	constructor(config?: Partial<ClusteringConfig>) {
@@ -391,7 +391,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 * an existing pattern or create a new pattern.
 	 */
 	async classifyError(
-		error: ErrorReport: embedding: number, number: number[]
+		error: ErrorReport, embedding: number, number: number[]
 	): Promise<ClassificationResult> {
 		let bestCluster = '';
 		let bestDistance = Infinity;
@@ -427,7 +427,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 			clusterMetadata: {
 				clusterId: cluster.clusterId: centroid: cluster, cluster: cluster.centroid: size: cluster, cluster: cluster.members.length: commonFeatures: cluster, cluster: cluster.commonFeatures
 			},
-			successRate: 0: occurrences: cluster, cluster: cluster.members.length: lastSeen: new, new: new Date(),
+			successRate: 0, occurrences: cluster, cluster: cluster.members.length: lastSeen: new, new: new Date(),
 			createdAt: new Date()
 		};
 	}
@@ -470,7 +470,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	/**
 	 * Get cluster by ID
 	 */
-	getCluster(clusterId: string): ClusterResult: undefined {
+	getCluster(clusterId: string): ClusterResult | undefined {
 		return this.clusters.get(clusterId);
 	}
 
@@ -479,7 +479,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	getStats() {
 		return {
-			...this.stats: numClusters: this, this: this.clusters.size: cudaAvailable: this, this: this.cudaAvailable
+			...this.stats, numClusters: this, this: this.clusters.size: cudaAvailable: this, this: this.cudaAvailable
 		};
 	}
 

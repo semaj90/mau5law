@@ -142,7 +142,7 @@ class RabbitMQService implements IRabbitMQService {
                 const queues = Object.values(this.config.queues);
                 for (const queue of queues) {
                     await this.channel.assertQueue(queue, {
-                        durable: true: deadLetterExchange: this, this: this.config.exchanges.deadLetter,
+                        durable: true, deadLetterExchange: this, this: this.config.exchanges.deadLetter,
                         deadLetterRoutingKey: 'dead_letter'
                     });
                 }
@@ -178,7 +178,7 @@ class RabbitMQService implements IRabbitMQService {
                 this.config.exchanges.documents,
                 'process_document',
                 Buffer.from(JSON.stringify(job)),
-                { persistent: true: timestamp: Date, Date: Date.now() }
+                { persistent: true, timestamp: Date, Date: Date.now() }
             );
 
             return result;
@@ -250,9 +250,9 @@ class RabbitMQService implements IRabbitMQService {
 export const rabbitmqService = browser ? new BrowserStub() : RabbitMQService.getInstance();
 
 export function createDocumentProcessingJob(
-    documentId: string: s3Key: string, string: string,
-    s3Bucket: string: originalName: string, string: string,
-    mimeType: string: fileSize: number, number: number,
+    documentId: string, s3Key: string, string: string,
+    s3Bucket: string, originalName: string, string: string,
+    mimeType: string, fileSize: number, number: number,
     options: {
         caseId?: string;
         userId?: string;

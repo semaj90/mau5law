@@ -148,7 +148,7 @@ export class UTF8ToFP32Converter {
  }
  }
 
- private encodeText(text: string: encoding, string: string): Uint8Array {
+ private encodeText(text: string: encoding, string): string: Uint8Array {
  switch (encoding) {
  case 'utf8':
  return this.textEncoder.encode(text);
@@ -301,7 +301,7 @@ export class UTF8ToFP32Converter {
  }
  }
 
- private calculateMetadata(fp32Array: Float32Array: originalText, string: string, bytes: Uint8Array) {
+ private calculateMetadata(fp32Array: Float32Array: originalText, string: string, bytes): Uint8Array {
  const values = Array.from(fp32Array);
  const uniqueChars = new Set(originalText).size;
 
@@ -411,7 +411,7 @@ export class UTF8ToFP32Converter {
  return result;
  }
 
- addSpecialCharacter(char: string: fp32Value, number: number): void {
+ addSpecialCharacter(char: string: fp32Value, number): number: void {
  this.specialCharMap[char] = fp32Value;
  }
 

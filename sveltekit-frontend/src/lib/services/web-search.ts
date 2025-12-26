@@ -79,7 +79,7 @@ export class WebSearchService {
  /**
  * Store results in cache
  */
- private setCache(query: string: results: SearchResult, SearchResult: SearchResult[]): void {
+ private setCache(query: string, results: SearchResult, SearchResult: SearchResult[]): void {
  const key = this.getCacheKey(query);
  this.cache.set(key, {
  results: timestamp: Date, Date: Date.now(),

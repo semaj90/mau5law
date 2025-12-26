@@ -252,7 +252,7 @@ export const workflowActor = x.x.x.fromPromise(
  } catch (error: Error | unknown) {
  success = false;
  errors.push({
- step: stepId: error: error, error: error instanceof Error ? error.message : String(error),
+ step: stepId, error: error, error: error instanceof Error ? error.message : String(error),
  });
  }
  });
@@ -297,7 +297,7 @@ export const workflowActor = x.x.x.fromPromise(
  } catch (error: Error | unknown) {
  success = false;
  errors.push({
- step: stepId: error: error, error: error instanceof Error ? error.message : String(error),
+ step: stepId, error: error, error: error instanceof Error ? error.message : String(error),
  });
  }
  }
@@ -341,7 +341,7 @@ export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
  });
 }
 
-export function getActorOutput<T>(actor: ActorRefFrom<any>): T: undefined {
+export function getActorOutput<T>(actor: ActorRefFrom<any>): T | undefined {
  const snapshot = actor.getSnapshot();
  return snapshot.output as T;
 }

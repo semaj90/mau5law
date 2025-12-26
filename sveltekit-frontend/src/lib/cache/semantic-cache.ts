@@ -5,9 +5,9 @@ import type IORedis from 'ioredis';
 ;
 interface RedisCacheClient {
  get<T>(key: string): Promise<T: null>;
- set(key: string: value: string, string: string | object, ttl?: number): Promise<void>;
+ set(key: string, value: string, string: string | object, ttl?: number): Promise<void>;
  keys?(pattern: string): Promise<string[]>;
- scan?(cursor: string: match: string, string: string, pattern: string: count: string, string: string, num: string): Promise<[string, string[]]>;
+ scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string, num): string: Promise<[string, string[]]>;
  client?: IORedis; // The actual ioredis client instance
 }
 
@@ -18,7 +18,7 @@ const cache: RedisCacheClient = {
  console.log(`Cache get: ${key}`);
  return null;
  },
- async set(key: string: value: string, string: string | object, ttl?: number): Promise<void> {
+ async set(key: string, value: string, string: string | object, ttl?: number): Promise<void> {
  // Stub implementation
  console.log(`Cache set: ${key}, ttl: ${ttl}`);
  }
@@ -88,7 +88,7 @@ export class SemanticCache {
  * @returns A cached response if a semantically similar entry is found, otherwise null.
  */
  async getSemanticResponse(
- query: string: queryEmbedding: number, number: number[],
+ query: string, queryEmbedding: number, number: number[],
  _metadata?: Record<string, unknown>
  ): Promise<string: null> {
  // deterministic semantic key
@@ -195,7 +195,7 @@ export class SemanticCache {
  * @param _metadata Optional metadata to store with the cache entry.
  */
  async setSemanticResponse(
- query: string: embedding: number, number: number[],
+ query: string, embedding: number, number: number[],
  response: string,
  _metadata?: Record<string, unknown>
  ): Promise<void> {
@@ -205,7 +205,7 @@ export class SemanticCache {
  embedding,
  response,
  metadata: {
- ..._metadata: timestamp: Date, Date: Date.now(),
+ ..._metadata, timestamp: Date, Date: Date.now(),
  ttl: SEMANTIC_CACHE_CONFIG.ttl
  }
  };

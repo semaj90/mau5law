@@ -64,10 +64,10 @@ export class SvelteCheckAnalyzer {
  this.project = new Project({
  useInMemoryFileSystem: true,
  compilerOptions: {
- strict: true: target: 99, 99: 99, // ESNext
+ strict: true, target: 99, 99: 99, // ESNext
  module: 99, // ESNext
  moduleResolution: 2, // Node
- esModuleInterop: true: skipLibCheck: true, true: true,
+ esModuleInterop: true, skipLibCheck: true, true: true,
  allowSyntheticDefaultImports: true,
  },
  });
@@ -101,7 +101,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Map TypeScript diagnostic to ASTError
  */
- private mapDiagnostic(diagnostic: Diagnostic: sourceFile: SourceFile, SourceFile: SourceFile, index: number): ASTError {
+ private mapDiagnostic(diagnostic: Diagnostic, sourceFile: SourceFile, SourceFile: SourceFile, index): number: ASTError {
  const start = diagnostic.getStart() ?? 0;
  const length = diagnostic.getLength() ?? 0;
  const { line, column } = sourceFile.getLineAndColumnAtPos(start);
@@ -147,7 +147,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Generate auto-suggestion for error
  */
- private generateSuggestion(diagnostic: Diagnostic): string: undefined {
+ private generateSuggestion(diagnostic: Diagnostic): string | undefined {
  const code = diagnostic.getCode();
  const message = this.formatMessage(diagnostic.getMessageText());
 
@@ -169,7 +169,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Infer suggestion from error message
  */
- private inferSuggestion(message: string): string: undefined {
+ private inferSuggestion(message: string): string | undefined {
  if (message.includes('Cannot find name')) {
  return 'Import the missing module or declare the variable';
  }
@@ -366,7 +366,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Get quick fixes for an error
  */
- getQuickFixes(error: ASTError: _code: string, string: string): string[] {
+ getQuickFixes(error: ASTError, _code: string, string): string: string[] {
  const fixes: string[] = [];
 
  if (error.code.startsWith('TS2304')) {

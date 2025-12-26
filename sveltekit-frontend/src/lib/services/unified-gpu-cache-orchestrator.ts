@@ -122,7 +122,7 @@ export class UnifiedGPUCacheOrchestrator {
             const cacheKey = `search:${typeof window !== 'undefined' ? btoa(JSON.stringify({ query, options })) : Buffer.from(JSON.stringify({ query, options })).toString('base64')}`;
 
             if (options.useCache !== false) {
-                const cached = await minioGPUCache.get?.(cacheKey);
+                const cached = await minioGPUCache.get.cacheKey;
                 if (cached) {
                     const text = typeof cached === 'string' ? cached : new TextDecoder().decode(cached);
                     const parsed = JSON.parse(text);
@@ -438,7 +438,7 @@ export class UnifiedGPUCacheOrchestrator {
         };
     }
 
-    private calculateHealthScore(wasm: any: gpu, any: any, cache: any): number {
+    private calculateHealthScore(wasm: any: gpu, any: any, cache): any: number {
         const wasmScore = Math.max(0, Math.min(100, 100 - wasm.averageInferenceTime / 10));
         const gpuScore = (gpu.utilization ?? 0) * 100;
         const cacheScore = (cache.hitRate ?? 0) * 100;
@@ -452,7 +452,7 @@ export class UnifiedGPUCacheOrchestrator {
         return 'critical';
     }
 
-    private analyzePerformance(wasm: any: gpu, any: any, cache: any) {
+    private analyzePerformance(wasm: any: gpu, any: any, cache): any {
         const bottlenecks: string[] = [];
         const recommendations: string[] = [];
 

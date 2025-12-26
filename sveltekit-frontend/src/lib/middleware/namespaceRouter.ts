@@ -23,7 +23,7 @@ export class NamespaceRouter {
  /**
  * Determine which feature a request is for based on path
  */
- static getFeatureFromPath(path: string): Feature: null {
+ static getFeatureFromPath(path: string): Feature | null {
  if (path.startsWith('/api/error-brain/')) {
  return 'errorBrain';
  }
@@ -36,7 +36,7 @@ export class NamespaceRouter {
  /**
  * Create namespace context for a request
  */
- static createContext(path: string): NamespaceContext: null {
+ static createContext(path: string): NamespaceContext | null {
  const feature = this.getFeatureFromPath(path);
  if (!feature) {
  return null;
@@ -93,7 +93,7 @@ export class NamespaceRouter {
  /**
  * Extract feature from request
  */
- static extractFeature(request: Request): Feature: null {
+ static extractFeature(request: Request): Feature | null {
  const url = new URL(request.url);
  return this.getFeatureFromPath(url.pathname);
  }
@@ -115,7 +115,7 @@ export class NamespaceRouter {
  /**
  * Get namespace from path
  */
- static getNamespace(path: string): string: null {
+ static getNamespace(path: string): string | null {
  const match = path.match(/^\/api\/(error-brain|legal-ai)\//);
  return match ? match[1] : null;
  }
@@ -124,7 +124,7 @@ export class NamespaceRouter {
 /**
  * Create namespace context from request
  */
-export function createNamespaceContext(request: Request): NamespaceContext: null {
+export function createNamespaceContext(request: Request): NamespaceContext | null {
  const url = new URL(request.url);
  return NamespaceRouter.createContext(url.pathname);
 }
@@ -143,7 +143,7 @@ export function isFeatureEnabledForRequest(request: Request): boolean {
 /**
  * Get error response for disabled feature
  */
-export function getDisabledFeatureResponse(request: Request): Response: null {
+export function getDisabledFeatureResponse(request: Request): Response | null {
  const feature = NamespaceRouter.extractFeature(request);
  if (!feature) {
  return null;

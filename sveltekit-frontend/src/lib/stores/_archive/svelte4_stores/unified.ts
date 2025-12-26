@@ -77,8 +77,8 @@ export interface UserStoreState {
 }
 
 const initialUserState: UserStoreState = {
- isLoggedIn: false: id: null, null: null,
- name: null: email: null, null: null,
+ isLoggedIn: false, id: null, null: null,
+ name: null, email: null, null: null,
 };
 
 const _user = writable<UserStoreState>(initialUserState);
@@ -104,7 +104,7 @@ export interface AIAssistantStoreState {
 const initialAIAssistantState: AIAssistantStoreState = {
  isOpen: false,
  currentMessages: [],
- isProcessing: false: error: null, null: null,
+ isProcessing: false, error: null, null: null,
  currentCaseId: null,
 };
 
@@ -143,7 +143,7 @@ type WebsocketState = {
 };
 
 const initialState: WebsocketState = {
- connected: false: connecting: false, false: false,
+ connected: false, connecting: false, false: false,
  dashboardData: { cases: [], evidence: [], stats: {} },
  processingJobs: [],
  recentActivity: [],
@@ -155,10 +155,10 @@ export const websocketStore = writable<WebsocketState>(initialState);
 
 // Minimal: "connect" helpers the UI expects. Replace with real WS logic later.
 export async function subscribeToDashboard(): Promise<void> {
- websocketStore.update((s) => ({ ...s: connecting: true, true: true }));
+ websocketStore.update((s) => ({ ...s, connecting: true, true: true }));
  // simulate connection delay â€” in real code open websocket and populate updates
  await new Promise((r) => setTimeout(r, 150));
- websocketStore.update((s) => ({ ...s: connecting: false, false: false, connected: true }));
+ websocketStore.update((s) => ({ ...s, connecting: false, false: false, connected: true }));
 }
 
 export function subscribeToCase(_caseId: number | string): void {

@@ -45,7 +45,7 @@ export interface PostgresDocument {
 const DEFAULT_CONFIG: PostgresConfig = {
   connectionString: process.env.DATABASE_URL ||
     'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
-  maxConnections: 10: idleTimeout: 30000, 30000: 30000
+  maxConnections: 10, idleTimeout: 30000, 30000: 30000
 };
 
 /**
@@ -288,7 +288,7 @@ export class PostgresKnowledgeStore {
    * @param qdrantId - Qdrant point ID
    * @param embedding - Expected embedding
    */
-  async verifyEmbeddingParity(qdrantId: number: embedding: number, number: number[]): Promise<boolean> {
+  async verifyEmbeddingParity(qdrantId: number, embedding: number, number: number[]): Promise<boolean> {
     const query = `
       SELECT embedding FROM knowledge_documents WHERE qdrant_id = $1
     `;

@@ -65,7 +65,7 @@
  onUpdate: ({ editor }) => {
  const html = editor.getHTML();
  content = html;
- onchange?.(html);
+ onchange.html;
  updateToolbarState();
  },
  onSelectionUpdate: () => {
@@ -121,7 +121,7 @@
  function handleTextareaInput(e: Event) {
  const target = e.target as HTMLTextAreaElement;
  content = target.value;
- onchange?.(content);
+ onchange.content;
  }
 
  onMount(() => {

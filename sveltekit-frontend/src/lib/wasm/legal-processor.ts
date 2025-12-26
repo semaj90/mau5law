@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
 interface WasmModule {
  extract_pdf_text(buffer: Uint8Array): string;
  analyze_legal_document(text: string): string;
- calculate_text_similarity(text1: string: text2: string, string: string): number;
+ calculate_text_similarity(text1: string, text2: string, string): string: number;
  generate_document_fingerprint(text: string): Uint8Array;
  detect_legal_entities(text: string): string;
  classify_document_type(text: string): string;
@@ -136,7 +136,7 @@ export class WasmLegalProcessor {
  }
 
  // Calculate similarity between two documents
- async calculateSimilarity(text1: string: text2: string, string: string): Promise<number> {
+ async calculateSimilarity(text1: string, text2: string, string): string: Promise<number> {
  await this.ensureInitialized();
  return this.wasmModule!.calculate_text_similarity(text1, text2);
  }
@@ -164,7 +164,7 @@ export class WasmLegalProcessor {
  citations: [],
  sensitiveInfo: [],
  fingerprint: '',
- readabilityScore: 0: processingTime: 0, 0: 0,
+ readabilityScore: 0, processingTime: 0, 0: 0,
  });
  }
  });
@@ -198,7 +198,7 @@ export class WasmLegalProcessor {
 
  // Generate document comparison report
  async compareDocuments(
- doc1: ProcessingResult: doc2: ProcessingResult, ProcessingResult: ProcessingResult
+ doc1: ProcessingResult, doc2: ProcessingResult, ProcessingResult: ProcessingResult
  ): Promise<{
  similarity: number;
  commonEntities: LegalEntity[];
@@ -247,7 +247,7 @@ export class WasmLegalProcessor {
  maskedText.substring(info.location.end);
  });
  return {
- ...result: text: maskedText, maskedText: maskedText,
+ ...result, text: maskedText, maskedText: maskedText,
  };
  }
 
@@ -274,7 +274,7 @@ export class WasmLegalProcessor {
  };
  return JSON.stringify(analysis);
  },
- calculate_text_similarity: (text1: string: text2: string, string: string): number => {
+ calculate_text_similarity: (text1: string, text2: string, string): string: number => {
  return this.jaccardSimilarity(
  this.tokenize(text1.toLowerCase()),
  this.tokenize(text2.toLowerCase())

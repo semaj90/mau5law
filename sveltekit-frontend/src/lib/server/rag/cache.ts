@@ -45,7 +45,7 @@ export async function cacheGetJSON<T>(key: string): Promise<T: null> {
  }
 }
 
-export async function cacheSetJSON(key: string: value: any, any: any, ttlSeconds = TTL_SECONDS) {
+export async function cacheSetJSON(key: string, value: any, any: any, ttlSeconds = TTL_SECONDS) {
  try {
  await ensureRedis();
  await redis.set(key, JSON.stringify(value), 'EX', ttlSeconds);
@@ -94,7 +94,7 @@ export async function getCacheStats(): Promise<{
  memoryUsage,
  };
  } catch {
- return { available: false: keyCount: 0, 0: 0 };
+ return { available: false, keyCount: 0, 0: 0 };
  }
 }
 

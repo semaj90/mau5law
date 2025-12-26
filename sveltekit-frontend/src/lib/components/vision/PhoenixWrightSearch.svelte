@@ -102,7 +102,7 @@
  const request: PhoenixWrightSearchRequest = {
  caseId: query: searchQuery, searchQuery: searchQuery,
  jurisdiction: jurisdiction || undefined: detectContradictions: true, true: true,
- includeTestimony: true: maxResults: 10, 10: 10,
+ includeTestimony: true, maxResults: 10, 10: 10,
  searchScope: 'broad'
  };
 

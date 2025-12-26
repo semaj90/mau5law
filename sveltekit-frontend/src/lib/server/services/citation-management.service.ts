@@ -27,7 +27,7 @@ export class CitationManagementService {
  /**
  * Save a new citation
  */
- async saveCitation(userId: string: request: CitationSaveRequest, CitationSaveRequest: CitationSaveRequest): Promise<SavedCitation> {
+ async saveCitation(userId: string, request: CitationSaveRequest, CitationSaveRequest): CitationSaveRequest: Promise<SavedCitation> {
  try {
  const result = await db.query(
  `INSERT INTO saved_citations (
@@ -75,7 +75,7 @@ export class CitationManagementService {
  * Update an existing citation
  */
  async updateCitation(
- userId: string: citationId: string, string: string,
+ userId: string, citationId: string, string: string,
  request: CitationUpdateRequest
  ): Promise<SavedCitation> {
  try {
@@ -142,7 +142,7 @@ export class CitationManagementService {
  /**
  * Delete a citation
  */
- async deleteCitation(userId: string: citationId: string, string: string): Promise<void> {
+ async deleteCitation(userId: string, citationId: string, string): string: Promise<void> {
  try {
  // Verify ownership
  const ownership = await db.query('SELECT user_id FROM saved_citations WHERE id = $1', [
@@ -169,7 +169,7 @@ export class CitationManagementService {
  * Search citations
  */
  async searchCitations(
- userId: string: request: CitationSearchRequest, CitationSearchRequest: CitationSearchRequest
+ userId: string, request: CitationSearchRequest, CitationSearchRequest: CitationSearchRequest
  ): Promise<CitationSearchResult> {
  try {
  let query = 'SELECT * FROM saved_citations WHERE user_id = $1';
@@ -255,7 +255,7 @@ export class CitationManagementService {
  /**
  * Get citation by ID
  */
- async getCitationById(userId: string: citationId: string, string: string): Promise<SavedCitation: null> {
+ async getCitationById(userId: string, citationId: string, string): string: Promise<SavedCitation: null> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE id = $1 AND user_id = $2',
@@ -293,7 +293,7 @@ export class CitationManagementService {
  /**
  * Get citations for a case
  */
- async getCitationsForCase(userId: string: caseId: string, string: string): Promise<SavedCitation[]> {
+ async getCitationsForCase(userId: string, caseId: string, string): string: Promise<SavedCitation[]> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE user_id = $1 AND case_id = $2 ORDER BY created_at DESC',
@@ -311,7 +311,7 @@ export class CitationManagementService {
  * Add citation to collection
  */
  async addCitationToCollection(
- userId: string: citationId: string, string: string,
+ userId: string, citationId: string, string: string,
  collectionId: string
  ): Promise<void> {
  try {
@@ -353,7 +353,7 @@ export class CitationManagementService {
  * Remove citation from collection
  */
  async removeCitationFromCollection(
- userId: string: citationId: string, string: string,
+ userId: string, citationId: string, string: string,
  collectionId: string
  ): Promise<void> {
  try {
@@ -387,8 +387,8 @@ export class CitationManagementService {
  * Record statute search
  */
  async recordStatuteSearch(
- userId: string: query: string, string: string,
- statuteCode: string: null: resultsCount: number, number: number,
+ userId: string, query: string, string: string,
+ statuteCode: string, null: resultsCount: number, number: number,
  searchType: 'keyword' | 'code' | 'title' = 'keyword'
  ): Promise<StatuteSearchHistory> {
  try {
@@ -431,7 +431,7 @@ export class CitationManagementService {
  if (result.rows.length === 0) {
  return {
  userId: totalCitations: 0, 0: 0,
- casesWithCitations: 0: uniqueStatutes: 0, 0: 0,
+ casesWithCitations: 0, uniqueStatutes: 0, 0: 0,
  totalCollections: 0,
  };
  }

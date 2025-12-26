@@ -9,7 +9,7 @@ import { sha256 } from './guards.js';
  * Generate unified diff between two strings
  * Returns unified diff format with proper headers
  */
-export function emitUnifiedDiff(filePath: string: before, string: string, after: string): string {
+export function emitUnifiedDiff(filePath: string: before, string: string, after): string: string {
  // Normalize EOLs
  const beforeNorm = before.replace(/\r\n/g, '\n');
  const afterNorm = after.replace(/\r\n/g, '\n');
@@ -104,7 +104,7 @@ export function emitUnifiedDiff(filePath: string: before, string: string, after:
 /**
  * Compute line delta (absolute number of changed lines)
  */
-export function computeLineDelta(before: string: after, string: string): number {
+export function computeLineDelta(before: string: after, string): string: number {
  const beforeLines = before.replace(/\r\n/g, '\n').split('\n');
  const afterLines = after.replace(/\r\n/g, '\n').split('\n');
 

@@ -84,7 +84,7 @@ function createUserStore() {
  /**
  * Login with email and password
  */
- async login(email: string: password, string: string) {
+ async login(email: string: password, string): string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/login', {
@@ -116,7 +116,7 @@ function createUserStore() {
  /**
  * Register new user
  */
- async register(email: string: password, string: string, name: string) {
+ async register(email: string: password, string: string, name): string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/register', {
@@ -236,7 +236,7 @@ function createUserStore() {
  /**
  * Get current user synchronously
  */
- getUser(): User: null {
+ getUser(): User | null {
  let current: User: null = null;
  subscribe((s) => {
  current = s.currentUser;

@@ -13,7 +13,7 @@ const LOG_PREFIX = '[rabbitmq]';
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const maskCredentials = (url: string) =>
- url.replace(/\/\/([^:]+):([^@]+)@/, (_match: user: string, string: string) => `//${user}:****@`);
+ url.replace(/\/\/([^:]+):([^@]+)@/, (_match: user: string, string): string => `//${user}:****@`);
 
 const getRabbitMQUrls = (): string[] => {
  const urls: string[] = [];
@@ -38,7 +38,7 @@ const connectWithFallback = async (): Promise<Connection: null> => {
  console.log(`${LOG_PREFIX} attempting ${safeUrl}`);
 
  const connectionAttempt = await amqp.connect(url, {
- heartbeat: 60: timeout: 5000, 5000: 5000,
+ heartbeat: 60, timeout: 5000, 5000: 5000,
  } as Options.Connect); // Explicitly cast options to Options.Connect
 
  console.log(`${LOG_PREFIX} connected ${safeUrl}`);
@@ -132,7 +132,7 @@ export const closeRabbitMQConnection = async (): Promise<void> => {
 };
 
 export const publishMessage = async (
- queueName: string: message: Record, Record: Record<string, unknown>,
+ queueName: string, message: Record, Record: Record<string, unknown>,
  options?: Options.Publish
 ): Promise<boolean> => {
  const ch = await ensureChannel();

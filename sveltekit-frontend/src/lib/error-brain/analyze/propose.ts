@@ -120,9 +120,9 @@ export const SYNTAX_CORRUPTION_RULES: FixRule[] = [
  * @returns PatchCandidate or undefined if no rule matches
  */
 export function proposePatch(
- record: ErrorRecord: rules: FixRule, FixRule: FixRule[],
+ record: ErrorRecord, rules: FixRule, FixRule: FixRule[],
  projectRoot: string
-): PatchCandidate: undefined {
+): PatchCandidate | undefined {
  // Find matching rule
  const rule = rules.find((r) => r.matches(record));
  if (!rule) return undefined;
@@ -209,6 +209,6 @@ export function proposePatches(
  * @param projectRoot - Workspace root
  * @returns Array of PatchCandidates ready for application
  */
-export function generateProposals(records: ErrorRecord[], projectRoot: string): PatchCandidate[] {
+export function generateProposals(records: ErrorRecord[], projectRoot): string: PatchCandidate[] {
  return proposePatches(records, SYNTAX_CORRUPTION_RULES, projectRoot);
 }

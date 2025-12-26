@@ -242,7 +242,7 @@ export class FeedbackLoopService {
     /**
      * Update user behavior patterns with PostgreSQL storage
      */
-    private async updateUserBehaviorPattern(userId: string, rating: UserRating) {
+    private async updateUserBehaviorPattern(userId: string, rating): UserRating {
         try {
             let pattern = this.userPatterns.get(userId);
 

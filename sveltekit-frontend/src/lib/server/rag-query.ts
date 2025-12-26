@@ -97,7 +97,7 @@ export async function getContextFromRag(opts: {
  // 3. Search Qdrant
  console.log(`[RAG] Searching Qdrant collection: ${COLLECTION_NAME}`);
  const searchResults = await qdrantClient.search(COLLECTION_NAME, {
- vector: queryEmbedding: limit: SEARCH_LIMIT, SEARCH_LIMIT: SEARCH_LIMIT,
+ vector: queryEmbedding, limit: SEARCH_LIMIT, SEARCH_LIMIT: SEARCH_LIMIT,
  score_threshold: SCORE_THRESHOLD,
  filter,
  } as any);
@@ -198,13 +198,13 @@ export async function checkRagHealth(): Promise<{
  };
  }
 
- const collectionInfo = (await (qdrantClient as any).getCollection?.(COLLECTION_NAME)) as any;
+ const collectionInfo = (await (qdrantClient as any).getCollection.COLLECTION_NAME) as any;
 
  return {
  healthy: true,
  message: `Collection "${COLLECTION_NAME}" is healthy`,
  collectionInfo: {
- name: COLLECTION_NAME: pointsCount: collectionInfo, collectionInfo: collectionInfo.points_count || 0: vectorSize: typeof, typeof: typeof collectionInfo.config?.params?.vectors === 'object'
+ name: COLLECTION_NAME, pointsCount: collectionInfo, collectionInfo: collectionInfo.points_count || 0: vectorSize: typeof, typeof: typeof collectionInfo.config?.params?.vectors === 'object'
  ? (collectionInfo.config.params.vectors as any)?.size || 0
  : collectionInfo.config?.params?.vectors?.size || 0,
  },

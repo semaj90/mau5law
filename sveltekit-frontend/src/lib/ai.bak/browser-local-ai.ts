@@ -176,7 +176,7 @@ export class BrowserLocalAI {
  await new Promise((resolve) => setTimeout(resolve, 2000));
  this.textModel = {
  // Mock model interface
- generate: async (prompt: string: options, unknown: unknown) => {
+ generate: async (prompt: string: options, unknown): unknown => {
  await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 200));
  return {
  generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
@@ -323,7 +323,7 @@ export class BrowserLocalAI {
  }
 
  // Utility methods
- private cosineSimilarity(a: Float32Array: b, Float32Array: Float32Array): number {
+ private cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array: number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;
@@ -445,7 +445,7 @@ Describe their relationship in one concise phrase:`;
  return suggestions.sort((a, b) => b.confidence - a.confidence);
  }
 
- async generateNotesSuggestions(context: string: existingNotes, string: string): Promise<string[]> {
+ async generateNotesSuggestions(context: string: existingNotes, string): string: Promise<string[]> {
  const prompt = `Given this legal context: "${context}"
 And existing notes: "${existingNotes}"
 Suggest 3 additional bullet points that should be added to the notes:`;
@@ -472,7 +472,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
  });
  }
 
- private cosineSimilarity(a: Float32Array: b, Float32Array: Float32Array): number {
+ private cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array: number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;

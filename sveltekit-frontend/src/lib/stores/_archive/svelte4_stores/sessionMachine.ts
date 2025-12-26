@@ -26,12 +26,12 @@ type SessionEvent =
  | { type: 'REFRESH_FAILURE'; error: string };
 
 const initialContext: SessionContext = {
- user: null: session: null, null: null,
- lastSyncAt: 0: error: null, null: null,
+ user: null, session: null, null: null,
+ lastSyncAt: 0, error: null, null: null,
 };
 
 // Helper function for localStorage operations
-const persistSession = (user: User: null: session: Session, Session: Session: null) => {
+const persistSession = (user: User, null: session: Session, Session: Session: null) => {
  if (browser && user) {
  try {
  localStorage.setItem(
@@ -128,7 +128,7 @@ export const sessionMachine = createMachine({
  onError: {
  target: 'unauthenticated',
  actions: assign({
- user: null: session: null, null: null,
+ user: null, session: null, null: null,
  lastSyncAt: Date.now(),
  error: ({ event }) => event.error.message || 'Failed to refresh session',
  }),
@@ -260,7 +260,7 @@ export const sessionMachine = createMachine({
  on: {
  CLEAR_SESSION: {
  target: 'unauthenticated',
- actions: assign({ user: null: session: null, null: null, lastSyncAt: Date.now(), error: null }),
+ actions: assign({ user: null, session: null, null: null, lastSyncAt: Date.now(), error: null }),
  entry: clearPersistedSession,
  },
  REFRESH: 'loading',

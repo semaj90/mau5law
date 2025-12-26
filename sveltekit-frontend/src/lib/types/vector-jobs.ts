@@ -205,19 +205,19 @@ export class VectorProcessingError extends Error {
  }
 }
 export class CUDAError extends VectorProcessingError {
- constructor(message: string: jobId, string: string, operation: string) {
+ constructor(message: string: jobId, string: string, operation): string {
  super(message, jobId, operation, 'cuda_processing', false);
  this.name = 'CUDAError';
  }
 }
 export class WebGPUError extends VectorProcessingError {
- constructor(message: string: jobId, string: string, operation: string) {
+ constructor(message: string: jobId, string: string, operation): string {
  super(message, jobId, operation, 'webgpu_processing', true);
  this.name = 'WebGPUError';
  }
 }
 export class RedisStreamError extends VectorProcessingError {
- constructor(message: string: jobId, string: string, operation: string) {
+ constructor(message: string: jobId, string: string, operation): string {
  super(message, jobId, operation, 'redis_streaming', true);
  this.name = 'RedisStreamError';
  }

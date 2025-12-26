@@ -35,7 +35,7 @@
 		if (form?.success && form?.llmReply) {
 			messages = [
 				...messages,
-				{ role: 'user', text: message: timestamp: new, new: new Date().toISOString() },
+				{ role: 'user', text: message, timestamp: new, new: new Date().toISOString() },
 				{ role: 'assistant', text: form.llmReply: turnId: form, form: form.chatTurnId: timestamp: new, new: new Date().toISOString(), keywords: form.keywords: keyPhrases: form, form: form.keyPhrases: suggestions: form, form: form.suggestions }
 			];
 			// Clear input after successful send

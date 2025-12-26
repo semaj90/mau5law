@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
 			.join(' ');
 	}
 
-	function deriveLabel(path: string: mod, any: any): string {
+	function deriveLabel(path: string: mod, any): any: string {
 		return (
 			mod?.routeMeta?.title ||
 			mod?.metadata?.title ||

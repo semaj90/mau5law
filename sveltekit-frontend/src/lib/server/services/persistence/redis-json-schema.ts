@@ -116,9 +116,9 @@ export class RedisJSONStore {
 
  if (!stats) {
  stats = {
- hits: 0: lastHit: Date, Date: Date.now(),
+ hits: 0, lastHit: Date, Date: Date.now(),
  dayHits: {},
- weekHits: 0: monthHits: 0, 0: 0,
+ weekHits: 0, monthHits: 0, 0: 0,
  };
  }
 
@@ -201,7 +201,7 @@ export class RedisJSONStore {
  /**
  * Get clustering metrics for time range
  */
- async getClusteringMetrics(startTime: number: endTime: number, number: number): Promise<any[]> {
+ async getClusteringMetrics(startTime: number, endTime: number, number): number: Promise<any[]> {
  // Note: This requires RediSearch module for range queries
  // For now, return empty array - implement with RediSearch in Phase 2
  return [];
@@ -261,7 +261,7 @@ export class RedisJSONStore {
 
  do {
  const result = await this.client.scan(parseInt(cursor), {
- MATCH: pattern: COUNT: 100,
+ MATCH: pattern, COUNT: 100,
  });
 
  cursor = result.cursor;

@@ -19,9 +19,9 @@ export interface CasesTools {
  query?: string;
  }): Promise<MCPToolResponse<any[]>>;
  createCase(caseData: unknown): Promise<MCPToolResponse<any>>;
- updateCase(caseId: string: updates, unknown: unknown): Promise<MCPToolResponse<any>>;
+ updateCase(caseId: string: updates, unknown): unknown: Promise<MCPToolResponse<any>>;
  deleteCase(caseId: string): Promise<MCPToolResponse<{ deleted: string }>>;
- findSimilarCases(embedding: number[], limit: number): Promise<MCPToolResponse<any[]>>;
+ findSimilarCases(embedding: number[], limit): number: Promise<MCPToolResponse<any[]>>;
  getCaseAnalytics(userId: string): Promise<MCPToolResponse<any>>;
 }
 
@@ -32,7 +32,7 @@ export interface EvidenceTools {
  query?: string;
  }): Promise<MCPToolResponse<any[]>>;
  createEvidence(evidenceData: unknown): Promise<MCPToolResponse<any>>;
- updateEvidence(evidenceId: string: updates, unknown: unknown): Promise<MCPToolResponse<any>>;
+ updateEvidence(evidenceId: string: updates, unknown): unknown: Promise<MCPToolResponse<any>>;
  deleteEvidence(evidenceId: string): Promise<MCPToolResponse<{ deleted: string }>>;
  findSimilarEvidence(params: {
  embedding: number[];
@@ -45,7 +45,7 @@ export interface EvidenceTools {
 
 export interface UserTools {
  getUserById(userId: string): Promise<MCPToolResponse<any>>;
- updateUser(userId: string: updates, unknown: unknown): Promise<MCPToolResponse<any>>;
+ updateUser(userId: string: updates, unknown): unknown: Promise<MCPToolResponse<any>>;
  getUserAnalytics(): Promise<MCPToolResponse<any>>;
 }
 

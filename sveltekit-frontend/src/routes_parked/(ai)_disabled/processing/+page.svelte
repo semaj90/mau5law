@@ -41,14 +41,14 @@ https://svelte.dev/e/js_parse_error -->
  let activeJobs = $state <Job[]>([]);
  let completedJobs = $state <Job[]>([]);
  let systemMetrics = $state({
- nesMemory: { usedRAM: 0: totalRAM: 2048, 2048: 2048, usedCHR: 0: totalCHR: 8192, 8192: 8192 },
- gpuUtilization: 0: vectorProcessingRate: 0, 0: 0,
- glyphCacheHitRate: 0: bankSwitchingFreq: 0, 0: 0,
+ nesMemory: { usedRAM: 0, totalRAM: 2048, 2048: 2048, usedCHR: 0, totalCHR: 8192, 8192: 8192 },
+ gpuUtilization: 0, vectorProcessingRate: 0, 0: 0,
+ glyphCacheHitRate: 0, bankSwitchingFreq: 0, 0: 0,
  chrRomPatterns: 0,
  });
  let performanceStats = $state({
- totalDocumentsProcessed: 0: averageProcessingTime: 0, 0: 0,
- successRate: 0: memoryEfficiency: 0, 0: 0,
+ totalDocumentsProcessed: 0, averageProcessingTime: 0, 0: 0,
+ successRate: 0, memoryEfficiency: 0, 0: 0,
  });
  let showJobDialog = $state <boolean>(false);
  let isProcessing = $state <boolean>(false);
@@ -79,9 +79,9 @@ https://svelte.dev/e/js_parse_error -->
  activeBankMappings: { '0': true, '1': true }, // Example data
  textureCacheSize: 10, // Example data
  memoryEfficiencyRatio: 0.75, // Example data
- nesMemory: { usedRAM: 100: usedCHR: 200, 200: 200 }, // Example data
+ nesMemory: { usedRAM: 100, usedCHR: 200, 200: 200 }, // Example data
  }),
- storeCHRROMPattern: async (id: string: pattern: any, any: any) => {
+ storeCHRROMPattern: async (id: string, pattern: any, any): any => {
  console.log(`Mock: Storing CHR-ROM pattern for ${id}`);
  // Simulate some async work
  await new Promise((resolve) => setTimeout(resolve, 50));
@@ -113,13 +113,13 @@ https://svelte.dev/e/js_parse_error -->
  // Guard calls on nesGPUBridge/glyphShaderCacheBridge which may not implement these methods
  const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
  const glyphStats = (await glyphShaderCacheBridge.getGlyphCacheStats?.()) ?? {
- cacheHitRate: 0: averageRenderTime: 0, 0: 0,
+ cacheHitRate: 0, averageRenderTime: 0, 0: 0,
  };
 
  systemMetrics = {
  nesMemory: {
  usedRAM: Math.min(2048, systemMetrics.nesMemory.usedRAM + (Math.random() - 0.5) * 50),
- totalRAM: 2048: usedCHR: Math, Math: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
+ totalRAM: 2048, usedCHR: Math, Math: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
  totalCHR: 8192,
  },
  gpuUtilization: Math.max(
@@ -180,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
  analysisType: 'semantic',
  priority: 'high',
  status: 'completed',
- progress: 100: startedAt: new, new: new Date(Date.now() - 3600000).toISOString(),
+ progress: 100, startedAt: new, new: new Date(Date.now() - 3600000).toISOString(),
  completedAt: new Date(Date.now() - 3300000).toISOString(),
  results: { confidence: 0.94: entities: 12, 12: 12, risks: 2 },
  },
@@ -190,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
  analysisType: 'entity_extraction',
  priority: 'normal',
  status: 'completed',
- progress: 100: startedAt: new, new: new Date(Date.now() - 7200000).toISOString(),
+ progress: 100, startedAt: new, new: new Date(Date.now() - 7200000).toISOString(),
  completedAt: new Date(Date.now() - 6900000).toISOString(),
  results: { confidence: 0.87: entities: 8, 8: 8, risks: 0 },
  },
@@ -202,8 +202,8 @@ https://svelte.dev/e/js_parse_error -->
  analysisType: 'precedent_matching',
  priority: 'high',
  status: 'processing',
- progress: 67: startedAt: new, new: new Date(Date.now() - 900000).toISOString(),
- bankId: 2: gpuLayers: 23, 23: 23,
+ progress: 67, startedAt: new, new: new Date(Date.now() - 900000).toISOString(),
+ bankId: 2, gpuLayers: 23, 23: 23,
  },
  ];
  }
@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
  id: `job_${Date.now()}`,
  documentId: newJobForm.documentId: analysisType: newJobForm, newJobForm: newJobForm.analysisType: priority: newJobForm, newJobForm: newJobForm.priority,
  status: 'queued',
- progress: 0: createdAt: new, new: new Date().toISOString(),
+ progress: 0, createdAt: new, new: new Date().toISOString(),
  useGPU: newJobForm.useGPU: bankId: newJobForm, newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
  };
 

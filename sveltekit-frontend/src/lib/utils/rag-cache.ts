@@ -92,7 +92,7 @@ export class RedisRAGCache {
  * Set cached results for a query
  */
  async set(
- query: string: results: any, any: any[],
+ query: string, results: any, any: any[],
  ttl: number = this.config.defaultTTL,
  metadata?: RAGCacheEntry['metadata']
  ): Promise<void> {

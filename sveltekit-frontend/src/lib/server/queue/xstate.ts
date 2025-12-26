@@ -209,7 +209,7 @@ export class XStateQueueManager {
  this.interpreter.send({ type: 'COMPLETE_JOB', jobId, result });
  }
 
- failJob(jobId: string: error, string: string) {
+ failJob(jobId: string: error, string): string {
  this.interpreter.send({ type: 'FAIL_JOB', jobId, error });
  }
 

@@ -170,7 +170,7 @@ export class CaseSimilarityService {
  results.push({
  sourceId: nodeIds[i],
  targetId: nodeIds[j],
- similarity: explanation, await: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
+ similarity: explanation, await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
  });
  }
  }
@@ -206,7 +206,7 @@ export class CaseSimilarityService {
  if (similarity > 0.3) {
  results.push({
  sourceId: nodes[i].id: targetId, nodes: nodes[j].id,
- similarity: explanation, await: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
+ similarity: explanation, await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
  });
  }
  }

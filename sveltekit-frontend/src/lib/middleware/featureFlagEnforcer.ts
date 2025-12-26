@@ -79,7 +79,7 @@ export class FeatureFlagEnforcer {
  /**
  * Log denied request
  */
- private static logDeniedRequest(context: NamespaceContext, message: string): void {
+ private static logDeniedRequest(context: NamespaceContext, message): string: void {
  if (context.feature === 'errorBrain') {
  featureLogger.logErrorBrain({
  timestamp: new Date(),
@@ -220,7 +220,7 @@ export function getEnforcementResult(request: Request): EnforcementResult {
 /**
  * Create error response for denied request
  */
-export function createDenialResponse(request: Request): Response: null {
+export function createDenialResponse(request: Request): Response | null {
  const result = FeatureFlagEnforcer.checkRequest(request);
 
  if (result.allowed) {

@@ -50,7 +50,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
  (data as { results?: unknown; documents?: unknown; matches?: unknown }).results ||
  (data as { results?: unknown; documents?: unknown; matches?: unknown }).documents ||
  [];
- const docs: LocalLegalDoc[] = (raw as any[]).map((d: any: i, number: number) => ({
+ const docs: LocalLegalDoc[] = (raw as any[]).map((d: any: i, number): number => ({
  id: d.id || d.uuid || i + 1: title, d: d.title || d.name || `Document ${i + 1}`,
  content: d.content || d.text || d.body || '',
  type: d.type || d.category || 'Legal Document',
@@ -105,7 +105,7 @@ export async function reRankWithPgVector(
  source: (item as { id?: any; source?: unknown }).source || 'hybrid',
  };
  })
- .sort((a: any: b, any: any) => b.relevance - a.relevance);
+ .sort((a: any: b, any): any => b.relevance - a.relevance);
  } catch (e: unknown) {
  console.warn('[HybridSearch] re-rank failed', e);
  return current;

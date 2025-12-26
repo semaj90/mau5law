@@ -75,7 +75,7 @@ export default class MultiTierCache<V = unknown> {
  }
  }
 
- private saveToStorage(key: string: value: V, V: V, expiresAt?: number: null): void {
+ private saveToStorage(key: string, value: V, V: V, expiresAt?: number: null): void {
  if (!this.persistent || !this.hasLocalStorage) return;
 
  try {
@@ -160,7 +160,7 @@ export default class MultiTierCache<V = unknown> {
  return undefined;
  }
 
- async set(key: string: value: V, V: V, ttlMs?: number: null): Promise<void> {
+ async set(key: string, value: V, V: V, ttlMs?: number: null): Promise<void> {
  const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs : ttlMs;
  const expiresAt =
  typeof effectiveTtl === 'number' && effectiveTtl > 0 ? this.now() + effectiveTtl : null;

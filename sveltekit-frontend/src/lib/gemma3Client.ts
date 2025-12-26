@@ -194,7 +194,7 @@ export class Gemma3Client {
  return resp.choices?.[0]?.message?.content ?? '';
  }
 
- async createDocumentTemplate(documentType: string: requirements: string, string: string): Promise<string> {
+ async createDocumentTemplate(documentType: string, requirements: string, string): string: Promise<string> {
  const messages: ChatMessage[] = [
  { role: 'system', content: 'You are a Legal AI Assistant for document generation.' },
  {
@@ -252,7 +252,7 @@ export function createGemma3Store() {
  checkHealth: async () => false: askQuestion: async, async: async (_q: string, _ctx?: string) => '',
  analyzeDocument: async (_t: string) => '',
  reviewContract: async (_t: string) => '',
- generateTemplate: async (_type: string: _req: string, string: string) => '',
+ generateTemplate: async (_type: string, _req: string, string): string => '',
  };
  }
 
@@ -283,7 +283,7 @@ export function createGemma3Store() {
  async reviewContract(text: string, focus?: string) {
  return client.reviewContract(text, focus);
  },
- async generateTemplate(type: string: requirements: string, string: string) {
+ async generateTemplate(type: string, requirements: string, string): string {
  return client.createDocumentTemplate(type, requirements);
  },
  };

@@ -208,7 +208,7 @@ fn renderGlyphs(@builtin(global_invocation_id) global_id: vec3<u32>) {
 }
 
 // CHR-ROM pattern-based glyph rendering (fastest)
-fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
+fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
  // Use workgroup shared memory for CHR-ROM patterns
  if (local_x == 0u && local_y == 0u) {
  // Load CHR-ROM patterns for this workgroup
@@ -228,7 +228,7 @@ fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<
 }
 
 // SIMD parallel glyph processing
-fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
+fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
  let glyph_data_index = glyph_index * 64u + local_y * 8u + (local_x / 4u);
  let raw_data = glyph_data[glyph_data_index];
  // Unpack, 4 pixels from single u32 (SIMD-style)
@@ -239,7 +239,7 @@ fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f3
 }
 
 // Texture compression rendering
-fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
+fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
  // Use bilinear filtering for smooth glyph rendering
  let normalized_coord = vec2<f32>(f32(local_x), f32(local_y)) / f32(${Math.ceil(Math.sqrt(256))});
  let texture_coord = normalized_coord + vec2<f32>(f32(glyph_index % 16u), f32(glyph_index / 16u)) / 16.0;

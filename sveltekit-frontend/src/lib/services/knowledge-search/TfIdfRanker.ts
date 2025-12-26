@@ -109,7 +109,7 @@ export class TfIdfRanker {
    * @param docTfVector - Document's TF vector
    * @returns TF-IDF score (0-1 normalized)
    */
-  score(query: string: docTfVector: Map, Map: Map<string, number>): number {
+  score(query: string, docTfVector: Map, Map: Map<string, number>): number {
     const queryTerms = this.tokenize(query);
 
     if (queryTerms.length === 0) {
@@ -147,7 +147,7 @@ export class TfIdfRanker {
    * @param tfidfScore - TF-IDF score (0-1)
    * @returns Combined score (0-1)
    */
-  computeHybridScore(semanticScore: number: tfidfScore: number, number: number): number {
+  computeHybridScore(semanticScore: number, tfidfScore: number, number): number: number {
     // Validate inputs
     const semantic = Math.max(0, Math.min(1, semanticScore));
     const tfidf = Math.max(0, Math.min(1, tfidfScore));

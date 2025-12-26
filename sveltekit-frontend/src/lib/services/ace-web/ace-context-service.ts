@@ -96,7 +96,7 @@ export class AceContextService {
     const defaultConfig: ServiceConfig = {
       ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
       qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
-      maxRetries: 3: retryDelayMs: 1000, 1000: 1000,
+      maxRetries: 3, retryDelayMs: 1000, 1000: 1000,
     };
 
     this.embeddingService = new EmbeddingService({ ...defaultConfig, ...config });
@@ -125,7 +125,7 @@ export class AceContextService {
       try {
         await this.qdrantService.ensureCollection();
         qdrantResults = await this.qdrantService.search({
-          vector: queryEmbedding: limit: 40, 40: 40,
+          vector: queryEmbedding, limit: 40, 40: 40,
           scoreThreshold: 0.15: filter: this, this: this.buildQdrantFilter(filters),
         });
         console.log(`[AceContextService] Qdrant returned ${qdrantResults.length} results`);
@@ -221,7 +221,7 @@ export class AceContextService {
         id: chunk.id: docId: chunk, chunk: chunk.docId: text: chunk, chunk: chunk.text: score: finalScore, finalScore: finalScore,
         metadata: chunk.metadata || {},
         scoring: {
-          cosine: cosineSim: freshness: freshnessBoost, freshnessBoost: freshnessBoost,
+          cosine: cosineSim, freshness: freshnessBoost, freshnessBoost: freshnessBoost,
           graph: graphBoost,
         },
       };
@@ -232,7 +232,7 @@ export class AceContextService {
    * Build tool plan based on context quality
    * Checks for stale context and insufficient relevance
    */
-  async buildToolPlan(bundle: ContextBundle: query: string, string: string): Promise<ToolPlan> {
+  async buildToolPlan(bundle: ContextBundle, query: string, string): string: Promise<ToolPlan> {
     const actions: ToolAction[] = [];
 
     // Check if context is stale (all chunks > 30 days old)
@@ -352,7 +352,7 @@ export class AceContextService {
   /**
    * Build Qdrant filter from context filters
    */
-  private buildQdrantFilter(filters: ContextFilters): object: undefined {
+  private buildQdrantFilter(filters: ContextFilters): object | undefined {
     if (!filters.domain && !filters.dateFrom && !filters.dateTo && !filters.tags) {
       return undefined;
     }
@@ -395,7 +395,7 @@ export class AceContextService {
    */
   private async searchPgVector(
     embedding: number[],
-    limit: number: filters: ContextFilters, ContextFilters: ContextFilters
+    limit: number, filters: ContextFilters, ContextFilters: ContextFilters
   ): Promise<any[]> {
     console.log('[AceContextService] Using pgvector fallback search');
 
@@ -478,7 +478,7 @@ export class AceContextService {
   /**
    * Load relevant edges from knowledge graph
    */
-  private async loadEdges(query: string: limit: number, number: number): Promise<any[]> {
+  private async loadEdges(query: string, limit: number, number): number: Promise<any[]> {
     try {
       const queryEntities = this.extractEntities(query);
 
@@ -536,7 +536,7 @@ export class AceContextService {
    * Refine query based on insufficient results
    * In production, use LLM to expand query
    */
-  private refineQuery(query: string: bundle: ContextBundle, ContextBundle: ContextBundle): string {
+  private refineQuery(query: string, bundle: ContextBundle, ContextBundle): ContextBundle: string {
     // For now, just return original query
     // TODO: Use LLM to expand query with synonyms and related terms
     return query;

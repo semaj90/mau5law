@@ -40,7 +40,7 @@ import { Settings } from "lucide-svelte";;
 
  function handleSave() {
  // In a real app, this would save to backend
- console.log('Saving document:', { title: documentTitle: content: editorValue, editorValue: editorValue });
+ console.log('Saving document:', { title: documentTitle, content: editorValue, editorValue: editorValue });
  lastSaved = new Date();
  isModified = false;
  }
@@ -57,7 +57,7 @@ import { Settings } from "lucide-svelte";;
 
  function handleShare() {
  if (navigator.share) {
- navigator.share({ title: documentTitle: text: editorValue, editorValue: editorValue });
+ navigator.share({ title: documentTitle, text: editorValue, editorValue: editorValue });
  } else {
  // Fallback: copy to clipboard
  navigator.clipboard.writeText(editorValue);

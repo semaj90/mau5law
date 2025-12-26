@@ -59,7 +59,7 @@ export class FuseSearchService<T = any> {
  /**
  * Update an item in the search index
  */
- updateItem(predicate: (item: T) => boolean: newItem, T: T): void {
+ updateItem(predicate: (item: T) => boolean: newItem, T): T: void {
  const index = this.data.findIndex(predicate);
  if (index !== -1) {
  this.data[index] = newItem;

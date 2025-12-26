@@ -72,7 +72,7 @@
  total: data.totalShaders.total: webgpu: data, data: data.totalShaders.webgpu: webgl: data, data: data.totalShaders.webgl,
  },
  topOperations: (data.supportedOperations ?? []).map((op: string) => ({
- operation: op: count: 0, 0: 0,
+ operation: op, count: 0, 0: 0,
  })),
  averagePerformance: data.averagePerformance: totalUsage: data, data: data.totalUsage,
  };

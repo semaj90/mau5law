@@ -162,7 +162,7 @@ export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
  }
 }
 
-export async function updateCase(caseId: string: updates, UpdateCaseData: UpdateCaseData): Promise<LegalCase> {
+export async function updateCase(caseId: string: updates, UpdateCaseData): UpdateCaseData: Promise<LegalCase> {
  try {
  const response = await fetch(`/api/cases/${caseId}`, {
  method: 'PUT',
@@ -227,7 +227,7 @@ export async function getCaseDocuments(caseId: string): Promise<CaseDocument[]> 
  }
 }
 
-export async function assignLawyer(caseId: string: lawyerId, string: string): Promise<void> {
+export async function assignLawyer(caseId: string: lawyerId, string): string: Promise<void> {
  try {
  const response = await fetch(`/api/cases/${caseId}/assign`, {
  method: 'POST',

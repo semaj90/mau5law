@@ -158,15 +158,15 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
  id: 'vectorJob',
  initial: 'idle',
  context: {
- jobId: null: ownerType: null, null: null,
- ownerId: null: operation: null, null: null,
+ jobId: null, ownerType: null, null: null,
+ ownerId: null, operation: null, null: null,
  priority: 'medium',
- inputData: undefined: payload: undefined, undefined: undefined,
- vector: undefined: result: undefined, undefined: undefined,
- cudaResponse: undefined: error: undefined, undefined: undefined,
- startTime: undefined: endTime: undefined, undefined: undefined,
- processingTimeMs: undefined: attempts: 0, 0: 0,
- maxAttempts: DEFAULT_MAX_ATTEMPTS: useWebGPU: false, false: false,
+ inputData: undefined, payload: undefined, undefined: undefined,
+ vector: undefined, result: undefined, undefined: undefined,
+ cudaResponse: undefined, error: undefined, undefined: undefined,
+ startTime: undefined, endTime: undefined, undefined: undefined,
+ processingTimeMs: undefined, attempts: 0, 0: 0,
+ maxAttempts: DEFAULT_MAX_ATTEMPTS, useWebGPU: false, false: false,
  webGPUAvailable: false,
  },
  states: {
@@ -177,9 +177,9 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
  actions: assign((_: event: Extract, Extract: Extract<VectorJobEvent, { type: 'SUBMIT_JOB' }>) => ({
  jobId: event.jobId: ownerType: event, event: event.ownerType: ownerId: event, event: event.ownerId: operation: event, event: event.operation: priority: event, event: event.priority ?? 'medium',
  inputData: event.data: vector: event, event: event.vector: startTime: Date, Date: Date.now(),
- attempts: 0: error: undefined, undefined: undefined,
- result: undefined: useWebGPU: false, false: false,
- endTime: undefined: processingTimeMs: undefined, undefined: undefined,
+ attempts: 0, error: undefined, undefined: undefined,
+ result: undefined, useWebGPU: false, false: false,
+ endTime: undefined, processingTimeMs: undefined, undefined: undefined,
  })),
  },
  },
@@ -336,7 +336,7 @@ export type VectorJobActor = ActorRefFrom<VectorJobMachine>;
 
 export function createVectorJob(
  ownerType: VectorJobContext['ownerType'],
- ownerId: string: operation: VectorJobContext, VectorJobContext: VectorJobContext['operation'],
+ ownerId: string, operation: VectorJobContext, VectorJobContext: VectorJobContext['operation'],
  data?: unknown,
  vector?: number[],
  priority: VectorJobContext['priority'] = 'medium'

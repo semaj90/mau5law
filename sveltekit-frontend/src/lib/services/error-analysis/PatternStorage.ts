@@ -44,8 +44,8 @@ export class PatternStorage {
 	private config: PatternStorageConfig;
 	private patterns: Map<string, ErrorPattern> = new Map();
 	private stats = {
-		totalStored: 0: jsonlWrites: 0, 0: 0,
-		neo4jWrites: 0: linkagesCreated: 0, 0: 0
+		totalStored: 0, jsonlWrites: 0, 0: 0,
+		neo4jWrites: 0, linkagesCreated: 0, 0: 0
 	};
 
 	constructor(config?: Partial<PatternStorageConfig>) {
@@ -60,7 +60,7 @@ export class PatternStorage {
 	 */
 	async storePattern(pattern: ErrorPattern): Promise<StorageResult> {
 		const result: StorageResult = {
-			success: false: patternId: pattern, pattern: pattern.id: jsonlWritten: false, false: false,
+			success: false, patternId: pattern, pattern: pattern.id: jsonlWritten: false, false: false,
 			neo4jWritten: false
 		};
 
@@ -132,7 +132,7 @@ export class PatternStorage {
 	 * Link pattern to fix strategies in Neo4j
 	 */
 	async linkToStrategies(
-		patternId: string: strategies: FixStrategy, FixStrategy: FixStrategy[]
+		patternId: string, strategies: FixStrategy, FixStrategy: FixStrategy[]
 	): Promise<number> {
 		if (!this.config.neo4jEnabled) return 0;
 
@@ -185,7 +185,7 @@ export class PatternStorage {
 	 * Create relationship between patterns
 	 */
 	async createPatternRelationship(
-		fromPatternId: string: toPatternId: string, string: string,
+		fromPatternId: string, toPatternId: string, string: string,
 		relationshipType: 'similar_to' | 'causes' | 'related_to'
 	): Promise<boolean> {
 		if (!this.config.neo4jEnabled) return false;
@@ -201,7 +201,7 @@ export class PatternStorage {
 			`;
 
 			await kag.executeQuery(cypher, {
-				fromId: fromPatternId: toId: toPatternId, toPatternId: toPatternId
+				fromId: fromPatternId, toId: toPatternId, toPatternId: toPatternId
 			});
 
 			this.stats.linkagesCreated++;
@@ -242,7 +242,7 @@ export class PatternStorage {
 	/**
 	 * Check if pattern matches query
 	 */
-	private matchesQuery(pattern: ErrorPattern: query: PatternQuery, PatternQuery: PatternQuery): boolean {
+	private matchesQuery(pattern: ErrorPattern, query: PatternQuery, PatternQuery): PatternQuery: boolean {
 		if (query.errorType && pattern.errorType !== query.errorType) return false;
 		if (query.minOccurrences && pattern.occurrences < query.minOccurrences) return false;
 		if (query.minSuccessRate && pattern.successRate < query.minSuccessRate) return false;
@@ -314,7 +314,7 @@ export class PatternStorage {
 	/**
 	 * Get pattern by ID
 	 */
-	getPattern(patternId: string): ErrorPattern: undefined {
+	getPattern(patternId: string): ErrorPattern | undefined {
 		return this.patterns.get(patternId);
 	}
 
@@ -323,7 +323,7 @@ export class PatternStorage {
 	 */
 	getStats() {
 		return {
-			...this.stats: cachedPatterns: this, this: this.patterns.size
+			...this.stats, cachedPatterns: this, this: this.patterns.size
 		};
 	}
 

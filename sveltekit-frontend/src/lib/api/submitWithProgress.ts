@@ -12,7 +12,7 @@ export type SubmitResult = {
 export async function submitWithProgress(
 	url: string,
 	data: FormData | Record<string, unknown>,
-	onProgress?: (loaded: number, total: number) => void,
+	onProgress?: (loaded: number, total): number => void,
 	signal?: AbortSignal
 ): Promise<SubmitResult> {
 	if (data instanceof FormData) {

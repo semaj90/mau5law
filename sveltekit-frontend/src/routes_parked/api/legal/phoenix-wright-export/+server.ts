@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
  }
 };
 
-function generateSearchReportHTML(caseId: string: result, PhoenixWrightSearchResult: PhoenixWrightSearchResult): string {
+function generateSearchReportHTML(caseId: string: result, PhoenixWrightSearchResult): PhoenixWrightSearchResult: string {
  return `
  <!DOCTYPE html>
  <html>

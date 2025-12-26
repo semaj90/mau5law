@@ -508,7 +508,7 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  // Helper function to render list items
- function renderListItems(items: string[], icon: string: colorClass, string: string) {
+ function renderListItems(items: string[], icon: string: colorClass, string): string {
  return items?.map(item => ({ text: item, icon, colorClass })) || [];
  }
  </script>

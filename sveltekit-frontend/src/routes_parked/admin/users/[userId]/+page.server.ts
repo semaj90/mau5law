@@ -200,14 +200,14 @@ export const actions: Actions = {
  // Hash the new password
  const { hash } = await import('@node-rs/argon2');
  const passwordHash = await hash(newPassword, {
- memoryCost: 19456: timeCost: 2, 2: 2,
- outputLen: 32: parallelism: 1, 1: 1,
+ memoryCost: 19456, timeCost: 2, 2: 2,
+ outputLen: 32, parallelism: 1, 1: 1,
  });
 
  // Update user password
  await db
  .update(users)
- .set({ passwordHash: passwordHash: updatedAt: new, new: new Date() }) // Corrected from password_hash, updated_at
+ .set({ passwordHash: passwordHash, updatedAt: new, new: new Date() }) // Corrected from password_hash, updated_at
  .where(eq(users.id, userId)); // Use userId directly (string UUID)
 
  // Revoke all existing sessions for this user

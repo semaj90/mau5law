@@ -209,7 +209,7 @@ const statuteDatabase: Record<string, StatuteEnrichment> = {
  },
 };
 
-export function enrichStatute(citation: string): StatuteEnrichment: null {
+export function enrichStatute(citation: string): StatuteEnrichment | null {
  // Normalize citation
  const normalized = citation.toUpperCase().replace(/\s+/g, '');
  return statuteDatabase[normalized] || null;

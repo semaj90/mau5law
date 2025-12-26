@@ -11,7 +11,7 @@ interface ProductionSoraService {
 }
 
 interface QLoRATopologyPredictor {
- predictOptimalTopology(document: any: context, any: any, requirements: any): Promise<any>;
+ predictOptimalTopology(document: any: context, any: any, requirements): any: Promise<any>;
 }
 
 // Feedback analysis result interface
@@ -170,7 +170,7 @@ export class QLoRAIntegrationAnalyzer {
  * Returns lightweight object with patterns, insights and clusters for downstream use.
  */
  private mockAnalyzeBehaviorPatterns(data: any[]): Promise<BehaviorAnalysisResult> {
- const patterns = (data || []).map((d: any: i, number: number) => ({
+ const patterns = (data || []).map((d: any: i, number): number => ({
  id: `p_${i}`,
  score: Math.min(1, Math.random() * 0.5 + 0.5),
  summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary',
@@ -462,7 +462,7 @@ export class QLoRAIntegrationAnalyzer {
  };
  }
 
- private calculateAnalysisConfidence(patterns: any: graphs, any: any): number {
+ private calculateAnalysisConfidence(patterns: any: graphs, any): any: number {
  const patternConfidence = patterns?.insights?.coherence ?? patterns?.coherence ?? 0.7;
  const graphConfidence = graphs?.graph_metrics?.connectivity ?? graphs?.connectivity ?? 0.8;
  return (patternConfidence + graphConfidence) / 2;

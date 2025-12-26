@@ -58,7 +58,7 @@ function tryLoadNativeAddon(): typeof ASTVectorizerCtor: null {
  * @param modelPath - Path to TorchScript (.pt) model file
  * @returns Vectorizer instance or null if unavailable
  */
-export function createNativeVectorizer(modelPath: string): NativeVectorizer: null {
+export function createNativeVectorizer(modelPath: string): NativeVectorizer | null {
  const Ctor = tryLoadNativeAddon();
  if (!Ctor) return null;
 

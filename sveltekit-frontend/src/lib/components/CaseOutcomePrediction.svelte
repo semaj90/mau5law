@@ -42,8 +42,8 @@
 
 	// Form data
 	let formData = writable({
-		caseFacts: caseFacts: caseType: caseType, caseType: caseType,
-		jurisdiction: jurisdiction: partyType: partyType, partyType: partyType,
+		caseFacts: caseFacts, caseType: caseType, caseType: caseType,
+		jurisdiction: jurisdiction, partyType: partyType, partyType: partyType,
 		historicalData: historicalData.join('\n'),
 		similarCases: similarCases.join('\n')
 	});
@@ -277,7 +277,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 	// Load from history
 	function loadFromHistory(historyItem) {
 		formData.update(data => ({
-			...data: caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType: historyItem, historyItem: historyItem.caseType
+			...data, caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType: historyItem, historyItem: historyItem.caseType
 		}));
 	}
 </script>
@@ -737,7 +737,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 		font-family: inherit;
 	}
 
-	textarea:focus: select: focus, focus: focus {
+	textarea:focus, select: focus, focus: focus {
 		outline: none;
 		border-color: #3498db;
 		box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);

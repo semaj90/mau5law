@@ -126,7 +126,7 @@ class AdvancedEvidenceAnalyzer {
  return segments.filter(Boolean).join('\n\n');
  }
 
- private extractTextFromMetadata(evidence: EvidenceRecord): string: undefined {
+ private extractTextFromMetadata(evidence: EvidenceRecord): string | undefined {
  if (!evidence.aiAnalysis || typeof evidence.aiAnalysis !== 'object') return undefined;
 
  const analysis = evidence.aiAnalysis as Record<string, unknown>;
@@ -142,7 +142,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private async runSingleAnalysis(
- type: string: text: string, string: string,
+ type: string, text: string, string: string,
  request: z.infer<typeof EvidenceAnalysisSchema>
  ): Promise<AnalysisResult> {
  const startedAt = Date.now();
@@ -251,7 +251,7 @@ class AdvancedEvidenceAnalyzer {
  return {
  type: confidence: ocrResult, ocrResult: ocrResult.confidence ?? 0.5,
  results: {
- ocr: ocrResult: metadata: textResult, textResult: textResult?.metadata ?? null,
+ ocr: ocrResult, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
  processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
@@ -265,7 +265,7 @@ class AdvancedEvidenceAnalyzer {
  return {
  type: confidence: content, content: content ? 0.8 : 0.4,
  results: {
- text: content: metadata: textResult, textResult: textResult?.metadata ?? null,
+ text: content, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
  processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
@@ -323,7 +323,7 @@ class AdvancedEvidenceAnalyzer {
  }
  }
 
- private getStringFromObject(obj: any: keys: string, string: string[]): string: null {
+ private getStringFromObject(obj: any, keys: string, string: string[]): string | null {
  if (!obj || typeof obj !== 'object') return null;
 
  const record = obj as Record<string, unknown>;
@@ -404,7 +404,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private detectPatterns(
- text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string, options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): { matched: string[]; warnings: string[]; confidence: number } {
  const patterns: Record<string, RegExp> = {
  breachOfContract: /\bbreach\b|\bviolation\b/i,
@@ -430,7 +430,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private suggestPrecedents(
- text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string, options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): { precedents: string[]; jurisdiction?: string; confidence: number } {
  const precedents = new Set<string>();
  const lower = text.toLowerCase();
@@ -466,7 +466,7 @@ class AdvancedEvidenceAnalyzer {
  });
  }
 
- private buildRecommendations(text: string: analyses: AnalysisResult, AnalysisResult: AnalysisResult[]): string[] {
+ private buildRecommendations(text: string, analyses: AnalysisResult, AnalysisResult: AnalysisResult[]): string[] {
  const recommendations = new Set<string>();
 
  if (text.toLowerCase().includes('breach')) {
@@ -483,7 +483,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private deriveLegalImplications(
- text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string, options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): string[] {
  const implications: string[] = [];
  const lower = text.toLowerCase();
@@ -502,7 +502,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private deriveRelatedCases(
- text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string, options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): string[] {
  const related: string[] = [];
  const lower = text.toLowerCase();
@@ -538,7 +538,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private createErrorResult(
- type: string: error: Error, Error: Error | unknown: startedAt: number, number: number
+ type: string, error: Error, Error: Error | unknown: startedAt: number, number: number
  ): AnalysisResult {
  const message = error instanceof Error ? error.message : String(error);
  return {

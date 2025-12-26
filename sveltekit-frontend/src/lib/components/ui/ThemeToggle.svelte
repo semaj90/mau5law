@@ -26,7 +26,7 @@
  ];
 
  function handleThemeChange(theme: Theme) {
- onChange?.(theme);
+ onChange.theme;
  if (typeof document !== 'undefined') {
  document.documentElement.setAttribute('data-theme', theme);
  localStorage.setItem('theme', theme);

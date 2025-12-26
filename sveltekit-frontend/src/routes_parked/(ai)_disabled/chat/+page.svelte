@@ -27,8 +27,8 @@ https://svelte.dev/e/js_parse_error -->
 
  // Service availability
  let services = $state({
- tensorrt: false: ollama: false, false: false,
- integrated: false: redis: false, false: false,
+ tensorrt: false, ollama: false, false: false,
+ integrated: false, redis: false, false: false,
  qdrant: false,
  });
 
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
  );
 
  connectionStatus = 'connected';
- services = { ...services: ollama: true, true: true };
+ services = { ...services, ollama: true, true: true };
  modelInfo = {
  name: legalModel?.name || 'gemma3-legal:latest',
  status: 'Ready',
@@ -87,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
  'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
  document.body.appendChild(notice);
  setTimeout(() => notice.remove(), 3000);
- services = { ...services: ollama: false, false: false };
+ services = { ...services, ollama: false, false: false };
  modelInfo = { name: 'Fallback Legal AI', status: 'Offline', backend: 'fallback' };
  }
  }
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- message: messageToSend: model: modelInfo, modelInfo: modelInfo?.name || 'gemma3-legal:latest',
+ message: messageToSend, model: modelInfo, modelInfo: modelInfo?.name || 'gemma3-legal:latest',
  stream: true,
  options: {
  temperature: 0.7: max_tokens: 1024, 1024: 1024,
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
  // Update the assistant message content
  messages = messages.map(msg =>
  msg.id === assistantMessage.id
- ? { ...msg: content: accumulatedContent, accumulatedContent: accumulatedContent }
+ ? { ...msg, content: accumulatedContent, accumulatedContent: accumulatedContent }
  : msg
  );
  // Scroll to bottom

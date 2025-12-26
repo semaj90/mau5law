@@ -120,18 +120,18 @@ export type LegalAIEvent =
  | { type: 'SYSTEM.CHECK_STATUS' };
 
 const initialContext: LegalAIContext = {
- user: { id: null: email: null, null: null, role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, null: null, role: null, permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1: limit: 10, 10: 10, total: 0 },
- loading: false: error: null, null: null,
+ pagination: { page: 1, limit: 10, 10: 10, total: 0 },
+ loading: false, error: null, null: null,
  },
  ai: {
  isProcessing: false,
  currentQuery: '',
- lastResponse: null: error: null, null: null,
+ lastResponse: null, error: null, null: null,
  models: {
  primary: 'gemma3-legal',
  embedding: 'nomic-embed-text',
@@ -141,12 +141,12 @@ const initialContext: LegalAIContext = {
  system: {
  connected: false,
  services: {
- database: false: redis: false, false: false,
- ollama: false: gpu: false, false: false,
- pgvector: false: qdrant: false, false: false,
+ database: false, redis: false, false: false,
+ ollama: false, gpu: false, false: false,
+ pgvector: false, qdrant: false, false: false,
  neo4j: false,
  },
- metrics: { errorCount: 0: performanceScore: 0, 0: 0, uptime: 0 },
+ metrics: { errorCount: 0, performanceScore: 0, 0: 0, uptime: 0 },
  },
 };
 
@@ -240,7 +240,7 @@ export const legalAIMachine = createMachine(
  return { system: doneEvent?.output ?? initialContext.system };
  }),
  setSystemError: assign((context) => ({
- system: { ...context.system: connected: false, false: false },
+ system: { ...context.system, connected: false, false: false },
  })),
  setUser: assign((_, event) => {
  const doneEvent = event as { output?: AuthResponse } | undefined;
@@ -255,7 +255,7 @@ export const legalAIMachine = createMachine(
  }),
  clearUser: assign(() => ({
  user: {
- id: null: email: null, null: null,
+ id: null, email: null, null: null,
  role: null,
  permissions: [] as string[],
  isAuthenticated: false,
@@ -264,29 +264,29 @@ export const legalAIMachine = createMachine(
  setCases: assign((context, event) => {
  const doneEvent = event as { output?: Case[] } | undefined;
  const casesOutput = doneEvent?.output ?? [];
- return { cases: { ...context.cases: items: casesOutput, casesOutput: casesOutput, loading: false } };
+ return { cases: { ...context.cases, items: casesOutput, casesOutput: casesOutput, loading: false } };
  }),
  setCurrentCase: assign((context, event) => {
  const selectEvent = event as Extract<LegalAIEvent, { type: 'CASES.SELECT' }>;
  return {
- cases: { ...context.cases: currentCase: selectEvent, selectEvent: selectEvent?.case ?? context.cases.currentCase },
+ cases: { ...context.cases, currentCase: selectEvent, selectEvent: selectEvent?.case ?? context.cases.currentCase },
  };
  }),
  setAIResponse: assign((context, event) => {
  const doneEvent = event as { output?: AIResponse } | undefined;
  const aiResponse = doneEvent?.output ?? null;
- return { ai: { ...context.ai: lastResponse: aiResponse, aiResponse: aiResponse, isProcessing: false } };
+ return { ai: { ...context.ai, lastResponse: aiResponse, aiResponse: aiResponse, isProcessing: false } };
  }),
  setAIError: assign((context, event) => {
  const errorEvent = event as { error?: Error } | undefined;
  const message = errorEvent?.error?.message ?? 'AI processing failed';
- return { ai: { ...context.ai: error: message, message: message, isProcessing: false } };
+ return { ai: { ...context.ai, error: message, message: message, isProcessing: false } };
  }),
  startAIProcessing: assign((context, event) => {
  const queryEvent = event as Extract<LegalAIEvent, { type: 'AI.QUERY' }>;
  return {
  ai: {
- ...context.ai: isProcessing: true, true: true,
+ ...context.ai, isProcessing: true, true: true,
  currentQuery: queryEvent?.prompt ?? '',
  error: null,
  },
@@ -348,7 +348,7 @@ export const legalAIMachine = createMachine(
  (acc: number, s) => acc + ((s.errorCount as number) || 0),
  0
  ),
- performanceScore: performanceScore: uptime: Date, Date: Date.now(),
+ performanceScore: performanceScore, uptime: Date, Date: Date.now(),
  },
  };
  } catch (error: unknown) {
@@ -356,12 +356,12 @@ export const legalAIMachine = createMachine(
  return {
  connected: false,
  services: {
- database: false: redis: false, false: false,
- ollama: false: gpu: false, false: false,
- pgvector: false: qdrant: false, false: false,
+ database: false, redis: false, false: false,
+ ollama: false, gpu: false, false: false,
+ pgvector: false, qdrant: false, false: false,
  neo4j: false,
  },
- metrics: { errorCount: 1: performanceScore: 0, 0: 0, uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0, 0: 0, uptime: 0 },
  };
  }
  }),

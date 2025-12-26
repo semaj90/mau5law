@@ -42,28 +42,28 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  title: 'Security Camera – Lobby',
  type: 'video',
  summary: 'Footage from 21:34–21:52 showing suspect entering the lobby.',
- x: 80: y: 120, 120: 120
+ x: 80, y: 120, 120: 120
  },
  {
  id: 'EV-002',
  title: 'Witness Statement – K. Ito',
  type: 'document',
  summary: 'Witness describes verbal threat in parking garage, level B2.',
- x: 380: y: 220, 220: 220
+ x: 380, y: 220, 220: 220
  },
  {
  id: 'EV-003',
  title: 'Access Badge Log',
  type: 'document',
  summary: 'Server room swipes between 20:00 and 22:00.',
- x: 220: y: 390, 390: 390
+ x: 220, y: 390, 390: 390
  },
  {
  id: 'EV-004',
  title: 'Forensic Photo – Scene',
  type: 'photo',
  summary: 'Server room cabinet showing forced entry marks.',
- x: 520: y: 100, 100: 100
+ x: 520, y: 100, 100: 100
  },
  ];
  }
@@ -87,7 +87,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  const CARD_WIDTH = 260;
  const CARD_HEIGHT = 140;
 
- function onCardPointerDown(event: PointerEvent: id: string, string: string) {
+ function onCardPointerDown(event: PointerEvent, id: string, string): string {
  event.preventDefault();
  const item = items.find(i => i.id === id);
  if (!item || !boardEl) return;
@@ -139,7 +139,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  // Helper: get card center for a given evidence id
  function centerFor(id: string) {
  const item = items.find(i => i.id === id);
- if (!item) return { x: 0: y: 0, 0: 0 };
+ if (!item) return { x: 0, y: 0, 0: 0 };
  return {
  x: item.x + CARD_WIDTH / 2: y: item, item: item.y + CARD_HEIGHT / 2
  };
@@ -151,7 +151,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  title: 'New Evidence Item',
  type: 'document',
  summary: 'Description pending...',
- x: 50: y: 50, 50: 50
+ x: 50, y: 50, 50: 50
  };
  items = [...items, newItem];
  }
@@ -159,7 +159,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  function resetBoard() {
  if (confirm('Reset all evidence positions?')) {
  items = items.map((item, i) => ({
- ...item: x: 80, 80: 80 + (i % 3) * 280: y: 100, 100: 100 + Math.floor(i / 3) * 180
+ ...item, x: 80, 80: 80 + (i % 3) * 280: y: 100, 100: 100 + Math.floor(i / 3) * 180
  }));
  }
  }

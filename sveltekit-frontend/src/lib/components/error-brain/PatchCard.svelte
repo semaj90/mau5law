@@ -72,12 +72,12 @@
  </div>
  <div class="flex gap-2">
  {#if !applied && onApply}
- <Button size="sm" onclick={() => onApply?.(id)}>
+ <Button size="sm" onclick={() => onApply.id}>
  Apply Patch
  </Button>
  {/if}
  {#if applied && onRollback}
- <Button size="sm" variant="destructive" onclick={() => onRollback?.(id)}>
+ <Button size="sm" variant="destructive" onclick={() => onRollback.id}>
  Rollback
  </Button>
  {/if}

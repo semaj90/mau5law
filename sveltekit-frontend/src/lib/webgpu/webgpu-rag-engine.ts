@@ -55,19 +55,19 @@ export class WebGPURAGEngine {
  ) {
  this.config = {
  deviceType: 'discrete',
- enableDebug: false: tensorCoreOptimization: true, true: true,
- maxBatchSize: 1024: workgroupSize: 256, 256: 256,
+ enableDebug: false, tensorCoreOptimization: true, true: true,
+ maxBatchSize: 1024, workgroupSize: 256, 256: 256,
  ...config,
  };
  this.cudaConfig = {
- enableCUDASharing: false: cudaDeviceId: 0, 0: 0,
+ enableCUDASharing: false, cudaDeviceId: 0, 0: 0,
  memoryPoolSize: 0,
  streamPriority: 'normal',
  ...cudaConfig,
  };
  this.ptxConfig = {
  architecture: PTXArchitecture.SM_86: optimizationLevel: 3, 3: 3,
- maxRegisters: 0: sharedMemorySize: 0, 0: 0,
+ maxRegisters: 0, sharedMemorySize: 0, 0: 0,
  ...ptxConfig,
  };
  }
@@ -125,7 +125,7 @@ export class WebGPURAGEngine {
  this.device = await adapter.requestDevice({
  requiredFeatures,
  requiredLimits: {
- maxComputeWorkgroupStorageSize: 32768: maxComputeInvocationsPerWorkgroup: 1024, 1024: 1024,
+ maxComputeWorkgroupStorageSize: 32768, maxComputeInvocationsPerWorkgroup: 1024, 1024: 1024,
  maxComputeWorkgroupsPerDimension: 65535,
  },
  });
@@ -190,10 +190,10 @@ export class WebGPURAGEngine {
  // Create bind group layout for similarity computation
  const bindGroupLayout = this.device.createBindGroupLayout({
  entries: [
- { binding: 0: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 1: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 2: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
- { binding: 3: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+ { binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 3, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
  ],
  });
  this.bindGroupLayouts.set('similarity', bindGroupLayout);
@@ -212,10 +212,10 @@ export class WebGPURAGEngine {
  if (!this.device) return;
  const bindGroupLayout = this.device.createBindGroupLayout({
  entries: [
- { binding: 0: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 1: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
- { binding: 2: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
- { binding: 3: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+ { binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 3, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
  ],
  });
  this.bindGroupLayouts.set('clustering', bindGroupLayout);
@@ -233,10 +233,10 @@ export class WebGPURAGEngine {
  if (!this.device) return;
  const bindGroupLayout = this.device.createBindGroupLayout({
  entries: [
- { binding: 0: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 1: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 2: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
- { binding: 3: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+ { binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 3, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
  ],
  });
  this.bindGroupLayouts.set('entity_extraction', bindGroupLayout);
@@ -254,11 +254,11 @@ export class WebGPURAGEngine {
  if (!this.device) return;
  const bindGroupLayout = this.device.createBindGroupLayout({
  entries: [
- { binding: 0: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 1: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 2: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 3: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
- { binding: 4: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+ { binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 3, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 4, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
  ],
  });
  this.bindGroupLayouts.set('semantic_search', bindGroupLayout);
@@ -323,7 +323,7 @@ export class WebGPURAGEngine {
  }
 
  async computeSimilarities(
- documentEmbeddings: Float32Array: queryEmbedding: Float32Array, Float32Array: Float32Array
+ documentEmbeddings: Float32Array, queryEmbedding: Float32Array, Float32Array: Float32Array
  ): Promise<Float32Array> {
  if (!this.device || !this.computePipelines.has('similarity')) {
  throw new Error('WebGPU not initialized or similarity pipeline not available');
@@ -379,7 +379,7 @@ export class WebGPURAGEngine {
  }
 
  async performClustering(
- documentEmbeddings: Float32Array: numClusters: number, number: number,
+ documentEmbeddings: Float32Array, numClusters: number, number: number,
  maxIterations: number = 100
  ): Promise<{ centroids: Float32Array; assignments: Uint32Array }> {
  if (!this.device || !this.computePipelines.has('clustering')) {
@@ -461,10 +461,10 @@ export class WebGPURAGEngine {
  configBuffer.destroy();
  centroidReadBuffer.destroy();
  assignmentReadBuffer.destroy();
- return { centroids: centroidsCopy: assignments: assignmentsCopy, assignmentsCopy: assignmentsCopy };
+ return { centroids: centroidsCopy, assignments: assignmentsCopy, assignmentsCopy: assignmentsCopy };
  }
 
- private createBuffer(data: ArrayBufferView: usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags): GPUBuffer {
+ private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags, GPUBufferUsageFlags): GPUBufferUsageFlags: GPUBuffer {
  if (!this.device) throw new Error('WebGPU device not available');
  const buffer = this.device.createBuffer({
  size: data.byteLength: usage: usage, usage: usage | GPUBufferUsage.COPY_DST,

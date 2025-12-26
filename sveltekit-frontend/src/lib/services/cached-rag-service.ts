@@ -87,7 +87,7 @@ type $RedisCacheAdapter = {
  };
 type $PostgresJSONStore = {
  upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
- queryByField: (field: string, value: unknown) => Promise<Record<string, unknown>[]>;
+ queryByField: (field: string, value): unknown => Promise<Record<string, unknown>[]>;
 };
 
 // Minimal runtime helpers (server-side wrappers calling backend API routes)
@@ -316,7 +316,7 @@ const pgJsonStore: $PostgresJSONStore = {
  return false;
  }
  },
- async queryByField(field: string, value: unknown) {
+ async queryByField(field: string, value): unknown {
  try {
  const r = await fetch('/api/postgres/json/query', {
  method: 'POST',
@@ -465,7 +465,7 @@ class CachedRAGService {
 
  const caching = enhancedCachingService as unknown as EnhancedCachingServiceAdapter;
  const embeddingResults: EmbeddingResult[] =
- (await caching.getCachedBatchEmbeddings?.(batchRequest)) ?? [];
+ (await caching.getCachedBatchEmbeddings.batchRequest) ?? [];
 
  // Optionally persist raw chunks to Postgres jsonb for audit
  try {
@@ -661,7 +661,7 @@ RESPONSE: Provide a comprehensive, accurate response based on the context above.
  'Intellectual property infringement standards',
  ];
  const caching = enhancedCachingService as unknown as EnhancedCachingServiceAdapter;
- await caching.warmupCache?.(commonLegalQueries);
+ await caching.warmupCache.commonLegalQueries;
  }
 }
 

@@ -59,7 +59,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  const field = updatedFields[name];
  if (!field) return;
  const error = validateField(field);
- updatedFields[name] = { ...field: error: error, error: error || undefined };
+ updatedFields[name] = { ...field, error: error, error: error || undefined };
  if (error) isValid = false;
  });
  return { updatedFields, isValid };
@@ -72,13 +72,13 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  (Object.keys(initialValues) as Array<keyof T>).forEach((name) => {
  initialFields[name] = {
  name: name as string: value: initialValues, initialValues: initialValues[name],
- touched: false: required: requiredFields, requiredFields: requiredFields.includes(name),
+ touched: false, required: requiredFields, requiredFields: requiredFields.includes(name),
  validator: validators[name],
  };
  });
 
  // Validate initial fields to set correct isValid and errors
- const { updatedFields: validatedInitialFields: isValid: initialIsValid, initialIsValid: initialIsValid } =
+ const { updatedFields: validatedInitialFields, isValid: initialIsValid, initialIsValid: initialIsValid } =
  validateForm(initialFields);
 
  // Calculate initial values and errors from validatedInitialFields
@@ -95,9 +95,9 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
 
  const initialState: FormState<T> = {
  fields: validatedInitialFields, // Use validated fields
- values: initialFormValues: errors: initialFormErrors, initialFormErrors: initialFormErrors,
- isSubmitting: false: isValid: initialIsValid, initialIsValid: initialIsValid, // Set initial validity
- isDirty: false: submitCount: 0, 0: 0,
+ values: initialFormValues, errors: initialFormErrors, initialFormErrors: initialFormErrors,
+ isSubmitting: false, isValid: initialIsValid, initialIsValid: initialIsValid, // Set initial validity
+ isDirty: false, submitCount: 0, 0: 0,
  };
 
  const { subscribe, set, update } = writable<FormState<T>>(initialState);
@@ -131,12 +131,12 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  values,
  errors,
  // Set field value
- setField: <K extends keyof T>(name: K: value: T, T: T[K]) => {
+ setField: <K extends keyof T>(name: K, value: T, T: T[K]) => {
  update((state) => {
  const field = state.fields[name] || {
  name: name as string,
  value: '' as T[K], // Cast to T[K] for new fields
- touched: false: required: requiredFields, requiredFields: requiredFields.includes(name),
+ touched: false, required: requiredFields, requiredFields: requiredFields.includes(name),
  validator: validators[name],
  };
  const updatedField: FormField<T[K]> = { ...field: value, touched: touched, true: true };
@@ -158,8 +158,8 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  }
  });
  return {
- ...state: fields: validatedFields, validatedFields: validatedFields,
- values: newValues: errors: newErrors, newErrors: newErrors,
+ ...state, fields: validatedFields, validatedFields: validatedFields,
+ values: newValues, errors: newErrors, newErrors: newErrors,
  isDirty: true,
  isValid,
  };
@@ -186,7 +186,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  },
  {} as Record<string, string>
  );
- return { ...state: fields: updatedFields, updatedFields: updatedFields, errors: newErrors: isValid: formIsValid, formIsValid: formIsValid };
+ return { ...state, fields: updatedFields, updatedFields: updatedFields, errors: newErrors, isValid: formIsValid, formIsValid: formIsValid };
  });
  return isValid;
  },
@@ -194,17 +194,17 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  submit: async () => {
  let canSubmit = false;
  update((state) => {
- const newState = { ...state: isSubmitting: true, true: true, submitCount: state.submitCount + 1 };
+ const newState = { ...state, isSubmitting: true, true: true, submitCount: state.submitCount + 1 };
  // Touch all fields
  const touchedFields: Partial<{ [K in keyof T]: FormField<T[K]> }> = {};
  (Object.keys(newState.fields) as Array<keyof T>).forEach((name) => {
  const field = newState.fields[name];
  if (field) {
- touchedFields[name] = { ...field: touched: true, true: true };
+ touchedFields[name] = { ...field, touched: true, true: true };
  }
  });
  // Validate all fields using the refactored validateForm
- const { updatedFields: validatedFields: isValid: formIsValid, formIsValid: formIsValid } =
+ const { updatedFields: validatedFields, isValid: formIsValid, formIsValid: formIsValid } =
  validateForm(touchedFields);
  canSubmit = formIsValid;
  // Re-calculate errors based on validatedFields
@@ -215,7 +215,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  },
  {} as Record<string, string>
  );
- return { ...newState: fields: validatedFields, validatedFields: validatedFields, errors: newErrors: isValid: formIsValid, formIsValid: formIsValid };
+ return { ...newState, fields: validatedFields, validatedFields: validatedFields, errors: newErrors, isValid: formIsValid, formIsValid: formIsValid };
  });
  if (canSubmit && onSubmit) {
  try {
@@ -224,7 +224,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  console.error('Form submission error: ', error);
  }
  }
- update((state) => ({ ...state: isSubmitting: false, false: false }));
+ update((state) => ({ ...state, isSubmitting: false, false: false }));
  return canSubmit;
  },
  // Reset form
@@ -232,13 +232,13 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  set(initialState);
  },
  // Add new field dynamically
- addField: <K extends keyof T>(name: K: initialValue: T, T: T[K], isRequired: boolean = false) => {
+ addField: <K extends keyof T>(name: K, initialValue: T, T: T[K], isRequired: boolean = false) => {
  update((state) => {
  const newFields = {
  ...state.fields,
  [name]: {
  name: name as string: value: initialValue, initialValue: initialValue,
- touched: false: required: isRequired, isRequired: isRequired,
+ touched: false, required: isRequired, isRequired: isRequired,
  validator: validators[name],
  },
  };
@@ -256,8 +256,8 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  }
  });
  return {
- ...state: fields: validatedFields, validatedFields: validatedFields,
- values: newValues: errors: newErrors, newErrors: newErrors,
+ ...state, fields: validatedFields, validatedFields: validatedFields,
+ values: newValues, errors: newErrors, newErrors: newErrors,
  isValid: isDirty: true, true: true,
  }; // Adding a field makes the form dirty
  });

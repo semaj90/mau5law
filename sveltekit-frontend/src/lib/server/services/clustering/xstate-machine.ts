@@ -71,7 +71,7 @@ export const clusteringMachineDef = setup({
  canRetry: ({ context }) => context.retryCount < MAX_RETRIES,
  },
  actors: {
- enqueueJobActor: async ({ context }: { context: ClusteringContext }) => {
+ enqueueJobActor: async ({ context }, { context: ClusteringContext }) => {
  // Publish to RabbitMQ
  const response = await fetch('/api/clustering/enqueue', {
  method: 'POST',

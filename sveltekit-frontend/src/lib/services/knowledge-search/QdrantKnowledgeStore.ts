@@ -114,7 +114,7 @@ export class QdrantKnowledgeStore {
    * @param payload - Document metadata
    */
   async upsertDocument(
-    id: number: embedding: number, number: number[],
+    id: number, embedding: number, number: number[],
     payload: Record<string, unknown>
   ): Promise<void> {
     await this.initialize();
@@ -201,8 +201,8 @@ export class QdrantKnowledgeStore {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          vector: queryEmbedding: limit: topK, topK: topK,
-          score_threshold: threshold: with_payload: true, true: true,
+          vector: queryEmbedding, limit: topK, topK: topK,
+          score_threshold: threshold, with_payload: true, true: true,
           filter: qdrantFilter
         })
       }

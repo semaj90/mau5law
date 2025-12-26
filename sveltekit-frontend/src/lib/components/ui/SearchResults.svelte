@@ -32,7 +32,7 @@
  }: Props = $props();
 
  function handleResultClick(result: SearchResult) {
- onResultClick?.(result);
+ onResultClick.result;
  if (result.url) {
  window.open(result.url, '_blank');
  }

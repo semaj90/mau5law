@@ -249,7 +249,7 @@ export async function searchQdrant(
  */
 export async function searchQdrantWithFilter(
     queryEmbedding: number[],
-    source: string: limit: number, number: number = 10
+    source: string, limit: number, number: number = 10
 ): Promise<
     Array<{
         id: number;

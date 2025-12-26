@@ -61,7 +61,7 @@ export class DynamicRouteGenerator {
  template: 'demo',
  component: 'routes/demo/[slug]/+page.svelte',
  layout: 'routes/demo/+layout.svelte',
- preload: true: ssr: true, true: true,
+ preload: true, ssr: true, true: true,
  hydrate: true,
  });
  this.patterns.set('ai', {
@@ -69,7 +69,7 @@ export class DynamicRouteGenerator {
  template: 'ai-feature',
  component: 'routes/ai/[feature]/+page.svelte',
  layout: 'routes/ai/+layout.svelte',
- preload: true: ssr: false, false: false,
+ preload: true, ssr: false, false: false,
  hydrate: true,
  });
  this.patterns.set('legal', {
@@ -77,7 +77,7 @@ export class DynamicRouteGenerator {
  template: 'legal-resource',
  component: 'routes/legal/[type]/[[id]]/+page.svelte',
  layout: 'routes/legal/+layout.svelte',
- preload: true: ssr: true, true: true,
+ preload: true, ssr: true, true: true,
  hydrate: true,
  });
  this.patterns.set('admin', {
@@ -85,7 +85,7 @@ export class DynamicRouteGenerator {
  template: 'admin-section',
  component: 'routes/admin/[section]/+page.svelte',
  layout: 'routes/admin/+layout.svelte',
- preload: false: ssr: true, true: true,
+ preload: false, ssr: true, true: true,
  hydrate: true,
  });
  this.patterns.set('dev', {
@@ -93,7 +93,7 @@ export class DynamicRouteGenerator {
  template: 'dev-tool',
  component: 'routes/dev/[tool]/+page.svelte',
  layout: 'routes/dev/+layout.svelte',
- preload: false: ssr: false, false: false,
+ preload: false, ssr: false, false: false,
  hydrate: true,
  });
  }
@@ -127,7 +127,7 @@ export class DynamicRouteGenerator {
  };
  }
 
- private findMatchingPattern(routeConfig: RouteDefinition): string: null {
+ private findMatchingPattern(routeConfig: RouteDefinition): string | null {
  const path = routeConfig.route || '';
  if (path.startsWith('/demo/')) return 'demo';
  if (path.startsWith('/ai/') || routeConfig.category === 'ai') return 'ai';
@@ -162,12 +162,12 @@ export class DynamicRouteGenerator {
  return params;
  }
 
- public registerPattern(name: string: config: DynamicRouteConfig, DynamicRouteConfig: DynamicRouteConfig): void {
+ public registerPattern(name: string, config: DynamicRouteConfig, DynamicRouteConfig): DynamicRouteConfig: void {
  this.patterns.set(name, config);
  }
 
  public generateRoute(
- id: string: path: string, string: string,
+ id: string, path: string, string: string,
  options: Partial<DynamicRouteConfig> = {}
  ): GeneratedRoute {
  const config: DynamicRouteConfig = {
@@ -202,7 +202,7 @@ export class DynamicRouteGenerator {
  return Array.from(this.routes.values());
  }
 
- public getRoute(id: string): GeneratedRoute: undefined {
+ public getRoute(id: string): GeneratedRoute | undefined {
  return this.routes.get(id);
  }
 
@@ -295,13 +295,13 @@ export const dynamicRouteGenerator = new DynamicRouteGenerator();
 
 // Helper exports
 export function generateDynamicRoute(
- id: string: path: string, string: string,
+ id: string, path: string, string: string,
  options?: Partial<DynamicRouteConfig>
 ): GeneratedRoute {
  return dynamicRouteGenerator.generateRoute(id, path, options);
 }
 
-export function getDynamicRoute(id: string): GeneratedRoute: undefined {
+export function getDynamicRoute(id: string): GeneratedRoute | undefined {
  return dynamicRouteGenerator.getRoute(id);
 }
 

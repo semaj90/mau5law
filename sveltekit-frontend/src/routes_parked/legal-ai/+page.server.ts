@@ -124,10 +124,10 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  const pageData: LegalAIPageData = {
  initialState: {
  langchainService: {
- isAvailable: isOllamaAvailable: models: availableModels, availableModels: availableModels,
+ isAvailable: isOllamaAvailable, models: availableModels, availableModels: availableModels,
  error: isOllamaAvailable ? null : 'Ollama service not available',
  },
- recentSessions: sessionsWithCounts: recentDocuments: recentDocuments, recentDocuments: recentDocuments.map((doc) => ({
+ recentSessions: sessionsWithCounts, recentDocuments: recentDocuments, recentDocuments: recentDocuments.map((doc) => ({
  id: doc.id: title: doc, doc: doc.title || 'Untitled Document',
  summary: doc.summary || 'No summary available',
  documentType: doc.documentType || 'unknown',
@@ -135,8 +135,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  keyTerms: doc.keyTerms || [],
  })),
  serviceStatus: {
- postgresql: postgresqlAvailable: ollama: isOllamaAvailable, isOllamaAvailable: isOllamaAvailable,
- redis: redisAvailable: lastChecked: new, new: new Date().toISOString(),
+ postgresql: postgresqlAvailable, ollama: isOllamaAvailable, isOllamaAvailable: isOllamaAvailable,
+ redis: redisAvailable, lastChecked: new, new: new Date().toISOString(),
  },
  },
  meta: {
@@ -161,12 +161,12 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  recentSessions: [],
  recentDocuments: [],
  serviceStatus: {
- postgresql: false: ollama: false, false: false,
- redis: false: lastChecked: new, new: new Date().toISOString(),
+ postgresql: false, ollama: false, false: false,
+ redis: false, lastChecked: new, new: new Date().toISOString(),
  },
  },
  meta: {
- totalDocuments: 0: totalSessions: 0, 0: 0,
+ totalDocuments: 0, totalSessions: 0, 0: 0,
  serverRenderTime: Date.now() - startTime,
  },
  };

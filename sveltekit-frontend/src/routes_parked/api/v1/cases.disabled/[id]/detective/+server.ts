@@ -18,7 +18,7 @@ const DetectiveModeSchema = z.object({
 });
 
 // Helper: safely extract user id from locals/session
-function getUserId(locals: App.Locals): string: null {
+function getUserId(locals: App.Locals): string | null {
  return locals.session?.user?.id ?? null;
 }
 

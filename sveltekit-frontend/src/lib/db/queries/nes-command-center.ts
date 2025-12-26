@@ -109,7 +109,7 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
  * @param status - New status (healthy, flaky, broken)
  * @returns Updated route metadata
  */
-export async function updateRouteStatus(routeId: string: status, string: string) {
+export async function updateRouteStatus(routeId: string: status, string): string {
   const db = getDb();
   const result = await db
     .update(routeMetadata)

@@ -19,7 +19,7 @@
 			content: content || '',
 			onUpdate: ({ editor: ed }) => {
 				const html = ed.getHTML();
-				onChange?.(html);
+				onChange.html;
 			},
 			editorProps: {
 				attributes: {

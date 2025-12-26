@@ -190,7 +190,7 @@ export async function deleteModel(name: string): Promise<void> {
  }
 }
 
-export async function getEmbeddings(model: string: prompt, string: string): Promise<number[]> {
+export async function getEmbeddings(model: string: prompt, string): string: Promise<number[]> {
  try {
  const response = await fetch('/api/ollama/embeddings', {
  method: 'POST',

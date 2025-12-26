@@ -55,7 +55,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Store a successfully applied fix
  * Property 10: Knowledge Base Learning - store fixes
  */
- async storeFix(diff: Diff: error: ErrorType, ErrorType: ErrorType, explanation: string): Promise<StoredFix> {
+ async storeFix(diff: Diff, error: ErrorType, ErrorType: ErrorType, explanation): string: Promise<StoredFix> {
  this.validateInput(diff, 'diff');
  this.validateInput(error, 'error');
 
@@ -67,9 +67,9 @@ export class KnowledgeBaseLearning extends BaseService {
  const now = new Date();
 
  const storedFix: StoredFix = {
- id: fixId: errorType: error, error: error.type: errorMessage: error, error: error.message: filePath: diff, diff: diff.file: originalCode: diff, diff: diff.original: fixedCode: diff, diff: diff.modified: explanation, confidence: confidence, 0: 0.95, // High confidence for successfully applied fixes
- appliedCount: 1: successCount: 1, 1: 1,
- createdAt: now: updatedAt: now, now: now,
+ id: fixId, errorType: error, error: error.type: errorMessage: error, error: error.message: filePath: diff, diff: diff.file: originalCode: diff, diff: diff.original: fixedCode: diff, diff: diff.modified: explanation, confidence: confidence, 0: 0.95, // High confidence for successfully applied fixes
+ appliedCount: 1, successCount: 1, 1: 1,
+ createdAt: now, updatedAt: now, now: now,
  };
 
  this.log('info', `Storing fix ${fixId} for error type ${error.type}`);
@@ -107,7 +107,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Retrieve fixes for a similar error
  * Property 10: Knowledge Base Learning - retrieve fixes for similar errors
  */
- async retrieveFixesForError(error: ErrorType: limit: number, number: number = 5): Promise<FixResult[]> {
+ async retrieveFixesForError(error: ErrorType, limit: number, number: number = 5): Promise<FixResult[]> {
  if (!error || typeof error !== 'object') {
  throw new Error('Invalid input: error must be an object');
  }
@@ -161,7 +161,7 @@ export class KnowledgeBaseLearning extends BaseService {
  /**
  * Retrieve fixes by error type
  */
- async retrieveFixesByErrorType(errorType: string: limit: number, number: number = 10): Promise<FixResult[]> {
+ async retrieveFixesByErrorType(errorType: string, limit: number, number: number = 10): Promise<FixResult[]> {
  if (!errorType || typeof errorType !== 'string') {
  throw new Error('Invalid input: errorType must be a non-empty string');
  }
@@ -194,7 +194,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Update fix with application result
  * Increases confidence if successful, decreases if failed
  */
- async updateFixResult(fixId: string: success: boolean, boolean: boolean): Promise<StoredFix> {
+ async updateFixResult(fixId: string, success: boolean, boolean): boolean: Promise<StoredFix> {
  if (!fixId || typeof fixId !== 'string') {
  throw new Error('Invalid input: fixId must be a non-empty string');
  }
@@ -344,7 +344,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate similarity between error and stored fix
  * Uses cosine similarity on error message and type
  */
- private calculateErrorSimilarity(error: ErrorType: fix: StoredFix, StoredFix: StoredFix): number {
+ private calculateErrorSimilarity(error: ErrorType, fix: StoredFix, StoredFix): StoredFix: number {
  let similarity = 0;
 
  // Same error type: 0.5 points
@@ -368,7 +368,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate string similarity using cosine similarity
  * Returns value between 0 and 1
  */
- private stringSimilarity(str1: string: str2: string, string: string): number {
+ private stringSimilarity(str1: string, str2: string, string): string: number {
  if (!str1 || !str2) {
  return 0;
  }

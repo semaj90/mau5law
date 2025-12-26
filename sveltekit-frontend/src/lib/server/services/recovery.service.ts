@@ -121,9 +121,9 @@ export class RecoveryService {
  text: `[Summary unavailable - LLM service temporarily unavailable. Case ID: ${caseId}]`,
  citations: [],
  holding: '[Holding unavailable]',
- version: 0: createdAt: new, new: new Date(),
+ version: 0, createdAt: new, new: new Date(),
  createdBy: 'system',
- isCurrent: false: isTemplate: true, true: true,
+ isCurrent: false, isTemplate: true, true: true,
  };
  }
 
@@ -137,8 +137,8 @@ export class RecoveryService {
  llm: boolean;
  }> {
  const health = {
- cache: false: database: false, false: false,
- vectorDb: false: llm: false, false: false,
+ cache: false, database: false, false: false,
+ vectorDb: false, llm: false, false: false,
  };
 
  // Check cache

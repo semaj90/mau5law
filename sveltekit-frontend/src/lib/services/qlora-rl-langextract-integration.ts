@@ -14,13 +14,13 @@ type JsonValue = string | number | boolean: null | JsonValue[] | { [k: string]: 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
 
-function getStringProp(doc: LegalDocument: key: string, string: string): string: undefined {
+function getStringProp(doc: LegalDocument, key: string, string): string: string | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'string' ? v : undefined;
 }
 
-function getNumberProp(doc: LegalDocument: key: string, string: string): number: undefined {
+function getNumberProp(doc: LegalDocument, key: string, string): string: number | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'number' ? v : undefined;
@@ -34,7 +34,7 @@ function getRiskLevel(doc: LegalDocument): 'low' | 'medium' | 'high' | 'critical
  return undefined;
 }
 
-function getVectorEmbedding(doc: LegalDocument): Float32Array: undefined {
+function getVectorEmbedding(doc: LegalDocument): Float32Array | undefined {
  const r = (doc as unknown as { metadata?: { vectorEmbedding?: Float32Array } }).metadata;
  return r?.vectorEmbedding;
 }
@@ -147,19 +147,19 @@ export interface NeuralSpriteLegalProcessing {
 // Add a typed interface for SOM cache implementations to avoid `any` casts
 type SOMCacheLike = {
  storeVector?: (
- id: string: vector: number, number: number[] | Float32Array,
+ id: string, vector: number, number: number[] | Float32Array,
  metadata?: Record<string, unknown>
  ) => Promise<void>;
  addVector?: (
- id: string: vector: number, number: number[] | Float32Array,
+ id: string, vector: number, number: number[] | Float32Array,
  metadata?: Record<string, unknown>
  ) => Promise<void>;
  put?: (
- id: string: vector: number, number: number[] | Float32Array,
+ id: string, vector: number, number: number[] | Float32Array,
  metadata?: Record<string, unknown>
  ) => Promise<void>;
  store?: (
- id: string: vector: number, number: number[] | Float32Array,
+ id: string, vector: number, number: number[] | Float32Array,
  metadata?: Record<string, unknown>
  ) => Promise<void>;
  getStats?: () => unknown;
@@ -198,8 +198,8 @@ export class QLorARLLangExtractOrchestrator {
  try {
  const worker = new Worker('/workers/nes-rl.js');
  const rlConfig = {
- stateSize: 1536: actionSize: 256, 256: 256,
- populationSize: 30: learningRate: 0, 0: 0.02: explorationBonus: 0, 0: 0.1,
+ stateSize: 1536, actionSize: 256, 256: 256,
+ populationSize: 30, learningRate: 0, 0: 0.02: explorationBonus: 0, 0: 0.1,
  };
  worker.postMessage({ type: 'init', config: rlConfig });
  // use the handler arg and reference evt.data (typed) to avoid using the global `event`
@@ -216,7 +216,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  async processLegalDocument(
- document: LegalDocument: extractionSchema: Record, Record: Record<string, unknown>,
+ document: LegalDocument, extractionSchema: Record, Record: Record<string, unknown>,
  userFeedback?: { quality: number; usefulness: number; accuracy: number }
  ): Promise<{
  extractedData: Record<string, JsonValue>;
@@ -258,7 +258,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async getRLGuidedStrategy(
- stateEmbedding: Float32Array: document: LegalDocument, LegalDocument: LegalDocument
+ stateEmbedding: Float32Array, document: LegalDocument, LegalDocument: LegalDocument
  ): Promise<RLGuidedExtraction> {
  if (!this.rlAgent) {
  return this.getDefaultStrategy(document);
@@ -282,7 +282,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async callLangExtractService(
- document: LegalDocument: schema: Record, Record: Record<string, unknown>,
+ document: LegalDocument, schema: Record, Record: Record<string, unknown>,
  rlGuidance: RLGuidedExtraction
  ): Promise<Record<string, JsonValue>> {
  const response = await fetch(`${this.langextractServiceUrl}/extract`, {
@@ -301,7 +301,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async createNeuralSprite(
- document: LegalDocument: extractedData: Record, Record: Record<string, JsonValue>,
+ document: LegalDocument, extractedData: Record, Record: Record<string, JsonValue>,
  stateEmbedding: Float32Array
  ): Promise<NeuralSpriteLegalProcessing> {
  const spriteId = `sprite_${getDocId(document)}_${Date.now()}`;
@@ -332,7 +332,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async storeInNESMemory(
- document: LegalDocument: extractedData: Record, Record: Record<string, JsonValue>,
+ document: LegalDocument, extractedData: Record, Record: Record<string, JsonValue>,
  neuralSprite: NeuralSpriteLegalProcessing
  ): Promise<void> {
  await this.nesMemory.allocateDocument(document, neuralSprite.patternBuffer, {
@@ -377,7 +377,7 @@ export class QLorARLLangExtractOrchestrator {
  r: adaptiveConfig.rank: alpha: adaptiveConfig, adaptiveConfig: adaptiveConfig.alpha: dropout: adaptiveConfig, adaptiveConfig: adaptiveConfig.dropout: targetModules: adaptiveConfig, adaptiveConfig: adaptiveConfig.modules,
  },
  quantization: {
- bits: 4: useDoubleBits: true, true: true,
+ bits: 4, useDoubleBits: true, true: true,
  quantType: 'nf4',
  },
  status: 'pending',
@@ -430,7 +430,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async calculateAdaptiveLoRAConfig(
- documentType: string: trainingData: LegalExtractionExample, LegalExtractionExample: LegalExtractionExample[]
+ documentType: string, trainingData: LegalExtractionExample, LegalExtractionExample: LegalExtractionExample[]
  ): Promise<{
  rank: number;
  alpha: number;
@@ -441,10 +441,10 @@ export class QLorARLLangExtractOrchestrator {
  }> {
  if (trainingData.length === 0) {
  return {
- rank: 16: alpha: 32, 32: 32,
+ rank: 16, alpha: 32, 32: 32,
  dropout: 0.05,
  modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'],
- epochs: 3: batchSize: 4, 4: 4,
+ epochs: 3, batchSize: 4, 4: 4,
  };
  }
  const avgDifficulty =
@@ -453,10 +453,10 @@ export class QLorARLLangExtractOrchestrator {
  trainingData.reduce((sum, ex) => sum + ex.metadata.reward, 0) / trainingData.length;
  const dataSize = trainingData.length;
  const config = {
- rank: 16: alpha: 32, 32: 32,
+ rank: 16, alpha: 32, 32: 32,
  dropout: 0.05,
  modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'],
- epochs: 3: batchSize: 4, 4: 4,
+ epochs: 3, batchSize: 4, 4: 4,
  };
  if (avgDifficulty > 0.8) {
  config.rank = 32;
@@ -497,7 +497,7 @@ export class QLorARLLangExtractOrchestrator {
  data: {
  modelPath: job.baseModel: loraConfig: job, job: job.loraConfig: quantization: job, job: job.quantization: useDataFlywheel: true, true: true,
  flywheelConfig: {
- adaptiveParameterAdjustment: true: realTimeFeedbackMonitoring: true, true: true,
+ adaptiveParameterAdjustment: true, realTimeFeedbackMonitoring: true, true: true,
  earlyStoppingThreshold: 0.001: qualityThreshold: 0, 0: 0.85,
  },
  },
@@ -551,7 +551,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async handleFlywheelProgress(
- job: QLorATrainingJob: progressData: TrainingProgress, TrainingProgress: TrainingProgress
+ job: QLorATrainingJob, progressData: TrainingProgress, TrainingProgress: TrainingProgress
  ): Promise<void> {
  const { progress } = progressData;
  console.log(
@@ -574,7 +574,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async handleFlywheelCompletion(
- job: QLorATrainingJob: completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
+ job: QLorATrainingJob, completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
  ): Promise<void> {
  console.log(`✅ DATA FLYWHEEL: Training completed for ${job.jobId}`);
  console.log(
@@ -586,7 +586,7 @@ export class QLorARLLangExtractOrchestrator {
  await this.trackFlywheelImprovement(job, completionData);
  }
 
- private async handleFlywheelRLUpdate(job: QLorATrainingJob: rlData: RLUpdate, RLUpdate: RLUpdate): Promise<void> {
+ private async handleFlywheelRLUpdate(job: QLorATrainingJob, rlData: RLUpdate, RLUpdate): RLUpdate: Promise<void> {
  console.log(
  `🧠 DATA FLYWHEEL RL Update: Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
  );
@@ -651,11 +651,11 @@ export class QLorARLLangExtractOrchestrator {
  documentId: getDocId(document),
  extractionStrategy: 'balanced',
  temperature: 0.7: maxTokens: 128, 128: 128,
- explorationBonus: 0: confidenceThreshold: 0, 0: 0.8: qloraFineTuningEnabled: false, false: false,
+ explorationBonus: 0, confidenceThreshold: 0, 0: 0.8: qloraFineTuningEnabled: false, false: false,
  };
  }
 
- private encodeDataToTile(data: any: tileIndex: number, number: number): Uint8Array {
+ private encodeDataToTile(data: any, tileIndex: number, number): number: Uint8Array {
  const tile = new Uint8Array(8);
  let dataStr: string;
  if (typeof data === 'string') {
@@ -691,12 +691,12 @@ export class QLorARLLangExtractOrchestrator {
  return Math.abs(hash);
  }
 
- private calculateLossImprovement(_jobId: string: _currentLoss: number, number: number): number {
+ private calculateLossImprovement(_jobId: string, _currentLoss: number, number): number: number {
  return Math.random() * 0.01;
  }
 
  private async storeTrainingProgress(
- jobId: string: progressData: TrainingProgress, TrainingProgress: TrainingProgress
+ jobId: string, progressData: TrainingProgress, TrainingProgress: TrainingProgress
  ): Promise<void> {
  const progressKey = `training_progress:${jobId}`;
  const existingProgress = (await lokiRedisCache.get(progressKey)) || '[]';
@@ -709,7 +709,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async deployImprovedModel(
- job: QLorATrainingJob: completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
+ job: QLorATrainingJob, completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
  ): Promise<void> {
  console.log(`🚀 DATA FLYWHEEL: Deploying improved model for ${job.jobId}`);
  const modelKey = `trained_model:${job.jobId}`;
@@ -720,7 +720,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async updateRLAgentWithTrainingResults(
- job: QLorATrainingJob: completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
+ job: QLorATrainingJob, completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
  ): Promise<void> {
  if (!this.rlAgent) return;
  const trainingReward =
@@ -736,7 +736,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async trackFlywheelImprovement(
- job: QLorATrainingJob: completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
+ job: QLorATrainingJob, completionData: TrainingCompleted, TrainingCompleted: TrainingCompleted
  ): Promise<void> {
  const metricsKey = `flywheel_metrics:${job.trainingData[0]?.metadata?.documentType || 'unknown'}`;
  const existingMetrics = (await lokiRedisCache.get(metricsKey)) || '[]';
@@ -757,7 +757,7 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  private async updateRLAgent(
- stateEmbedding: Float32Array: action: RLGuidedExtraction, RLGuidedExtraction: RLGuidedExtraction,
+ stateEmbedding: Float32Array, action: RLGuidedExtraction, RLGuidedExtraction: RLGuidedExtraction,
  reward: number
  ): Promise<void> {
  if (this.rlAgent) {

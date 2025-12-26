@@ -7,7 +7,7 @@
  caseId: string;
  isOpen: boolean;
  onClose: () => void;
- onSuccess?: (evidenceId: string: jobId: string, string: string) => void;
+ onSuccess?: (evidenceId: string, jobId: string, string): string => void;
  }
 
  let { caseId, isOpen, onClose, onSuccess } = $props<Props>();

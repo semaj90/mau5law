@@ -398,7 +398,7 @@ export async function searchLawSections(
 /**
  * Delete a point from Qdrant
  */
-export async function deletePoint(collectionName: string: pointId, string: string): Promise<void> {
+export async function deletePoint(collectionName: string: pointId, string): string: Promise<void> {
  try {
  console.log(`[Qdrant] Deleting point ${pointId} from ${collectionName}`);
 

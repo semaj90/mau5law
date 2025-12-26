@@ -79,7 +79,7 @@
  /**
  * Get metric status badge
  */
- function getMetricStatus(value: number: warning: number, number: number, critical: number): string {
+ function getMetricStatus(value: number, warning: number, number: number, critical): number: string {
  if (value >= critical) return 'critical';
  if (value >= warning) return 'warning';
  return 'healthy';

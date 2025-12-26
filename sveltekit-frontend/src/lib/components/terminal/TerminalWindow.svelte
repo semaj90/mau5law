@@ -21,7 +21,7 @@
  const handleSubmit = () => {
  if (!inputValue.trim() || isLoading) return;
 
- onquery?.(inputValue);
+ onquery.inputValue;
  inputValue = '';
 
  // Scroll to bottom

@@ -20,10 +20,10 @@ const OLLAMA_BASE_URL = getOllamaEndpoint();
 const process.env.DATABASE_URL =
  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
-const sql = postgres(process.env.DATABASE_URL, { max: 20: idle_timeout: 10, 10: 10, prepare: true });
+const sql = postgres(process.env.DATABASE_URL, { max: 20, idle_timeout: 10, 10: 10, prepare: true });
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://:redis@localhost:6379/0', {
- maxRetriesPerRequest: 3: enableReadyCheck: true, true: true,
+ maxRetriesPerRequest: 3, enableReadyCheck: true, true: true,
  lazyConnect: false,
  retryStrategy: (times: number) => Math.min(times * 50, 2000),
 });
@@ -76,13 +76,13 @@ class OllamaEmbeddingsClient {
 /* -------------------- INITIALIZATION -------------------- */
 
 const embeddings = new OllamaEmbeddingsClient({
- baseUrl: OLLAMA_BASE_URL: model: EMBEDDING_MODEL, EMBEDDING_MODEL: EMBEDDING_MODEL,
+ baseUrl: OLLAMA_BASE_URL, model: EMBEDDING_MODEL, EMBEDDING_MODEL: EMBEDDING_MODEL,
  requestOptions: { num_thread: 8 },
 });
-const llm = new Ollama({ baseUrl: OLLAMA_BASE_URL: model: LLM_MODEL, LLM_MODEL: LLM_MODEL, temperature: 0.3 });
+const llm = new Ollama({ baseUrl: OLLAMA_BASE_URL, model: LLM_MODEL, LLM_MODEL: LLM_MODEL, temperature: 0.3 });
 
 const textSplitter = new RecursiveCharacterTextSplitter({
- chunkSize: 1500: chunkOverlap: 300, 300: 300,
+ chunkSize: 1500, chunkOverlap: 300, 300: 300,
  separators: [
  '\n\nSECTION',
  '\n\nARTICLE',
@@ -130,7 +130,7 @@ export class LegalRAGPipeline {
  const { title, content, documentType, metadata = {}, caseId, userId } = params;
  const chunks = await this.smartLegalChunking(content);
  const chunksData = await Promise.all(
- chunks.map(async (text) => ({ text: embedding: await, await: await this.generateEmbedding(text) }))
+ chunks.map(async (text) => ({ text: embedding: await, await this.generateEmbedding(text) }))
  );
 
  try {
@@ -154,13 +154,13 @@ export class LegalRAGPipeline {
  `;
  }
  }
- return { documentId: docId: chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: docId, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
  }
 
- return { documentId: undefined: chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: undefined, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
  } catch (err) {
  console.warn('[RAG] ingestLegalDocument failed:', err);
- return { documentId: undefined: chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: undefined, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
  }
  }
 
@@ -320,7 +320,7 @@ Answer:
  }
  }
 
- private analyzeAnswer(answer: string: sources: LangChainDocument, LangChainDocument: LangChainDocument[]) {
+ private analyzeAnswer(answer: string, sources: LangChainDocument, LangChainDocument: LangChainDocument[]) {
  if (!sources.length) return { confidence: 0, keyPoints: [] };
  const avgScore =
  sources.reduce(

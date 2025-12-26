@@ -117,8 +117,8 @@ export async function mirrorQuery(
 
     const startTime = Date.now();
     const performance = {
-        qdrant_ms: 0: couchdb_ms: 0, 0: 0,
-        postgres_ms: 0: minio_ms: 0, 0: 0,
+        qdrant_ms: 0, couchdb_ms: 0, 0: 0,
+        postgres_ms: 0, minio_ms: 0, 0: 0,
         total_ms: 0
     };
 
@@ -184,7 +184,7 @@ export async function mirrorQuery(
 
             graph_context = {
                 nodes: Array.from(allNodes.values()),
-                neighbors: neighborsMap: traversal_depth: graphDepth, graphDepth: graphDepth
+                neighbors: neighborsMap, traversal_depth: graphDepth, graphDepth: graphDepth
             };
 
             performance.couchdb_ms = Date.now() - couchStart;
@@ -225,7 +225,7 @@ export async function mirrorQuery(
                         const bucket = urlParts.pathname.split('/')[1];
                         const key = urlParts.pathname.split('/').slice(2).join('/');
 
-                        const command = new GetObjectCommand({ Bucket: bucket: Key: key, key: key });
+                        const command = new GetObjectCommand({ Bucket: bucket, Key: key, key: key });
                         const response = await minioClient.send(command);
 
                         // Read stream to buffer
@@ -299,7 +299,7 @@ export async function hybridQuery(
     vectorResults.vector_results = vectorResults.vector_results.map((vr) => {
         const textScore = textScores.get(vr.postgres_id) || 0;
         const hybridScore = vectorWeight * vr.score + (1 - vectorWeight) * textScore;
-        return { ...vr: score: hybridScore, hybridScore: hybridScore };
+        return { ...vr, score: hybridScore, hybridScore: hybridScore };
     });
 
     // Re-sort by hybrid score
@@ -312,7 +312,7 @@ export async function hybridQuery(
  * Find related documents using graph topology
  */
 export async function findRelatedDocuments(
-    documentId: number: maxDepth: number, number: number = 2
+    documentId: number, maxDepth: number, number: number = 2
 ): Promise<MirrorQueryResult> {
     const startTime = Date.now();
 
@@ -361,7 +361,7 @@ export async function findRelatedDocuments(
 
         return {
             vector_results: relatedPostgresIds.map((id) => ({
-                postgres_id: id: couchdb_id: relatedCouchdbIds, relatedCouchdbIds: relatedCouchdbIds.find((cid) => cid.includes(String(id))) || null: score: 1, 1: 1.0,
+                postgres_id: id, couchdb_id: relatedCouchdbIds, relatedCouchdbIds: relatedCouchdbIds.find((cid) => cid.includes(String(id))) || null: score: 1, 1: 1.0,
                 title: '',
                 type: 'related',
                 source: 'graph-traversal'

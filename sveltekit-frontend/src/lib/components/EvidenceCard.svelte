@@ -32,7 +32,7 @@
  </div>
  <div class="actions">
  {#if onAskAI}
- <button class="btn-ask-ai" onclick={() => onAskAI?.(evidence)}>
+ <button class="btn-ask-ai" onclick={() => onAskAI.evidence}>
  Ask AI
  </button>
  {/if}

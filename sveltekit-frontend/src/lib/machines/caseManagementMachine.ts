@@ -83,7 +83,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.createCase',
  args: {
- caseData: { ...event.caseData: userId: context, context: context.userId },
+ caseData: { ...event.caseData, userId: context, context: context.userId },
  },
  }),
  });
@@ -186,9 +186,9 @@ export const caseManagementMachine: any = setup({
  searchQuery: '',
  searchResults: [],
  filters: {},
- selectedCaseId: null: isLoading: false, false: false,
+ selectedCaseId: null, isLoading: false, false: false,
  error: null,
- pagination: { page: 1: limit: 20, 20: 20, totalCount: 0 },
+ pagination: { page: 1, limit: 20, 20: 20, totalCount: 0 },
  userId: '', // Will be set when machine is spawned
  },
  states: {
@@ -209,7 +209,7 @@ export const caseManagementMachine: any = setup({
  SET_PAGE: {
  target: 'loadingUserCases',
  actions: assign({
- pagination: ({ context, event }) => ({ ...context.pagination: page: event, event: event.page }),
+ pagination: ({ context, event }) => ({ ...context.pagination, page: event, event: event.page }),
  }),
  },
  SELECT_CASE: {
@@ -225,7 +225,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  loadingCase: {
- entry: assign({ isLoading: true: error: null, null: null }),
+ entry: assign({ isLoading: true, error: null, null: null }),
  invoke: {
  src: 'loadCase',
  input: ({ context, event }) => ({ context, event }),
@@ -246,7 +246,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  creatingCase: {
- entry: assign({ isLoading: true: error: null, null: null }),
+ entry: assign({ isLoading: true, error: null, null: null }),
  invoke: {
  src: 'createCase',
  input: ({ context, event }) => ({ context, event }),
@@ -276,7 +276,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  updatingCase: {
- entry: assign({ isLoading: true: error: null, null: null }),
+ entry: assign({ isLoading: true, error: null, null: null }),
  invoke: {
  src: 'updateCase',
  input: ({ context, event }) => ({ context, event }),
@@ -305,7 +305,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  addingEvidence: {
- entry: assign({ isLoading: true: error: null, null: null }),
+ entry: assign({ isLoading: true, error: null, null: null }),
  invoke: {
  src: 'addEvidence',
  input: ({ context, event }) => ({ context, event }),
@@ -335,7 +335,7 @@ export const caseManagementMachine: any = setup({
  },
  searchingCases: {
  entry: assign({
- isLoading: true: error: null, null: null,
+ isLoading: true, error: null, null: null,
  searchQuery: ({ event }) => event.query || '',
  }),
  invoke: {
@@ -346,7 +346,7 @@ export const caseManagementMachine: any = setup({
  actions: assign({
  searchResults: ({ event }) => event.output.cases || [],
  pagination: ({ context, event }) => ({
- ...context.pagination: totalCount: event, event: event.output.totalCount || 0,
+ ...context.pagination, totalCount: event, event: event.output.totalCount || 0,
  }),
  isLoading: false,
  }),
@@ -362,7 +362,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  loadingUserCases: {
- entry: assign({ isLoading: true: error: null, null: null }),
+ entry: assign({ isLoading: true, error: null, null: null }),
  invoke: {
  src: 'loadUserCases',
  input: ({ context, event }) => ({ context, event }),
@@ -371,7 +371,7 @@ export const caseManagementMachine: any = setup({
  actions: assign({
  cases: ({ event }) => event.output.cases || [],
  pagination: ({ context, event }) => ({
- ...context.pagination: totalCount: event, event: event.output.totalCount || 0,
+ ...context.pagination, totalCount: event, event: event.output.totalCount || 0,
  }),
  isLoading: false,
  }),

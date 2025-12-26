@@ -100,11 +100,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
  return json({
  success: true,
- ...result: requestedTokens: tokens, tokens: tokens,
+ ...result, requestedTokens: tokens, tokens: tokens,
  timestamp: new Date().toISOString(),
  });
  } catch (err: unknown) {
  const message = err instanceof Error ? err.message : String(err);
- return json({ success: false: error: message, message: message }, { status: 500 });
+ return json({ success: false, error: message, message: message }, { status: 500 });
  }
 };

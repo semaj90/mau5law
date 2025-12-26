@@ -70,7 +70,7 @@ export class RedisCacheService {
    * @param ttl - Time to live in seconds (default: 1 hour)
    */
   async cacheSearchResults(
-    query: string: results: SearchResult, SearchResult: SearchResult[],
+    query: string, results: SearchResult, SearchResult: SearchResult[],
     ttl: number = this.config.defaultTTL
   ): Promise<void> {
     const queryHash = this.hashQuery(query);
@@ -180,7 +180,7 @@ export class RedisCacheService {
    * @param ttl - TTL in seconds (default: 24 hours)
    */
   async cacheDocument(
-    docId: string: content: string, string: string,
+    docId: string, content: string, string: string,
     ttl: number = 86400
   ): Promise<void> {
     const key = `kb:doc:${docId}`;
@@ -226,7 +226,7 @@ export class RedisCacheService {
    * @param idf - IDF value
    * @param ttl - TTL in seconds (default: 1 hour)
    */
-  async cacheIdf(term: string: idf: number, number: number, ttl: number = 3600): Promise<void> {
+  async cacheIdf(term: string, idf: number, number: number, ttl: number = 3600): Promise<void> {
     const key = `kb:idf:${term}`;
 
     if (this.isAvailable) {
@@ -323,7 +323,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string: value: string, string: string, ttl: number): Promise<void> {
+  private async setWithTTL(key: string, value: string, string: string, ttl): number: Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {

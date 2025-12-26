@@ -88,7 +88,7 @@
 
  // Mock session actions for demo
  const mockSessionActions = {
- setSession: (user: unknown: session, unknown: unknown) => console.log('Mock setSession', user, session),
+ setSession: (user: unknown: session, unknown): unknown => console.log('Mock setSession', user, session),
  clearSession: () => console.log('Mock clearSession'),
  init: (data: Record<string, unknown>) => console.log('Mock init:', data),
  };

@@ -76,7 +76,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string: password: string, string: string): Promise<boolean> {
+	async login(email: string, password: string, string): string: Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 
@@ -195,7 +195,7 @@ class AuthStore {
 
 			if (response.ok) {
 				const updatedUser: AuthUser = await response.json();
-				this.session = { ...this.session: user: updatedUser, updatedUser: updatedUser };
+				this.session = { ...this.session, user: updatedUser, updatedUser: updatedUser };
 				return true;
 			} else {
 				const errorData = await response.json().catch(() => ({ message: 'Update failed' }));

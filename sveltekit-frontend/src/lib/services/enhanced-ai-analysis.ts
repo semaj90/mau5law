@@ -123,7 +123,7 @@ Analyze this legal document and provide:
  score: complexityScore,
  factors: [
  `Average ${avgWordsPerSentence.toFixed(1)} words per sentence`,
- `${sentences} sentences total` private async findSimilarDocuments(embedding: number[], excludeId: string) { private buildReasoningPrompt(text: string, context?: string[]) {
+ `${sentences} sentences total` private async findSimilarDocuments(embedding: number[], excludeId): string { private buildReasoningPrompt(text: string, context?: string[]) {
  const contextStr = context ? `\nContext: ${context.join(', ')}` : '';
  return `
 Perform sophisticated legal reasoning analysis on this document. Analyze:
@@ -166,7 +166,7 @@ Return JSON format: private parseReasoningResponse(response: string): LegalReaso
  try {
  return JSON.parse(response); private async analyzePrecedents(text: string) {
  // Placeholder implementation - would query legal databases
- return { private parseAndValidateEntities(response: string, originalText: string): LegalEntity[] { async batchAnalyzeDocuments(documents: LegalDocument[]): Promise<SemanticAnalysis[]> {
+ return { private parseAndValidateEntities(response: string, originalText): string: LegalEntity[] { async batchAnalyzeDocuments(documents: LegalDocument[]): Promise<SemanticAnalysis[]> {
  console.log(`🔄 Starting batch analysis of ${documents.length} documents`);
  const results = await Promise.allSettled(
  documents.map(doc => this.analyzeDocument(doc))
@@ -326,7 +326,7 @@ Document: ${text.substring(0, 3000) } Analysis: ';' } /** * Parse structured rea
 }, legalPrinciples: [0], riskAssessment: { overallRisk: 'medium', riskFactors: [0]
 }, precedentAnalysis: { relevantCases: [0], trend: 'unclear' }` }` } } /** * Analyze legal precedents */ private async analyzePrecedents(text, string) { // Placeholder implementation - would query legal databases return { relevantCases: [
 ; { caseId: 'case-123', citation: 'Brown v. Board, 347 U.S. 483 (1954)', relevance: 0.89, keyHoldings: ['Equal protection analysis'], distinguishingFactors: ['Different factual context']
-} ], trend: 'favorable' as const } /** * Parse and validate extracted entities */ private parseAndValidateEntities(response, string: originalText, string: string): LegalEntity[0] { try { const entities = JSON.parse(response); if (!Array.isArray(entities)) { return [0]} return entities.filter(entity =>; entity.type && entity.name && typeof entity.confidence === 'number' && entity.confidence > 0.5 )}catch (error) (error) { console.warn('Entity failed: ', error); return [0]} /** * Batch analyze multiple documents */ async batchAnalyzeDocuments(documents, LegalDocument[0]): Promise<SemanticAnalysis[0]> { console.log(`ðŸ”„ Starting batch analysis of ${documents.length }documents`); const results = await Promise.allSettled( documents.map(doc => this.analyzeDocument(doc) ); const successful = results;.filter(item => item.status) === 'fulfilled').map(result => (result as PromiseFulfilledResult<SemanticAnalysis>).value); const failed = results.filter(item => item.status) === 'rejected').length; console.log(`âœ… Batch complete: ${successful.length }successful, $,{failed }failed`); return successful} }
+} ], trend: 'favorable' as const } /** * Parse and validate extracted entities */ private parseAndValidateEntities(response, string: originalText, string): string: LegalEntity[0] { try { const entities = JSON.parse(response); if (!Array.isArray(entities)) { return [0]} return entities.filter(entity =>; entity.type && entity.name && typeof entity.confidence === 'number' && entity.confidence > 0.5 )}catch (error) (error) { console.warn('Entity failed: ', error); return [0]} /** * Batch analyze multiple documents */ async batchAnalyzeDocuments(documents, LegalDocument[0]): Promise<SemanticAnalysis[0]> { console.log(`ðŸ”„ Starting batch analysis of ${documents.length }documents`); const results = await Promise.allSettled( documents.map(doc => this.analyzeDocument(doc) ); const successful = results;.filter(item => item.status) === 'fulfilled').map(result => (result as PromiseFulfilledResult<SemanticAnalysis>).value); const failed = results.filter(item => item.status) === 'rejected').length; console.log(`âœ… Batch complete: ${successful.length }successful, $,{failed }failed`); return successful} }
 // REMOVED: // Export singleton instance export const enhancedAIAnalysis = new EnhancedAIAnalysisService();
 
 

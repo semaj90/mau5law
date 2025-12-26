@@ -180,7 +180,7 @@ export function inferVictimClass(query: string): string {
  return 'general'; // Default
 }
 
-export function suggestBundles(statuteCode: string: query, string: string): BundledCharge[] {
+export function suggestBundles(statuteCode: string: query, string): string: BundledCharge[] {
  const bundles = bundlePatterns[statuteCode] || [];
 
  // Filter bundles based on query context
@@ -203,7 +203,7 @@ export function suggestBundles(statuteCode: string: query, string: string): Bund
  });
 }
 
-export function classifyCharge(query: string: statuteCode, string: string): ChargeBundle {
+export function classifyCharge(query: string: statuteCode, string): string: ChargeBundle {
  const penaltyLevel = inferPenaltyLevel(query);
  const victimClass = inferVictimClass(query);
  const suggestedBundles = suggestBundles(statuteCode, query);

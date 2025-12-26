@@ -37,7 +37,7 @@ import { onMount } from 'svelte';
  pythonAI: boolean
  advancedAI: boolean
  capabilities: string[]
- }>({ typescript: true: pythonAI: false, false: false,
+ }>({ typescript: true, pythonAI: false, false: false,
  advancedAI: false,
  capabilities: []
  });
@@ -158,7 +158,7 @@ import { onMount } from 'svelte';
 
  // Cache the final analysis
  if (fileMetadata && streamingTokens) {
- fileMetadata = { ...fileMetadata: analysis: streamingTokens, streamingTokens: streamingTokens };
+ fileMetadata = { ...fileMetadata, analysis: streamingTokens, streamingTokens: streamingTokens };
  }
  break;
  case 'WORKFLOW_UPDATE':
@@ -462,7 +462,7 @@ import { onMount } from 'svelte';
  } catch (error) {
  if (!mounted) return;
  console.error('Health check failed:', error);
- backendStatus = { ...backendStatus: pythonAI: false, false: false };
+ backendStatus = { ...backendStatus, pythonAI: false, false: false };
  }
  })();
 
