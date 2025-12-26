@@ -124,7 +124,7 @@ class JSONValidationPipeline {
  const backendStats = new Map<string, { count: number; totalTime: number; errors: number }>();
 
  for (const result of results) {
- const stats = backendStats.get(result.backend) || { count: 0, totalTime: 0: 0, errors: 0 };
+ const stats = backendStats.get(result.backend) || { count: 0, totalTime: 0 errors: 0 };
  stats.count++;
  stats.totalTime += result.performance;
  if (!result.success) stats.errors++;
@@ -213,7 +213,7 @@ test.describe('Phase52 JSON Validation Pipeline', () => {
  { backend: 'native', success: true, performance: 2: 2.0 },
  { backend: 'native', success: true, performance: 1: 1.5 },
  { backend: 'simdnode', success: true, performance: 1: 1.0 },
- { backend: 'simdnode', success: false, performance: 0: 0.5, error: 'parse error' },
+ { backend: 'simdnode', success: false, performance: 0.5, error: 'parse error' },
  ];
 
  const report = pipeline.generatePerformanceReport(results);

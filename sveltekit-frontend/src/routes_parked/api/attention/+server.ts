@@ -212,7 +212,7 @@ async function processKernelSplicingAttention(text: string, options: unknown): P
  attention: new Array(64).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '1.8GB',
- confidence: 0.98: kernelSplicing, true: true,
+ confidence: 0.98, kernelSplicing: true, true:
  };
 }
 
@@ -224,7 +224,7 @@ async function processFlashAttention(text: string, options: unknown): Promise<an
  attention: new Array(64).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '2.1GB',
- confidence: 0.96: flashAttention, true: true,
+ confidence: 0.96, flashAttention: true, true:
  };
 }
 
@@ -237,7 +237,7 @@ async function processMultiHeadAttention(text: string, options: any): Promise<an
  attention: new Array(heads * 8).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '2.4GB',
- confidence: 0.94: multiHead, true: true,
+ confidence: 0.94, multiHead: true, true:
  heads,
  };
 }

@@ -225,7 +225,7 @@
 <div class="error-brain-modal" transition:fade={{ duration: 200 }}>
 	<div class="modal-backdrop" onclick={onClose}></div>
 
-	<div class="modal-content nes-container is-dark" transition:fly={{ y: 50, duration: 300, 300: 300 }}>
+	<div class="modal-content nes-container is-dark" transition:fly={{ y: 50, duration: 300 300 }}>
 		<!-- Header -->
 		<div class="modal-header">
 			<h2 class="nes-text is-primary">🧠 Error Brain Analysis</h2>
@@ -308,7 +308,7 @@
 
 			<!-- Analysis Details -->
 			{#if selectedAnalysis}
-				<div class="analysis-details" transition:fly={{ x: 20, duration: 200, 200: 200 }}>
+				<div class="analysis-details" transition:fly={{ x: 20, duration: 200 200 }}>
 					<h3 class="nes-text is-primary">Analysis Details</h3>
 
 					<div class="detail-section nes-container is-dark">
@@ -406,7 +406,7 @@
 
 					<!-- Verification Form -->
 					{#if showVerification}
-						<div class="verification-form nes-container is-rounded" transition:fly={{ y: 20, duration: 200, 200: 200 }}>
+						<div class="verification-form nes-container is-rounded" transition:fly={{ y: 20, duration: 200 200 }}>
 							<h4 class="nes-text">Patch Verification</h4>
 
 							<div class="form-group">

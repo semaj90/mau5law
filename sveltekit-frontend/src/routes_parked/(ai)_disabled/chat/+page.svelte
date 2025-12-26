@@ -27,8 +27,8 @@ https://svelte.dev/e/js_parse_error -->
 
  // Service availability
  let services = $state({
- tensorrt: false, ollama: false, false: false,
- integrated: false, redis: false, false: false,
+ tensorrt: false, ollama: false false,
+ integrated: false, redis: false false,
  qdrant: false,
  });
 
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
  message: messageToSend, model: modelInfo, modelInfo: modelInfo?.name || 'gemma3-legal:latest',
  stream: true,
  options: {
- temperature: 0.7: max_tokens, 1024: 1024: 1024,
+ temperature: 0.7, max_tokens: 1024: 1024
  num_ctx: 4096
  }
  }),

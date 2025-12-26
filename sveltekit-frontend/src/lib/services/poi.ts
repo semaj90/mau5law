@@ -57,7 +57,7 @@ export const poiService = {
  /**
  * Update a POI
  */
- async updatePOI(poiId: string, data): Promise<PersonOfInterest> {
+ async updatePOI(poiId: string): Promise<PersonOfInterest> {
  const response = await fetch(`${API_BASE}/${poiId}`, {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ export const poiService = {
  /**
  * Add a known associate
  */
- async addAssociate(poiId: string, data): Promise<KnownAssociate> {
+ async addAssociate(poiId: string): Promise<KnownAssociate> {
  const response = await fetch(`${API_BASE}/${poiId}/associates`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -103,7 +103,7 @@ export const poiService = {
  /**
  * Remove a known associate
  */
- async removeAssociate(poiId: string, associateId): Promise<void> {
+ async removeAssociate(poiId: string): Promise<void> {
  const response = await fetch(`${API_BASE}/${poiId}/associates/${associateId}`, {
  method: 'DELETE',
  });

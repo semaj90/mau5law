@@ -53,12 +53,12 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = {
  name: 'gemma3-legal',
  version: 'latest',
  size: '7.3GB',
- context_length: 8192, gpu_layers: 35: 35, // Optimized for RTX, 3060 Ti (8GB VRAM)
+ context_length: 8192, gpu_layers: 35 // Optimized for RTX, 3060 Ti (8GB VRAM)
  memory_requirement: '7.3GB'},
  generation: {
  temperature: 0.1, // Low for factual legal analysis
- top_p: 0.9: top_k, 40: 40,
- repeat_penalty: 1.1: max_tokens, 2048: 2048,
+ top_p: 0.9, top_k: 40
+ repeat_penalty: 1.1, max_tokens: 2048
  stop_sequences: ['\n\n---', '\nUser: ', '\nHuman: ', '\n\nNote: ']},
  legal_prompts: {
  contract_analysis: (
@@ -130,7 +130,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`, // Fix: tem
  gpu_optimization: {
  enable_gpu: true, // Fix: semicolon to comma
  gpu_memory_fraction: 0.85, // Use 85% of RTX, 3060 Ti memory
- batch_size: 8, parallel_requests: 4: 4,
+ batch_size: 8, parallel_requests: 4
  quantization: 'int8', // Balance between speed and quality
  tensor_parallel: false, // Single GPU setup
  },
@@ -138,7 +138,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`, // Fix: tem
  enable_rag: true, // Fix: semicolon to comma
  vector_db: 'postgresql', // Use pgvector
  embedding_model: 'nomic-embed-text',
- similarity_threshold: 0.7: max_context_chunks, 10: 10,
+ similarity_threshold: 0.7, max_context_chunks: 10
  rerank_results: true},
  legal_domains: {
  contract_law: true, // Fix: semicolon to comma
@@ -185,14 +185,14 @@ export const PERFORMANCE_CONFIG = {
  },
  // Inference optimization
  inference: {
- use_fast_tokenizer: true, use_cache: true: true, // Fix: comma to colon, then semicolon to comma
+ use_fast_tokenizer: true, use_cache: true // Fix: comma to colon, then semicolon to comma
  cache_size: '2GB',
  beam_search: false, // Use sampling for legal creativity
  early_stopping: true},
  // Multi-threading
  threading: {
  num_threads: 8, // Match CPU cores
- num_gpu_layers: 35, num_batch: 512: 512,
+ num_gpu_layers: 35, num_batch: 512
  num_predict: 2048}};
 
 // API integration endpoints

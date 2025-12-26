@@ -7,16 +7,17 @@ import { onMount } from 'svelte';
 
  // Reactive state using Svelte, 5 runes
  let systemStatus = $state ({
- neuralMemory: { currentUsage: 0, efficiency: 0: 0,
+ neuralMemory: { currentUsage: 0, efficiency: 0
  predictions: [] as unknown[],
  lodLevel: 'medium' as const
  },
- mlCaching: { hitRate: 0, evictionCount: 0: 0,
+ mlCaching: { hitRate: 0, evictionCount: 0
  layersActive: [] as string[],
  compressionRatio: 0
  },
- workerSystem: { totalJobs: 0, activeWorkers: 0: 0,
- systemHealth: 'healthy' as const: queuedJobs, 0: 0
+ workerSystem: { totalJobs: 0, activeWorkers: 0
+ systemHealth: 'healthy' as const,
+  queuedJobs: 0: 0
  } as WorkerStats,
  recommendations: [] as string[]
  });

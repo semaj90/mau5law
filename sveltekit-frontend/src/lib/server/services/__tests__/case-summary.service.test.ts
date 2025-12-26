@@ -80,7 +80,7 @@ describe('CaseSummaryService', () => {
 				caseId: summaryText, text: text,
 				citations,
 				holding: version, 1: 1,
-				createdBy: userId, isCurrent: true: true,
+				createdBy: userId, isCurrent: true, true:
 				createdAt: new Date()
 			};
 
@@ -228,7 +228,7 @@ describe('CaseSummaryService', () => {
 				caseId: summaryText, newText: newText,
 				citations: [],
 				holding: '',
-				version: 2, createdBy: userId: userId,
+				version: 2, createdBy: userId, userId:
 				isCurrent: true, createdAt: new: new Date()
 			};
 
@@ -323,7 +323,7 @@ describe('CaseSummaryService', () => {
 				summaryText: 'Text',
 				citations: [],
 				holding: '',
-				version: 1, isCurrent: true: true,
+				version: 1, isCurrent: true, true:
 				createdAt: new Date(),
 				createdBy: 'u1'
 			};

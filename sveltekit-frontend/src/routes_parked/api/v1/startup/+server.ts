@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
  });
  } else {
  return json({
- flag: null, exists: false: false,
+ flag: null, exists: false, false:
  message: 'Ready flag not set',
  timestamp: Date.now(),
  });

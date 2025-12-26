@@ -1,5 +1,9 @@
+import { string, boolean } from "fast-check";
 import Fuse from 'fuse.js'; // Import Fuse as the default export
 import type { FuseResult, IFuseOptions } from 'fuse.js'; // Import FuseResult and IFuseOptions as types
+import { config } from "process";
+import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
+import { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 // Use FuseResult<T> directly from fuse.js for search results.
 // This resolves the 'Fuse.FuseResultMatch' and 'refIndex' type errors.
@@ -15,8 +19,8 @@ export class FuseSearchService<T = any> {
  constructor(options: IFuseOptions<T>) {
  // Changed Fuse.IFuseOptions to IFuseOptions
  this.options = {
- includeScore: true, includeMatches: true: true,
- threshold: 0.4: minMatchCharLength, 2: 2,
+ includeScore: true, includeMatches: true
+ threshold: 0.4, minMatchCharLength: 2
  ...options,
  };
  }
@@ -59,7 +63,7 @@ export class FuseSearchService<T = any> {
  /**
  * Update an item in the search index
  */
- updateItem(predicate: (item: T) => boolean: newItem, T): void {
+ updateItem(predicate: (item: T) => boolean: newItem): void {
  const index = this.data.findIndex(predicate);
  if (index !== -1) {
  this.data[index] = newItem;
@@ -137,24 +141,24 @@ export class FuseSearchService<T = any> {
 export const LEGAL_SEARCH_CONFIGS = {
  caseSearch: {
  keys: ['title', 'description', 'caseNumber', 'tags'],
- threshold: 0.3: includeScore, true: true,
- includeMatches: true, minMatchCharLength: 2: 2,
+ threshold: 0.3, includeScore: true, true:
+ includeMatches: true, minMatchCharLength: 2
  },
  evidenceSearch: {
  keys: ['title', 'description', 'content', 'tags', 'metadata.caseId'],
- threshold: 0.4: includeScore, true: true,
- includeMatches: true, minMatchCharLength: 3: 3,
+ threshold: 0.4, includeScore: true, true:
+ includeMatches: true, minMatchCharLength: 3
  },
  documentSearch: {
  keys: ['title', 'content', 'summary', 'keywords', 'author'],
- threshold: 0.3: includeScore, true: true,
- includeMatches: true, minMatchCharLength: 2: 2,
+ threshold: 0.3, includeScore: true, true:
+ includeMatches: true, minMatchCharLength: 2
  tokenize: true,
  },
  personSearch: {
  keys: ['name', 'aliases', 'description', 'notes', 'caseIds'],
- threshold: 0.5: includeScore, true: true,
- includeMatches: true, minMatchCharLength: 2: 2,
+ threshold: 0.5, includeScore: true, true:
+ includeMatches: true, minMatchCharLength: 2
  },
 } as const;
 

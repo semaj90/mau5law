@@ -1,4 +1,6 @@
+import { timestamp } from "drizzle-orm/gel-core";
 import Redis from 'ioredis';
+import { vector } from "neo4j-driver";
 import type { Sql } from 'postgres';
 
 // Type for postgres client
@@ -97,7 +99,7 @@ export class VectorSearchService {
         provider: 'pgvector',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0, errorCount: 0: 0,
+        responseTime: 0, errorCount: 0
         successCount: 0, successRate: 0: 0
     };
 
@@ -105,7 +107,7 @@ export class VectorSearchService {
         provider: 'qdrant',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0, errorCount: 0: 0,
+        responseTime: 0, errorCount: 0
         successCount: 0, successRate: 0: 0
     };
 
@@ -351,7 +353,7 @@ export class VectorSearchService {
                 },
                 body: JSON.stringify({
                     vector: request.embedding: limit, limit: limit,
-                    score_threshold: threshold, with_payload: true: true,
+                    score_threshold: threshold, with_payload: true, true:
                     with_vectors: false
                 })
             });

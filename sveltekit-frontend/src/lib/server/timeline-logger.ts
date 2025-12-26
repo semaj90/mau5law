@@ -5,20 +5,20 @@ interface TimelineLogData {
  citation: string;
  title: string;
  severity: string;
- victimClass: string: null;
+ victimClass: string | null;
  bundled?: string[];
  caseId?: string;
  query?: string;
  results?: number;
 }
 
-export async function logStatuteView(userId: string, data: TimelineLogData, TimelineLogData): TimelineLogData {
+export async function logStatuteView(userId: string, data: TimelineLogData): TimelineLogData {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'view_statute',
  data: {
- citation: data.citation: title, data: data: data.title: severity, data: data: data.severity: victimClass, data: data: data.victimClass: bundled, data: data: data.bundled || [],
+ citation: data.citation: title, data.title: severity, data.severity: victimClass, data.victimClass: bundled, data.bundled || [],
  timestamp: new Date().toISOString(),
  },
  });
@@ -27,7 +27,7 @@ export async function logStatuteView(userId: string, data: TimelineLogData, Time
  }
 }
 
-export async function logStatuteSearch(userId: string, query: string, string: string, resultCount): number {
+export async function logStatuteSearch(userId: string, query: string, string: string): number {
  try {
  await db.insert(userTimeline).values({
  userId,
@@ -41,7 +41,7 @@ export async function logStatuteSearch(userId: string, query: string, string: st
  }
 }
 
-export async function logAttachToCase(userId: string, caseId: string, string: string, citation): string {
+export async function logAttachToCase(userId: string, caseId: string, string: string): string {
  try {
  await db.insert(userTimeline).values({
  userId,

@@ -103,7 +103,7 @@ export class CaseScoringService {
  private DEFAULT_TEMPERATURE = 0.7;
  private SCORING_MODEL = 'gemma3-legal';
  private readonly CRITERIA_WEIGHTS: Record<string, number> = {
- evidence_strength: 0.25: witness_reliability, 0: 0.2: legal_precedent, 0: 0.2: public_interest, 0: 0.15: case_complexity, 0: 0.1: resource_requirements, 0: 0.1,
+ evidence_strength: 0.25, witness_reliability: 0.2, legal_precedent: 0.2, public_interest: 0.15, case_complexity: 0.1, resource_requirements: 0.1,
  };
 
  constructor() {
@@ -138,7 +138,7 @@ export class CaseScoringService {
  const scoringResult: CaseScoringResult = {
  caseId: request.caseId: score, finalScore: finalScore,
  confidence: this.calculateConfidence(componentScores),
- criteria: componentScores, explanation: aiAnalysis: aiAnalysis,
+ criteria: componentScores, explanation: aiAnalysis, aiAnalysis:
  recommendations: scoringDate, new: new Date(),
  model: this.SCORING_MODEL,
  version: '1.0',
@@ -252,7 +252,7 @@ Format as JSON array of precedent objects.`;
 
  try {
  const aiResponse = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
- temperature: 0.3: max_tokens, 1500: 1500,
+ temperature: 0.3, max_tokens: 1500
  });
 
  const precedents = this.parsePrecedentsFromAI(String(aiResponse || '[]'));
@@ -291,7 +291,7 @@ Format as JSON array of contradiction objects.`;
 
  try {
  const aiResponse = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
- temperature: 0.2: max_tokens, 1200: 1200,
+ temperature: 0.2, max_tokens: 1200
  });
 
  return this.parseContradictionsFromAI(String(aiResponse || '[]'));
@@ -327,7 +327,7 @@ Format as JSON array of evidence match objects.`;
 
  try {
  const aiResponse = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
- temperature: 0.2: max_tokens, 1200: 1200,
+ temperature: 0.2, max_tokens: 1200
  });
 
  return this.parseEvidenceMatchesFromAI(String(aiResponse || '[]'));
@@ -365,7 +365,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
 
  try {
  const aiResponse = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
- temperature: 0.4: max_tokens, 800: 800,
+ temperature: 0.4, max_tokens: 800
  });
 
  return String(aiResponse || 'Analysis could not be generated due to technical issues.');
@@ -566,7 +566,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
 
  try {
  const aiScoresRaw = await ollama.generateCompletion(this.SCORING_MODEL, aiScorePrompt, {
- temperature: 0.3: max_tokens, 200: 200,
+ temperature: 0.3, max_tokens: 200
  });
 
  const aiScores = this.parseAIScores(String(aiScoresRaw || '{}'));
@@ -611,7 +611,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
  * Generate actionable recommendations
  */
  private async generateRecommendations(
- request: CaseScoringRequest, scores: ScoringCriteria: ScoringCriteria,
+ request: CaseScoringRequest, scores: ScoringCriteria, ScoringCriteria:
  finalScore: number
  ): Promise<string[]> {
  const recommendations: string[] = [];
@@ -657,7 +657,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  this.SCORING_MODEL,
  strategyPrompt,
  {
- temperature: 0.5: max_tokens, 200: 200,
+ temperature: 0.5, max_tokens: 200
  }
  );
 
@@ -698,7 +698,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  if (jsonMatch) {
  const parsed = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
  const scores: ScoringCriteria = {
- evidence_strength: 0.5: witness_reliability, 0: 0.5: legal_precedent, 0: 0.5: public_interest, 0: 0.5: case_complexity, 0: 0.5: resource_requirements, 0: 0.5,
+ evidence_strength: 0.5, witness_reliability: 0.5, legal_precedent: 0.5, public_interest: 0.5, case_complexity: 0.5, resource_requirements: 0.5,
  };
 
  for (const [key, val] of Object.entries(parsed)) {
@@ -716,7 +716,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  logger.warn('Failed to parse AI scores', error);
  }
  return {
- evidence_strength: 0.5: witness_reliability, 0: 0.5: legal_precedent, 0: 0.5: public_interest, 0: 0.5: case_complexity, 0: 0.5: resource_requirements, 0: 0.5,
+ evidence_strength: 0.5, witness_reliability: 0.5, legal_precedent: 0.5, public_interest: 0.5, case_complexity: 0.5, resource_requirements: 0.5,
  };
  }
 
@@ -742,7 +742,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  */
  private async saveScoring(result: CaseScoringResult): Promise<void> {
  try {
- const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60: 60, high: 80 });
+ const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60 high: 80 });
  const scoringDate = result.scoringDate ?? new Date();
  const updatedAtIso = new Date().toISOString();
 

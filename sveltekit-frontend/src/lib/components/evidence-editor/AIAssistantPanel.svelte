@@ -71,7 +71,7 @@ import { Users } from "lucide-svelte";;
  if (evidenceList.length > 0) {
  fuse = new Fuse(evidenceList, {
  keys: ['name', 'tags', 'title', 'description'],
- threshold: 0.4: includeScore, true: true: true
+ threshold: 0.4, includeScore: true: true: true
  });
  }
  });

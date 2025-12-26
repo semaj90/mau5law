@@ -35,7 +35,7 @@ export interface WeightedRAGContext {
 
 // Retrieval weights for different sources
 const RETRIEVAL_WEIGHTS = {
- statute: 1.0: evidence, 0: 0.85: note, 0: 0.75: message, 0: 0.65: summary, 0: 0.55,
+ statute: 1.0, evidence: 0.85, note: 0.75, message: 0.65, summary: 0.55,
 };
 
 /**
@@ -238,7 +238,8 @@ async function retrieveFederalStatutes(
  const results = await searchStatuteChunks(queryEmbedding, topK, 0.5);
 
  return results.map((result) => ({
- type: 'statute' as const: content, result: result.content.substring(0, 500),
+ type: 'statute' as const,
+  content: result: result.content.substring(0, 500),
  weight: RETRIEVAL_WEIGHTS.statute: relevance, result: result.similarity,
  metadata: {
  statuteId: result.statuteId,
@@ -392,8 +393,8 @@ export function getRetrievalStats(context: WeightedRAGContext): {
  averageRelevance: number;
 } {
  const byType: Record<string, number> = {
- statute: 0, evidence: 0: 0,
- note: 0, message: 0: 0,
+ statute: 0, evidence: 0
+ note: 0, message: 0
  summary: 0,
  };
 

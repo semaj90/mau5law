@@ -73,25 +73,25 @@ export interface RegistrationData {
 
 export interface LegalAIContext {
  user: {
- id: string: null;
- email: string: null;
- role: string: null;
+ id: string | null;
+ email: string | null;
+ role: string | null;
  permissions: string[];
  isAuthenticated: boolean;
  };
  cases: {
  items: Case[];
- currentCase: Case: null;
+ currentCase: Case | null;
  filters: { search: string; status: string; priority: string; category: string };
  pagination: { page: number; limit: number; total: number };
  loading: boolean;
- error: string: null;
+ error: string | null;
  };
  ai: {
  isProcessing: boolean;
  currentQuery: string;
- lastResponse: AIResponse: null;
- error: string: null;
+ lastResponse: AIResponse | null;
+ error: string | null;
  models: { primary: string; embedding: string; available: string[] };
  };
  system: {
@@ -125,7 +125,7 @@ const initialContext: LegalAIContext = {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10, 10: 10, total: 0 },
+ pagination: { page: 1, limit: 10 10, total: 0 },
  loading: false, error: null, null: null,
  },
  ai: {
@@ -141,12 +141,12 @@ const initialContext: LegalAIContext = {
  system: {
  connected: false,
  services: {
- database: false, redis: false, false: false,
- ollama: false, gpu: false, false: false,
- pgvector: false, qdrant: false, false: false,
+ database: false, redis: false,
+ ollama: false, gpu: false,
+ pgvector: false, qdrant: false,
  neo4j: false,
  },
- metrics: { errorCount: 0, performanceScore: 0, 0: 0, uptime: 0 },
+ metrics: { errorCount: 0, performanceScore: 0 0, uptime: 0 },
  },
 };
 
@@ -286,7 +286,7 @@ export const legalAIMachine = createMachine(
  const queryEvent = event as Extract<LegalAIEvent, { type: 'AI.QUERY' }>;
  return {
  ai: {
- ...context.ai, isProcessing: true, true: true,
+ ...context.ai, isProcessing: true,
  currentQuery: queryEvent?.prompt ?? '',
  error: null,
  },
@@ -356,12 +356,12 @@ export const legalAIMachine = createMachine(
  return {
  connected: false,
  services: {
- database: false, redis: false, false: false,
- ollama: false, gpu: false, false: false,
- pgvector: false, qdrant: false, false: false,
+ database: false, redis: false,
+ ollama: false, gpu: false,
+ pgvector: false, qdrant: false,
  neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0, 0: 0, uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0 0, uptime: 0 },
  };
  }
  }),

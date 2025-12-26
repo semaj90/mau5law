@@ -47,7 +47,7 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 /**
  * Create session data for cookies
  */
-export function createSessionData(userId: string, email: string: string, name): string {
+export function createSessionData(userId: string, email: string: string): string {
  return {
  userId,
  email,

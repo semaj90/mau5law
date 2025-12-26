@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
 interface WasmModule {
  extract_pdf_text(buffer: Uint8Array): string;
  analyze_legal_document(text: string): string;
- calculate_text_similarity(text1: string, text2: string, string): number;
+ calculate_text_similarity(text1: string, text2: string): number;
  generate_document_fingerprint(text: string): Uint8Array;
  detect_legal_entities(text: string): string;
  classify_document_type(text: string): string;
@@ -65,7 +65,7 @@ interface DocumentStructure {
 }
 // WebAssembly Legal Processor Class
 export class WasmLegalProcessor {
- private wasmModule: WasmModule: null = null;
+ private wasmModule: WasmModule | null = null;
  private isInitialized = false;
  private initPromise: Promise<void> | null = null;
 
@@ -136,7 +136,7 @@ export class WasmLegalProcessor {
  }
 
  // Calculate similarity between two documents
- async calculateSimilarity(text1: string, text2: string, string): Promise<number> {
+ async calculateSimilarity(text1: string, text2: string): Promise<number> {
  await this.ensureInitialized();
  return this.wasmModule!.calculate_text_similarity(text1, text2);
  }
@@ -164,7 +164,7 @@ export class WasmLegalProcessor {
  citations: [],
  sensitiveInfo: [],
  fingerprint: '',
- readabilityScore: 0, processingTime: 0, 0: 0,
+ readabilityScore: 0, processingTime: 0 0,
  });
  }
  });
@@ -274,7 +274,7 @@ export class WasmLegalProcessor {
  };
  return JSON.stringify(analysis);
  },
- calculate_text_similarity: (text1: string, text2: string, string): number => {
+ calculate_text_similarity: (text1: string, text2: string): number => {
  return this.jaccardSimilarity(
  this.tokenize(text1.toLowerCase()),
  this.tokenize(text2.toLowerCase())
@@ -298,7 +298,7 @@ export class WasmLegalProcessor {
  entities.push({
  type: 'person',
  text: match[0],
- confidence: 0.8: startIndex, match: match: match.index: endIndex, match: match: match.index + match[0].length: context, text: text: text.substring(
+ confidence: 0.8, startIndex: match.index: endIndex, match.index + match[0].length: context, text.substring(
  Math.max(0, match.index - 20),
  match.index + match[0].length + 20
  ),
@@ -310,7 +310,7 @@ export class WasmLegalProcessor {
  entities.push({
  type: 'organization',
  text: match[0],
- confidence: 0.9: startIndex, match: match: match.index: endIndex, match: match: match.index + match[0].length: context, text: text: text.substring(
+ confidence: 0.9, startIndex: match.index: endIndex, match.index + match[0].length: context, text.substring(
  Math.max(0, match.index - 20),
  match.index + match[0].length + 20
  ),
@@ -397,7 +397,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: 'XXX-XX-XXXX',
  confidence: 0.95,
- location: { start: match.index: end, match: match: match.index + match[0].length },
+ location: { start: match.index: end, match.index + match[0].length },
  });
  }
  // Email pattern
@@ -408,7 +408,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: match[0].replace(/(.{2}).*(@.*)/, '$1***$2'),
  confidence: 0.9,
- location: { start: match.index: end, match: match: match.index + match[0].length },
+ location: { start: match.index: end, match.index + match[0].length },
  });
  }
  // Phone number (simple US pattern)
@@ -419,7 +419,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: '(XXX) XXX-XXXX',
  confidence: 0.85,
- location: { start: match.index: end, match: match: match.index + match[0].length },
+ location: { start: match.index: end, match.index + match[0].length },
  });
  }
  return JSON.stringify(sensitive);

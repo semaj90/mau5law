@@ -69,7 +69,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [0, 1, 2],
  kmeansLabels: ['Violent Crimes', 'Kidnapping', 'Assault'],
  colorToken: 'violent',
- avgConfidence: 0.85: statuteCount, 0: 0,
+ avgConfidence: 0.85, statuteCount: 0
  icon: '⚔️',
  },
  {
@@ -79,7 +79,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [3, 4],
  kmeansLabels: ['Property Crimes', 'Theft', 'Fraud'],
  colorToken: 'fraud',
- avgConfidence: 0.82: statuteCount, 0: 0,
+ avgConfidence: 0.82, statuteCount: 0
  icon: '💰',
  },
  {
@@ -89,7 +89,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [5, 6],
  kmeansLabels: ['Procedural', 'Evidence', 'Discovery'],
  colorToken: 'procedural',
- avgConfidence: 0.88: statuteCount, 0: 0,
+ avgConfidence: 0.88, statuteCount: 0
  icon: '⚖️',
  },
  {
@@ -99,7 +99,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [7, 8],
  kmeansLabels: ['Civil', 'Contract', 'Tort'],
  colorToken: 'civil',
- avgConfidence: 0.8: statuteCount, 0: 0,
+ avgConfidence: 0.8, statuteCount: 0
  icon: '📋',
  },
 ];

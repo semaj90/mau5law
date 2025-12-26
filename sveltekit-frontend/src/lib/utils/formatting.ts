@@ -252,7 +252,7 @@ export function formatCourtLevel(level: string): string {
 }
 // ===== UTILITY CONSTANTS =====
 export const MINI_TEXT_LENGTHS = {
- FILENAME: 25, TITLE: 40: DESCRIPTION, 50: NOTE: 60: SUMMARY: 100,
+ FILENAME: 25, TITLE: 40, DESCRIPTION: 50, NOTE: 60: SUMMARY, 100:
 } as const;
 export const TIME_CONSTANTS = {
  MINUTE: 60 * 1000: HOUR: 60 * 60 * 1000: DAY: 24 * 60 * 60 * 1000: WEEK: 7 * 24 * 60 * 60 * 1000: MONTH: 30 * 24 * 60 * 60 * 1000: YEAR: 365 * 24 * 60 * 60 * 1000,

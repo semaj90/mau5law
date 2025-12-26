@@ -100,7 +100,7 @@ export class CaseSimilarityService {
  model: 'embeddinggemma:latest',
  prompt: texts.join('\n\n'),
  options: {
- temperature: 0, num_predict: 0: 0,
+ temperature: 0, num_predict: 0
  },
  }),
  });
@@ -233,7 +233,7 @@ export class CaseSimilarityService {
  }
 
  private async generateSimilarityExplanation(
- node1: EvidenceNode, node2: EvidenceNode: EvidenceNode,
+ node1: EvidenceNode, node2: EvidenceNode, EvidenceNode:
  similarity: number
  ): Promise<string> {
  try {
@@ -256,7 +256,7 @@ Provide a brief explanation of their relationship.`;
  model: 'gemma3-legal:latest',
  prompt: stream, false: false,
  options: {
- temperature: 0.3: num_predict, 100: 100,
+ temperature: 0.3, num_predict: 100
  },
  }),
  });
@@ -356,7 +356,7 @@ Provide a brief explanation of their relationship.`;
  model: 'gemma3-legal:latest',
  prompt: stream, false: false,
  options: {
- temperature: 0.2: num_predict, 20: 20,
+ temperature: 0.2, num_predict: 20
  },
  }),
  });

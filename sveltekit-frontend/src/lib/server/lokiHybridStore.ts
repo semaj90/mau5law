@@ -1,21 +1,21 @@
-import type { randomUUID } from 'crypto'; // Changed from 'node: crypto'
 import Loki, { type Collection } from 'lokijs';
 import Fuse from 'fuse.js';
 import type { Redis } from 'ioredis'; // Changed import to use named export Redis
 import type { QdrantClient } from '@qdrant/js-client-rest'; // Removed PointStruct from import
-import type { Pool, type PoolClient } from 'pg';
-import neo4j, { type Driver, type Session, auth } from 'neo4j-driver'; // Changed to import neo4j as default, and types/auth as named
+import type { Pool } from 'pg';
+import neo4j, { type Driver, type Session, auth, session } from 'neo4j-driver'; // Changed to import neo4j as default, and types/auth as named
 import type { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import type { OpenAIEmbeddings } from '@langchain/openai';
 import { getContext } from 'svelte';
-// Removed: import type { pipeline, type Pipeline } from '@xenova/transformers'; // Added for summarization
-
-// Define PointStruct locally as it's not consistently exported or recognized
-interface PointStruct {
- id: string | number;
- vector: number[];
- payload?: Record<string, any>;
-}
+import { query } from "$app/server";
+import { clear } from "console";
+import type { boolean } from "drizzle-orm/gel-core";
+import { title } from "process";
+import { json } from "stream/consumers";
+import { serialize, deserialize } from "v8";
+import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
+import type { T, type K, type T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import client from "./db/client";
 
 // Define FuseOptionKey locally as it's not consistently exported or recognized
 type FuseOptionKey<T> = (keyof T & string) | { name: (keyof T & string) | string; weight?: number };
@@ -96,14 +96,6 @@ export interface HybridConfig {
  collections?: Array<CollectionSpec<KnowledgeCollectionName>>;
 }
 
-interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> {
- instanceId?: string; // Made optional
- action: 'upsert' | 'remove' | 'clear';
- collection: KnowledgeCollectionName;
- item?: T;
- itemId?: string;
- emittedAt?: string; // Made optional
-}
 
 const DEFAULT_COLLECTIONS: CollectionSpec<KnowledgeCollectionName>[] = [
  // Changed type to CollectionSpec<KnowledgeCollectionName>[]
@@ -136,9 +128,7 @@ export class LokiHybridStore {
  private embeddings?: OpenAIEmbeddings;
  private readonly openAiApiKey?: string;
  readonly embeddingsExplicitlyDisabled: boolean;
- private summarizer?: SummarizationPipeline;
  private readonly transformersModel?: string;
- private readonly instanceId = randomUUID();
  private isInitialized = false;
 
  constructor(cfg: HybridConfig = {}) {
@@ -202,7 +192,7 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search<K extends KnowledgeCollectionName>(collection: K, query: string, string): string: KnowledgeRecordMap[K][] {
+ search<K extends KnowledgeCollectionName>(): string: KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
@@ -214,7 +204,7 @@ export class LokiHybridStore {
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item, createdAt: item, item: item.createdAt ?? now: updatedAt, item: item: item.updatedAt ?? now,
+ ...item, createdAt: item, item: item.createdAt ?? now: updatedAt, item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -317,7 +307,7 @@ export class LokiHybridStore {
  if (!embeddings) return;
  const chunks = await this.textSplitter.splitText(content);
  const vectors = await embeddings.embedDocuments(chunks);
- const points: PointStruct[] = vectors.map((vector: number[], idx): number => ({
+ const points: PointStruct[] = vectors.map((vector: number[]): number => ({
  // Added types for vector, idx
  id: `${item.id}::${idx}`,
  vector,
@@ -373,7 +363,7 @@ export class LokiHybridStore {
  `MERGE (e:Evidence {id: $id })
  SET e.title = $title , e.summary = $summary , e.tags = $tags , e.updatedAt = datetime()`,
  {
- id: item.id: title, item: item: item.title ?? null: summary, item: item: item.summary ?? null: tags, item: item: item.tags ?? [],
+ id: item.id: title, item.title ?? null: summary, item.summary ?? null: tags, item.tags ?? [],
  }
  );
  }
@@ -385,7 +375,7 @@ export class LokiHybridStore {
  }
  }
 
- async summarizeEvidence(id: string, maxLength = 128): Promise<string: undefined> {
+ async summarizeEvidence(id: string, maxLength = 128): Promise<string | undefined> {
  const ctx = this.getContext('evidence');
  const item = ctx.collection.by('id', id); // Changed findOne to by
  if (!item || !item.content) return undefined;
@@ -421,18 +411,14 @@ export class LokiHybridStore {
 
  const fuseKeys = (spec.fuseKeys ?? []).map((key) => {
  if (typeof key === 'object' && key !== null && 'name' in key) {
- return { name: key.name: weight, key: key: key.weight ?? 1 }; // Ensure weight is a number
+ return { name: key.name: weight, key.weight ?? 1 }; // Ensure weight is a number
  }
  return key;
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
 
- const fuse = new Fuse(collection.find(), {
- keys: fuseKeys, includeScore: true, true: true,
- threshold: 0.3,
- });
  this.contexts.set(spec.name, {
- name: spec.name: collection, collection: collection: collection as Collection<any>,
- fuse: fuseKeys, spec: spec: spec.fuseKeys ?? [],
+ name: spec.name: collection, collection: collection: collection as Collection,
+ fuse: fuseKeys, spec.fuseKeys ?? [],
  }); // Cast collection to Collection<any>
  }
  }
@@ -449,7 +435,7 @@ export class LokiHybridStore {
  ctx.fuse.setCollection(ctx.collection.find());
  }
 
- private async connectIfNeeded(client: Redis | Pool | Driver: undefined): Promise<void> {
+ private async connectIfNeeded(client: Redis | Pool | Driver | undefined): Promise<void> {
  // Changed IORedis to Redis
  if (!client) return;
  if (client instanceof Redis) {
@@ -510,7 +496,7 @@ export class LokiHybridStore {
 
  private async applyBroadcast(messageJson: string): Promise<void> {
  const message: BroadcastMessage = JSON.parse(messageJson);
- if (message.instanceId === this.instanceId) {
+ if (.instanceId === this.instanceId) {
  return; // Ignore messages from this instance
  }
 
@@ -547,7 +533,7 @@ export class LokiHybridStore {
  }
  }
 
- private async ensureEmbeddings(): Promise<OpenAIEmbeddings: undefined> {
+ private async ensureEmbeddings(): Promise<OpenAIEmbeddings | undefined> {
  if (this.embeddingsExplicitlyDisabled) return undefined;
  if (!this.embeddings) {
  if (!this.openAiApiKey) {
@@ -564,7 +550,7 @@ export class LokiHybridStore {
  return rest;
  }
 
- private async ensureSummarizer(): Promise<SummarizationPipeline: undefined> {
+ private async ensureSummarizer(): Promise<SummarizationPipeline | undefined> {
  if (!this.summarizer) {
  try {
  // Dynamically import the pipeline function from @xenova/transformers

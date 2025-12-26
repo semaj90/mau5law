@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
  try {
  const health = await checkDatabaseHealth();
  const stats = await getDatabaseStats();
- return json({ success: true, healthy: health: health, stats });
+ return json({ success: true, healthy: health, health: stats });
  } catch (err: unknown) {
  const message = err instanceof Error ? err.message : String(err);
  console.error('Database health check error:', message);
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const message = err instanceof Error ? err.message : String(err);
  console.error('Database maintenance error:', message);
  return json(
- { success: false, error: message: message, timestamp: new Date().toISOString() },
+ { success: false, error: message, message: timestamp: new Date().toISOString() },
  { status: 500 }
  );
  }
@@ -112,7 +112,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
  const message = err instanceof Error ? err.message : String(err);
  console.error('Database deletion error:', message);
  return json(
- { success: false, error: message: message, timestamp: new Date().toISOString() },
+ { success: false, error: message, message: timestamp: new Date().toISOString() },
  { status: 500 }
  );
  }

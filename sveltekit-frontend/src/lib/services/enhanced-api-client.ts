@@ -1,11 +1,13 @@
-import type { Case } from '$lib/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility
  */
-import type { z } from 'zod';
+import type { boolean, file, number, string, unknown, type z } from 'zod';
 import { goto } from '$app/navigation';
 import {  browser  } from '$app/environment';
+import { getHealthStatus } from "$lib/server/ai/rag-pipeline-enhanced";
+import type { Record } from "neo4j-driver";
+import type { id } from "zod/v4/locales";
 
 // Base API configuration
 const API_BASE_URL = '/api/v1';
@@ -490,7 +492,7 @@ export class LegalAIApiClient {
  */
  async uploadFile(
  file: File,
- onProgress?: (progress: number) => void,
+ onProgress?: () => void,
  signal?: AbortSignal
  ): Promise<{
  fileUrl: string;

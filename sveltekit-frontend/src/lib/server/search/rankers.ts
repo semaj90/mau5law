@@ -23,7 +23,7 @@ function tokenize(text: string): string[] {
  .filter(Boolean);
 }
 
-function occurrences(text: string, token): number {
+function occurrences(text: string): number {
  if (!token) return 0;
  return text.split(token).length - 1;
 }

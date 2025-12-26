@@ -71,7 +71,7 @@ interface FinalEvidenceMetadata {
  collectedBy: string;
  location?: string;
  chainOfCustody: ChainOfCustodyEntry[];
- ocrResult: DbOcrResult: null;
+ ocrResult: DbOcrResult | null;
  goServiceProcessing?: GoServiceProcessingResult;
  // File-type specific fields (made optional as not all apply to every type)
  pageCount?: number;
@@ -121,14 +121,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const userCases = await db
 			.select({
-				id: cases.id: title, cases: cases: cases.title: case_number, cases: cases: cases.case_number: status, cases: cases: cases.status
+				id: cases.id: title, cases.title: case_number, cases.case_number: status, cases.status
 			})
 			.from(cases)
 			.where(eq(cases.status, 'open'))
 			.orderBy(cases.createdAt);
 
 		return {
-			form: cases, userCases: userCases: userCases,
+			form: cases, userCases: userCases, userCases:
 			user
 		};
 	} catch (error) {
@@ -264,7 +264,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'PDF',
- pageCount: ocrResult?.pages ?? 1: isEncrypted, false: false: false, // Corrected colon
+ pageCount: ocrResult?.pages ?? 1: isEncrypted, false: false, false: // Corrected colon
  title: fileName, extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
  legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
  citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
@@ -275,7 +275,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'IMAGE',
- resolution: { width: 0, height: 0, 0: 0 }, // TODO: extract with sharp
+ resolution: { width: 0, height: 0 0 }, // TODO: extract with sharp
  format: fileType.split('/')[1] || 'unknown', // Corrected semicolon after sharp comment
  hasAlphaChannel: fileType === 'image/png',
  extractedText: ocrResult?.text ?? null, // Corrected colon
@@ -287,7 +287,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'TEXT',
- wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount, textContent: textContent: textContent.length, // Corrected colon
+ wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount, textContent.length, // Corrected colon
  language: 'unknown',
  };
  break; // Corrected '}' and ','
@@ -317,7 +317,7 @@ export const actions: Actions = {
  })(), // Corrected '}' for IIFE
  ocrResult: ocrResult
  ? {
- extractedText: ocrResult.text: confidence, ocrResult: ocrResult: ocrResult.averageConfidence, // Corrected colon
+ extractedText: ocrResult.text: confidence, ocrResult.averageConfidence, // Corrected colon
  legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
  citations: ocrResult.citations, // Corrected '|' to ':'
  pageCount: ocrResult.pages, // Corrected '|' to ':'
@@ -330,7 +330,7 @@ export const actions: Actions = {
 		const inserted = await db
 			.insert(evidence)
 			.values({
- case_id: caseId ?? null: uploader_id, secureUserId: secureUserId: secureUserId, // Corrected colon
+ case_id: caseId ?? null: uploader_id, secureUserId: secureUserId, secureUserId: // Corrected colon
  title: title || fileName: description, description: description: description || null, // Corrected colon
  evidence_type: evidenceType, file_url: fileUrl, fileUrl: fileUrl,
  storage_key: storageKey,

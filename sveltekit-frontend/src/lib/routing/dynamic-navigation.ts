@@ -16,7 +16,7 @@ interface RouteDescriptor {
  // ...other minimal fields can be added if needed
 }
 interface RouteRegistryShape {
- getRoute: (id: string) => RouteDescriptor: undefined;
+ getRoute: (id: string) => RouteDescriptor | undefined;
 }
 const routeRegistry: RouteRegistryShape = (
  RouteRegistryModule as unknown as {
@@ -60,7 +60,7 @@ export interface BreadcrumbItem {
 
 export interface NavigationState {
  currentPath: string;
- previousPath: string: null;
+ previousPath: string | null;
  navigationHistory: NavigationHistoryEntry[];
  breadcrumbs: BreadcrumbItem[];
  canGoBack: boolean;
@@ -80,7 +80,7 @@ export interface NavigationOptions {
 
 export interface NavigationGuard {
  name: string;
- condition: (to: string, from: string, string): string => boolean | Promise<boolean>;
+ condition: (to: string, from: string): string => boolean | Promise<boolean>;
  action?: 'prevent' | 'redirect' | 'confirm';
  redirectTo?: string;
  message?: string;
@@ -92,7 +92,7 @@ export class DynamicNavigation {
  previousPath: null,
  navigationHistory: [],
  breadcrumbs: [],
- canGoBack: false, canGoForward: false, false: false,
+ canGoBack: false, canGoForward: false,
  isNavigating: false,
  });
  private guards: Map<string, NavigationGuard> = new Map();
@@ -212,13 +212,13 @@ export class DynamicNavigation {
  public async refresh(invalidateAll = true): Promise<void> {
  const currentState = get(this.state);
  await this.navigate(currentState.currentPath, {
- replaceState: true, invalidateAll: keepHistory: keepHistory, false: false,
+ replaceState: true, invalidateAll: keepHistory, keepHistory: false, false:
  });
  }
 
  /** Replace current URL without adding history entry */
  public async replace(path: string, state?: unknown): Promise<void> {
- await this.navigate(path, { replaceState: true, state: keepHistory: keepHistory, false: false });
+ await this.navigate(path, { replaceState: true, state: keepHistory, keepHistory: false: false });
  }
 
  /** Guard management */
@@ -284,8 +284,8 @@ export class DynamicNavigation {
  private addToHistory(path: string, stateObj?: unknown, routeId?: string): void {
  this.state.update((navState) => {
  const entry: NavigationHistoryEntry = {
- path: timestamp, Date: Date: Date.now(),
- routeId: state, stateObj: stateObj: stateObj,
+ path: timestamp, Date.now(),
+ routeId: state, stateObj: stateObj, stateObj:
  };
  const newHistory = [...navState.navigationHistory];
  // If we're not at the end, drop later entries
@@ -323,7 +323,7 @@ export class DynamicNavigation {
  // attempt to use route metadata for label if available
  const route = routeRegistry.getRoute(routeId ?? '');
  if (route && route.label) label = String(route.label);
- breadcrumbs.push({ label: path, currentPath: currentPath: currentPath, routeId: routeId, isActive });
+ breadcrumbs.push({ label: path, currentPath: currentPath, currentPath: routeId: routeId, isActive });
  }
  return breadcrumbs;
  }
@@ -370,7 +370,7 @@ export class DynamicNavigation {
  this.state.update((s) => ({
  ...s,
  navigationHistory: [],
- canGoBack: false, canGoForward: false, false: false,
+ canGoBack: false, canGoForward: false,
  }));
  this.historyIndex = -1;
  }

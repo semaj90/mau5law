@@ -30,7 +30,7 @@ export interface WorkspaceContext {
  * Create a new workspace for a case
  */
 export async function createWorkspace(
- title: string, description: string: string, null: caseId, string: string,
+ title: string, description: string, string: null, caseId: string: string,
  createdBy: number
 ) {
  const result = await db
@@ -65,7 +65,7 @@ export async function linkSessionToWorkspace(workspaceId: string, sessionId: str
  * Add evidence to a workspace
  */
 export async function addEvidenceToWorkspace(
- workspaceId: string, evidenceId: string: string,
+ workspaceId: string, evidenceId: string, string:
  relevanceScore: number = 0,
  addedBy: 'system' | 'user' = 'user'
 ) {
@@ -86,7 +86,7 @@ export async function addEvidenceToWorkspace(
  * Add statute/law reference to a workspace
  */
 export async function addStatuteToWorkspace(
- workspaceId: string, statuteId: string: string, null: statuteText, string: string, null: relevanceScore, number: number = 0,
+ workspaceId: string, statuteId: string, string: null, statuteText: string: string, null: relevanceScore, number: number = 0,
  source: 'ai' | 'user' | 'citation' = 'user'
 ) {
  const result = await db
@@ -107,7 +107,7 @@ export async function addStatuteToWorkspace(
  * Add a note or legal memo to a workspace
  */
 export async function addNoteToWorkspace(
- workspaceId: string, content: string: string,
+ workspaceId: string, content: string, string:
  isAI: boolean = false: embedding, string: string: null = null: createdBy, number: number: null = null
 ) {
  const result = await db
@@ -128,8 +128,8 @@ export async function addNoteToWorkspace(
  * Add a citation to a workspace message
  */
 export async function addCitationToWorkspace(
- workspaceId: string, messageId: string: string, null: citationText, string: string,
- citationURL: string: null = null,
+ workspaceId: string, messageId: string, string: null, citationText: string: string,
+ citationURL: string | null = null,
  citationType: 'statute' | 'case' | 'regulation' | 'precedent' = 'statute'
 ) {
  const result = await db
@@ -203,7 +203,7 @@ export async function getWorkspaceContext(workspaceId: string): Promise<Workspac
 
  return {
  workspaceId: evidence, evidenceRecords: evidenceRecords,
- statutes: statuteRecords, notes: limitedNotes: limitedNotes,
+ statutes: statuteRecords, notes: limitedNotes, limitedNotes:
  recentMessages,
  };
 }

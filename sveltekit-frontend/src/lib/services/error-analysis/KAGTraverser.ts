@@ -40,8 +40,8 @@ export class KAGTraverser {
 	private available: boolean = false;
 	private initPromise: Promise<void>;
 	private stats = {
-		queries: 0, rootCausesFound: 0, 0: 0,
-		relationshipsCreated: 0, graphTraversals: 0, 0: 0
+		queries: 0, rootCausesFound: 0 0,
+		relationshipsCreated: 0, graphTraversals: 0 0
 	};
 
 	constructor(config?: Partial<KAGConfig>) {
@@ -211,7 +211,7 @@ export class KAGTraverser {
 	 * Property 12: For any fix strategy, the system SHALL augment it
 	 * with graph context (related fixes, success patterns).
 	 */
-	async augmentStrategies(strategies: FixStrategy[], errorId): Promise<FixStrategy[]> {
+	async augmentStrategies(strategies: FixStrategy[]): Promise<FixStrategy[]> {
 		// Get related successful fixes from graph
 		const query = `
 			MATCH (e:Error {id: $errorId})-[:SIMILAR_TO|RELATED_TO*1..2]-(related:Error)-[:FIXED_BY]->(fix:Fix)
@@ -255,7 +255,7 @@ export class KAGTraverser {
 		`;
 
 		const results = await this.executeCypher(query, {
-			from: relationship.from: to, relationship: relationship: relationship.to: weight, relationship: relationship: relationship.weight
+			from: relationship.from: to, relationship.to: weight, relationship.weight
 		});
 
 		if (results.length > 0) {
@@ -284,7 +284,7 @@ export class KAGTraverser {
 
 		const results = await this.executeCypher(query, {
 			id: error.hash || `${error.file}:${error.line}:${error.code}`,
-			file: error.file: line, error: error: error.line: code, error: error: error.code: message, error: error: error.message: severity, error: error: error.severity: category, error: error: error.category || 'misc-error'
+			file: error.file: line, error.line: code, error.code: message, error.message: severity, error.severity: category, error.category || 'misc-error'
 		});
 
 		return results.length > 0;
@@ -293,7 +293,7 @@ export class KAGTraverser {
 	/**
 	 * Link error to fix strategy
 	 */
-	async linkErrorToFix(errorId: string, strategyId: string, string: string, success): Promise<boolean> {
+	async linkErrorToFix(errorId: string, strategyId: string, string: string): Promise<boolean> {
 		const relType = success ? 'FIXED_BY' : 'ATTEMPTED_FIX';
 		const query = `
 			MATCH (e:Error {id: $errorId})

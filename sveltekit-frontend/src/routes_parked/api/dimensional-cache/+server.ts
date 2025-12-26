@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  embeddings: new Float32Array(embeddings),
  attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined: metadata, metadata: metadata || {},
  });
- return json({ success: true, cached: result: result, timestamp: Date.now() });
+ return json({ success: true, cached: result, result: timestamp: Date.now() });
  }
  case 'get': {
  const { key } = body;

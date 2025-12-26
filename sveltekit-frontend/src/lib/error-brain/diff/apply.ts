@@ -127,7 +127,7 @@ export async function applyPatches(
  * Apply a single patch directly (for testing)
  */
 export async function applyPatchDirect(
- patch: PatchCandidate, afterContent: string: string,
+ patch: PatchCandidate, afterContent: string, string:
  dryRun = false
 ): Promise<{ ok: boolean; reason?: string }> {
  const appliedFiles = new Set<string>();

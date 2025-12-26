@@ -128,7 +128,7 @@ export class BrowserRAGChain {
  return {
  answer: 'I could not find relevant information to answer your question.',
  sources: [],
- confidence: 0, tokensGenerated: 0: 0,
+ confidence: 0, tokensGenerated: 0
  duration: performance.now() - startTime,
  };
  }

@@ -68,7 +68,7 @@ export default class MultiTierCache<V = unknown> {
  }
 
  return {
- value: parsed.value: expiresAt, parsed: parsed: parsed.expiresAt ?? null,
+ value: parsed.value: expiresAt, parsed.expiresAt ?? null,
  };
  } catch {
  return null;
@@ -128,7 +128,7 @@ export default class MultiTierCache<V = unknown> {
  }
 
  // Public API
- async get(key: string): Promise<V: undefined> {
+ async get(key: string): Promise<V | undefined> {
  // prune expired entries first
  this.pruneExpiredInMemory();
 
@@ -151,7 +151,7 @@ export default class MultiTierCache<V = unknown> {
  if (fromStorage) {
  // put into memory (and maintain LRU)
  this.memory.set(key, {
- value: fromStorage.value: expiresAt, fromStorage: fromStorage: fromStorage.expiresAt ?? null,
+ value: fromStorage.value: expiresAt, fromStorage.expiresAt ?? null,
  });
  this.evictIfNeeded();
  return fromStorage.value;

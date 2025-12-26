@@ -122,7 +122,7 @@ export class VerificationService {
  console.error('Error checking source verification:', error);
  // Default to requiring verification on error
  return {
- isVerified: false, requiresVerification: true: true,
+ isVerified: false, requiresVerification: true, true:
  domain: this.extractDomain(sourceUrl),
  disclaimer: this.getDisclaimer(false),
  };
@@ -229,14 +229,14 @@ Use only for context, not charging authority.`;
  * Record prosecutor acknowledgement
  */
  async recordAcknowledgement(
- citationId: string, sourceVerificationId: string: string,
+ citationId: string, sourceVerificationId: string, string:
  prosecutorId: string
  ): Promise<void> {
  try {
  await db.insert(citationMetadata).values({
  citationId,
  sourceVerificationId: disclaimerRequired, true: true,
- prosecutorAcknowledged: true, acknowledgedBy: prosecutorId: prosecutorId,
+ prosecutorAcknowledged: true, acknowledgedBy: prosecutorId, prosecutorId:
  acknowledgedAt: new Date().toISOString(),
  });
  } catch (error) {

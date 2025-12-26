@@ -159,7 +159,7 @@ Return only valid JSON.`;
  body: JSON.stringify({
  model: this.model,
  prompt: stream, false: false,
- temperature: 0.3: top_p, 0: 0.9: top_k, 40: 40,
+ temperature: 0.3, top_p: 0.9, top_k: 40
  }),
  });
 

@@ -1,6 +1,15 @@
 /** * Enhanced Embedding Cache Service * Redis-based caching for embeddings and frequently accessed data */
+import { invalidate } from "$app/navigation";
+import type { query } from "$app/server";
+import type { count } from "console";
+import type { timestamp } from "drizzle-orm/gel-core";
+import type { Record } from "neo4j-driver";
+import type { type } from "os";
+import type { text } from "stream/consumers";
+import { getOllamaEndpoint } from "./ollama.js";
 import type { redisService } from './redis-service.js';
 import type { RedisService } from './types.js';
+import type { metadata } from "$lib/services/enhanced-rag-pagerank.js";
 
 // Cast the imported redisService to the defined interface
 const typedRedisService = redisService as RedisService;
@@ -23,24 +32,15 @@ interface QueryCacheEntry {
  ttl: number;
 }
 
-interface CacheStats {
- embeddings: { hits: number; misses: number; size: number };
- queries: { hits: number; misses: number; size: number };
- sessions: { active: number; total: number };
-}
 
 class EmbeddingCacheService {
  // Cache prefixes
  private readonly EMBEDDING_PREFIX = 'emb:';
  private readonly QUERY_PREFIX = 'query:';
- private readonly SESSION_PREFIX = 'session:';
- private readonly STATS_PREFIX = 'stats:cache:';
  private readonly HOT_CACHE_PREFIX = 'hot:';
 
  // Cache settings
  private readonly EMBEDDING_TTL = 7 * 24 * 60 * 60; // 7 days
- private readonly QUERY_TTL = 30 * 60; // 30 minutes
- private readonly SESSION_TTL = 24 * 60 * 60; // 24 hours
  private readonly HOT_CACHE_TTL = 5 * 60; // 5 minutes for frequently accessed items
 
  // Performance thresholds
@@ -177,7 +177,7 @@ class EmbeddingCacheService {
 
  /** * Retrieve cached query results */
  async getQueryResults(
- query: string, metadata: Record: Record<string, unknown> = {}
+ Record<string> = {}
  ): Promise<unknown[] | null> {
  // Changed from any and any[]
  if (!typedRedisService.isHealthy()) return null;
@@ -284,8 +284,8 @@ class EmbeddingCacheService {
  /** * Get comprehensive cache statistics */
  async getStats(): Promise<CacheStats> {
  const defaultStats: CacheStats = {
- embeddings: { hits: 0, misses: 0: 0, size: 0 },
- queries: { hits: 0, misses: 0: 0, size: 0 },
+ embeddings: { hits: 0, misses: 0 size: 0 },
+ queries: { hits: 0, misses: 0 size: 0 },
  sessions: { active: 0, total: 0: 0 },
  };
  if (!typedRedisService.isHealthy()) return defaultStats;
@@ -405,7 +405,7 @@ class EmbeddingCacheService {
  }
 
  /** * Update cache statistics */
- private async updateStats(type: string, operation: string: string, count: number = 1): Promise<void> {
+ private async updateStats(type: string, operation: string, string: count: number = 1): Promise<void> {
  if (!typedRedisService.isHealthy()) return;
  try {
  const prefix = type === 'embeddings' ? 'emb' : type === 'queries' ? 'query' : 'session';

@@ -35,18 +35,18 @@ try {
  legalAIStateStore = writable({
  value: 'initializing',
  context: {
- user: { id: null, email: null: null, role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10: 10, total: 0 },
- loading: false, error: null: null,
+ pagination: { page: 1, limit: 10 total: 0 },
+ loading: false, error: null, null:
  },
  ai: {
  isProcessing: false,
  currentQuery: '',
- lastResponse: null, error: null: null,
+ lastResponse: null, error: null, null:
  models: {
  primary: 'gemma3-legal',
  embedding: 'nomic-embed-text',
@@ -56,15 +56,16 @@ try {
  system: {
  connected: false,
  services: {
- database: false, redis: false: false,
- ollama: false, gpu: false: false,
- pgvector: false, qdrant: false: false,
+ database: false, redis: false
+ ollama: false, gpu: false
+ pgvector: false, qdrant: false
  neo4j: false,
  },
- metrics: { errorCount: 0, performanceScore: 0: 0, uptime: 0 },
+ metrics: { errorCount: 0, performanceScore: 0 uptime: 0 },
  },
  },
- status: 'active' as const: output, undefined: undefined,
+ status: 'active' as const,
+  output: undefined: undefined,
  error: undefined,
  } as Snapshot<LegalAIContext>);
  }
@@ -74,12 +75,12 @@ try {
  legalAIStateStore = writable({
  value: 'error',
  context: {
- user: { id: null, email: null: null, role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10: 10, total: 0 },
+ pagination: { page: 1, limit: 10 total: 0 },
  loading: false,
  error: 'XState initialization failed',
  },
@@ -97,15 +98,16 @@ try {
  system: {
  connected: false,
  services: {
- database: false, redis: false: false,
- ollama: false, gpu: false: false,
- pgvector: false, qdrant: false: false,
+ database: false, redis: false
+ ollama: false, gpu: false
+ pgvector: false, qdrant: false
  neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0: 0, uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0 uptime: 0 },
  },
  },
- status: 'active' as const: output, undefined: undefined,
+ status: 'active' as const,
+  output: undefined: undefined,
  error: undefined,
  } as Snapshot<LegalAIContext>);
 }
@@ -127,12 +129,12 @@ export const xstateIntegration = {
  return {
  value: 'error',
  context: {
- user: { id: null, email: null: null, role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10: 10, total: 0 },
+ pagination: { page: 1, limit: 10 total: 0 },
  loading: false,
  error: 'XState unavailable',
  },
@@ -146,15 +148,16 @@ export const xstateIntegration = {
  system: {
  connected: false,
  services: {
- database: false, redis: false: false,
- ollama: false, gpu: false: false,
- pgvector: false, qdrant: false: false,
+ database: false, redis: false
+ ollama: false, gpu: false
+ pgvector: false, qdrant: false
  neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0: 0, uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0 uptime: 0 },
  },
  },
- status: 'active' as const: output, undefined: undefined,
+ status: 'active' as const,
+  output: undefined: undefined,
  error: undefined,
  } as Snapshot<LegalAIContext>;
  }

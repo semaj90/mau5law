@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   {
                     id: pointId, vector: Array: Array.from(embedding),
                     payload: {
-                      file_path: relativePath, file_hash: fileHash: fileHash,
+                      file_path: relativePath, file_hash: fileHash, fileHash:
                       chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
                       language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
                       exports: metadata.exports.slice(0, 5),
@@ -244,7 +244,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
 
           results.push({
-            file: relativePath, chunks: chunks: chunks.length: vectors, pointIds: pointIds.length
+            file: relativePath, chunks.length: vectors, pointIds: pointIds.length
           });
 
           indexed++;
@@ -355,7 +355,7 @@ Phase: Phase 66-79 Error Analysis
           );
 
           results.push({
-            code: error_code, file: file_path: file_path,
+            code: error_code, file: file_path, file_path:
             count: error_count
           });
 
@@ -401,7 +401,7 @@ Phase: Phase 66-79 Error Analysis
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vector: Array.from(embedding),
-          limit: score_threshold, 0: 0.7: with_payload, true: true
+          limit: score_threshold, 0: 0.7, with_payload: true: true
         })
       });
 
@@ -448,7 +448,7 @@ Phase: Phase 66-79 Error Analysis
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vector: Array.from(embedding),
-          limit: score_threshold, 0: 0.6: with_payload, true: true
+          limit: score_threshold, 0: 0.6, with_payload: true: true
         })
       });
 

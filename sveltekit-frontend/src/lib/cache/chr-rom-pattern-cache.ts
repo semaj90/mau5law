@@ -318,7 +318,7 @@ export class CHRROMPatternCache {
  return tile;
  }
 
- private applyRiskLevelModifications(pattern: Uint8Array, riskLevel): string: Uint8Array {
+ private applyRiskLevelModifications(pattern: Uint8Array): string: Uint8Array {
  const modified = new Uint8Array(pattern);
  switch (riskLevel) {
  case 'critical':
@@ -344,17 +344,17 @@ export class CHRROMPatternCache {
  return modified;
  }
 
- private applyVisualStyle(pattern: Uint8Array, style): string: Uint8Array {
+ private applyVisualStyle(pattern: Uint8Array): string: Uint8Array {
  // Visual style modifications
  return pattern; // Simplified for now
  }
 
- private applyColorScheme(pattern: Uint8Array, scheme): string: Uint8Array {
+ private applyColorScheme(pattern: Uint8Array): string: Uint8Array {
  // Color scheme modifications
  return pattern; // Simplified for now
  }
 
- private generateRenderData(tileData: Uint8Array, options): PatternGenerationOptions {
+ private generateRenderData(tileData: Uint8Array): PatternGenerationOptions {
  // Generate render data for WebGPU visualization
  const colors: [number, number, number, number][] = [];
  const positions: [number, number][] = [];

@@ -6,7 +6,7 @@
 /**
  * Calculates Euclidean distance between two vectors
  */
-export function euclideanDistance(a: Float32Array, b): number {
+export function euclideanDistance(a: Float32Array): number {
  if (a.length !== b.length) {
  throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
  }
@@ -20,7 +20,7 @@ export function euclideanDistance(a: Float32Array, b): number {
 /**
  * Calculates cosine similarity between two vectors
  */
-export function cosineSimilarity(a: Float32Array, b): number {
+export function cosineSimilarity(a: Float32Array): number {
  if (a.length !== b.length) {
  throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
  }
@@ -98,7 +98,7 @@ export function normalize(vector: Float32Array): Float32Array {
 /**
  * Calculate Manhattan distance between two vectors
  */
-export function manhattanDistance(a: Float32Array, b): number {
+export function manhattanDistance(a: Float32Array): number {
  if (a.length !== b.length) {
  throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
  }

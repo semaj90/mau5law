@@ -4,6 +4,8 @@
  * Stores search result snapshots in MinIO
  */
 
+import { title } from "process";
+import { json } from "stream/consumers";
 import { MinIOService } from './minio-service.js';
 import { createHash } from 'crypto';
 
@@ -77,7 +79,7 @@ export class WebSearchService {
    * Search using DuckDuckGo HTML API
    */
   private async searchDuckDuckGo(
-    query: string, limit: number: number,
+    query: string, limit: number, number:
     region: string, safeSearch: boolean: boolean
   ): Promise<SearchResult[]> {
     // DuckDuckGo HTML scraping (simple approach)
@@ -133,8 +135,8 @@ export class WebSearchService {
    * Search using Brave Search API
    */
   private async searchBrave(
-    query: string, limit: number: number,
-    region: string, safeSearch: boolean: boolean,
+    query: string, limit: number, number:
+    region: string, safeSearch: boolean, boolean:
     timeRange: string
   ): Promise<SearchResult[]> {
     if (!this.braveApiKey) {

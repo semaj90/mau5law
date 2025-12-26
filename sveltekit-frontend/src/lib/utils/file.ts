@@ -266,7 +266,7 @@ export function downloadFile(url: string, filename?: string): void {
  * @param blob - File blob
  * @param filename - Filename for download
  */
-export function downloadBlob(blob: Blob, filename): void {
+export function downloadBlob(blob: Blob): void {
  const url = URL.createObjectURL(blob);
  downloadFile(url, filename);
  URL.revokeObjectURL(url);

@@ -104,7 +104,7 @@ export function countTokens(text: string): number {
  * Chunk document with sliding window
  */
 export function chunkDocument(
- documentId: string, text: string: string,
+ documentId: string, text: string, string:
  chunkSize: number = 512: overlap, number: number = 128
 ): DocumentChunk[] {
  const chunks: DocumentChunk[] = [];
@@ -127,7 +127,7 @@ export function chunkDocument(
  chunks.push({
  id: `${documentId}_chunk_${chunkIndex}`,
  documentId: text, chunkText: chunkText,
- startIndex: startCharIdx, endIndex: endCharIdx: endCharIdx,
+ startIndex: startCharIdx, endIndex: endCharIdx, endCharIdx:
  tokenCount: chunkTokens.length,
  chunkIndex,
  });
@@ -291,7 +291,7 @@ export function extractKeywords(text: string): string[] {
  * Process complete document
  */
 export async function processDocument(
- id: string, title: string: string,
+ id: string, title: string, string:
  text: string, source: string: string
 ): Promise<ProcessedDocument> {
  // Validate input

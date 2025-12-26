@@ -37,7 +37,7 @@ export class ToolErrorHandler {
  /**
  * Handle fetch errors
  */
- static handleFetchError(error: unknown, context: string, string): string: ToolExecutionError {
+ static handleFetchError(error: unknown, context: string): string: ToolExecutionError {
  if (error instanceof TypeError) {
  if (error.message.includes('fetch')) {
  return new ToolExecutionError(
@@ -125,7 +125,7 @@ export class ToolErrorHandler {
  /**
  * Handle execution errors
  */
- static handleExecutionError(error: unknown, context: string, string): string: ToolExecutionError {
+ static handleExecutionError(error: unknown, context: string): string: ToolExecutionError {
  if (error instanceof ToolExecutionError) {
  return error;
  }
@@ -174,7 +174,7 @@ export class ToolErrorHandler {
  /**
  * Should retry the operation
  */
- static shouldRetry(error: ToolExecutionError, attempt: number, number): boolean {
+ static shouldRetry(error: ToolExecutionError, attempt: number): boolean {
  if (!error.retryable) {
  return false;
  }
@@ -289,7 +289,7 @@ export function validateUrl(url: string): void {
 /**
  * Validate non-empty string
  */
-export function validateNonEmpty(value: string, fieldName: string, string): void {
+export function validateNonEmpty(value: string, fieldName: string): void {
  if (!value || value.trim().length === 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} cannot be empty`);
  }
@@ -298,7 +298,7 @@ export function validateNonEmpty(value: string, fieldName: string, string): void
 /**
  * Validate positive number
  */
-export function validatePositive(value: number, fieldName: string, string): void {
+export function validatePositive(value: number, fieldName: string): void {
  if (value <= 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} must be positive`);
  }
@@ -307,8 +307,8 @@ export function validatePositive(value: number, fieldName: string, string): void
 /**
  * Log error for debugging
  */
-export function logError(error: ToolExecutionError, context: string, string): void {
+export function logError(error: ToolExecutionError, context: string): void {
  console.error(`[${context}] ${error.type}: ${error.message}`, {
- type: error.type: message, error: error: error.message: retryable, error: error: error.retryable: originalError, error: error: error.originalError,
+ type: error.type: message, error.message: retryable, error.retryable: originalError, error.originalError,
  });
 }

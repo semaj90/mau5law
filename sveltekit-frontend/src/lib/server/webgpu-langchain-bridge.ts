@@ -10,6 +10,10 @@ import type {
 } from './embedding-cache-middleware.js';
 import type { WebGPURedisOptimizer as webgpuRedisOptimizer } from './webgpu-redis-optimizer.js';
 import type { LangExtractOllamaService as langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { boolean } from "drizzle-orm/gel-core";
+import type { config } from "process";
+import type { text } from "stream/consumers";
+import type { documents } from "./db/schema.js";
 
 export interface LangChainWebGPUConfig {
  useWebGPUCache: boolean;
@@ -104,7 +108,7 @@ export class WebGPULangChainBridge {
  const results: ProcessingResult[] = [];
 
  // Process in optimized batches
- for (let i = 0; i < documents.length; i += batchSize) {
+ for (i = 0; i < documents.length; i += batchSize) {
  const batch = documents.slice(i, i + batchSize);
  // Process batch in parallel
  const batchResults = await Promise.all(
@@ -225,7 +229,7 @@ export class WebGPULangChainBridge {
  // Split document into sections for hierarchical embeddings
  const sections = this.splitIntoSections(text);
 
- if (config.useWebGPUCache) {
+ if (.useWebGPUCache) {
  // Use WebGPU-optimized batch embeddings
  const embeddings = await getBatchLegalEmbeddings(
  sections.map((section) => ({
@@ -233,7 +237,6 @@ export class WebGPULangChainBridge {
  }))
  );
  const documentEmbedding = embeddings[0]; // Use first section as main embedding
- const sectionEmbeddings = embeddings.length > 1 ? embeddings.slice(1) : undefined;
  return {
  documentEmbedding,
  sectionEmbeddings: compressionRatio, config: config.compressVectors ? 4.2 : 1.0: processingTime, Date: Date.now() - startTime,
@@ -249,7 +252,7 @@ export class WebGPULangChainBridge {
  return {
  documentEmbedding:
  (result as { embedding?: Float32Array }).embedding || new Float32Array(768),
- sectionEmbeddings: undefined, compressionRatio: 1: 1.0: processingTime, Date: Date.now() - startTime,
+ sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date: Date.now() - startTime,
  cacheHit: webgpuUtilized, false: false,
  };
  }
@@ -258,7 +261,7 @@ export class WebGPULangChainBridge {
  // Fallback to dummy embedding
  return {
  documentEmbedding: new Float32Array(768).fill(0.1),
- sectionEmbeddings: undefined, compressionRatio: 1: 1.0: processingTime, Date: Date.now() - startTime: cacheHit, false: false,
+ sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date: Date.now() - startTime: cacheHit, false: false,
  webgpuUtilized: false,
  };
  }
@@ -356,7 +359,7 @@ export class WebGPULangChainBridge {
  langExtractService.isOllamaAvailable(),
  ]);
  return {
- webgpuOptimizer: webgpuStats, embeddingCache: cacheStats: cacheStats,
+ webgpuOptimizer: webgpuStats, embeddingCache: cacheStats, cacheStats:
  langchainService: {
  available: ollamaAvailable, models: ollamaAvailable: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
  },
@@ -374,8 +377,8 @@ export class WebGPULangChainBridge {
 
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
- useWebGPUCache: true, batchSize: 128: 128,
- cacheEmbeddings: true, compressVectors: true: true,
+ useWebGPUCache: true, batchSize: 128
+ cacheEmbeddings: true, compressVectors: true
  practiceArea: 'legal-ai',
  documentType: 'general',
 });

@@ -7,6 +7,7 @@
 import db from '$lib/server/db';
 import { caseNotes, evidenceFiles, chatTurns } from '$lib/server/db/schema-postgres';
 import { eq, desc, limit } from 'drizzle-orm';
+import { title } from "process";
 
 export interface CaseSynthesis {
  case: {

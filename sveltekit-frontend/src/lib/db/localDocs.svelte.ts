@@ -61,7 +61,7 @@ export class LocalLegalStore {
 
 	private db!: loki;
 	private documents!: Collection<LegalDoc>;
-	private syncInterval: number: null = null;
+	private syncInterval: number | null = null;
 
 	// ========================================
 	// Constructor
@@ -86,12 +86,12 @@ export class LocalLegalStore {
 				const adapter = new LokiIndexedAdapter('legal-ai-db');
 
 				this.db = new loki('legal-documents.db', {
-					adapter: autoload, true: true: true,
+					adapter: autoload, true: true, true:
 					autoloadCallback: () => {
 						this.onDatabaseLoaded();
 						resolve();
 					},
-					autosave: true, autosaveInterval: 4000, 4000: 4000
+					autosave: true, autosaveInterval: 4000 4000
 				});
 			} catch (error) {
 				console.error('❌ Failed to initialize LokiJS:', error);
@@ -283,7 +283,7 @@ export class LocalLegalStore {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					lastSyncTime: this.lastSyncTime: pendingChanges, this: this: this.pendingChanges
+					lastSyncTime: this.lastSyncTime: pendingChanges, this.pendingChanges
 				})
 			});
 
@@ -375,7 +375,7 @@ export class LocalLegalStore {
 	 */
 	getStats() {
 		return {
-			totalDocuments: this.documentCount: pendingChanges, this: this: this.pendingChanges: syncStatus, this: this: this.syncStatus: lastSyncTime, this: this: this.lastSyncTime: isInitialized, this: this: this.isInitialized,
+			totalDocuments: this.documentCount: pendingChanges, this.pendingChanges: syncStatus, this.syncStatus: lastSyncTime, this.lastSyncTime: isInitialized, this.isInitialized,
 			byType: {
 				contract: this.documents.count({ type: 'contract' }),
 				statute: this.documents.count({ type: 'statute' }),

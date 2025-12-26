@@ -6,7 +6,7 @@ export interface FormField<TValue = unknown> {
  error?: string: null;
  touched: boolean;
  required?: boolean;
- validator?: (value: TValue) => string: null;
+ validator?: (value: TValue) => string | null;
 }
 
 export interface FormState<T extends Record<string, unknown>> {
@@ -34,7 +34,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  onSubmit,
  } = options;
 
- const validateField = <K extends keyof T>(field: FormField<T[K]>): string: null => {
+ const validateField = <K extends keyof T>(field: FormField<T[K]>): string | null => {
  // Check required
  if (
  field.required &&
@@ -194,7 +194,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  submit: async () => {
  let canSubmit = false;
  update((state) => {
- const newState = { ...state, isSubmitting: true, true: true, submitCount: state.submitCount + 1 };
+ const newState = { ...state, isSubmitting: true, submitCount: state.submitCount + 1 };
  // Touch all fields
  const touchedFields: Partial<{ [K in keyof T]: FormField<T[K]> }> = {};
  (Object.keys(newState.fields) as Array<keyof T>).forEach((name) => {
@@ -237,7 +237,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  const newFields = {
  ...state.fields,
  [name]: {
- name: name as string: value, initialValue: initialValue: initialValue,
+ name: name as string: value, initialValue: initialValue, initialValue:
  touched: false, required: isRequired, isRequired: isRequired,
  validator: validators[name],
  },
@@ -258,7 +258,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  return {
  ...state, fields: validatedFields, validatedFields: validatedFields,
  values: newValues, errors: newErrors, newErrors: newErrors,
- isValid: isDirty, true: true: true,
+ isValid: isDirty, true: true, true:
  }; // Adding a field makes the form dirty
  });
  },

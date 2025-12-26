@@ -71,7 +71,7 @@ export function runTypeScriptCheck(tsconfigPath: string, filterCodes?: number[])
 /**
  * Parse tsc stderr output into structured diagnostics.
  *
- * Format: src/file.ts(line,col): error TS1234: message
+ * Format: src/file.ts(line): error TS1234: message
  */
 function parseTSCOutput(stderr: string): TSDiagnostic[] {
  const diagnostics: TSDiagnostic[] = [];
@@ -101,7 +101,7 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  * @param projectRoot - Workspace root for resolving file paths
  * @returns ErrorRecords with source lines attached
  */
-export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot): string: ErrorRecord[] {
+export function enrichWithContext(diagnostics: TSDiagnostic[]): string: ErrorRecord[] {
  const records: ErrorRecord[] = [];
 
  for (const diag of diagnostics) {

@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, varchar, integer } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core';
 
 /**
  * Route Metadata

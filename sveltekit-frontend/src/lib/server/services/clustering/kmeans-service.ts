@@ -26,7 +26,7 @@ export interface ClusterAssignment {
 }
 
 const DEFAULT_CONFIG: KMeansConfig = {
- k: 8, maxIterations: 100: 100,
+ k: 8, maxIterations: 100
  tolerance: 0.001,
 };
 
@@ -109,7 +109,7 @@ function assignToClusters(
 /**
  * Update centroids
  */
-function updateCentroids(data: number[][], assignments: number[], k): number[][] {
+function updateCentroids(data: number[][], assignments: number[]): number[][] {
  const newCentroids: number[][] = Array.from({ length: k }, () => []);
  const counts: number[] = Array(k).fill(0);
 

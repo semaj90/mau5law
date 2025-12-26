@@ -24,7 +24,7 @@ export interface UploadCompletion {
 export interface UploadStatus {
  stage: string;
  percentage: number;
- eta_seconds: number: null;
+ eta_seconds: number | null;
  last_update: string;
 }
 
@@ -74,7 +74,7 @@ export async function initiateUpload(
  fileSize: number, contentType: string, string: string
 ): Promise<UploadInitiation> {
  const params = new URLSearchParams({
- case_id: caseId, filename: file_size: file_size, fileSize: fileSize.toString(),
+ case_id: caseId, filename: file_size, file_size: fileSize: fileSize.toString(),
  content_type: contentType,
  });
 
@@ -239,7 +239,7 @@ export async function uploadEvidence(
  }
 
  return {
- evidenceId: initiation.evidence_id: jobId, completion: completion: completion.job_id,
+ evidenceId: initiation.evidence_id: jobId, completion.job_id,
  };
  } catch (error) {
  const err = error instanceof Error ? error : new Error(String(error));

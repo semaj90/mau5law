@@ -46,7 +46,7 @@ export type ConnectionState = 'connected' | 'disconnected' | 'reconnecting' | 'f
 // Health updates service state
 export interface HealthUpdatesState {
  connectionState: ConnectionState;
- lastUpdateTime: Date: null;
+ lastUpdateTime: Date | null;
  reconnectionAttempts: number;
  isUsingSSE: boolean;
 }
@@ -57,7 +57,7 @@ export interface HealthUpdatesState {
  */
 export const healthUpdatesState: Writable<HealthUpdatesState> = writable({
  connectionState: 'disconnected',
- lastUpdateTime: null, reconnectionAttempts: 0, 0: 0,
+ lastUpdateTime: null, reconnectionAttempts: 0 0,
  isUsingSSE: false,
 });
 
@@ -219,7 +219,7 @@ async function connectWebSocket(): Promise<boolean> {
  healthUpdatesState.update((state) => ({
  ...state,
  connectionState: 'connected',
- reconnectionAttempts: 0, isUsingSSE: false, false: false,
+ reconnectionAttempts: 0, isUsingSSE: false,
  }));
  reconnectionAttempts = 0;
  resolve(true);
@@ -303,7 +303,7 @@ async function connectSSE(): Promise<boolean> {
  healthUpdatesState.update((state) => ({
  ...state,
  connectionState: 'connected',
- reconnectionAttempts: 0, isUsingSSE: true, true: true,
+ reconnectionAttempts: 0, isUsingSSE: true,
  }));
  reconnectionAttempts = 0;
  resolve(true);

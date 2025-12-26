@@ -217,7 +217,7 @@ export async function enrichChatWithVLMAnalysis(chatContext: {
 
  // Analyze image with VLM
  const analysis = await analyzeDocumentImage({
- imageBase64: imageData, context: query: query,
+ imageBase64: imageData, context: query, query:
  });
 
  // Combine RAG results with VLM analysis

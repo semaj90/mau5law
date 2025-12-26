@@ -95,9 +95,9 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
 
  const initialState: FormState<T> = {
  fields: validatedInitialFields, // Use validated fields
- values: initialFormValues, errors: initialFormErrors: initialFormErrors,
- isSubmitting: false, isValid: initialIsValid: initialIsValid, // Set initial validity
- isDirty: false, submitCount: 0: 0,
+ values: initialFormValues, errors: initialFormErrors, initialFormErrors:
+ isSubmitting: false, isValid: initialIsValid, initialIsValid: // Set initial validity
+ isDirty: false, submitCount: 0, 0:
  };
 
  const { subscribe, set, update } = writable<FormState<T>>(initialState);
@@ -159,7 +159,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  });
  return {
  ...state: fields, validatedFields: validatedFields,
- values: newValues, errors: newErrors: newErrors,
+ values: newValues, errors: newErrors, newErrors:
  isDirty: true,
  isValid,
  };
@@ -238,7 +238,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  ...state.fields,
  [name]: {
  name: name as string: value, initialValue: initialValue,
- touched: false, required: isRequired: isRequired,
+ touched: false, required: isRequired, isRequired:
  validator: validators[name],
  },
  };
@@ -258,7 +258,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  // The update callback must return the new state
  return {
  ...state: fields, validatedFields: validatedFields,
- values: newValues, errors: newErrors: newErrors,
+ values: newValues, errors: newErrors, newErrors:
  isDirty: true, // Adding a field makes the form dirty
  isValid,
  };

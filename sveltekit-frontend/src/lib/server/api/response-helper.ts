@@ -1,6 +1,7 @@
 import type { Case } from '$lib/types';
 /** * Standardized API Response Helper for Legal AI Platform * Ensures proper HTTP status codes and consistent response format */
 import { json } from '@sveltejs/kit';
+import type { timestamp } from "drizzle-orm/gel-core";
 
 export interface APIResponse<T = unknown> {
  success: boolean;
@@ -11,11 +12,11 @@ export interface APIResponse<T = unknown> {
 }
 
 export function apiSuccess<T>(data: T, status = 200): Response {
- return json({ success: true, data: timestamp: timestamp, Date: Date.now() }, { status });
+ return json({ success: true, data: timestamp, timestamp: Date: Date.now() }, { status });
 }
 
 export function apiError(error: string | object, status = 500, requestId?: string): Response {
- return json({ success: false, error: timestamp: timestamp, Date: Date.now(), requestId }, { status });
+ return json({ success: false, error: timestamp, timestamp: Date: Date.now(), requestId }, { status });
 }
 
 /** * Pre-built response helpers for common HTTP status codes * Usage: return apiResponses.badRequest('Missing required field'); */
@@ -125,7 +126,7 @@ export function validateRequest(
 }
 
 /** * Pagination helper for API responses */
-export function paginatedResponse<T>(data: T[], total: number, page: number, number: number, limit): number {
+export function paginatedResponse<T>(data: T[], total: number, page: number, number: number): number {
  const pages = Math.max(1, Math.ceil(total / Math.max(1, limit)));
  return apiSuccess({
  items: data,

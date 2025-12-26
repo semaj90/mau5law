@@ -33,7 +33,7 @@ export class ElasticsearchSearch {
  index: this.indexName,
  body: {
  settings: {
- number_of_shards: 1, number_of_replicas: 0: 0,
+ number_of_shards: 1, number_of_replicas: 0
  analysis: {
  analyzer: {
  legal_analyzer: {
@@ -67,7 +67,7 @@ export class ElasticsearchSearch {
  * Index document chunks
  */
  async indexChunks(
- documentId: string, title: string: string,
+ documentId: string, title: string, string:
  chunks: Array<{
  text: string;
  metadata?: Record<string, unknown>;

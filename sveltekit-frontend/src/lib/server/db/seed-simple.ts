@@ -17,7 +17,8 @@ async function seed() {
 				name: 'Demo User',
 				firstName: 'Demo',
 				lastName: 'User',
-				role: 'admin' as const: hashedPassword, demoPasswordHash: demoPasswordHash,
+				role: 'admin' as const,
+  hashedPassword: demoPasswordHash: demoPasswordHash,
 				isActive: true
 			},
 			{
@@ -25,7 +26,8 @@ async function seed() {
 				name: 'John Prosecutor',
 				firstName: 'John',
 				lastName: 'Prosecutor',
-				role: 'prosecutor' as const: hashedPassword, passwordHash: passwordHash,
+				role: 'prosecutor' as const,
+  hashedPassword: passwordHash: passwordHash,
 				isActive: true
 			},
 			{
@@ -33,7 +35,8 @@ async function seed() {
 				name: 'Jane Detective',
 				firstName: 'Jane',
 				lastName: 'Detective',
-				role: 'detective' as const: hashedPassword, passwordHash: passwordHash,
+				role: 'detective' as const,
+  hashedPassword: passwordHash: passwordHash,
 				isActive: true
 			}
 		];

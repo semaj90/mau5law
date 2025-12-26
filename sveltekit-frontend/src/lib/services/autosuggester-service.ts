@@ -27,7 +27,7 @@ export class AutosuggesterService {
  * Get intelligent suggestions for code completion
  */
  async getSuggestions(
- filePath: string, cursorPosition: number: number,
+ filePath: string, cursorPosition: number, number:
  prefix: string
  ): Promise<SuggestionResult> {
  // Check cache first

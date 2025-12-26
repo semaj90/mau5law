@@ -4,21 +4,20 @@
  * Integrates with PostgreSQL, MinIO S3, and Docker microservices
  * Includes structured error handling with custom error classes
  */
-import type { Lucia } from 'lucia';
-import type { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import bcrypt from 'bcryptjs';
-import type { eq } from 'drizzle-orm';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { Session, User } from 'lucia'; // Corrected import: import both Session and User types
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
+import { Lucia, type Session, type User } from 'lucia';
 import db from './db/drizzle.js'; // Changed to default import for 'db'
 import * as schema from './db/schema.js'; // Changed to import all as 'schema'
-import type {
- RegistrationError,
- SessionError,
- LoginError,
- PasswordError,
- ProfileError,
- MicroserviceError,
+import {
+    LoginError,
+    type MicroserviceError,
+    PasswordError,
+    ProfileError,
+    RegistrationError,
+    SessionError,
 } from './errors.js'; // Removed ERROR_CODES
 import type { getLegalGatewayUrl } from './utils/endpoints.js'; // Import the new endpoint helper
 
@@ -89,7 +88,7 @@ export class AuthService {
  try {
  // Validate email format (basic check)
  if (!data.email || !data.email.includes('@')) {
- throw new RegistrationError('Invalid email format', 'INVALID_EMAIL', { email: data.email });
+ throw new RegistrationError('Invalid email format', 'INVALID_EMAIL', JSON.stringify({ email: data.email }));
  }
  // Check for existing user
  const existingUser = await db
@@ -98,9 +97,9 @@ export class AuthService {
  .where(eq(schema.users.email, data.email))
  .limit(1); // Used schema.users
  if (existingUser.length > 0) {
- throw new RegistrationError('A user with this email already exists', 'EMAIL_TAKEN', {
+ throw new RegistrationError('A user with this email already exists', 'EMAIL_TAKEN', JSON.stringify({
  email: data.email,
- });
+ }));
  }
  // Validate password strength (basic check: at least: 8 chars)
  if (!data.password || data.password.length < 8) {
@@ -115,7 +114,7 @@ export class AuthService {
  .values({
  // Used schema.users
  email: data.email,
- hashedPassword: passwordHash,
+ passwordHash: passwordHash,
  firstName: data.firstName ?? null,
  lastName: data.lastName ?? null,
  role: 'prosecutor',
@@ -141,7 +140,7 @@ export class AuthService {
  }
  }
  /** * Login user with credentials and session creation */
- async login(email: string, password): string {
+ async login(email: string, password: string): Promise<User> {
  try {
  const [user] = await db
  .select()
@@ -149,7 +148,7 @@ export class AuthService {
  .where(eq(schema.users.email, email))
  .limit(1); // Used schema.users
  // Check if user exists and has password
- if (!user || !user.hashedPassword) {
+ if (!user || !user.passwordHash) {
  throw new LoginError('Invalid email or password', 'INVALID_CREDENTIALS', { email });
  }
  // Check if account is active
@@ -164,7 +163,7 @@ export class AuthService {
  );
  }
  // Verify password using bcryptjs
- const validPassword = await bcrypt.compare(password, user.hashedPassword);
+ const validPassword = await bcrypt.compare(password, user.passwordHash);
  if (!validPassword) {
  throw new LoginError('Invalid email or password', 'INVALID_CREDENTIALS', { email });
  }
@@ -272,18 +271,18 @@ export class AuthService {
  }
  }
  /** * Change user password with session invalidation */
- async changePassword(userId: string, currentPassword: string, newPassword): string {
+ async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
  try {
  const [user] = await db
  .select()
  .from(schema.users)
  .where(eq(schema.users.id, userId))
  .limit(1); // Used schema.users
- if (!user || !user.hashedPassword) {
+ if (!user || !user.passwordHash) {
  throw new PasswordError('User not found', 'USER_NOT_FOUND', { userId });
  }
  // Verify current password
- const validPassword = await bcrypt.compare(currentPassword, user.hashedPassword); // Corrected bcrypt.compare arguments
+ const validPassword = await bcrypt.compare(currentPassword, user.passwordHash); // Corrected bcrypt.compare arguments
  if (!validPassword) {
  throw new PasswordError('Current password is incorrect', 'CURRENT_PASSWORD_INCORRECT', {
  userId,
@@ -299,7 +298,7 @@ export class AuthService {
  const newPasswordHash = await bcrypt.hash(newPassword, this.bcryptRounds); // Corrected hash
  await db
  .update(schema.users)
- .set({ hashedPassword: newPasswordHash, updatedAt: new Date().toISOString() })
+ .set({ passwordHash: newPasswordHash, updatedAt: new Date().toISOString() })
  .where(eq(schema.users.id, userId)); // Used schema.users
  // Invalidate all user sessions for security
  await this.invalidateUserSessions(userId);

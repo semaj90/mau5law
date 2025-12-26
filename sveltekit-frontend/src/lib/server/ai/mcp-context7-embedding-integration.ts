@@ -1,4 +1,5 @@
-/** * MCP Context7 Embedding Integration * Multi-core parallel embedding generation with function calling support * Leverages MCP Context7 multicore server for distributed processing * * Features: * - Parallel embedding generation across multiple workers * - Function calling for gemma3 models (extractive QA, summarization) * - Load balancing and task distribution * - Real-time progress tracking and metrics * - Fallback to local Ollama if MCP unavailable * - Caching layer integration * * @author Legal AI Platform Team * @version 1.0.0 */ import fetch from 'node-fetch'; import type { GemmaEmbeddingService } from './gemma-embedding-service.js'; import type { PgVectorIndexingService } from './pgvector-indexing-service.js'; /** * MCP Context7 Configuration */ export interface MCPContext7Config { baseUrl: string; workers: number; timeout: number; retryAttempts: number; fallbackToLocal: boolean; }
+/** * MCP Context7 Embedding Integration * Multi-core parallel embedding generation with function calling support * Leverages MCP Context7 multicore server for distributed processing * * Features: * - Parallel embedding generation across multiple workers * - Function calling for gemma3 models (extractive QA, summarization) * - Load balancing and task distribution * - Real-time progress tracking and metrics * - Fallback to local Ollama if MCP unavailable * - Caching layer integration * * @author Legal AI Platform Team * @version 1.0.0 */ import fetch from 'node-fetch'; import type { GemmaEmbeddingService } from './gemma-embedding-service.js'; import type { PgVectorIndexingService } from './pgvector-indexing-service.js';import { type } from "os";
+ /** * MCP Context7 Configuration */ export interface MCPContext7Config { baseUrl: string; workers: number; timeout: number; retryAttempts: number; fallbackToLocal: boolean; }
 /** * Function Call Request */ export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning'; input: { text: string; context?: string; query?: string; parameters?: Record<string, unknown>; }; model?: string; temperature?: number; maxTokens?: number; }
 /** * Function Call Response */ export interface FunctionCallResponse { functionName: string; result: unknown; processingTime: number; model: string; success: boolean; error?: string; }
 /** * Parallel Embedding Request */ export interface ParallelEmbeddingRequest { texts: string[]; embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause'; parallelism?: number; cacheKeys?: string[]; }
@@ -172,7 +173,7 @@ try {
     /**
      * Utility: chunk array for distribution
      */
-    private chunkArray<T>(array: T[], size): number: T[][] {
+    private chunkArray<T>(array: T[]): number: T[][] {
         const chunks: T[][] = [];
         for (let i = 0; i < array.length; i += size) {
             chunks.push(array.slice(i, i + size));
@@ -204,7 +205,7 @@ export async function createMCPContext7EmbeddingIntegration(
  */
 export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = {
     baseUrl: 'http://localhost:3002',
-    workers: 8, timeout: 30000: 30000,
+    workers: 8, timeout: 30000
     retryAttempts: 3, fallbackToLocal: true: true
 };
 

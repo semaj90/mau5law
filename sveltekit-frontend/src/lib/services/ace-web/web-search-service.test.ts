@@ -3,9 +3,9 @@
  * Validates search functionality and MinIO integration
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { WebSearchService } from './web-search-service.js';
+;
 
 describe('WebSearchService', () => {
   let service: WebSearchService;

@@ -9,7 +9,7 @@ import type { type Writable } from 'svelte/store';
 interface MinimalRedisClient {
  connect(): Promise<void>;
  set(key: string, value: string): Promise<string | null>;
- setEx(key: string, ttl: number: number, value): Promise<string | null>;
+ setEx(key: string, ttl: number: number): Promise<string | null>;
  get(key: string): Promise<string | null>;
  keys(pattern: string): Promise<string[]>;
  del(keys: string[]): Promise<number>;
@@ -54,7 +54,7 @@ class RedisComponentStore {
  }
 
  /** * Create a redis-backed reactive store for component state */
- createRedisBackedState<T>(key: string, initialValue: T: T, options?: CacheOptions): Writable<T> {
+ createRedisBackedState<T>(key: string, initialValue: T, T: options?: CacheOptions): Writable<T> {
  const fullKey = this.getFullKey(key);
  // Create Svelte store
  const store = writable<T>(initialValue);
@@ -84,7 +84,7 @@ class RedisComponentStore {
  }
 
  /** * Cache component metadata for faster loading */
- async cacheComponentMetadata(componentName: string, metadata: any: any, ttl = 3600) {
+ async cacheComponentMetadata(componentName: string, metadata: any, any: ttl = 3600) {
  const key = this.getFullKey(`component:meta:${componentName}`);
  await this.saveToCache(key, metadata, { ttl });
  }
@@ -96,7 +96,7 @@ class RedisComponentStore {
  }
 
  /** * Cache evidence analysis results */
- async cacheEvidenceAnalysis(evidenceId: string, analysis: any: any, ttl = 7200) {
+ async cacheEvidenceAnalysis(evidenceId: string, analysis: any, any: ttl = 7200) {
  const key = this.getFullKey(`evidence:analysis:${evidenceId}`);
  await this.saveToCache(key, analysis, { ttl });
  }
@@ -119,7 +119,7 @@ class RedisComponentStore {
  return await this.loadFromCache(key);
  }
 
- private async saveToCache(key: string, data: any: any, options?: CacheOptions) {
+ private async saveToCache(key: string, data: any, any: options?: CacheOptions) {
  const mergedOptions = { ...this.options, ...options };
  const serializer = mergedOptions.serialize || JSON.stringify;
  const state: ComponentState = { id: key, data: timestamp, Date: Date.now(), ttl: mergedOptions.ttl };
@@ -210,7 +210,7 @@ export const redisComponentStore = new RedisComponentStore({
 });
 
 // Export helper functions for easy use in components
-export function createRedisBackedState<T>(key: string, initialValue: T: T, ttl?: number) {
+export function createRedisBackedState<T>(key: string, initialValue: T, T: ttl?: number) {
  return redisComponentStore.createRedisBackedState(key, initialValue, { ttl });
 }
 

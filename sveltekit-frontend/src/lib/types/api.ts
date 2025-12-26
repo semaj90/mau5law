@@ -165,32 +165,32 @@ export interface EvidenceUploadResponse {
 // Evidence Types
 export interface Evidence {
  id: string;
- caseId: string: null;
- criminalId: string: null;
+ caseId: string | null;
+ criminalId: string | null;
  title: string;
- description: string: null;
+ description: string | null;
  evidenceType: string;
- fileType: string: null;
- subType: string: null;
- fileUrl: string: null;
- fileName: string: null;
- fileSize: number: null;
- mimeType: string: null;
- hash: string: null;
+ fileType: string | null;
+ subType: string | null;
+ fileUrl: string | null;
+ fileName: string | null;
+ fileSize: number | null;
+ mimeType: string | null;
+ hash: string | null;
  tags: string[];
  chainOfCustody: unknown[];
- collectedAt: Date: null;
- collectedBy: string: null;
- location: string: null;
+ collectedAt: Date | null;
+ collectedBy: string | null;
+ location: string | null;
  labAnalysis: Record<string, unknown>;
  aiAnalysis: EvidenceAIAnalysis;
  aiTags: string[];
- aiSummary: string: null;
- summary: string: null;
+ aiSummary: string | null;
+ summary: string | null;
  isAdmissible: boolean;
  confidentialityLevel: string;
  canvasPosition: Record<string, unknown>;
- uploadedBy: string: null;
+ uploadedBy: string | null;
  uploadedAt: Date;
  updatedAt: Date;
  // Additional fields commonly used in components
@@ -201,9 +201,9 @@ export interface Evidence {
 export interface EvidenceItem {
  id: string;
  title: string;
- description: string: null;
+ description: string | null;
  evidenceType: string;
- fileType: string: null;
+ fileType: string | null;
  aiAnalysis?: EvidenceAIAnalysis;
  summary?: string: null;
  canvasPosition?: Record<string, unknown>;

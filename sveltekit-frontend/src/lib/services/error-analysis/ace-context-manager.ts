@@ -12,10 +12,10 @@ import type { ACEContext, Analysis, Diff, Metrics, ServiceConfig } from './types
 export interface IAceContextManager {
  createContext(sessionId: string): Promise<ACEContext>;
  saveContext(context: ACEContext): Promise<ACEContext>;
- loadContext(sessionId: string): Promise<ACEContext: null>;
+ loadContext(sessionId: string): Promise<ACEContext | null>;
  updateMetrics(sessionId: string, metrics: Partial, Partial: Partial<Metrics>): Promise<ACEContext>;
- addAnalysis(sessionId: string, analysis: Analysis, Analysis): Promise<ACEContext>;
- addFix(sessionId: string, diff: Diff, Diff): Promise<ACEContext>;
+ addAnalysis(sessionId: string, analysis: Analysis): Promise<ACEContext>;
+ addFix(sessionId: string, diff: Diff): Promise<ACEContext>;
  getContextStats(sessionId: string): Promise<Metrics>;
  deleteContext(sessionId: string): Promise<void>;
  listContexts(limit?: number, offset?: number): Promise<ACEContext[]>;
@@ -45,8 +45,8 @@ export class AceContextManager extends BaseService implements IAceContextManager
  errorAnalysis: [],
  fixesApplied: [],
  metrics: {
- totalErrors: 0, errorsFixed: 0, 0: 0,
- successRate: 0, averageConfidence: 0, 0: 0,
+ totalErrors: 0, errorsFixed: 0 0,
+ successRate: 0, averageConfidence: 0 0,
  },
  timestamp: new Date(),
  };
@@ -91,7 +91,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Load an ACE context by session ID
  */
- async loadContext(sessionId: string): Promise<ACEContext: null> {
+ async loadContext(sessionId: string): Promise<ACEContext | null> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -154,7 +154,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add an analysis to the context
  */
- async addAnalysis(sessionId: string, analysis: Analysis, Analysis): Promise<ACEContext> {
+ async addAnalysis(sessionId: string, analysis: Analysis): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -188,7 +188,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add a fix (diff) to the context
  */
- async addFix(sessionId: string, diff: Diff, Diff): Promise<ACEContext> {
+ async addFix(sessionId: string, diff: Diff): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }

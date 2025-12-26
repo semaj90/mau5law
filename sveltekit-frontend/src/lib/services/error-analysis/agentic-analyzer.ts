@@ -10,10 +10,10 @@ import { BaseService } from './base-service.js';
 import type { Error, Analysis, LLMResponse, Pattern, ServiceConfig } from './types.js';
 
 export interface IAgenticAnalyzer {
- analyzeError(error: Error, context): Promise<Analysis>;
+ analyzeError(error: Error): Promise<Analysis>;
  generatePrompt(error: Error, patterns: Pattern[]): Promise<string>;
  callLLM(prompt: string): Promise<LLMResponse>;
- persistPrompt(prompt: string, response): Promise<void>;
+ persistPrompt(prompt: string): Promise<void>;
  parseAnalysis(response: LLMResponse): Promise<Analysis>;
 }
 
@@ -28,7 +28,7 @@ export class AgenticAnalyzer extends BaseService implements IAgenticAnalyzer {
  * Analyze an error using agentic reasoning
  * Combines error context with similar patterns for comprehensive analysis
  */
- async analyzeError(error: Error, context): Promise<Analysis> {
+ async analyzeError(error: Error): Promise<Analysis> {
  this.validateInput(error, 'error');
  if (!context || typeof context !== 'string') {
  throw new Error('Invalid input: context must be a non-empty string');
@@ -183,7 +183,7 @@ export class AgenticAnalyzer extends BaseService implements IAgenticAnalyzer {
  * Persist prompt and response for audit trail
  * Stores in memory for now (will be persisted to DB in task 11)
  */
- async persistPrompt(prompt: string, response): Promise<void> {
+ async persistPrompt(prompt: string): Promise<void> {
  if (!prompt || typeof prompt !== 'string') {
  throw new Error('Invalid input: prompt must be a non-empty string');
  }
@@ -262,7 +262,7 @@ export class AgenticAnalyzer extends BaseService implements IAgenticAnalyzer {
  * Generate prompt from context string
  * Helper method for analyzeError
  */
- private async generatePromptFromContext(error: Error, context): Promise<string> {
+ private async generatePromptFromContext(error: Error): Promise<string> {
  const sections: string[] = [];
 
  sections.push('You are an expert TypeScript/Svelte developer analyzing code errors.');

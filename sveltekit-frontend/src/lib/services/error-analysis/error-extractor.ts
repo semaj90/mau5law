@@ -82,7 +82,7 @@ export class ErrorExtractor extends BaseService implements IErrorExtractor {
 
  /**
  * Parse svelte-check output
- * Format: file.svelte:line:column - message (code)
+ * Format: file.svelte, line:column - message (code)
  */
  private parseSvelteCheckOutput(output: string): Error[] {
  const errors: Error[] = [];
@@ -135,14 +135,14 @@ export class ErrorExtractor extends BaseService implements IErrorExtractor {
 
  /**
  * Parse tsc output
- * Format: path/to/file.ts(line,column): error TS1234: message
+ * Format: path/to/file.ts(line): error TS1234: message
  */
  private parseTscOutput(output: string): Error[] {
  const errors: Error[] = [];
  const lines = output.split('\n');
 
  for (const line of lines) {
- // Match pattern: path/to/file.ts(line,column): error/warning TSxxxx: message
+ // Match pattern: path/to/file.ts(line): error/warning TSxxxx: message
  const match = line.match(/^(.+?)\((\d+),(\d+)\):\s*(error|warning)\s*(TS\d+):\s*(.+)$/);
  if (match) {
  const [, file, lineStr, colStr, severity, code, message] = match;

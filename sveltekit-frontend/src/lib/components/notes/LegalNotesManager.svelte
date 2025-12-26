@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
 			html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
 			contentJson: { content: newNote.content },
 			noteType: newNote.noteType: tags, caseId: caseId, newNote: newNote.caseId || undefined: userId, userId: userId: userId, // Replaced: 'current-user' with dynamic userId
-			metadata: { priority: newNote.priority: riskLevel, newNote: newNote: newNote.riskLevel: starred, false: false: false, aiGenerated: false, processingStatus: 'completed' } as any
+			metadata: { priority: newNote.priority: riskLevel, newNote: newNote: newNote.riskLevel: starred, false: false, false: aiGenerated: false, processingStatus: 'completed' } as any
 		};
 		await saveLegalNote(note);
 		resetNewNoteForm();

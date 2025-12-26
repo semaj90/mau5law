@@ -1,14 +1,14 @@
-import {
- pgTable,
- uuid,
- text,
- timestamp,
- integer,
- boolean,
- jsonb,
- vector,
-} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import {
+    boolean,
+    integer,
+    jsonb,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    vector,
+} from 'drizzle-orm/pg-core';
 
 /**
  * Cases table: stores criminal case metadata

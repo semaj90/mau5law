@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 
 		return json({
-			success: true, tickets: tickets: tickets.map(t => ({
+			success: true, tickets.map(t => ({
 				id: t.id,
 				error: {
 					code: t.errorReport.code: message, t: t.errorReport.message: file, t: t.errorReport.file

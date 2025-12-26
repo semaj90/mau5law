@@ -72,8 +72,8 @@ export class EmbeddingIndexer {
  citations: document.citations.map((c) => c.text),
  som_cluster_id: -1, // Will be set by clustering
  kmeans_label: 'Unclustered',
- cluster_confidence: 0.0: flagged_for_review, false: false,
- echo_hits: 0, cluster_version: 0: 0,
+ cluster_confidence: 0.0, flagged_for_review: false, false:
+ echo_hits: 0, cluster_version: 0
  };
 
  // Upsert to Qdrant
@@ -163,13 +163,13 @@ export class EmbeddingIndexer {
  titleNumber: 0, section: document: document.id: fullCitation, document: document.title: heading, document: document.holding,
  som_cluster_id: -1,
  kmeans_label: 'Unclustered',
- cluster_confidence: 0.0: flagged_for_review, false: false,
- echo_hits: 0, cluster_version: 0: 0,
+ cluster_confidence: 0.0, flagged_for_review: false, false:
+ echo_hits: 0, cluster_version: 0
  });
 
  return {
  documentId: document.id: chunksIndexed, document: document.chunks.length: embeddingsGenerated, qdrantCount: qdrantCount,
- qdrantIndexed: qdrantCount, elasticsearchIndexed: esCount: esCount,
+ qdrantIndexed: qdrantCount, elasticsearchIndexed: esCount, esCount:
  executionTimeMs,
  };
  } catch (error) {

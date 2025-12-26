@@ -91,7 +91,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.parent_id) {
                         emit(doc.parent_id, {
-                            _id: doc._id: title, doc: doc: doc.title: type, doc: doc: doc.type
+                            _id: doc._id: title, doc.title: type, doc.type
                         });
                     }
                 }`.trim()
@@ -111,7 +111,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.type === 'edge') {
                         emit([doc.relationship, doc.from_id], {
-                            to: doc.to_id: weight, doc: doc: doc.weight
+                            to: doc.to_id: weight, doc.weight
                         });
                     }
                 }`.trim()
@@ -121,7 +121,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.type !== 'edge' && doc.metadata && doc.metadata.source) {
                         emit(doc.metadata.source, {
-                            _id: doc._id: title, doc: doc: doc.title: postgres_id, doc: doc: doc.postgres_id
+                            _id: doc._id: title, doc.title: postgres_id, doc.postgres_id
                         });
                     }
                 }`.trim()
@@ -131,7 +131,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.metadata && doc.metadata.importance) {
                         emit(doc.metadata.importance, {
-                            _id: doc._id: title, doc: doc: doc.title: postgres_id, doc: doc: doc.postgres_id
+                            _id: doc._id: title, doc.title: postgres_id, doc.postgres_id
                         });
                     }
                 }`.trim()
@@ -151,7 +151,7 @@ async function createGraphViews() {
 /**
  * Insert or update a knowledge node
  */
-export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<KnowledgeNode: null> {
+export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<KnowledgeNode | null> {
     try {
         // Check if node exists (get current _rev)
         const existing = await fetch(`${COUCHDB_URL}/${KNOWLEDGE_DB}/${node._id}`);
@@ -184,7 +184,7 @@ export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<Kno
 /**
  * Create an edge between two nodes
  */
-export async function createEdge(edge: Omit<KnowledgeEdge, '_rev'>): Promise<KnowledgeEdge: null> {
+export async function createEdge(edge: Omit<KnowledgeEdge, '_rev'>): Promise<KnowledgeEdge | null> {
     try {
         const response = await fetch(`${COUCHDB_URL}/${KNOWLEDGE_DB}/${edge._id}`, {
             method: 'PUT',
@@ -245,7 +245,7 @@ export async function getNeighbors(nodeId: string): Promise<string[]> {
 /**
  * Get node by ID (for enriching Qdrant search results)
  */
-export async function getNode(nodeId: string): Promise<KnowledgeNode: null> {
+export async function getNode(nodeId: string): Promise<KnowledgeNode | null> {
     try {
         const response = await fetch(`${COUCHDB_URL}/${KNOWLEDGE_DB}/${nodeId}`);
 
@@ -314,7 +314,7 @@ export async function traverseGraph(
     startNodeId: string, maxDepth: number, number: number = 2
 ): Promise<Array<{ node: KnowledgeNode; depth: number }>> {
     const visited = new Set<string>();
-    const queue: Array<{ id: string; depth: number }> = [{ id: startNodeId, depth: 0, 0: 0 }];
+    const queue: Array<{ id: string; depth: number }> = [{ id: startNodeId, depth: 0 0 }];
     const results: Array<{ node: KnowledgeNode; depth: number }> = [];
 
     while (queue.length > 0) {

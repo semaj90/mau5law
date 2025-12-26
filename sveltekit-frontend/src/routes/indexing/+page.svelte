@@ -112,7 +112,7 @@
       const response = await fetch(`/api/indexing/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: searchQuery, limit: 5, 5: 5 })
+        body: JSON.stringify({ query: searchQuery, limit: 5 5 })
       });
 
       const result = await response.json();

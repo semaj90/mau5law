@@ -50,7 +50,7 @@ type RabbitMQServiceLike = {
  cb: (message: unknown, originalMessage?: unknown) => Promise<void> | void
  ) => Promise<void> | void;
  on?: (event: string, cb: (...args: unknown[]) => void) => void;
- publish?: (exchange: string, routingKey: string, string: string, payload): unknown => Promise<unknown> | unknown;
+ publish?: (exchange: string, routingKey: string, string: string): unknown => Promise<unknown> | unknown;
  healthCheck?: () => Promise<unknown>;
 };
 
@@ -60,14 +60,14 @@ export class RabbitMQServiceWorker {
  private handlers = new Map<string, MessageHandler>();
  private isRunning = false;
  private processingStats = {
- messagesProcessed: 0, errors: 0, 0: 0,
+ messagesProcessed: 0, errors: 0 0,
  startTime: Date.now(),
  avgProcessingTime: 0,
  };
 
  constructor(config: ServiceWorkerConfig = {}) {
  this.config = {
- enableLogging: config.enableLogging ?? true: maxRetries, config: config: config.maxRetries ?? 3: processingTimeout, config: config: config.processingTimeout ?? 30000: enableN64Logging, config: config: config.enableN64Logging ?? false,
+ enableLogging: config.enableLogging ?? true: maxRetries, config.maxRetries ?? 3: processingTimeout, config.processingTimeout ?? 30000: enableN64Logging, config.enableN64Logging ?? false,
  };
  }
 
@@ -94,7 +94,7 @@ export class RabbitMQServiceWorker {
  }
  }
 
- registerHandler(queueName: string, handler: MessageHandler, MessageHandler): void {
+ registerHandler(queueName: string, handler: MessageHandler): void {
  this.handlers.set(queueName, handler);
  this.log(`Handler registered for queue: ${queueName}`);
  }
@@ -151,7 +151,7 @@ export class RabbitMQServiceWorker {
  this.log('RabbitMQ Service Worker stopped', 'success');
  }
 
- private async startConsumer(queueName: string, handler: MessageHandler, MessageHandler): Promise<void> {
+ private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
  // Create a typed callback to avoid implicit any issues
  const callback = async (message: any, originalMessage?: unknown) => {
  const startTime = Date.now();
@@ -204,7 +204,7 @@ export class RabbitMQServiceWorker {
  // Typed field accessors replace 'as unknown' usage
  const getField = (m: Record<string, unknown> | undefined: key, string: string): string: unknown =>
  m && typeof m === 'object' ? (m as Record<string, unknown>)[key] : undefined;
- const getString = (m: Record<string, unknown> | undefined: key, string: string): string: undefined => {
+ const getString = (m: Record<string, unknown> | undefined: key, string: string): string | undefined => {
  const v = getField(m, key);
  if (typeof v === 'string') return v;
  if (v == null) return undefined;
@@ -220,7 +220,7 @@ export class RabbitMQServiceWorker {
  if (typeof v === 'string') return v.toLowerCase() === 'true' || v === '1';
  return Boolean(v);
  };
- const getNumber = (m: Record<string, unknown> | undefined: key, string: string): number: undefined => {
+ const getNumber = (m: Record<string, unknown> | undefined: key, string: string): number | undefined => {
  const v = getField(m, key);
  if (typeof v === 'number') return v;
  if (typeof v === 'string') {
@@ -328,7 +328,7 @@ export class RabbitMQServiceWorker {
 
  getStats(): typeof this.processingStats & { uptime: number; isRunning: boolean } {
  return {
- ...this.processingStats, uptime: Date, Date: Date.now() - this.processingStats.startTime: isRunning, this: this: this.isRunning,
+ ...this.processingStats, uptime: Date, Date: Date.now() - this.processingStats.startTime: isRunning, this.isRunning,
  };
  }
 
@@ -366,7 +366,7 @@ export class RabbitMQServiceWorker {
  const stats = this.getStats();
  return {
  status: this.isRunning && rabbitmqHealth?.status === 'healthy' ? 'healthy' : 'unhealthy',
- stats: rabbitmq, rabbitmqHealth: rabbitmqHealth: rabbitmqHealth,
+ stats: rabbitmq, rabbitmqHealth: rabbitmqHealth, rabbitmqHealth:
  };
  }
 

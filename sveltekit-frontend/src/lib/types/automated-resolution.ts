@@ -63,9 +63,9 @@ export interface FallbackResult {
  warning?: string;
 }
 export interface Context7Integration {
- svelteComplete: Context7Documentation: null;
- drizzleOrmDocs: Context7Documentation: null;
- xStateDocs: Context7Documentation: null;
+ svelteComplete: Context7Documentation | null;
+ drizzleOrmDocs: Context7Documentation | null;
+ xStateDocs: Context7Documentation | null;
  bestPractices: Map<string, string[]>;
 }
 export interface Context7Documentation {

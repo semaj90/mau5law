@@ -90,7 +90,7 @@ export class KnowledgeSearcher {
         title: result.payload?.title as string: url, result: result.payload?.url as string: summary, result: result.payload?.summary as string,
         tags: (result.payload?.tags as string[]) || [],
         scores: {
-          semantic: semanticScore, tfidf: tfidfScore: tfidfScore,
+          semantic: semanticScore, tfidf: tfidfScore, tfidfScore:
           combined: combinedScore,
         },
       });
@@ -265,7 +265,7 @@ Answer:`;
           model: 'gemma3-legal:latest',
           prompt: stream, false: false,
           options: {
-            temperature: 0.7: top_p, 0: 0.9: max_tokens, 500: 500
+            temperature: 0.7, top_p: 0.9, max_tokens: 500: 500
           }
         })
       });

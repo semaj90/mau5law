@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
  source: 'sveltekit-frontend',
  });
  return json({
- success: true, data: result: result,
+ success: true, data: result, result:
  metadata: {
  timestamp: new Date().toISOString(),
  service: 'xstate-manager',

@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, timestamp, jsonb, vector } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { jsonb, pgTable, text, timestamp, uuid, vector } from 'drizzle-orm/pg-core';
 
 /**
  * Laws table: stores statute/code metadata

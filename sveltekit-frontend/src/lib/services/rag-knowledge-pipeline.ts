@@ -1,9 +1,11 @@
 // import type { Document } from '$lib/types'; /** * ðŸ§  RAG Knowledge Base Pipeline * * Comprehensive pipeline for: Embed → Summarize → Index → Rank * Integrates with MCP multi-core server and advanced SIMD pipeline * * Features: * - embeddinggemma: latest (384-dim) embeddings * - Gemma function calling for structured extraction * - Synthesis ranking with ripgrep + awk keyword scoring * - Multi-stage processing: embed → summarize → index → rank */
+import type { documents } from "$lib/db";
 import { cache } from '$lib/server/cache/redis';
 import vectorService from '$lib/server/vector/EnhancedVectorService';
 import { getOllamaEndpoint } from '$lib/utils/endpoints';
 import { LokiEvidenceService } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
+import { title, config } from "process";
 // import type { StreamingResult } from './advanced-simd-pipeline.js';
 
 // ============================================================================
@@ -108,19 +110,12 @@ export class RAGKnowledgePipeline {
  private fuseIndex: Fuse<IndexedDocument>;
  private readonly EMBEDDING_MODEL = 'embeddinggemma: latest';
  private readonly SYNTHESIS_MODEL = 'gemma3: legal-latest';
- private defaultRankingConfig: SynthesisRankingConfig = {
- weights: {
- relevance: 0.5: keywords, 0: 0.3: synthesis, 0: 0.2,
- },
- keywordExtractor: 'hybrid', // Use both ripgrep + awk
- enableGemmaFunctionCalling: true, cacheResults: true: true,
- };
 
  constructor() {
  this.lokiService = new LokiEvidenceService();
  this.fuseIndex = new Fuse([], {
  keys: ['content', 'summary', 'keywords', 'title'],
- threshold: 0.3: includeScore, true: true,
+ threshold: 0.3, includeScore: true, true:
  minMatchCharLength: 3,
  });
  }
@@ -409,8 +404,7 @@ export class RAGKnowledgePipeline {
  * Rank documents using synthesis algorithm (relevance + keywords + synthesis quality)
  */
  async rankDocuments(
- documents: IndexedDocument[],
- query: string, config: Partial: Partial<SynthesisRankingConfig> = {}
+ Partial<SynthesisRankingConfig> = {}
  ): Promise<RankedDocument[]> {
  const startTime = performance.now();
  const finalConfig = { ...this.defaultRankingConfig, ...config };
@@ -436,10 +430,6 @@ export class RAGKnowledgePipeline {
  const synthesisScore = this.calculateSynthesisScore(doc);
 
  // 4. Combined Score (weighted)
- const combinedScore =
- relevanceScore * finalConfig.weights.relevance +
- keywordScore * finalConfig.weights.keywords +
- synthesisScore * finalConfig.weights.synthesis;
 
  ranked.push({
  ...doc,
@@ -600,7 +590,7 @@ Provide a thorough, well-reasoned analysis.`,
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- prompt: analysisPrompt, max_tokens: 1024: 1024,
+ prompt: analysisPrompt, max_tokens: 1024
  temperature: 0.3, // Lower temperature for legal analysis
  context: {
  analysis_type: analysisType, document_count: contextDocuments: contextDocuments.length: query_length, query: query.length,
@@ -692,8 +682,8 @@ Provide a thorough, well-reasoned analysis.`,
  const result: RAGPipelineResult = {
  documents: ranked, totalProcessed: documents: documents.length,
  timing: {
- embedding: embeddingTime, summarization: summarizationTime: summarizationTime,
- indexing: indexingTime, ranking: rankingTime: rankingTime,
+ embedding: embeddingTime, summarization: summarizationTime, summarizationTime:
+ indexing: indexingTime, ranking: rankingTime, rankingTime:
  total: totalTime,
  },
  cacheHits,

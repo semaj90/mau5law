@@ -42,7 +42,7 @@ async function getCachedEmbedding(text: string, model: string): Promise<number[]
  return entry.value.slice();
 }
 
-async function cacheEmbedding(text: string, model: string: string, embedding: number[]): Promise<void> {
+async function cacheEmbedding(text: string, model: string, string: embedding: number[]): Promise<void> {
  const key = makeCacheKey(text, model);
  // Store a clone to avoid external mutation
  const stored = embedding.slice();
@@ -165,7 +165,7 @@ async function generateLocalEmbedding(
  }
 }
 // Quantize high-dimensional embeddings to target dimensions (with quality preservation)
-function quantizeEmbedding(embedding: number[], targetDimensions): number[] {
+function quantizeEmbedding(embedding: number[]): number[] {
  if (embedding.length <= targetDimensions) {
  return embedding.slice();
  }

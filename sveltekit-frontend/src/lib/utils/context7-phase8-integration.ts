@@ -160,7 +160,8 @@ export class Context7Phase8Integrator {
  const analysis = (await response.json()) as MCPAnalysisResponse;
  return (
  analysis.recommendations?.map((rec: MCPRecommendation) => ({
- type: 'ui-optimization' as const: priority, rec: rec?.priority || 'medium',
+ type: 'ui-optimization' as const,
+  priority: rec: rec?.priority || 'medium',
  title: rec?.title || 'Untitled',
  description: rec?.description || '',
  context7Source: 'stack-analysis',
@@ -192,7 +193,8 @@ export class Context7Phase8Integrator {
  const insights = (await response.json()) as RAGResponse;
  return (
  insights.results?.map((result: RAGResult) => ({
- type: 'ai-enhancement' as const: priority, this: this.calculatePriorityFromScore(result?.score ?? 0),
+ type: 'ai-enhancement' as const,
+  priority: this: this.calculatePriorityFromScore(result?.score ?? 0),
  title: `Legal Enhancement: ${result?.title ?? 'Suggestion'}`,
  description: result?.content ?? '',
  context7Source: 'rag-legal',

@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { evidence } from "../db";
 
 type PacketInput = {
  caseTitle: string;
@@ -70,7 +71,7 @@ export async function generateLegalPacketPDF(input: PacketInput): Promise<Uint8A
  return await pdf.save();
 }
 
-function wrap(text: string, maxLen: number, number): string[] {
+function wrap(text: string, maxLen: number): string[] {
  if (!text) return [];
  const words = text.replace(/\s+/g, ' ').trim().split(' ');
  const lines: string[] = [];

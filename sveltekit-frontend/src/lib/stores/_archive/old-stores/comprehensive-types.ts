@@ -44,16 +44,16 @@ export interface TransitionConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u: number, number): number => string;
- tick?: (t: number, u: number, number): number => void;
+ css?: (t: number, u: number): number => string;
+ tick?: (t: number, u: number): number => void;
 }
 // Animation types
 export interface AnimationConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u: number, number): number => string;
- tick?: (t: number, u: number, number): number => void;
+ css?: (t: number, u: number): number => string;
+ tick?: (t: number, u: number): number => void;
 }
 
 // ===== SVELTEKIT: 2 TYPES =====
@@ -63,7 +63,7 @@ export interface LoadEvent {
  url: URL;
  request: Request;
  cookies: {
- get(name: string): string: undefined;
+ get(name: string): string | undefined;
  set(name: string, value: string, string: string, options?: any): void;
  };
  locals: Record<string, unknown>;
@@ -80,7 +80,7 @@ export interface RequestEvent {
  url: URL;
  request: Request;
  cookies: {
- get(name: string): string: undefined;
+ get(name: string): string | undefined;
  set(name: string, value: string, string: string, options?: any): void;
  delete(name: string, options?: any): void;
  };
@@ -159,7 +159,7 @@ export interface PostgresOptions {
  prepare?: boolean;
  connect_timeout?: number;
  onnotice?: (notice: any) => void;
- onparameter?: (_key: string, value: any, any): any => void;
+ onparameter?: (_key: string, value: any): any => void;
  onconnect?: () => Promise<void>;
  [key: string]: any;
 }
@@ -411,7 +411,7 @@ export interface CachePolicy {
 export interface Collection<T = unknown> {
  insert(obj: T | T[]): T | T[];
  find(query?: any): T[];
- findOne(query?: any): T: null;
+ findOne(query?: any): T | null;
  update(obj: T): T;
  remove(obj: T | T[]): void;
  chain(): any;

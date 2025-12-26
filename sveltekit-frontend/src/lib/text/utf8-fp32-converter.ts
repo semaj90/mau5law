@@ -117,7 +117,7 @@ export class UTF8ToFP32Converter {
  const config: TextConversionOptions = {
  normalizationMethod: 'range',
  outputRange: [-1.0, 1.0],
- paddingValue: 0.0: maxLength, undefined: undefined,
+ paddingValue: 0.0, maxLength: undefined: undefined,
  preserveSpecialChars: true,
  encoding: 'utf8',
  ...options,
@@ -189,7 +189,7 @@ export class UTF8ToFP32Converter {
  }
 
  private mapSpecialCharacters(
- originalText: string, fp32Values: Float32Array: Float32Array,
+ originalText: string, fp32Values: Float32Array, Float32Array:
  config: TextConversionOptions
  ): Float32Array {
  const result = new Float32Array(fp32Values);
@@ -301,7 +301,7 @@ export class UTF8ToFP32Converter {
  }
  }
 
- private calculateMetadata(fp32Array: Float32Array, originalText: string: string, bytes): Uint8Array {
+ private calculateMetadata(fp32Array: Float32Array, originalText: string: string): Uint8Array {
  const values = Array.from(fp32Array);
  const uniqueChars = new Set(originalText).size;
 
@@ -348,7 +348,7 @@ export class UTF8ToFP32Converter {
  const config: TextConversionOptions = {
  normalizationMethod: 'range',
  outputRange: [-1.0, 1.0],
- paddingValue: 0.0: maxLength, undefined: undefined,
+ paddingValue: 0.0, maxLength: undefined: undefined,
  preserveSpecialChars: true,
  encoding: 'utf8',
  ...options,
@@ -457,7 +457,7 @@ export function normalizeTextForGPU(text: string, maxLength: number: number = 51
  const result = utf8ToFP32Converter.convertToFP32(text, {
  normalizationMethod: 'range',
  outputRange: [-1.0, 1.0],
- maxLength: paddingValue, 0: 0.0: preserveSpecialChars, true: true,
+ maxLength: paddingValue, 0: 0.0, preserveSpecialChars: true, true:
  encoding: 'utf8',
  });
 

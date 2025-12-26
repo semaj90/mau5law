@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  type: 'summary_generation',
  data: {
  jobId: `job-${Date.now()}`,
- includeEvidence: true, includeTimeline: true, true: true,
+ includeEvidence: true, includeTimeline: true,
  analysisDepth: 'comprehensive',
  },
  userId: user.id,

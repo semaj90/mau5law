@@ -10,9 +10,9 @@
  */
 
 export class ComputeShaderEngine {
- private device: GPUDevice: null = null;
- private adapter: GPUAdapter: null = null;
- private computeQueue: GPUQueue: null = null;
+ private device: GPUDevice | null = null;
+ private adapter: GPUAdapter | null = null;
+ private computeQueue: GPUQueue | null = null;
  private initialized = false;
 
  /**
@@ -42,7 +42,7 @@ export class ComputeShaderEngine {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: [],
  requiredLimits: {
- maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize: maxBufferSize, this: this: this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX, 256: 256: 256,
+ maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize: maxBufferSize, this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX, 256: 256
  maxComputeWorkgroupSizeY: 256,
  },
  });
@@ -61,7 +61,7 @@ export class ComputeShaderEngine {
  /**
  * Compute cosine similarity between two vectors using GPU
  */
- async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array, Float32Array): Promise<number> {
+ async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
  if (!this.device || !this.computeQueue) {
  throw new Error('WebGPU not initialized');
  }
@@ -97,11 +97,11 @@ export class ComputeShaderEngine {
 
  // Create buffers
  const bufferA = this.device.createBuffer({
- size: vectorA.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorA.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
 
  const bufferB = this.device.createBuffer({
- size: vectorB.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorB.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
 
  const resultBuffer = this.device.createBuffer({
@@ -110,7 +110,7 @@ export class ComputeShaderEngine {
  });
 
  const readBuffer = this.device.createBuffer({
- size: dimension * 3 * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+ size: dimension * 3 * 4: usage, GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
  });
 
  // Upload data

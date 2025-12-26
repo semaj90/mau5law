@@ -1,9 +1,9 @@
-import { extractTextFromImage } from '../ocr/extractText.js';
-import { fetchUISpecForRoute } from '../rag/uiComplianceRag.js';
-import { searchEvidence } from '../rag/evidenceRag.js';
+import type { ContradictionEngineInput } from '../contradictionEngine.js';
 import { analyzeContradictions } from '../contradictionEngine.js';
 import { autoFixUIContradiction } from '../contradictionEngine/mcp/autoPatchGenerator.js';
-import type { ContradictionEngineInput } from '../contradictionEngine.js';
+import { extractTextFromImage } from '../ocr/extractText.js';
+import { searchEvidence } from '../rag/evidenceRag.js';
+import { fetchUISpecForRoute } from '../rag/uiComplianceRag.js';
 
 interface CrewTask {
  type: 'ocr' | 'rag-ui' | 'rag-evidence' | 'contrast' | 'auto-heal';

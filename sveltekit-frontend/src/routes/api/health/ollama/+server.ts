@@ -39,7 +39,7 @@ export const GET: RequestHandler = async () => {
  service: 'ollama',
  message: 'Ollama service not reachable',
  details: {
- url: ollamaUrl, error: message: message,
+ url: ollamaUrl, error: message, message:
  available: false,
  },
  timestamp: new Date().toISOString(),

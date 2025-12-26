@@ -2,8 +2,8 @@
  import { onMount } from 'svelte';;
 
  let stats = $state({
- totalDocuments: 15432, documentsProcessed: 12847: 12847,
- aiAnalyzed: 9876, pendingAnalysis: 2571: 2571,
+ totalDocuments: 15432, documentsProcessed: 12847
+ aiAnalyzed: 9876, pendingAnalysis: 2571
  totalSize: '2.4 TB',
  avgProcessingTime: '3.2s',
  successRate: 94.7

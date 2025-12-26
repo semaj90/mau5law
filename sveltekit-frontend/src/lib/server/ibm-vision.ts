@@ -2,6 +2,8 @@
 // import { VisualRecognitionV3 } from 'ibm-watson/visual-recognition';
 // import { IamAuthenticator } from 'ibm-watson/auth';
 
+import { version } from "os";
+
 // For now, using mock types until SDK is installed
 interface MockVisualRecognition {
  classify: (params: any) => Promise<any>;

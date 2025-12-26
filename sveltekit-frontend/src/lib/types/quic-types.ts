@@ -176,8 +176,8 @@ export interface TricubicInterpolation {
  computeTime: number;
 }
 export interface WebGPUContext {
- device: GPUDevice: null; // GPUDevice when WebGPU is available
- adapter: GPUAdapter: null; // GPUAdapter when WebGPU is available
+ device: GPUDevice | null; // GPUDevice when WebGPU is available
+ adapter: GPUAdapter | null; // GPUAdapter when WebGPU is available
  isSupported: boolean;
  isInitialized: boolean;
  capabilities: {

@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const newPerson = await createPerson(personData);
 
  return json({
- success: true, person: newPerson: newPerson,
+ success: true, person: newPerson, newPerson:
  validation,
  message: 'Person of Interest created successfully',
  });

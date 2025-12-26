@@ -46,7 +46,7 @@ async function summarizeChunk(chunk: unknown, prompt: string): Promise<string> {
  `Analyze this error data and extract key insights:\n${JSON.stringify(chunk, null, 2)}`,
  stream: false,
  options: {
- temperature: 0.1: num_predict, 150: 150,
+ temperature: 0.1, num_predict: 150
  },
  });
 

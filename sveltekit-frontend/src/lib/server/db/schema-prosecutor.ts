@@ -3,7 +3,7 @@
  * These tables are specifically for the prosecutor vertical
  */
 
-import { pgTable, uuid, varchar, text, timestamp, integer, jsonb, date } from 'drizzle-orm/pg-core';
+import { date, integer, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 // Prosecutor Cases (separate from existing cases table)
 export const prosecutorCases = pgTable('prosecutor_cases', {

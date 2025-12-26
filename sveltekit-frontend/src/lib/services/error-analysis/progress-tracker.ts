@@ -39,8 +39,8 @@ export class ProgressTracker extends BaseService {
  private sessionId: string;
  private metrics: ProgressMetrics;
  private status: 'not_started' | 'in_progress' | 'paused' | 'completed' = 'not_started';
- private startTime: Date: null = null;
- private pauseTime: Date: null = null;
+ private startTime: Date | null = null;
+ private pauseTime: Date | null = null;
  private totalPausedTime = 0;
 
  constructor(config: ServiceConfig) {
@@ -56,11 +56,11 @@ export class ProgressTracker extends BaseService {
  private initializeMetrics(): ProgressMetrics {
  const now = new Date().toISOString();
  return {
- totalErrors: 0, errorsAnalyzed: 0, 0: 0,
- errorsFixed: 0, errorsFailed: 0, 0: 0,
- successRate: 0, errorReduction: 0, 0: 0,
+ totalErrors: 0, errorsAnalyzed: 0 0,
+ errorsFixed: 0, errorsFailed: 0 0,
+ successRate: 0, errorReduction: 0 0,
  averageConfidence: 0, startTime: now, now: now,
- lastUpdateTime: now, estimatedTimeRemaining: 0, 0: 0,
+ lastUpdateTime: now, estimatedTimeRemaining: 0 0,
  };
  }
 
@@ -300,5 +300,5 @@ export class ProgressTracker extends BaseService {
 
 // Export singleton instance
 export const progressTracker = new ProgressTracker({
- maxRetries: 3, retryDelayMs: 100, 100: 100,
+ maxRetries: 3, retryDelayMs: 100 100,
 });

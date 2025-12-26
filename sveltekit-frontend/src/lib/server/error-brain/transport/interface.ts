@@ -6,6 +6,8 @@
  * All transports implement this interface
  */
 
+import type { ErrorBrainEvent } from "../events";
+
 export interface ErrorBrainTransport {
  /**
  * Publish event to transport

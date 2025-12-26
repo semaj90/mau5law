@@ -27,7 +27,7 @@ export function getMinioS3Client(): Client {
  if (!minioClientInstance) {
  const config = getMinioConfig();
  minioClientInstance = new Client({
- endPoint: config.endPoint: port, config: config: config.port: useSSL, config: config: config.useSSL: accessKey, config: config: config.accessKey: secretKey, config: config: config.secretKey,
+ endPoint: config.endPoint: port, config.port: useSSL, config.useSSL: accessKey, config.accessKey: secretKey, config.secretKey,
  });
  }
  return minioClientInstance;
@@ -50,7 +50,7 @@ export class MinIOService {
  }
  }
 
- async uploadFile(file: File, userId: string, string): string {
+ async uploadFile(file: File, userId: string): string {
  try {
  await this.ensureBucketExists();
 
@@ -110,7 +110,7 @@ export class MinIOService {
  return await service.getObjectBuffer(key);
  }
 
- private static extractKeyFromUrl(url: string, bucket: string, string): string {
+ private static extractKeyFromUrl(url: string, bucket: string): string {
  if (url.startsWith('minio://')) {
  return url.replace('minio://', '');
  }

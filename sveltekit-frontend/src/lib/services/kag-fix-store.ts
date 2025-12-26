@@ -58,8 +58,8 @@ export interface KAGStats {
 
 export class KAGFixStore {
  private readonly PREFIX = 'phase72:kag:';
- private readonly SIG_PREFIX = `${this.PREFIX}sig:`; // phase72:kag:sig:<sha256>
- private readonly PATCH_PREFIX = `${this.PREFIX}patch:`; // phase72:kag:patch:<patchId>
+ private readonly SIG_PREFIX = `${this.PREFIX}sig:`; // phase72: kag, sig:<sha256>
+ private readonly PATCH_PREFIX = `${this.PREFIX}patch:`; // phase72: kag, patch:<patchId>
  private readonly STATS_KEY = `${this.PREFIX}stats`; // Global stats
  private readonly TTL_DAYS = 30; // Cache TTL in days
 
@@ -109,7 +109,7 @@ export class KAGFixStore {
  const sig = createHash('sha256').update(sigInput).digest('hex');
 
  return {
- sig: message, normalized: normalized: normalized,
+ sig: message, normalized: normalized, normalized:
  file: error.file || 'unknown',
  code: context,
  tool,
@@ -128,7 +128,7 @@ export class KAGFixStore {
  * 5. Store with 30-day TTL
  * 6. Index by patch ID for reverse lookup
  */
- async storeFix(errorSig: ErrorSignature, fix: FixRecord, FixRecord): Promise<void> {
+ async storeFix(errorSig: ErrorSignature, fix: FixRecord): Promise<void> {
  const key = `${this.SIG_PREFIX}${errorSig.sig}`;
 
  try {
@@ -185,7 +185,7 @@ export class KAGFixStore {
  * Returns highest confidence fix for given error signature.
  * Returns null if no fix found.
  */
- async queryBestFix(errorSig: ErrorSignature): Promise<FixRecord: null> {
+ async queryBestFix(errorSig: ErrorSignature): Promise<FixRecord | null> {
  const key = `${this.SIG_PREFIX}${errorSig.sig}`;
 
  try {
@@ -269,11 +269,11 @@ export class KAGFixStore {
  const statsJson = await lokiRedisCache.get(this.STATS_KEY);
  if (!statsJson) {
  return {
- totalSignatures: 0, totalFixes: 0, 0: 0,
+ totalSignatures: 0, totalFixes: 0 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0, 0: 0,
+ hitRate: 0, missRate: 0 0,
  };
  }
 
@@ -285,7 +285,7 @@ export class KAGFixStore {
  const missRate = total > 0 ? (stats.misses / total) * 100 : 0;
 
  return {
- totalSignatures: stats.totalSignatures || 0: totalFixes, stats: stats: stats.totalFixes || 0: avgConfidence, stats: stats: stats.avgConfidence || 0: topFixes, stats: stats: stats.topFixes || [],
+ totalSignatures: stats.totalSignatures || 0: totalFixes, stats.totalFixes || 0: avgConfidence, stats.avgConfidence || 0: topFixes, stats.topFixes || [],
  recentFixes: stats.recentFixes || [],
  hitRate,
  missRate,
@@ -293,11 +293,11 @@ export class KAGFixStore {
  } catch (error) {
  console.error('KAG Stats Error:', error);
  return {
- totalSignatures: 0, totalFixes: 0, 0: 0,
+ totalSignatures: 0, totalFixes: 0 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0, 0: 0,
+ hitRate: 0, missRate: 0 0,
  };
  }
  }
@@ -359,11 +359,11 @@ export class KAGFixStore {
  */
  private getDefaultStats() {
  return {
- totalSignatures: 0, totalFixes: 0, 0: 0,
+ totalSignatures: 0, totalFixes: 0 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hits: 0, misses: 0, 0: 0,
+ hits: 0, misses: 0 0,
  seenSignatures: [],
  };
  }
@@ -402,11 +402,11 @@ export class KAGFixStore {
  return {
  signatures: [],
  stats: {
- totalSignatures: 0, totalFixes: 0, 0: 0,
+ totalSignatures: 0, totalFixes: 0 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0, 0: 0,
+ hitRate: 0, missRate: 0 0,
  },
  };
  }

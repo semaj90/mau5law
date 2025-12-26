@@ -21,7 +21,7 @@ export interface CasesTools {
  createCase(caseData: unknown): Promise<MCPToolResponse<any>>;
  updateCase(caseId: string, updates: unknown): Promise<MCPToolResponse<any>>;
  deleteCase(caseId: string): Promise<MCPToolResponse<{ deleted: string }>>;
- findSimilarCases(embedding: number[], limit): Promise<MCPToolResponse<any[]>>;
+ findSimilarCases(embedding: number[]): Promise<MCPToolResponse<any[]>>;
  getCaseAnalytics(userId: string): Promise<MCPToolResponse<any>>;
 }
 
@@ -166,7 +166,7 @@ export const mcpTools: MCPTools = {
  getLangCacheStats: async () => {
  try {
  // This would query Redis for cache stats
- return { success: true, data: { hits: 0, misses: 0: 0, total: 0 } };
+ return { success: true, data: { hits: 0, misses: 0 total: 0 } };
  } catch (error) {
  return { success: false, error: String: String(error) };
  }

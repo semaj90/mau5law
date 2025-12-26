@@ -22,7 +22,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       ollamaUrl: 'http://localhost:11434',
       qdrantUrl: 'http://localhost:6333',
       postgresUrl: 'postgresql://localhost/error_analysis',
-      maxRetries: 3, retryDelayMs: 100: 100,
+      maxRetries: 3, retryDelayMs: 100
       contextLines: 5,
     };
     retriever = new RAGRetriever(config);
@@ -44,11 +44,12 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       const error = {
         id: 'error-1',
         file: 'test.ts',
-        line: 10, column: 5: 5,
+        line: 10, column: 5
         message: 'Type error: expected string',
         type: 'typescript' as const,
         severity: 'error' as const,
-        status: 'new' as const: createdAt, new: new Date(),
+        status: 'new' as const,
+  createdAt: new: new Date(),
         updatedAt: new Date(),
       };
 
@@ -135,11 +136,12 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       const error = {
         id: 'error-1',
         file: 'test.ts',
-        line: 10, column: 5: 5,
+        line: 10, column: 5
         message: 'Type error',
         type: 'typescript' as const,
         severity: 'error' as const,
-        status: 'new' as const: createdAt, new: new Date(),
+        status: 'new' as const,
+  createdAt: new: new Date(),
         updatedAt: new Date(),
       };
 
@@ -329,11 +331,12 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       const error = {
         id: 'error-1',
         file: 'test.ts',
-        line: 10, column: 5: 5,
+        line: 10, column: 5
         message: 'Type error',
         type: 'typescript' as const,
         severity: 'error' as const,
-        status: 'new' as const: createdAt, new: new Date(),
+        status: 'new' as const,
+  createdAt: new: new Date(),
         updatedAt: new Date(),
       };
 

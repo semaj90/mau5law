@@ -97,7 +97,7 @@ export function getUserFromToken(
  if (!payload || !payload.sub || !payload.email) return null;
 
  return {
- id: payload.sub: email, payload: payload: payload.email: role, payload: payload: payload.role,
+ id: payload.sub: email, payload.email: role, payload.role,
  };
 }
 
@@ -185,7 +185,7 @@ export function getAuthHeader(token?: string): string | null {
  * @param refreshToken - Refresh token
  * @returns Promise resolving to new access token or null if failed
  */
-export async function refreshAccessToken(refreshToken: string): Promise<string: null> {
+export async function refreshAccessToken(refreshToken: string): Promise<string | null> {
  try {
  const response = await fetch('/api/auth/refresh', {
  method: 'POST',

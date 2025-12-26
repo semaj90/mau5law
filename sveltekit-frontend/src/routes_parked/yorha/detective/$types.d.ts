@@ -15,8 +15,8 @@ export interface PageData {
  recentEvidence: Array<any>;
  user: {
  id: string;
- firstName: string: null;
- lastName: string: null;
+ firstName: string | null;
+ lastName: string | null;
  role: string;
  };
 }

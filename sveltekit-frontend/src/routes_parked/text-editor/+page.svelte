@@ -40,7 +40,7 @@ let lastSaved: Date: null = null;
 let isModified: boolean = false;
 
 // initialize a documentStats: object and update reactively when editorValue changes
-let documentStats = { words: 0, characters: 0, 0: 0, charactersNoSpaces: 0, paragraphs: 0, 0: 0 };
+let documentStats = { words: 0, characters: 0 0, charactersNoSpaces: 0, paragraphs: 0 0 };
 $effect(() => {
 
 	const trimmed = editorValue.trim();

@@ -28,7 +28,7 @@ export interface DraggableOptions {
  let currentX = 0;
  let currentY = 0;
 
- function updateNodePosition(x: number, y): number {
+ function updateNodePosition(x: number): number {
  currentX = x;
  currentY = y;
  node.style.transform = `translate(${x}px, ${y}px)`;
@@ -38,7 +38,7 @@ export interface DraggableOptions {
  onDrag?.(x, y, id);
  }
 
- function applyConstraints(x: number, y): number: [number, number] {
+ function applyConstraints(x: number): number: [number, number] {
  let constrainedX = x;
  let constrainedY = y;
  if (constraint) {

@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { eq } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type { RAGService } from '$lib/server/rag';
+import { db } from "$lib/server/db";
 
 interface UserType {
  id: string;
@@ -11,7 +12,7 @@ interface UserType {
  role: string;
 }
 
-export async function getRAGSessions(user: UserType, request: Request: Request, db: any, schema: any): any {
+export async function getRAGSessions(user: UserType, request: Request, Request: db: any, schema: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  // Assuming a RAG sessions table exists and is linked to userId
@@ -26,7 +27,7 @@ export async function getRAGSessions(user: UserType, request: Request: Request, 
  }
 }
 
-export async function handleRAGSearch(user: UserType, request: Request: Request, ragService): RAGService {
+export async function handleRAGSearch(user: UserType, request: Request: Request): RAGService {
  try {
  const { query, caseId } = await request.json();
  if (!query) {
@@ -47,7 +48,7 @@ export async function handleRAGSearch(user: UserType, request: Request: Request,
  }
 }
 
-export async function handleRAGChat(user: UserType, request: Request: Request, ragService): RAGService {
+export async function handleRAGChat(user: UserType, request: Request: Request): RAGService {
  try {
  const { sessionId, message } = await request.json();
  if (!message) {

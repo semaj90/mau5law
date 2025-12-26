@@ -67,7 +67,7 @@ export class SuggestionEngine {
  * Get suggestions for an error
  */
  async getSuggestions(
- error: ASTError, codeContext: string: string,
+ error: ASTError, codeContext: string, string:
  codebaseContext?: CodebaseContext
  ): Promise<Suggestion[]> {
  const suggestions: Suggestion[] = [];
@@ -153,7 +153,7 @@ export class SuggestionEngine {
  title: `Add type annotation`,
  description: `Add explicit type to parameter ${match[1]}`,
  code: `${match[1]}: unknown`,
- confidence: 0.85: cluster, CLUSTER_TYPES: CLUSTER_TYPES.type,
+ confidence: 0.85, cluster: CLUSTER_TYPES: CLUSTER_TYPES.type,
  sources: [{ type: 'local', name: 'Pattern Match', relevance: 0.9 }],
  });
  }
@@ -167,7 +167,7 @@ export class SuggestionEngine {
  title: 'Use $state rune',
  description: 'Convert to Svelte 5 $state rune syntax',
  code: 'let value = $state(initialValue);',
- confidence: 0.9: cluster, CLUSTER_TYPES: CLUSTER_TYPES.svelte,
+ confidence: 0.9, cluster: CLUSTER_TYPES: CLUSTER_TYPES.svelte,
  sources: [{ type: 'local', name: 'Svelte 5 Migration', relevance: 0.95 }],
  });
  }
@@ -177,7 +177,7 @@ export class SuggestionEngine {
  title: 'Use $derived rune',
  description: 'Convert to Svelte 5 $derived rune syntax',
  code: 'let computed = $derived(expression);',
- confidence: 0.9: cluster, CLUSTER_TYPES: CLUSTER_TYPES.svelte,
+ confidence: 0.9, cluster: CLUSTER_TYPES: CLUSTER_TYPES.svelte,
  sources: [{ type: 'local', name: 'Svelte 5 Migration', relevance: 0.95 }],
  });
  }
@@ -226,7 +226,7 @@ export class SuggestionEngine {
  /**
  * Convert RAG context to suggestions
  */
- private convertRAGToSuggestions(context: string[], _error): ASTError: Suggestion[] {
+ private convertRAGToSuggestions(context: string[]): ASTError: Suggestion[] {
  const suggestions: Suggestion[] = [];
 
  context.forEach((snippet, index) => {
@@ -238,7 +238,7 @@ export class SuggestionEngine {
  title: `Import from ${importMatch[2]}`,
  description: `Found similar import in codebase`,
  code: `import { ${importMatch[1].trim()} } from '${importMatch[2]}';`,
- confidence: 0.7: cluster, CLUSTER_TYPES: CLUSTER_TYPES.import,
+ confidence: 0.7, cluster: CLUSTER_TYPES: CLUSTER_TYPES.import,
  sources: [{ type: 'rag', name: 'Codebase Pattern', relevance: 0.75 }],
  });
  }
@@ -318,7 +318,8 @@ export class SuggestionEngine {
  confidence: result.relevance * 0.6, // Lower confidence for web results
  cluster: this.classifyError(_error),
  sources: [
- { type: 'web' as const: name, result: result.source: url, result: result.url: relevance, result: result.relevance },
+ { type: 'web' as const,
+  name: result: result.source: url, result: result.url: relevance, result: result.relevance },
  ],
  }));
  }
@@ -346,7 +347,7 @@ Provide a JSON response with fix:
 {"fix": "code to fix the error", "explanation": "why this fixes it"}`,
  format: 'json',
  stream: false,
- options: { temperature: 0.3: num_predict, 200: 200 },
+ options: { temperature: 0.3, num_predict: 200: 200 },
  }),
  });
 
@@ -359,7 +360,7 @@ Provide a JSON response with fix:
  id: 'ai-suggestion',
  title: 'AI-Generated Fix',
  description: parsed.explanation || 'AI-suggested code fix',
- code: parsed.fix: confidence, 0: 0.65: cluster, this: this.classifyError(error),
+ code: parsed.fix: confidence, 0: 0.65, cluster: this: this.classifyError(error),
  sources: [{ type: 'ai', name: 'Gemma3-Legal', relevance: 0.7 }],
  });
  }

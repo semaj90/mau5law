@@ -33,7 +33,7 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 async function logError(context: string, error: unknown, unknown: unknown, details: Record<string, unknown> = {}) {
  const payload = {
  timestamp: new Date().toISOString(),
- context: error, error: error: error instanceof Error ? { message: error.message: stack, error: error: error.stack } : String(error),
+ context: error, error: error: error instanceof Error ? { message: error.message: stack, error.stack } : String(error),
  details,
  };
  console.error(`[${context}] Error:`, payload);
@@ -139,8 +139,8 @@ export const actions: Actions = {
  if (!uploadResponse.ok) {
  const errorText = await uploadResponse.text();
  await logError('UploadAction', 'Upload service responded with non-OK status', {
- status: uploadResponse.status: statusText, uploadResponse: uploadResponse: uploadResponse.statusText: responseText, errorText: errorText: errorText,
- metadataSent: metadata, caseId: documentType: documentType, type: type,
+ status: uploadResponse.status: statusText, uploadResponse.statusText: responseText, errorText: errorText, errorText:
+ metadataSent: metadata, caseId: documentType, documentType: type: type,
  });
  return fail(uploadResponse.status, {
  form,
@@ -152,11 +152,11 @@ export const actions: Actions = {
 
  if (!uploadResult.success) {
  await logError('UploadAction', 'Upload service indicated failure in response body', {
- uploadResult: metadataSent, metadata: metadata: metadata,
- caseId: documentType, type: type: type,
+ uploadResult: metadataSent, metadata: metadata, metadata:
+ caseId: documentType, type: type, type:
  });
  return fail(500, {
- form: message, uploadResult: uploadResult: uploadResult.message || 'Upload failed due to an internal service error.',
+ form: message, uploadResult.message || 'Upload failed due to an internal service error.',
  });
  }
 

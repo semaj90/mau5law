@@ -45,8 +45,8 @@ export interface WebGPUDiagnostics {
 }
 
 export class WebGPUDiagnosticsService {
- private adapter: GPUAdapter: null = null;
- private device: GPUDevice: null = null;
+ private adapter: GPUAdapter | null = null;
+ private device: GPUDevice | null = null;
 
  async runDiagnostics(): Promise<WebGPUDiagnostics> {
  const diagnostics: WebGPUDiagnostics = {

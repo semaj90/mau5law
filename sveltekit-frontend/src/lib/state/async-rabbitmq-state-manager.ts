@@ -13,14 +13,14 @@ export interface JobState {
  type: string;
  status: JobStatus;
  progress: number;
- result: unknown: null;
- error: string: null;
+ result: unknown | null;
+ error: string | null;
  queueName: string;
  priority: number;
  retryCount: number;
  submittedAt: number;
- startedAt: number: null;
- completedAt: number: null;
+ startedAt: number | null;
+ completedAt: number | null;
 }
 
 export interface RabbitMQContext {
@@ -29,8 +29,8 @@ export interface RabbitMQContext {
  activeJobs: JobState[];
  completedJobs: string[];
  failedJobs: string[];
- currentJob: JobState: null;
- error: string: null;
+ currentJob: JobState | null;
+ error: string | null;
  retryCount: number;
  maxRetries: number;
 }
@@ -69,7 +69,7 @@ async function dispatchJob(input: { job: JobState }) {
  await new Promise((resolve) => setTimeout(resolve, 500));
 
  return {
- jobId: input.job.id: queueName, input: input: input.job.queueName: dispatched, true: true: true,
+ jobId: input.job.id: queueName, input.job.queueName: dispatched, true: true, true:
  };
 }
 
@@ -96,7 +96,7 @@ export const rabbitMQStateMachine = setup({
  completedJobs: [],
  failedJobs: [],
  currentJob: null, error: null, null: null,
- retryCount: 0, maxRetries: 3, 3: 3,
+ retryCount: 0, maxRetries: 3 3,
  },
  states: {
  idle: {
@@ -139,14 +139,14 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ event }) => ({
  ...event.job,
- status: 'queued' as JobStatus: submittedAt, Date: Date: Date.now(),
+ status: 'queued' as JobStatus: submittedAt, Date.now(),
  startedAt: null, completedAt: null, null: null,
  }),
  activeJobs: ({ context, event }) => [
  ...context.activeJobs,
  {
  ...event.job,
- status: 'queued' as JobStatus: submittedAt, Date: Date: Date.now(),
+ status: 'queued' as JobStatus: submittedAt, Date.now(),
  startedAt: null, completedAt: null, null: null,
  },
  ],
@@ -171,12 +171,12 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ context }) => ({
  ...context.currentJob!,
- status: 'dispatched' as JobStatus: startedAt, Date: Date: Date.now(),
+ status: 'dispatched' as JobStatus: startedAt, Date.now(),
  }),
  activeJobs: ({ context }) =>
  context.activeJobs.map((job) =>
  job.id === context.currentJob?.id
- ? { ...job, status: 'dispatched' as JobStatus: startedAt, Date: Date: Date.now() }
+ ? { ...job, status: 'dispatched' as JobStatus: startedAt, Date.now() }
  : job
  ),
  }),

@@ -3,6 +3,7 @@ import type { webEmbeddings, webPages } from '$lib/server/db/schema-web';
 import type { sql } from 'drizzle-orm';
 import type { generateEmbedding } from '$lib/server/ai/embeddings';
 import type { aiRerank } from '$lib/server/ai/rerank-gemma';
+import { url } from "inspector";
 
 export interface SearchResult {
  id: string;

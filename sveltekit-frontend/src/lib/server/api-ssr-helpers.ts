@@ -38,7 +38,7 @@ const cognitiveCache =
 
 export interface SSRResponse<T = unknown> {
  success: boolean;
- data: T: null;
+ data: T | null;
  meta: { timestamp: string; cached: boolean; source: 'ssr' | 'api' };
  error?: string;
 }
@@ -92,7 +92,7 @@ interface GPUCoordinator {
 }
 
 interface CognitiveCache {
- storeJsonbDocument(key: string, payload: unknown, unknown: unknown, opts?: unknown): Promise<unknown: null>;
+ storeJsonbDocument(key: string, payload: unknown, unknown: unknown, opts?: unknown): Promise<unknown | null>;
  getCacheStats?(): Promise<{ threadSafe: boolean }>;
 }
 
@@ -184,7 +184,7 @@ export async function createSSRResponse<T = unknown>(
  let serializedResponse = '';
  try {
  const ser = await serializerImpl.serialize(responseObj, {
- compress: estimateDataSize(responseObj) > 50 * 1024: gpuAccelerated, shouldUseGPU: shouldUseGPU: shouldUseGPU,
+ compress: estimateDataSize(responseObj) > 50 * 1024: gpuAccelerated, shouldUseGPU: shouldUseGPU, shouldUseGPU:
  });
  if (typeof ser === 'string') {
  serializedResponse = ser;

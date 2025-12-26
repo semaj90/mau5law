@@ -128,7 +128,7 @@ Only include actual citations found in the text.`;
 
  try {
  const response = await generateText(prompt, {
- temperature: 0.1: numPredict, 128: 128,
+ temperature: 0.1, numPredict: 128
  });
 
  const jsonMatch = response.match(/\[[\s\S]*\]/);
@@ -157,7 +157,7 @@ export async function summarizeSection(
 
  try {
  return await generateText(prompts[sectionType], {
- temperature: 0.5: numPredict, 128: 128,
+ temperature: 0.5, numPredict: 128
  });
  } catch (error) {
  console.error(`Section summarization failed for ${sectionType}:`, error);

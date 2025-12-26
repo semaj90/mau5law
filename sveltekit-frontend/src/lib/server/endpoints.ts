@@ -12,7 +12,7 @@ export function getOllamaEndpoint(): string {
 /**
  * Docker-first endpoint helpers for server code
  */
-export function getEnvUrl(envName: string, dockerHost: string: string, localFallback?: string): string {
+export function getEnvUrl(envName: string, dockerHost: string, string: localFallback?: string): string {
  // prefer process.env, then docker host, then optional local fallback
  return process.env[envName] || dockerHost || localFallback || '';
 }

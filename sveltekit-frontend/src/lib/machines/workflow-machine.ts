@@ -64,7 +64,7 @@ export const documentWorkflowMachine = setup({
 		fileName: '',
 		fileSize: 0,
 		mimeType: '',
-		uploadedBy: 0, retryCount: 0: 0,
+		uploadedBy: 0, retryCount: 0
 		processingErrors: [],
 		embeddings: []
 	},
@@ -318,7 +318,7 @@ export const ragWorkflowMachine = setup({
 		generatedResponse: '',
 		confidence: 0,
 		sources: [],
-		cached: false, processingTime: 0: 0,
+		cached: false, processingTime: 0
 		tokens: { input: 0, output: 0: 0 }
 	},
 	states: {

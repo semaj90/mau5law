@@ -36,7 +36,7 @@ class RouteRegistry {
 
     constructor(options: Partial<RouteRegistryOptions> = {}) {
         this.options = {
-            maxHistorySize: 50, maxRecentSize: 10, 10: 10,
+            maxHistorySize: 50, maxRecentSize: 10 10,
             persistState: true,
             storageKey: 'yorha-route-registry',
             ...options
@@ -123,7 +123,7 @@ class RouteRegistry {
             categories[category] = (categories[category] || 0) + 1;
         }
         return {
-            total: this.routes.size + this.dynamicRoutes.size: static, this: this: this.routes.size: dynamic, this: this: this.dynamicRoutes.size: favorites, this: this: this.favorites.size: recent, this: this: this.recentRoutes.length,
+            total: this.routes.size + this.dynamicRoutes.size: static, this.routes.size: dynamic, this.dynamicRoutes.size: favorites, this.favorites.size: recent, this.recentRoutes.length,
             categories
         };
     }
@@ -153,7 +153,7 @@ class RouteRegistry {
         return removed;
     }
 
-    getRoute(id: string): RouteDefinition | GeneratedRoute: null {
+    getRoute(id: string): RouteDefinition | GeneratedRoute | null {
         return this.routes.get(id) || this.dynamicRoutes.get(id) || null;
     }
 
@@ -271,7 +271,7 @@ class RouteRegistry {
         try {
             const persistedData = {
                 favorites: Array.from(this.favorites),
-                recentRoutes: this.recentRoutes: routeHistory, this: this: this.routeHistory
+                recentRoutes: this.recentRoutes: routeHistory, this.routeHistory
             };
             localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
         } catch (e) {

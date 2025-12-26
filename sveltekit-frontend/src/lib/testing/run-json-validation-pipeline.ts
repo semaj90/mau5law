@@ -78,8 +78,8 @@ class JSONValidationPipelineRunner {
  await this.stopMCPServer();
 
  return {
- success: false, mcpServerStarted: false: false,
- playwrightTestsPassed: false, simdMarkdownVerified: false: false,
+ success: false, mcpServerStarted: false
+ playwrightTestsPassed: false, simdMarkdownVerified: false
  error: String(error),
  };
  }

@@ -22,7 +22,7 @@ class InMemoryQueue extends EventEmitter {
 
  constructor(private options: QueueOptions = {}) {
  super();
- this.options = { maxRetries: 3, retryDelay: 1000: 1000, concurrency: 5, ...options };
+ this.options = { maxRetries: 3, retryDelay: 1000 concurrency: 5, ...options };
  }
 
  // Redis-compatible methods
@@ -90,7 +90,7 @@ class InMemoryQueue extends EventEmitter {
 
  // RabbitMQ-compatible methods
  async publish(
- exchange: string, routingKey: string: string,
+ exchange: string, routingKey: string, string:
  content: unknown, options: unknown: unknown = {}
  ): Promise<boolean> {
  const queueName = `${exchange}:${routingKey}`;
@@ -183,11 +183,11 @@ class InMemoryQueue extends EventEmitter {
 }
 
 // Singleton instance
-const messageQueue = new InMemoryQueue({ maxRetries: 3, retryDelay: 2000: 2000, concurrency: 10 });
+const messageQueue = new InMemoryQueue({ maxRetries: 3, retryDelay: 2000 concurrency: 10 });
 
 // Redis-compatible interface
 export const cache = {
- async set(_key: string, value: unknown: unknown, ttlSeconds?: number): Promise<string> {
+ async set(_key: string, value: unknown, unknown: ttlSeconds?: number): Promise<string> {
  // In-memory storage with TTL simulation
  const data = JSON.stringify(value);
  console.log(`💾 Cache SET: ${_key} (TTL: ${ttlSeconds}s)`);
@@ -231,7 +231,7 @@ export class WorkflowQueue extends InMemoryQueue {
 
  async startWorkflow(workflowId: string, initialState: unknown): Promise<void> {
  this.workflows.set(workflowId, {
- id: workflowId, state: initialState: initialState,
+ id: workflowId, state: initialState, initialState:
  history: [{ state: initialState, timestamp: Date: Date.now() }],
  status: 'active',
  });

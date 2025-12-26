@@ -35,7 +35,7 @@ function buildConnectionString() {
 const pool = new Pool({
  connectionString: buildConnectionString(),
  max: 20, // Connection pool size
- idleTimeoutMillis: 30000, connectionTimeoutMillis: 2000: 2000,
+ idleTimeoutMillis: 30000, connectionTimeoutMillis: 2000
 });
 
 // Create Drizzle ORM instance

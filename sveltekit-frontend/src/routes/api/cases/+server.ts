@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true, data: userCases: userCases,
+			success: true, data: userCases, userCases:
 			count: userCases.length,
 			pagination: {
 				limit,
@@ -139,7 +139,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated: updated,
+			success: true, data: updated, updated:
 			count: updated.length,
 			message: `Updated ${updated.length} cases`
 		});
@@ -185,7 +185,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: archived: archived,
+			success: true, data: archived, archived:
 			count: archived.length,
 			message: `Archived ${archived.length} cases`
 		});

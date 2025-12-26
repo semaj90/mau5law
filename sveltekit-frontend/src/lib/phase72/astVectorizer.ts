@@ -23,7 +23,7 @@ interface NativeVectorizer {
  * Attempt to load the native GPU addon.
  * Returns null if not built or missing dependencies.
  */
-function tryLoadNativeAddon(): typeof ASTVectorizerCtor: null {
+function tryLoadNativeAddon(): typeof ASTVectorizerCtor | null {
  if (ASTVectorizerCtor) return ASTVectorizerCtor;
 
  try {
@@ -110,7 +110,7 @@ async function generateEmbeddingViaOllama(text: string): Promise<number[]> {
  * Automatically uses GPU addon if available, falls back to Ollama.
  */
 export class Phase72Vectorizer {
- private nativeInstance: NativeVectorizer: null = null;
+ private nativeInstance: NativeVectorizer | null = null;
  private readonly useNative: boolean;
 
  constructor(options: { modelPath?: string; forceOllama?: boolean } = {}) {

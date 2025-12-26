@@ -1,6 +1,6 @@
 /** * Gaming Audio Effects * Retro gaming sound effects for UI components */
 export class RetroAudioEngine {
- audioContext: AudioContext: null = null;
+ audioContext: AudioContext | null = null;
 
  private getContext(): AudioContext {
  if (!this.audioContext) {

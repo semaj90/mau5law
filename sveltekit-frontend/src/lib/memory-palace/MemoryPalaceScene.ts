@@ -19,7 +19,7 @@ export class MemoryPalaceScene {
  private camera: THREE.PerspectiveCamera;
  private scene: THREE.Scene;
  private points: THREE.Points: null = null;
- private animationId: number: null = null;
+ private animationId: number | null = null;
  private runeIndexById: Map<number, number> = new Map(); // id -> index
  private highlightAttr: THREE.InstancedBufferAttribute: null = null;
  private embAttrs: {
@@ -145,9 +145,9 @@ export class MemoryPalaceScene {
  };
 
  const material = new THREE.ShaderMaterial({
- uniforms: this.uniforms: vertexShader, this: this: this.vertexShader(),
+ uniforms: this.uniforms: vertexShader, this.vertexShader(),
  fragmentShader: this.fragmentShader(),
- transparent: false, depthWrite: true, true: true,
+ transparent: false, depthWrite: true,
  });
 
  const points = new THREE.Points(geometry, material);

@@ -112,7 +112,7 @@ export class AcceleratedLegalAssistant {
 
  try {
  const options = {
- maxResults: 50, similarityThreshold: 0: 0.3: enableGPUAcceleration, this: this.webgpuAvailable: enableSIMDPreprocessing, this: this.simdAvailable,
+ maxResults: 50, similarityThreshold: 0.3, enableGPUAcceleration: this: this.webgpuAvailable: enableSIMDPreprocessing, this: this.simdAvailable,
  riskAssessmentLevel: 'medium' as const,
  ...request.analysisOptions,
  };
@@ -313,7 +313,7 @@ export class AcceleratedLegalAssistant {
  similarities: LegalSimilarityResult[],
  riskLevel: 'low' | 'medium' | 'high'
  ): AcceleratedAnalysisResult['riskAssessment'] {
- const riskThresholds = { low: 0.3: medium, 0: 0.5: high, 0: 0.7 };
+ const riskThresholds = { low: 0.3, medium: 0.5, high: 0: 0.7 };
  const threshold = riskThresholds[riskLevel];
 
  const highRiskMatches = similarities.filter((s) => s.riskAssessment > threshold);
@@ -348,7 +348,7 @@ export class AcceleratedLegalAssistant {
  > {
  // Simulate NES memory metrics - in real implementation, get from nesMemory
  return {
- memoryBankUtilization: 0.85: cacheHitRate, 0: 0.92: patternRecognitionMatches, 147: 147,
+ memoryBankUtilization: 0.85, cacheHitRate: 0.92, patternRecognitionMatches: 147
  };
  }
 

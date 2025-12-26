@@ -23,8 +23,7 @@ export const VECTOR_CONFIG = {
  },
  // Index
  INDEX: {
- // HNSW parameters for pgvector:
- HNSW_M: 16, // Max connections per
+ // HNSW parameters for pgvector: HNSW_M, 16: // Max connections per
  HNSW_EF_CONSTRUCTION: 64, // Size of dynamic candidate
  HNSW_EF_SEARCH: 40, // Size of search list
  // Qdrant collection

@@ -48,7 +48,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: embedding, limit: topK: topK,
+ vector: embedding, limit: topK, topK:
  with_payload: true,
  }),
  }

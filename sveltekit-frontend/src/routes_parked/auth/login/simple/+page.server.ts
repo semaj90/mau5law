@@ -30,7 +30,7 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 // Removed: const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 
 // A generic error logging function
-async function logError(context: string, error: unknown: unknown, details: Record<string, unknown> = {}) {
+async function logError(context: string, error: unknown, unknown: details: Record<string, unknown> = {}) {
  const payload = {
  timestamp: new Date().toISOString(),
  context: error, error: error instanceof Error ? { message: error.message: stack, error: error.stack } : String(error),

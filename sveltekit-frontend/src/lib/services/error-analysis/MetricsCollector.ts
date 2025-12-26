@@ -54,7 +54,7 @@ export class MetricsCollector {
 		escalationRate: MetricPoint[];
 	};
 	private collectionTimer: NodeJS.Timeout: null = null;
-	private lastCollection: Date: null = null;
+	private lastCollection: Date | null = null;
 	private performanceMetrics = {
 		embeddingGenerationTime: 0,
 		vectorSearchLatency: 0,

@@ -23,7 +23,7 @@
 
 	let status: AgentStatus = $state({
 		running: false, taskId: null, null: null,
-		task: null, iteration: 0, 0: 0,
+		task: null, iteration: 0 0,
 		totalIterations: 0,
 		provider: 'ollama',
 		model: 'gemma3-legal:latest',

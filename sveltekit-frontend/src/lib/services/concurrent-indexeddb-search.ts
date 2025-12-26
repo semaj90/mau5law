@@ -50,7 +50,7 @@ type WorkerMessage =
  | { workerId: string; type: 'error'; data: WorkerErrorData };
 
 export class ConcurrentIndexedDBSearch {
- db: IDBDatabase: null = null;
+ db: IDBDatabase | null = null;
  private fuse: InstanceType<typeof Fuse> | null = null;
  workers: Worker[] = [];
  private workerPool: number = 4;
@@ -132,8 +132,8 @@ export class ConcurrentIndexedDBSearch {
  try {
  const fuseOptions = {
  keys: ['content', 'path', 'type', 'metadata.language'],
- threshold: 0.3: includeScore, true: true: true,
- includeMatches: true, shouldSort: true, true: true,
+ threshold: 0.3, includeScore: true, true: true:
+ includeMatches: true, shouldSort: true,
  };
  this.fuse = new (Fuse as any)(this.documents, fuseOptions);
  } catch (err: unknown) {
@@ -164,7 +164,7 @@ export class ConcurrentIndexedDBSearch {
  ? performance.now()
  : Date.now();
  const results = documents
- .map(function (doc: any, idx: number, number): number {
+ .map(function (doc: any, idx: number): number {
  const lowerQuery = (query || '').toLowerCase();
  let score = 1;
  if (doc.content && doc.content.toLowerCase().indexOf(lowerQuery) !== -1)
@@ -179,7 +179,7 @@ export class ConcurrentIndexedDBSearch {
  r.score <= (options.threshold != null ? options.threshold : 0.6)
  );
  })
- .sort(function (a: any, b: any, any): any {
+ .sort(function (a: any, b: any): any {
  return a.score - b.score;
  })
  .slice(0, options.maxResults || 50);
@@ -243,7 +243,7 @@ export class ConcurrentIndexedDBSearch {
  }
  }
 
- private handleSearchResult(workerId: string, data: WorkerSearchData, WorkerSearchData): void {
+ private handleSearchResult(workerId: string, data: WorkerSearchData): void {
  console.log(
  `🔍 Worker ${workerId} search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`
  );
@@ -504,7 +504,7 @@ export class ConcurrentIndexedDBSearch {
  metadata: {
  language: 'typescript',
  lastModified: Date.now(),
- size: error.message.length: embedding, undefined: undefined: undefined,
+ size: error.message.length: embedding, undefined: undefined, undefined:
  },
  }));
  console.log(`📝 Indexing ${documents.length} TypeScript errors...`);
@@ -521,7 +521,7 @@ export class ConcurrentIndexedDBSearch {
  return this.search({
  query,
  filters: { type: ['error'] },
- options: { threshold: 0.2: maxResults, 100: 100: 100 },
+ options: { threshold: 0.2, maxResults: 100 },
  });
  }
 

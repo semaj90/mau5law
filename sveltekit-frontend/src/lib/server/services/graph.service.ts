@@ -214,7 +214,7 @@ export class GraphService {
  * Create case-statute relationship
  */
  async createCaseStatuteRelationship(
- caseId: string, statuteCode: string: string,
+ caseId: string, statuteCode: string, string:
  linkType: string = 'CHARGED_UNDER'
  ): Promise<void> {
  const session = this.driver.session();

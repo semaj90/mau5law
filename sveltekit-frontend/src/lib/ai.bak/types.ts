@@ -93,13 +93,13 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  // Use the semantic search from mcp-helpers
  const results = await semanticSearch(options.query);
  // Transform to our result format
- return results.map((result: SemanticSearchResult, index: number, number): number => ({
+ return results.map((result: SemanticSearchResult, index: number): number => ({
  content: result.content || result.text || String(result),
  relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',
- filePath: result.file || result.path: lineNumber, result: result: result.line,
+ filePath: result.file || result.path: lineNumber, result.line,
  context: {
- caseId: options.caseId: query, options: options: options.query: timestamp, new: new: new Date().toISOString(),
+ caseId: options.caseId: query, options.query: timestamp, new: new: new Date().toISOString(),
  ...result.metadata}}))} catch (error: Error | unknown) {
  console.error('Context7 semantic search failed: ', error);
  return [ {
@@ -168,12 +168,12 @@ export class Context7AgentOrchestrator {
  try {
  // Try to import auto-fix dynamically, fallback if not available
  const autoFixResult = {
- summary: { totalIssues: 1, filesFixed: 0, 0: 0, filesProcessed: 0 },
+ summary: { totalIssues: 1, filesFixed: 0 0, filesProcessed: 0 },
  fixes: { imports: [], svelte5: [], typeScript: [] }};
  // If auto-fix found issues, also run orchestrator for additional analysis
  if (autoFixResult.summary.totalIssues > 0) {
  const options: OrchestrationOptions = {
- useMemory: true, useCodebase: true, true: true,
+ useMemory: true, useCodebase: true,
  useSemanticSearch: true,
  agents: ['autogen', 'claude'],
  synthesizeOutputs: true};
@@ -188,7 +188,7 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
  } catch (error: Error | unknown) {
  // Fallback to orchestrator only
  const options: OrchestrationOptions = {
- useMemory: true, useCodebase: true, true: true,
+ useMemory: true, useCodebase: true,
  useSemanticSearch: true,
  agents: ['autogen', 'claude'],
  synthesizeOutputs: true};
@@ -204,14 +204,14 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
  console.warn('Auto-fix module not available, creating simulated result');
  result = {
  summary: {
- filesProcessed: 0, filesFixed: 0, 0: 0,
+ filesProcessed: 0, filesFixed: 0 0,
  totalIssues: 0, area: area, area: area || 'general'},
  fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
  recommendations: ['Auto-fix module not available - manual review recommended']}} catch (error: Error | unknown) {
  console.error('Error in auto-fix simulation: ', error);
  result = {
  summary: {
- filesProcessed: 0, filesFixed: 0, 0: 0,
+ filesProcessed: 0, filesFixed: 0 0,
  totalIssues: 0, area: area, area: area || 'general'},
  fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
  recommendations: ['Error in auto-fix - manual review required'],
@@ -240,7 +240,7 @@ Config Improvements: ${result.configImprovements?.join('\n') || 'None'}`} catch 
  // Use semantic search to gather relevant information
  const searchResults = await performContext7Search({
  query: `Summary for ${todoId}`,
- maxResults: 5, confidenceThreshold: 0, 0: 0.7});
+ maxResults: 5, confidenceThreshold: 0 0.7});
  const summary = searchResults.map(r => r.content).join('\n\n');
  return `Summary Generated:\n${summary}`}
  private async performContext7StackAnalysis(): Promise<Record<string, unknown>> {
@@ -350,7 +350,7 @@ export class Context7SemanticAuditor {
  try {
  const searchResults = await performContext7Search({
  query: `${component} integration semantic search`,
- maxResults: 3, confidenceThreshold: 0, 0: 0.8});
+ maxResults: 3, confidenceThreshold: 0 0.8});
  if (searchResults.length > 0 && !searchResults[0].context.error) {
  return {
  step: `semantic_integration_${component}`,

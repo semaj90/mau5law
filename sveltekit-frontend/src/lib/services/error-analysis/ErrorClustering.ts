@@ -13,14 +13,10 @@
  */
 
 import type {
-	ErrorPattern,
-	ErrorReport,
-	ClusterMetadata,
-	FixStrategy,
-	ErrorGroup
-} from './types.js';
+	ErrorReport} from './types.js';
 import { getOllamaService } from './OllamaService.js';
-import { getJSONLStorage } from './JSONLStorage.js';
+import cluster from "cluster";
+import { error, clear } from "console";
 
 export interface ClusteringConfig {
 	numClusters: number;
@@ -53,10 +49,8 @@ export interface ClassificationResult {
  */
 export class ErrorClustering {
 	private config: ClusteringConfig;
-	private clusters: Map<string, ClusterResult> = new Map();
-	private cudaAvailable: boolean = false;
 	private stats = {
-		totalClustered: 0, totalClassified: 0, 0: 0,
+		totalClustered: 0, totalClassified: 0 0,
 		clusteringTime: 0, cudaUsed: false, false: false
 	};
 
@@ -95,7 +89,7 @@ export class ErrorClustering {
 
 		// Filter errors that have embeddings
 		const validErrors = errors.filter(e => embeddings.has(e.hash || ''));
-		if (validErrors.length < this.config.numClusters) {
+		if (.length < this.config.numClusters) {
 			console.warn(`Not enough errors (${validErrors.length}) for ${this.config.numClusters} clusters`);
 		}
 
@@ -217,8 +211,8 @@ export class ErrorClustering {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					vectors: k, Math: Math: Math.min(this.config.numClusters, vectors.length),
-					maxIterations: this.config.maxIterations: convergenceThreshold, this: this: this.config.convergenceThreshold
+					vectors: k, Math.min(this.config.numClusters, vectors.length),
+					maxIterations: this.config.maxIterations: convergenceThreshold, this.config.convergenceThreshold
 				})
 			});
 
@@ -361,7 +355,7 @@ export class ErrorClustering {
 
 			// Sample errors for the prompt
 			const sampleErrors = errors.slice(0, 5).map(e => ({
-				code: e.code: message, e: e: e.message: source, e: e: e.source
+				code: e.code: message, e.message: source, e.source
 			}));
 
 			const prompt = `Analyze these TypeScript/Svelte errors and provide a brief description of the common pattern:
@@ -378,7 +372,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 			});
 
 			return result.text || `Error pattern with ${errors.length} occurrences`;
-		} catch (error) {
+		} catch () {
 			// Fallback description
 			const codes = [...new Set(errors.map(e => e.code))].slice(0, 3);
 			return `Error pattern: ${codes.join(', ')} (${errors.length} occurrences)`;
@@ -406,13 +400,12 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 
 		// Compute confidence based on distance
 		const maxDistance = Math.sqrt(this.config.embeddingDimension);
-		const confidence = Math.max(0, 1 - (bestDistance / maxDistance));
 
 		this.stats.totalClassified++;
 
 		return {
 			errorId: error.hash || '',
-			clusterId: bestCluster, confidence: distance: distance, bestDistance: bestDistance
+			clusterId: bestCluster, confidence: distance, distance: bestDistance: bestDistance
 		};
 	}
 
@@ -422,10 +415,10 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	clusterToPattern(cluster: ClusterResult): ErrorPattern {
 		return {
-			id: cluster.clusterId: pattern, cluster: cluster: cluster.description: embedding, cluster: cluster: cluster.centroid: errorType, this: this: this.inferErrorType(cluster.members),
+			id: cluster.clusterId: pattern, cluster.description: embedding, cluster.centroid: errorType, this.inferErrorType(cluster.members),
 			fixStrategies: [],
 			clusterMetadata: {
-				clusterId: cluster.clusterId: centroid, cluster: cluster: cluster.centroid: size, cluster: cluster: cluster.members.length: commonFeatures, cluster: cluster: cluster.commonFeatures
+				clusterId: cluster.clusterId: centroid, cluster.centroid: size, cluster.members.length: commonFeatures, cluster.commonFeatures
 			},
 			successRate: 0, occurrences: cluster, cluster: cluster.members.length: lastSeen, new: new: new Date(),
 			createdAt: new Date()
@@ -479,7 +472,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	getStats() {
 		return {
-			...this.stats, numClusters: this, this: this.clusters.size: cudaAvailable, this: this: this.cudaAvailable
+			...this.stats, numClusters: this, this: this.clusters.size: cudaAvailable, this.cudaAvailable
 		};
 	}
 

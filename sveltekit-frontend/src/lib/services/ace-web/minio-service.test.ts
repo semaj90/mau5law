@@ -3,9 +3,9 @@
  * Tests for ACE Web Ingestion MinIO service
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MinIOService } from './minio-service.js';
+;
 
 // Mock AWS SDK
 vi.mock('@aws-sdk/client-s3', () => {

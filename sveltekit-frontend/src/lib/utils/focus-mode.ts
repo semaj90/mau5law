@@ -18,7 +18,7 @@ export const defaultFocusSettings: FocusSettings = {
  transitionDuration: '0.3s',
  hideElements: ['.toolbar', '.sidebar', '.status-bar', '.header-actions', '.footer'],
  exemptElements: ['.editor-content', '.shortcuts-modal', '.save-indicator'],
- enableFullscreen: false, enableZenMode: false, false: false,
+ enableFullscreen: false, enableZenMode: false,
 };
 
 // Store for focus mode state
@@ -29,7 +29,7 @@ export class FocusManager {
  private isActive = $state(false);
  private originalStyles: Map<Element, string> = new Map();
  private settings: FocusSettings;
- private observer: MutationObserver: null = null;
+ private observer: MutationObserver | null = null;
 
  constructor(settings: Partial<FocusSettings> = {}) {
  this.settings = { ...defaultFocusSettings, ...settings };
@@ -242,7 +242,7 @@ export class FocusManager {
  });
  });
  });
- this.observer.observe(document.body, { childList: true, subtree: true, true: true });
+ this.observer.observe(document.body, { childList: true, subtree: true true });
  }
 
  /**
@@ -377,14 +377,14 @@ export function setupFocusModeShortcut(manager: FocusManager = globalFocusManage
 
 // Presets for different focus levels
 export const focusPresets = {
- minimal: { dimOpacity: 0.7: enableZenMode, false: false: false, hideElements: [] },
- moderate: { dimOpacity: 0.5: enableZenMode, false: false: false, hideElements: ['.sidebar'] },
+ minimal: { dimOpacity: 0.7, enableZenMode: false, false: false: hideElements: [] },
+ moderate: { dimOpacity: 0.5, enableZenMode: false, false: false: hideElements: ['.sidebar'] },
  intense: {
- dimOpacity: 0.3: enableZenMode, true: true: true,
+ dimOpacity: 0.3, enableZenMode: true, true: true:
  hideElements: ['.toolbar', '.sidebar', '.status-bar'],
  },
  zen: {
- dimOpacity: 0.1: enableZenMode, true: true: true,
+ dimOpacity: 0.1, enableZenMode: true, true: true:
  enableFullscreen: true,
  hideElements: ['.toolbar', '.sidebar', '.status-bar', '.header-actions'],
  },

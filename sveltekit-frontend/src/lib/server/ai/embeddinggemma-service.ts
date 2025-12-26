@@ -1,5 +1,5 @@
-import type { createHash } from 'crypto';
 import type { cognitiveCache } from '$lib/server/cache';
+import type { createHash } from 'crypto';
 import type { generateEmbedding as requestEmbedding } from './ollama-client.js';
 
 const DEFAULT_MODEL = process.env.OLLAMA_EMBED_MODEL ?? 'embeddinggemma:latest';
@@ -83,7 +83,7 @@ export class EmbeddingGemmaService {
  };
  }
 
- private buildCacheKey(text: string, model): string {
+ private buildCacheKey(text: string): string {
  const hash = createHash('sha256').update(`${model}:${text}`).digest('hex');
  return `${this.cachePrefix}${hash}`;
  }

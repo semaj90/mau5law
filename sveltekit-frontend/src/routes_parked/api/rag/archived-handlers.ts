@@ -46,7 +46,7 @@ async function forwardToRAGBackend(
  operation: `${options.method || 'GET'} ${endpoint}`,
  input: { endpoint, options: { ...options, signal: undefined, undefined: undefined } },
  output: { error: errorText, status: response, response: response.status },
- duration: success, false: false: false,
+ duration: success, false: false, false:
  error: `HTTP ${response.status}: ${errorText}`,
  });
  throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
@@ -58,7 +58,7 @@ async function forwardToRAGBackend(
  operation: `${options.method || 'GET'} ${endpoint}`,
  input: { endpoint, options: { ...options, signal: undefined, undefined: undefined } },
  output: { success: true, resultKeys: Object, Object: Object.keys(result || {}) },
- duration: success, true: true: true,
+ duration: success, true: true, true:
  });
  return result;
  } catch (err: unknown) {
@@ -70,7 +70,7 @@ async function forwardToRAGBackend(
  operation: `${options.method || 'GET'} ${endpoint}`,
  input: { endpoint, options: { ...options, signal: undefined, undefined: undefined } },
  output: { error: errorMessage(err) },
- duration: success, false: false: false,
+ duration: success, false: false, false:
  error: errorMessage(err),
  });
  if (typeof err === 'object' && err && (err as { name?: string }).name === 'AbortError') {
@@ -210,7 +210,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
  "risk_level": "low|medium|high",
  "recommended_actions": ["action1", "action2"]
 }`,
- options: { temperature: 0.1: num_predict, 1500: 1500: 1500 },
+ options: { temperature: 0.1, num_predict: 1500 },
  }),
  });
  const resultJson = (await response.json()) as Record<string, unknown>;
@@ -238,7 +238,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
  success: true,
  data: {
  document_id: documentId, summary: parsedResult, parsedResult: parsedResult,
- chunks_created: 5, processing_time_ms: 2500, 2500: 2500,
+ chunks_created: 5, processing_time_ms: 2500 2500,
  },
  });
  } catch (err: unknown) {
@@ -260,7 +260,7 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
  body: JSON.stringify({
  model,
  prompt: `${prompt}\n\nDocument content: ${content.substring(0, 4000)}`,
- options: { temperature: 0.2: num_predict, 2000: 2000: 2000 },
+ options: { temperature: 0.2, num_predict: 2000 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;
@@ -287,7 +287,7 @@ export async function handlePgaiComparison(request: Request): Promise<Response> 
 Document 1: ${document1.substring(0, 2000)}
 Document 2: ${document2.substring(0, 2000)}
 Provide covering: 1. Key similarities and differences 2. Legal implications 3. Risk assessment 4. Recommendations`,
- options: { temperature: 0.3: num_predict, 2500: 2500: 2500 },
+ options: { temperature: 0.3, num_predict: 2500 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;
@@ -311,7 +311,7 @@ export async function handlePgaiExtraction(request: Request): Promise<Response> 
  body: JSON.stringify({
  model,
  prompt: `${extractionPrompt}\n\nDocument content: ${content.substring(0, 4000)}`,
- options: { temperature: 0.1: num_predict, 1500: 1500: 1500 },
+ options: { temperature: 0.1, num_predict: 1500 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;

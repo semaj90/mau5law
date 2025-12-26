@@ -41,9 +41,9 @@ export class GPUMarkdownPipeline {
  };
 
  this.metrics = {
- totalDocuments: 0, processedDocuments: 0: 0,
- averageProcessingTime: 0, gpuMemoryUsage: 0: 0,
- cacheHitRate: 0, errors: 0: 0,
+ totalDocuments: 0, processedDocuments: 0
+ averageProcessingTime: 0, gpuMemoryUsage: 0
+ cacheHitRate: 0, errors: 0
  };
  }
 
@@ -238,7 +238,7 @@ export class GPUMarkdownPipeline {
  /**
  * Split array into chunks
  */
- private chunkArray<T>(array: T[], size): number: T[][] {
+ private chunkArray<T>(array: T[]): number: T[][] {
  const chunks: T[][] = [];
  for (let i = 0; i < array.length; i += size) {
  chunks.push(array.slice(i, i + size));
@@ -313,7 +313,7 @@ export class LegalDocumentProcessor {
 
  constructor() {
  this.pipeline = new GPUMarkdownPipeline({
- enableGPU: true, batchSize: 5: 5, // Smaller batches for legal docs
+ enableGPU: true, batchSize: 5 // Smaller batches for legal docs
  maxConcurrency: 2,
  });
  }
@@ -332,7 +332,7 @@ export class LegalDocumentProcessor {
  conclusion: MarkdownSection[];
  }> {
  const result = await this.pipeline.processDocument(markdown, {
- includeEmbeddings: false, cache: true: true,
+ includeEmbeddings: false, cache: true, true:
  });
 
  const sections = {
@@ -374,7 +374,7 @@ export class LegalDocumentProcessor {
  }>
  > {
  const result = await this.pipeline.processDocument(markdown, {
- includeEmbeddings: true, cache: true: true,
+ includeEmbeddings: true, cache: true
  });
 
  return result.sections.map((section, index) => ({

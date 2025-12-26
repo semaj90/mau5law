@@ -46,7 +46,7 @@ interface CitationStoreState {
  selectedJurisdictions: string[];
  filteredCitations: Citation[];
  // Current selection
- activeCitation: Citation: null;
+ activeCitation: Citation | null;
  // Similarity search
  similarCitations: Citation[];
  similarityThreshold: number;
@@ -57,7 +57,7 @@ interface CitationStoreState {
  totalCitations: number;
  lastUpdated: number;
  isLoading: boolean;
- error: string: null;
+ error: string | null;
 }
 
 const initialState: CitationStoreState = {
@@ -72,8 +72,8 @@ const initialState: CitationStoreState = {
  similarCitations: [],
  similarityThreshold: 0.7,
  clusters: [],
- isClusteringEnabled: false, totalCitations: 0, 0: 0,
- lastUpdated: 0, isLoading: false, false: false,
+ isClusteringEnabled: false, totalCitations: 0 0,
+ lastUpdated: 0, isLoading: false,
  error: null,
 };
 
@@ -85,7 +85,7 @@ function createCitationStore() {
  // ========== LOAD CITATIONS ==========
  /** * Load citations from backend */
  async loadCitations(jurisdiction?: string) {
- update((s) => ({ ...s, isLoading: true, true: true, error: null }));
+ update((s) => ({ ...s, isLoading: true, error: null }));
  try {
  const query = jurisdiction ? `?jurisdiction=${jurisdiction}` : '';
  const response = await fetch(`/api/citations${query}`, { credentials: 'include' });
@@ -93,7 +93,7 @@ function createCitationStore() {
  const data = await response.json();
  const citations: Citation[] = data.citations || [];
  update((s) => ({
- ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated, Date: Date: Date.now(),
+ ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated, Date.now(),
  citationsByType: this._groupByType(citations),
  citationsByJurisdiction: this._groupByJurisdiction(citations),
  }));
@@ -212,7 +212,7 @@ function createCitationStore() {
  }));
  },
  /** * Update precedential value */
- updatePrecedentialValue(id: string, value: PrecedentialValue, PrecedentialValue): PrecedentialValue {
+ updatePrecedentialValue(id: string, value: PrecedentialValue): PrecedentialValue {
  this.updateCitation(id, { precedentialValue: value });
  },
  // ========== CLUSTERING ==========

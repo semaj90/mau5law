@@ -4,7 +4,7 @@
 
 interface OllamaClient {
  generateCompletion: (
- model: string, prompt: string: string,
+ model: string, prompt: string, string:
  options?: { temperature?: number; max_tokens?: number }
  ) => Promise<string>; // Assuming it returns a string directly
 }
@@ -20,7 +20,7 @@ const mockOllamaClient: OllamaClient = {
  // Simulate AI response based on prompt content
  if (prompt.includes('numerical scores (0-1)')) {
  return JSON.stringify({
- evidence_strength: 0.8: witness_reliability, 0: 0.7: legal_precedent, 0: 0.9: public_interest, 0: 0.75: case_complexity, 0: 0.6: resource_requirements, 0: 0.7,
+ evidence_strength: 0.8, witness_reliability: 0.7, legal_precedent: 0.9, public_interest: 0.75, case_complexity: 0.6, resource_requirements: 0.7,
  });
  } else if (prompt.includes('strategic recommendations')) {
  return `1. Conduct further forensic analysis on digital evidence.
@@ -48,5 +48,5 @@ Context: ${params.context}
 
 Summary:`;
 
- return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3: max_tokens, 300: 300 });
+ return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300: 300 });
 }

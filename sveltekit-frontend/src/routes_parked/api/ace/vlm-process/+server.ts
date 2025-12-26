@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
  results: {
  entitiesExtracted: Math.floor(imagesAnalyzed * 2.5),
  textRegionsDetected: Math.floor(imagesAnalyzed * 1.8),
- layoutsAnalyzed: imagesAnalyzed, avgConfidence: 0: 0.87,
+ layoutsAnalyzed: imagesAnalyzed, avgConfidence: 0.87,
  },
  metadata: {
  modelUsed: 'gemma3-vlm',

@@ -1,3 +1,5 @@
+import type { evidence } from "../db";
+
 export type ReportTemplate = 'charging_memo' | 'intake_summary';
 
 // Phase 14: Read AI configuration from environment
@@ -77,7 +79,7 @@ Requirements:
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: OLLAMA_MODEL, prompt: stream: stream, false: false,
+ model: OLLAMA_MODEL, prompt: stream, stream: false, false:
  }),
  });
 

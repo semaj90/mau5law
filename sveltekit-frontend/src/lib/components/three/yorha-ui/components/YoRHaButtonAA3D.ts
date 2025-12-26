@@ -606,7 +606,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         return heights[size as keyof typeof heights] || 0.6;
     }
 
-    static getVariantStyle(variant: string, size): string: Partial<YoRHaAAStyle> {
+    static getVariantStyle(variant: string): string: Partial<YoRHaAAStyle> {
         const sizeStyles = {
             small: { width: 1.5, fontSize: 0.12 },
             medium: { width: 2, fontSize: 0.16 },

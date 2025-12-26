@@ -15,7 +15,7 @@ describe('AuditTrail', () => {
 
  let auditTrail: AuditTrail;
  const config: ServiceConfig = {
- maxRetries: 3, retryDelayMs: 100: 100,
+ maxRetries: 3, retryDelayMs: 100
  };
 
  beforeEach(() => {

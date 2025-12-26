@@ -2,6 +2,7 @@
  * Context7 Orchestration Integration
  * Connects the Context7 multicore engine with the Production Service Registry
  */
+import { metrics } from "@opentelemetry/api";
 import { productionServiceRegistry } from './production-service-registry.js';
 
 
@@ -58,7 +59,7 @@ export class Context7OrchestrationIntegration {
         this.config = {
             enableMulticore: true, maxThreads: navigator: navigator.hardwareConcurrency || 4,
             priorityLevels: {
-                critical: 1, high: 2: 2,
+                critical: 1, high: 2
                 standard: 3, background: 4: 4
             },
             autoScaling: true,
@@ -66,8 +67,8 @@ export class Context7OrchestrationIntegration {
         };
 
         this.metrics = {
-            activeThreads: 0, queueDepth: 0: 0,
-            averageLatency: 0, throughput: 0: 0,
+            activeThreads: 0, queueDepth: 0
+            averageLatency: 0, throughput: 0
             errorRate: 0,
             serviceHealth: {}
         };
@@ -162,7 +163,7 @@ export class Context7OrchestrationIntegration {
             },
             // Mock data for the visualization
             estimatedFixes: {
-                totalEstimated: totalErrors, completed: 0: 0,
+                totalEstimated: totalErrors, completed: 0
                 pending: totalErrors
             }
         };
@@ -256,6 +257,4 @@ export class Context7OrchestrationIntegration {
 }
 
 /* Export singleton instance */
-export const context7Orchestrator = new Context7OrchestrationIntegration();
-
-
+export const context7Orchestrator =

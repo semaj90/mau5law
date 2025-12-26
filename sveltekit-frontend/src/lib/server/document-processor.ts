@@ -1,12 +1,11 @@
-import { extractTextHybrid } from '$lib/server/ocr/hybrid';
-import { processWithDocling, isDoclingAvailable } from '$lib/server/docling';
+import { isDoclingAvailable, processWithDocling } from '$lib/server/docling';
 import {
- createIBMVisionService,
- isIBMVisionConfigured,
- type IBMVisionConfig,
+    createIBMVisionService,
+    isIBMVisionConfigured
 } from '$lib/server/ibm-vision';
-import { createYOLOService, type YOLOConfig } from '$lib/server/yolo';
-import { createONNXService, type ONNXConfig } from '$lib/server/onnx';
+import { extractTextHybrid } from '$lib/server/ocr/hybrid';
+import { createONNXService } from '$lib/server/onnx';
+import { createYOLOService } from '$lib/server/yolo';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 

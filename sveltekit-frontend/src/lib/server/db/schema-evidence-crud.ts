@@ -12,17 +12,17 @@
 
 import { sql } from 'drizzle-orm';
 import {
- index,
- jsonb,
- pgEnum,
- pgTable,
- primaryKey,
- real,
- text,
- timestamp,
- unique,
- uuid,
- varchar,
+    index,
+    jsonb,
+    pgEnum,
+    pgTable,
+    primaryKey,
+    real,
+    text,
+    timestamp,
+    unique,
+    uuid,
+    varchar,
 } from 'drizzle-orm/pg-core';
 import { evidence } from './schema-postgres.js';
 

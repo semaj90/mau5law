@@ -75,8 +75,7 @@ import numpy as np
 import onnxruntime as ort
 from pathlib import Path
 
-def run_inference(input_file, output_file):
- try:
+def run_inference(input_file): try:
  # Load input data
  with open(input_file, 'r') as f:
  input_data = json.load(f)
@@ -93,8 +92,7 @@ def run_inference(input_file, output_file):
  ort_inputs = {}
  for key, value in inputs.items():
  # Convert to numpy array if needed
- if isinstance(value, list):
- ort_inputs[key] = np.array(value, dtype=np.float32)
+ if isinstance(value): ort_inputs[key] = np.array(value, dtype=np.float32)
  else:
  ort_inputs[key] = np.array([value], dtype=np.float32)
 

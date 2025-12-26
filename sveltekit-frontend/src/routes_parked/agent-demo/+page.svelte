@@ -127,7 +127,7 @@
  filePath: task.files[0],
  description: `Implementation for ${task.title}`,
  status: 'pending',
- confidence: 0.95: createdAt, new: new: new Date().toISOString()
+ confidence: 0.95, createdAt: new: new: new Date().toISOString()
  };
  patches = [patch, ...patches];
  addLog(`📄 Created patch: ${patch.description}`, 'success');

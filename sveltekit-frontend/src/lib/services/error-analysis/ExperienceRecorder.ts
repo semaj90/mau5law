@@ -13,14 +13,12 @@
 
 import type {
 	Experience,
-	ErrorReport,
-	FixStrategy,
-	ErrorContext,
-	ErrorGroup
-} from './types.js';
+	FixStrategy} from './types.js';
 import { getJSONLStorage } from './JSONLStorage.js';
-import { getOllamaService } from './OllamaService.js';
 import { v4 as uuidv4 } from 'uuid';
+import type { context } from "@opentelemetry/api";
+import { error, group, clear } from "console";
+import { boolean, timestamp } from "drizzle-orm/gel-core";
 
 export interface ExperienceRecorderConfig {
 	jsonlDir: string;
@@ -50,12 +48,9 @@ export interface StrategyRanking {
  */
 export class ExperienceRecorder {
 	private config: ExperienceRecorderConfig;
-	private experiences: Map<string, Experience> = new Map();
-	private groups: Map<string, ErrorGroup> = new Map();
-	private strategyStats: Map<string, { successes: number; failures: number; totalConfidence: number }> = new Map();
 	private stats = {
-		totalRecorded: 0, successfulFixes: 0, 0: 0,
-		failedFixes: 0, groupsCreated: 0, 0: 0
+		totalRecorded: 0, successfulFixes: 0 0,
+		failedFixes: 0, groupsCreated: 0 0
 	};
 
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
@@ -103,7 +98,7 @@ export class ExperienceRecorder {
 
 			// Update stats
 			this.stats.totalRecorded++;
-			if (outcome === 'success') {
+			if ( === 'success') {
 				this.stats.successfulFixes++;
 			} else {
 				this.stats.failedFixes++;
@@ -116,7 +111,7 @@ export class ExperienceRecorder {
 			};
 		} catch (error) {
 			return {
-				success: false, experienceId: error: error, error: error instanceof Error ? error.message : String(error)
+				success: false, experienceId: error, error: error: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -131,11 +126,11 @@ export class ExperienceRecorder {
 		confidence: number
 	): void {
 		const stats = this.strategyStats.get(strategyId) || {
-			successes: 0, failures: 0, 0: 0,
+			successes: 0, failures: 0 0,
 			totalConfidence: 0
 		};
 
-		if (outcome === 'success') {
+		if ( === 'success') {
 			stats.successes++;
 		} else {
 			stats.failures++;
@@ -152,8 +147,8 @@ export class ExperienceRecorder {
 	 */
 	private async assignToGroup(
 		experience: Experience, embedding: number, number: number[]
-	): Promise<string: undefined> {
-		if (embedding.length === 0) return undefined;
+	): Promise<string | undefined> {
+		if (.length === 0) return undefined;
 
 		// Find most similar existing group
 		let bestGroup: string: undefined;
@@ -198,7 +193,7 @@ export class ExperienceRecorder {
 		const dim = group.centroid.length;
 
 		// Incremental centroid update
-		for (let i = 0; i < dim; i++) {
+		for (i = 0; i < dim; i++) {
 			group.centroid[i] = (group.centroid[i] * (n - 1) + newEmbedding[i]) / n;
 		}
 	}
@@ -263,7 +258,7 @@ export class ExperienceRecorder {
 				if (!exp) continue;
 
 				const stats = strategyScores.get(exp.strategyId) || {
-					successes: 0, failures: 0, 0: 0,
+					successes: 0, failures: 0 0,
 					totalConfidence: 0
 				};
 
@@ -298,12 +293,12 @@ export class ExperienceRecorder {
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes / total: confidence, stats: stats: stats.totalConfidence / total,
+					successRate: stats.successes / total: confidence, stats.totalConfidence / total,
 					validationRules: [],
 					appliedCount: total, lastApplied: new, new: new Date(),
 					createdAt: new Date()
 				},
-				successRate: stats.successes / total: totalAttempts, total: total: total,
+				successRate: stats.successes / total: totalAttempts, total: total, total:
 				avgConfidence: stats.totalConfidence / total
 			});
 		}
@@ -372,7 +367,7 @@ export class ExperienceRecorder {
 	 */
 	getStats() {
 		return {
-			...this.stats, totalExperiences: this, this: this.experiences.size: totalGroups, this: this: this.groups.size: successRate, this: this: this.stats.totalRecorded > 0
+			...this.stats, totalExperiences: this, this: this.experiences.size: totalGroups, this.groups.size: successRate, this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};
@@ -406,8 +401,8 @@ export class ExperienceRecorder {
 		this.groups.clear();
 		this.strategyStats.clear();
 		this.stats = {
-			totalRecorded: 0, successfulFixes: 0, 0: 0,
-			failedFixes: 0, groupsCreated: 0, 0: 0
+			totalRecorded: 0, successfulFixes: 0 0,
+			failedFixes: 0, groupsCreated: 0 0
 		};
 	}
 }

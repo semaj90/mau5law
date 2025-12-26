@@ -66,7 +66,7 @@ export class DockerMemoryOptimizer {
  const freed = Math.round(before * 0.05);
  const after = before - freed;
  return {
- beforeMB: before, afterMB: after: after,
+ beforeMB: before, afterMB: after, after:
  freedMB: freed,
  actions: ['trim caches', 'reuse buffers'],
  };

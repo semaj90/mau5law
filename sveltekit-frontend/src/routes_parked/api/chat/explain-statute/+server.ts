@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  body: JSON.stringify({
  model: getChatModel(),
- prompt: stream, stream: stream || false: temperature, 0: 0.7: top_p, 0: 0.9: top_k, 40: 40,
+ prompt: stream, stream: stream || false: temperature, 0: 0.7, top_p: 0.9, top_k: 40
  }),
  });
 

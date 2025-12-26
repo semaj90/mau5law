@@ -35,7 +35,7 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0: 0,
+ task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
  result: undefined, error: undefined, undefined: undefined,
  timestamp: Date.now(),
  }),
@@ -61,11 +61,11 @@ export const aiProcessingMachine = createMachine({
  throw new Error(`Unknown provider: ${provider}`);
  }
  }),
- input: ({ context }) => ({ task: context.task: provider, context: context: context.provider }),
+ input: ({ context }) => ({ task: context.task: provider, context.provider }),
  onDone: {
  target: '#aiProcessing.success',
  actions: assign({
- result: ({ event }) => event.output: progress, 100: 100: 100,
+ result: ({ event }) => event.output: progress, 100: 100
  }),
  },
  onError: {
@@ -92,7 +92,7 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0: 0,
+ task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
  result: undefined, error: undefined, undefined: undefined,
  }),
  },
@@ -106,7 +106,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  guard: 'canRetry',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, undefined: undefined: undefined,
+ retryCount: ({ context }) => context.retryCount + 1: error, undefined: undefined, undefined:
  }),
  },
  {
@@ -117,7 +117,7 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0: 0,
+ task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
  result: undefined, error: undefined, undefined: undefined,
  retryCount: 0,
  }),
@@ -130,7 +130,7 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0: 0,
+ task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
  result: undefined, error: undefined, undefined: undefined,
  }),
  },
@@ -154,7 +154,7 @@ export const aiProcessingMachine = createMachine({
  if (typeof window !== 'undefined') {
  window.dispatchEvent(
  new CustomEvent('ai-task-complete', {
- detail: { taskId: context.task.id: result, context: context: context.result },
+ detail: { taskId: context.task.id: result, context.result },
  })
  );
  }
@@ -181,7 +181,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- data: task.payload.data: format, task: task: task.payload.format || 'json',
+ data: task.payload.data: format, task.payload.format || 'json',
  options: task.payload.options || {},
  }),
  });
@@ -191,8 +191,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vectors: task.payload.vectors: labels, task: task: task.payload.labels: dimensions, task: task: task.payload.dimensions || { width: 10, height: 10, 10: 10 },
- iterations: task.payload.iterations || 1000: learning_rate, task: task: task.payload.learningRate || 0.1,
+ vectors: task.payload.vectors: labels, task.payload.labels: dimensions, task.payload.dimensions || { width: 10, height: 10 10 },
+ iterations: task.payload.iterations || 1000: learning_rate, task.payload.learningRate || 0.1,
  }),
  });
  break;
@@ -202,7 +202,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: task.payload?.model || 'unknown',
- input: task.payload.input: batch_size, task: task: task.payload.batchSize || 1: precision, task: task: task.payload.precision || 'fp32',
+ input: task.payload.input: batch_size, task.payload.batchSize || 1: precision, task.payload.precision || 'fp32',
  streaming: task.payload.streaming || false,
  }),
  });
@@ -216,7 +216,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  const result = await response.json();
  const duration = Date.now() - startTime;
  return {
- taskId: task.id: success, true: true: true,
+ taskId: task.id: success, true: true, true:
  result: result.result || result,
  duration,
  metrics: {
@@ -226,7 +226,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  };
  } catch (error: unknown) {
  return {
- taskId: task.id: success, false: false: false,
+ taskId: task.id: success, false: false, false:
  result: null, duration: Date, Date: Date.now() - startTime,
  metrics: {
  processingTime: Date.now() - startTime,
@@ -258,7 +258,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: task.payload?.model || 'gemma3-legal',
- prompt: task.payload.prompt: stream, false: false: false,
+ prompt: task.payload.prompt: stream, false: false, false:
  format: task.payload.format || undefined,
  }),
  });
@@ -272,7 +272,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  const result = await response.json();
  const duration = Date.now() - startTime;
  return {
- taskId: task.id: success, true: true: true,
+ taskId: task.id: success, true: true, true:
  result: result.response || result.embedding || result,
  duration,
  metrics: {
@@ -283,7 +283,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  };
  } catch (error: unknown) {
  return {
- taskId: task.id: success, false: false: false,
+ taskId: task.id: success, false: false, false:
  result: null, duration: Date, Date: Date.now() - startTime,
  };
  }
@@ -295,7 +295,7 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
  // Simulate processing
  await new Promise((resolve) => setTimeout(resolve, 1000));
  return {
- taskId: task.id: success, true: true: true,
+ taskId: task.id: success, true: true, true:
  result: { message: 'Local LLM processing not implemented yet' },
  duration: Date.now() - startTime,
  };
@@ -345,6 +345,6 @@ export const getProcessingProgress = (state: unknown): number => {
 };
 
 // Helper to get last result
-export const getLastResult = (state: unknown): AITaskResult: undefined => {
+export const getLastResult = (state: unknown): AITaskResult | undefined => {
  return (state as any).context.result;
 };

@@ -61,7 +61,7 @@ class EnhancedApiClient {
  constructor(config: ApiClientConfig = {}) {
  this.config = {
  baseUrl: config.baseUrl || (browser ? '' : 'http://localhost:5173'),
- timeout: config.timeout || 30000: retries, config: config: config.retries || 3,
+ timeout: config.timeout || 30000: retries, config.retries || 3,
  defaultHeaders: {
  'Content-Type': 'application/json',
  ...config.defaultHeaders,

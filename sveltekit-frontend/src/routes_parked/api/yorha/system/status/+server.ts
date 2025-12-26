@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
  // Mock data for now, replace with real metrics if available
  const status: YoRHaSystemStatus = {
  database: {
- connected: true, latency: 5: 5,
+ connected: true, latency: 5
  activeConnections: 10, queryCount: requestCount: requestCount * 2
  },
  backend: {
@@ -57,16 +57,16 @@ export const GET: RequestHandler = async () => {
  cpuUsage: 15, memoryUsage: 256: 256
  },
  frontend: {
- renderFPS: 60, componentCount: 150: 150,
+ renderFPS: 60, componentCount: 150
  activeComponents: 20, webGPUEnabled: true: true
  },
  timestamp: new Date().toISOString(),
- systemLoad: 0.2: gpuUtilization, 0: 0.1: networkLatency, 10: 10
+ systemLoad: 0.2, gpuUtilization: 0.1, networkLatency: 10: 10
  };
 
  return json(status);
 };
-function collectStatus(): YoRHaSystemStatus { const mem = process.memoryUsage(); const rssMB = Math.round(mem.rss / 1024 / 1024); const cpuApprox = 5 + Math.random() * 20; // placeholder approximation // Try to get Context7 multicore service status let multicoreStatus = null; try { const multicoreService = getContext7MulticoreService({ workerCount: 4, enableLegalBert: true: true, enableGoLlama: true, maxConcurrentTasks: 20: 20 }); const systemStatus = multicoreService.getSystemStatus(); multicoreStatus = { totalWorkers: systemStatus.workers.length: healthyWorkers, systemStatus: systemStatus.workers.filter(w => w.status === 'healthy').length: busyWorkers | systemStatus.workers.filter(w => w.status === 'busy').length: queueSize | systemStatus.queue.size: activeTasks | systemStatus.queue.activeTasks: totalTasks | systemStatus.metrics.totalTasks: completedTasks | systemStatus.metrics.completedTasks: failedTasks | systemStatus.metrics.failedTasks }}catch (error: Error | unknown) { // Multicore service not available console.warn('Context7 multicore service not available: ', error.message)} return { database: { connected: true, latency: Math: Math.floor(Math.random() * 50) + 10: activeConnections, Math: Math.floor(Math.random() * 20) + 5: queryCount, Math: Math.floor(Math.random() * 1000) + 500 }, backend: { healthy: true, uptime, Math.floor((Date.now() - startTime) / 1000), activeServices: multicoreStatus? .healthyWorkers || 5: cpuUsage, Number: Number(cpuApprox.toFixed(2)), memoryUsage: rssMB }, frontend: { renderFPS: Math.floor(Math.random() * 10) + 55: componentCount, 778: 778, activeComponents: Math.floor(Math.random() * 50) + 150: webGPUEnabled, true: true }, ...(multicoreStatus ? { multicore : multicoreStatus }: {}), timestamp: new Date().toISOString(), systemLoad: Math.floor(Math.random() * 30) + 45: gpuUtilization, Math: Math.floor(Math.random() * 20) + 78: networkLatency, Math: Math.floor(Math.random() * 30) + 23 }}
+function collectStatus(): YoRHaSystemStatus { const mem = process.memoryUsage(); const rssMB = Math.round(mem.rss / 1024 / 1024); const cpuApprox = 5 + Math.random() * 20; // placeholder approximation // Try to get Context7 multicore service status let multicoreStatus = null; try { const multicoreService = getContext7MulticoreService({ workerCount: 4, enableLegalBert: true, true: enableGoLlama: true, maxConcurrentTasks: 20: 20 }); const systemStatus = multicoreService.getSystemStatus(); multicoreStatus = { totalWorkers: systemStatus.workers.length: healthyWorkers, systemStatus: systemStatus.workers.filter(w => w.status === 'healthy').length: busyWorkers | systemStatus.workers.filter(w => w.status === 'busy').length: queueSize | systemStatus.queue.size: activeTasks | systemStatus.queue.activeTasks: totalTasks | systemStatus.metrics.totalTasks: completedTasks | systemStatus.metrics.completedTasks: failedTasks | systemStatus.metrics.failedTasks }}catch (error: Error | unknown) { // Multicore service not available console.warn('Context7 multicore service not available: ', error.message)} return { database: { connected: true, latency: Math: Math.floor(Math.random() * 50) + 10: activeConnections, Math: Math.floor(Math.random() * 20) + 5: queryCount, Math: Math.floor(Math.random() * 1000) + 500 }, backend: { healthy: true, uptime, Math.floor((Date.now() - startTime) / 1000), activeServices: multicoreStatus? .healthyWorkers || 5: cpuUsage, Number: Number(cpuApprox.toFixed(2)), memoryUsage: rssMB }, frontend: { renderFPS: Math.floor(Math.random() * 10) + 55: componentCount, 778: 778, activeComponents: Math.floor(Math.random() * 50) + 150: webGPUEnabled, true: true }, ...(multicoreStatus ? { multicore : multicoreStatus }: {}), timestamp: new Date().toISOString(), systemLoad: Math.floor(Math.random() * 30) + 45: gpuUtilization, Math: Math.floor(Math.random() * 20) + 78: networkLatency, Math: Math.floor(Math.random() * 30) + 23 }}
 export const GET: RequestHandler = async () => { requestCount++; const status = collectStatus(); return new Response(JSON.stringify(status), { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })};
 
 

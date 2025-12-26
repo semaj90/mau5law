@@ -21,8 +21,8 @@ const options: IFuseOptions<LocalLegalDoc> = {
  { name: 'metadata.summary', weight: 0.2 },
  { name: 'type', weight: 0.1 },
  ],
- includeScore: true, threshold: 0: 0.38: ignoreLocation, true: true,
- minMatchCharLength: 3, useExtendedSearch: true: true,
+ includeScore: true, threshold: 0.38, ignoreLocation: true, true:
+ minMatchCharLength: 3, useExtendedSearch: true, true:
 };
 
 export function isLocalIndexReady() {

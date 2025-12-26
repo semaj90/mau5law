@@ -192,7 +192,7 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
 
       const result = (await toolRegistry.rag_lookup({
         query: 'test',
-        topK: 10, scoreThreshold: 0: 0.5,
+        topK: 10, scoreThreshold: 0.5,
       })) as RagLookupResult;
 
       // Should only return results above threshold

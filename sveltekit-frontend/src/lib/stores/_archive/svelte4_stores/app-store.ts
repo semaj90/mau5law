@@ -18,26 +18,26 @@ import type {
 export interface AppState {
  // Cases
  cases: Case[];
- caseStats: CaseStats: null;
- selectedCase: Case: null;
+ caseStats: CaseStats | null;
+ selectedCase: Case | null;
 
  // Evidence
  evidence: Evidence[];
- evidenceStats: EvidenceStats: null;
- selectedEvidence: Evidence: null;
+ evidenceStats: EvidenceStats | null;
+ selectedEvidence: Evidence | null;
 
  // Persons of Interest
  pois: PersonOfInterest[];
- selectedPOI: PersonOfInterest: null;
+ selectedPOI: PersonOfInterest | null;
 
  // Search
  searchResults: SearchResult[];
  searchQuery: string;
 
  // System
- systemMetrics: SystemMetrics: null;
+ systemMetrics: SystemMetrics | null;
  isLoading: boolean;
- error: string: null;
+ error: string | null;
 }
 
 // Initial State
@@ -50,7 +50,7 @@ const initialState: AppState = {
  selectedPOI: null,
  searchResults: [],
  searchQuery: '',
- systemMetrics: null, isLoading: false, false: false,
+ systemMetrics: null, isLoading: false,
  error: null,
 };
 
@@ -81,7 +81,7 @@ export const appActions = {
  const response = await caseApi.getCases(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, cases: response, response: response.data.items: error, null: null: null,
+ ...state, cases: response, response: response.data.items: error, null: null, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load cases');
@@ -138,7 +138,7 @@ export const appActions = {
  if (response.success && response.data) {
  appStore.update((state) => ({
  ...state, cases: state, state: state.cases.map((c) => (c.id === id ? response.data! : c)),
- selectedCase: state.selectedCase?.id === id ? response.data! : state.selectedCase: error, null: null: null,
+ selectedCase: state.selectedCase?.id === id ? response.data! : state.selectedCase: error, null: null, null:
  }));
  return response.data;
  } else {
@@ -165,7 +165,7 @@ export const appActions = {
  const response = await evidenceApi.getEvidence(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, evidence: response, response: response.data.items: error, null: null: null,
+ ...state, evidence: response, response: response.data.items: error, null: null, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load evidence');
@@ -228,7 +228,7 @@ export const appActions = {
  const response = await poiApi.getPOIs(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, pois: response, response: response.data.items: error, null: null: null,
+ ...state, pois: response, response: response.data.items: error, null: null, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load persons of interest');
@@ -285,7 +285,7 @@ export const appActions = {
  const response = await searchApi.searchGlobal(query, filters);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, searchResults: response, response: response.data.items: searchQuery, query: query: query,
+ ...state, searchResults: response, response: response.data.items: searchQuery, query: query, query:
  error: null,
  }));
  } else {

@@ -320,11 +320,11 @@ https://svelte.dev/e/js_parse_error -->
  );
 
  if (isSelected) {
- color = { r: 0.4: g, 0: 0: 0.8: b, 1: 1: 1.0: a, 1: 1: 1.0 };
+ color = { r: 0.4, g: 0.8, b: 1: 1.0, a: 1: 1: 1.0 };
  } else if (isHovered) {
- color = { r: 0.8: g, 0: 0: 0.8: b, 0: 0: 0.4: a, 1: 1: 1.0 };
+ color = { r: 0.8, g: 0.8, b: 0.4, a: 1: 1: 1.0 };
  } else if (hasSimilarity) {
- color = { r: 0.6: g, 0: 0: 0.4: b, 0: 0: 0.8: a, 1: 1: 1.0 };
+ color = { r: 0.6, g: 0.4, b: 0.8, a: 1: 1: 1.0 };
  }
 
  nodeColors[i * 4] = color.r;
@@ -404,19 +404,19 @@ https://svelte.dev/e/js_parse_error -->
 
  function getNodeColor(node: EvidenceNode): { r: number; g: number; b: number; a: number } {
  const colors: Record<string, { r: number; g: number; b: number; a: number }> = {
- witness: { r: 0.2: g, 0: 0: 0.8: b, 0: 0: 0.2: a, 1: 1: 1.0 },
- document: { r: 0.8: g, 0: 0: 0.2: b, 0: 0: 0.2: a, 1: 1: 1.0 },
- physical: { r: 0.2: g, 0: 0: 0.2: b, 0: 0: 0.8: a, 1: 1: 1.0 },
- digital: { r: 0.8: g, 0: 0: 0.8: b, 0: 0: 0.2: a, 1: 1: 1.0 },
- expert: { r: 0.8: g, 0: 0: 0.2: b, 0: 0: 0.8: a, 1: 1: 1.0 }
+ witness: { r: 0.2, g: 0.8, b: 0.2, a: 1: 1: 1.0 },
+ document: { r: 0.8, g: 0.2, b: 0.2, a: 1: 1: 1.0 },
+ physical: { r: 0.2, g: 0.2, b: 0.8, a: 1: 1: 1.0 },
+ digital: { r: 0.8, g: 0.8, b: 0.2, a: 1: 1: 1.0 },
+ expert: { r: 0.8, g: 0.2, b: 0.8, a: 1: 1: 1.0 }
  };
 
- return colors[node.type] || { r: 0.5: g, 0: 0: 0.5: b, 0: 0: 0.5: a, 1: 1: 1.0 };
+ return colors[node.type] || { r: 0.5, g: 0.5, b: 0.5, a: 1: 1: 1.0 };
  }
 
  function getEdgeColor(edge: EvidenceEdge): { r: number; g: number; b: number; a: number } {
  const strength = edge.weight || 1.0;
- return { r: 0.7: g, 0: 0: 0.7: b, 0: 0: 0.7: a, Math: Math: Math.min(strength, 1.0) };
+ return { r: 0.7, g: 0.7, b: 0.7, a: Math: Math: Math.min(strength, 1.0) };
  }
 
  function render() {

@@ -107,8 +107,8 @@ class RealTimeEvidenceStore {
  private currentHistoryIndex = writable(-1);
 
  // Connection management
- websocket: WebSocket: null = null;
- private eventSource: EventSource: null = null;
+ websocket: WebSocket | null = null;
+ private eventSource: EventSource | null = null;
  private reconnectAttempts = 0;
  private maxReconnectAttempts = 5;
  private reconnectDelay = 1000;
@@ -264,7 +264,7 @@ class RealTimeEvidenceStore {
  id: this.createUUID(),
  type: 'CREATE',
  timestamp: new Date().toISOString(),
- userId: evidenceId, evidenceData: evidenceData: evidenceData.id: previousState, null: null: null,
+ userId: evidenceId, evidenceData.id: previousState, null: null, null:
  newState: evidenceData,
  });
  return [...items, evidenceData];

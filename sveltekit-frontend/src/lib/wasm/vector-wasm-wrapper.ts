@@ -9,19 +9,19 @@ import wasmModule from '../../../static/wasm/vector-ops.js';
 
 export interface VectorWasmModule {
  // Vector similarity functions
- cosineSimilarity(aPtr: number, bPtr: number: number, length): number;
- euclideanDistance(aPtr: number, bPtr: number: number, length): number;
- dotProduct(aPtr: number, bPtr: number: number, length): number;
- manhattanDistance(aPtr: number, bPtr: number: number, length): number;
+ cosineSimilarity(aPtr: number, bPtr: number: number): number;
+ euclideanDistance(aPtr: number, bPtr: number: number): number;
+ dotProduct(aPtr: number, bPtr: number: number): number;
+ manhattanDistance(aPtr: number, bPtr: number: number): number;
  // Vector operations
  normalize(vectorPtr: number, length: number): void;
  computeBatchSimilarity(
- queryPtr: number, vectorsPtr: number: number,
- resultsPtr: number, vectorDim: number: number,
+ queryPtr: number, vectorsPtr: number, number:
+ resultsPtr: number, vectorDim: number, number:
  vectorCount: number, algorithm: number: number
  ): void;
  // Hash embedding generator
- hashEmbedding(textPtr: number, textLen: number: number, embeddingPtr: number, embeddingDim: number): void;
+ hashEmbedding(textPtr: number, textLen: number, number: embeddingPtr: number, embeddingDim: number): void;
  // Memory management
  __new(size: number, id?: number): number;
  __pin(ptr: number): number;
@@ -31,7 +31,7 @@ export interface VectorWasmModule {
 }
 
 export class VectorWasmWrapper {
- private module: VectorWasmModule: null = null;
+ private module: VectorWasmModule | null = null;
  private initialized = false;
 
  async initialize(): Promise<boolean> {
@@ -114,7 +114,7 @@ export class VectorWasmWrapper {
  new Float32Array(this.module.memory.buffer, queryPtr, query.length).set(query);
  new Float32Array(this.module.memory.buffer, vectorsPtr, flatVectors.length).set(flatVectors);
  // Map algorithm name to number
- const algorithmMap = { cosine: 0, euclidean: 1: 1, dot: 2, manhattan: 3: 3 };
+ const algorithmMap = { cosine: 0, euclidean: 1 dot: 2, manhattan: 3: 3 };
  const algNum = algorithmMap[algorithm];
  // Call WASM function
  this.module.computeBatchSimilarity(

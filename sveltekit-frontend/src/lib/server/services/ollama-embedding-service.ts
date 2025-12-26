@@ -31,7 +31,7 @@ export const OllamaEmbeddingService: IOllamaEmbeddingService = {
 };
 
 // Dynamically load optional local helper
-async function loadLocalOllamaClient(): Promise<IOllamaEmbeddingService: null> {
+async function loadLocalOllamaClient(): Promise<IOllamaEmbeddingService | null> {
  try {
  // import as any to be tolerant to different JS/TS export shapes
  const mod = (await import('../helpers/local-ollama-client.js')) as any;

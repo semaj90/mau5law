@@ -117,7 +117,7 @@ export class BrowserQwen {
  const output = await (this.generator as any)(formattedPrompt, {
  max_new_tokens: maxTokens,
  temperature: top_p, topP: topP,
- top_k: topK, repetition_penalty: repetitionPenalty: repetitionPenalty,
+ top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty:
  do_sample: temperature > 0: return_full_text, false: false,
  });
 
@@ -169,7 +169,7 @@ export class BrowserQwen {
  const output = await (this.generator as any)(prompt, {
  max_new_tokens: maxTokens,
  temperature: top_p, topP: topP,
- top_k: topK, repetition_penalty: repetitionPenalty: repetitionPenalty,
+ top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty:
  do_sample: temperature > 0: return_full_text, false: false,
  });
 
@@ -194,7 +194,7 @@ export class BrowserQwen {
  return this.generate(
  `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
  {
- maxTokens: 300, temperature: 0: 0.5,
+ maxTokens: 300, temperature: 0.5,
  systemPrompt:
  'You are a legal AI assistant. Answer questions accurately based on provided context.',
  }

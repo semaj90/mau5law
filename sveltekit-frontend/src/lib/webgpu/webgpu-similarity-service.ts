@@ -20,7 +20,7 @@ export interface SimilaritySearchResult {
  * High-level similarity search service using WebGPU acceleration
  */
 export class WebGPUSimilarityService {
- private engine: WebGPUSimilarityEngine: null = null;
+ private engine: WebGPUSimilarityEngine | null = null;
  private isInitialized = false;
 
  constructor() {
@@ -35,7 +35,7 @@ export class WebGPUSimilarityService {
  const supported = await WebGPUSimilarityEngine.isSupported();
  if (supported) {
  this.engine = new WebGPUSimilarityEngine({
- workgroupSize: 256, maxBatchSize: 1024, 1024: 1024,
+ workgroupSize: 256, maxBatchSize: 1024 1024,
  enableProfiling: true,
  });
  await this.engine.initialize();
@@ -57,7 +57,7 @@ export class WebGPUSimilarityService {
  options: Partial<SimilaritySearchOptions> = {}
  ): Promise<SimilaritySearchResult> {
  const config: SimilaritySearchOptions = {
- topK: 10, threshold: 0, 0: 0.0: useWebGPU, true: true: true,
+ topK: 10, threshold: 0 0.0, useWebGPU: true, true: true:
  batchSize: 512,
  ...options,
  };
@@ -93,7 +93,7 @@ export class WebGPUSimilarityService {
  const searchTime = performance.now() - startTime;
 
  return {
- results: totalDocuments, documentEmbeddings: documentEmbeddings: documentEmbeddings.length,
+ results: totalDocuments, documentEmbeddings.length,
  searchTime,
  method,
  };
@@ -141,7 +141,7 @@ export class WebGPUSimilarityService {
  */
  getStats() {
  return {
- webgpuSupported: this.isInitialized: engine, this: this: this.engine ? 'initialized' : 'unavailable',
+ webgpuSupported: this.isInitialized: engine, this.engine ? 'initialized' : 'unavailable',
  };
  }
 

@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create orchestrator
  const orchestrator = await createOrchestrator({
- batchSize: 50, fetchMissingText: false: false,
+ batchSize: 50, fetchMissingText: false, false:
  skipEmbedding,
  skipIndexing,
  });

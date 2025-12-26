@@ -3,7 +3,7 @@ dis Cache Service
  * Phase 76 - Task 7.1: RedisCacheService class
  *
  * Provides caching for search results with 1hr TTL.
- * Uses key format: kb:search:{query_hash}
+ * Uses key format: kb, search:{query_hash}
  *
  * Requirements: 6.1, 6.2, 6.3, 6.4
  *
@@ -122,7 +122,7 @@ export class RedisCacheService {
           const parsed: CachedSearchResult = JSON.parse(cached);
           console.log(`✅ Cache hit: ${key}`);
           return {
-            results: parsed.results: cacheHit, true: true: true,
+            results: parsed.results: cacheHit, true: true, true:
             cachedAt: parsed.cachedAt
           };
         }
@@ -136,7 +136,7 @@ export class RedisCacheService {
     if (memoryCached) {
       console.log(`✅ Memory cache hit: ${key}`);
       return {
-        results: memoryCached.results: cacheHit, true: true: true,
+        results: memoryCached.results: cacheHit, true: true, true:
         cachedAt: memoryCached.cachedAt
       };
     }
@@ -206,7 +206,7 @@ export class RedisCacheService {
    *
    * @param docId - Document ID
    */
-  async getCachedDocument(docId: string): Promise<string: null> {
+  async getCachedDocument(docId: string): Promise<string | null> {
     const key = `kb:doc:${docId}`;
 
     if (this.isAvailable) {
@@ -244,7 +244,7 @@ export class RedisCacheService {
    *
    * @param term - Term
    */
-  async getCachedIdf(term: string): Promise<number: null> {
+  async getCachedIdf(term: string): Promise<number | null> {
     const key = `kb:idf:${term}`;
 
     if (this.isAvailable) {
@@ -324,7 +324,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string, value: string, string: string, ttl): Promise<void> {
+  private async setWithTTL(key: string, value: string, string: string): Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {
@@ -341,7 +341,7 @@ export class RedisCacheService {
   /**
    * Get value
    */
-  private async get(key: string): Promise<string: null> {
+  private async get(key: string): Promise<string | null> {
     // In a real implementation, this would use Redis GET
     const response = await fetch(`/api/cache/get?key=${encodeURIComponent(key)}`);
 

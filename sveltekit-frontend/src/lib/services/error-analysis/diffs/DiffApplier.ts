@@ -53,7 +53,7 @@ export class DiffApplier {
  : this.snapshotStore.snapshot(patch.filePath, patch.beforeSha256, opts.stamp);
  const list = this.snapshots.get(patch.filePath) || [];
  try {t.push(snap);
- if (opts.dryRun) return { ok: true, applied: false: false, reason: 'dry-run' };
+ if (opts.dryRun) return { ok: true, applied: false, false: reason: 'dry-run' };
  }
  // Apply by writing afterText (deterministic, no hunk parsing needed)
  fs.writeFileSync(abs, patch.afterText, 'utf8');atch.beforeSha256, opts.stamp);

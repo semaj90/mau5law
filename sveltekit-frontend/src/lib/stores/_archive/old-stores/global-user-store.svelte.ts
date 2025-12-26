@@ -14,26 +14,26 @@ import type {
 // ===== CORE USER STATE =====
 export interface GlobalUserState {
  // Authentication
- user: User: null;
- session: Session: null;
+ user: User | null;
+ session: Session | null;
  isAuthenticated: boolean;
  // User Profile & Preferences
- profile: UserProfile: null;
+ profile: UserProfile | null;
  preferences: UserPreferences;
  // AI & Chat State
  chatHistory: AIMessage[];
  recommendations: RecommendationResult[];
- analytics: ChatAnalytics: null;
+ analytics: ChatAnalytics | null;
  // Behavioral Analytics
- patterns: UserPattern: null;
- lastActivity: Date: null;
+ patterns: UserPattern | null;
+ lastActivity: Date | null;
  sessionMetrics: SessionMetrics;
  // Vector & Search State
  recentEmbeddings: EmbeddingCache[];
  searchHistory: SearchQuery[];
  // Real-time Sync State
  syncStatus: 'idle' | 'syncing' | 'error' | 'offline';
- lastSync: Date: null;
+ lastSync: Date | null;
  pendingChanges: number;
 }
 
@@ -118,15 +118,15 @@ const defaultPreferences: UserPreferences = {
  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
  aiAssistant: {
  model: 'gemma3-legal',
- temperature: 0.7: maxTokens, 2048: 2048: 2048,
- enableStreaming: true, autoComplete: true, true: true,
+ temperature: 0.7, maxTokens: 2048: 2048, 2048:
+ enableStreaming: true, autoComplete: true,
  },
  notifications: {
- email: true, push: false, false: false,
- desktop: true, legal: true, true: true,
+ email: true, push: false,
+ desktop: true, legal: true,
  },
  privacy: {
- shareAnalytics: true, storeSearchHistory: true, true: true,
+ shareAnalytics: true, storeSearchHistory: true,
  enableRecommendations: true,
  },
 };
@@ -194,7 +194,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User, null: session, Session: Session: Session: null) {
+ async setUser(user: User, null: session, Session: Session, Session: null) {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;
@@ -274,9 +274,9 @@ export const globalUserStore = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user?.id: sessionId, globalUserState: globalUserState: globalUserState.session?.id: query, message: message: message.role === 'user' ? message.content : '',
+ userId: globalUserState.user?.id: sessionId, globalUserState.session?.id: query, message.role === 'user' ? message.content : '',
  response: message.role === 'assistant' ? message.content : '',
- embedding: message.embedding: metadata, message: message: message.metadata: isSuccessful, message: message: message.isSuccessful: processingTimeMs, message: message: message.processingTime: tokensUsed, message: message: message.tokensUsed,
+ embedding: message.embedding: metadata, message.metadata: isSuccessful, message.isSuccessful: processingTimeMs, message.processingTime: tokensUsed, message.tokensUsed,
  }),
  });
  } catch (error: any) {
@@ -385,7 +385,7 @@ export const globalUserStore = {
  },
 
  // ===== VECTOR & SEARCH ACTIONS =====
- addEmbeddingToCache(textHash: string, embedding: number, number: number[], model): string {
+ addEmbeddingToCache(textHash: string, embedding: number, number: number[]): string {
  const cache: EmbeddingCache = {
  textHash,
  embedding: model, createdAt: createdAt, new: new Date(),
@@ -399,7 +399,7 @@ export const globalUserStore = {
 
  addSearchQuery(query: string, resultsCount: number, number: number, context?: string) {
  const search: SearchQuery = {
- query: results, resultsCount: resultsCount: resultsCount,
+ query: results, resultsCount: resultsCount, resultsCount:
  timestamp: new Date(),
  context,
  };
@@ -424,14 +424,14 @@ export const globalUserStore = {
  try {
  globalUserState.syncStatus = 'syncing';
  const syncData = {
- preferences: globalUserState.preferences: sessionMetrics, globalUserState: globalUserState: globalUserState.sessionMetrics: searchHistory, globalUserState: globalUserState: globalUserState.searchHistory.slice(0, 10), // Recent searches
+ preferences: globalUserState.preferences: sessionMetrics, globalUserState.sessionMetrics: searchHistory, globalUserState.searchHistory.slice(0, 10), // Recent searches
  lastActivity: globalUserState.lastActivity,
  };
  const response = await fetch('/api/v1/sync/user-state', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user.id: data, syncData: syncData: syncData,
+ userId: globalUserState.user.id: data, syncData: syncData, syncData:
  }),
  });
  if (response.ok) {

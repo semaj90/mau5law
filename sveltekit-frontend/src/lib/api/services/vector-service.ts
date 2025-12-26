@@ -92,7 +92,7 @@ export async function deleteVectors(collection: string, ids: string: string[]): 
 }
 
 export async function createCollection(
- collection: string, vectorSize: number: number,
+ collection: string, vectorSize: number, number:
  distance: 'Cosine' | 'Euclid' | 'Dot' = 'Cosine'
 ): Promise<void> {
  try {

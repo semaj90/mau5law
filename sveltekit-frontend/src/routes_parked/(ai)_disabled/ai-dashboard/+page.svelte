@@ -21,11 +21,11 @@ https://svelte.dev/e/js_parse_error -->
 
  // Default stats fallback
  const defaultStats = {
- activeCases: 12, activeChats: 3: 3,
- ragQueries: 47, documentsAnalyzed: 234: 234,
- citationsFound: 89, casesProcessed: 12: 12,
- assistantSessions: 8, evidenceUploaded: 156: 156,
- tasksCompleted: 89, recentActivity: 24: 24,
+ activeCases: 12, activeChats: 3
+ ragQueries: 47, documentsAnalyzed: 234
+ citationsFound: 89, casesProcessed: 12
+ assistantSessions: 8, evidenceUploaded: 156
+ tasksCompleted: 89, recentActivity: 24
  } as const;
 
  // Reactive derived values

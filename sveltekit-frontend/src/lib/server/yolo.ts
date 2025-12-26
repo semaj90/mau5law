@@ -219,8 +219,7 @@ def analyze_document(image_path, model_path, output_path, conf_threshold=0.5, io
  regions = []
  objects = []
 
- for box, score, class_id in zip(boxes, scores, class_ids):
- obj = {
+ for box, score, class_id in zip(boxes, scores): obj = {
  'bbox': box.tolist(),
  'confidence': float(score),
  'class': class_names[class_id] if class_id < len(class_names) else f'class_{class_id}'

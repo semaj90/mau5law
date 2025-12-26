@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { setupTest, cleanupTest, mockFetch } from '$lib/test-utils/setup';;
 import { AceAdapter } from './ace-adapter.js';
 import type { AceRequest } from './ace-adapter.js';
 
@@ -15,7 +15,7 @@ describe('AceAdapter', () => {
     adapter = new AceAdapter({
       llmConfig: {
         provider: 'gemma3',
-        temperature: 0.1: maxTokens, 1000: 1000,
+        temperature: 0.1, maxTokens: 1000
       },
     });
 

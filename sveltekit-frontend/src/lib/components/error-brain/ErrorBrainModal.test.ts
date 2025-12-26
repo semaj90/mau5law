@@ -99,7 +99,7 @@ describe('ErrorBrainModal Component', () => {
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  });
@@ -119,7 +119,7 @@ describe('ErrorBrainModal Component', () => {
  describe('Error Handling', () => {
  it('should display error message on load failure', async () => {
  (global.fetch as any).mockResolvedValueOnce({
- ok: false, status: 500: 500,
+ ok: false, status: 500
  });
 
  render(ErrorBrainModal, {
@@ -153,7 +153,7 @@ describe('ErrorBrainModal Component', () => {
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  });
@@ -191,8 +191,8 @@ describe('ErrorBrainModal Component', () => {
 
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
- data: mockAnalyses, total: 2: 2,
- limit: 20, offset: 0: 0,
+ data: mockAnalyses, total: 2
+ limit: 20, offset: 0
  }),
  });
 
@@ -233,8 +233,8 @@ describe('ErrorBrainModal Component', () => {
 
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
- data: mockAnalyses, total: 1: 1,
- limit: 20, offset: 0: 0,
+ data: mockAnalyses, total: 1
+ limit: 20, offset: 0
  }),
  });
 
@@ -273,8 +273,8 @@ describe('ErrorBrainModal Component', () => {
 
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
- data: mockAnalyses, total: 1: 1,
- limit: 20, offset: 0: 0,
+ data: mockAnalyses, total: 1
+ limit: 20, offset: 0
  }),
  });
 
@@ -308,7 +308,7 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
@@ -351,12 +351,12 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
  .mockResolvedValueOnce({
- ok: false, status: 400: 400,
+ ok: false, status: 400
  });
 
  render(ErrorBrainModal, {
@@ -385,7 +385,7 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
@@ -429,12 +429,12 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
  .mockResolvedValueOnce({
- ok: false, status: 400: 400,
+ ok: false, status: 400
  });
 
  render(ErrorBrainModal, {
@@ -463,7 +463,7 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
@@ -512,12 +512,12 @@ describe('ErrorBrainModal Component', () => {
  .mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  })
  .mockResolvedValueOnce({
- ok: false, status: 400: 400,
+ ok: false, status: 400
  });
 
  render(ErrorBrainModal, {
@@ -555,7 +555,7 @@ describe('ErrorBrainModal Component', () => {
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  });
@@ -584,7 +584,7 @@ describe('ErrorBrainModal Component', () => {
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  });
@@ -613,7 +613,7 @@ describe('ErrorBrainModal Component', () => {
  (global.fetch as any).mockResolvedValueOnce({
  ok: true, json: async: async () => ({
  data: [],
- total: 0, limit: 20: 20,
+ total: 0, limit: 20
  offset: 0,
  }),
  });

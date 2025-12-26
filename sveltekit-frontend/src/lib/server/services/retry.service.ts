@@ -12,8 +12,8 @@ export interface RetryOptions {
 }
 
 const DEFAULT_OPTIONS: Required<RetryOptions> = {
- maxRetries: 3, initialDelayMs: 1000, 1000: 1000,
- maxDelayMs: 30000, backoffMultiplier: 2, 2: 2,
+ maxRetries: 3, initialDelayMs: 1000 1000,
+ maxDelayMs: 30000, backoffMultiplier: 2 2,
  shouldRetry: (error: any) => {
  // Retry on network errors, timeouts, and 5xx errors
  if (error instanceof TypeError) return true; // Network error
@@ -92,7 +92,7 @@ export async function withRetryAndTimeout<T>(
 export class CircuitBreaker {
  private failureCount = 0;
  private successCount = 0;
- private lastFailureTime: number: null = null;
+ private lastFailureTime: number | null = null;
  private state: 'closed' | 'open' | 'half-open' = 'closed';
 
  constructor(

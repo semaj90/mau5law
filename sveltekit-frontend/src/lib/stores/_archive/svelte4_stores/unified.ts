@@ -70,9 +70,9 @@ import { xstateIntegration } from '$lib/services/xstate-integration';
 // --- User Store Types and Store ---
 export interface UserStoreState {
  isLoggedIn: boolean;
- id: string: null; // Added: 'id' property to resolve compilation error
- name: string: null;
- email: string: null;
+ id: string | null; // Added: 'id' property to resolve compilation error
+ name: string | null;
+ email: string | null;
  // ... other user-related properties
 }
 
@@ -96,8 +96,8 @@ export interface AIAssistantStoreState {
  isOpen: boolean;
  currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error
  isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error
- error: string: null; // Added: 'error' to resolve compilation error
- currentCaseId: string: null; // To store the caseId for context
+ error: string | null; // Added: 'error' to resolve compilation error
+ currentCaseId: string | null; // To store the caseId for context
  // ... other AI assistant related properties
 }
 
@@ -143,7 +143,7 @@ type WebsocketState = {
 };
 
 const initialState: WebsocketState = {
- connected: false, connecting: false, false: false,
+ connected: false, connecting: false,
  dashboardData: { cases: [], evidence: [], stats: {} },
  processingJobs: [],
  recentActivity: [],
@@ -158,7 +158,7 @@ export async function subscribeToDashboard(): Promise<void> {
  websocketStore.update((s) => ({ ...s, connecting: true, true: true }));
  // simulate connection delay â€” in real code open websocket and populate updates
  await new Promise((r) => setTimeout(r, 150));
- websocketStore.update((s) => ({ ...s, connecting: false, false: false, connected: true }));
+ websocketStore.update((s) => ({ ...s, connecting: false, connected: true }));
 }
 
 export function subscribeToCase(_caseId: number | string): void {

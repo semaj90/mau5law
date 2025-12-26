@@ -1,14 +1,14 @@
 // Top imports (ensure these are present)
 import {
- pgTable,
- serial,
- text,
- jsonb,
- timestamp,
- boolean,
- integer,
- real,
- uuid,
+    boolean,
+    integer,
+    jsonb,
+    pgTable,
+    real,
+    serial,
+    text,
+    timestamp,
+    uuid,
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 

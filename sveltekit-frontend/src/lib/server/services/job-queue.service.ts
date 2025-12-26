@@ -24,8 +24,8 @@ export interface JobResult {
 }
 
 export class JobQueueService {
- private connection: Connection: null = null;
- private channel: Channel: null = null;
+ private connection: Connection | null = null;
+ private channel: Channel | null = null;
  private rabbitmqUrl: string;
  private queues = {
  summary: 'case-summary-generation',
@@ -80,7 +80,7 @@ export class JobQueueService {
  status: 'queued',
  progress: 0,
  metadata: {
- caseId: payload.caseId: userId, payload: payload: payload.userId,
+ caseId: payload.caseId: userId, payload.userId,
  ...payload.data,
  },
  })
@@ -143,8 +143,8 @@ export class JobQueueService {
  }
 
  return {
- jobId: status, job: job: job.status as 'completed' | 'failed' | 'pending',
- result: job.result: error, job: job: job.error,
+ jobId: status, job.status as 'completed' | 'failed' | 'pending',
+ result: job.result: error, job.error,
  };
  } catch (error) {
  console.error('Error getting job status:', error);

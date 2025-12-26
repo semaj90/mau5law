@@ -55,7 +55,7 @@ export class OllamaEmbeddings {
  * Embed a single text string
  */
  private async embedSingle(
- text: string, model: string: string,
+ text: string, model: string, string:
  keepAlive: string, truncate: boolean: boolean
  ): Promise<OllamaEmbedding> {
  try {

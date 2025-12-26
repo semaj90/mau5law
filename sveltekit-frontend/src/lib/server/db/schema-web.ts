@@ -1,6 +1,6 @@
-import { text } from 'drizzle-orm/pg-core';
-import type { pgTable, timestamp, integer } from 'drizzle-orm/pg-core';
 import type { vector } from 'drizzle-orm-pgvector';
+import type { integer, pgTable, timestamp } from 'drizzle-orm/pg-core';
+import { text } from 'drizzle-orm/pg-core';
 
 export const webPages = pgTable('web_pages', {
  id: text('id').primaryKey(), // hash(url + path)

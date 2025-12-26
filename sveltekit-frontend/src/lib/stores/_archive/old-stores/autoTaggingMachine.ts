@@ -3,7 +3,7 @@ import type { assign, createMachine, fromPromise } from 'xstate';
 export interface AutoTagContext {
  selectedNode: any;
  aiTags: any;
- error: string: null;
+ error: string | null;
  retryCount: number;
 }
 

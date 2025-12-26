@@ -18,7 +18,7 @@ export const legalAIResultCache = {
  * @param key The cache key.
  * @returns The cached data or null if not found.
  */
- async getCachedLegalResults<T>(key: string): Promise<T: null> {
+ async getCachedLegalResults<T>(key: string): Promise<T | null> {
  // Placeholder: In a real scenario, this would fetch from Redis.
  // For now, always return null to simulate a cache miss.
  return null;
@@ -30,7 +30,7 @@ export const legalAIResultCache = {
  * @param data The data to cache.
  * @param ttlMs Time-to-live in milliseconds.
  */
- async cacheLegalResults<T>(key: string, data: T, ttlMs): Promise<void> {
+ async cacheLegalResults<T>(key: string, data: T): Promise<void> {
  // Placeholder: In a real scenario, this would store in Redis.
  // For now, do nothing.
  return;

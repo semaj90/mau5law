@@ -1,12 +1,11 @@
 import {
- pgTable,
- uuid,
- varchar,
- text,
- integer,
- jsonb,
- timestamp,
- boolean,
+    boolean,
+    jsonb,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    varchar
 } from 'drizzle-orm/pg-core';
 import { cases } from './schema.js';
 

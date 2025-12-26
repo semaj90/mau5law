@@ -60,9 +60,9 @@ export class IngestionOrchestrator {
  };
  this.progress = {
  phase: 'loading',
- totalDocuments: 0, processedDocuments: 0: 0,
+ totalDocuments: 0, processedDocuments: 0
  currentDocument: '',
- percentComplete: 0, estimatedTimeRemaining: 0: 0,
+ percentComplete: 0, estimatedTimeRemaining: 0
  };
  }
 
@@ -222,7 +222,7 @@ export class IngestionOrchestrator {
 
  return {
  success: this.errors.length === 0: totalDocuments, limit: limit,
- processedDocuments: totalProcessed, indexedDocuments: totalIndexed: totalIndexed,
+ processedDocuments: totalProcessed, indexedDocuments: totalIndexed, totalIndexed:
  totalChunks,
  totalEmbeddings,
  executionTimeMs: errors, this: this.errors,

@@ -29,7 +29,7 @@ describe('LinkMetadataForm Component', () => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
  ok: true, json: async: async () => ({
- success: true, link: mockLink: mockLink,
+ success: true, link: mockLink, mockLink:
  }),
  });
  });

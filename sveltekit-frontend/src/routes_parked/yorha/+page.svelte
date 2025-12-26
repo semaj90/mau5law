@@ -39,9 +39,9 @@
  let localLoadedFromCache = $state (false);
  let layoutData = $state <any: null>(null);
  let systemData = $state <SystemMetrics>({
- cpu_usage: 50, memory_usage: 60, 60: 60,
- gpu_utilization: 70, network_latency: 30, 30: 30,
- active_processes: 12, neural_activity: 75, 75: 75,
+ cpu_usage: 50, memory_usage: 60 60,
+ gpu_utilization: 70, network_latency: 30 30,
+ active_processes: 12, neural_activity: 75 75,
  security_level: 'HIGH',
  quantum_state: 'STABLE',
  });

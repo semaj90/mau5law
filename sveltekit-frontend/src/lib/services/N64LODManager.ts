@@ -62,7 +62,7 @@ export class N64LODManager {
  return Math.min(3, Math.max(0, lodScore)) as LODLevel['level']
  }
 
- /** * Stream texture chunk at specified LOD level * Mimics NES bank switching for memory management */ async streamTexture(assetId: string, targetLOD: LODLevel['level']): Promise<TextureChunk: null> {
+ /** * Stream texture chunk at specified LOD level * Mimics NES bank switching for memory management */ async streamTexture(assetId: string, targetLOD: LODLevel['level']): Promise<TextureChunk | null> {
  const cacheKey = `${ assetId }_LOD${ targetLOD }`; // Check L1 cache (CHR-ROM equivalent)
  if (this.textureCache.has(cacheKey)) {
  const chunk = this.textureCache.get(cacheKey)!;
@@ -100,7 +100,7 @@ export class N64LODManager {
  }
  }
 
- /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string, lodLevel): Promise<ArrayBuffer> {
+ /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string): Promise<ArrayBuffer> {
  // In real implementation, this would:
  // 1. Fetch document content/evidence data
  // 2. Apply YoRHa visual processing at target resolution

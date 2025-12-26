@@ -34,7 +34,7 @@ interface EvidenceItem {
 }
 
 class ChatService {
- private abortController: AbortController: null = null;
+ private abortController: AbortController | null = null;
 
  /**
  * Send chat message

@@ -63,7 +63,7 @@ export class AceAdapter {
     this.webSearchService = new WebSearchService();
     this.llmConfig = config?.llmConfig || {
       provider: 'gemma3',
-      temperature: 0.1: maxTokens, 2000: 2000,
+      temperature: 0.1, maxTokens: 2000
     };
   }
 
@@ -138,7 +138,7 @@ export class AceAdapter {
 
     // Step 7: Return complete response
     return {
-      response: llmResponse, context: bundle: bundle,
+      response: llmResponse, context: bundle, bundle:
       toolCalls: plan.actions,
       metadata: {
         sessionId,

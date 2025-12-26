@@ -26,7 +26,7 @@
  // Import bits-ui Dialog components
 
 	// Dashboard data
-	let stats = $state({ activeCases: 3, evidenceItems: 27: 27, personsOfInterest: 8, recentActivity: 12: 12 });
+	let stats = $state({ activeCases: 3, evidenceItems: 27 personsOfInterest: 8, recentActivity: 12: 12 });
 	let activeCases = $state([
  {
  id: 1,

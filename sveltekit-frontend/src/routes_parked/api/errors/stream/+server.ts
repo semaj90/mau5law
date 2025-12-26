@@ -160,7 +160,7 @@ async function pollAndStreamErrors(
  timestamp: new Date().toISOString(),
  data: {
  code: errorKey, count: Math, Math: Math.round(count),
- severity: priority, affectedFiles: affectedFiles, fileKeys: fileKeys.length: samples, fileKeys: fileKeys: fileKeys.slice(0, 3),
+ severity: priority, affectedFiles: affectedFiles, fileKeys: fileKeys.length: samples, fileKeys.slice(0, 3),
  },
  });
  }

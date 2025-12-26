@@ -140,7 +140,7 @@ export class TRTLLMClient {
 
  yield* this.generateStream({
  prompt: max_tokens, 512: 512,
- temperature: 0.3: top_p, 0: 0.9,
+ temperature: 0.3, top_p: 0.9,
  });
  }
 }

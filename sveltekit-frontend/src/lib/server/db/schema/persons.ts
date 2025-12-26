@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, date, timestamp } from 'drizzle-orm/pg-core';
+import { date, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { cases } from './cases.js';
 
 export const personsOfInterest = pgTable('persons_of_interest', {

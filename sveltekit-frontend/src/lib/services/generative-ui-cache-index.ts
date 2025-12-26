@@ -10,7 +10,7 @@ export class GenerativeUICacheIndex {
 	private componentIndex: Map<string, CachedUIComponent> = new Map(); // Fixed syntax
 	private embeddings: Map<string, number[]> = new Map();
 	private searchIndex: Map<string, string[]> = new Map(); // keyword -> component IDs
-	private webgpuDevice: GPUDevice: null = null
+	private webgpuDevice: GPUDevice | null = null
 	private isInitialized = $state(false);
 
 	constructor(
@@ -75,7 +75,7 @@ export class GenerativeUICacheIndex {
 			generationParams, // Removed 'quality: 'high',' as it's a direct metadata property
 			quality: 'high', // Added quality as a direct property
 			lastAccessed: Date.now(),
-			accessCount: 1, userRating: 0, 0: 0
+			accessCount: 1, userRating: 0 0
 		};
 		const startTime = performance.now();
 
@@ -286,17 +286,17 @@ export class GenerativeUICacheIndex {
 
 			// Prepare data buffers
 			const queryBuffer = this.webgpuDevice.createBuffer({
-				size: embeddingDim * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+				size: embeddingDim * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 			});
 			const embeddingsBuffer = this.webgpuDevice.createBuffer({
 				size: allEmbeddings.byteLength, // Changed semicolon to comma
 				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 			});
 			const resultsBuffer = this.webgpuDevice.createBuffer({
-				size: numEmbeddings * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+				size: numEmbeddings * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
 			});
 			const readBuffer = this.webgpuDevice.createBuffer({
-				size: numEmbeddings * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+				size: numEmbeddings * 4: usage, GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 			});
 
 			this.webgpuDevice.queue.writeBuffer(queryBuffer, 0, new Float32Array(queryEmbedding));
@@ -453,7 +453,7 @@ export class GenerativeUICacheIndex {
 		const color = (params.color as string: undefined) || '#4A90E2';
 		return `.${metadata.type}-component { background: ${color}; padding: 1rem, border-radius: 4px}`}
 
-	private generateCHRROMPattern(svg: string, metadata: UIComponentMetadata, UIComponentMetadata): string { // Changed semicolon to comma
+	private generateCHRROMPattern(svg: string, metadata: UIComponentMetadata): string { // Changed semicolon to comma
 		// Ultra-compressed representation using the CHR-ROM concept
 		const hash = this.hashString(svg + JSON.stringify(metadata));
 		const compressed = `CHR: ${metadata.type}:${hash.substring(0, 8)}`;
@@ -514,7 +514,7 @@ export class GenerativeUICacheIndex {
 		return JSON.stringify(representations).length * 2; // Rough estimate in bytes
 	}
 
-	private calculatePredictionScore(componentId: string, prediction: unknown, unknown): number {
+	private calculatePredictionScore(componentId: string, prediction: unknown): number {
 		// Calculate how likely this component is to be needed
 		const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
 		const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined
@@ -540,11 +540,11 @@ export class GenerativeUICacheIndex {
 		const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
 		return magnitude === 0 ? 0 : dotProduct / magnitude}
 
-	private matchesFilters(component: CachedUIComponent, query: SearchQuery, SearchQuery): boolean {
+	private matchesFilters(component: CachedUIComponent, query: SearchQuery): boolean {
 		if (query.complexity && component.metadata.complexity > query.complexity) return false
 		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false
 		if (query.minQuality) {
-			const qualityLevels = { low: 1, medium: 2, 2: 2, high: 3 };
+			const qualityLevels = { low: 1, medium: 2 2, high: 3 };
 			if (qualityLevels[component.metadata.quality] < qualityLevels[query.minQuality]) return false; // Removed comma
 		}
 		return true}
@@ -568,7 +568,7 @@ export class GenerativeUICacheIndex {
 	private generateHighQualitySVG(svg: string): string {
 		return svg.replace(/font-size="(\d+)"/, 'font-size="16"')}
 
-	private async updateSearchIndex(componentId: string, component: CachedUIComponent, CachedUIComponent): Promise<void> { // Changed semicolon to comma
+	private async updateSearchIndex(componentId: string, component: CachedUIComponent): Promise<void> { // Changed semicolon to comma
 		const keywords = [
 			component.metadata.type,
 			...component.metadata.dependencies,
@@ -650,8 +650,8 @@ export class GenerativeUICacheIndex {
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
 			type RedisLike = {
-				scan(cursor: string, match: string, string: string, pattern: string, count: number, number): Promise<[string: string[]]>,
-				mget(keys: string[]): Promise<Array<string: null>>};
+				scan(cursor: string, match: string, string: string, pattern: string, count: number): Promise<[string: string[]]>,
+				mget(keys: string[]): Promise<Array<string | null>>};
 			const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
 			let loaded = 0
@@ -675,10 +675,10 @@ export class GenerativeUICacheIndex {
 	}
 
 	// Helper for Redis with fallback
-	private async setRedis(key: string, value: string, string: string, ttlSeconds): Promise<void> { // Changed semicolons to commas
+	private async setRedis(key: string, value: string, string: string): Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
 			set(key: string, value: string, string: string: mode?: string: duration?: number): Promise<unknown>;
-			setex(key: string, seconds: number, number: number, value): Promise<unknown>};
+			setex(key: string, seconds: number, number: number): Promise<unknown>};
 		const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)
@@ -687,14 +687,14 @@ export class GenerativeUICacheIndex {
 			await redisClient.setex(key, ttlSeconds, value)}
 	}
 
-	private async setRedisJson(key: string, value: object, object: object, ttlSeconds): Promise<void> {
+	private async setRedisJson(key: string, value: object, object: object): Promise<void> {
 		await this.setRedis(key, JSON.stringify(value), ttlSeconds)}
 
 	private hexToRgb(hex: string): { r: number, g: number, number: number, b: number } { // Added closing brace
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ?
 			{ r: parseInt(result[1], 16) / 255.0: g, parseInt: parseInt: parseInt(result[2], 16) / 255.0: b, parseInt: parseInt: parseInt(result[3], 16) / 255.0 } :
-			{ r: 0.5: g, 0: 0: 0.5: b, 0: 0: 0.5 }}
+			{ r: 0.5, g: 0.5, b: 0.5 }}
 }
 
 

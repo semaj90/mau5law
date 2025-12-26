@@ -17,7 +17,7 @@ export function simd_vector_add(a: Float32Array, b: Float32Array): Float32Array:
  return result;
 }
 
-export function simd_matrix_multiply(a: Float32Array, b: Float32Array: Float32Array, rowsA: number, colsA: number: number, colsB): number: Float32Array {
+export function simd_matrix_multiply(a: Float32Array, b: Float32Array, Float32Array: rowsA: number, colsA: number: number): number: Float32Array {
  const result = new Float32Array(rowsA * colsB);
  for (let i = 0; i < rowsA; i++) {
  for (let j = 0; j < colsB; j++) {
@@ -32,7 +32,7 @@ export function simd_matrix_multiply(a: Float32Array, b: Float32Array: Float32Ar
 }
 
 // Memory-efficient batch processing
-export function process_batch_embeddings(embeddings: Float32Array, batchSize: number: number, dimensions): number: Float32Array {
+export function process_batch_embeddings(embeddings: Float32Array, batchSize: number: number): number: Float32Array {
  const numBatches = embeddings.length / (batchSize * dimensions);
  const result = new Float32Array(numBatches * dimensions);
 

@@ -23,7 +23,7 @@ declare module 'fuse.js' {
  search(query: string): FuseResult<T>[];
  setCollection(list: T[]): void;
  add(item: T): void;
- remove(predicate: (item: T, index: number, number): number => boolean): T[];
+ remove(predicate: (item: T, index: number): number => boolean): T[];
  }
  export default Fuse;
 }
@@ -58,7 +58,7 @@ declare module 'lokijs' {
  interface Collection<T> {
  insert(doc: T): T;
  find(query?: unknown): T[];
- findOne(query?: unknown): T: null;
+ findOne(query?: unknown): T | null;
  update(doc: T): T;
  remove(doc: T): void;
  removeWhere(query: unknown): void;
@@ -97,7 +97,7 @@ declare module '@tauri-apps/api/fs' {
  children?: FileEntry[];
  }
  export function readTextFile(filePath: string): Promise<string>;
- export function writeTextFile(filePath: string, data: string, string): Promise<void>;
+ export function writeTextFile(filePath: string, data: string): Promise<void>;
  export function readDir(dir: string, options?: { recursive?: boolean }): Promise<FileEntry[]>;
  export function createDir(dir: string, options?: { recursive?: boolean }): Promise<void>;
  export function removeFile(file: string): Promise<void>;

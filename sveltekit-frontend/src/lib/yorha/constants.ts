@@ -22,35 +22,35 @@ export type YoRHaFormField =
 
 // Column definitions
 export const documentsColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140: 140 },
- { key: 'title', title: 'DOCUMENT TITLE', sortable: true, filterable: true, true: true, width: 300 },
- { key: 'documentType', title: 'TYPE', sortable: true, filterable: true, true: true, width: 120 },
- { key: 'jurisdiction', title: 'JURISDICTION', sortable: true, width: 150, 150: 150 },
- { key: 'yorha_confidence', title: 'CONFIDENCE', sortable: true, width: 120, 120: 120, type: 'number' },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100: 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'PROCESSED', sortable: true, width: 140, 140: 140, type: 'date' },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'title', title: 'DOCUMENT TITLE', sortable: true, filterable: true, width: 300 },
+ { key: 'documentType', title: 'TYPE', sortable: true, filterable: true, width: 120 },
+ { key: 'jurisdiction', title: 'JURISDICTION', sortable: true, width: 150 150 },
+ { key: 'yorha_confidence', title: 'CONFIDENCE', sortable: true, width: 120 120, type: 'number' },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'PROCESSED', sortable: true, width: 140 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 
 export const casesColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140: 140 },
- { key: 'title', title: 'CASE TITLE', sortable: true, filterable: true, true: true, width: 300 },
- { key: 'caseNumber', title: 'CASE NUMBER', sortable: true, width: 150, 150: 150 },
- { key: 'yorha_priority', title: 'PRIORITY', sortable: true, width: 100, 100: 100, type: 'text' },
- { key: 'assignedTo', title: 'ASSIGNED TO', sortable: true, width: 150, 150: 150 },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100: 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'CREATED', sortable: true, width: 140, 140: 140, type: 'date' },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'title', title: 'CASE TITLE', sortable: true, filterable: true, width: 300 },
+ { key: 'caseNumber', title: 'CASE NUMBER', sortable: true, width: 150 150 },
+ { key: 'yorha_priority', title: 'PRIORITY', sortable: true, width: 100 100, type: 'text' },
+ { key: 'assignedTo', title: 'ASSIGNED TO', sortable: true, width: 150 150 },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'CREATED', sortable: true, width: 140 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 
 export const evidenceColumns: YoRHaColumn[] = [
- { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140, 140: 140 },
- { key: 'title', title: 'EVIDENCE TITLE', sortable: true, filterable: true, true: true, width: 250 },
- { key: 'evidenceType', title: 'TYPE', sortable: true, width: 120, 120: 120, type: 'text' },
- { key: 'caseId', title: 'CASE ID', sortable: true, width: 120, 120: 120 },
- { key: 'collectedBy', title: 'COLLECTED BY', sortable: true, width: 150, 150: 150 },
- { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100, 100: 100, type: 'text' },
- { key: 'yorha_timestamp', title: 'COLLECTED', sortable: true, width: 140, 140: 140, type: 'date' },
+ { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 140 },
+ { key: 'title', title: 'EVIDENCE TITLE', sortable: true, filterable: true, width: 250 },
+ { key: 'evidenceType', title: 'TYPE', sortable: true, width: 120 120, type: 'text' },
+ { key: 'caseId', title: 'CASE ID', sortable: true, width: 120 120 },
+ { key: 'collectedBy', title: 'COLLECTED BY', sortable: true, width: 150 150 },
+ { key: 'yorha_status', title: 'STATUS', sortable: true, width: 100 100, type: 'text' },
+ { key: 'yorha_timestamp', title: 'COLLECTED', sortable: true, width: 140 140, type: 'date' },
  { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' },
 ];
 

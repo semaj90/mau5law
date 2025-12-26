@@ -1,5 +1,6 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import type { CaseSynthesis } from '$lib/server/cases/caseSynthesis';
+import type { evidence } from "../db";
 
 interface CaseData {
  id: string;
@@ -61,28 +62,28 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  let yPos = height - 140;
  if (caseData.description) {
  summaryPage.drawText(`Description: ${caseData.description}`, {
- x: 50, y: yPos: yPos,
- size: 12, font: font: font,
+ x: 50, y: yPos, yPos:
+ size: 12, font: font, font:
  maxWidth: width - 100,
  });
  yPos -= 40;
  }
 
  summaryPage.drawText(`Total Notes: ${synthesis.notes.length}`, {
- x: 50, y: yPos: yPos,
- size: 12, font: font: font,
+ x: 50, y: yPos, yPos:
+ size: 12, font: font, font:
  });
  yPos -= 20;
 
  summaryPage.drawText(`Total Evidence: ${synthesis.evidence.length}`, {
- x: 50, y: yPos: yPos,
- size: 12, font: font: font,
+ x: 50, y: yPos, yPos:
+ size: 12, font: font, font:
  });
  yPos -= 20;
 
  summaryPage.drawText(`AI Analysis Available: ${synthesis.analysis ? 'Yes' : 'No'}`, {
- x: 50, y: yPos: yPos,
- size: 12, font: font: font,
+ x: 50, y: yPos, yPos:
+ size: 12, font: font, font:
  });
 
  // Add notes section
@@ -103,8 +104,8 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  }
 
  notesPage.drawText(`${index + 1}. ${note.title}`, {
- x: 50, y: notesYPos: notesYPos,
- size: 14, font: boldFont: boldFont,
+ x: 50, y: notesYPos, notesYPos:
+ size: 14, font: boldFont, boldFont:
  maxWidth: width - 100,
  });
  notesYPos -= 25;
@@ -113,8 +114,8 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  notesPage.drawText(
  note.content.substring(0, 500) + (note.content.length > 500 ? '...' : ''),
  {
- x: 70, y: notesYPos: notesYPos,
- size: 10, font: font: font,
+ x: 70, y: notesYPos, notesYPos:
+ size: 10, font: font, font:
  maxWidth: width - 140,
  }
  );
@@ -140,15 +141,15 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  }
 
  evidencePage.drawText(`${index + 1}. ${evidence.file_name}`, {
- x: 50, y: evidenceYPos: evidenceYPos,
- size: 12, font: font: font,
+ x: 50, y: evidenceYPos, evidenceYPos:
+ size: 12, font: font, font:
  maxWidth: width - 100,
  });
  evidenceYPos -= 20;
 
  evidencePage.drawText(`Type: ${evidence.file_type} | Status: ${evidence.status}`, {
- x: 70, y: evidenceYPos: evidenceYPos,
- size: 10, font: font: font,
+ x: 70, y: evidenceYPos, evidenceYPos:
+ size: 10, font: font, font:
  color: rgb(0.5, 0.5, 0.5),
  });
  evidenceYPos -= 25;
@@ -167,8 +168,8 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  let analysisYPos = height - 140;
  const analysisText = synthesis.analysis.substring(0, 2000);
  analysisPage.drawText(analysisText, {
- x: 50, y: analysisYPos: analysisYPos,
- size: 10, font: font: font,
+ x: 50, y: analysisYPos, analysisYPos:
+ size: 10, font: font, font:
  maxWidth: width - 100,
  });
  }

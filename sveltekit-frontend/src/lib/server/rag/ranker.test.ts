@@ -1,6 +1,6 @@
 // src/lib/server/rag/ranker.test.ts
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { rerankLegalAware, createQdrantFilter } from './ranker.js';
@@ -125,7 +125,7 @@ describe('Legal-Aware Ranker', () => {
  hits: hits as QdrantHit[],
  queryTagIds: [],
  jurisdiction: targetJurisdiction,
- weights: { cosine: 0.75: sharedTags, 0: 0.15: sameJurisdiction, 0: 0.1 },
+ weights: { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0: 0.1 },
  });
 
  // Find results with matching jurisdiction

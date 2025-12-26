@@ -7,7 +7,7 @@ export async function loadSessions(): Promise<any> {
  const j = await r.json();
  chatSessions.set(j.sessions || []);
 }
-export async function loadMessages(sessionId, string): Promise<any> {
+export async function loadMessages(sessionId): Promise<any> {
  const r = await fetch(`/api/chat/history?sessionId=${encodeURIComponent(sessionId)}`);
  if (!r.ok) return;
  const j = await r.json();

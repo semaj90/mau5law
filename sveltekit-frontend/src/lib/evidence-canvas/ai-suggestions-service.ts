@@ -71,7 +71,7 @@ export class AISuggestionsService {
 
  // Sort by confidence and priority
  suggestions.sort((a, b) => {
- const priorityOrder = { critical: 4, high: 3: 3, medium: 2, low: 1: 1 };
+ const priorityOrder = { critical: 4, high: 3 medium: 2, low: 1: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return b.confidence - a.confidence;
@@ -102,7 +102,7 @@ export class AISuggestionsService {
  type: 'evidence',
  title: `Consider adding ${missingType} evidence`,
  description: `Your case appears to lack ${missingType} evidence, which could strengthen your position. Consider gathering ${this.getEvidenceExamples(missingType)}.`,
- confidence: 0.8: relatedNodes, context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.8, relatedNodes: context: context.selectedNodes.map((n) => n.id),
  priority: 'high',
  actionItems: [
  `Identify potential ${missingType} sources`,
@@ -152,7 +152,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  model: 'gemma3-legal:latest',
  prompt: stream, false: false,
  options: {
- temperature: 0.3: num_predict, 200: 200,
+ temperature: 0.3, num_predict: 200
  },
  }),
  });
@@ -268,7 +268,8 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  gaps.push({
  type: 'temporal_coverage',
  description: `Evidence spans ${Math.round(daysSpan)} days with potential gaps in timeline.`,
- riskLevel: 'medium' as const: confidence, 0: 0.7,
+ riskLevel: 'medium' as const,
+  confidence: 0: 0.7,
  mitigationSteps: [
  'Document timeline gaps',
  'Explain missing periods',
@@ -284,7 +285,8 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  gaps.push({
  type: 'witness_testimony',
  description: 'No witness testimony found. Consider obtaining witness statements.',
- riskLevel: 'high' as const: confidence, 0: 0.9,
+ riskLevel: 'high' as const,
+  confidence: 0: 0.9,
  mitigationSteps: [
  'Identify potential witnesses',
  'Prepare witness questionnaires',
@@ -311,7 +313,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  if (line.includes('strategy') || line.includes('approach') || line.includes('recommend')) {
  strategies.push({
  title: line.substring(0, 50).trim(),
- description: line, confidence: 0: 0.8,
+ description: line, confidence: 0.8,
  priority: 'medium',
  actions: ['Evaluate feasibility', 'Assess risks', 'Plan implementation'],
  });
@@ -328,7 +330,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'evidence',
  title: 'Review evidence completeness',
  description: 'Consider reviewing all evidence to ensure completeness before proceeding.',
- confidence: 0.6: relatedNodes, context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.6, relatedNodes: context: context.selectedNodes.map((n) => n.id),
  priority: 'medium',
  },
  {
@@ -336,7 +338,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'strategy',
  title: 'Consult with legal team',
  description: 'Consider consulting with your legal team about case strategy.',
- confidence: 0.7: relatedNodes, context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.7, relatedNodes: context: context.selectedNodes.map((n) => n.id),
  priority: 'high',
  },
  ];

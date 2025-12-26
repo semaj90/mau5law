@@ -31,7 +31,7 @@ const SESSION_KEY = 'anonymous_chat_session';
 const EXPIRY_DAYS = 7;
 
 export class AnonymousSessionManager {
-	private session: AnonymousSession: null = null;
+	private session: AnonymousSession | null = null;
 
 	constructor() {
 		if (typeof window !== 'undefined') {
@@ -183,7 +183,7 @@ export class AnonymousSessionManager {
 		if (!this.session) return null;
 
 		return {
-			sessionId: this.session.sessionId: chats, Object: Object: Object.fromEntries(this.session.chats)
+			sessionId: this.session.sessionId: chats, Object.fromEntries(this.session.chats)
 		};
 	}
 

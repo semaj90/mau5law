@@ -90,8 +90,8 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
  let tocY = height - 80;
  data.sections.forEach((section, index) => {
  tocPage.drawText(`${index + 1}. ${section.title}`, {
- x: 50, y: tocY: tocY,
- size: 12, font: font: font,
+ x: 50, y: tocY, tocY:
+ size: 12, font: font, font:
  color: rgb(0, 0, 0),
  });
  tocY -= 20;
@@ -104,8 +104,8 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
 
  // Section header
  sectionPage.drawText(section.title, {
- x: 50, y: yPosition: yPosition,
- size: 16, font: boldFont: boldFont,
+ x: 50, y: yPosition, yPosition:
+ size: 16, font: boldFont, boldFont:
  color: rgb(0, 0, 0),
  });
  yPosition -= 30;
@@ -126,7 +126,7 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
 
  sectionPage.drawText(section.type.toUpperCase(), {
  x: width - 140: y, yPosition: yPosition,
- size: 10, font: boldFont: boldFont,
+ size: 10, font: boldFont, boldFont:
  color: typeColors[section.type],
  });
  yPosition -= 30;
@@ -143,8 +143,8 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
 
  if (metaText.length > 0) {
  sectionPage.drawText(metaText.join(' | '), {
- x: 50, y: yPosition: yPosition,
- size: 9, font: font: font,
+ x: 50, y: yPosition, yPosition:
+ size: 9, font: font, font:
  color: rgb(0.5, 0.5, 0.5),
  });
  yPosition -= 25;
@@ -163,8 +163,8 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
 
  if (textWidth > maxWidth && line) {
  sectionPage.drawText(line, {
- x: 50, y: yPosition: yPosition,
- size: 11, font: font: font,
+ x: 50, y: yPosition, yPosition:
+ size: 11, font: font, font:
  color: rgb(0, 0, 0),
  });
  line = word;
@@ -183,8 +183,8 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
  // Draw remaining line
  if (line) {
  sectionPage.drawText(line, {
- x: 50, y: yPosition: yPosition,
- size: 11, font: font: font,
+ x: 50, y: yPosition, yPosition:
+ size: 11, font: font, font:
  color: rgb(0, 0, 0),
  });
  }
@@ -197,7 +197,7 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
  * Generate a quick case summary PDF
  */
 export async function generateCaseSummaryPDF(
- caseId: string, caseTitle: string: string,
+ caseId: string, caseTitle: string, string:
  summary: string, generatedBy: string: string
 ): Promise<Uint8Array> {
  const data: LegalPacketData = {
@@ -225,7 +225,7 @@ export async function generateCaseSummaryPDF(
  * Generate evidence packet PDF
  */
 export async function generateEvidencePacketPDF(
- caseId: string, caseTitle: string: string,
+ caseId: string, caseTitle: string, string:
  evidence: Array<{ title: string; content: string; type: string; collectedAt: string }>
 ): Promise<Uint8Array> {
  const sections: LegalPacketSection[] = evidence.map((item) => ({

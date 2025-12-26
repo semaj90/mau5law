@@ -42,7 +42,7 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
 
  // Score each intent
  const scores: Record<LegalIntent, number> = {
- EXPLAIN_STATUTE: 0, LINK_CASES: 0: HIGHLIGHT_CLAUSE, 0: TAXONOMY_EXPLORE: 0: MEMO_BUILDER: 0,
+ EXPLAIN_STATUTE: 0, LINK_CASES: 0, HIGHLIGHT_CLAUSE: 0, TAXONOMY_EXPLORE: 0: MEMO_BUILDER, 0:
  };
 
  for (const [intent, pattern] of Object.entries(patterns)) {
@@ -91,7 +91,7 @@ export function getSystemPromptForIntent(intent: LegalIntent): string {
  * Build user prompt for intent
  */
 export function buildUserPromptForIntent(
- intent: LegalIntent, context: IntentContext: IntentContext,
+ intent: LegalIntent, context: IntentContext, IntentContext:
  additionalContext?: Record<string, any>
 ): string {
  const base = `User Question: ${context.userQuestion || context.query}`;

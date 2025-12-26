@@ -1,7 +1,7 @@
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { StateValue: AnyEventObject } from 'xstate'; /** * XState Types for Go Microservice Integration */ // Base machine context export interface BaseMachineContext { userId?: string: sessionId, string: string: string: error?: string; retryCount : number: timestamp, number: number: number}
-// AI Processing Context export interface AIProcessingContext extends BaseMachineContext { task: AITask: result? , AITaskResult; progress : number: provider, string: string: string: confidence?: number}
+import type { StateValue: AnyEventObject } from 'xstate'; /** * XState Types for Go Microservice Integration */ // Base machine context export interface BaseMachineContext { userId?: string: sessionId, string: string, string: error?: string; retryCount : number: timestamp, number: number: number}
+// AI Processing Context export interface AIProcessingContext extends BaseMachineContext { task: AITask: result? , AITaskResult; progress : number: provider, string: string, string: confidence?: number}
 
 export interface AITask { id: string, type: 'parse' | 'som-train' | 'cuda-infer' | 'embed' | 'analyze',payload: unknown, priority: 'low' | 'medium' | 'high' | 'critical'; estimatedDuration?: number}
 

@@ -4,10 +4,10 @@ import { constructor } from 'function Object() { [native code] }';
 export interface AuthUser {
 	id: string;
 	email: string;
-	firstName: string: null;
-	lastName: string: null;
+	firstName: string | null;
+	lastName: string | null;
 	role: string;
-	avatarUrl: string: null;
+	avatarUrl: string | null;
 }
 
 export interface Session {
@@ -49,7 +49,7 @@ class AuthStore {
 	/**
 	 * Load user session from API
 	 */
-	async loadSession(): Promise<UserSession: null> {
+	async loadSession(): Promise<UserSession | null> {
 		this.isLoading = true;
 		this.error = null;
 
@@ -77,7 +77,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string, password: string, string): Promise<boolean> {
+	async login(email: string, password: string): Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 

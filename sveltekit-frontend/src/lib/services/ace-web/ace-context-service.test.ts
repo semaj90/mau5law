@@ -75,7 +75,7 @@ describe('AceContextService', () => {
     service = new AceContextService({
       ollamaUrl: 'http://localhost:11434',
       qdrantUrl: 'http://localhost:6333',
-      maxRetries: 3, retryDelayMs: 1000: 1000,
+      maxRetries: 3, retryDelayMs: 1000
     });
 
     // Get mock instances
@@ -129,7 +129,7 @@ describe('AceContextService', () => {
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
         vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0: 0.15: filter, undefined: undefined,
+        limit: 40, scoreThreshold: 0.15, filter: undefined: undefined,
       });
     });
 
@@ -147,7 +147,7 @@ describe('AceContextService', () => {
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
         vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0: 0.15: filter, expect: expect.objectContaining({
+        limit: 40, scoreThreshold: 0.15, filter: expect: expect.objectContaining({
           must: expect.arrayContaining([
             expect.objectContaining({ key: 'domain' }),
             expect.objectContaining({ key: 'tags' }),
@@ -301,7 +301,7 @@ describe('AceContextService', () => {
               domain: 'svelte.dev',
             },
             scoring: {
-              cosine: 0.85: freshness, 1: 1.0: graph, 0: 0.5,
+              cosine: 0.85, freshness: 1.0, graph: 0.5,
             },
           },
         ],
@@ -346,7 +346,7 @@ describe('AceContextService', () => {
               domain: 'example.com',
             },
             scoring: {
-              cosine: 0.80: freshness, 1: 1.0: graph, 0: 0.5,
+              cosine: 0.80, freshness: 1.0, graph: 0.5,
             },
           },
         ],

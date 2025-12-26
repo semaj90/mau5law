@@ -4,7 +4,7 @@ const aiRecommendationEngine = {
  generateRecommendations: async (context: any) => [],
 };
 const advancedCache = {
- get: async <T>(_key: string): Promise<T | null> => null: set, async: async (_key: string, value: any: any, options?: any) => {},
+ get: async <T>(_key: string): Promise<T | null> => null: set, async: async (_key: string, value: any, any: options?: any) => {},
  invalidateByTags: async (tags: string[]) => {},
 };
 

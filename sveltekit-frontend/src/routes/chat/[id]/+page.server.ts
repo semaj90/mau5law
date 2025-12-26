@@ -66,8 +66,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			await channel.assertQueue(QUEUE, { durable: true });
 
 			const job = {
-				chatId: params.id: userMessage, userMessage: userMessage: userMessage.trim(),
-				caseId: userId, locals: locals: locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
+				chatId: params.id: userMessage, userMessage.trim(),
+				caseId: userId, locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
 			};
 
 			channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(job)), {

@@ -85,7 +85,7 @@ async function generateEmbeddingWithFallback(text: string): Promise<number[]> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: fallbackModel, prompt: text: text,
+ model: fallbackModel, prompt: text, text:
  }),
  });
 
@@ -153,7 +153,7 @@ export async function pullOllamaModel(modelName: string): Promise<boolean> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- name: modelName, stream: false: false,
+ name: modelName, stream: false, false:
  }),
  });
 

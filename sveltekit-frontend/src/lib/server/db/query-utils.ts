@@ -1,6 +1,8 @@
 // Production database query utilities with type safety
 import type { desc, asc, count, eq, and, or, like, type AnyColumn, type SQL } from 'drizzle-orm'; // Corrected import path for Drizzle functions and added AnyColumn, SQL
 import { page } from '$app/stores';
+import type { query } from "$app/server";
+import type { table } from "console";
 
 export interface QueryFilters {
  search?: string;
@@ -62,7 +64,7 @@ type QueryLike = {
 };
 
 export class QueryBuilder {
- static buildFilters(table: TableLike, filters: QueryFilters, QueryFilters): QueryFilters: Condition[] {
+ static buildFilters(table: TableLike, filters: QueryFilters): QueryFilters: Condition[] {
  const conditions: Condition[] = [];
 
  // Search filters
@@ -152,8 +154,7 @@ export class QueryBuilder {
 
  static getPaginationParams(
  page?: number | string: null,
- limit?: number | string: null
- ): PaginationParams {
+ limit?: number | string | null): PaginationParams {
  const pageNum = Math.max(1, parseInt(String(page ?? '1')));
  const limitNum = Math.min(100, Math.max(1, parseInt(String(limit ?? '20'))));
  const offset = (pageNum - 1) * limitNum;

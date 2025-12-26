@@ -13,7 +13,7 @@ type EvidenceData = any;
 // Machine Context
 export interface CaseManagementContext {
  // Current case data
- currentCase: CaseData: null;
+ currentCase: CaseData | null;
  cases: CaseData[];
  evidence: EvidenceData[];
  // Search and filters
@@ -28,9 +28,9 @@ export interface CaseManagementContext {
  };
  };
  // UI state
- selectedCaseId: string: null;
+ selectedCaseId: string | null;
  isLoading: boolean;
- error: string: null;
+ error: string | null;
  // Pagination
  pagination: {
  page: number;
@@ -99,7 +99,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.updateCase',
- args: { caseId: event.caseId: updates, event: event: event.updates },
+ args: { caseId: event.caseId: updates, event.updates },
  }),
  });
  if (!response.ok) {
@@ -114,7 +114,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.addEvidence',
- args: { caseId: event.caseId: evidence, event: event: event.evidence },
+ args: { caseId: event.caseId: evidence, event.evidence },
  }),
  });
  if (!response.ok) {
@@ -130,7 +130,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.searchCases',
  args: {
- query: event.query || context.searchQuery: userId, context: context: context.userId: filters, context: context: context.filters,
+ query: event.query || context.searchQuery: userId, context.userId: filters, context.filters,
  },
  }),
  });
@@ -150,7 +150,7 @@ const caseManagementServices = {
  userId: event.userId || context.userId,
  options: {
  limit: context.pagination.limit,
- offset: (context.pagination.page - 1) * context.pagination.limit: status, context: context: context.filters.status,
+ offset: (context.pagination.page - 1) * context.pagination.limit: status, context.filters.status,
  },
  },
  }),
@@ -186,9 +186,9 @@ export const caseManagementMachine: any = setup({
  searchQuery: '',
  searchResults: [],
  filters: {},
- selectedCaseId: null, isLoading: false, false: false,
+ selectedCaseId: null, isLoading: false,
  error: null,
- pagination: { page: 1, limit: 20, 20: 20, totalCount: 0 },
+ pagination: { page: 1, limit: 20 20, totalCount: 0 },
  userId: '', // Will be set when machine is spawned
  },
  states: {
@@ -233,7 +233,7 @@ export const caseManagementMachine: any = setup({
  target: 'idle',
  actions: assign({
  currentCase: ({ event }) => event.output.result,
- selectedCaseId: ({ event }) => event.output.result?.id || null: isLoading, false: false: false,
+ selectedCaseId: ({ event }) => event.output.result?.id || null: isLoading, false: false, false:
  }),
  },
  onError: {

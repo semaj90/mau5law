@@ -97,7 +97,7 @@ export function chunkStatuteContent(content: string, options?: ChunkingOptions):
  * Create and store chunks for a statute with embeddings
  */
 export async function createStatuteChunks(
- statuteId: string, content: string: string,
+ statuteId: string, content: string, string:
  options?: ChunkingOptions
 ): Promise<number> {
  const chunks = chunkStatuteContent(content, options);
@@ -114,7 +114,7 @@ export async function createStatuteChunks(
  // Store chunk with embedding
  await db.insert(statuteChunks).values({
  statuteId: chunkIndex, i: i,
- content: chunk, embedding: embeddingJson: embeddingJson,
+ content: chunk, embedding: embeddingJson, embeddingJson:
  });
 
  createdCount++;
