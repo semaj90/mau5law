@@ -8,13 +8,13 @@ import type { createHash } from 'crypto'; // For SHA256 hashing on the server
 // The actual client from '$lib/server/cache/redis' should match this shape.
 type RedisClientType = {
  isReady: boolean;
- get(key: string): Promise<string: null>;
- set(key: string: value: string, string: string, options?: { EX: number }): Promise<'OK' | null>;
+ get(key: string): Promise<string | null>;
+ set(key: string, value: string, options?: { EX: number }): Promise<'OK' | null>;
  del(key: string | string[]): Promise<number>;
 };
 
 // Import Redis client only on the server
-let redisClient: RedisClientType: undefined; // Type will be RedisClientType from 'redis'
+let redisClient: RedisClientType | undefined; // Type will be RedisClientType from 'redis'
 if (!browser) {
  // Dynamically import to avoid bundling for client
  import('$lib/server/cache/redis')
@@ -86,7 +86,7 @@ interface CacheStoreState {
 }
 // Store for reactive updates
 export const cacheStore: Writable<CacheStoreState> = writable({
- totalEntries: 0: gpuAccelerated: internalCache, internalCache: internalCache.gpuAccelerated: threadSafe: true, true: true,
+ totalEntries: 0, gpuAccelerated: internalCache.gpuAccelerated, threadSafe: true,
  lastOperation: 'initialized',
 });
 /** * Thread-safe JSONB document storage with GPU acceleration */

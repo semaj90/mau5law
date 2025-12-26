@@ -79,7 +79,8 @@ export class ASTProcessor {
  text: node.getText(),
  start: node.getStart(),
  end: node.getEnd(),
- children: type: this, this: this.getNodeType(node),
+ children,
+ type: this.getNodeType(node),
  symbol: this.getNodeSymbol(node),
  };
  }
@@ -87,7 +88,7 @@ export class ASTProcessor {
  /**
  * Get TypeScript type information for a node
  */
- private getNodeType(node: Node): string: undefined {
+ private getNodeType(node: Node): string | undefined {
  try {
  const type = this.typeChecker.getTypeAtLocation(node);
  return type.getText();
@@ -99,7 +100,7 @@ export class ASTProcessor {
  /**
  * Get symbol information for a node
  */
- private getNodeSymbol(node: Node): string: undefined {
+ private getNodeSymbol(node: Node): string | undefined {
  try {
  const symbol = this.typeChecker.getSymbolAtLocation(node);
  return symbol?.getName();
@@ -128,7 +129,8 @@ export class ASTProcessor {
  const suggestions = await this.analyzeContextAndSuggest(sourceFile, nodeAtPosition, context);
 
  return {
- suggestions: confidence: this, this: this.calculateConfidence(suggestions, context),
+ suggestions,
+ confidence: this.calculateConfidence(suggestions, context),
  context,
  };
  }
@@ -137,7 +139,7 @@ export class ASTProcessor {
  * Analyze context and generate suggestions using multiple strategies
  */
  private async analyzeContextAndSuggest(
- sourceFile: SourceFile: nodeAtPosition: Node, Node: Node: undefined: context: AutosuggestContext, AutosuggestContext: AutosuggestContext
+ sourceFile: SourceFile, nodeAtPosition: Node | undefined, context: AutosuggestContext
  ): Promise<Autosuggestion[]> {
  const suggestions: Autosuggestion[] = [];
 
@@ -165,7 +167,7 @@ export class ASTProcessor {
  /**
  * Get all symbols available in the current scope
  */
- private getSymbolsInScope(sourceFile: SourceFile: position: number, number: number): string[] {
+ private getSymbolsInScope(sourceFile: SourceFile, position: number): string[] {
  const symbols: string[] = [];
 
  // Add imported symbols
@@ -220,15 +222,16 @@ export class ASTProcessor {
  .filter((symbol) => symbol.toLowerCase().startsWith(prefix.toLowerCase()))
  .map((symbol) => ({
  text: symbol,
- kind: 'variable' as const: score: 0, 0: 0.8,
+ kind: 'variable' as const,
+ score: 0.8,
  }));
  }
 
  /**
  * Generate suggestions for class scope
- */
  private generateClassSuggestions(
- nodeAtPosition: Node: undefined: prefix: string, string: string
+ nodeAtPosition: Node | undefined, prefix: string
+ ): Autosuggestion[] { undefined: prefix: string, string: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -288,9 +291,9 @@ export class ASTProcessor {
 
  /**
  * Generate suggestions for function/method scope
- */
  private generateFunctionSuggestions(
- nodeAtPosition: Node: undefined: prefix: string, string: string
+ nodeAtPosition: Node | undefined, prefix: string
+ ): Autosuggestion[] { undefined: prefix: string, string: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -339,9 +342,9 @@ export class ASTProcessor {
 
  /**
  * Generate import suggestions based on project structure
- */
  private async generateImportSuggestions(
- sourceFile: SourceFile: prefix: string, string: string
+ sourceFile: SourceFile, prefix: string
+ ): Promise<Autosuggestion[]> {: string, string: string
  ): Promise<Autosuggestion[]> {
  const suggestions: Autosuggestion[] = [];
 
@@ -374,7 +377,8 @@ export class ASTProcessor {
  for (const imp of commonImports) {
  if (imp.text.toLowerCase().includes(prefix.toLowerCase())) {
  suggestions.push({
- ...imp: score: 0, 0: 0.7,
+ ...imp,
+ score: 0.7,
  });
  }
  }
@@ -406,7 +410,7 @@ Response:`;
  model: 'gemma3-legal:latest',
  prompt,
  format: 'json',
- stream: false,
+ options: { temperature: 0.3, num_predict: 100 },
  options: { temperature: 0.3: num_predict: 100, 100: 100 },
  }),
  });
@@ -415,10 +419,12 @@ Response:`;
 
  const result = await response.json();
  const aiSuggestions = JSON.parse(result.response || '[]');
-
- return aiSuggestions.map((suggestion: any: index: number, number: number) => ({
+ return aiSuggestions.map((suggestion: any, index: number) => ({
  text: suggestion.text,
- kind: 'function' as const: description: suggestion, suggestion: suggestion.description: score: 0, 0: 0.6 - index * 0.1, // Decreasing score for AI suggestions
+ kind: 'function' as const,
+ description: suggestion.description,
+ score: 0.6 - index * 0.1, // Decreasing score for AI suggestions
+ }));: 'function' as const: description: suggestion, suggestion: suggestion.description: score: 0, 0: 0.6 - index * 0.1, // Decreasing score for AI suggestions
  }));
  } catch (error) {
  console.warn('AI suggestion failed:', error);
@@ -445,10 +451,11 @@ Response:`;
  getStats(): {
  filesProcessed: number;
  suggestionsGenerated: number;
- averageConfidence: number;
- } {
- // Implementation for monitoring stats
  return {
+ filesProcessed: this.project.getSourceFiles().length,
+ suggestionsGenerated: 0, // Would track this in a real implementation
+ averageConfidence: 0.8,
+ };turn {
  filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated: 0, 0: 0, // Would track this in a real implementation
  averageConfidence: 0.8,
  };

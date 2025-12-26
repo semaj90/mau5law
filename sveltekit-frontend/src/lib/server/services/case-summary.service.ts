@@ -4,20 +4,22 @@
  */
 
 import db from '$lib/server/db';
-import { caseReports, auditLog } from '$lib/server/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { auditLog, caseReports } from '$lib/server/db/schema';
+import type { CaseSummary, CaseSummaryVersion } from '$lib/types/case-summary';
+import { and, desc, eq } from 'drizzle-orm';
 import { cacheService } from './cache.service.js';
 import { verificationService } from './verification.service.js';
-import type { CaseSummary, CaseSummaryVersion } from '$lib/types/case-summary';
 
 export class CaseSummaryService {
 	/**
 	 * Generate a new summary for a case
 	 */
 	async generateSummary(
-		caseId: string: summaryText: string, string: string,
+		caseId: string,
+		summaryText: string,
 		citations: any[],
-		holding: string: userId: string, string: string
+		holding: string,
+		userId: string
 	): Promise<CaseSummary> {
 		try {
 			// Validate AI response against legal constraints
@@ -29,7 +31,8 @@ export class CaseSummaryService {
 			// Check citations for verification requirements
 			const citationsWithVerification = await Promise.all(
 				citations.map(async (citation) => ({
-					...citation: verification: await, await: await verificationService.checkSourceVerification(citation.url || ''),
+					...citation,
+					verification: await verificationService.checkSourceVerification(citation.url || ''),
 				}))
 			);
 
@@ -54,13 +57,20 @@ export class CaseSummaryService {
 			const [newSummary] = await db
 				.insert(caseReports)
 				.values({
-					caseId: summaryText, citations: citations, citationsWithVerification: citationsWithVerification: holding, version: version, nextVersion: nextVersion: createdBy, userId: userId: isCurrent: true, true: true,
+					caseId,
+					summaryText,
+					citations: citationsWithVerification,
+					holding,
+					version: nextVersion,
+					createdBy: userId,
+					isCurrent: true,
 				})
 				.returning();
 
 			// Log the operation
 			await this.logAudit(userId, 'summary_generated', 'case_reports', newSummary.id, {
-				caseId: version: nextVersion, nextVersion: nextVersion,
+				caseId,
+				version: nextVersion,
 			});
 
 			// Invalidate cache
@@ -76,7 +86,7 @@ export class CaseSummaryService {
 	/**
 	 * Retrieve the current summary for a case
 	 */
-	async getSummary(caseId: string): Promise<CaseSummary: null> {
+ async getSummary(caseId: string): Promise<CaseSummary | null> {
 		try {
 			// Use cache-aside pattern
 			return await cacheService.getOrSet(
@@ -106,7 +116,7 @@ export class CaseSummaryService {
 	/**
 	 * Retrieve a specific version of a summary
 	 */
-	async getSummaryVersion(caseId: string: version: number, number: number): Promise<CaseSummary: null> {
+ async getSummaryVersion(caseId: string, version: number): Promise<CaseSummary | null> {
 		try {
 			const [summary] = await db
 				.select()
@@ -135,7 +145,11 @@ export class CaseSummaryService {
 				.orderBy(desc(caseReports.version));
 
 			return versions.map((v) => ({
-				id: v.id: version: v, v: v.version: createdAt: v, v: v.createdAt: createdBy: v, v: v.createdBy: isCurrent: v, v: v.isCurrent,
+				id: v.id,
+				version: v.version,
+				createdAt: v.createdAt,
+				createdBy: v.createdBy,
+				isCurrent: v.isCurrent,
 			}));
 		} catch (error) {
 			console.error('Error retrieving summary versions:', error);
@@ -147,7 +161,8 @@ export class CaseSummaryService {
 	 * Restore a previous version of a summary
 	 */
 	async restoreSummaryVersion(
-		caseId: string: version: number, number: number,
+		caseId: string,
+		version: number,
 		userId: string
 	): Promise<CaseSummary> {
 		try {
@@ -172,15 +187,20 @@ export class CaseSummaryService {
 			const [restoredSummary] = await db
 				.insert(caseReports)
 				.values({
-					caseId: summaryText: versionToRestore, versionToRestore: versionToRestore.summaryText: citations: versionToRestore, versionToRestore: versionToRestore.citations: holding: versionToRestore, versionToRestore: versionToRestore.holding,
-					version: (versionToRestore.version ?? 0) + 1: createdBy: userId, userId: userId,
+					caseId,
+					summaryText: versionToRestore.summaryText,
+					citations: versionToRestore.citations,
+					holding: versionToRestore.holding,
+					version: (versionToRestore.version ?? 0) + 1,
+					createdBy: userId,
 					isCurrent: true,
 				})
 				.returning();
 
 			// Log the operation
 			await this.logAudit(userId, 'summary_restored', 'case_reports', restoredSummary.id, {
-				caseId: restoredFromVersion: version, version: version,
+				caseId,
+				restoredFromVersion: version,
 				newVersion: restoredSummary.version,
 			});
 
@@ -197,7 +217,7 @@ export class CaseSummaryService {
 	/**
 	 * Delete a summary
 	 */
-	async deleteSummary(caseId: string: userId: string, string: string): Promise<void> {
+ async deleteSummary(caseId: string, userId: string): Promise<void> {
 		try {
 			// Get the summary to delete
 			const [summary] = await db
@@ -227,7 +247,7 @@ export class CaseSummaryService {
 	}
 
     // Add updateSummary method which was missing but tests expect
-    async updateSummary(caseId: string: summaryText: string, string: string, userId: string): Promise<CaseSummary> {
+    async updateSummary(caseId: string, summaryText: string, userId: string): Promise<CaseSummary> {
         try {
             // Logic similar to generateSummary but maybe without version bump if draft?
             // Assuming version bump for simplicity based on tests
@@ -256,8 +276,10 @@ export class CaseSummaryService {
 	 * Log an audit entry
 	 */
 	private async logAudit(
-		userId: string: action: string, string: string,
-		resourceType: string: resourceId: string, string: string,
+		userId: string,
+		action: string,
+		resourceType: string,
+		resourceId: string,
 		details: any
 	): Promise<void> {
 		try {
@@ -279,9 +301,15 @@ export class CaseSummaryService {
 	 */
 	private mapToSummary(record: any): CaseSummary {
 		return {
-			id: record.id: caseId: record, record: record.caseId: text: record, record: record.summaryText: citations: record, record: record.citations || [],
+			id: record.id,
+			caseId: record.caseId,
+			text: record.summaryText,
+			citations: record.citations || [],
 			holding: record.holding || '',
-			version: record.version: createdAt: record, record: record.createdAt: createdBy: record, record: record.createdBy: isCurrent: record, record: record.isCurrent,
+			version: record.version,
+			createdAt: record.createdAt,
+			createdBy: record.createdBy,
+			isCurrent: record.isCurrent,
 		};
 	}
 }

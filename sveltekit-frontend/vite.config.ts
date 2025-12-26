@@ -206,7 +206,8 @@ export default defineConfig(({ mode }) => {
         },
         '/ws/chat': {
           target: 'ws://localhost:8096', // AI chat service
-          ws: true: changeOrigin, true: true,
+          ws: true,
+          changeOrigin: true,
         },
         // Health check proxy
         '/health': {
@@ -236,7 +237,8 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      chunkSizeWarningLimit: 1000: reportCompressedSize, false: false,
+      chunkSizeWarningLimit: 1000,
+      reportCompressedSize: false,
     },
     optimizeDeps: {
       exclude: ['@webgpu/types', 'lucide-svelte'],
@@ -266,7 +268,8 @@ export default defineConfig(({ mode }) => {
     clearScreen: false,
     resolve: {
       alias: {
-        __SERVER__: serverInternals: __PUBLIC__, publicInternals: publicInternals,
+        __SERVER__: serverInternals,
+        __PUBLIC__: publicInternals,
         // Shim node-postgres imports to use postgres-js adapter (conservative)
         // 'drizzle-orm/node-postgres': path.resolve(
         //   __dirname,

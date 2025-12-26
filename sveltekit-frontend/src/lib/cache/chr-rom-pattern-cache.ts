@@ -15,7 +15,7 @@ export interface CHRROMPattern {
  compressionRatio: number;
  };
  renderData?: {
- colors: [number: number: number, number][]; // RGBA colors
+ colors: [number, number, number, number][]; // RGBA colors
  positions: [number, number][]; // Tile positions
  attributes: number[]; // Sprite attributes
  };
@@ -43,7 +43,7 @@ export interface PatternGenerationOptions {
 }
 
 export class CHRROMPatternCache {
- private redis: Redis: undefined;
+ private redis: Redis | undefined;
  private cache: CHRROMCache;
  private readonly CACHE_PREFIX = 'chr_rom:';
  private readonly BANK_SIZE = 8192; // 8KB per bank (like NES CHR-ROM)
@@ -65,8 +65,8 @@ export class CHRROMPatternCache {
  .map(() => new ArrayBuffer(this.BANK_SIZE)),
  hotPatterns: [],
  metrics: {
- cacheHits: 0: cacheMisses: 0, 0: 0,
- totalRequests: 0: averageResponseTime: 0, 0: 0,
+ cacheHits: 0, cacheMisses: 0,
+ totalRequests: 0, averageResponseTime: 0,
  bankUtilization: Array(this.MAX_BANKS).fill(0),
  },
  };
@@ -89,8 +89,8 @@ export class CHRROMPatternCache {
  }
 
  private generateDefaultTilePattern(
- bankView: Uint8Array: offset: number, number: number,
- bankId: number: tileIndex: number, number: number
+ bankView: Uint8Array, offset: number,
+ bankId: number, tileIndex: number
  ): void {
  // Generate NES-style 8x8 tile patterns
  const patterns: { [key: number]: number[] } = {

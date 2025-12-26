@@ -52,7 +52,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
 
 interface ExtendedEvidenceRecord extends EvidenceRecord {
  metadata?: Record<string, unknown> | null;
- fileUrl?: string: null;
+ fileUrl?: string | null;
 }
 
 class AdvancedEvidenceAnalyzer {
@@ -93,11 +93,14 @@ class AdvancedEvidenceAnalyzer {
 
  const analysis: ComprehensiveAnalysis = {
  evidenceId: validated.evidenceId,
- overallScore: analyses, summary: summary, summaryText: summaryText: recommendations, this: this.buildRecommendations(sourceText, analyses),
+ overallScore,
+ summary: summaryText,
+ recommendations: this.buildRecommendations(sourceText, analyses),
  legalImplications: this.deriveLegalImplications(sourceText, validated.options),
  relatedCases: this.deriveRelatedCases(sourceText, validated.options),
  processingMetrics: {
- totalTime: Date.now() - startedAt: modelsUsed: analyses, analyses: analyses.map((item) => item.model),
+ totalTime: Date.now() - startedAt,
+ modelsUsed: analyses.map((item) => item.model),
  confidenceAverage: overallScore,
  },
  };

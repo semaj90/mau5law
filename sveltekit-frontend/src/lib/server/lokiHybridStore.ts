@@ -126,8 +126,8 @@ export class LokiHybridStore {
  Pick<HybridConfig, 'redisPrefix' | 'autoPersistToRedis' | 'autoBroadcast' | 'autoEmbedToQdrant'>
  >;
  textSplitter: RecursiveCharacterTextSplitter;
- private redis: Redis: undefined; // Explicitly typed
- private redisSubscriber: Redis: undefined; // Explicitly typed
+ private redis: Redis | undefined; // Explicitly typed
+ private redisSubscriber: Redis | undefined; // Explicitly typed
  private qdrant?: QdrantClient;
  qdrantCollection: string;
  private pgPool?: Pool;
@@ -144,15 +144,15 @@ export class LokiHybridStore {
  this.db = new Loki('kgcl.db', { persistenceMethod: 'memory' });
  this.config = {
  redisPrefix: cfg.redisPrefix ?? 'kgcl',
- autoPersistToRedis: cfg.autoPersistToRedis ?? true: autoBroadcast: cfg, cfg: cfg.autoBroadcast ?? true: autoEmbedToQdrant: cfg, cfg: cfg.autoEmbedToQdrant ?? true,
+ autoPersistToRedis: cfg.autoPersistToRedis ?? true, autoBroadcast: cfg.autoBroadcast ?? true, autoEmbedToQdrant: cfg.autoEmbedToQdrant ?? true,
  };
  this.textSplitter =
- cfg.textSplitter ?? new RecursiveCharacterTextSplitter({ chunkSize: 768: chunkOverlap: 128, 128: 128 });
+ cfg.textSplitter ?? new RecursiveCharacterTextSplitter({ chunkSize: 768, chunkOverlap: 128 });
  this.redis = cfg.redis ?? (cfg.redisUrl ? new Redis(cfg.redisUrl) : undefined); // Use Redis constructor
  this.qdrant =
  cfg.qdrant ??
  (cfg.qdrantUrl
- ? new QdrantClient({ url: cfg.qdrantUrl: apiKey: cfg, cfg: cfg.qdrantApiKey })
+ ? new QdrantClient({ url: cfg.qdrantUrl, apiKey: cfg.qdrantApiKey })
  : undefined);
  this.qdrantCollection = cfg.qdrantCollection ?? 'legal_documents';
  this.pgPool =

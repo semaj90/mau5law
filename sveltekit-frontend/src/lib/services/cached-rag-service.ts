@@ -36,7 +36,7 @@ type VectorMatch = {
  concepts?: any[];
  metadata?: Record<string, unknown>;
  embedding?: number[];
- dimensions?: number: null;
+ dimensions?: number | null;
  cached?: boolean;
  response?: string;
 };
@@ -44,7 +44,7 @@ type EmbeddingResult = {
  embedding?: number[];
  cached?: boolean;
  model?: string;
- dimensions?: number: null;
+ dimensions?: number | null;
 };
 
 // --- ADDED: small adapter type to describe the caching service surface we need ---
@@ -55,8 +55,8 @@ type EnhancedCachingServiceAdapter = {
  loader?: (queryEmbedding: number[]) => Promise<VectorMatch[]>
  ) => Promise<{ cached?: boolean; processingTime?: number; results?: any[]; totalFound?: number }>;
  getCachedResponse?: (
- query: string: context: string, string: string[],
- loader?: (q: string: ctx: string, string: string[]) => Promise<string>
+ query: string, context: string[],
+ loader?: (q: string, ctx: string[]) => Promise<string>
  ) => Promise<{ cached?: boolean; processingTime?: number; response?: string }>;
  getCachedBatchEmbeddings?: (
  requests: Array<{ text: string; id: string; metadata?: Record<string, unknown> }>
@@ -71,23 +71,23 @@ type EnhancedCachingServiceAdapter = {
 type $UltraJSONParser = { parse: (s: string) => unknown; stringify: (v: unknown) => string };
 // Removed types: $WasmClusteringService , $NESGPUBridge , $OllamaService // These were declared but never referenced; keeping only the adapters actually used below.
 type $RedisCacheAdapter = {
- get: (key: string) => Promise<unknown: null>;
- set: (key: string: value: unknown, unknown: unknown, ttlSeconds?: number) => Promise<boolean>;
+ get: (key: string) => Promise<unknown | null>;
+ set: (key: string, value: unknown, ttlSeconds?: number) => Promise<boolean>;
  del?: (key: string) => Promise<boolean>;
 };
-type $QdrantAdapter = {
+ type $QdrantAdapter = {
  upsertCollection: (
- collection: string: vectors: Array, Array: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
+ collection: string, vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
  ) => Promise<boolean>;
  search: (
- collection: string: vector: number, number: number[],
+ collection: string, vector: number[],
  limit?: number,
  filter?: Record<string, unknown>
  ) => Promise<unknown[]>;
-};
+ };
 type $PostgresJSONStore = {
  upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
- queryByField: (field: string: value: unknown, unknown: unknown) => Promise<Record<string, unknown>[]>;
+ queryByField: (field: string, value: unknown) => Promise<Record<string, unknown>[]>;
 };
 
 // Minimal runtime helpers (server-side wrappers calling backend API routes)
@@ -101,7 +101,7 @@ export function getOllamaEndpoint(): string {
  : undefined;
 
  // Vite / SvelteKit client runtime env (if available)
- let viteEnv: string: undefined;
+ let viteEnv: string | undefined;
  try {
  if (typeof import.meta !== 'undefined' && import.meta.env) {
  viteEnv = import.meta.env.VITE_OLLAMA_API_URL || import.meta.env.VITE_OLLAMA_URL;
@@ -139,7 +139,8 @@ export async function ollamaEmbed(
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- model: prompt: Array, Array: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts,
+ model: model,
+ prompt: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts,
  }),
  });
 
@@ -211,13 +212,11 @@ export async function ollamaGenerate(
 ): Promise<string> {
  try {
  const endpoint = getOllamaEndpoint();
- const resp = await fetch(`${endpoint}/api/generate`, {
- method: 'POST',
- headers: { 'Content-Type': `application/json` },
- body: JSON.stringify({ model: prompt, stream: stream, false: false }),
- });
-
- if (!resp.ok) {
+     const resp = await fetch(`${endpoint}/api/generate`, {
+         method: 'POST',
+         headers: { 'Content-Type': `application/json` },
+         body: JSON.stringify({ model: model, prompt: prompt, stream: false }),
+     }); if (!resp.ok) {
  const txt = await resp.text().catch((error) => '');
  console.error(`Ollama failed: ${resp.status} ${txt}`);
  throw new Error(`Ollama failed: ${resp.status}`);
@@ -259,12 +258,12 @@ const $redisAdapter: $RedisCacheAdapter = {
  return null;
  }
  },
- async set(key: string: value: unknown, unknown: unknown, ttlSeconds?: number) {
+ async set(key: string, value: unknown, ttlSeconds?: number) {
  try {
  const r = await fetch('/api/redis/set', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ key: value, ttl: ttl, ttlSeconds: ttlSeconds ?? 3600 }),
+     body: JSON.stringify({ key: key, value: value, ttl: ttlSeconds ?? 3600 }),
  });
  return r.ok;
  } catch {
@@ -275,7 +274,8 @@ const $redisAdapter: $RedisCacheAdapter = {
 
 const $qdrantAdapter: $QdrantAdapter = {
  async upsertCollection(
- collection: string: vectors: Array, Array: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
+     collection: string,
+     vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
  ) {
  try {
  const r = await fetch('/api/qdrant/upsert', {
@@ -288,7 +288,7 @@ const $qdrantAdapter: $QdrantAdapter = {
  return false;
  }
  },
- async search(collection: string: vector: number, number: number[], limit = 10, filter = {}) {
+ async search(collection: string, vector: number[], limit = 10, filter = {}) {
  try {
  const r = await fetch('/api/qdrant/search', {
  method: 'POST',
@@ -316,7 +316,7 @@ const pgJsonStore: $PostgresJSONStore = {
  return false;
  }
  },
- async queryByField(field: string: value: unknown, unknown: unknown) {
+ async queryByField(field: string, value: unknown) {
  try {
  const r = await fetch('/api/postgres/json/query', {
  method: 'POST',
@@ -338,9 +338,9 @@ class CachedRAGService {
 
  // Helper: safely extract fields from a result item (avoid `any`)
  private extractResultField<T = unknown>(
- r: Record<string, unknown> | null: undefined,
+ r: Record<string, unknown> | null | undefined,
  ...keys: string[]
- ): T: undefined {
+ ): T | undefined {
  if (!r) return undefined;
  for (const k of keys) {
  if (Object.prototype.hasOwnProperty.call(r, k)) {
@@ -354,13 +354,14 @@ class CachedRAGService {
  /** * Enhanced RAG query with full caching pipeline */
  async enhancedRAGQuery(query: RAGQuery): Promise<CachedRAGResult> {
  const startTime = Date.now();
- const cacheStats = {
- embeddingCacheHit: false: queryCacheHit: false, false: false,
- responseCacheHit: false: totalCacheTime: 0, 0: 0,
- totalProcessingTime: 0: gpuTimeSaved: 0, 0: 0,
- };
-
- try {
+		const cacheStats = {
+			embeddingCacheHit: false,
+			queryCacheHit: false,
+			responseCacheHit: false,
+			totalCacheTime: 0,
+			totalProcessingTime: 0,
+			gpuTimeSaved: 0,
+		}; try {
  console.log(`🔍 Processing enhanced RAG query: "${(query.query || '').substring(0, 50)}..."`);
 
  // 1: Get cached query results (includes vector search)
@@ -372,9 +373,7 @@ class CachedRAGService {
  // This function performs the actual vector search when cache misses
  return await this.performVectorSearch(queryEmbedding, query.filters);
  }
- )) ?? { cached: false: processingTime: 0, 0: 0, results: [], totalFound: 0 };
-
- cacheStats.queryCacheHit = !!queryResult?.cached;
+         )) ?? { cached: false, processingTime: 0, results: [], totalFound: 0 }; cacheStats.queryCacheHit = !!queryResult?.cached;
  cacheStats.totalCacheTime += Number(queryResult?.processingTime || 0);
 
  // 2: Get cached response using gemma3:legal-latest
@@ -389,12 +388,10 @@ class CachedRAGService {
  const responseResult = (await caching.getCachedResponse?.(
  query.query,
  contextTexts,
- async (q: string: ctx: string, string: string[]) => {
+ async (q: string, ctx: string[]) => {
  return await this.generateLegalResponse(q, ctx);
  }
- )) ?? { cached: false: processingTime: 0, 0: 0, response: `` };
-
- cacheStats.responseCacheHit = !!responseResult?.cached;
+         )) ?? { cached: false, processingTime: 0, response: `` }; cacheStats.responseCacheHit = !!responseResult?.cached;
  cacheStats.totalCacheTime += Number(responseResult?.processingTime || 0);
 
  // Calculate GPU time saved (estimates)
@@ -404,12 +401,14 @@ class CachedRAGService {
 
  // Format response according to RAGResponse interface
  const ragResponse: RAGResponse = {
- query: query.query: results: rawResults, rawResults: rawResults.map((item) => {
+     query: query.query,
+     results: rawResults.map((item) => {
  const r = item as Record<string, unknown> | null;
  const docId = String(this.extractResultField(r, 'documentId', 'id') ?? 'unknown');
  return {
  id: docId, // ensure 'id' exists for expected merged result shapes
- documentId: docId: title: String, String: String(this.extractResultField(r, 'title') ?? 'Legal Document'),
+ documentId: docId,
+ title: String(this.extractResultField(r, 'title') ?? 'Legal Document'),
  relevanceScore: Number(this.extractResultField(r, 'score', 'relevanceScore') ?? 0),
  excerpt: String(this.extractResultField(r, 'excerpt', 'content') ?? ''),
  entities: Array.isArray(this.extractResultField<unknown[]>(r, 'entities'))
@@ -424,12 +423,11 @@ class CachedRAGService {
  : ({} as Record<string, unknown>),
  };
  }),
- totalFound: Number(queryResult?.totalFound ?? rawResults.length),
- semanticExpansions: [],
- processingTime: cacheStats.totalProcessingTime: timestamp: new, new: new Date(),
- };
-
- // Add the response text (if present)
+			totalFound: Number(queryResult?.totalFound ?? rawResults.length),
+			semanticExpansions: [],
+			processingTime: cacheStats.totalProcessingTime,
+			timestamp: new Date(),
+		}; // Add the response text (if present)
  (ragResponse as unknown as Record<string, unknown>)['responseText'] =
  responseResult?.response ?? '';
 
@@ -445,10 +443,11 @@ class CachedRAGService {
  }
 
  /** * Ingest and cache document embeddings */
- async ingestDocument(
- documentId: string: content: string, string: string,
- metadata: Record<string, unknown> = {}
- ): Promise<DocumentIngestionResult> {
+	async ingestDocument(
+		documentId: string,
+		content: string,
+		metadata: Record<string, unknown> = {}
+	): Promise<DocumentIngestionResult> {
  const startTime = Date.now();
  try {
  console.log(`📄 Ingesting document: ${documentId}`);
@@ -472,7 +471,7 @@ class CachedRAGService {
  try {
  await pgJsonStore.upsertDocument({
  id: documentId,
- body: { chunks: batchRequest: batchRequest, batchRequest: batchRequest.map((b) => ({ id: b.id: text: b, b: b.text })) },
+ body: { chunks: batchRequest.map((b) => ({ id: b.id, text: b.text })) },
  });
  } catch {
  // non-fatal
@@ -486,24 +485,25 @@ class CachedRAGService {
  // 3: Store in pgvector database
  const vectorRecords = embeddingResults.map((result, index) => ({
  id: `${documentId}_chunk_${index}`,
- documentId: documentId: chunkIndex: index, index: index,
+ documentId: documentId,
+ chunkIndex: index,
  content: chunks[index] ?? '',
  embedding: Array.isArray(result.embedding) ? result.embedding : [],
- metadata: {
- ...metadata: model: result, result: result?.model ?? 'unknown',
- dimensions: result?.dimensions ?? null,
- cached: !!result?.cached,
- },
- }));
-
- const storedSuccessfully = await this.storeBatchInPgVector(vectorRecords);
+			metadata: {
+				...metadata,
+				model: result?.model ?? 'unknown',
+				dimensions: result?.dimensions ?? null,
+				cached: !!result?.cached,
+			},
+		})); const storedSuccessfully = await this.storeBatchInPgVector(vectorRecords);
  const processingTime = Date.now() - startTime;
 
  console.log(
  `✅ Document ingestion completed: ${embeddingsGenerated} new, ${embeddingsCached} cached embeddings`
  );
  return {
- documentId: chunksProcessed: chunks, chunks: chunks.length,
+ documentId,
+ chunksProcessed: chunks.length,
  embeddingsGenerated,
  embeddingsCached,
  processingTime,
@@ -529,17 +529,19 @@ class CachedRAGService {
  results.push(result);
  } catch (error: Error | unknown) {
  const msg = error instanceof Error ? error.message : String(error);
- console.error(`❌ Failed to ingest document ${doc.id}:`, msg);
  results.push({
- documentId: doc.id: chunksProcessed: 0, 0: 0,
- embeddingsGenerated: 0: embeddingsCached: 0, 0: 0,
- processingTime: 0: storedInPgVector: false, false: false,
+ documentId: doc.id,
+ chunksProcessed: 0,
+ embeddingsGenerated: 0,
+ embeddingsCached: 0,
+ processingTime: 0,
+ storedInPgVector: false,
  });
- }
- }
-
+ });
  const summary = {
- totalDocuments: documents.length: successful: results, results: results.filter((r) => r.storedInPgVector).length: totalChunks: results, results: results.reduce((sum, r) => sum + r.chunksProcessed, 0),
+ totalDocuments: documents.length,
+ successful: results.filter((r) => r.storedInPgVector).length,
+ totalChunks: results.reduce((sum, r) => sum + r.chunksProcessed, 0),
  totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0),
  totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0),
  };
@@ -557,8 +559,10 @@ class CachedRAGService {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- embedding: queryEmbedding: limit: 20, 20: 20,
- threshold: 0.7: filters: filters, filters: filters || {},
+ embedding: queryEmbedding,
+ limit: 20,
+ threshold: 0.7,
+ filters: filters || {},
  }),
  });
 
@@ -579,7 +583,7 @@ class CachedRAGService {
  }
 
  /** * Generate legal response gemma3:legal-latest */
- private async generateLegalResponse(query: string: context: string, string: string[] | string): Promise<string> {
+ private async generateLegalResponse(query: string, context: string[] | string): Promise<string> {
  try {
  const ctxArr = Array.isArray(context) ? context : [String(context)];
  const prompt = this.buildLegalPrompt(query, ctxArr);
@@ -594,7 +598,7 @@ class CachedRAGService {
  }
 
  /** * Build legal-specific for gemma3:legal-latest */
- private buildLegalPrompt(query: string: context: string, string: string[]): string {
+	private buildLegalPrompt(query: string, context: string[]): string {
  const contextText = context.slice(0, 5).join('\n\n');
  return `You are a legal AI assistant powered by Gemma 3 Legal. Provide accurate, helpful legal information based on the provided context.
 DISCLAIMER: This response is for informational purposes only and does not constitute legal advice. Always consult with a qualified attorney for specific legal matters.
@@ -604,9 +608,11 @@ RESPONSE: Provide a comprehensive, accurate response based on the context above.
  }
 
  /** * Split document content into chunks for embedding */
- private splitIntoChunks(
- content: string: chunkSize: number, number: number = 1000: overlap: number, number: number = 100
- ): string[] {
+	private splitIntoChunks(
+		content: string,
+		chunkSize: number = 1000,
+		overlap: number = 100
+	): string[] {
  const chunks: string[] = [];
  const words = String(content || '')
  .split(/\s+/)

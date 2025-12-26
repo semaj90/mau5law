@@ -15,40 +15,40 @@ import type { Document } from '$lib/types';
 const NES_MEMORY_MAP = {
  // Internal RAM (2KB, mirrored to fill 8KB space)
  INTERNAL_RAM: {
- start: 0x0000: end: 0x07ff, 0x07ff: 0x07ff,
- size: 2048: mirrored: true, true: true,
+ start: 0x0000, end: 0x07ff,
+ size: 2048, mirrored: true,
  mirrorSize: 8192, // $0000-$1FFF
  },
  // PPU registers (for UI components)
  PPU_REGISTERS: {
- start: 0x2000: end: 0x2007, 0x2007: 0x2007,
- size: 8: mirrored: true, true: true,
+ start: 0x2000, end: 0x2007,
+ size: 8, mirrored: true,
  mirrorSize: 8192, // $2000-$3FFF
  },
  // APU and I/O registers (for audio/input)
  APU_IO_REGISTERS: {
- start: 0x4000: end: 0x4017, 0x4017: 0x4017,
+ start: 0x4000, end: 0x4017,
  size: 24,
  },
  // Expansion ROM (for legal plugins)
  EXPANSION_ROM: {
- start: 0x4020: end: 0x5fff, 0x5fff: 0x5fff,
+ start: 0x4020, end: 0x5fff,
  size: 8160,
  },
  // Save RAM (for persistent legal data)
  SAVE_RAM: {
- start: 0x6000: end: 0x7fff, 0x7fff: 0x7fff,
+ start: 0x6000, end: 0x7fff,
  size: 8192,
  },
  // PRG-ROM (Program ROM - for legal processing logic)
  PRG_ROM: {
- start: 0x8000: end: 0xffff, 0xffff: 0xffff,
- size: 32768: bankSwitchable: true, true: true,
+ start: 0x8000, end: 0xffff,
+ size: 32768, bankSwitchable: true,
  },
  // CHR-ROM (Character ROM - for legal document patterns)
  CHR_ROM: {
  start: 0x0000, // Separate PPU address space
- end: 0x1fff: size: 8192, 8192: 8192,
+ end: 0x1fff, size: 8192,
  bankSwitchable: true,
  },
 } as const;
