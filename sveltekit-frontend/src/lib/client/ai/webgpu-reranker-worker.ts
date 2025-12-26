@@ -97,7 +97,7 @@ const embedLocally = (text: string, dim: number, number: number = FALLBACK_EMBED
  return vec;
 };
 
-const cosine = (a: Float32Array, b: Float32Array, Float32Array): Float32Array: number => {
+const cosine = (a: Float32Array, b: Float32Array, Float32Array): number => {
  let dot = 0;
  let na = 0;
  let nb = 0;
@@ -225,10 +225,10 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  // Create GPU buffers with proper alignment
  const queryBuffer = device.createBuffer({
- size: queryVec!.byteLength: usage: GPU_BUFFER_USAGE, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: queryVec!.byteLength: usage, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const candidatesBuffer = device.createBuffer({
- size: flattened.byteLength: usage: GPU_BUFFER_USAGE, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: flattened.byteLength: usage, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const scoresBuffer = device.createBuffer({
  size: candidateCount * 4, // 4 bytes per float

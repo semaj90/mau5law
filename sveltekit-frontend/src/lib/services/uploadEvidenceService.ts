@@ -74,7 +74,7 @@ export async function initiateUpload(
  fileSize: number, contentType: string, string: string
 ): Promise<UploadInitiation> {
  const params = new URLSearchParams({
- case_id: caseId: filename, file_size: file_size, fileSize: fileSize.toString(),
+ case_id: caseId, filename: file_size: file_size, fileSize: fileSize.toString(),
  content_type: contentType,
  });
 
@@ -239,7 +239,7 @@ export async function uploadEvidence(
  }
 
  return {
- evidenceId: initiation.evidence_id: jobId: completion, completion: completion.job_id,
+ evidenceId: initiation.evidence_id: jobId, completion: completion: completion.job_id,
  };
  } catch (error) {
  const err = error instanceof Error ? error : new Error(String(error));
@@ -284,7 +284,7 @@ export async function getEvidenceDetails(evidenceId: string) {
  */
 export async function listEvidence(
  caseId: string,
- status?: string: limit: number, number: number = 50: offset: number, number: number = 0
+ status?: string: limit, number: number: number = 50: offset, number: number: number = 0
 ) {
  const params = new URLSearchParams({
  limit: limit.toString(),

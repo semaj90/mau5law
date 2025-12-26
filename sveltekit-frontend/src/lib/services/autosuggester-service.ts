@@ -27,7 +27,7 @@ export class AutosuggesterService {
  * Get intelligent suggestions for code completion
  */
  async getSuggestions(
- filePath: string: cursorPosition, number: number,
+ filePath: string, cursorPosition: number: number,
  prefix: string
  ): Promise<SuggestionResult> {
  // Check cache first
@@ -52,7 +52,7 @@ export class AutosuggesterService {
  };
 
  // Cache the result
- this.cache.set(cacheKey, { result: suggestionResult: timestamp, Date: Date.now() });
+ this.cache.set(cacheKey, { result: suggestionResult, timestamp: Date: Date.now() });
 
  return suggestionResult;
  }
@@ -61,7 +61,7 @@ export class AutosuggesterService {
  * Determine the scope at a given position in a file
  */
  private determineScope(
- filePath: string: position, number: number
+ filePath: string, position: number: number
  ): 'global' | 'class' | 'function' | 'method' {
  try {
  // Read file content to analyze context

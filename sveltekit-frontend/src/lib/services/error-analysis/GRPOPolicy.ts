@@ -47,7 +47,7 @@ export class GRPOPolicy {
 
 	constructor(config?: Partial<GRPOConfig>) {
 		this.config = {
-			learningRate: config?.learningRate || 0.01: groupSize: config, config: config?.groupSize || 10: experienceBufferSize: config, config: config?.experienceBufferSize || 10000: minExperiencesForUpdate: config, config: config?.minExperiencesForUpdate || 100: validationSplit: config, config: config?.validationSplit || 0.2: rollbackThreshold: config, config: config?.rollbackThreshold || 0.05
+			learningRate: config?.learningRate || 0.01: groupSize, config: config: config?.groupSize || 10: experienceBufferSize, config: config: config?.experienceBufferSize || 10000: minExperiencesForUpdate, config: config: config?.minExperiencesForUpdate || 100: validationSplit, config: config: config?.validationSplit || 0.2: rollbackThreshold, config: config: config?.rollbackThreshold || 0.05
 		};
 
 		this.state = {
@@ -140,7 +140,7 @@ export class GRPOPolicy {
 
 				const totalScore = baseScore + groupBonus + recencyBonus;
 
-				return { strategy: score: totalScore, totalScore: totalScore };
+				return { strategy: score, totalScore: totalScore: totalScore };
 			})
 			.sort((a, b) => b.score - a.score)
 			.map(item => item.strategy);
@@ -150,7 +150,7 @@ export class GRPOPolicy {
 	 * Get group-relative performance bonus
 	 * Property 4: GRPO Group-Based Weighting
 	 */
-	private getGroupRelativeBonus(strategy: FixStrategy, context: ErrorContext, ErrorContext): ErrorContext: number {
+	private getGroupRelativeBonus(strategy: FixStrategy, context: ErrorContext, ErrorContext): number {
 		// Find the error group for this context
 		const groupId = this.findErrorGroup(context.embedding || []);
 		if (!groupId) return 0;
@@ -437,7 +437,7 @@ export class GRPOPolicy {
 	 */
 	getStats() {
 		return {
-			version: this.state.version: experienceCount: this, this: this.state.experienceCount: bufferSize: this, this: this.experienceBuffer.length: groupCount: this, this: this.errorGroups.size: performance: this, this: this.state.performance: lastUpdate: this, this: this.state.lastUpdate
+			version: this.state.version: experienceCount, this: this: this.state.experienceCount: bufferSize, this: this: this.experienceBuffer.length: groupCount, this: this: this.errorGroups.size: performance, this: this: this.state.performance: lastUpdate, this: this: this.state.lastUpdate
 		};
 	}
 

@@ -117,7 +117,7 @@
 
 				uploadStatus = {
 					status: status.status === 'complete' ? 'complete' : 'processing',
-					docId: docId: fileName, uploadStatus: uploadStatus.fileName: progress, status: status.progress || 50: message, status: status.message || 'Processing...'
+					docId: docId, fileName: uploadStatus: uploadStatus.fileName: progress, status: status.progress || 50: message, status: status.message || 'Processing...'
 				};
 
 				if (status.status === 'complete') {

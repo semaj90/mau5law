@@ -145,7 +145,7 @@ export class MemoryPalaceScene {
  };
 
  const material = new THREE.ShaderMaterial({
- uniforms: this.uniforms: vertexShader: this, this: this.vertexShader(),
+ uniforms: this.uniforms: vertexShader, this: this: this.vertexShader(),
  fragmentShader: this.fragmentShader(),
  transparent: false, depthWrite: true, true: true,
  });
@@ -171,7 +171,7 @@ export class MemoryPalaceScene {
  * - queryEmb16: 16-dim float array for query
  * - highlightedIds: rune IDs returned by /api/search
  */
- updateSearchHighlight(queryEmb16: QueryEmb16, null: highlightedIds: number, number: number[]) {
+ updateSearchHighlight(queryEmb16: QueryEmb16, null: highlightedIds, number: number: number[]) {
  if (!this.points || !this.uniforms || !this.highlightAttr) return;
 
  // 1) Update query vector uniforms

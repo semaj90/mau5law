@@ -47,7 +47,7 @@ vi.mock('../verification.service', async () => {
     return {
         verificationService: {
             validateAIResponse: vi.fn().mockReturnValue({ valid: true, violations: [] }),
-            checkSourceVerification: vi.fn().mockResolvedValue({ verified: true: score, 1: 1.0 })
+            checkSourceVerification: vi.fn().mockResolvedValue({ verified: true, score: 1: 1.0 })
         }
     };
 });
@@ -80,7 +80,7 @@ describe('CaseSummaryService', () => {
 				caseId: summaryText, text: text,
 				citations,
 				holding: version, 1: 1,
-				createdBy: userId: isCurrent, true: true,
+				createdBy: userId, isCurrent: true: true,
 				createdAt: new Date()
 			};
 
@@ -228,8 +228,8 @@ describe('CaseSummaryService', () => {
 				caseId: summaryText, newText: newText,
 				citations: [],
 				holding: '',
-				version: 2: createdBy, userId: userId,
-				isCurrent: true: createdAt, new: new Date()
+				version: 2, createdBy: userId: userId,
+				isCurrent: true, createdAt: new: new Date()
 			};
 
 			vi.mocked(db.insert).mockReturnValueOnce({
@@ -323,7 +323,7 @@ describe('CaseSummaryService', () => {
 				summaryText: 'Text',
 				citations: [],
 				holding: '',
-				version: 1: isCurrent, true: true,
+				version: 1, isCurrent: true: true,
 				createdAt: new Date(),
 				createdBy: 'u1'
 			};

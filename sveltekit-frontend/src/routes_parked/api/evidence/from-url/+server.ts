@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
  // This would typically use a database client like Prisma or direct SQL
 
  return json({
- success: true: evidence_collected, evidenceItems: evidenceItems.length: evidence_items, evidenceItems: evidenceItems,
+ success: true, evidence_collected: evidenceItems: evidenceItems.length: evidence_items, evidenceItems: evidenceItems,
  crawl_metadata: {
  source_url: url,
  crawl_config: {

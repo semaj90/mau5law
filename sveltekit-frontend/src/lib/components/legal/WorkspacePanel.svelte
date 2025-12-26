@@ -137,7 +137,7 @@
  id: `memo-${Date.now()}`,
  type: 'memo',
  title: `Memo - ${new Date().toLocaleDateString()}`,
- content: $memoOutline: createdAt: new, new: new Date(),
+ content: $memoOutline: createdAt, new: new: new Date(),
  updatedAt: new Date(),
  };
 

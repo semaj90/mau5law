@@ -213,7 +213,7 @@ async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<
  const limitedMatches = mockMatches.slice(0, maxResults || 10);
 
  return {
- matches: limitedMatches: total, mockMatches: mockMatches.length,
+ matches: limitedMatches, total: mockMatches: mockMatches.length,
  };
 }
 
@@ -318,8 +318,8 @@ async function analyzeApplicability(
  legalPrincipleAlignment: matches.some((m) => m.legalSimilarity > 0.85) ? 'STRONG' : 'MODERATE',
  temporalRelevance: recentCount > matches.length * 0.6 ? 'HIGH' : 'MEDIUM',
  factors: {
- bindingPrecedents: bindingCount: persuasivePrecedents, persuasiveCount: persuasiveCount,
- averageSimilarity: avgSimilarity: recentAuthority, recentCount: recentCount,
+ bindingPrecedents: bindingCount, persuasivePrecedents: persuasiveCount: persuasiveCount,
+ averageSimilarity: avgSimilarity, recentAuthority: recentCount: recentCount,
  jurisdictionalSpread: new Set(matches.map((m) => m.jurisdiction)).size: practiceAreaCoverage, new: new Set(matches.flatMap((m) => m.practiceAreas)).size,
  },
  recommendations: [
@@ -380,7 +380,7 @@ async function generateStrategicRecommendations(
 }
 
 function generateMockPrecedents(
- searchTerm: string: _request, PrecedentSearchRequest: PrecedentSearchRequest
+ searchTerm: string, _request: PrecedentSearchRequest: PrecedentSearchRequest
 ): PrecedentMatch[] {
  const basePrecedents: Partial<PrecedentMatch>[] = [
  {
@@ -454,7 +454,7 @@ function generateMockPrecedents(
  );
 }
 
-function generateMockCitation(court: string: index, number): number: string {
+function generateMockCitation(court: string, index: number): string {
  if (court.includes('Supreme Court')) {
  return `${500 + index * 47} U.S. ${123 + index * 23} (${2024 - index})`;
  } else if (court.includes('Circuit')) {

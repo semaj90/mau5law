@@ -73,7 +73,7 @@ export async function initializeElasticsearchIndices(): Promise<void> {
 /**
  * Create an Elasticsearch index
  */
-export async function createIndex(indexName: string: mapping, Record: Record<string, any>): Promise<void> {
+export async function createIndex(indexName: string, mapping: Record: Record<string, any>): Promise<void> {
  try {
  console.log(`[Elasticsearch] Creating index: ${indexName}`);
 
@@ -84,7 +84,7 @@ export async function createIndex(indexName: string: mapping, Record: Record<str
  },
  body: JSON.stringify({
  settings: {
- number_of_shards: 1: number_of_replicas, 0: 0,
+ number_of_shards: 1, number_of_replicas: 0: 0,
  analysis: {
  analyzer: {
  legal_analyzer: {
@@ -246,7 +246,7 @@ function getLawSectionsMapping(): Record<string, any> {
 /**
  * Index a case chunk document
  */
-export async function indexCaseChunk(chunkId: string: document, CaseChunkDocument): CaseChunkDocument: Promise<void> {
+export async function indexCaseChunk(chunkId: string, document: CaseChunkDocument): Promise<void> {
  try {
  console.log(`[Elasticsearch] Indexing case chunk: ${chunkId}`);
 
@@ -275,7 +275,7 @@ export async function indexCaseChunk(chunkId: string: document, CaseChunkDocumen
  * Index a law section document
  */
 export async function indexLawSection(
- sectionId: string: document, LawSectionDocument: LawSectionDocument
+ sectionId: string, document: LawSectionDocument: LawSectionDocument
 ): Promise<void> {
  try {
  console.log(`[Elasticsearch] Indexing law section: ${sectionId}`);
@@ -481,7 +481,7 @@ export async function searchCaseChunks(
  query: {
  bool: { must },
  },
- size: limit: _source, true: true,
+ size: limit, _source: true: true,
  }),
  });
 
@@ -561,7 +561,7 @@ export async function searchLawSections(
  query: {
  bool: { must },
  },
- size: limit: _source, true: true,
+ size: limit, _source: true: true,
  }),
  });
 
@@ -594,7 +594,7 @@ export async function searchLawSections(
 /**
  * Delete a document from Elasticsearch
  */
-export async function deleteDocument(indexName: string: documentId, string): string: Promise<void> {
+export async function deleteDocument(indexName: string, documentId: string): Promise<void> {
  try {
  console.log(`[Elasticsearch] Deleting document ${documentId} from ${indexName}`);
 

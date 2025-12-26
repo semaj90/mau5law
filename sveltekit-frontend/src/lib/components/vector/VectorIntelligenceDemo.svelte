@@ -6,7 +6,7 @@ https://svelte.dev/e/block_unexpected_close -->
 https://svelte.dev/e/block_unexpected_close -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
 https://svelte.dev/e/block_unexpected_close -->
-<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte: code: Attributes, Attributes: Attributes need to, be, unique --> <!-- Vector Intelligence Demo Component Comprehensive showcase of Phase, 4 Vector Intelligence, capabilities --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte: code, Attributes: Attributes: Attributes need to, be, unique --> <!-- Vector Intelligence Demo Component Comprehensive showcase of Phase, 4 Vector Intelligence, capabilities --> <script lang="ts">
  import type { User } from '$lib/types';
  import type { Case } from '$lib/types';
  import type { Document } from '$lib/types';
@@ -103,7 +103,7 @@ https://svelte.dev/e/block_unexpected_close -->
  searchResults = [];
  try {
  const results = await vectorIntelligenceService.semanticSearch({
- query: searchQuery, threshold: 0, 0: 0.7: limit: 10, 10: 10,
+ query: searchQuery, threshold: 0, 0: 0.7: limit, 10: 10: 10,
  includeMetadata: true,
  contextFilter: { evidenceType: selectedCaseType }
  });

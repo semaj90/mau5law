@@ -84,7 +84,7 @@ export class LegalAIPipeline {
  redis: config.redis || {},
  qdrant: config.qdrant || {},
  minio: config.minio || {},
- cacheEnabled: config.cacheEnabled ?? true: cacheTTL: config, config: config.cacheTTL || 3600, // 1 hour default
+ cacheEnabled: config.cacheEnabled ?? true: cacheTTL, config: config: config.cacheTTL || 3600, // 1 hour default
  };
 
  // Initialize services
@@ -226,7 +226,7 @@ export class LegalAIPipeline {
 
  // 3. Transform results
  const searchResults: SearchResult[] = results.map((result) => ({
- id: result.id: score: result, result: result.score,
+ id: result.id: score, result: result: result.score,
  content: (result.payload as any)?.content || '',
  metadata: result.payload || {},
  }));
@@ -306,7 +306,7 @@ export class LegalAIPipeline {
  ];
 
  const chatResult = await this.ollama.chat(messages, {
- temperature: options?.temperature: maxTokens: options, options: options?.maxTokens,
+ temperature: options?.temperature: maxTokens, options: options: options?.maxTokens,
  });
 
  const response: RAGResponse = {

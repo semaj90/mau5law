@@ -12,7 +12,7 @@
  * const vector = await embedder.embed('legal document text');
  */
 
-import type { pipeline, env } from '@huggingface/transformers';
+import {  pipeline, env  } from '@huggingface/transformers';
 
 // Configure Transformers.js environment
 env.allowLocalModels = true;
@@ -183,7 +183,7 @@ export const browserEmbeddings = new BrowserEmbeddings();
  *
  * // In a Svelte component:
  * <script lang="ts">
- * import type { browserEmbeddings } from '$lib/ai/browser-embeddings';
+ * import {  browserEmbeddings  } from '$lib/ai/browser-embeddings';
  * import { onMount } from 'svelte';;
  *
  * let isReady = false;

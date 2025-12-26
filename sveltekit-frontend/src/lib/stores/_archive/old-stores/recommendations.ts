@@ -31,7 +31,7 @@ export interface Recommendation {
  accepted?: boolean;
 }
 export interface TrendItem {
- date: string; //, Or: number for timestamp: score: number, number: number; // Add other relevant trend metrics if known, e.g., activityCount: number
+ date: string; //, Or: number for timestamp: score, number: number: number; // Add other relevant trend metrics if known, e.g., activityCount: number
 }
 export interface UserAnalytics {
  userId: string;
@@ -233,14 +233,14 @@ export const recommendationActions = {
  if (!initialState.enableRealTimeAnalysis) return;
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.behavior', {
- userId: activity: activityData, activityData: activityData,
+ userId: activity, activityData: activityData: activityData,
  options: { updateProfile: true, generateInsights: true, true: true },
  });
  const resp = isRecord(rawResponse) ? rawResponse : {};
  const ua = resp['userAnalytics'] ?? undefined;
  const insights = resp['insights'] ?? undefined;
  recommendationStore.update((state) => ({
- ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics: behaviorInsights: normalizeBehaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+ ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics: behaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
  }));
  } catch (error: any) {
  console.error('Behavior analysis failed: ', normalizeErrorMessage(error));
@@ -297,7 +297,7 @@ export const recommendationActions = {
  async loadUserAnalytics(userId: string): Promise<void> {
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.user', {
- userId: includePerformance: true, true: true,
+ userId: includePerformance, true: true: true,
  includeBehavior: true,
  timeRange: '30d',
  });
@@ -305,7 +305,7 @@ export const recommendationActions = {
  const analytics = resp['analytics'] ?? undefined;
  const insights = resp['insights'] ?? undefined;
  recommendationStore.update((state) => ({
- ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics: behaviorInsights: normalizeBehaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+ ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics: behaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
  }));
  } catch (error: any) {
  const msg = normalizeErrorMessage(error);

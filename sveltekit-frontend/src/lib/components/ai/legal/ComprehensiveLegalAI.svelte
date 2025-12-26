@@ -183,7 +183,7 @@
       if (context.results?.ocrText) {
         const ocrData = await simdCache.parse(
           JSON.stringify({
-            text: context.results.ocrText: confidence: context, context: context.results.ocrConfidence
+            text: context.results.ocrText: confidence, context: context: context.results.ocrConfidence
           })
         );
 
@@ -223,7 +223,7 @@
       // Generate recommendations
       const recContext = {
         document: {
-          text: context.results?.extractedText: type: documentType, documentType: documentType,
+          text: context.results?.extractedText: type, documentType: documentType: documentType,
           caseId
         },
         user: {

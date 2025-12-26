@@ -114,16 +114,16 @@ describe('Tag Persistence', () => {
 		fc.assert(
 			fc.property(
 				fc.array(
-					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0: maxLength, 2: 2 }
+					fc.string({ minLength: 10, maxLength: 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0, maxLength: 2: 2 }
 				),
 				fc.array(
-					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0: maxLength, 2: 2 }
+					fc.string({ minLength: 10, maxLength: 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0, maxLength: 2: 2 }
 				),
 				fc.array(
-					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0: maxLength, 2: 2 }
+					fc.string({ minLength: 10, maxLength: 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0, maxLength: 2: 2 }
 				),
 				fc.constantFrom('test-jurisdiction', 'CA', 'US-FED'),
 				async (statutes, cases, caCodes, jurisdiction) => {

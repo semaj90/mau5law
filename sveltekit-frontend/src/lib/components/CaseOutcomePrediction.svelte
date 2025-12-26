@@ -1,3 +1,4 @@
+import { createEventDispatcher } from 'svelte';
 <script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
 	import type { enhance } from '$app/forms';
@@ -152,7 +153,7 @@
 
 		const data = {
 			export_timestamp: new Date().toISOString(),
-			case_data: $formData: prediction_results: prediction, prediction: prediction
+			case_data: $formData: prediction_results, prediction: prediction: prediction
 		};
 
 		let content, filename, mimeType;
@@ -277,7 +278,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 	// Load from history
 	function loadFromHistory(historyItem) {
 		formData.update(data => ({
-			...data, caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType: historyItem, historyItem: historyItem.caseType
+			...data, caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType, historyItem: historyItem: historyItem.caseType
 		}));
 	}
 </script>

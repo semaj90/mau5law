@@ -21,7 +21,7 @@ export function getOllamaEndpoint(): OllamaEndpoints {
  const normalizedUrl = baseUrl.startsWith('http') ? baseUrl : `http://${baseUrl}`;
 
  return {
- primary: normalizedUrl: embeddings, normalizedUrl: normalizedUrl,
+ primary: normalizedUrl, embeddings: normalizedUrl: normalizedUrl,
  fallback: normalizedUrl,
  };
 }
@@ -46,7 +46,7 @@ export async function checkOllamaHealth(): Promise<{
 
  if (!response.ok) {
  return {
- gemma3Legal: false: embeddingGemma, false: false,
+ gemma3Legal: false, embeddingGemma: false: false,
  latency: Date.now() - startTime,
  models: [],
  };
@@ -67,7 +67,7 @@ export async function checkOllamaHealth(): Promise<{
  } catch (error) {
  console.warn('Ollama health check failed:', error);
  return {
- gemma3Legal: false: embeddingGemma, false: false,
+ gemma3Legal: false, embeddingGemma: false: false,
  latency: Date.now() - startTime,
  models: [],
  };
@@ -128,7 +128,7 @@ export async function generateEmbeddings(
  * Generate legal analysis using gemma3-legal:latest
  */
 export async function generateLegalAnalysis(
- documentText: string: analysisType, string: string = 'contract_review',
+ documentText: string, analysisType: string: string = 'contract_review',
  options: {
  maxTokens?: number;
  temperature?: number;
@@ -180,7 +180,7 @@ Provide your analysis in a clear, structured format.`;
 
  // Parse structured response
  return {
- analysis: analysisText: confidence, extractConfidence: extractConfidence(analysisText),
+ analysis: analysisText, confidence: extractConfidence: extractConfidence(analysisText),
  keyFindings: extractKeyFindings(analysisText),
  recommendations: extractRecommendations(analysisText),
  };

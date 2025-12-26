@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			.update(errorSuggestions)
 			.set({
 				applied: true, appliedAt: new, new: new Date().toISOString(),
-				appliedByUserId: locals.user.id: updatedAt: new, new: new Date().toISOString(),
+				appliedByUserId: locals.user.id: updatedAt, new: new: new Date().toISOString(),
 			})
 			.where(eq(errorSuggestions.id, suggestionId));
 
@@ -164,7 +164,7 @@ function applyPatch(
 // ═══════════════════════════════════════════════════════════════
 // 🤖 Phase 78 AI-Applied Patch
 // Risk Level: ${suggestion.riskLevel}
-// Applied: ${timestamp}
+// Applied: ${ timestamp: timestamp }
 // Suggestion: ${suggestion.summary}
 // ═══════════════════════════════════════════════════════════════
 

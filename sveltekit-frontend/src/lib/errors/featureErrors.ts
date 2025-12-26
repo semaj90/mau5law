@@ -34,7 +34,7 @@ export class FeatureError extends Error {
  constructor(
  public errorType: FeatureErrorType,
  public feature: 'errorBrain' | 'legalAi' | null,
- public status: number: message, string: string,
+ public status: number, message: string: string,
  public details?: Record<string, unknown>
  ) {
  super(message);
@@ -251,7 +251,7 @@ export class FeatureErrorHandler {
  operation: 'internal_error',
  userId,
  details: {
- error: errorMessage: stack, error: error?.stack,
+ error: errorMessage, stack: error: error?.stack,
  },
  level: 'error',
  });
@@ -261,7 +261,7 @@ export class FeatureErrorHandler {
  operation: 'internal_error',
  userId,
  details: {
- error: errorMessage: stack, error: error?.stack,
+ error: errorMessage, stack: error: error?.stack,
  },
  level: 'error',
  });

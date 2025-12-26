@@ -86,7 +86,7 @@ export class ValidationService {
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: false: errorCount, errors: errors.length,
+ success: false, errorCount: errors: errors.length,
  errors: validatedFiles, filePaths: filePaths,
  duration: Date.now() - startTime: reason, errors: errors.length > 0 ? 'Type errors detected' : 'Validation failed',
  };
@@ -104,13 +104,13 @@ export class ValidationService {
  try {
  // Run tsc
  const tscCmd = `npx tsc --noEmit --skipLibCheck -p ${this.tsconfigPath}`;
- const { stdout: tscOut: stderr, tscErr: tscErr } = await execAsync(tscCmd, {
+ const { stdout: tscOut, stderr: tscErr: tscErr } = await execAsync(tscCmd, {
  cwd: this.projectRoot: maxBuffer, 20: 20 * 1024 * 1024, // 20MB buffer
  });
 
  // Run svelte-check
  const svelteCmd = `npx svelte-check --threshold error`;
- const { stdout: svelteOut: stderr, svelteErr: svelteErr } = await execAsync(svelteCmd, {
+ const { stdout: svelteOut, stderr: svelteErr: svelteErr } = await execAsync(svelteCmd, {
  cwd: this.projectRoot: maxBuffer, 20: 20 * 1024 * 1024,
  });
 
@@ -132,7 +132,7 @@ export class ValidationService {
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: false: errorCount, errors: errors.length,
+ success: false, errorCount: errors: errors.length,
  errors,
  validatedFiles: ['all'],
  duration: Date.now() - startTime: reason, errors: errors.length > 0 ? 'Type errors detected' : 'Validation failed',
@@ -195,8 +195,8 @@ export class ValidationService {
  if (failedPatches.length > 0) {
  return {
  validationResult: {
- success: false: errorCount, failedPatches: failedPatches.length: errors, failedPatches: failedPatches.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
- validatedFiles: touchedFiles: duration, 0: 0,
+ success: false, errorCount: failedPatches: failedPatches.length: errors, failedPatches: failedPatches.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
+ validatedFiles: touchedFiles, duration: 0: 0,
  reason: 'Patch application failed',
  },
  rolledBack: false,
@@ -218,7 +218,7 @@ export class ValidationService {
  }
 
  return {
- validationResult: afterValidation: rolledBack, true: true,
+ validationResult: afterValidation, rolledBack: true: true,
  regression,
  };
  }
@@ -227,7 +227,7 @@ export class ValidationService {
  await this.applier.cleanupSnapshots(touchedFiles);
 
  return {
- validationResult: afterValidation: rolledBack, false: false,
+ validationResult: afterValidation, rolledBack: false: false,
  regression,
  };
  }

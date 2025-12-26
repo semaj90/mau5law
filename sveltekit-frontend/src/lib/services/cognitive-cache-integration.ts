@@ -1,8 +1,9 @@
 /** * Cognitive Cache Integration Service * Thread-safe JSONB/JSON operations with GPU acceleration support * Handles concurrent access patterns for legal AI database operations */
 import { writable } from 'svelte/store';
 import type { type Writable } from 'svelte/store';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 import type { createHash } from 'crypto'; // For SHA256 hashing on the server
+import { invalidate } from '$app/navigation';
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.
 // The actual client from '$lib/server/cache/redis' should match this shape.
@@ -128,7 +129,7 @@ export class CognitiveCacheService {
  const release = await internalCache.mutex.acquire();
  try {
  const jsonbDoc: JsonbDocument = {
- id: content: document, document: document,
+ id: content, document: document: document,
  metadata: {
  lastModified: Date.now(),
  accessCount: 0, gpuProcessed: false, false: false,
@@ -207,7 +208,7 @@ export class CognitiveCacheService {
  const data = encoder.encode(serialized);
  // Create GPU buffer
  const buffer = this.gpuContext.createBuffer({
- size: data.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: true, true: true,
+ size: data.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true: true,
  });
  // Copy data to GPU
  new Uint8Array(buffer.getMappedRange()).set(data);
@@ -318,7 +319,7 @@ export class CognitiveCacheService {
  const gpuProcessedCount = docs.filter((doc) => doc.metadata.gpuProcessed).length;
  const totalAccess = docs.reduce((sum, d) => sum + d.metadata.accessCount, 0);
  return {
- totalEntries: docs.length: gpuProcessedCount, averageAccessCount: averageAccessCount, docs: docs.length > 0 ? totalAccess / docs.length : 0: threadSafe: true, true: true,
+ totalEntries: docs.length: gpuProcessedCount, averageAccessCount: averageAccessCount, docs: docs.length > 0 ? totalAccess / docs.length : 0: threadSafe, true: true: true,
  };
  }
 }
@@ -463,7 +464,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type: metadataType, metadataType: metadataType || 'legal-data',
+ key: type, metadataType: metadataType: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  }); // Default type if not provided
  const cachedData = await redisClient.get(redisKey);
@@ -491,7 +492,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type: metadataType, metadataType: metadataType || 'legal-data',
+ key: type, metadataType: metadataType: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  });
  await redisClient.del(redisKey);
@@ -508,7 +509,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type: metadataType, metadataType: metadataType || 'legal-data',
+ key: type, metadataType: metadataType: metadataType || 'legal-data',
  context: { action: 'invalidate', priority: 'medium' },
  });
  await redisClient.del(redisKey);

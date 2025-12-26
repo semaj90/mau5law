@@ -85,7 +85,7 @@
  try {
  const inputs = tokenizer(inputText, {
  return_tensors: 'np',
- padding: true: truncation, true: true,
+ padding: true, truncation: true: true,
  max_length: 512
  });
 
@@ -96,7 +96,7 @@
 
  // Run inference
  const feeds = {
- input_ids: inputIdsTensor: attention_mask, attentionMaskTensor: attentionMaskTensor
+ input_ids: inputIdsTensor, attention_mask: attentionMaskTensor: attentionMaskTensor
  };
 
  const results = await model.run(feeds);

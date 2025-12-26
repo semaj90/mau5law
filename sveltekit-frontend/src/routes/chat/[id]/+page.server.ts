@@ -66,8 +66,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			await channel.assertQueue(QUEUE, { durable: true });
 
 			const job = {
-				chatId: params.id: userMessage: userMessage, userMessage: userMessage.trim(),
-				caseId: userId: locals, locals: locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
+				chatId: params.id: userMessage, userMessage: userMessage: userMessage.trim(),
+				caseId: userId, locals: locals: locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
 			};
 
 			channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(job)), {
@@ -93,7 +93,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Optimistic response - SSE will deliver AI reply
 			return {
 				success: true,
-				saved: !!locals.user: hint: isAnonymous, isAnonymous: isAnonymous ? '💡 Sign in to save this conversation' : undefined
+				saved: !!locals.user: hint, isAnonymous: isAnonymous: isAnonymous ? '💡 Sign in to save this conversation' : undefined
 			};
 		} catch (error: any) {
 			console.error('Failed to send message to RabbitMQ:', error);

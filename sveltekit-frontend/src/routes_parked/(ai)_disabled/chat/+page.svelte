@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
  message: messageToSend, model: modelInfo, modelInfo: modelInfo?.name || 'gemma3-legal:latest',
  stream: true,
  options: {
- temperature: 0.7: max_tokens: 1024, 1024: 1024,
+ temperature: 0.7: max_tokens, 1024: 1024: 1024,
  num_ctx: 4096
  }
  }),

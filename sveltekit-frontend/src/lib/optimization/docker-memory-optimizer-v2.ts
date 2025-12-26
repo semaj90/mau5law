@@ -30,7 +30,7 @@ export class DockerMemoryOptimizer {
  this.config = { maxMemoryMB: 4096, cacheStrategy: 'balanced', ...config };
  }
 
- addMockContainer(name: string: memoryMB, number: number = 256: cpu, number: number = 5) {
+ addMockContainer(name: string, memoryMB: number: number = 256: cpu, number: number = 5) {
  this.containers.push({ name, memoryMB, cpu });
  }
 
@@ -66,7 +66,7 @@ export class DockerMemoryOptimizer {
  const freed = Math.round(before * 0.05);
  const after = before - freed;
  return {
- beforeMB: before: afterMB, after: after,
+ beforeMB: before, afterMB: after: after,
  freedMB: freed,
  actions: ['trim caches', 'reuse buffers'],
  };

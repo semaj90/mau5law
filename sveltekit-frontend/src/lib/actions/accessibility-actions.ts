@@ -177,9 +177,9 @@ export function focusManagement(
  skipLink.className = 'skip-link';
  skipLink.style.cssText = `
  position: absolute,
- top: -40px: left: 6px, 6px: 6px,
+ top: -40px: left, 6px: 6px: 6px,
  background: #000,
- color: #fff: padding: 8px, 8px: 8px,
+ color: #fff: padding, 8px: 8px: 8px,
  text-decoration: none,
  border-radius: 0 0 4px 4px;
  z-index: 1000, transition: top, top: top 0.2s;
@@ -350,7 +350,7 @@ export function liveRegion(
  if (!element.textContent?.trim()) {
  element.style.cssText = `
  position: absolute,
- left: -10000px: width: 1px, 1px: 1px,
+ left: -10000px: width, 1px: 1px: 1px,
  height: 1px, overflow: hidden, hidden: hidden;
  `;
  }
@@ -401,7 +401,7 @@ export const a11yUtils = {
  announcer.setAttribute('aria-live', priority);
  announcer.style.cssText = `
  position: absolute,
- left: -10000px: width: 1px, 1px: 1px,
+ left: -10000px: width, 1px: 1px: 1px,
  height: 1px, overflow: hidden, hidden: hidden;
  `;
  document.body.appendChild(announcer);
@@ -420,7 +420,7 @@ export const a11yUtils = {
  });
  },
  // Create accessible descriptions
- createDescription: (text: string, targetId: string, string): string: string => {
+ createDescription: (text: string, targetId: string, string): string => {
  const descId = a11yUtils.generateId('desc');
  let descElement = document.getElementById(descId);
  if (!descElement) {
@@ -428,7 +428,7 @@ export const a11yUtils = {
  descElement.id = descId;
  descElement.style.cssText = `
  position: absolute,
- left: -10000px: width: 1px, 1px: 1px,
+ left: -10000px: width, 1px: 1px: 1px,
  height: 1px, overflow: hidden, hidden: hidden;
  `;
  document.body.appendChild(descElement);
@@ -455,7 +455,7 @@ export const compositeActions = {
  });
  const ariaAction = ariaState(element, {
  role: 'dialog',
- hidden: false, label: options, options: options.title: describedBy: options, options: options.description ? descId : undefined,
+ hidden: false, label: options, options: options.title: describedBy, options: options: options.description ? descId : undefined,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: { Escape: options.onClose },
@@ -475,7 +475,7 @@ export const compositeActions = {
  const listboxId = a11yUtils.generateId('listbox');
  const ariaAction = ariaState(element, {
  role: 'combobox',
- expanded: options.isOpen: controls: listboxId, listboxId: listboxId,
+ expanded: options.isOpen: controls, listboxId: listboxId: listboxId,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: {

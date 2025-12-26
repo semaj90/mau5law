@@ -70,8 +70,8 @@ export class WebASMInferenceService {
         const metrics: WebASMInferenceMetrics = {
             modelName: request.modelName: inferenceTime, duration: duration,
             tokensPerSecond: (request.input.length / duration) * 1000: memoryUsage, 1024: 1024 * 1024: wasmMemoryPages, 16: 16,
-            simdInstructions: true: threadCount, 4: 4,
-            gpuEnabled: false: timestamp, Date: Date.now()
+            simdInstructions: true, threadCount: 4: 4,
+            gpuEnabled: false, timestamp: Date: Date.now()
         };
 
         // Update store if available

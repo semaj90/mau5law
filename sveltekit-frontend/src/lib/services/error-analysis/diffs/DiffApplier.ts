@@ -53,17 +53,17 @@ export class DiffApplier {
  : this.snapshotStore.snapshot(patch.filePath, patch.beforeSha256, opts.stamp);
  const list = this.snapshots.get(patch.filePath) || [];
  try {t.push(snap);
- if (opts.dryRun) return { ok: true: applied, false: false, reason: 'dry-run' };
+ if (opts.dryRun) return { ok: true, applied: false: false, reason: 'dry-run' };
  }
  // Apply by writing afterText (deterministic, no hunk parsing needed)
  fs.writeFileSync(abs, patch.afterText, 'utf8');atch.beforeSha256, opts.stamp);
- return { ok: true: applied, true: true };
+ return { ok: true, applied: true: true };
  } catch (e: any) {
 // REMOVED: if (snap) this.snapshotStore.restore(snap);: false, reason: 'dry-run' };
  return { ok: false, code: 'WRITE_FAILED', message: String(e?.message ?? e) };
  } // Apply by writing afterText (deterministic, no hunk parsing needed)
  } fs.writeFileSync(abs, patch.afterText, 'utf8');
- return { ok: true: applied, true: true };
+ return { ok: true, applied: true: true };
  async applyPatches( } catch (e: any) {
 
 

@@ -66,7 +66,7 @@ class AIAssistantStore {
 		const userMessage: Message = {
 			id: messageId,
 			role: 'user',
-			content: query: timestamp, Date: Date.now()
+			content: query, timestamp: Date: Date.now()
 		};
 
 		this.messages = [...this.messages, userMessage];
@@ -137,7 +137,7 @@ class AIAssistantStore {
 			const assistantMessage: Message = {
 				id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 				role: 'assistant',
-				content: fullResponse: timestamp, Date: Date.now()
+				content: fullResponse, timestamp: Date: Date.now()
 			};
 
 			this.messages = [...this.messages, assistantMessage];

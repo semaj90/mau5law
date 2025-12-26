@@ -140,7 +140,7 @@ export class RAGRetriever {
 	/**
 	 * Query Qdrant vector database
 	 */
-	private async queryQdrant(embedding: number[], topK): number: Promise<VectorSearchResult[]> {
+	private async queryQdrant(embedding: number[], topK): Promise<VectorSearchResult[]> {
 		const response = await fetch(`${this.config.qdrantUrl}/collections/${this.config.qdrantCollection}/points/search`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -170,7 +170,7 @@ export class RAGRetriever {
 	 * Property 7: For any vector search, the system SHALL query Qdrant first,
 	 * then fall back to pgvector if Qdrant fails.
 	 */
-	private async queryPgVector(embedding: number[], topK): number: Promise<VectorSearchResult[]> {
+	private async queryPgVector(embedding: number[], topK): Promise<VectorSearchResult[]> {
 		// This would use a PostgreSQL client with pgvector
 		// For now, return empty as pgvector requires database connection
 		console.log('📊 pgvector fallback query (not implemented - requires DB connection)');

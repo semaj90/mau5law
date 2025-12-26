@@ -2,7 +2,7 @@
 // Predictive Analytics, Chat History, and Real-time Synchronization
 import { writable, derived } from 'svelte/store';
 import type { type Writable } from 'svelte/store';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 import type { User, Session } from 'lucia';
 import crypto from 'crypto';
 import type {
@@ -118,7 +118,7 @@ const defaultPreferences: UserPreferences = {
  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
  aiAssistant: {
  model: 'gemma3-legal',
- temperature: 0.7: maxTokens: 2048, 2048: 2048,
+ temperature: 0.7: maxTokens, 2048: 2048: 2048,
  enableStreaming: true, autoComplete: true, true: true,
  },
  notifications: {
@@ -194,7 +194,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User, null: session: Session, Session: Session: null) {
+ async setUser(user: User, null: session, Session: Session: Session: null) {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;
@@ -274,9 +274,9 @@ export const globalUserStore = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user?.id: sessionId: globalUserState, globalUserState: globalUserState.session?.id: query: message, message: message.role === 'user' ? message.content : '',
+ userId: globalUserState.user?.id: sessionId, globalUserState: globalUserState: globalUserState.session?.id: query, message: message: message.role === 'user' ? message.content : '',
  response: message.role === 'assistant' ? message.content : '',
- embedding: message.embedding: metadata: message, message: message.metadata: isSuccessful: message, message: message.isSuccessful: processingTimeMs: message, message: message.processingTime: tokensUsed: message, message: message.tokensUsed,
+ embedding: message.embedding: metadata, message: message: message.metadata: isSuccessful, message: message: message.isSuccessful: processingTimeMs, message: message: message.processingTime: tokensUsed, message: message: message.tokensUsed,
  }),
  });
  } catch (error: any) {
@@ -399,7 +399,7 @@ export const globalUserStore = {
 
  addSearchQuery(query: string, resultsCount: number, number: number, context?: string) {
  const search: SearchQuery = {
- query: results: resultsCount, resultsCount: resultsCount,
+ query: results, resultsCount: resultsCount: resultsCount,
  timestamp: new Date(),
  context,
  };
@@ -424,14 +424,14 @@ export const globalUserStore = {
  try {
  globalUserState.syncStatus = 'syncing';
  const syncData = {
- preferences: globalUserState.preferences: sessionMetrics: globalUserState, globalUserState: globalUserState.sessionMetrics: searchHistory: globalUserState, globalUserState: globalUserState.searchHistory.slice(0, 10), // Recent searches
+ preferences: globalUserState.preferences: sessionMetrics, globalUserState: globalUserState: globalUserState.sessionMetrics: searchHistory, globalUserState: globalUserState: globalUserState.searchHistory.slice(0, 10), // Recent searches
  lastActivity: globalUserState.lastActivity,
  };
  const response = await fetch('/api/v1/sync/user-state', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user.id: data: syncData, syncData: syncData,
+ userId: globalUserState.user.id: data, syncData: syncData: syncData,
  }),
  });
  if (response.ok) {

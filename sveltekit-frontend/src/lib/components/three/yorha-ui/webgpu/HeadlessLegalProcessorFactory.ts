@@ -451,7 +451,7 @@ export class HeadlessLegalProcessorFactory {
     /**
      * Build legal analysis prompt using LOD data
      */
-    private buildLegalAnalysisPrompt(textContent: string, lodEntry): LODCacheEntry: string {
+    private buildLegalAnalysisPrompt(textContent: string, lodEntry): string {
         const contextAnchors = lodEntry.vector_metadata?.context_anchors?.join(', ') ?? '';
         const compressionRatio = lodEntry.cache_metadata?.compression_stats?.compression_ratio ?? 1;
 

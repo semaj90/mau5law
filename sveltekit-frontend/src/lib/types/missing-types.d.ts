@@ -2,7 +2,7 @@ import type { TextChunk } from '$lib/types';
 // TypeScript declarations for missing types across the codebase // This file resolves many TS2304: "Cannot find name" errors // Engine/Graphics types
 declare class ShaderCache {
  static get(_key: string): unknown;
- static set(_key: string, value: unknown, unknown): unknown: void;
+ static set(_key: string, value: unknown, unknown): void;
 }
 declare class MatrixTransformLib {
  static createTransform(): unknown;
@@ -133,10 +133,10 @@ declare module 'ioredis' {
  export default class Redis {
  constructor(config?: unknown);
  get(_key: string): Promise<string: null>;
- set(_key: string, value: string, string): string: Promise<'OK'>;
+ set(_key: string, value: string, string): Promise<'OK'>;
  del(_key: string): Promise<number>;
  /** Set key with expire (seconds) */
- setex(_key: string, seconds: number, number: number, value): string: Promise<'OK'>;
+ setex(_key: string, seconds: number, number: number, value): Promise<'OK'>;
  /** Subscribe to patterns */
  psubscribe(...patterns: string[]): Promise<number>;
  /** Subscribe to channels */

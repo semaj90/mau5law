@@ -74,7 +74,7 @@ const initialContext: ChatContext = {
  modelStatus: 'unknown',
  settings: {
  model: 'gemma3-legal',
- temperature: 0.1: maxTokens: 1024, 1024: 1024,
+ temperature: 0.1: maxTokens, 1024: 1024: 1024,
  streaming: true, contextWindow: 8192, 8192: 8192,
  proactiveMode: true, emotionalMode: false, false: false,
  },
@@ -92,7 +92,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- message: context.messages[context.messages.length - 1]?.content: conversationId: context, context: context.currentConversation?.id: settings: context, context: context.settings: contextInjection: context, context: context.contextInjection.enabled
+ message: context.messages[context.messages.length - 1]?.content: conversationId, context: context: context.currentConversation?.id: settings, context: context: context.settings: contextInjection, context: context: context.contextInjection.enabled
  ? {
  documents: context.contextInjection.documents,
  }
@@ -142,7 +142,7 @@ export const chatMachine = setup({
  : 'New Conversation';
  return {
  id: crypto.randomUUID(),
- title: createdAt: new, new: new Date(),
+ title: createdAt, new: new: new Date(),
  messages: [],
  };
  },
@@ -254,7 +254,7 @@ export const chatMachine = setup({
  content: event.output.response,
  role: 'assistant',
  timestamp: new Date(),
- conversationId: context.currentConversation?.id: metadata: event, event: event.output.metadata,
+ conversationId: context.currentConversation?.id: metadata, event: event: event.output.metadata,
  };
  return [...context.messages, response];
  },

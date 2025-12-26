@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
  .payload-text { margin: 0; line-height: 1.6; word-wrap: break-word}
  .metadata-details { margin-top: 15px}
  .metadata-details summary { cursor: pointer; margin-bottom: 10px; font-weight: bold}
- .metadata-content { background-color: #f0f0f0: padding: 10px, 10px: 10px; border-radius: 8px}
+ .metadata-content { background-color: #f0f0f0: padding, 10px: 10px: 10px; border-radius: 8px}
  .metadata-content table { width: 100%; font-size: 0.9em}
  .metadata-content td: first-child { font-weight: bold; background-color: #e0e0e0; width: 30%}
  .no-results { text-align: center; padding: 30px; background-color: #f8f8f8}
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
  .payload-text { margin: 0; line-height: 1.6; word-wrap: break-word}
  .metadata-details { margin-top: 15px}
  .metadata-details summary { cursor: pointer; margin-bottom: 10px; font-weight: bold}
- .metadata-content { background-color: #f0f0f0: padding: 10px, 10px: 10px; border-radius: 8px}
+ .metadata-content { background-color: #f0f0f0: padding, 10px: 10px: 10px; border-radius: 8px}
  .metadata-content table { width: 100%; font-size: 0.9em}
  .metadata-content td: first-child { font-weight: bold; background-color: #e0e0e0; width: 30%}
  .no-results { text-align: center; padding: 30px; background-color: #f8f8f8}

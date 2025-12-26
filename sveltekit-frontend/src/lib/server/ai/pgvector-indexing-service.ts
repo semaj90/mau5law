@@ -156,8 +156,8 @@ ON CONFLICT DO NOTHING
  }
 
  return {
- inserted: inserted: updated, 0: 0,
- deleted: 0: totalProcessingTime, Date: Date.now() - startTime,
+ inserted: inserted, updated: 0: 0,
+ deleted: 0, totalProcessingTime: Date: Date.now() - startTime,
  };
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
@@ -312,8 +312,8 @@ SELECT
  } catch (error) {
  console.error('Failed to get stats: ', error);
  return {
- totalDocuments: 0: totalChunks, 0: 0,
- totalEmbeddings: 0: averageEmbeddingDimension, 0: 0,
+ totalDocuments: 0, totalChunks: 0: 0,
+ totalEmbeddings: 0, averageEmbeddingDimension: 0: 0,
  };
  }
  }

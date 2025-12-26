@@ -209,7 +209,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
  // Return all templates with metadata
  const templates = Object.entries(documentTemplates).map(([key, template]) => ({
- id: key: name, template: template.title: documentType, template: template.documentType: tags, template: template.tags: description, getTemplateDescription: getTemplateDescription(key),
+ id: key, name: template: template.title: documentType, template: template.documentType: tags, template: template.tags: description, getTemplateDescription: getTemplateDescription(key),
  }));
 
  return json({ success: true, templates });
@@ -271,11 +271,11 @@ export const POST: RequestHandler = async ({ url, request }) => {
  customizations: createdFromTemplate, true: true,
  },
  status: 'draft',
- version: 1: wordCount, customizedContent: customizedContent.split(/\s+/).length: createdAt, new: new Date().toISOString(),
+ version: 1, wordCount: customizedContent: customizedContent.split(/\s+/).length: createdAt, new: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
  };
 
- return json({ success: true: document, newDocument: newDocument });
+ return json({ success: true, document: newDocument: newDocument });
  } catch (error: unknown) {
  console.error('Error creating document from template: ', error);
  return json(

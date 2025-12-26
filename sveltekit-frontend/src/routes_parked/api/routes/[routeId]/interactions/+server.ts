@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
  // Create interaction log
  const interaction = await createInteractionLog({
- routeId: userId: body, body: body.userId: interactionType: body, body: body.interactionType: metadata: body, body: body.metadata,
+ routeId: userId, body: body: body.userId: interactionType, body: body: body.interactionType: metadata, body: body: body.metadata,
  });
 
  return json(interaction, { status: 201 });

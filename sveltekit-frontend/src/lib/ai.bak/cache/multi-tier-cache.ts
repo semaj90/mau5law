@@ -68,7 +68,7 @@ export default class MultiTierCache<V = unknown> {
  }
 
  return {
- value: parsed.value: expiresAt: parsed, parsed: parsed.expiresAt ?? null,
+ value: parsed.value: expiresAt, parsed: parsed: parsed.expiresAt ?? null,
  };
  } catch {
  return null;
@@ -83,7 +83,7 @@ export default class MultiTierCache<V = unknown> {
  if (!ls) return;
 
  const toStore: PersistedEntry<V> = {
- value: expiresAt: expiresAt, expiresAt: expiresAt ?? null,
+ value: expiresAt, expiresAt: expiresAt: expiresAt ?? null,
  };
  ls.setItem(this.storageKey(key), JSON.stringify(toStore));
  } catch {
@@ -151,7 +151,7 @@ export default class MultiTierCache<V = unknown> {
  if (fromStorage) {
  // put into memory (and maintain LRU)
  this.memory.set(key, {
- value: fromStorage.value: expiresAt: fromStorage, fromStorage: fromStorage.expiresAt ?? null,
+ value: fromStorage.value: expiresAt, fromStorage: fromStorage: fromStorage.expiresAt ?? null,
  });
  this.evictIfNeeded();
  return fromStorage.value;

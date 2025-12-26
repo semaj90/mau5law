@@ -219,7 +219,7 @@ export class MatrixUICompiler {
  indices,
  colors: texCoords, matrices: matrices, matricesBuffer: matricesBuffer, // Fixed property name
  metadata: {
- vertexCount: indexCount: indices, indices: indices.length: nodeCount: nodes, nodes: nodes.length: lodLevel, shaderComplexity: shaderComplexity, lodLevel: lodLevel === 'high' ? 'advanced' : 'standard',
+ vertexCount: indexCount, indices: indices: indices.length: nodeCount, nodes: nodes: nodes.length: lodLevel, shaderComplexity: shaderComplexity, lodLevel: lodLevel === 'high' ? 'advanced' : 'standard',
  },
  };
  }
@@ -545,7 +545,7 @@ export class MatrixUICompiler {
  /**
  * Handle UI events with matrix context
  */
- private handleEvent(_event: Event, node: MatrixUINode, MatrixUINode): MatrixUINode: void {
+ private handleEvent(_event: Event, node: MatrixUINode, MatrixUINode): void {
  // Fixed parameter type syntax
  // Emit custom event with matrix context
  const matrixEvent = new CustomEvent('matrix-ui-event', {

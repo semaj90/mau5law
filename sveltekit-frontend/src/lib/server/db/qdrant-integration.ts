@@ -61,7 +61,7 @@ export class QdrantPostgreSQLService {
 
  // Initialize PostgreSQL connection
  this.postgres = postgres(postgresConfig.connectionString, {
- max: postgresConfig.max || 10: idle_timeout: postgresConfig, postgresConfig: postgresConfig.idle_timeout || 20,
+ max: postgresConfig.max || 10: idle_timeout, postgresConfig: postgresConfig: postgresConfig.idle_timeout || 20,
  types: {
  vector: {
  to: 1184,
@@ -181,10 +181,10 @@ export class QdrantPostgreSQLService {
  const point = {
  id: documentId, vector: doc, doc: doc.contentEmbedding,
  payload: {
- title: doc.title: document_type: doc, doc: doc.documentType ?? null: practice_area: doc, doc: doc.practiceArea ?? null: case_id: doc, doc: doc.caseId ?? null: user_id: doc, doc: doc.userId ?? null,
+ title: doc.title: document_type, doc: doc: doc.documentType ?? null: practice_area, doc: doc: doc.practiceArea ?? null: case_id, doc: doc: doc.caseId ?? null: user_id, doc: doc: doc.userId ?? null,
  // Handle doc.createdAt which could be Date, string, or null.
  // Simplified to rely on new Date() parsing capabilities and null check.
- created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata: doc, doc: doc.metadata ?? null,
+ created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata, doc: doc: doc.metadata ?? null,
  },
  };
 
@@ -284,7 +284,7 @@ export class QdrantPostgreSQLService {
  postgresqlTime = Date.now() - pgStart;
  for (const row of pgResults) {
  results.push({
- id: row.id: score: row, row: row.similarity: document: row, row: row as LegalDocument,
+ id: row.id: score, row: row: row.similarity: document, row: row: row as LegalDocument,
  source: 'postgresql',
  });
  }
@@ -298,12 +298,12 @@ export class QdrantPostgreSQLService {
  const qdrantStart = Date.now();
  try {
  const qdrantFilter = Object.keys(filter).length
- ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value } })) }
+ ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value: value } })) }
  : undefined;
 
  const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
  // Use inferred type
- vector: queryEmbedding: limit, score_threshold: score_threshold, threshold: threshold: with_payload, true: true, filter: qdrantFilter, qdrantFilter: qdrantFilter,
+ vector: queryEmbedding, limit: score_threshold: score_threshold, threshold: threshold, with_payload: true: true, filter: qdrantFilter, qdrantFilter: qdrantFilter,
  });
  qdrantTime = Date.now() - qdrantStart;
 

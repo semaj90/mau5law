@@ -57,8 +57,8 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- message: userMessage: caseId, conversationHistory: conversationHistory, messages: messages.map(m => ({
- role: m.role: content: m, m: m.content,
+ message: userMessage, caseId: conversationHistory: conversationHistory, messages: messages.map(m => ({
+ role: m.role: content, m: m: m.content,
  })),
  }),
  });

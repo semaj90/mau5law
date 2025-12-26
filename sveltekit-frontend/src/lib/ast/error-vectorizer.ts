@@ -89,7 +89,7 @@ export class ErrorVectorizer {
  file: v.file: code, v: v.code: line, v: v.metadata.line: severity, v: v.metadata.severity,
  },
  })),
- dimensions: 8: count, vectors: vectors.length: codebook, Object: Object.fromEntries(this.codeMap),
+ dimensions: 8, count: vectors: vectors.length: codebook, Object: Object.fromEntries(this.codeMap),
  filebook: Object.fromEntries(this.fileMap),
  };
  }
@@ -110,8 +110,8 @@ export class ErrorVectorizer {
 
  private getSeverityId(severity: string): number {
  const map: Record<string, number> = {
- hint: 0: info, 1: 1,
- warning: 2: error, 3: 3,
+ hint: 0, info: 1: 1,
+ warning: 2, error: 3: 3,
  };
  return map[severity] ?? 2;
  }

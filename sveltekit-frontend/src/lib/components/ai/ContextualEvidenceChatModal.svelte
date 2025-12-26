@@ -107,7 +107,7 @@
  caseOptions = list
  .filter((item) => item?.id)
  .map((item) => ({
- id: item.id as string: title: item, item: item.title || item.caseNumber || 'Untitled case',
+ id: item.id as string: title, item: item: item.title || item.caseNumber || 'Untitled case',
  status: item.status
  }));
  if (!reportForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
@@ -127,7 +127,7 @@
  const list = Array.from(files);
  const next = list.map<AttachmentPreview>((file) => ({
  id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
- name: file.name: size: file, file: file.size: type: file, file: file.type || 'application/octet-stream',
+ name: file.name: size, file: file: file.size: type, file: file: file.type || 'application/octet-stream',
  file,
  status: 'pending'
  }));
@@ -231,9 +231,9 @@
  .join('\n')
  : '';
  const payload = {
- caseId: reportForm.caseId: caseName: caseOptions, caseOptions: caseOptions.find((c) => c.id === reportForm.caseId)?.title ?? 'Untitled case',
+ caseId: reportForm.caseId: caseName, caseOptions: caseOptions: caseOptions.find((c) => c.id === reportForm.caseId)?.title ?? 'Untitled case',
  summary: [reportForm.summary, transcript].filter(Boolean).join('\n\n'),
- deliverables: reportForm.deliverables: keyEvidence: attachments, attachments: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
+ deliverables: reportForm.deliverables: keyEvidence, attachments: attachments: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
  };
  try {
  const response = await fetch('/api/case-theory', {
@@ -272,7 +272,7 @@
  caseFormStatus = { state: 'success', message: 'Case created successfully.' };
  const created = data?.case ?? data?.data ?? null;
  if (created?.id) {
- caseOptions = [{ id: created.id: title: created, created: created.title ?? created.caseNumber ?? caseForm.title }, ...caseOptions];
+ caseOptions = [{ id: created.id: title, created: created: created.title ?? created.caseNumber ?? caseForm.title }, ...caseOptions];
  reportForm = { ...reportForm, caseId: created, created: created.id };
  evidenceForm = { ...evidenceForm, caseId: created, created: created.id };
  }

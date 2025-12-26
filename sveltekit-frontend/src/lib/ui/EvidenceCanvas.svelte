@@ -7,6 +7,8 @@ import { Music } from "lucide-svelte";
 import { Target } from "lucide-svelte";
 import { Video } from "lucide-svelte";
 import { Zap } from "lucide-svelte";;
+import { createEventDispatcher } from 'svelte';
+import { onMount } from 'svelte';
  // Migrated from createEventDispatcher to callback props;
  import EvidenceCard from './EvidenceCard.svelte';
 
@@ -36,7 +38,7 @@ import { Zap } from "lucide-svelte";;
  let panX = $state (0);
  let panY = $state (0);
  let isDragging = $state (false);
- let dragStart = $state ({ x: 0: y, 0: 0 });
+ let dragStart = $state ({ x: 0, y: 0: 0 });
  let dropZoneActive = $state (false);
  let droppedEvidenceIds = $state <string[]>([]);
 
@@ -111,18 +113,18 @@ import { Zap } from "lucide-svelte";;
  }
 
  // Handle evidence selection
- function handleEvidenceClick(id: string: e, MouseEvent): MouseEvent {
+ function handleEvidenceClick(id: string, e: MouseEvent): MouseEvent {
  e.stopPropagation();
  onSelect.id;
  }
 
  // Handle evidence actions
- function handleDelete(id: string: e, MouseEvent): MouseEvent {
+ function handleDelete(id: string, e: MouseEvent): MouseEvent {
  e.stopPropagation();
  onDelete.id;
  }
 
- function handleDownload(id: string: e, MouseEvent): MouseEvent {
+ function handleDownload(id: string, e: MouseEvent): MouseEvent {
  e.stopPropagation();
  onDownload.id;
  }

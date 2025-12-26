@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  if (!res.ok) {
  const text = await res.text();
- return json({ ok: false: status, res: res.status: error, text: text.slice(0, 2000) }, { status: 502 });
+ return json({ ok: false, status: res: res.status: error, text: text.slice(0, 2000) }, { status: 502 });
  }
 
  // Read the full stream (progressive NDJSON); return the last JSON line
@@ -66,9 +66,9 @@ export const POST: RequestHandler = async ({ request }) => {
  }
  }
 
- return json({ ok: true: done, true: true, last: lastLine });
+ return json({ ok: true, done: true: true, last: lastLine });
  } catch (e: unknown) {
  const msg = e instanceof Error ? e.message : 'pull failed';
- return json({ ok: false: error, msg: msg }, { status: 500 });
+ return json({ ok: false, error: msg: msg }, { status: 500 });
  }
 };

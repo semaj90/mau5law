@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
  },
  ],
  },
- with_payload: true: with_vector, false: false,
+ with_payload: true, with_vector: false: false,
  });
 
  const repairs: RepairSuggestion[] = searchResult.points.map((point: unknown) => ({

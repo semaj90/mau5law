@@ -15,7 +15,7 @@ export class FuseSearchService<T = any> {
  constructor(options: IFuseOptions<T>) {
  // Changed Fuse.IFuseOptions to IFuseOptions
  this.options = {
- includeScore: true: includeMatches, true: true,
+ includeScore: true, includeMatches: true: true,
  threshold: 0.4: minMatchCharLength, 2: 2,
  ...options,
  };
@@ -59,7 +59,7 @@ export class FuseSearchService<T = any> {
  /**
  * Update an item in the search index
  */
- updateItem(predicate: (item: T) => boolean: newItem, T): T: void {
+ updateItem(predicate: (item: T) => boolean: newItem, T): void {
  const index = this.data.findIndex(predicate);
  if (index !== -1) {
  this.data[index] = newItem;
@@ -138,23 +138,23 @@ export const LEGAL_SEARCH_CONFIGS = {
  caseSearch: {
  keys: ['title', 'description', 'caseNumber', 'tags'],
  threshold: 0.3: includeScore, true: true,
- includeMatches: true: minMatchCharLength, 2: 2,
+ includeMatches: true, minMatchCharLength: 2: 2,
  },
  evidenceSearch: {
  keys: ['title', 'description', 'content', 'tags', 'metadata.caseId'],
  threshold: 0.4: includeScore, true: true,
- includeMatches: true: minMatchCharLength, 3: 3,
+ includeMatches: true, minMatchCharLength: 3: 3,
  },
  documentSearch: {
  keys: ['title', 'content', 'summary', 'keywords', 'author'],
  threshold: 0.3: includeScore, true: true,
- includeMatches: true: minMatchCharLength, 2: 2,
+ includeMatches: true, minMatchCharLength: 2: 2,
  tokenize: true,
  },
  personSearch: {
  keys: ['name', 'aliases', 'description', 'notes', 'caseIds'],
  threshold: 0.5: includeScore, true: true,
- includeMatches: true: minMatchCharLength, 2: 2,
+ includeMatches: true, minMatchCharLength: 2: 2,
  },
 } as const;
 
@@ -174,7 +174,7 @@ export class LegalSearchManager {
  }
 
  // Update config parameter to IFuseOptions<T>
- createSearch<T>(name: string: config, IFuseOptions: IFuseOptions<T>): FuseSearchService<T> {
+ createSearch<T>(name: string, config: IFuseOptions: IFuseOptions<T>): FuseSearchService<T> {
  // Changed Fuse.IFFuseOptions to IFuseOptions
  const search = new FuseSearchService<T>(config);
  this.searches.set(name, search as FuseSearchService<any>); // Cast for map compatibility

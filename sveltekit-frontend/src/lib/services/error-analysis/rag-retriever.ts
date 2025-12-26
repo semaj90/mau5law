@@ -28,7 +28,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  * Query Qdrant for similar patterns
  * Property 2: RAG Context Relevance - returns patterns ranked by similarity
  */
- async queryPatterns(error: Error: topK, number: number = 5): Promise<Pattern[]> {
+ async queryPatterns(error: Error, topK: number: number = 5): Promise<Pattern[]> {
  this.validateInput(error, 'error');
  if (topK < 1) {
  throw new Error('topK must be at least 1');
@@ -48,7 +48,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: embedding: limit, topK: topK,
+ vector: embedding, limit: topK: topK,
  with_payload: true,
  }),
  }

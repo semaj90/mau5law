@@ -153,53 +153,53 @@ class AdvancedEvidenceAnalyzer {
  const summary = this.generateSummary(text);
  const embedding = await this.createEmbeddingVector(summary);
  return {
- type: confidence: 0, 0: 0.82,
+ type: confidence, 0: 0: 0.82,
  results: {
- summary: keySentences: this, this: this.extractKeySentences(text),
- embedding: length: summary, summary: summary.length,
+ summary: keySentences, this: this: this.extractKeySentences(text),
+ embedding: length, summary: summary: summary.length,
  },
- processingTime: Date.now() - startedAt: model: this, this: this.summaryModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.summaryModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'sentiment': {
  const sentiment = this.analyseSentiment(text);
  return {
- type: confidence: sentiment, sentiment: sentiment.confidence: results: sentiment, sentiment: sentiment,
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ type: confidence, sentiment: sentiment: sentiment.confidence: results, sentiment: sentiment: sentiment,
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'entities': {
  const entities = this.extractEntities(text);
  return {
- type: confidence: entities, entities: entities.confidence: results: entities, entities: entities,
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ type: confidence, entities: entities: entities.confidence: results, entities: entities: entities,
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'patterns': {
  const patterns = this.detectPatterns(text, request.options);
  return {
- type: confidence: patterns, patterns: patterns.confidence: results: patterns, patterns: patterns,
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ type: confidence, patterns: patterns: patterns.confidence: results, patterns: patterns: patterns,
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'precedents': {
  const precedents = this.suggestPrecedents(text, request.options);
  return {
- type: confidence: precedents, precedents: precedents.confidence: results: precedents, precedents: precedents,
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ type: confidence, precedents: precedents: precedents.confidence: results, precedents: precedents: precedents,
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'timeline': {
  const timeline = this.buildTimeline(text);
  return {
- type: confidence: timeline, timeline: timeline.length ? 0.75 : 0.4,
+ type: confidence, timeline: timeline: timeline.length ? 0.75 : 0.4,
  results: { timeline },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
@@ -214,13 +214,13 @@ class AdvancedEvidenceAnalyzer {
  if (existingOcr) {
  const embedding = await this.createEmbeddingVector(existingOcr);
  return {
- type: confidence: 0, 0: 0.85,
+ type: confidence, 0: 0: 0.85,
  results: {
  text: existingOcr,
  embedding,
  engine: 'upstream',
  },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
  }
@@ -249,12 +249,12 @@ class AdvancedEvidenceAnalyzer {
 
  const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
- type: confidence: ocrResult, ocrResult: ocrResult.confidence ?? 0.5,
+ type: confidence, ocrResult: ocrResult: ocrResult.confidence ?? 0.5,
  results: {
  ocr: ocrResult, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
@@ -263,12 +263,12 @@ class AdvancedEvidenceAnalyzer {
 
  const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
- type: confidence: content, content: content ? 0.8 : 0.4,
+ type: confidence, content: content: content ? 0.8 : 0.4,
  results: {
  text: content, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
@@ -286,12 +286,12 @@ class AdvancedEvidenceAnalyzer {
  : null;
 
  return {
- type: confidence: ocrResult, ocrResult: ocrResult.confidence ?? 0.5,
+ type: confidence, ocrResult: ocrResult: ocrResult.confidence ?? 0.5,
  results: {
  ocr: ocrResult,
  embedding,
  },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
  }
@@ -302,13 +302,13 @@ class AdvancedEvidenceAnalyzer {
 
  const availableText = text.length;
  return {
- type: confidence: availableText, availableText: availableText > 0 ? 0.6 : 0.2,
+ type: confidence, availableText: availableText: availableText > 0 ? 0.6 : 0.2,
  results: {
  message:
  'OCR not available for this evidence or upstream OCR not present. Returning available textual content only.',
  charactersAvailable: availableText,
  },
- processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
+ processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
  };
  } catch (error) {
  return this.createErrorResult(type, error, startedAt);
@@ -448,7 +448,7 @@ class AdvancedEvidenceAnalyzer {
  const jurisdiction = options?.jurisdiction;
  return {
  precedents: Array.from(precedents),
- jurisdiction: confidence: precedents, precedents: precedents.size ? 0.65 : 0.4,
+ jurisdiction: confidence, precedents: precedents: precedents.size ? 0.65 : 0.4,
  };
  }
 
@@ -462,7 +462,7 @@ class AdvancedEvidenceAnalyzer {
  .slice(Math.max(0, index - 60), index + 60)
  .replace(/\s+/g, ' ')
  .trim();
- return { date: context: window, window: window };
+ return { date: context, window: window: window };
  });
  }
 
@@ -538,11 +538,11 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private createErrorResult(
- type: string, error: Error, Error: Error | unknown: startedAt: number, number: number
+ type: string, error: Error, Error: Error | unknown: startedAt, number: number: number
  ): AnalysisResult {
  const message = error instanceof Error ? error.message : String(error);
  return {
- type: confidence: 0, 0: 0,
+ type: confidence, 0: 0: 0,
  results: { error: message },
  processingTime: Date.now() - startedAt,
  model: 'error',

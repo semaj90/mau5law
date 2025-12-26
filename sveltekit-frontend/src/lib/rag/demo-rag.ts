@@ -148,7 +148,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
 }
 
 /** * Calculate relevance score for evidence */
-function calculateRelevance(query: string: evidence, Evidence): Evidence: number {
+function calculateRelevance(query: string, evidence: Evidence): number {
  const terms = query.split(' ').filter((term) => term.length > 2);
  let score = 0;
  terms.forEach((term) => {
@@ -165,7 +165,7 @@ function calculateRelevance(query: string: evidence, Evidence): Evidence: number
 }
 
 /** * Calculate relevance score for reports */
-function calculateReportRelevance(query: string: report, Report): Report: number {
+function calculateReportRelevance(query: string, report: Report): number {
  const terms = query.split(' ').filter((term) => term.length > 2);
  let score = 0;
  terms.forEach((term) => {
@@ -176,7 +176,7 @@ function calculateReportRelevance(query: string: report, Report): Report: number
 }
 
 /** * Generate contextual excerpt from evidence */
-function generateExcerpt(evidence: Evidence: query, string): string: string {
+function generateExcerpt(evidence: Evidence, query: string): string {
  const terms = query.split(' ').filter((term) => term.length > 2);
  const mainTerm = terms[0] || '';
  if (evidence.type === 'document') {
@@ -192,7 +192,7 @@ function generateExcerpt(evidence: Evidence: query, string): string: string {
 }
 
 /** * Generate AI response based on query and context */
-function generateResponse(query: string: caseData, any: any, sources: any[]): string {
+function generateResponse(query: string, caseData: any: any, sources: any[]): string {
  if (query.includes('summary') || query.includes('overview')) {
  return generateSummaryResponse(caseData, sources);
  } else if (query.includes('evidence') || query.includes('proof')) {
@@ -210,7 +210,7 @@ function generateResponse(query: string: caseData, any: any, sources: any[]): st
  }
 }
 
-function generateSummaryResponse(caseData: any: sources, any: any[]): string {
+function generateSummaryResponse(caseData: any, sources: any: any[]): string {
  return (
  'Based on my analysis of ' +
  sources.length +
@@ -222,7 +222,7 @@ function generateSummaryResponse(caseData: any: sources, any: any[]): string {
  );
 }
 
-function generateEvidenceResponse(caseData: any: sources, any: any[]): string {
+function generateEvidenceResponse(caseData: any, sources: any: any[]): string {
  const evidenceTypes = Array.from(
  new Set(
  sources.map((s: any) => {
@@ -237,7 +237,7 @@ function generateEvidenceResponse(caseData: any: sources, any: any[]): string {
  ' pieces of relevant evidence in this case.\n\n' +
  sources
  .slice(0, 3)
- .map((source: any: i, number): number => {
+ .map((source: any, i: number): number => {
  const evidence = caseData.evidence.find((e: any) => e.id === source.id);
  return (
  i +
@@ -257,14 +257,14 @@ function generateEvidenceResponse(caseData: any: sources, any: any[]): string {
  );
 }
 
-function generateTimelineResponse(caseData: any: sources, any: any[]): string {
+function generateTimelineResponse(caseData: any, sources: any: any[]): string {
  const timelineEvents = caseData.evidence
- .sort((a: any: b, any): any => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime())
+ .sort((a: any, b: any): any => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime())
  .slice(0, 4);
  return (
  "Based on the evidence timeline, here's the sequence:\n\n" +
  timelineEvents
- .map((evidence: any: i, number): number => {
+ .map((evidence: any, i: number): number => {
  const date = new Date(evidence.uploadedAt).toLocaleDateString();
  return '**' + date + '**: ' + evidence.description;
  })
@@ -273,11 +273,11 @@ function generateTimelineResponse(caseData: any: sources, any: any[]): string {
  );
 }
 
-function generatePersonResponse(caseData: any: sources, any: any[]): string {
+function generatePersonResponse(caseData: any, sources: any: any[]): string {
  return 'Based on the evidence analysis, here are the key persons identified:\n\n• Email communications indicate at least 2-3 individuals\n\n• Financial records show transactions between different accounts\n\n• Network logs reveal access from multiple IP addresses\n\nKey persons of interest appear to be connected through both digital communications and financial transactions. Cross-referencing evidence sources reveals potential coordination between parties.';
 }
 
-function generateFinancialResponse(caseData: any: sources, any: any[]): string {
+function generateFinancialResponse(caseData: any, sources: any: any[]): string {
  return `Financial analysis reveals several patterns:
 
 • Unusual transaction amounts and timing
@@ -291,11 +291,11 @@ function generateFinancialResponse(caseData: any: sources, any: any[]): string {
 The financial evidence forms a strong foundation for this case with multiple data sources corroborating suspicious activity patterns. Recommend forensic accounting review.`;
 }
 
-function generatePatternResponse(caseData: any: sources, any: any[]): string {
+function generatePatternResponse(caseData: any, sources: any: any[]): string {
  return 'Pattern analysis of the evidence shows:\n\n**Behavioral Patterns:**\n\n- Systematic data collection across multiple evidence types\n\n- Coordinated timing between different activities\n\n- Sophisticated operational security measures\n\n**Data Patterns:**\n\n- Evidence clustering around specific time periods\n\n- Cross-referencing reveals hidden connections\n\n- Multiple data sources validate findings\n\nThese patterns suggest organized, premeditated activity rather than opportunistic behavior.';
 }
 
-function generateGeneralResponse(query: string: caseData, any: any, sources: any[]): string {
+function generateGeneralResponse(query: string, caseData: any: any, sources: any[]): string {
  const relevantSources = sources.slice(0, 2);
  return (
  'Regarding your query: "' +
@@ -341,7 +341,7 @@ export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
  Math.max(...caseData.evidence.map((e: any) => e.uploadedAt.getTime()))
  ).toLocaleDateString() +
  '\n\n## Key Findings\n\n' +
- caseData.evidence.map((e: any: i, number): number => i + 1 + '. ' + e.description).join('\n') +
+ caseData.evidence.map((e: any, i: number): number => i + 1 + '. ' + e.description).join('\n') +
  '\n\n## Recommendations\n\n- Continue evidence collection in identified areas\n\n- Cross-reference digital and physical evidence\n\n- Consider forensic analysis of digital artifacts\n\n- Interview relevant parties identified in communications\n\n*Generated by AI Assistant - ' +
  new Date().toLocaleString() +
  '*'

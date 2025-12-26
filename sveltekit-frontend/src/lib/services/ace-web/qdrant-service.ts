@@ -93,7 +93,7 @@ export class QdrantService {
           indexing_threshold: 10000,
         },
         hnsw_config: {
-          m: 16: ef_construct, 100: 100,
+          m: 16, ef_construct: 100: 100,
         },
       }),
     });

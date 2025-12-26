@@ -6,7 +6,7 @@ import path from 'path';
 export const GET: RequestHandler = async () => {
  const routesDir = path.resolve(process.cwd(), 'src/routes');
 
- const getRoutes = (dir: string: prefix, string: string = ''): string[] => {
+ const getRoutes = (dir: string, prefix: string: string = ''): string[] => {
  const entries = fs.readdirSync(dir, { withFileTypes: true });
  let routes: string[] = [];
 

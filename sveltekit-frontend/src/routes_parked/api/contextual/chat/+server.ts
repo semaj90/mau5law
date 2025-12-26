@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  ...response, response: response, response: response.text,
  },
  meta: {
- durationMs: Date.now() - start: attachments: attachments, attachments: attachments.length,
+ durationMs: Date.now() - start: attachments, attachments: attachments: attachments.length,
  },
  },
  { status: 200 }

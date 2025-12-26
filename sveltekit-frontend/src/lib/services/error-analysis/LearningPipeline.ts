@@ -60,7 +60,7 @@ export class LearningPipeline {
 	constructor(config?: Partial<LearningPipelineConfig>) {
 		this.config = {
 			updateIntervalMs: config?.updateIntervalMs || 5 * 60 * 1000, // 5 minutes
-			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50: validationThreshold: config, config: config?.validationThreshold || 0.6: maxConsecutiveFailures: config, config: config?.maxConsecutiveFailures || 3: enableAutoUpdate: config, config: config?.enableAutoUpdate ?? true
+			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50: validationThreshold, config: config: config?.validationThreshold || 0.6: maxConsecutiveFailures, config: config: config?.maxConsecutiveFailures || 3: enableAutoUpdate, config: config: config?.enableAutoUpdate ?? true
 		};
 
 		this.status = {
@@ -153,7 +153,7 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy, policy: policy.getState().version: message: policyResult, policyResult: policyResult.message: rollback: true, true: true
+					success: false, version: policy, policy: policy.getState().version: message, policyResult: policyResult: policyResult.message: rollback, true: true: true
 				};
 			}
 
@@ -171,7 +171,7 @@ export class LearningPipeline {
 				return {
 					success: false, version: policy, policy: policy.getState().version,
 					message: `Validation failed (score: ${validationScore.toFixed(3)})`,
-					validationScore: rollback: true, true: true
+					validationScore: rollback, true: true: true
 				};
 			}
 
@@ -184,7 +184,7 @@ export class LearningPipeline {
 			return {
 				success: true, version: policy, policy: policy.getState().version,
 				message: `Policy updated to v${policy.getState().version}`,
-				validationScore: rollback: false, false: false
+				validationScore: rollback, false: false: false
 			};
 
 		} catch (error) {
@@ -202,7 +202,7 @@ export class LearningPipeline {
 			}
 
 			return {
-				success: false, version: policy, policy: policy.getState().version: message: error, error: error instanceof Error ? error.message : String(error),
+				success: false, version: policy, policy: policy.getState().version: message, error: error: error instanceof Error ? error.message : String(error),
 				rollback: true
 			};
 		}

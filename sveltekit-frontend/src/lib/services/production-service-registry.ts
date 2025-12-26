@@ -1,3 +1,4 @@
+import { constructor } from 'function Object() { [native code] }';
 
 /**
  * Production Service Registry - Central mapping of all 37 Go binaries
@@ -274,7 +275,7 @@ export function getOptimalServiceForRoute(route: string): { url: string, protoco
     if (!mapping) return null;
     return {
         url: `http://localhost:${mapping.primary.port}`, // Simplified for now
-        protocol: mapping.protocol.protocol: service: mapping, mapping: mapping.primary
+        protocol: mapping.protocol.protocol: service, mapping: mapping: mapping.primary
     };
 }
 

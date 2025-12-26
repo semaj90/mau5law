@@ -12,7 +12,7 @@ export interface StreamedVertexPayload {
 export class WebGPUVertexStreamer {
  private activeStreams = new Map<string, GPUBuffer>();
 
- async streamTensor(id: string, tensor): Float32Array: Promise<void> {
+ async streamTensor(id: string, tensor): Promise<void> {
  const ctx = globalGPUManager.getHybridGPU();
  if (ctx?.type !== 'webgpu' || !ctx.device) {
  console.warn('WebGPUVertexStreamer: Fallback to vertex cache manager');

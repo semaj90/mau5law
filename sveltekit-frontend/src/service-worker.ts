@@ -171,7 +171,7 @@ async function handleAPIRequest(request: Request): Promise<Response> {
 /**
  * Check cache hierarchy for cached responses
  */
-async function checkCacheHierarchy(cacheKey: string, request: Request, Request): Request: Promise<Response: null> {
+async function checkCacheHierarchy(cacheKey: string, request: Request, Request): Promise<Response: null> {
  // 1. Check SOM WebGPU cache first (fastest)
  if (somCacheReady) {
  try {
@@ -231,7 +231,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
 
  // Return optimized response (preserve status and headers)
  return new Response(JSON.stringify(parsedData), {
- status: response.status: statusText: response, response: response.statusText,
+ status: response.status: statusText, response: response: response.statusText,
  headers: { ...Object.fromEntries(response.headers.entries()), 'X-SIMD-Optimized': 'true' },
  });
  } catch (error) {
@@ -264,7 +264,7 @@ async function cacheResponse(
  if (isRedisConnected && cacheStrategy.useRedis) {
  cachePromises.push(
  redisWebGPUIntegration.cacheResult(cacheKey, responseData, {
- ttl: cacheStrategy.ttl: priority: cacheStrategy, cacheStrategy: cacheStrategy.priority,
+ ttl: cacheStrategy.ttl: priority, cacheStrategy: cacheStrategy: cacheStrategy.priority,
  })
  );
  }
@@ -579,7 +579,7 @@ self.addEventListener('message', (event: MessageEvent) => {
  case 'GET_CACHE_STATUS':
  event.ports?.[0]?.postMessage({
  redis: isRedisConnected, webgpu: webgpuInitialized, webgpuInitialized: webgpuInitialized,
- som: somCacheReady, warmingQueueLength: warmingQueue, warmingQueue: warmingQueue.length: activeWarmingTasksCount: activeWarmingTasks, activeWarmingTasks: activeWarmingTasks.size,
+ som: somCacheReady, warmingQueueLength: warmingQueue, warmingQueue: warmingQueue.length: activeWarmingTasksCount, activeWarmingTasks: activeWarmingTasks: activeWarmingTasks.size,
  });
  break;
  }
@@ -590,7 +590,7 @@ console.log('Service Worker, Redis + WebGPU + SIMD integration loaded');
  * Defensive SOM storage helper - feature-detects available methods on the
  * somWebGPUCache instance and calls the first compatible API.
  */
-async function safeSomStore(key: string, data: unknown, unknown): unknown: Promise<void> {
+async function safeSomStore(key: string, data: unknown, unknown): Promise<void> {
  // Short-circuit if SOM not ready
  if (!somCacheReady) return;
  const s = somWebGPUCache as any;

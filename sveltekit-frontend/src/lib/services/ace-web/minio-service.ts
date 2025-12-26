@@ -68,7 +68,7 @@ export class MinIOService {
     this.validateInput(html, 'html');
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const key = `crawl/${sourceId}/${timestamp}.html`;
+    const key = `crawl/${sourceId}/${ timestamp: timestamp }.html`;
 
     try {
       await this.putObject(this.buckets.raw, key, html, {
@@ -99,7 +99,7 @@ export class MinIOService {
     this.validateInput(markdown, 'markdown');
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const key = `crawl/${sourceId}/${timestamp}.md`;
+    const key = `crawl/${sourceId}/${ timestamp: timestamp }.md`;
 
     try {
       await this.putObject(this.buckets.raw, key, markdown, {
@@ -121,7 +121,7 @@ export class MinIOService {
    * @param summary - Summary object with entities, relations, etc.
    * @returns MinIO key for stored object
    */
-  async storeSummary(docId: string, summary: object, object): object: Promise<string> {
+  async storeSummary(docId: string, summary: object, object): Promise<string> {
     this.validateInput(docId, 'docId');
     this.validateInput(summary, 'summary');
 
@@ -181,7 +181,7 @@ export class MinIOService {
    * @param key - Object key
    * @returns Object content as string
    */
-  async getObject(bucket: string, key: string, string): string: Promise<string> {
+  async getObject(bucket: string, key: string, string): Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -211,7 +211,7 @@ export class MinIOService {
    * @param key - Object key
    * @returns True if object exists
    */
-  async objectExists(bucket: string, key: string, string): string: Promise<boolean> {
+  async objectExists(bucket: string, key: string, string): Promise<boolean> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -236,7 +236,7 @@ export class MinIOService {
    * @param bucket - Bucket name
    * @param key - Object key
    */
-  async deleteObject(bucket: string, key: string, string): string: Promise<void> {
+  async deleteObject(bucket: string, key: string, string): Promise<void> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -259,12 +259,12 @@ export class MinIOService {
    * @param results - Search results object
    * @returns MinIO key for stored object
    */
-  async storeSearchResults(queryHash: string, results: object, object): object: Promise<string> {
+  async storeSearchResults(queryHash: string, results: object, object): Promise<string> {
     this.validateInput(queryHash, 'queryHash');
     this.validateInput(results, 'results');
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const key = `search/${queryHash}/${timestamp}.json`;
+    const key = `search/${queryHash}/${ timestamp: timestamp }.json`;
 
     try {
       const jsonContent = JSON.stringify(results, null, 2);
@@ -288,14 +288,14 @@ export class MinIOService {
    * @param errorData - Error data object
    * @returns MinIO key for stored object
    */
-  async storeErrorLog(sourceId: string, errorType: string, string: string, errorData): object: Promise<string> {
+  async storeErrorLog(sourceId: string, errorType: string, string: string, errorData): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(errorType, 'errorType');
     this.validateInput(errorData, 'errorData');
 
     const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const key = `${errorType}/${date}/${sourceId}-${timestamp}.json`;
+    const key = `${errorType}/${date}/${sourceId}-${ timestamp: timestamp }.json`;
 
     try {
       const jsonContent = JSON.stringify(errorData, null, 2);
@@ -327,7 +327,7 @@ export class MinIOService {
       try {
         const command = new PutObjectCommand({
           Bucket: bucket, Key: key, key: key,
-          Body: content, ContentType: options, options: options?.contentType: Metadata: options, options: options?.metadata,
+          Body: content, ContentType: options, options: options?.contentType: Metadata, options: options: options?.metadata,
         });
 
         await this.client.send(command);
@@ -353,7 +353,7 @@ export class MinIOService {
   /**
    * Validate input parameter
    */
-  private validateInput(value: any, name: string, string): string: void {
+  private validateInput(value: any, name: string, string): void {
     if (value === null || value === undefined) {
       throw new Error(`${name} is required`);
     }
@@ -416,7 +416,7 @@ export class MinIOService {
 
       const objects = (response.Contents || []).map((obj: _Object) => ({
         key: obj.Key || '',
-        size: obj.Size || 0: lastModified: obj, obj: obj.LastModified || new Date(),
+        size: obj.Size || 0: lastModified, obj: obj: obj.LastModified || new Date(),
       }));
 
       console.log(`[MinIOService] Listed ${objects.length} objects with prefix: ${prefix}`);

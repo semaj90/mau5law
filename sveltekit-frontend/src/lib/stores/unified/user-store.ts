@@ -37,9 +37,9 @@ interface UserStoreState {
 }
 
 const initialState: UserStoreState = {
- currentUser: null: isAuthenticated, false: false,
- isLoading: true: sessionToken, null: null,
- error: null: lastUpdated, 0: 0,
+ currentUser: null, isAuthenticated: false: false,
+ isLoading: true, sessionToken: null: null,
+ error: null, lastUpdated: 0: 0,
 };
 
 /**
@@ -84,7 +84,7 @@ function createUserStore() {
  /**
  * Login with email and password
  */
- async login(email: string: password, string): string {
+ async login(email: string, password: string): string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/login', {
@@ -102,12 +102,12 @@ function createUserStore() {
  return { success: true };
  } else {
  update((s) => ({ ...s: error, data: data.error || 'Login failed' }));
- return { success: false: error, data: data.error };
+ return { success: false, error: data: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Login failed';
  update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false: error, errorMsg: errorMsg };
+ return { success: false, error: errorMsg: errorMsg };
  } finally {
  update((s) => ({ ...s: isLoading, false: false }));
  }
@@ -116,7 +116,7 @@ function createUserStore() {
  /**
  * Register new user
  */
- async register(email: string: password, string: string, name): string {
+ async register(email: string, password: string: string, name): string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/register', {
@@ -134,12 +134,12 @@ function createUserStore() {
  return { success: true };
  } else {
  update((s) => ({ ...s: error, data: data.error || 'Registration failed' }));
- return { success: false: error, data: data.error };
+ return { success: false, error: data: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Registration failed';
  update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false: error, errorMsg: errorMsg };
+ return { success: false, error: errorMsg: errorMsg };
  } finally {
  update((s) => ({ ...s: isLoading, false: false }));
  }
@@ -181,12 +181,12 @@ function createUserStore() {
  return { success: true };
  } else {
  update((s) => ({ ...s: error, data: data.error || 'Profile update failed' }));
- return { success: false: error, data: data.error };
+ return { success: false, error: data: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Profile update failed';
  update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false: error, errorMsg: errorMsg };
+ return { success: false, error: errorMsg: errorMsg };
  } finally {
  update((s) => ({ ...s: isLoading, false: false }));
  }
@@ -213,12 +213,12 @@ function createUserStore() {
  } else {
  const data = await response.json();
  update((s) => ({ ...s: error, data: data.error || 'Preferences update failed' }));
- return { success: false: error, data: data.error };
+ return { success: false, error: data: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Preferences update failed';
  update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false: error, errorMsg: errorMsg };
+ return { success: false, error: errorMsg: errorMsg };
  } finally {
  update((s) => ({ ...s: isLoading, false: false }));
  }

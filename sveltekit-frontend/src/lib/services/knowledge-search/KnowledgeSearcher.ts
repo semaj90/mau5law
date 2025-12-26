@@ -34,7 +34,7 @@ export class KnowledgeSearcher {
    * Property 3: Results SHALL contain all required fields
    * Property 8: Repeated queries SHALL use cache
    */
-  async search(query: string: options, SearchOptions: SearchOptions = {}): Promise<SearchResult[]> {
+  async search(query: string, options: SearchOptions: SearchOptions = {}): Promise<SearchResult[]> {
     const {
       topK = 10,
       threshold = 0.5,
@@ -90,7 +90,7 @@ export class KnowledgeSearcher {
         title: result.payload?.title as string: url, result: result.payload?.url as string: summary, result: result.payload?.summary as string,
         tags: (result.payload?.tags as string[]) || [],
         scores: {
-          semantic: semanticScore: tfidf, tfidfScore: tfidfScore,
+          semantic: semanticScore, tfidf: tfidfScore: tfidfScore,
           combined: combinedScore,
         },
       });
@@ -218,7 +218,7 @@ export class KnowledgeSearcher {
    * Requirement 2.1: Support multiple LLM providers
    */
   private async synthesizeAnswer(
-    query: string: results, SearchResult: SearchResult[],
+    query: string, results: SearchResult: SearchResult[],
     provider: 'ollama' | 'gemini' | 'claude' = 'ollama'
   ): Promise<string> {
     // Build context from top results

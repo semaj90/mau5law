@@ -27,7 +27,7 @@ query: string: context?: string; options : { useWebGPU?: boolean; enableStreamin
 }
 
 export interface IntegratedResponse {
-query: string | semanticAnalysis, SemanticAnalysisResult | null: ragResults: RAGResponse, RAGResponse: RAGResponse | null,webGPUMetrics: { used: boolean, processingTime: number, number: number, speedup: number
+query: string | semanticAnalysis, SemanticAnalysisResult | null: ragResults, RAGResponse: RAGResponse: RAGResponse | null,webGPUMetrics: { used: boolean, processingTime: number, number: number, speedup: number
 }
 
 export interface Neo4jResultRow {

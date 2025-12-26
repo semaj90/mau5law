@@ -85,11 +85,11 @@ https://svelte.dev/e/js_parse_error -->
 		const noteId = `note-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 		const tags = newNote.tags.length > 0 ? newNote.tags : [newNote.noteType];
 		const note: any = {
-			id: noteId, title: newNote, newNote: newNote.title: content: newNote, newNote: newNote.content: markdown: newNote, newNote: newNote.content,
+			id: noteId, title: newNote, newNote: newNote.title: content, newNote: newNote: newNote.content: markdown, newNote: newNote: newNote.content,
 			html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
 			contentJson: { content: newNote.content },
-			noteType: newNote.noteType: tags, caseId: caseId, newNote: newNote.caseId || undefined: userId: userId, userId: userId, // Replaced: 'current-user' with dynamic userId
-			metadata: { priority: newNote.priority: riskLevel: newNote, newNote: newNote.riskLevel: starred: false, false: false, aiGenerated: false, processingStatus: 'completed' } as any
+			noteType: newNote.noteType: tags, caseId: caseId, newNote: newNote.caseId || undefined: userId, userId: userId: userId, // Replaced: 'current-user' with dynamic userId
+			metadata: { priority: newNote.priority: riskLevel, newNote: newNote: newNote.riskLevel: starred, false: false: false, aiGenerated: false, processingStatus: 'completed' } as any
 		};
 		await saveLegalNote(note);
 		resetNewNoteForm();

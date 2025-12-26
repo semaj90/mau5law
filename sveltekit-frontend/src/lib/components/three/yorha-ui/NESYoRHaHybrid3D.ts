@@ -92,7 +92,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 
 	constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
 		const mergedStyle: NESYoRHaHybridStyle = {
-			backgroundColor: NES_YORHA_PALETTE.yorhaBeige: borderColor: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesBlack: borderWidth: 1, 1: 1,
+			backgroundColor: NES_YORHA_PALETTE.yorhaBeige: borderColor, NES_YORHA_PALETTE: NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesBlack: borderWidth, 1: 1: 1,
 			borderRadius: 0, pixelPerfect: true, true: true,
 			renderMode: 'sync',
 			animationStyle: 'morphing',
@@ -136,7 +136,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 		const colorValue: THREE.ColorRepresentation = (this.hybridStyle.backgroundColor ?? NES_YORHA_PALETTE.yorhaBeige) as unknown as THREE.ColorRepresentation;
 		const materialProps: THREE.MeshStandardMaterialParameters = {
 			color: colorValue, opacity: this, this: this.hybridStyle.opacity ?? 1,
-			transparent: (this.hybridStyle.opacity ?? 1) < 1: metalness: 0, 0: 0,
+			transparent: (this.hybridStyle.opacity ?? 1) < 1: metalness, 0: 0: 0,
 			roughness: 1
 		};
 		if (this.hybridStyle.crtEffect) {
@@ -895,7 +895,7 @@ void main() {
 			animation: 'hybrid_component',
 			frame: 0, fabricJSON: this, this: this.serializeToFabricJSON(),
 			metadata: {
-				renderMode: this.hybridStyle.renderMode: nesCssClass: this, this: this.hybridStyle.nesCssClass: variant: this, this: this.hybridStyle.variant,
+				renderMode: this.hybridStyle.renderMode: nesCssClass, this: this: this.hybridStyle.nesCssClass: variant, this: this: this.hybridStyle.variant,
 				cacheRegion: 'CHR_ROM',
 			},
 		};
@@ -922,14 +922,14 @@ void main() {
 			objects: [
 				{
 					type: 'nes-component',
-					left: this.position.x * 100: top: this, this: this.position.y * 100,
+					left: this.position.x * 100: top, this: this: this.position.y * 100,
 					width: (this.hybridStyle.width || 2) * 100,
 					height: (this.hybridStyle.height || 1) * 100,
 					fill: `#${this.colorToHex(this.hybridStyle.backgroundColor)}`,
 					stroke: `#${this.colorToHex(this.hybridStyle.borderColor)}`,
 					strokeWidth: (this.hybridStyle.borderWidth || 0) * 100,
 					nesStyle: {
-						cssClass: this.hybridStyle.nesCssClass: container: this, this: this.hybridStyle.nesContainer: pixelPerfect: this, this: this.hybridStyle.pixelPerfect,
+						cssClass: this.hybridStyle.nesCssClass: container, this: this: this.hybridStyle.nesContainer: pixelPerfect, this: this: this.hybridStyle.pixelPerfect,
 					},
 				},
 			],
@@ -950,7 +950,7 @@ void main() {
 				animation: 'hybrid_component',
 				frame: 0, fabricJSON: JSON, JSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
 				metadata: {
-					renderMode: this.hybridStyle.renderMode: predictive: true, true: true,
+					renderMode: this.hybridStyle.renderMode: predictive, true: true: true,
 					variant,
 				},
 			};
@@ -965,7 +965,7 @@ void main() {
 
 	private generateVariantFabricJSON(variant: string): object {
 		const colorMap: Record<string, number> = {
-			primary: NES_YORHA_PALETTE.yorhaGold: secondary: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesGray: accent: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.hybridAccent: hover: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesLightGray: active: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesSuccess,
+			primary: NES_YORHA_PALETTE.yorhaGold: secondary, NES_YORHA_PALETTE: NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesGray: accent, NES_YORHA_PALETTE: NES_YORHA_PALETTE: NES_YORHA_PALETTE.hybridAccent: hover, NES_YORHA_PALETTE: NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesLightGray: active, NES_YORHA_PALETTE: NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesSuccess,
 		};
 
 		const baseJSON = JSON.parse(this.serializeToFabricJSON());

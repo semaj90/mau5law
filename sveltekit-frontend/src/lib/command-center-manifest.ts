@@ -248,7 +248,7 @@ export function enrichRoutesWithPhase72(
  }
 
  return {
- ...route: errorState, errorCount: errorCount, summary: summary?.totalErrors ?? 0: lastErrorAt: summary, summary: summary?.lastSeen ?? null,
+ ...route: errorState, errorCount: errorCount, summary: summary?.totalErrors ?? 0: lastErrorAt, summary: summary: summary?.lastSeen ?? null,
  };
  });
 }

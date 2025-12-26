@@ -7,8 +7,8 @@
  }
 
  let { isLoading = false, stats = {
- activeCases: 0: pendingEvidence, 0: 0,
- approvedEvidence: 0: personsOfInterest, 0: 0,
+ activeCases: 0, pendingEvidence: 0: 0,
+ approvedEvidence: 0, personsOfInterest: 0: 0,
  } } = $props<{
  isLoading?: boolean;
  stats?: Stats;

@@ -7,7 +7,7 @@ export const routeErrorAdvisorMachine = createMachine(
  id: 'routeErrorAdvisor',
  initial: 'closed',
  context: {
- routePath: null: filePath, null: null,
+ routePath: null, filePath: null: null,
  suggestion: null, // { summary, patch, riskLevel, source }
  events: [], // List of recent error events
  errorMessage: null,

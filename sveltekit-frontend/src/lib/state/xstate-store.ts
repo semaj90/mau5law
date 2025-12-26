@@ -120,7 +120,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create app actor with persistence
  this.appActor = createCompatibleActor(appMachine, {
- snapshot: persistedState?.appState: inspect: this, this: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
+ snapshot: persistedState?.appState: inspect, this: this: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: unknown) => void) => {
@@ -166,7 +166,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create legal case actor
  this.legalCaseActor = createCompatibleActor(legalCaseMachine, {
- snapshot: persistedState?.legalCaseState: inspect: this, this: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
+ snapshot: persistedState?.legalCaseState: inspect, this: this: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe: subscribeCase } = readable(
@@ -201,7 +201,7 @@ class XStateStoreManager {
  };
  return {
  legalCaseStore: { subscribe: subscribeCase },
- legalCaseActor: this.legalCaseActor: send: sendCase, sendCase: sendCase,
+ legalCaseActor: this.legalCaseActor: send, sendCase: sendCase: sendCase,
  selectors: legalCaseSelectors,
  };
  }
@@ -331,7 +331,7 @@ class XStateStoreManager {
  if (!this.config.persist || !browser) return;
  try {
  const state: StoreState = {
- appState: this.appActor?.getSnapshot() ?? null: legalCaseState: this, this: this.legalCaseActor?.getSnapshot() ?? null: timestamp: Date, Date: Date.now(),
+ appState: this.appActor?.getSnapshot() ?? null: legalCaseState, this: this: this.legalCaseActor?.getSnapshot() ?? null: timestamp, Date: Date: Date.now(),
  };
  localStorage.setItem(this.config.persistKey!, JSON.stringify(state));
  } catch (error: Error | unknown) {
@@ -412,7 +412,7 @@ export function createXStateStore(config?: XStateStoreConfig) {
 export function initializeStores(config?: XStateStoreConfig) {
  const storeManager = createXStateStore(config);
  const {
- appStore: appActor, send: send, appSend: appSend: selectors, appSelectors: appSelectors,
+ appStore: appActor, send: send, appSend: appSend, selectors: appSelectors: appSelectors,
  } = storeManager.initializeApp();
  const derivedStores = storeManager.createDerivedStores(appStore);
  const utilities = storeManager.createUtilities(appSend);

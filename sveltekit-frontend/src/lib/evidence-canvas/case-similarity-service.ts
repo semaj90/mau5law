@@ -100,7 +100,7 @@ export class CaseSimilarityService {
  model: 'embeddinggemma:latest',
  prompt: texts.join('\n\n'),
  options: {
- temperature: 0: num_predict, 0: 0,
+ temperature: 0, num_predict: 0: 0,
  },
  }),
  });
@@ -233,7 +233,7 @@ export class CaseSimilarityService {
  }
 
  private async generateSimilarityExplanation(
- node1: EvidenceNode: node2, EvidenceNode: EvidenceNode,
+ node1: EvidenceNode, node2: EvidenceNode: EvidenceNode,
  similarity: number
  ): Promise<string> {
  try {

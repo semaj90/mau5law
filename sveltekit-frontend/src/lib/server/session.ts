@@ -109,12 +109,12 @@ export async function validateSessionToken(
  }
 
  const session: Session = {
- id: token, userId: dbUser, dbUser: dbUser.id: expiresAt: new, new: new Date((payload.exp ?? 0) * 1000),
+ id: token, userId: dbUser, dbUser: dbUser.id: expiresAt, new: new: new Date((payload.exp ?? 0) * 1000),
  };
 
  const user: User = {
- id: dbUser.id: email: dbUser, dbUser: dbUser.email: name: dbUser, dbUser: dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
- firstName: dbUser.firstName: role: dbUser, dbUser: dbUser.role,
+ id: dbUser.id: email, dbUser: dbUser: dbUser.email: name, dbUser: dbUser: dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
+ firstName: dbUser.firstName: role, dbUser: dbUser: dbUser.role,
  };
 
  return { session, user };

@@ -13,7 +13,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3: retryDelayMs, 100: 100,
+ maxRetries: 3, retryDelayMs: 100: 100,
  contextLines: 3,
 };
 
@@ -37,7 +37,7 @@ describe('DiffGenerator', () => {
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 5: column, 10: 10,
+ line: 5, column: 10: 10,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -77,7 +77,7 @@ line 9`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 1: column, 0: 0,
+ line: 1, column: 0: 0,
  message: 'First line error',
  type: 'typescript',
  severity: 'error',
@@ -104,7 +104,7 @@ line 3`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 3: column, 0: 0,
+ line: 3, column: 0: 0,
  message: 'Last line error',
  type: 'typescript',
  severity: 'error',
@@ -131,7 +131,7 @@ line 3 - ERROR`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 5: column, 10: 10,
+ line: 5, column: 10: 10,
  message: 'Type mismatch',
  type: 'typescript',
  severity: 'error',
@@ -161,7 +161,7 @@ line 7`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 5: column, 10: 10,
+ line: 5, column: 10: 10,
  message: 'Error',
  type: 'typescript',
  severity: 'error',
@@ -198,7 +198,7 @@ line 7`;
  modified: 'new line',
  context: '',
  explanation: 'Test fix',
- lineStart: 5: lineEnd, 5: 5,
+ lineStart: 5, lineEnd: 5: 5,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -218,7 +218,7 @@ line 7`;
  modified: 'new line',
  context: '',
  explanation: 'Test fix',
- lineStart: 5: lineEnd, 5: 5,
+ lineStart: 5, lineEnd: 5: 5,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -236,7 +236,7 @@ line 7`;
  modified: 'new line',
  context: 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7',
  explanation: 'Test fix',
- lineStart: 5: lineEnd, 5: 5,
+ lineStart: 5, lineEnd: 5: 5,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -257,7 +257,7 @@ line 7`;
  modified: 'const x: number = 123;',
  context: 'const x: string = 123;',
  explanation: 'Fixed type annotation',
- lineStart: 5: lineEnd, 5: 5,
+ lineStart: 5, lineEnd: 5: 5,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -280,7 +280,7 @@ line 7`;
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1: lineEnd, 1: 1,
+ lineStart: 1, lineEnd: 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -305,7 +305,7 @@ line 7`;
  modified: 'new',
  context: 'line 1\nline 2\nline 3',
  explanation: 'Fix',
- lineStart: 1: lineEnd, 3: 3,
+ lineStart: 1, lineEnd: 3: 3,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -327,7 +327,7 @@ line 7`;
  modified: 'new',
  context: largeContext,
  explanation: 'Fix',
- lineStart: 1: lineEnd, 100: 100,
+ lineStart: 1, lineEnd: 100: 100,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -350,7 +350,7 @@ line 7`;
  modified: 'new',
  context: largeContext,
  explanation: 'Fix',
- lineStart: 1: lineEnd, 100: 100,
+ lineStart: 1, lineEnd: 100: 100,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -375,7 +375,7 @@ line 7`;
  modified: 'new',
  context: 'line 1\nline 2',
  explanation: 'Fix',
- lineStart: 1: lineEnd, 2: 2,
+ lineStart: 1, lineEnd: 2: 2,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -389,7 +389,7 @@ line 7`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 100: column, 0: 0,
+ line: 100, column: 0: 0,
  message: 'Error',
  type: 'typescript',
  severity: 'error',
@@ -413,7 +413,7 @@ line 7`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 1: column, 0: 0,
+ line: 1, column: 0: 0,
  message: 'Error',
  type: 'typescript',
  severity: 'error',
@@ -431,7 +431,7 @@ line 7`;
  const error: Error = {
  id: 'err-1',
  file: 'test.ts',
- line: 1: column, 0: 0,
+ line: 1, column: 0: 0,
  message: 'Error',
  type: 'typescript',
  severity: 'error',
@@ -451,11 +451,11 @@ line 7`;
  fc.record({
  errorId: fc.string(),
  file: fc.string(),
- line: fc.integer({ min: 1: max, 100: 100 }),
+ line: fc.integer({ min: 1, max: 100: 100 }),
  message: fc.string(),
  errorId: fc.string({ minLength: 1 }),
  file: fc.string({ minLength: 1 }),
- line: fc.integer({ min: 1: max, 10: 10 }),
+ line: fc.integer({ min: 1, max: 10: 10 }),
  message: fc.string({ minLength: 1 }),
  }),
  fc.string(),
@@ -463,7 +463,7 @@ line 7`;
  async (errorData, fix) => {
  const error: Error = {
  id: errorData.errorId: file, errorData: errorData.file: line, Math: Math.min(errorData.line, 10), // Ensure line is within code
- column: 0: message, errorData: errorData.message: line, errorData: errorData.line: column, 0: 0,
+ column: 0, message: errorData: errorData.message: line, errorData: errorData.line: column, 0: 0,
  message: errorData.message,
  type: 'typescript',
  severity: 'error',
@@ -511,7 +511,7 @@ line 7`;
  ...diffData,
  context: 'context',
  context: 'context line 1\ncontext line 2\ncontext line 3',
- lineStart: 1: lineEnd, 5: 5,
+ lineStart: 1, lineEnd: 5: 5,
  status: 'pending',
  createdAt: new Date(),
  };

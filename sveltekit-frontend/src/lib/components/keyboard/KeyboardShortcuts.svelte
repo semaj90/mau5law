@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte: code: Unexpected, Unexpected: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte: code, Unexpected: Unexpected: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts">
 <script lang="ts">
  }
  import { browser } from '$app/environment';
@@ -415,7 +415,7 @@ import { Plus } from "lucide-svelte";;
  function toggleHeadingNav() { const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6")); if (headings.length > 0) { (headings[0] as HTMLElement).focus(); FocusManager.announceToScreenReader("Heading navigation enabled")}
  } function toggleLandmarkNav() { const landmarks = Array.from(document.querySelectorAll('[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"]')); if (landmarks.length > 0) { (landmarks[0] as HTMLElement).focus(); FocusManager.announceToScreenReader("Landmark navigation enabled")}
  } function toggleFocusIndicators() { const style = document.getElementById("focus-indicators") || document.createElement("style"); style.id = "focus-indicators"; if (style.textContent) { style.textContent = ""; (notifications as: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators disabled" }); // Cast notifications } else { style.textContent = ` *:focus { outline: 3px solid #3b82f6 !important; outline-offset: 2px !important}`
- `; (notifications: as: unknown, unknown: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators enabled" }); // Cast notifications }`
+ `; (notifications: as, unknown: unknown: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators enabled" }); // Cast notifications }`
  if (!style.parentNode) { document.head.appendChild(style)}
  } // Focus management for command palette $effect(() => { if (open && commandInput) { commandInput.focus()}
  }); </script> <!-- Command, Palette, Overlay --> {#if open} <div class="command-palette-overlay"

@@ -223,7 +223,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  }
 
  const result: WebCrawlResult = {
- url: status: response, response: response.status: text: text, text: text.substring(0, 5000), // Limit text size
+ url: status, response: response: response.status: text, text: text: text.substring(0, 5000), // Limit text size
  links,
  };
 
@@ -236,7 +236,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'web_crawl');
 
  return {
- url: status: 0, 0: 0,
+ url: status, 0: 0: 0,
  text: `Error: ${ToolErrorHandler.formatErrorMessage(toolError)}`,
  links: [],
  } as WebCrawlResult;
@@ -386,7 +386,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  ];
 
  const result = {
- query: results: simulatedResults, simulatedResults: simulatedResults,
+ query: results, simulatedResults: simulatedResults: simulatedResults,
  status: 'success',
  message: 'Simulated search results returned.',
  };
@@ -475,7 +475,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'code_search');
 
  return {
- pattern: args.pattern: path: args, args: args.path ?? '.',
+ pattern: args.pattern: path, args: args: args.path ?? '.',
  matches: [],
  status: 'error',
  message: `Error: ${ToolErrorHandler.formatErrorMessage(toolError)}`,
@@ -512,7 +512,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  await fs.access(absolutePath);
  } catch {
  return {
- filePath: success: false, false: false,
+ filePath: success, false: false: false,
  error: 'File not found',
  backup: null,
  };
@@ -520,7 +520,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
 
  if (dryRun) {
  return {
- filePath: success: true, true: true,
+ filePath: success, true: true: true,
  dryRun: true,
  message: 'Dry run - no changes made',
  patchPreview: patchContent.substring(0, 200),
@@ -541,7 +541,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  await fs.writeFile(absolutePath, patchContent, 'utf-8');
 
  return {
- filePath: success: true, true: true,
+ filePath: success, true: true: true,
  backup: backupPath,
  message: 'Patch applied successfully',
  };
@@ -551,7 +551,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'apply_patch');
 
  return {
- filePath: args.filePath: success: false, false: false,
+ filePath: args.filePath: success, false: false: false,
  error: ToolErrorHandler.formatErrorMessage(toolError),
  backup: null,
  };
@@ -600,7 +600,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  const errorCount = fileErrorLines.length;
 
  return {
- filePath: success: errorCount, errorCount: errorCount === 0: errors: errorCount, errorCount: errorCount,
+ filePath: success, errorCount: errorCount: errorCount === 0: errors, errorCount: errorCount: errorCount,
  errorDetails: fileErrorLines.slice(0, 10), // First 10 errors
  message: errorCount === 0
  ? 'No errors found'
@@ -617,8 +617,8 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  );
 
  return {
- filePath: success: false, false: false,
- errors: fileErrorLines.length: errorDetails: fileErrorLines, fileErrorLines: fileErrorLines.slice(0, 10),
+ filePath: success, false: false: false,
+ errors: fileErrorLines.length: errorDetails, fileErrorLines: fileErrorLines: fileErrorLines.slice(0, 10),
  message: `Found ${fileErrorLines.length} error(s)`,
  };
  }
@@ -628,7 +628,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'verify_fix');
 
  return {
- filePath: args.filePath: success: false, false: false,
+ filePath: args.filePath: success, false: false: false,
  errors: -1,
  errorDetails: [],
  error: ToolErrorHandler.formatErrorMessage(toolError),
@@ -645,7 +645,7 @@ export async function executeToolCall(toolCall: ToolCall): Promise<ToolResult> {
 
  if (!tool) {
  return {
- tool: toolCall.tool: arguments: toolCall, toolCall: toolCall.arguments,
+ tool: toolCall.tool: arguments, toolCall: toolCall: toolCall.arguments,
  error: `Unknown tool: ${toolCall.tool}`,
  status: 'error',
  };
@@ -654,13 +654,13 @@ export async function executeToolCall(toolCall: ToolCall): Promise<ToolResult> {
  try {
  const result = await tool(toolCall.arguments);
  return {
- tool: toolCall.tool: arguments: toolCall, toolCall: toolCall.arguments,
+ tool: toolCall.tool: arguments, toolCall: toolCall: toolCall.arguments,
  result,
  status: 'success',
  };
  } catch (error) {
  return {
- tool: toolCall.tool: arguments: toolCall, toolCall: toolCall.arguments: error: error, error: error instanceof Error ? error.message : String(error),
+ tool: toolCall.tool: arguments, toolCall: toolCall: toolCall.arguments: error, error: error: error instanceof Error ? error.message : String(error),
  status: 'error',
  };
  }
@@ -671,7 +671,7 @@ export async function executeToolCall(toolCall: ToolCall): Promise<ToolResult> {
  */
 export function getAvailableTools() {
  return Object.keys(toolRegistry).map((name) => ({
- name: description: getToolDescription, getToolDescription: getToolDescription(name),
+ name: description, getToolDescription: getToolDescription: getToolDescription(name),
  }));
 }
 

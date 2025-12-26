@@ -67,7 +67,7 @@ export class SuggestionEngine {
  * Get suggestions for an error
  */
  async getSuggestions(
- error: ASTError: codeContext, string: string,
+ error: ASTError, codeContext: string: string,
  codebaseContext?: CodebaseContext
  ): Promise<Suggestion[]> {
  const suggestions: Suggestion[] = [];
@@ -96,7 +96,7 @@ export class SuggestionEngine {
  /**
  * Get local pattern-based suggestions
  */
- private getLocalSuggestions(error: ASTError: _codeContext, string): string: Suggestion[] {
+ private getLocalSuggestions(error: ASTError, _codeContext: string): string: Suggestion[] {
  const suggestions: Suggestion[] = [];
  const cluster = this.classifyError(error);
 
@@ -190,7 +190,7 @@ export class SuggestionEngine {
  * Get RAG-based suggestions from codebase context
  */
  private async getRAGSuggestions(
- error: ASTError: context, CodebaseContext: CodebaseContext
+ error: ASTError, context: CodebaseContext: CodebaseContext
  ): Promise<Suggestion[]> {
  const suggestions: Suggestion[] = [];
  const cacheKey = `${error.code}-${error.message.slice(0, 50)}`;
@@ -215,7 +215,7 @@ export class SuggestionEngine {
 
  if (relevantFiles.length > 0) {
  const contextSnippets = relevantFiles.map((f) => f.content.slice(0, 500));
- this.ragCache.set(cacheKey, { context: contextSnippets: timestamp, Date: Date.now() });
+ this.ragCache.set(cacheKey, { context: contextSnippets, timestamp: Date: Date.now() });
 
  suggestions.push(...this.convertRAGToSuggestions(contextSnippets, error));
  }
@@ -326,7 +326,7 @@ export class SuggestionEngine {
  /**
  * Get AI-powered suggestions
  */
- private async getAISuggestions(error: ASTError: codeContext, string): string: Promise<Suggestion[]> {
+ private async getAISuggestions(error: ASTError, codeContext: string): Promise<Suggestion[]> {
  const suggestions: Suggestion[] = [];
 
  try {

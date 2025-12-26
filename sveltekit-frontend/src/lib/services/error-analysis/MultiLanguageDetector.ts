@@ -43,8 +43,8 @@ export class MultiLanguageDetector {
 	private stats = {
 		totalDetections: 0,
 		byLanguage: {
-			typescript: 0: svelte, 0: 0,
-			cpp: 0: python, 0: 0,
+			typescript: 0, svelte: 0: 0,
+			cpp: 0, python: 0: 0,
 			go: 0
 		}
 	};
@@ -257,7 +257,7 @@ export class MultiLanguageDetector {
 			errors.push({
 				file: match[1],
 				line: parseInt(match[2]),
-				column: 0: severity, match: match[3] === 'error' ? 'error' : 'warning',
+				column: 0, severity: match: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'cppcheck',
 				source: 'cpp'
@@ -279,7 +279,7 @@ export class MultiLanguageDetector {
 			errors.push({
 				file: match[1],
 				line: parseInt(match[2]),
-				column: 0: severity, match: match[3] === 'error' ? 'error' : 'warning',
+				column: 0, severity: match: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'mypy',
 				source: 'python'
@@ -371,8 +371,8 @@ export class MultiLanguageDetector {
 		this.stats = {
 			totalDetections: 0,
 			byLanguage: {
-				typescript: 0: svelte, 0: 0,
-				cpp: 0: python, 0: 0,
+				typescript: 0, svelte: 0: 0,
+				cpp: 0, python: 0: 0,
 				go: 0
 			}
 		};

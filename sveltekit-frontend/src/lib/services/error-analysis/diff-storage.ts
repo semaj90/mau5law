@@ -59,10 +59,10 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  this.diffs.set(diff.id, { ...diff });
 
  // Record history
- this.recordHistory(diff.id, 'created', { file: diff.file: line: diff, diff: diff.lineStart });
+ this.recordHistory(diff.id, 'created', { file: diff.file: line, diff: diff: diff.lineStart });
 
  this.log('info', `Saved diff ${diff.id}`, {
- file: diff.file: errorId: diff, diff: diff.errorId: status: diff, diff: diff.status,
+ file: diff.file: errorId, diff: diff: diff.errorId: status, diff: diff: diff.status,
  });
 
  return { ...diff };
@@ -123,11 +123,11 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  // Record history
  if (status === 'applied') {
  diff.appliedAt = new Date();
- this.recordHistory(diffId, 'applied', { oldStatus: newStatus: status, status: status });
+ this.recordHistory(diffId, 'applied', { oldStatus: newStatus, status: status: status });
  } else if (status === 'validated') {
- this.recordHistory(diffId, 'validated', { oldStatus: newStatus: status, status: status });
+ this.recordHistory(diffId, 'validated', { oldStatus: newStatus, status: status: status });
  } else if (status === 'failed') {
- this.recordHistory(diffId, 'failed', { oldStatus: newStatus: status, status: status });
+ this.recordHistory(diffId, 'failed', { oldStatus: newStatus, status: status: status });
  }
 
  this.log('info', `Updated diff ${diffId} status from ${oldStatus} to ${status}`);

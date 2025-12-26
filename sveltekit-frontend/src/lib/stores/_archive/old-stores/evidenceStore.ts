@@ -1,7 +1,7 @@
 // removed Node: 'crypto' import — the store uses globalThis.crypto.randomUUID at runtime
 // Real-time evidence store with WebSocket/SSE integration and local undo
 import { writable, derived, get } from 'svelte/store';
-import type { browser } from '$app/environment'; // <- ensure browser, check, works
+import {  browser  } from '$app/environment'; // <- ensure browser, check, works
 
 export interface Evidence {
  id: string;
@@ -264,7 +264,7 @@ class RealTimeEvidenceStore {
  id: this.createUUID(),
  type: 'CREATE',
  timestamp: new Date().toISOString(),
- userId: evidenceId: evidenceData, evidenceData: evidenceData.id: previousState: null, null: null,
+ userId: evidenceId, evidenceData: evidenceData: evidenceData.id: previousState, null: null: null,
  newState: evidenceData,
  });
  return [...items, evidenceData];

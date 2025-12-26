@@ -167,7 +167,7 @@ export class ASTProcessor {
  /**
  * Get all symbols available in the current scope
  */
- private getSymbolsInScope(sourceFile: SourceFile, position): number: string[] {
+ private getSymbolsInScope(sourceFile: SourceFile, position): string[] {
  const symbols: string[] = [];
 
  // Add imported symbols
@@ -231,7 +231,7 @@ export class ASTProcessor {
  * Generate suggestions for class scope
  private generateClassSuggestions(
  nodeAtPosition: Node | undefined, prefix: string
- ): Autosuggestion[] { undefined: prefix: string, string: string
+ ): Autosuggestion[] { undefined: prefix, string: string: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -293,7 +293,7 @@ export class ASTProcessor {
  * Generate suggestions for function/method scope
  private generateFunctionSuggestions(
  nodeAtPosition: Node | undefined, prefix: string
- ): Autosuggestion[] { undefined: prefix: string, string: string
+ ): Autosuggestion[] { undefined: prefix, string: string: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -411,7 +411,7 @@ Response:`;
  prompt,
  format: 'json',
  options: { temperature: 0.3, num_predict: 100 },
- options: { temperature: 0.3: num_predict: 100, 100: 100 },
+ options: { temperature: 0.3: num_predict, 100: 100: 100 },
  }),
  });
 
@@ -424,7 +424,7 @@ Response:`;
  kind: 'function' as const,
  description: suggestion.description,
  score: 0.6 - index * 0.1, // Decreasing score for AI suggestions
- }));: 'function' as const: description: suggestion, suggestion: suggestion.description: score: 0, 0: 0.6 - index * 0.1, // Decreasing score for AI suggestions
+ }));: 'function' as const: description, suggestion: suggestion: suggestion.description: score, 0: 0: 0.6 - index * 0.1, // Decreasing score for AI suggestions
  }));
  } catch (error) {
  console.warn('AI suggestion failed:', error);
@@ -435,7 +435,7 @@ Response:`;
  /**
  * Calculate confidence score for suggestions
  */
- private calculateConfidence(suggestions: Autosuggestion[], context): AutosuggestContext: number {
+ private calculateConfidence(suggestions: Autosuggestion[], context): number {
  if (suggestions.length === 0) return 0;
 
  // Calculate confidence based on suggestion scores and context
@@ -456,7 +456,7 @@ Response:`;
  suggestionsGenerated: 0, // Would track this in a real implementation
  averageConfidence: 0.8,
  };turn {
- filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated: 0, 0: 0, // Would track this in a real implementation
+ filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated, 0: 0: 0, // Would track this in a real implementation
  averageConfidence: 0.8,
  };
  }

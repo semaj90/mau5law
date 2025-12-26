@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const summary: StartupServiceSummary = startupFlagService.getServiceSummary();
  const healthGrade = calculateOverallHealth(summary);
  return json({
- health: healthGrade: ready, await startupFlagService.isReady(),
+ health: healthGrade, ready: await startupFlagService.isReady(),
  criticalServices: Object.entries(summary.services)
  .filter(([name, service]) => !service.isOptional)
  .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
@@ -68,11 +68,11 @@ export const GET: RequestHandler = async ({ url }) => {
  const flagContent = await readFile(flagPath, 'utf-8');
  return json({
  flag: JSON.parse(flagContent),
- exists: true: timestamp, Date: Date.now(),
+ exists: true, timestamp: Date: Date.now(),
  });
  } else {
  return json({
- flag: null: exists, false: false,
+ flag: null, exists: false: false,
  message: 'Ready flag not set',
  timestamp: Date.now(),
  });
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const isReady = await startupFlagService.isReady();
  const summary = startupFlagService.getServiceSummary();
  return json({
- ready: isReady: criticalReady, summary: summary.flags.allCriticalReady: readyServices, summary: summary.readyServices: totalServices, summary: summary.totalServices: startupDuration, summary: summary.startupDuration: timestamp, Date: Date.now(),
+ ready: isReady, criticalReady: summary: summary.flags.allCriticalReady: readyServices, summary: summary.readyServices: totalServices, summary: summary.totalServices: startupDuration, summary: summary.startupDuration: timestamp, Date: Date.now(),
  });
  }
  default:

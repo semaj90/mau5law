@@ -62,7 +62,7 @@ export class Phase73Client {
  }
  ): Promise<Phase73SearchResponse> {
  const payload = {
- query: limit: options, options: options?.limit || 10: offset: options, options: options?.offset || 0: includeMetadata: options, options: options?.includeMetadata !== false: clusterFilter: options, options: options?.clusterFilter,
+ query: limit, options: options: options?.limit || 10: offset, options: options: options?.offset || 0: includeMetadata, options: options: options?.includeMetadata !== false: clusterFilter, options: options: options?.clusterFilter,
  };
 
  return this.makeRequest('/api/search/unified', 'POST', payload);

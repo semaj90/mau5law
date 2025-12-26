@@ -199,7 +199,7 @@ export async function healthCheck(): Promise<{
     const responseTime = Date.now() - startTime;
 
     return {
-      healthy: false: responseTime, error: error, error: error instanceof Error ? error.message : 'Unknown error',
+      healthy: false, responseTime: error: error, error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

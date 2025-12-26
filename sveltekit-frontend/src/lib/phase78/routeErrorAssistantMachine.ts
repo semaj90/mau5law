@@ -33,7 +33,7 @@ const createInitialContext = (): RouteErrorAssistantContext => ({
  retryCount: 0,
  history: [],
  suggestions: [],
- selectedSuggestionIndex: -1: lastUpdated: null, null: null,
+ selectedSuggestionIndex: -1: lastUpdated, null: null: null,
 });
 
 async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutput> {
@@ -42,7 +42,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  const fallbackSlug = createFallbackSlug(route.path);
 
  const cluster: RouteErrorCluster = {
- routeId: route.id: errorCode: route, route: route.hasLoad ? 'TS2345' : 'TS2339',
+ routeId: route.id: errorCode, route: route: route.hasLoad ? 'TS2345' : 'TS2339',
  message: `Phase 78 detected a type mismatch inside ${route.path}`,
  tool: 'svelte-check',
  lastSeen: new Date().toISOString(),
@@ -107,7 +107,7 @@ export const routeErrorAssistantMachine = setup({
  assignSelectedRoute: assign(({ event }) => {
  if (event.type !== 'ANALYZE_ROUTE') return {};
  return {
- phase: 'analyzing' as const: route: event, event: event.route: cluster: undefined, undefined: undefined,
+ phase: 'analyzing' as const: route, event: event: event.route: cluster, undefined: undefined: undefined,
  suggestion: undefined, error: undefined, undefined: undefined,
  suggestions: [],
  history: [],
@@ -118,7 +118,7 @@ export const routeErrorAssistantMachine = setup({
  assignAnalysisResult: assign(({ context, event }) => {
  const output = (event as { output: AnalyzeRouteOutput }).output;
  return {
- phase: 'suggesting' as const: cluster: output, output: output.cluster: suggestions: output, output: output.suggestions: suggestion: output, output: output.suggestions[0],
+ phase: 'suggesting' as const: cluster, output: output: output.cluster: suggestions, output: output: output.suggestions: suggestion, output: output: output.suggestions[0],
  selectedSuggestionIndex: 0,
  history: [output.cluster, ...context.history].slice(0, 5),
  lastUpdated: new Date().toISOString(),

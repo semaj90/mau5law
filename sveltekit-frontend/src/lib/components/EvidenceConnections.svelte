@@ -20,7 +20,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 					const relatedItem = evidence.find((e) => e.id === relatedId);
 					if (relatedItem) {
 						lines.push({
-							from: item: to, relatedItem: relatedItem,
+							from: item, to: relatedItem: relatedItem,
 							type: item.relation_type || 'related'
 						});
 					}

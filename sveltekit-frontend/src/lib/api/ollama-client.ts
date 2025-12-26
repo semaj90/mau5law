@@ -2,7 +2,7 @@
  * Production Ollama Endpoint Helper
  *
  * Centralized Ollama endpoint configuration with Docker/local fallback
- * Supports: gemma3-legal:latest: embeddinggemma, latest: latest
+ * Supports: gemma3-legal: latest, embeddinggemma: latest: latest
  */
 
 // Environment-based endpoint resolution

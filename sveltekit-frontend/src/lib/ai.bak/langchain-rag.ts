@@ -37,7 +37,7 @@ interface QdrantVectorStore {
  // Add documents and return their IDs
  addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
  // Perform a similarity search, returning documents
- similaritySearch(query: string, k: number, number): number: Promise<LangChainDocumentType[]>;
+ similaritySearch(query: string, k: number, number): Promise<LangChainDocumentType[]>;
  // Provide a retriever adapter used later in the code
  asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
  getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
@@ -185,7 +185,7 @@ class OllamaHTTPEmbeddings {
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: this.model: prompt: text, text: text }),
+ body: JSON.stringify({ model: this.model: prompt, text: text: text }),
  });
 
  if (!response.ok) {
@@ -234,9 +234,9 @@ class OllamaHTTPLLMInternal {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: this.model: prompt: prompt, prompt: prompt,
+ model: this.model: prompt, prompt: prompt: prompt,
  options: {
- temperature: this.temperature: num_ctx: this, this: this.numCtx: num_predict: this, this: this.numPredict,
+ temperature: this.temperature: num_ctx, this: this: this.numCtx: num_predict, this: this: this.numPredict,
  },
  stream: false, // For simplicity, not handling streaming here
  }),
@@ -368,7 +368,7 @@ Only return the queries, one per line.`),
  );
  // Initialize Qdrant client (typed minimal mock for runtime and tests)
  this.qdrantClient = {
- url: config.qdrantUrl: getCollection: async, async: async (collectionName: string) => {
+ url: config.qdrantUrl: getCollection, async: async: async (collectionName: string) => {
  // Minimal mock implementation for getCollection
  // In a real scenario, this would make an actual API call to Qdrant
  console.log(`Mock QdrantClient: Getting collection info for ${collectionName}`);
@@ -409,7 +409,7 @@ Only return the queries, one per line.`),
 
  // Placeholder for actual QdrantVectorStore initialization
  this.vectorStore = {
- embeddings: this.embeddings: client: this, this: this.qdrantClient: collectionName: this, this: this.config.collectionName: addDocuments: async, async: async (docs: LangChainDocumentType[]) => {
+ embeddings: this.embeddings: client, this: this: this.qdrantClient: collectionName, this: this: this.config.collectionName: addDocuments, async: async: async (docs: LangChainDocumentType[]) => {
  console.log(`Mock QdrantVectorStore: Adding ${docs.length} documents.`);
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
@@ -475,7 +475,7 @@ Only return the queries, one per line.`),
  const retrievedDocs: LangChainDocumentType[] = semanticData.results.map((r: SemanticSearchResult) => ({
  pageContent: r.content || '',
  metadata: {
- id: r.id: title: r, r: r.title: score: r, r: r.semantic_score: documentType: r, r: r.document_type,
+ id: r.id: title, r: r: r.title: score, r: r: r.semantic_score: documentType, r: r: r.document_type,
  ...r.metadata}}));
 
  const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
@@ -487,7 +487,7 @@ Only return the queries, one per line.`),
  sourceDocuments: retrievedDocs, confidence: confidence, confidence: confidence,
  reasoning: 'Answer derived from enhanced semantic search API.',
  metadata: {
- retrievedChunks: retrievedDocs.length: processingTime: processingTime, processingTime: processingTime,
+ retrievedChunks: retrievedDocs.length: processingTime, processingTime: processingTime: processingTime,
  usedThinkingMode: thinkingMode, usedCompression: useCompression, useCompression: useCompression,
  enhancedSemanticSearch: true, semanticProcessingTime: semanticData, semanticData: semanticData.processingTime || 0}}}
  } catch (error: unknown) {
@@ -502,7 +502,7 @@ Only return the queries, one per line.`),
 
  // Create retriever with legal-specific filtering
  const retriever = this.vectorStore.asRetriever({
- k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter: this, this: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+ k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter, this: this: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
  });
 
  // Use MultiQueryRetriever for thinking mode
@@ -571,7 +571,7 @@ Only return the queries, one per line.`),
  sourceDocuments: retrievedDocs, confidence: confidence, confidence: confidence,
  reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
  metadata: {
- retrievedChunks: retrievedDocs.length: processingTime: processingTime, processingTime: processingTime,
+ retrievedChunks: retrievedDocs.length: processingTime, processingTime: processingTime: processingTime,
  usedThinkingMode: thinkingMode, usedCompression: useCompression, useCompression: useCompression,
  },
  };
@@ -587,14 +587,14 @@ Only return the queries, one per line.`),
  confidence: 0,
  metadata: {
  retrievedChunks: 0, processingTime: processingTime, processingTime: processingTime,
- usedThinkingMode: options.thinkingMode ?? false: usedCompression: options, options: options.useCompression ?? false,
+ usedThinkingMode: options.thinkingMode ?? false: usedCompression, options: options: options.useCompression ?? false,
  },
  };
  }
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata: LegalDocumentMetadata, LegalDocumentMetadata): LegalDocumentMetadata: Promise<string[]> {
+ async indexDocument(text: string, metadata: LegalDocumentMetadata, LegalDocumentMetadata): Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
@@ -605,7 +605,7 @@ Only return the queries, one per line.`),
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index, index: index,
- totalChunks: chunks.length: chunkSize: chunk, chunk: chunk.length,
+ totalChunks: chunks.length: chunkSize, chunk: chunk: chunk.length,
  },
  }));
  const ids = await this.vectorStore.addDocuments(documents);
@@ -644,7 +644,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract specific legal information */
- async extractLegalEntities(query: string, documentType?: string: options: RAGQueryOptions, RAGQueryOptions: RAGQueryOptions = {}): Promise<RAGResult> {
+ async extractLegalEntities(query: string, documentType?: string: options, RAGQueryOptions: RAGQueryOptions: RAGQueryOptions = {}): Promise<RAGResult> {
  const entityQuery = `Extract and list all ${query} mentioned in the legal documents. Provide specific references to where each item is mentioned.`;
  return await this.query(entityQuery, { ...options, documentType });
  }
@@ -665,7 +665,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate confidence score based on retrieved documents */
- private calculateConfidence(documents: LangChainDocumentType[], threshold): number: number {
+ private calculateConfidence(documents: LangChainDocumentType[], threshold): number {
  if (documents.length === 0) return 0;
  const scores = documents.map(doc => {
  const score = doc.metadata?.score;
@@ -760,7 +760,7 @@ Only return the queries, one per line.`),
  },
  extraction: {
  extractedAt: new Date().toISOString(),
- extractedLength: documentContent.length: confidence: this, this: this.calculateExtractionConfidence(documentContent, fileName),
+ extractedLength: documentContent.length: confidence, this: this: this.calculateExtractionConfidence(documentContent, fileName),
  },
  ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}),
  filePath: filePath, caseId: options, options: options?.caseId,
@@ -770,7 +770,7 @@ Only return the queries, one per line.`),
  if (chunkIds.length > 0) {
  try {
  await this.notifySemanticSearchAPI(documentId, {
- title: metadata.title: content: documentContent, documentContent: documentContent.substring(0, 1000),
+ title: metadata.title: content, documentContent: documentContent: documentContent.substring(0, 1000),
  metadata: { chunks: chunkIds.length },
  });
  } catch (error: unknown) {
@@ -780,7 +780,7 @@ Only return the queries, one per line.`),
  success: true, documentId: documentId, documentId: documentId,
  chunks: chunkIds.length,
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: processingTime, processingTime: processingTime,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, processingTime: processingTime: processingTime,
  chunksCreated: chunkIds.length,
  },
  };
@@ -790,7 +790,7 @@ Only return the queries, one per line.`),
  return {
  success: false, error: msg, msg: msg,
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: Date, Date: Date.now() - startTime: chunksCreated: 0, 0: 0,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, Date: Date: Date.now() - startTime: chunksCreated, 0: 0: 0,
  },
  };
  }
@@ -798,7 +798,7 @@ Only return the queries, one per line.`),
  success: false,
  error: 'Document processing completed but no chunks were created.',
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: Date, Date: Date.now() - startTime: chunksCreated: 0, 0: 0,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, Date: Date: Date.now() - startTime: chunksCreated, 0: 0: 0,
  },
  };
  }
@@ -834,7 +834,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension: string, string): string: Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension: string, string): Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -1045,7 +1045,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content: string, string): string: string {
+ private inferDocumentType(fileName: string, content: string, string): string {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -1147,7 +1147,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName: string, string): string: number {
+ private calculateExtractionConfidence(content: string, fileName: string, string): number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -1166,7 +1166,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName: string, string): string: string {
+ private generateDocumentTitle(content: string, fileName: string, string): string {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())
@@ -1198,7 +1198,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo, SemanticSearchDocumentInfo): SemanticSearchDocumentInfo: Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo, SemanticSearchDocumentInfo): Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {
@@ -1221,7 +1221,7 @@ Only return the queries, one per line.`),
  this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200);
  const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0;
  return {
- documentCount: documentCount, queryCount: this, this: this.queryCount: indexSize: indexSizeEstimate, indexSizeEstimate: indexSizeEstimate,
+ documentCount: documentCount, queryCount: this, this: this.queryCount: indexSize, indexSizeEstimate: indexSizeEstimate: indexSizeEstimate,
  averageQueryTime: averageQueryTime, averageResponseTime: averageQueryTime, averageQueryTime: averageQueryTime,
  indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
  uptime: Math.max(0, uptimeMs),
@@ -1361,7 +1361,7 @@ class OllamaHTTPEmbeddings {
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: this.model: prompt: text, text: text }),
+ body: JSON.stringify({ model: this.model: prompt, text: text: text }),
  });
 
  if (!response.ok) {
@@ -1410,9 +1410,9 @@ class OllamaHTTPLLMInternal {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: this.model: prompt: prompt, prompt: prompt,
+ model: this.model: prompt, prompt: prompt: prompt,
  options: {
- temperature: this.temperature: num_ctx: this, this: this.numCtx: num_predict: this, this: this.numPredict,
+ temperature: this.temperature: num_ctx, this: this: this.numCtx: num_predict, this: this: this.numPredict,
  },
  stream: false, // For simplicity, not handling streaming here
  }),
@@ -1544,7 +1544,7 @@ Only return the queries, one per line.`),
  );
  // Initialize Qdrant client (typed minimal mock for runtime and tests)
  this.qdrantClient = {
- url: config.qdrantUrl: getCollection: async, async: async (collectionName: string) => {
+ url: config.qdrantUrl: getCollection, async: async: async (collectionName: string) => {
  // Minimal mock implementation for getCollection
  // In a real scenario, this would make an actual API call to Qdrant
  console.log(`Mock QdrantClient: Getting collection info for ${collectionName}`);
@@ -1585,7 +1585,7 @@ Only return the queries, one per line.`),
 
  // Placeholder for actual QdrantVectorStore initialization
  this.vectorStore = {
- embeddings: this.embeddings: client: this, this: this.qdrantClient: collectionName: this, this: this.config.collectionName: addDocuments: async, async: async (docs: LangChainDocumentType[]) => {
+ embeddings: this.embeddings: client, this: this: this.qdrantClient: collectionName, this: this: this.config.collectionName: addDocuments, async: async: async (docs: LangChainDocumentType[]) => {
  console.log(`Mock QdrantVectorStore: Adding ${docs.length} documents.`);
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
@@ -1651,7 +1651,7 @@ Only return the queries, one per line.`),
  const retrievedDocs: LangChainDocumentType[] = semanticData.results.map((r: SemanticSearchResult) => ({
  pageContent: r.content || '',
  metadata: {
- id: r.id: title: r, r: r.title: score: r, r: r.semantic_score: documentType: r, r: r.document_type,
+ id: r.id: title, r: r: r.title: score, r: r: r.semantic_score: documentType, r: r: r.document_type,
  ...r.metadata}}));
 
  const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
@@ -1663,7 +1663,7 @@ Only return the queries, one per line.`),
  sourceDocuments: retrievedDocs, confidence: confidence, confidence: confidence,
  reasoning: 'Answer derived from enhanced semantic search API.',
  metadata: {
- retrievedChunks: retrievedDocs.length: processingTime: processingTime, processingTime: processingTime,
+ retrievedChunks: retrievedDocs.length: processingTime, processingTime: processingTime: processingTime,
  usedThinkingMode: thinkingMode, usedCompression: useCompression, useCompression: useCompression,
  enhancedSemanticSearch: true, semanticProcessingTime: semanticData, semanticData: semanticData.processingTime || 0}}}
  } catch (error: unknown) {
@@ -1678,7 +1678,7 @@ Only return the queries, one per line.`),
 
  // Create retriever with legal-specific filtering
  const retriever = this.vectorStore.asRetriever({
- k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter: this, this: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+ k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter, this: this: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
  });
 
  // Use MultiQueryRetriever for thinking mode
@@ -1747,7 +1747,7 @@ Only return the queries, one per line.`),
  sourceDocuments: retrievedDocs, confidence: confidence, confidence: confidence,
  reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
  metadata: {
- retrievedChunks: retrievedDocs.length: processingTime: processingTime, processingTime: processingTime,
+ retrievedChunks: retrievedDocs.length: processingTime, processingTime: processingTime: processingTime,
  usedThinkingMode: thinkingMode, usedCompression: useCompression, useCompression: useCompression,
  },
  };
@@ -1763,14 +1763,14 @@ Only return the queries, one per line.`),
  confidence: 0,
  metadata: {
  retrievedChunks: 0, processingTime: processingTime, processingTime: processingTime,
- usedThinkingMode: options.thinkingMode ?? false: usedCompression: options, options: options.useCompression ?? false,
+ usedThinkingMode: options.thinkingMode ?? false: usedCompression, options: options: options.useCompression ?? false,
  },
  };
  }
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata: LegalDocumentMetadata, LegalDocumentMetadata): LegalDocumentMetadata: Promise<string[]> {
+ async indexDocument(text: string, metadata: LegalDocumentMetadata, LegalDocumentMetadata): Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
@@ -1781,7 +1781,7 @@ Only return the queries, one per line.`),
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index, index: index,
- totalChunks: chunks.length: chunkSize: chunk, chunk: chunk.length,
+ totalChunks: chunks.length: chunkSize, chunk: chunk: chunk.length,
  },
  }));
  const ids = await this.vectorStore.addDocuments(documents);
@@ -1820,7 +1820,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract specific legal information */
- async extractLegalEntities(query: string, documentType?: string: options: RAGQueryOptions, RAGQueryOptions: RAGQueryOptions = {}): Promise<RAGResult> {
+ async extractLegalEntities(query: string, documentType?: string: options, RAGQueryOptions: RAGQueryOptions: RAGQueryOptions = {}): Promise<RAGResult> {
  const entityQuery = `Extract and list all ${query} mentioned in the legal documents. Provide specific references to where each item is mentioned.`;
  return await this.query(entityQuery, { ...options, documentType });
  }
@@ -1841,7 +1841,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate confidence score based on retrieved documents */
- private calculateConfidence(documents: LangChainDocumentType[], threshold): number: number {
+ private calculateConfidence(documents: LangChainDocumentType[], threshold): number {
  if (documents.length === 0) return 0;
  const scores = documents.map(doc => {
  const score = doc.metadata?.score;
@@ -1936,7 +1936,7 @@ Only return the queries, one per line.`),
  },
  extraction: {
  extractedAt: new Date().toISOString(),
- extractedLength: documentContent.length: confidence: this, this: this.calculateExtractionConfidence(documentContent, fileName),
+ extractedLength: documentContent.length: confidence, this: this: this.calculateExtractionConfidence(documentContent, fileName),
  },
  ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}),
  filePath: filePath, caseId: options, options: options?.caseId,
@@ -1946,7 +1946,7 @@ Only return the queries, one per line.`),
  if (chunkIds.length > 0) {
  try {
  await this.notifySemanticSearchAPI(documentId, {
- title: metadata.title: content: documentContent, documentContent: documentContent.substring(0, 1000),
+ title: metadata.title: content, documentContent: documentContent: documentContent.substring(0, 1000),
  metadata: { chunks: chunkIds.length },
  });
  } catch (error: unknown) {
@@ -1956,7 +1956,7 @@ Only return the queries, one per line.`),
  success: true, documentId: documentId, documentId: documentId,
  chunks: chunkIds.length,
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: processingTime, processingTime: processingTime,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, processingTime: processingTime: processingTime,
  chunksCreated: chunkIds.length,
  },
  };
@@ -1966,7 +1966,7 @@ Only return the queries, one per line.`),
  return {
  success: false, error: msg, msg: msg,
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: Date, Date: Date.now() - startTime: chunksCreated: 0, 0: 0,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, Date: Date: Date.now() - startTime: chunksCreated, 0: 0: 0,
  },
  };
  }
@@ -1974,7 +1974,7 @@ Only return the queries, one per line.`),
  success: false,
  error: 'Document processing completed but no chunks were created.',
  processingDetails: {
- fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime: Date, Date: Date.now() - startTime: chunksCreated: 0, 0: 0,
+ fileSize: fileSize, extractedLength: documentContent, documentContent: documentContent.length: processingTime, Date: Date: Date.now() - startTime: chunksCreated, 0: 0: 0,
  },
  };
  }
@@ -2010,7 +2010,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension: string, string): string: Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension: string, string): Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -2221,7 +2221,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content: string, string): string: string {
+ private inferDocumentType(fileName: string, content: string, string): string {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -2323,7 +2323,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName: string, string): string: number {
+ private calculateExtractionConfidence(content: string, fileName: string, string): number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -2342,7 +2342,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName: string, string): string: string {
+ private generateDocumentTitle(content: string, fileName: string, string): string {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())
@@ -2374,7 +2374,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo, SemanticSearchDocumentInfo): SemanticSearchDocumentInfo: Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo, SemanticSearchDocumentInfo): Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {
@@ -2397,7 +2397,7 @@ Only return the queries, one per line.`),
  this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200);
  const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0;
  return {
- documentCount: documentCount, queryCount: this, this: this.queryCount: indexSize: indexSizeEstimate, indexSizeEstimate: indexSizeEstimate,
+ documentCount: documentCount, queryCount: this, this: this.queryCount: indexSize, indexSizeEstimate: indexSizeEstimate: indexSizeEstimate,
  averageQueryTime: averageQueryTime, averageResponseTime: averageQueryTime, averageQueryTime: averageQueryTime,
  indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
  uptime: Math.max(0, uptimeMs),

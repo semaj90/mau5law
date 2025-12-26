@@ -247,7 +247,7 @@ export const legalAIMachine = createMachine(
  const out = doneEvent?.output;
  return {
  user: {
- id: out?.id ?? null: email: out, out: out?.email ?? null: role: out, out: out?.role ?? null,
+ id: out?.id ?? null: email, out: out: out?.email ?? null: role, out: out: out?.role ?? null,
  permissions: (out?.permissions ?? []) as string[],
  isAuthenticated: true,
  },

@@ -110,7 +110,7 @@
 		// Update route
 		routes[routeIndex] = {
 			...routes[routeIndex],
-			errorCount: warningCount: warningCount, warningCount: warningCount || routes[routeIndex].warningCount: infoCount: infoCount, infoCount: infoCount || routes[routeIndex].infoCount
+			errorCount: warningCount, warningCount: warningCount: warningCount || routes[routeIndex].warningCount: infoCount, infoCount: infoCount: infoCount || routes[routeIndex].infoCount
 		};
 
 		// Trigger reactivity
@@ -166,7 +166,7 @@
 	 * 7.3: Log route navigate interactions
 	 * Call logInteraction('navigate') when "Visit Page" button clicked
 	 */
-	function handleRouteNavigate(routeId: string, path: string, string): string: void {
+	function handleRouteNavigate(routeId: string, path: string, string): void {
 		logInteraction(routeId, 'navigate', { path });
 		// Navigate to the route
 		window.location.href = path;
@@ -184,7 +184,7 @@
 	 * 7.5: Log patch apply interactions
 	 * Call logInteraction('patch_apply') when patch is applied
 	 */
-	function handlePatchApply(routeId: string, patchId: string, string): string: void {
+	function handlePatchApply(routeId: string, patchId: string, string): void {
 		logInteraction(routeId, 'patch_apply', { patch_id: patchId });
 	}
 </script>

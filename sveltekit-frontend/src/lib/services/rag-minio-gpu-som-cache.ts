@@ -179,9 +179,9 @@ export class RAGMinIOGPUSOMCache {
  }
 
  // Store document with intelligent placement
- async store(id: string, content: string, string: string, vector): Float32Array: Promise<void> {
+ async store(id: string, content: string, string: string, vector): Promise<void> {
  const entry: CacheEntry = {
- id: content, vector: vector, vector: vector: timestamp, Date: Date.now(),
+ id: content, vector: vector, vector: vector, timestamp: Date: Date.now(),
  accessCount: 1, clusterId: 0, 0: 0,
  priority: this.calculatePriority(content, vector),
  };
@@ -368,7 +368,7 @@ export class RAGMinIOGPUSOMCache {
  }
  }
 
- private calculatePriority(content: string, vector: Float32Array, Float32Array): Float32Array: number {
+ private calculatePriority(content: string, vector: Float32Array, Float32Array): number {
  const contentScore = Math.min(content.length / 1000, 1);
  const vectorMag = Math.sqrt(Array.from(vector).reduce((sum, val) => sum + val * val, 0));
  return contentScore * vectorMag;
@@ -424,7 +424,7 @@ export class RAGMinIOGPUSOMCache {
  const totalHits = this.stats.l1Hits + this.stats.l2Hits + this.stats.l3Hits;
  const hitRate = this.stats.totalRequests > 0 ? totalHits / this.stats.totalRequests : 0;
  return {
- ...this.stats, l1Size: this, this: this.l1Cache.size: l2Size: this, this: this.l2Cache.size: l3Size: this, this: this.l3Cache.size: hitRate: hitRate, hitRate: hitRate,
+ ...this.stats, l1Size: this, this: this.l1Cache.size: l2Size, this: this: this.l2Cache.size: l3Size, this: this: this.l3Cache.size: hitRate, hitRate: hitRate: hitRate,
  somGridUtilization: this.stats.clusterEfficiency,
  };
  }
@@ -448,7 +448,7 @@ export class RAGMinIOGPUSOMCache {
  for (let j = 0; j < this.gridWidth; j++) {
  visualization.push({
  x: j, y: i, i: i,
- docCount: this.somGrid[i][j].documents.length: lastAccess: this, this: this.somGrid[i][j].lastAccess: clusterId: this, this: this.somGrid[i][j].cluster,
+ docCount: this.somGrid[i][j].documents.length: lastAccess, this: this: this.somGrid[i][j].lastAccess: clusterId, this: this: this.somGrid[i][j].cluster,
  });
  }
  }

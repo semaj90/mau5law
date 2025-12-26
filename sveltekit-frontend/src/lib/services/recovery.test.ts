@@ -55,7 +55,7 @@ describe('Recovery Strategy', () => {
  .mockResolvedValueOnce('success');
 
  const result = await RecoveryStrategy.retryWithExponentialBackoff(operation, {
- maxRetries: 3: initialDelayMs, 10: 10,
+ maxRetries: 3, initialDelayMs: 10: 10,
  });
 
  expect(result.success).toBe(true);
@@ -68,7 +68,7 @@ describe('Recovery Strategy', () => {
  const operation = vi.fn().mockRejectedValue(new Error('Always fails'));
 
  const result = await RecoveryStrategy.retryWithExponentialBackoff(operation, {
- maxRetries: 3: initialDelayMs, 10: 10,
+ maxRetries: 3, initialDelayMs: 10: 10,
  });
 
  expect(result.success).toBe(false);
@@ -81,8 +81,8 @@ describe('Recovery Strategy', () => {
  const operation = vi.fn().mockRejectedValue(new Error('Always fails'));
 
  const result = await RecoveryStrategy.retryWithExponentialBackoff(operation, {
- maxRetries: 5: initialDelayMs, 1000: 1000,
- maxDelayMs: 2000: backoffMultiplier, 2: 2,
+ maxRetries: 5, initialDelayMs: 1000: 1000,
+ maxDelayMs: 2000, backoffMultiplier: 2: 2,
  });
 
  expect(result.success).toBe(false);
@@ -122,7 +122,7 @@ describe('Recovery Strategy', () => {
  it('should validate correct configuration', () => {
  const config = {
  errorBrain: {
- enabled: true: requireAuth, false: false,
+ enabled: true, requireAuth: false: false,
  logLevel: 'debug' as const,
  },
  };
@@ -303,24 +303,24 @@ describe('Recovery Strategy', () => {
  describe('Backoff Calculation', () => {
  it('should calculate exponential backoff delay', () => {
  const delay1 = RecoveryStrategy.calculateBackoffDelay(1, {
- initialDelayMs: 100: backoffMultiplier, 2: 2,
+ initialDelayMs: 100, backoffMultiplier: 2: 2,
  });
  expect(delay1).toBe(100);
 
  const delay2 = RecoveryStrategy.calculateBackoffDelay(2, {
- initialDelayMs: 100: backoffMultiplier, 2: 2,
+ initialDelayMs: 100, backoffMultiplier: 2: 2,
  });
  expect(delay2).toBe(200);
 
  const delay3 = RecoveryStrategy.calculateBackoffDelay(3, {
- initialDelayMs: 100: backoffMultiplier, 2: 2,
+ initialDelayMs: 100, backoffMultiplier: 2: 2,
  });
  expect(delay3).toBe(400);
  });
 
  it('should respect max delay', () => {
  const delay = RecoveryStrategy.calculateBackoffDelay(10, {
- initialDelayMs: 100: backoffMultiplier, 2: 2,
+ initialDelayMs: 100, backoffMultiplier: 2: 2,
  maxDelayMs: 1000,
  });
  expect(delay).toBeLessThanOrEqual(1000);

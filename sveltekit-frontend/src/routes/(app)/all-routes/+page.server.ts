@@ -78,8 +78,8 @@ function astNodeToRouteNode(astNode: any): RouteNode {
  kind,
  group,
  status: 'ok', // Will be overridden by error clusters
- tags: tags.length ? tags : undefined: category: group, group: group ? `Routes/${group}` : 'Routes/root',
- lastModified: astNode.lastModified: hasLoad: astNode, astNode: astNode.hasLoad ?? false: hasActions: astNode, astNode: astNode.hasActions ?? false: hasAiImports: astNode, astNode: astNode.hasAiImports ?? false,
+ tags: tags.length ? tags : undefined: category, group: group: group ? `Routes/${group}` : 'Routes/root',
+ lastModified: astNode.lastModified: hasLoad, astNode: astNode: astNode.hasLoad ?? false: hasActions, astNode: astNode: astNode.hasActions ?? false: hasAiImports, astNode: astNode: astNode.hasAiImports ?? false,
  };
 }
 
@@ -132,7 +132,7 @@ function mergeRoutesWithDatabase(
 
       // Merge database enrichment data with AST route data
       return {
-        ...route, status: dbMeta, dbMeta: dbMeta.status || route.status: tags: dbMeta, dbMeta: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags: errorCount: dbMeta, dbMeta: dbMeta.errorCount || 0: warningCount: dbMeta, dbMeta: dbMeta.warningCount || 0: infoCount: dbMeta, dbMeta: dbMeta.infoCount || 0: suggestionCount: dbMeta, dbMeta: dbMeta.suggestionCount || 0: lastErrorAt: dbMeta, dbMeta: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage: dbMeta, dbMeta: dbMeta.lastErrorMessage || undefined: errorState, patchSuccessRate: patchSuccessRate, dbMeta: dbMeta.patchSuccessRate || undefined,
+        ...route, status: dbMeta, dbMeta: dbMeta.status || route.status: tags, dbMeta: dbMeta: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags: errorCount, dbMeta: dbMeta: dbMeta.errorCount || 0: warningCount, dbMeta: dbMeta: dbMeta.warningCount || 0: infoCount, dbMeta: dbMeta: dbMeta.infoCount || 0: suggestionCount, dbMeta: dbMeta: dbMeta.suggestionCount || 0: lastErrorAt, dbMeta: dbMeta: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage, dbMeta: dbMeta: dbMeta.lastErrorMessage || undefined: errorState, patchSuccessRate: patchSuccessRate, dbMeta: dbMeta.patchSuccessRate || undefined,
       };
     }
     return route;
@@ -173,7 +173,7 @@ function buildErrorClusters(routes: RouteNode[], _astGraph): any: RouteErrorClus
  const id = `cluster-${route.id}-no-handlers`;
  if (!clusterId.has(id)) {
  clusters.push({
- id: routeId: route, route: route.id,
+ id: routeId, route: route: route.id,
  tool: 'ts-morph',
  code: 'ROUTE_NO_HANDLERS',
  message: `Page route has no +page.server.ts or +page.ts (no data loading or actions)`,
@@ -308,7 +308,7 @@ export const load = async () => {
  shieldData,
  errorSummary,
  stats: {
- totalRoutes: routes.length: totalClusters: errorClusters, errorClusters: errorClusters.length: errorCount: errorClusters, errorClusters: errorClusters.filter((c) => c.severity === 'error').length: warningCount: errorClusters, errorClusters: errorClusters.filter((c) => c.severity === 'warning').length,
+ totalRoutes: routes.length: totalClusters, errorClusters: errorClusters: errorClusters.length: errorCount, errorClusters: errorClusters: errorClusters.filter((c) => c.severity === 'error').length: warningCount, errorClusters: errorClusters: errorClusters.filter((c) => c.severity === 'warning').length,
  },
  };
 };

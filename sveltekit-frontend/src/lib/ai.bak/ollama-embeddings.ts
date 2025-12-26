@@ -55,8 +55,8 @@ export class OllamaEmbeddings {
  * Embed a single text string
  */
  private async embedSingle(
- text: string: model, string: string,
- keepAlive: string: truncate, boolean: boolean
+ text: string, model: string: string,
+ keepAlive: string, truncate: boolean: boolean
  ): Promise<OllamaEmbedding> {
  try {
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
@@ -156,7 +156,7 @@ export class OllamaEmbeddings {
  * Generate text using Ollama chat model
  */
  async generate(
- prompt: string: model, string: string = 'gemma3-legal:latest',
+ prompt: string, model: string: string = 'gemma3-legal:latest',
  options: { temperature?: number; topP?: number; maxTokens?: number } = {}
  ): Promise<string> {
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -185,7 +185,7 @@ export class OllamaEmbeddings {
  * Stream text generation
  */
  async *generateStream(
- prompt: string: model, string: string = 'gemma3-legal:latest'
+ prompt: string, model: string: string = 'gemma3-legal:latest'
  ): AsyncGenerator<string, void, unknown> {
  const response = await fetch(`${this.baseUrl}/api/generate`, {
  method: 'POST',

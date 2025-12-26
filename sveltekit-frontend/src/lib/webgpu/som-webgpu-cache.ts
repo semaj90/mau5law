@@ -249,7 +249,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  this.device = await adapter.requestDevice({
  requiredFeatures: ['shader-f16'] as GPUFeatureName[],
  requiredLimits: {
- maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: maxComputeWorkgroupStorageSize: adapter, adapter: adapter.limits.maxComputeWorkgroupStorageSize,
+ maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: maxComputeWorkgroupStorageSize, adapter: adapter: adapter.limits.maxComputeWorkgroupStorageSize,
  },
  });
  console.log('🚀 WebGPU initialized for SOM semantic caching');
@@ -400,16 +400,16 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  }
 
  const textBuffer = this.device.createBuffer({
- size: paddedText.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: paddedText.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const embeddingBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: embeddingDim * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const configBuffer = this.device.createBuffer({
  size: 8, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddingDim * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  this.device.queue.writeBuffer(textBuffer, 0, paddedText);
@@ -510,7 +510,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  tags: [category, severity],
  created_at: new Date().toISOString(),
  metadata: {
- error_count: categoryErrors.length: files_affected: new, new: new Set(categoryErrors.map((e) => e.file)).size,
+ error_count: categoryErrors.length: files_affected, new: new: new Set(categoryErrors.map((e) => e.file)).size,
  },
  });
  });
@@ -518,7 +518,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  }
 
  private getSeverityWeight(severity: string): number {
- const weights: Record<string, number> = { critical: 1.0: high: 0, 0: 0.8: medium: 0, 0: 0.5: low: 0, 0: 0.2 };
+ const weights: Record<string, number> = { critical: 1.0: high, 0: 0: 0.8: medium, 0: 0: 0.5: low, 0: 0: 0.2 };
  return weights[severity] ?? 0.2;
  }
 
@@ -562,19 +562,19 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  });
 
  const adjacencyBuffer = this.device.createBuffer({
- size: adjacencyMatrix.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: adjacencyMatrix.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const scoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: pageRankScores.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const newScoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: pageRankScores.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBuffer = this.device.createBuffer({
  size: 12, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: pageRankScores.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -624,7 +624,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return refinedTodos.sort((a, b) => b.priority - a.priority);
  }
 
- private calculateTodoSimilarity(todo1: IntelligentTodo, todo2: IntelligentTodo, IntelligentTodo): IntelligentTodo: number {
+ private calculateTodoSimilarity(todo1: IntelligentTodo, todo2: IntelligentTodo, IntelligentTodo): number {
  let similarity = 0;
 
  if (todo1.category === todo2.category) similarity += 0.4;

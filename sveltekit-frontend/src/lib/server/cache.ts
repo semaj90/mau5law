@@ -200,7 +200,7 @@ export const cognitiveCache = {
  }
  },
 
- async storeJsonbDocument(key: string, value: unknown, unknown: unknown, ttlSeconds): number: Promise<void> {
+ async storeJsonbDocument(key: string, value: unknown, unknown: unknown, ttlSeconds): Promise<void> {
  await setCache(key, value, Math.max(1, ttlSeconds) * 1000);
  },
 };

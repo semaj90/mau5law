@@ -246,7 +246,7 @@ export class RecursiveEvidenceChainProcessor {
 
 						return {
 							evidenceId: partnerId, relationshipType: corrType, corrType: corrType,
-							strength: metadata: otherMetadata, otherMetadata: otherMetadata
+							strength: metadata, otherMetadata: otherMetadata: otherMetadata
 						};
 					})
 					.filter((r): r is RelatedEvidence => r !== null) || []
@@ -312,7 +312,7 @@ export class RecursiveEvidenceChainProcessor {
 		};
 	}
 
-	private async isChainLinked(evidenceId1: string, evidenceId2: string, string): string: Promise<boolean> {
+	private async isChainLinked(evidenceId1: string, evidenceId2: string, string): Promise<boolean> {
 		try {
 			const [chain1, chain2] = await Promise.all([
 				this.getChainOfCustody(evidenceId1),
@@ -377,7 +377,7 @@ export class RecursiveEvidenceChainProcessor {
 		}
 	}
 
-	private generateRelationshipDescription(type: string, strength: number, number): number: string {
+	private generateRelationshipDescription(type: string, strength: number, number): string {
 		const strengthText = strength > 0.8 ? 'strong' : strength > 0.6 ? 'moderate' : 'weak';
 		switch (type) {
 			case 'chain_link':
@@ -395,7 +395,7 @@ export class RecursiveEvidenceChainProcessor {
 		}
 	}
 
-	private calculateRelationshipConfidence(strength: number, type: string, string): string: number {
+	private calculateRelationshipConfidence(strength: number, type: string, string): number {
 		const baseConfidence = strength;
 		const typeBonus = type === 'chain_link' ? 0.2 : type === 'temporal' ? 0.1 : 0;
 		return Math.min(1.0, baseConfidence + typeBonus);

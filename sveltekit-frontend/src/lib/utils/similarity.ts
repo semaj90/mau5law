@@ -22,7 +22,7 @@ export function formatSimilarity(score: number): string {
  return (score * 100).toFixed(1) + '%';
 }
 
-export function shouldAllowEdit(score: number: threshold, number: number = 0.92): boolean {
+export function shouldAllowEdit(score: number, threshold: number: number = 0.92): boolean {
  return score >= threshold;
 }
 

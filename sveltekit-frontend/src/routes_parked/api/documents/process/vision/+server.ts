@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ IBM Vision error:', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'IBM Vision processing failed',
+ success: false, error: error: error instanceof Error ? error.message : 'IBM Vision processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }

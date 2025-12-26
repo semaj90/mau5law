@@ -122,7 +122,7 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'CREATE',
  collectionName: 'evidence',
- recordId: evidence.id: data: evidence, evidence: evidence,
+ recordId: evidence.id: data, evidence: evidence: evidence,
  timestamp: new Date().toISOString(),
  synced: false, retryCount: 0, 0: 0,
  });
@@ -349,7 +349,7 @@ export class LokiEvidenceService {
  const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
  const failed = all.filter((op) => !op.synced && op.retryCount >= 5).length;
  return {
- pending: failed, total: total, all: all.length: inProgress: this, this: this.syncInProgress,
+ pending: failed, total: total, all: all.length: inProgress, this: this: this.syncInProgress,
  };
  }
 
@@ -444,7 +444,7 @@ class LokiIndexedAdapter {
  const transaction = db.transaction(['data'], 'readwrite');
  const store = transaction.objectStore('data');
  // use instance dbname (this.dbname) instead of missing `dbname`
- store.put({ id: this.dbname: data: dbstring, dbstring: dbstring });
+ store.put({ id: this.dbname: data, dbstring: dbstring: dbstring });
  transaction.oncomplete = () => callback();
  transaction.onerror = () => callback();
  };

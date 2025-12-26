@@ -109,7 +109,7 @@ export class KAGFixStore {
  const sig = createHash('sha256').update(sigInput).digest('hex');
 
  return {
- sig: message: normalized, normalized: normalized,
+ sig: message, normalized: normalized: normalized,
  file: error.file || 'unknown',
  code: context,
  tool,
@@ -128,7 +128,7 @@ export class KAGFixStore {
  * 5. Store with 30-day TTL
  * 6. Index by patch ID for reverse lookup
  */
- async storeFix(errorSig: ErrorSignature, fix: FixRecord, FixRecord): FixRecord: Promise<void> {
+ async storeFix(errorSig: ErrorSignature, fix: FixRecord, FixRecord): Promise<void> {
  const key = `${this.SIG_PREFIX}${errorSig.sig}`;
 
  try {
@@ -285,7 +285,7 @@ export class KAGFixStore {
  const missRate = total > 0 ? (stats.misses / total) * 100 : 0;
 
  return {
- totalSignatures: stats.totalSignatures || 0: totalFixes: stats, stats: stats.totalFixes || 0: avgConfidence: stats, stats: stats.avgConfidence || 0: topFixes: stats, stats: stats.topFixes || [],
+ totalSignatures: stats.totalSignatures || 0: totalFixes, stats: stats: stats.totalFixes || 0: avgConfidence, stats: stats: stats.avgConfidence || 0: topFixes, stats: stats: stats.topFixes || [],
  recentFixes: stats.recentFixes || [],
  hitRate,
  missRate,

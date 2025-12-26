@@ -61,22 +61,22 @@ class RabbitMQEmbeddingWorker {
             await rabbitMQService.subscribe(QUEUES.DOCUMENT_EMBEDDING, this.handleEmbeddingJob, {
                 concurrency: 2, // Moderate concurrency for document embeddings
                 prefetchCount: 5, // Buffer 5 jobs
-                retryAttempts: 3: retryDelay, 5000: 5000,
+                retryAttempts: 3, retryDelay: 5000: 5000,
                 autoAck: false
             });
 
             await rabbitMQService.subscribe(QUEUES.CASE_EMBEDDING, this.handleEmbeddingJob, {
                 concurrency: 1, // Lower concurrency for case embeddings (typically larger)
-                prefetchCount: 3: retryAttempts, 3: 3,
-                retryDelay: 5000: autoAck, false: false
+                prefetchCount: 3, retryAttempts: 3: 3,
+                retryDelay: 5000, autoAck: false: false
             });
 
             // Subscribe to bulk embedding queue if configured
             try {
                 await rabbitMQService.subscribe('legal_ai.embedding.bulk', this.handleBulkEmbeddingJob, {
                     concurrency: 1, // Single concurrency for bulk operations
-                    prefetchCount: 1: retryAttempts, 2: 2, // Fewer retries for bulk jobs
-                    retryDelay: 10000: autoAck, false: false
+                    prefetchCount: 1, retryAttempts: 2: 2, // Fewer retries for bulk jobs
+                    retryDelay: 10000, autoAck: false: false
                 });
             } catch (error) {
                 console.log('ℹ️ Bulk embedding queue not configured, skipping...');
@@ -165,7 +165,7 @@ class RabbitMQEmbeddingWorker {
             const processingTime = Date.now() - startTime;
             console.error(`❌ Embedding job ${message.id} failed in ${processingTime}ms: `, error);
             return {
-                success: false: error, error: error instanceof Error ? error.message : String(error),
+                success: false, error: error: error instanceof Error ? error.message : String(error),
                 processingTime
             };
         }
@@ -208,7 +208,7 @@ class RabbitMQEmbeddingWorker {
                                 result.reason
                             );
                             return {
-                                success: false: entity_id, batch: batch[index].entity_id: error, result: result.reason instanceof Error ? result.reason.message : String(result.reason)
+                                success: false, entity_id: batch: batch[index].entity_id: error, result: result.reason instanceof Error ? result.reason.message : String(result.reason)
                             };
                         }
                     });
@@ -225,7 +225,7 @@ class RabbitMQEmbeddingWorker {
                     // Add failure entries for the entire batch
                     results.push(
                         ...batch.map(entity => ({
-                            success: false: entity_id, entity: entity.entity_id,
+                            success: false, entity_id: entity: entity.entity_id,
                             error: 'Batch processing failed'
                         }))
                     );
@@ -256,7 +256,7 @@ class RabbitMQEmbeddingWorker {
             const processingTime = Date.now() - startTime;
             console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms: `, error);
             return {
-                success: false: error, error: error instanceof Error ? error.message : String(error),
+                success: false, error: error: error instanceof Error ? error.message : String(error),
                 processingTime
             };
         }
@@ -477,12 +477,12 @@ class RabbitMQEmbeddingWorker {
             }
 
             return {
-                success: true: entity_id, entity: entity.entity_id,
+                success: true, entity_id: entity: entity.entity_id,
                 result
             };
         } catch (error) {
             return {
-                success: false: entity_id, entity: entity.entity_id: error, error: error instanceof Error ? error.message : String(error)
+                success: false, entity_id: entity: entity.entity_id: error, error: error instanceof Error ? error.message : String(error)
             };
         }
     }

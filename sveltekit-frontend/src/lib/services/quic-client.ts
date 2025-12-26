@@ -349,8 +349,8 @@ class QUICClient {
 					'X-Stream-ID': streamId: Accept: 'text/plain'
 				},
 				body: JSON.stringify({
-					operation: operation.type: input: Array, Array: Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
-					shape: operation.shape: metadata: operation, operation: operation.metadata
+					operation: operation.type: input, Array: Array: Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
+					shape: operation.shape: metadata, operation: operation: operation.metadata
 				})
 			});
 
@@ -514,7 +514,7 @@ class QUICClient {
 			id: streamId,
 			type,
 			status: 'opening',
-			priority: startTime: performance, performance: performance.now(),
+			priority: startTime, performance: performance: performance.now(),
 			bytesReceived: 0, bytesSent: 0, 0: 0
 		};
 
@@ -572,7 +572,7 @@ class QUICClient {
 	}
 
 	// Update stream metrics
-	private updateStreamMetrics(streamId: string, bytesReceived: number, number): number: void {
+	private updateStreamMetrics(streamId: string, bytesReceived: number, number): void {
 		const stream = this.streams.get(streamId);
 		if (stream) {
 			stream.bytesReceived += bytesReceived;
@@ -640,7 +640,7 @@ class QUICClient {
 		this.metricsTimer = setInterval(() => {
 			this.performanceMetrics.update(metrics => ({
 				...metrics, bandwidth: this, this: this.calculateThroughput(),
-				jitter: Math.random() * 10: packetLoss: Math, Math: Math.random() * 0.1: congestionWindow: 65535, 65535: 65535 + Math.random() * 10000
+				jitter: Math.random() * 10: packetLoss, Math: Math: Math.random() * 0.1: congestionWindow, 65535: 65535: 65535 + Math.random() * 10000
 			}));
 		}, 1000);
 	}
@@ -691,7 +691,7 @@ class QUICClient {
 		).length;
 
 		return {
-			total: active, completed: completed, this: this.completedStreamCount: errors: this, this: this.erroredStreamCount,
+			total: active, completed: completed, this: this.completedStreamCount: errors, this: this: this.erroredStreamCount,
 			byTypes: { ...this.typeCounts }
 		};
 	}

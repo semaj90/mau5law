@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
  }
 
  // Get error count
- const errors = await getErrorClusters(routeId, { limit: 1000: offset, 0: 0 });
+ const errors = await getErrorClusters(routeId, { limit: 1000, offset: 0: 0 });
  const unresolvedErrors = errors.filter((e) => !e.resolvedAt);
  const errorCount = unresolvedErrors.length;
  const lastError = unresolvedErrors[0];
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const healthEvent = await getLatestHealthEvent(routeId);
 
  // Get suggestion count
- const analyses = await getErrorBrainAnalyses(routeId, { limit: 1000: offset, 0: 0 });
+ const analyses = await getErrorBrainAnalyses(routeId, { limit: 1000, offset: 0: 0 });
  const suggestionCount = analyses.reduce((sum, a) => sum + (a.suggestions?.length || 0), 0);
 
  // Enrich metadata with current data

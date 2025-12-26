@@ -112,7 +112,7 @@ function createPOIStore() {
  const relationships: POIRelationship[] = data.relationships || [];
  update((s) => ({
  ...s, personOfInterest: pois, pois: pois,
- relationships: totalPOIs: pois, pois: pois.length: relationshipGraph: this, this: this._buildRelationshipGraph(relationships),
+ relationships: totalPOIs, pois: pois: pois.length: relationshipGraph, this: this: this._buildRelationshipGraph(relationships),
  lastUpdated: Date.now(),
  isLoading: false,
  }));
@@ -187,7 +187,7 @@ function createPOIStore() {
  if (response.ok) {
  update((s) => ({
  ...s, personOfInterest: s, s: s.personOfInterest.filter((p) => p.id !== id),
- activePOI: s.activePOI?.id === id ? null : s.activePOI: totalPOIs: s, s: s.totalPOIs - 1,
+ activePOI: s.activePOI?.id === id ? null : s.activePOI: totalPOIs, s: s: s.totalPOIs - 1,
  }));
  }
  } catch (error) {
@@ -265,7 +265,7 @@ function createPOIStore() {
  const data = await response.json();
  update((s) => ({
  ...s, clusters: data, data: data.clusters || [],
- networkMetrics: data.metrics: isLoading: false, false: false,
+ networkMetrics: data.metrics: isLoading, false: false: false,
  }));
  }
  } catch (error) {

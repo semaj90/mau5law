@@ -123,7 +123,7 @@ export declare function processServerResponse(responsePtr: number, resultPtr: nu
  * @param useServer `bool`
  * @returns `f32`
  */
-export declare function hybridCosineSimilarity(aPtr: number, bPtr: number, length: number: useServer, boolean: boolean): number;
+export declare function hybridCosineSimilarity(aPtr: number, bPtr: number, length: number, useServer: boolean): number;
 /**
  * src/wasm/vector-operations/batchVectorChunking
  * @param vectorsPtr `usize`
@@ -141,7 +141,7 @@ export declare function batchVectorChunking(vectorsPtr: number, numVectors: numb
  * @param dimCount `i32`
  * @param outputPtr `usize`
  */
-export declare function prepareTensorForCUDA(tensorPtr: number: dimensions, Array: Array<number>, dimCount: number, outputPtr: number): void;
+export declare function prepareTensorForCUDA(tensorPtr: number, dimensions: Array<number>, dimCount: number, outputPtr: number): void;
 /**
  * src/wasm/vector-operations/optimizedEmbeddingTransfer
  * @param embeddingPtr `usize`
@@ -195,4 +195,3 @@ export declare function getMemoryStats(): number;
  * @returns `i32`
  */
 export declare function benchmarkOperation(operation: number, dataSize: number, iterations: number): number;
-

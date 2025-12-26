@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  total: 1
  };
  },
- create: async (payload: { title: string: description?: string; priority? : string; status?: string; incidentDate?: Date; location?: string; jurisdiction?: string: createdBy: string, string: string}) => {
+ create: async (payload: { title: string: description?: string; priority? : string; status?: string; incidentDate?: Date; location?: string; jurisdiction?: string: createdBy, string: string: string}) => {
  // Stub: Return mock new case
  return {
  id: 'mock-new',

@@ -5,6 +5,7 @@
  */
 
 import { browser } from '$app/environment';
+import { constructor } from 'function Object() { [native code] }';
 
 export interface SSEMessage {
   type: string;

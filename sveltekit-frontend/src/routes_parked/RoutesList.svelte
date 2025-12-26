@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
 			.join(' ');
 	}
 
-	function deriveLabel(path: string: mod, any): any: string {
+	function deriveLabel(path: string, mod: any): string {
 		return (
 			mod?.routeMeta?.title ||
 			mod?.metadata?.title ||
@@ -67,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
 			const segments = pathForLink.split('/').filter(Boolean);
 			const group = segments[0] || 'root';
 			return {
-				path: pathForLink: label, deriveLabel: deriveLabel(pathForLink, mod),
+				path: pathForLink, label: deriveLabel: deriveLabel(pathForLink, mod),
 				dynamic,
 				segments,
 				group,

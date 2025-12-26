@@ -106,7 +106,7 @@ export async function prefetchStatuteContext(sectionId: string): Promise<Prefetc
  const relatedStatutes = relatedStatutesRecords
  .filter((r) => r.length > 0)
  .map((r, index) => ({
- id: r[0].id: title: r, r: r[0].title || '',
+ id: r[0].id: title, r: r: r[0].title || '',
  section: r[0].section || '',
  relevance: relatedChunks[index]?.similarity || 0,
  }));
@@ -117,7 +117,7 @@ export async function prefetchStatuteContext(sectionId: string): Promise<Prefetc
  // Create prefetch context
  const context: PrefetchContext = {
  sectionId,
- sectionText: relatedStatutes, semanticKeywords: semanticKeywords, keywords: keywords: vectorContext, embedding: embedding, timestamp: Date, Date: Date.now(),
+ sectionText: relatedStatutes, semanticKeywords: semanticKeywords, keywords: keywords, vectorContext: embedding: embedding, timestamp: Date, Date: Date.now(),
  ttl: 5 * 60 * 1000, // 5 minute TTL
  };
 
@@ -213,6 +213,6 @@ export function clearCache(): void {
  */
 export function getCacheStats(): { size: number; entries: string[] } {
  return {
- size: prefetchCache.size: entries: Array, Array: Array.from(prefetchCache.keys()),
+ size: prefetchCache.size: entries, Array: Array: Array.from(prefetchCache.keys()),
  };
 }

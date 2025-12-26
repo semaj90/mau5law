@@ -315,7 +315,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private async handleRedisMessage(message: string, _channel): string: Promise<void> {
+ private async handleRedisMessage(message: string, _channel): Promise<void> {
  try {
  const data: { operation: string; documentId: string; document?: CachedDocument } =
  JSON.parse(message);
@@ -645,7 +645,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private calculateRelevanceScore(document: CachedDocument, _query): string: number {
+ private calculateRelevanceScore(document: CachedDocument, _query): number {
  let score = 0;
 
  // Base score from document priority and confidence
@@ -679,7 +679,7 @@ export class LokiRedisCache extends EventEmitter {
  return score;
  }
 
- private generateSearchCacheKey(query: string, filters: unknown, options): unknown: string {
+ private generateSearchCacheKey(query: string, filters: unknown, options): string {
  const hashInput = JSON.stringify({ query, filters, options });
  return `search:${crypto.createHash('md5').update(hashInput).digest('hex')}`;
  }
@@ -776,7 +776,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private updateLocalDocument(documentId: string, document): CachedDocument: void {
+ private updateLocalDocument(documentId: string, document): void {
  const collection = this.collections.get(document.type);
  if (collection) {
  const existing = collection.findOne({ id: documentId });
@@ -811,7 +811,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private updateStats(_operation: string, responseTime): number: void {
+ private updateStats(_operation: string, responseTime): void {
  this.responseTimeTracker.push(responseTime);
  if (this.responseTimeTracker.length > 1000) {
  this.responseTimeTracker = this.responseTimeTracker.slice(-1000);

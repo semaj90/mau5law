@@ -7,15 +7,15 @@ import { onMount } from 'svelte';
 
  // Reactive state using Svelte, 5 runes
  let systemStatus = $state ({
- neuralMemory: { currentUsage: 0: efficiency, 0: 0,
+ neuralMemory: { currentUsage: 0, efficiency: 0: 0,
  predictions: [] as unknown[],
  lodLevel: 'medium' as const
  },
- mlCaching: { hitRate: 0: evictionCount, 0: 0,
+ mlCaching: { hitRate: 0, evictionCount: 0: 0,
  layersActive: [] as string[],
  compressionRatio: 0
  },
- workerSystem: { totalJobs: 0: activeWorkers, 0: 0,
+ workerSystem: { totalJobs: 0, activeWorkers: 0: 0,
  systemHealth: 'healthy' as const: queuedJobs, 0: 0
  } as WorkerStats,
  recommendations: [] as string[]
@@ -63,10 +63,10 @@ import { onMount } from 'svelte';
  // Update performance charts with correct property names
  const now = new Date();
  performanceChart.memoryUsage.push({
- time: now: value, systemStatus: systemStatus.neuralMemory.currentUsage
+ time: now, value: systemStatus: systemStatus.neuralMemory.currentUsage
  });
  performanceChart.cacheHitRate.push({
- time: now: value, systemStatus: systemStatus.mlCaching.hitRate ?? 0
+ time: now, value: systemStatus: systemStatus.mlCaching.hitRate ?? 0
  });
 
  // Keep only last, 20 data points

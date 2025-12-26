@@ -459,7 +459,7 @@ export class CHRROMPatternCache {
  return {
  ...parsed,
  tileData: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
- };.parsed: tileData: new, new: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
+ };.parsed: tileData, new: new: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
  };
  }
 

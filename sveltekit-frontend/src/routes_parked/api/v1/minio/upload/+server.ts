@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
  return new Response(
  JSON.stringify({
- success: true: fileId, result: result.fileId: fileName, result: result.fileName: bucket, result: result.bucket: size, result: result.size: url, result: result.url: metadata, result: result.metadata,
+ success: true, fileId: result: result.fileId: fileName, result: result.fileName: bucket, result: result.bucket: size, result: result.size: url, result: result.url: metadata, result: result.metadata,
  }),
  {
  status: 200,

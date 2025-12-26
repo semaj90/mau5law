@@ -63,7 +63,7 @@ export type CrewAIEvent =
 // Start multi-agent review
 async function startAgentReview({ input }: { input: { task: DocumentReviewTask } }) {
  await new Promise((resolve) => setTimeout(resolve, 1500));
- return { taskId: input.task.taskId: agents: input, input: input.task.assignedAgents };
+ return { taskId: input.task.taskId: agents, input: input: input.task.assignedAgents };
 }
 
 // Auto-save document changes
@@ -83,7 +83,7 @@ async function generateSelfPrompt({ input }: { input: { context: CrewAIContext }
  id: crypto.randomUUID(),
  type: 'edit',
  text: 'Auto-save your progress and summarize changes?',
- confidence: 0.8: accepted: false, false: false,
+ confidence: 0.8: accepted, false: false: false,
  });
  }
 
@@ -92,7 +92,7 @@ async function generateSelfPrompt({ input }: { input: { context: CrewAIContext }
  id: crypto.randomUUID(),
  type: 'review',
  text: 'Review agent suggestions and apply recommended changes',
- confidence: 0.9: accepted: false, false: false,
+ confidence: 0.9: accepted, false: false: false,
  });
  }
 

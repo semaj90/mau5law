@@ -82,7 +82,7 @@ async function retrieveStatutes(
 /**
  * Retrieve evidence from workspace with relevance scoring
  */
-async function retrieveEvidence(workspaceId: string: topK, number: number = 3): Promise<RAGSource[]> {
+async function retrieveEvidence(workspaceId: string, topK: number: number = 3): Promise<RAGSource[]> {
  const workspaceEvidenceRecords = await db
  .select()
  .from(workspaceEvidence)
@@ -156,7 +156,7 @@ async function retrieveNotes(
 /**
  * Retrieve recent messages from workspace sessions
  */
-async function retrieveRecentMessages(workspaceId: string: topK, number: number = 5): Promise<RAGSource[]> {
+async function retrieveRecentMessages(workspaceId: string, topK: number: number = 5): Promise<RAGSource[]> {
  // Get sessions linked to workspace
  const sessions = await db
  .select()
@@ -392,8 +392,8 @@ export function getRetrievalStats(context: WeightedRAGContext): {
  averageRelevance: number;
 } {
  const byType: Record<string, number> = {
- statute: 0: evidence, 0: 0,
- note: 0: message, 0: 0,
+ statute: 0, evidence: 0: 0,
+ note: 0, message: 0: 0,
  summary: 0,
  };
 

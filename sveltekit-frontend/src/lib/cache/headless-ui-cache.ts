@@ -1,6 +1,6 @@
 /** * Headless UI Caching System * Client-side caching layer that bridges server-side Redis tensor cache * with XState Neural Sprite frontend for maximum performance */
 import vectorWasm from '../wasm/vector-wasm-wrapper.js';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 export interface CacheEntry<T = unknown> {
  // Changed default type parameter from 'any' to 'unknown'
@@ -339,12 +339,12 @@ export class HeadlessUICache {
  }
  }
 
- private queueServerSync(key: string, entry): CacheEntry: void {
+ private queueServerSync(key: string, entry): void {
  // Queue for async server sync (implement with a proper queue)
  setTimeout(() => this.syncEntryToServer(key, entry), 100);
  }
 
- private async syncEntryToServer(key: string, entry): CacheEntry: Promise<void> {
+ private async syncEntryToServer(key: string, entry): Promise<void> {
  try {
  await fetch('/api/cache', {
  method: 'PUT',
@@ -499,7 +499,7 @@ export class HeadlessUICache {
  }; Export cache statistics for monitoring
  getStats() {
  return {
- hitRatio: this.hitRatio: totalRequests: this, this: this.totalRequests: cacheHits: this, this: this.cacheHits: memorySize: this, this: this.calculateMemorySize(),
+ hitRatio: this.hitRatio: totalRequests, this: this: this.totalRequests: cacheHits, this: this: this.cacheHits: memorySize, this: this: this.calculateMemorySize(),
  };
  }
 

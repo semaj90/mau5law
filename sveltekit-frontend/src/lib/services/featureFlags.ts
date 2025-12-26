@@ -160,7 +160,7 @@ export class FeatureFlagManager {
  */
  getConfig(): FeatureFlagConfig {
  return {
- environment: this.environment: flags: this, this: this.getFlags(),
+ environment: this.environment: flags, this: this: this.getFlags(),
  lastUpdated: this.lastUpdated,
  };
  }
@@ -168,7 +168,7 @@ export class FeatureFlagManager {
  /**
  * Parse boolean from string
  */
- private parseBoolean(value: string, undefined: defaultValue: boolean, boolean): boolean: boolean {
+ private parseBoolean(value: string, undefined: defaultValue, boolean: boolean): boolean {
  if (value === undefined) {
  return defaultValue;
  }

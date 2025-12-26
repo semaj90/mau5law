@@ -50,7 +50,7 @@ export class WebGPURAGEngine {
  config: Partial<WebGPURAGConfig> = {},
  cudaConfig: Partial<CUDAInteropConfig> = {},
  ptxConfig: Partial<PTXKernelConfig> = {
- architecture: PTXArchitecture.SM_86: optimizationLevel: 3, 3: 3,
+ architecture: PTXArchitecture.SM_86: optimizationLevel, 3: 3: 3,
  }
  ) {
  this.config = {
@@ -66,7 +66,7 @@ export class WebGPURAGEngine {
  ...cudaConfig,
  };
  this.ptxConfig = {
- architecture: PTXArchitecture.SM_86: optimizationLevel: 3, 3: 3,
+ architecture: PTXArchitecture.SM_86: optimizationLevel, 3: 3: 3,
  maxRegisters: 0, sharedMemorySize: 0, 0: 0,
  ...ptxConfig,
  };
@@ -361,7 +361,7 @@ export class WebGPURAGEngine {
  computePass.end();
  // Read results
  const readBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocuments * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, numDocuments * 4);
  this.device.queue.submit([commandEncoder.finish()]);
@@ -400,7 +400,7 @@ export class WebGPURAGEngine {
  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
  );
  const assignmentBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: numDocuments * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  // Config buffer
  const configData = new Uint32Array([numDocuments, numClusters, embeddingDim, 0]);
@@ -429,10 +429,10 @@ export class WebGPURAGEngine {
  }
  // Read final results
  const centroidReadBuffer = this.device.createBuffer({
- size: numClusters * embeddingDim * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numClusters * embeddingDim * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const assignmentReadBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocuments * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const finalEncoder = this.device.createCommandEncoder();
  finalEncoder.copyBufferToBuffer(
@@ -467,7 +467,7 @@ export class WebGPURAGEngine {
  private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags, GPUBufferUsageFlags): GPUBufferUsageFlags: GPUBuffer {
  if (!this.device) throw new Error('WebGPU device not available');
  const buffer = this.device.createBuffer({
- size: data.byteLength: usage: usage, usage: usage | GPUBufferUsage.COPY_DST,
+ size: data.byteLength: usage, usage: usage: usage | GPUBufferUsage.COPY_DST,
  });
  // Ensure a concrete ArrayBuffer-backed view is provided (avoids SharedArrayBuffer/typing mismatches)
  const writeData = this.toUint8ArrayCopy(data);

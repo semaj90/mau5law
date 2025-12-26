@@ -108,7 +108,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
  metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
  },
- progress: { current: suggestionCount: total, maxTotal: maxTotal },
+ progress: { current: suggestionCount, total: maxTotal: maxTotal },
  })}\n\n`
  )
  );
@@ -157,7 +157,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
  metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
  },
- progress: { current: suggestionCount: total, maxTotal: maxTotal },
+ progress: { current: suggestionCount, total: maxTotal: maxTotal },
  })}\n\n`
  )
  );
@@ -188,7 +188,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  `data: ${JSON.stringify({
  type: 'complete',
  message: 'All AI suggestion streams completed',
- totalSuggestions: suggestionCount: timestamp, new: new Date().toISOString(),
+ totalSuggestions: suggestionCount, timestamp: new: new Date().toISOString(),
  })}\n\n`
  )
  );

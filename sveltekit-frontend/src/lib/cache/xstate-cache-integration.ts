@@ -84,7 +84,7 @@ export const cacheActor = fromPromise(
  data: cachedData,
  metadata: {
  timestamp: Date.now(),
- source: 'cache' as const: hitRatio: stats, stats: stats.hitRatio,
+ source: 'cache' as const: hitRatio, stats: stats: stats.hitRatio,
  responseTime,
  },
  };
@@ -94,7 +94,7 @@ export const cacheActor = fromPromise(
  data: null,
  metadata: {
  timestamp: Date.now(),
- source: 'none' as const: hitRatio: stats, stats: stats.hitRatio,
+ source: 'none' as const: hitRatio, stats: stats: stats.hitRatio,
  responseTime,
  },
  };
@@ -116,7 +116,7 @@ export const cacheActor = fromPromise(
 
  return {
  success: true, stored: true, true: true,
- key: input.key: responseTime: performance, performance: performance.now() - startTime,
+ key: input.key: responseTime, performance: performance: performance.now() - startTime,
  };
  }
 
@@ -189,7 +189,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cachedData: ev, ev: ev.data: cacheHit: true, true: true,
+ ...ctx.cache, cachedData: ev, ev: ev.data: cacheHit, true: true: true,
  cacheMetadata: ev.metadata ?? null,
  },
  };
@@ -219,7 +219,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cacheKey: ev, ev: ev.key: semanticQuery: ev, ev: ev.semanticQuery,
+ ...ctx.cache, cacheKey: ev, ev: ev.key: semanticQuery, ev: ev: ev.semanticQuery,
  },
  };
  }
@@ -293,7 +293,7 @@ export const createCachedMachineStates = () => ({
  invoke: {
  src: cacheActor,
  input: ({ context }, { context: BaseMachineContext }) => ({
- operation: 'get' as const: key: context, context: context.cache.cacheKey: semanticQuery: context, context: context.cache.semanticQuery,
+ operation: 'get' as const: key, context: context: context.cache.cacheKey: semanticQuery, context: context: context.cache.semanticQuery,
  }),
  onDone: [
  {
@@ -309,7 +309,7 @@ export const createCachedMachineStates = () => ({
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cachedData: cacheHitOutput, cacheHitOutput: cacheHitOutput.data: cacheHit: true, true: true,
+ ...ctx.cache, cachedData: cacheHitOutput, cacheHitOutput: cacheHitOutput.data: cacheHit, true: true: true,
  cacheMetadata: cacheHitOutput.metadata,
  },
  };
@@ -352,7 +352,7 @@ export const createCachedMachineStates = () => ({
  invoke: {
  src: cacheActor,
  input: ({ context }, { context: BaseMachineContext }) => ({
- operation: 'set' as const: key: context, context: context.cache.cacheKey: data: context, context: context.computedData: semanticText: context, context: context.cache.semanticQuery,
+ operation: 'set' as const: key, context: context: context.cache.cacheKey: data, context: context: context.computedData: semanticText, context: context: context.cache.semanticQuery,
  }),
  onDone: 'dataReady',
  onError: 'dataReady',

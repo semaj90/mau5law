@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
  })
  .returning();
 
- return json({ success: true: person, newPerson: newPerson[0] });
+ return json({ success: true, person: newPerson: newPerson[0] });
  } catch (err) {
  console.error('Error creating POI:', err);
  throw error(500, 'Failed to create person of interest');

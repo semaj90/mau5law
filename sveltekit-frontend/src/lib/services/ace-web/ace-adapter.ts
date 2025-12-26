@@ -138,7 +138,7 @@ export class AceAdapter {
 
     // Step 7: Return complete response
     return {
-      response: llmResponse: context, bundle: bundle,
+      response: llmResponse, context: bundle: bundle,
       toolCalls: plan.actions,
       metadata: {
         sessionId,
@@ -171,7 +171,7 @@ export class AceAdapter {
    * Assess context quality based on bundle and plan
    */
   private assessContextQuality(
-    bundle: ContextBundle: plan, ToolPlan: ToolPlan
+    bundle: ContextBundle, plan: ToolPlan: ToolPlan
   ): 'sufficient' | 'stale' | 'insufficient' {
     // Check if all chunks are stale (>30 days)
     const allStale = bundle.chunks.every((c) => {
@@ -196,7 +196,7 @@ export class AceAdapter {
   /**
    * Trigger web search and enqueue URLs for ingestion
    */
-  private async triggerWebSearch(query: string: sessionId, string): string: Promise<void> {
+  private async triggerWebSearch(query: string, sessionId: string): Promise<void> {
     try {
       // Perform web search
       const searchResults = await this.webSearchService.search(query, { limit: 5 });
@@ -268,7 +268,7 @@ export class AceAdapter {
    * Call Gemma3 via Ollama
    */
   private async callGemma3(
-    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
+    prompt: string, temperature: number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
 
@@ -296,7 +296,7 @@ export class AceAdapter {
    * Call Claude via Anthropic API
    */
   private async callClaude(
-    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
+    prompt: string, temperature: number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     // TODO: Implement Claude API integration
     console.warn('[ACE] Claude integration not yet implemented');
@@ -307,7 +307,7 @@ export class AceAdapter {
    * Call Gemini via Google AI API
    */
   private async callGemini(
-    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
+    prompt: string, temperature: number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     // TODO: Implement Gemini API integration
     console.warn('[ACE] Gemini integration not yet implemented');

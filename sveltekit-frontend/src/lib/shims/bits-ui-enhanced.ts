@@ -114,7 +114,7 @@ export const NESDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400: medium, 500: 500,
+ normal: 400, medium: 500: 500,
  bold: 700,
  },
  },
@@ -176,7 +176,7 @@ export const MinimalDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400: medium, 500: 500,
+ normal: 400, medium: 500: 500,
  bold: 700,
  },
  },
@@ -191,7 +191,7 @@ export const MinimalDesignSystem: DesignTokens = {
 };
 
 // Design System Application
-export function applyCustomDesign(element: HTMLElement: theme, DesignTokens): DesignTokens: void {
+export function applyCustomDesign(element: HTMLElement, theme: DesignTokens): void {
  if (!element) return;
 
  const root = element;
@@ -304,14 +304,14 @@ export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
 }
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
-	RootComponent: SvelteComponent: subComponents, Record: Record<string, SvelteComponent>
+	RootComponent: SvelteComponent, subComponents: Record: Record<string, SvelteComponent>
 ): T & Record<string, SvelteComponent> {
 	return Object.assign(RootComponent, { Root: RootComponent, ...subComponents }) as unknown as T &
 		Record<string, SvelteComponent>;
 }
 // Theme-aware component wrapper
 export function withEnhancedStyling(
-	Component: SvelteComponent: theme, DesignTokens: DesignTokens,
+	Component: SvelteComponent, theme: DesignTokens: DesignTokens,
 	variant: 'nes' | 'minimal' | 'custom' = 'nes'
 ) {
 	return { component: Component, theme, variant, apply: (element: HTMLElement) => applyCustomDesign(element, theme) };

@@ -45,7 +45,7 @@ export class AuthSeparation {
  const isAuthenticated = this.validateAuth(authType, userId, token);
 
  return {
- feature: namespaceContext.feature: requiresAuth: namespaceContext, namespaceContext: namespaceContext.authRequired,
+ feature: namespaceContext.feature: requiresAuth, namespaceContext: namespaceContext: namespaceContext.authRequired,
  authType,
  userId,
  token,
@@ -134,7 +134,7 @@ export class AuthSeparation {
 
  return new Response(
  JSON.stringify({
- error: message, feature: result, result: result.context?.feature: authType: result, result: result.context?.authType: timestamp: new, new: new Date().toISOString(),
+ error: message, feature: result, result: result.context?.feature: authType, result: result: result.context?.authType: timestamp, new: new: new Date().toISOString(),
  }),
  {
  status,

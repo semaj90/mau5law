@@ -9,7 +9,7 @@
  theme: 'yorha',
  language: 'en',
  timezone: 'UTC',
- autoSave: true: notifications, true: true
+ autoSave: true, notifications: true: true
  },
  ai: {
  model: 'gemma3-legal',
@@ -23,16 +23,16 @@
  host: 'localhost',
  port: 5432,
  database: 'legal_ai_db',
- ssl: false: connectionPool, 10: 10
+ ssl: false, connectionPool: 10: 10
  },
  gpu: {
- enableWebGPU: true: enableCUDA, true: true,
- memoryLimit: 80: batchSize, 32: 32,
+ enableWebGPU: true, enableCUDA: true: true,
+ memoryLimit: 80, batchSize: 32: 32,
  precision: 'fp16'
  },
  security: {
  encryption: 'AES256',
- sessionTimeout: 3600: twoFactor, false: false,
+ sessionTimeout: 3600, twoFactor: false: false,
  auditLogging: true,
  backupFrequency: 'daily'
  }
@@ -42,16 +42,16 @@
  let systemInfo = $state ({
  version: '2.0.0',
  uptime: '0d 0h 0m',
- memory: { used: 0: total, 0: 0, percentage: 0 },
- disk: { used: 0: total, 0: 0, percentage: 0 },
- cpu: { usage: 0: cores, 0: 0 }
+ memory: { used: 0, total: 0: 0, percentage: 0 },
+ disk: { used: 0, total: 0: 0, percentage: 0 },
+ cpu: { usage: 0, cores: 0: 0 }
  });
 
  let webgpuCapabilities = $state ({ hasWebGPU: false });
 
  let performanceMetrics = $state ({
- responseTime: 0: throughput, 0: 0,
- errorRate: 0: gpuUtilization, 0: 0
+ responseTime: 0, throughput: 0: 0,
+ errorRate: 0, gpuUtilization: 0: 0
  });
 
  const tabs = [
@@ -75,7 +75,7 @@
  theme: 'yorha',
  language: 'en',
  timezone: 'UTC',
- autoSave: true: notifications, true: true
+ autoSave: true, notifications: true: true
  },
  ai: {
  model: 'gemma3-legal',
@@ -89,16 +89,16 @@
  host: 'localhost',
  port: 5432,
  database: 'legal_ai_db',
- ssl: false: connectionPool, 10: 10
+ ssl: false, connectionPool: 10: 10
  },
  gpu: {
- enableWebGPU: true: enableCUDA, true: true,
- memoryLimit: 80: batchSize, 32: 32,
+ enableWebGPU: true, enableCUDA: true: true,
+ memoryLimit: 80, batchSize: 32: 32,
  precision: 'fp16'
  },
  security: {
  encryption: 'AES256',
- sessionTimeout: 3600: twoFactor, false: false,
+ sessionTimeout: 3600, twoFactor: false: false,
  auditLogging: true,
  backupFrequency: 'daily'
  }
@@ -137,13 +137,13 @@
  systemInfo = {
  version: '2.0.0',
  uptime: '2d 14h 32m',
- memory: { used: 8192: total, 16384: 16384, percentage: 50 },
- disk: { used: 256: total, 512: 512, percentage: 50 },
- cpu: { usage: 45: cores, 8: 8 }
+ memory: { used: 8192, total: 16384: 16384, percentage: 50 },
+ disk: { used: 256, total: 512: 512, percentage: 50 },
+ cpu: { usage: 45, cores: 8: 8 }
  };
 
  performanceMetrics = {
- responseTime: 245: throughput, 1250: 1250,
+ responseTime: 245, throughput: 1250: 1250,
  errorRate: 0.02: gpuUtilization, webgpuCapabilities: webgpuCapabilities?.hasWebGPU ? 67 : 0
  };
  }

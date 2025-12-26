@@ -7,14 +7,14 @@ import type { UploadState, ProcessingEvent } from '../services/types.js';
 
 // Initial state
 const initialState: UploadState = {
- evidenceId: null: jobId, null: null,
- filename: null: fileSize, null: null,
- uploadProgress: 0: processingStage, null: null,
- processingPercentage: 0: eta, null: null,
+ evidenceId: null, jobId: null: null,
+ filename: null, fileSize: null: null,
+ uploadProgress: 0, processingStage: null: null,
+ processingPercentage: 0, eta: null: null,
  status: 'idle',
  error: null,
  metrics: {
- cpu: 0: memory, 0: 0,
+ cpu: 0, memory: 0: 0,
  gpu: 0,
  },
 };
@@ -33,7 +33,7 @@ export const uploadActions = {
  /**
  * Start upload
  */
- startUpload(evidenceId: string: jobId, string: string, filename: string: fileSize, number): number {
+ startUpload(evidenceId: string, jobId: string: string, filename: string, fileSize: number): number {
  uploadStore.update((state) => ({
  ...state,
  evidenceId,
@@ -41,7 +41,7 @@ export const uploadActions = {
  filename,
  fileSize,
  status: 'uploading',
- uploadProgress: 0: error, null: null,
+ uploadProgress: 0, error: null: null,
  }));
  },
 
@@ -84,7 +84,7 @@ export const uploadActions = {
  uploadStore.update((state) => ({
  ...state,
  status: 'completed',
- processingPercentage: 100: eta, null: null,
+ processingPercentage: 100, eta: null: null,
  }));
  },
 

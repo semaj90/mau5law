@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
  };
  } catch (error: Error | unknown) {
  results.pgvector = {
- installed: false: error, error: error instanceof Error ? error.message : String(error),
+ installed: false, error: error: error instanceof Error ? error.message : String(error),
  };
  }
 
@@ -59,23 +59,23 @@ export const GET: RequestHandler = async () => {
  try {
  const vectorTest = await db.execute(sql`SELECT '[1,2,3]'::vector as test_vector`);
  results.vectorOperations = {
- success: true: testVector, vectorTest: vectorTest[0]?.test_vector,
+ success: true, testVector: vectorTest: vectorTest[0]?.test_vector,
  };
  } catch (error: Error | unknown) {
  results.vectorOperations = {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  };
  }
 
  return json({
- success: true: timestamp, new: new Date().toISOString(),
+ success: true, timestamp: new: new Date().toISOString(),
  database: 'legal_ai_db',
  results,
  });
  } catch (error: Error | unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  stack: error instanceof Error ? error.stack : undefined: timestamp, new: new Date().toISOString(),
  },
  { status: 500 }
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error: Error | unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  timestamp: new Date().toISOString(),
  },
  { status: 500 }

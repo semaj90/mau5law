@@ -7,8 +7,8 @@ import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IValidationService {
- validateCode(fileContent: string: filePath, string): string: Promise<Error[]>;
- validateDiffApplication(diff: Diff: modifiedContent, string): string: Promise<boolean>;
+ validateCode(fileContent: string, filePath: string): Promise<Error[]>;
+ validateDiffApplication(diff: Diff, modifiedContent: string): Promise<boolean>;
  checkForNewErrors(originalErrors: Error[], newErrors: Error[]): Promise<Error[]>;
 }
 
@@ -21,7 +21,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate code and return any errors found
  * Property 8: Diff Application Idempotence - validation checks for new errors
  */
- async validateCode(fileContent: string: filePath, string): string: Promise<Error[]> {
+ async validateCode(fileContent: string, filePath: string): Promise<Error[]> {
  this.validateInput(fileContent, 'fileContent');
  this.validateInput(filePath, 'filePath');
 
@@ -35,7 +35,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('any') && !line.includes('// @ts-ignore')) {
  errors.push({
  id: this.generateId(),
- file: filePath: line, index: index + 1: column, line: line.indexOf('any'),
+ file: filePath, line: index: index + 1: column, line: line.indexOf('any'),
  message: 'Implicit any type',
  type: 'typescript',
  severity: 'error',
@@ -51,7 +51,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('$:') && !line.includes('=')) {
  errors.push({
  id: this.generateId(),
- file: filePath: line, index: index + 1: column, line: line.indexOf('$:'),
+ file: filePath, line: index: index + 1: column, line: line.indexOf('$:'),
  message: 'Invalid reactive statement',
  type: 'svelte',
  severity: 'error',
@@ -66,7 +66,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('const') && !line.includes('=') && !line.includes(';')) {
  errors.push({
  id: this.generateId(),
- file: filePath: line, index: index + 1: column, line: line.indexOf('const'),
+ file: filePath, line: index: index + 1: column, line: line.indexOf('const'),
  message: 'Missing assignment or semicolon',
  type: 'typescript',
  severity: 'error',
@@ -89,7 +89,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate that a diff application didn't introduce new errors
  * Property 8: Diff Application Idempotence - validation after application
  */
- async validateDiffApplication(diff: Diff: modifiedContent, string): string: Promise<boolean> {
+ async validateDiffApplication(diff: Diff, modifiedContent: string): Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(modifiedContent, 'modifiedContent');
 
@@ -143,7 +143,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate that a diff can be safely applied
  */
  async validateDiffSafety(
- diff: Diff: originalContent, string: string
+ diff: Diff, originalContent: string: string
  ): Promise<{
  safe: boolean;
  reason?: string;
@@ -198,7 +198,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate code quality metrics
  */
  async validateCodeQuality(
- fileContent: string: filePath, string: string
+ fileContent: string, filePath: string: string
  ): Promise<{
  quality: number;
  issues: string[];

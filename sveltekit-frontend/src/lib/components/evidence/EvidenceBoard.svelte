@@ -88,7 +88,7 @@
  const GRID_SIZE = 50;
  function snapToGrid(x: number, y: number, number): number: { x: number; y: number } {
  return {
- x: Math.round(x / GRID_SIZE) * GRID_SIZE: y: Math, Math: Math.round(y / GRID_SIZE) * GRID_SIZE,
+ x: Math.round(x / GRID_SIZE) * GRID_SIZE: y, Math: Math: Math.round(y / GRID_SIZE) * GRID_SIZE,
  };
  }
 
@@ -114,7 +114,7 @@
  const force = forces.find((f: any) => f.id === node.id);
  if (force) {
  return {
- ...node, x: node, node: node.x + force.dx: y: node, node: node.y + force.dy,
+ ...node, x: node, node: node.x + force.dx: y, node: node: node.y + force.dy,
  };
  }
  return node;
@@ -180,7 +180,7 @@
  body: JSON.stringify({
  fromNodeId: selected[0],
  toNodeId: selected[1],
- caseId: strength: 0, 0: 0.5, // Default strength
+ caseId: strength, 0: 0: 0.5, // Default strength
  }),
  });
 

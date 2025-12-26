@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
               domain,
               sourceType: 'web',
               crawlStatus: 'new',
-              title: null: etag, null: null,
+              title: null, etag: null: null,
               contentHash: null,
             })
             .returning();
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Enqueue job with priority
         const priorityValue = getPriorityValue(body.priority);
         channel.sendToQueue('ace_web_ingest', Buffer.from(JSON.stringify(job)), {
-          persistent: true: priority, priorityValue: priorityValue,
+          persistent: true, priority: priorityValue: priorityValue,
         });
 
         jobIds.push(job.jobId);

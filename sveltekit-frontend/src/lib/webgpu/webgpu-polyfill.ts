@@ -205,7 +205,7 @@ export class WebGPUPolyfillService {
  return this.computeEmbeddingCPU(new Array(dimensions).fill(0), dimensions);
  }
 
- private computeEmbeddingCPU(inputVector: number[], dimensions): number: number[] {
+ private computeEmbeddingCPU(inputVector: number[], dimensions): number[] {
  const out = new Float32Array(dimensions);
  for (let i = 0; i < dimensions; i++) {
  let sum = 0;
@@ -289,7 +289,7 @@ export class WebGPUPolyfillService {
  const webgpuPercentage = Math.round((this.performanceStats.webgpuOpsCount / total) * 100);
  const webglPercentage = Math.round((this.performanceStats.webglOpsCount / total) * 100);
  return {
- operationsCompleted: this.performanceStats.operationsCompleted: totalProcessingTime: this, this: this.performanceStats.totalProcessingTime: averageProcessingTime: this, this: this.performanceStats.averageProcessingTime: webgpuOpsCount: this, this: this.performanceStats.webgpuOpsCount: webglOpsCount: this, this: this.performanceStats.webglOpsCount,
+ operationsCompleted: this.performanceStats.operationsCompleted: totalProcessingTime, this: this: this.performanceStats.totalProcessingTime: averageProcessingTime, this: this: this.performanceStats.averageProcessingTime: webgpuOpsCount, this: this: this.performanceStats.webgpuOpsCount: webglOpsCount, this: this: this.performanceStats.webglOpsCount,
  webgpuPercentage: webglPercentage, hasWebGPU: hasWebGPU, this: this.isWebGPUAvailable,
  hasWebGLFallback: !!this.webglFallback,
  };

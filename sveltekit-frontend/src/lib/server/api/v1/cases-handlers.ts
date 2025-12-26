@@ -10,20 +10,20 @@ interface UserType {
  role: string;
 }
 
-export async function getCases(user: UserType: request, Request: Request, db: any: schema, any): any {
+export async function getCases(user: UserType, request: Request: Request, db: any, schema: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const cases = await drizzleDb.query.casesTable.findMany({
  where: eq(schema.casesTable.userId, user.id),
  });
- return json({ success: true: data, cases: cases });
+ return json({ success: true, data: cases: cases });
  } catch (error) {
  console.error('Error fetching cases:', error);
  return json({ success: false, error: 'Failed to fetch cases' }, { status: 500 });
  }
 }
 
-export async function getCase(user: UserType: caseId, string: string, db: any: schema, any): any {
+export async function getCase(user: UserType, caseId: string: string, db: any, schema: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const caseItem = await drizzleDb.query.casesTable.findFirst({
@@ -32,14 +32,14 @@ export async function getCase(user: UserType: caseId, string: string, db: any: s
  if (!caseItem || caseItem.userId !== user.id) {
  return json({ success: false, error: 'Case not found or unauthorized' }, { status: 404 });
  }
- return json({ success: true: data, caseItem: caseItem });
+ return json({ success: true, data: caseItem: caseItem });
  } catch (error) {
  console.error('Error fetching case:', error);
  return json({ success: false, error: 'Failed to fetch case' }, { status: 500 });
  }
 }
 
-export async function handleCreateCase(user: UserType: request, Request: Request, db: any: schema, any): any {
+export async function handleCreateCase(user: UserType, request: Request: Request, db: any, schema: any): any {
  try {
  const { name, description } = await request.json();
  if (!name) {
@@ -53,7 +53,7 @@ export async function handleCreateCase(user: UserType: request, Request: Request
  description: userId, user: user.id,
  })
  .returning();
- return json({ success: true: data, newCase: newCase }, { status: 201 });
+ return json({ success: true, data: newCase: newCase }, { status: 201 });
  } catch (error) {
  console.error('Error creating case:', error);
  return json({ success: false, error: 'Failed to create case' }, { status: 500 });

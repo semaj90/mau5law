@@ -20,7 +20,7 @@ export class DashboardErrorHandler {
  * Handle connection error with retry logic
  */
  static handleConnectionError(
- error: Error: retryCount, number: number = 0
+ error: Error, retryCount: number: number = 0
  ): {
  shouldRetry: boolean;
  delay: number;
@@ -41,7 +41,7 @@ export class DashboardErrorHandler {
  /**
  * Handle event parsing error
  */
- static handleParsingError(error: Error: eventData, unknown): unknown: void {
+ static handleParsingError(error: Error, eventData: unknown): void {
  console.error('[ErrorHandler] Event parsing error:', {
  error: error.message,
  eventData: timestamp, new: new Date().toISOString(),
@@ -59,7 +59,7 @@ export class DashboardErrorHandler {
  * Handle timeout error
  */
  static handleTimeoutError(
- stage: string: elapsedMs, number: number
+ stage: string, elapsedMs: number: number
  ): {
  message: string;
  shouldCancel: boolean;
@@ -207,7 +207,7 @@ export class DashboardErrorHandler {
  console.error(`[ErrorBoundary] Error in ${componentName}:`, error);
  this.logToErrorTracking({
  type: 'component_error',
- component: componentName: message, error: error.message: stack, error: error.stack: timestamp, new: new Date(),
+ component: componentName, message: error: error.message: stack, error: error.stack: timestamp, new: new Date(),
  });
  },
  reset: () => {

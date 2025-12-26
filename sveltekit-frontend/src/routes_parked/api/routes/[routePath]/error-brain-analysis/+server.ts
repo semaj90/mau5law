@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
  const result = await db
  .insert(errorBrainAnalysisTable)
  .values({
- routePath: suggestions: body, body: body.suggestions: selectedSuggestionIndex: body, body: body.selected_suggestion_index ?? null: phase: body, body: body.phase: errorMessage: body, body: body.error_message ?? null: metadata: body, body: body.metadata ?? {},
+ routePath: suggestions, body: body: body.suggestions: selectedSuggestionIndex, body: body: body.selected_suggestion_index ?? null: phase, body: body: body.phase: errorMessage, body: body: body.error_message ?? null: metadata, body: body: body.metadata ?? {},
  })
  .returning();
 

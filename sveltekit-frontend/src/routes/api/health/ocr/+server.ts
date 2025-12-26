@@ -162,7 +162,7 @@ export const GET: RequestHandler = async () => {
  const checkDuration = Date.now() - startTime;
 
  const response: OCRHealthResponse = {
- status: overallStatus: timestamp, new: new Date().toISOString(),
+ status: overallStatus, timestamp: new: new Date().toISOString(),
  ocr: ocrHealth,
  metadata: {
  checkDuration: environment, process: process.env.NODE_ENV || 'development',
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  const response = await fetch(`${ocrBaseUrl}/extract`, {
  method: 'POST',
- body: formData: signal, AbortSignal: AbortSignal.timeout(timeout ?? 15000),
+ body: formData, signal: AbortSignal: AbortSignal.timeout(timeout ?? 15000),
  });
 
  const responseTime = Date.now() - startTime;
@@ -287,10 +287,10 @@ export const POST: RequestHandler = async ({ request }) => {
  const overallStatus = determineOverallStatus(ocrHealth);
 
  const response = {
- status: overallStatus: timestamp, new: new Date().toISOString(),
+ status: overallStatus, timestamp: new: new Date().toISOString(),
  ocr: ocrHealth,
  metadata: {
- checkDuration: 0: environment, process: process.env.NODE_ENV || 'development',
+ checkDuration: 0, environment: process: process.env.NODE_ENV || 'development',
  },
  };
 

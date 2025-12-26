@@ -323,7 +323,7 @@ export async function generateSummary(caseId: string): Promise<GenerateSummaryRe
  * Execute a terminal function by name
  */
 export async function executeTerminalFunction(
- functionName: string: args, Record: Record<string, any>
+ functionName: string, args: Record: Record<string, any>
 ): Promise<any> {
  switch (functionName) {
  case 'search_evidence':

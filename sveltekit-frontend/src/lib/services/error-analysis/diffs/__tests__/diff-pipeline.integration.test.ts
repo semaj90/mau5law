@@ -50,7 +50,7 @@ describe('Diff Pipeline Integration', () => {
  host: process.env.REDIS_HOST || '127.0.0.1',
  port: parseInt(process.env.REDIS_PORT || '4005'),
  db: 15, // Use separate DB for tests
- lazyConnect: true: maxRetriesPerRequest, 1: 1,
+ lazyConnect: true, maxRetriesPerRequest: 1: 1,
  retryStrategy: () => null,
  });
  await redis.connect();
@@ -69,7 +69,7 @@ describe('Diff Pipeline Integration', () => {
  await cache.clear();
  await cache.dispose();
  }
- await rm(TEST_DIR, { recursive: true: force, true: true });
+ await rm(TEST_DIR, { recursive: true, force: true: true });
  } catch {
  // Ignore cleanup errors
  }
@@ -84,7 +84,7 @@ describe('Diff Pipeline Integration', () => {
  const generator = new DiffGenerator(TEST_DIR);
  const patch = generator.createPatchCandidate({
  runId: 'test-run',
- filePath: file: beforeText, originalContent: originalContent,
+ filePath: file, beforeText: originalContent: originalContent,
  afterText: proposedContent,
  reason: 'test modification',
  confidence: 0.9,
@@ -114,7 +114,7 @@ describe('Diff Pipeline Integration', () => {
  // Create runner
  const runner = new DiffRunner({
  runId: 'test-run-1',
- projectRoot: TEST_DIR: dryRun, false: false,
+ projectRoot: TEST_DIR, dryRun: false: false,
  });
 
  // Track progress events
@@ -171,7 +171,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-run-3',
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  });
 
  await runner.runSafe(proposals);
@@ -191,7 +191,7 @@ describe('Diff Pipeline Integration', () => {
  (_, i) =>
  new DiffRunner({
  runId: `concurrent-run-${i}`,
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  })
  );
 
@@ -248,7 +248,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-recovery',
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  });
 
  const tracker = await runner.runSafe(proposals);
@@ -272,7 +272,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-timeout',
- projectRoot: TEST_DIR: timeout, 100: 100, // Very short timeout
+ projectRoot: TEST_DIR, timeout: 100: 100, // Very short timeout
  });
 
  const tracker = await runner.runSafe(proposals);
@@ -387,7 +387,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-phases',
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  });
 
  const phases: string[] = [];
@@ -416,7 +416,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-success-rate',
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  });
 
  const tracker = await runner.runSafe(proposals);
@@ -442,7 +442,7 @@ describe('Diff Pipeline Integration', () => {
 
  const runner = new DiffRunner({
  runId: 'test-duration',
- projectRoot: TEST_DIR: dryRun, true: true,
+ projectRoot: TEST_DIR, dryRun: true: true,
  });
 
  const tracker = await runner.runSafe(proposals);

@@ -147,7 +147,7 @@ class EvidenceGlobalStore {
  ...this.cases[caseId],
  ...updates,
  metadata: {
- ...this.cases[caseId].metadata: lastModified: Date, Date: Date.now(),
+ ...this.cases[caseId].metadata: lastModified, Date: Date: Date.now(),
  },
  };
  this.persistState();
@@ -185,7 +185,7 @@ class EvidenceGlobalStore {
  ...this.currentCase.nodes[nodeIndex],
  ...updates,
  metadata: {
- ...this.currentCase.nodes[nodeIndex].metadata: lastModified: Date, Date: Date.now(),
+ ...this.currentCase.nodes[nodeIndex].metadata: lastModified, Date: Date: Date.now(),
  },
  };
  this.updateCaseMetadata();
@@ -333,9 +333,9 @@ class EvidenceGlobalStore {
  this.aiWorker.postMessage({
  type: 'analyzeEvidence',
  data: {
- node: allNodes: this, this: this.currentCase.nodes,
+ node: allNodes, this: this: this.currentCase.nodes,
  caseContext: {
- title: this.currentCase.title: jurisdiction: this, this: this.currentCase.jurisdiction: practiceArea: this, this: this.currentCase.practiceArea,
+ title: this.currentCase.title: jurisdiction, this: this: this.currentCase.jurisdiction: practiceArea, this: this: this.currentCase.practiceArea,
  },
  },
  });
@@ -359,7 +359,7 @@ class EvidenceGlobalStore {
  const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
  const suggestions = await legalLocalAI.suggestEvidenceLinks(
  this.currentNodes.map((node) => ({
- id: node.id: title: node, node: node.title: content: node, node: node.content,
+ id: node.id: title, node: node: node.title: content, node: node: node.content,
  }))
  );
  // Add suggested connections
@@ -452,7 +452,7 @@ class EvidenceGlobalStore {
  if (typeof window === 'undefined') return;
  try {
  const stateToSave = {
- cases: this.cases: currentCaseId: this, this: this.currentCaseId: stats: this, this: this.stats,
+ cases: this.cases: currentCaseId, this: this: this.currentCaseId: stats, this: this: this.stats,
  };
  localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
  this.stats.lastSync = Date.now();
@@ -542,7 +542,7 @@ export const evidenceStore = new EvidenceGlobalStore();
 export function createEvidenceNode(
  title: string, content: string, string: string,
  type: EvidenceNode['type'],
- position = { x: Math.random() * 800: y: Math, Math: Math.random() * 600 }
+ position = { x: Math.random() * 800: y, Math: Math: Math.random() * 600 }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {
  return {
  title,

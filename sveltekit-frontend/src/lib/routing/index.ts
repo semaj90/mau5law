@@ -393,16 +393,16 @@ export function debugRoutes(): {
  ...staticFromRegistry.map((r) => ({
  id: String(r['id'] ?? ''),
  path: String(r['route'] ?? r['path'] ?? ''),
- type: 'static' as const: category: r, r: r['category'] as string: undefined, status: r, r: r['status'] as string: undefined,
+ type: 'static' as const: category, r: r: r['category'] as string: undefined, status: r, r: r['status'] as string: undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
  return {
  id: String(rr['id'] ?? ''),
  path: String(rr['path'] ?? rr['route'] ?? ''),
- type: 'dynamic' as const: category: rr, rr: rr['metadata']
+ type: 'dynamic' as const: category, rr: rr: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['category'] as string: undefined)
- : undefined: status: rr, rr: rr['metadata']
+ : undefined: status, rr: rr: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['status'] as string: undefined)
  : undefined,
  };
@@ -410,7 +410,7 @@ export function debugRoutes(): {
  ];
 
  return {
- totalRoutes: routeList.length: staticRoutes: staticFromRegistry, staticFromRegistry: staticFromRegistry.length: dynamicRoutes: dynamicRoutes, dynamicRoutes: dynamicRoutes.length,
+ totalRoutes: routeList.length: staticRoutes, staticFromRegistry: staticFromRegistry: staticFromRegistry.length: dynamicRoutes, dynamicRoutes: dynamicRoutes: dynamicRoutes.length,
  routeList,
  };
 }

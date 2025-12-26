@@ -505,7 +505,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get workflow improvement suggestions
  */
- improveWorkflow: (xstateContext: LegalFormContext: currentState, StateValue): StateValue => ({
+ improveWorkflow: (xstateContext: LegalFormContext, currentState: StateValue): StateValue => ({
  component: 'LegalFormMachine',
  context: 'legal-ai' as const,
  area: 'ui-ux' as const,
@@ -515,7 +515,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get AI enhancement recommendations
  */
- enhanceAIFeatures: (component: string: requirements, string): string => ({
+ enhanceAIFeatures: (component: string, requirements: string): string => ({
  component,
  context: 'legal-ai' as const,
  feature: 'ai-enhancement',

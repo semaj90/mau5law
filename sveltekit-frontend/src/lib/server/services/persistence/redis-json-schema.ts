@@ -183,7 +183,7 @@ export class RedisJSONStore {
 
  /**
  * Store clustering metrics
- * Key: metrics:clustering:{timestamp}
+ * Key: metrics:clustering:{ timestamp: timestamp }
  */
  async storeClusteringMetrics(timestamp: number, data: {
  jobCount: number;
@@ -193,7 +193,7 @@ export class RedisJSONStore {
  avgRetryCount: number;
  clusterQuality: number;
  }): Promise<void> {
- const key = `metrics:clustering:${timestamp}`;
+ const key = `metrics:clustering:${ timestamp: timestamp }`;
  await this.client.json.set(key, '$', data);
  await this.client.expire(key, 90 * 24 * 60 * 60); // 90 days
  }
@@ -201,7 +201,7 @@ export class RedisJSONStore {
  /**
  * Get clustering metrics for time range
  */
- async getClusteringMetrics(startTime: number, endTime: number, number): number: Promise<any[]> {
+ async getClusteringMetrics(startTime: number, endTime: number, number): Promise<any[]> {
  // Note: This requires RediSearch module for range queries
  // For now, return empty array - implement with RediSearch in Phase 2
  return [];

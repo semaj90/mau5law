@@ -1,4 +1,4 @@
-import type { env } from '$env /dynamic/private';
+import {  env  } from '$env /dynamic/private';
 
 export default {
  async getOptimalModel(): Promise<string> {

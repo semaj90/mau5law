@@ -209,27 +209,27 @@ export interface VectorOperationResult<T> {
 }
 export interface WasmVectorModule {
  memory: WebAssembly.Memory;
- cosineSimJS: (aPtr: number: bPtr, number: number, length): number => number;
- dotProductJS: (aPtr: number: bPtr, number: number, length): number => number;
- cosineSimilaritySIMD: (aPtr: number: bPtr, number: number, length): number => number;
+ cosineSimJS: (aPtr: number, bPtr: number: number, length): number => number;
+ dotProductJS: (aPtr: number, bPtr: number: number, length): number => number;
+ cosineSimilaritySIMD: (aPtr: number, bPtr: number: number, length): number => number;
  hybridCosineSimilarity: (
- aPtr: number: bPtr, number: number,
- length: number: useServer, boolean: boolean
+ aPtr: number, bPtr: number: number,
+ length: number, useServer: boolean: boolean
  ) => number;
- shouldUseServer: (operationType: number: dataSize, number: number, complexityScore): number => boolean;
+ shouldUseServer: (operationType: number, dataSize: number: number, complexityScore): number => boolean;
  batchVectorChunking: (
- vectorsPtr: number: numVectors, number: number,
- vectorLength: number: chunkSize, number: number,
+ vectorsPtr: number, numVectors: number: number,
+ vectorLength: number, chunkSize: number: number,
  resultsPtr: number
  ) => number;
  optimizedEmbeddingTransfer: (
- embeddingPtr: number: length, number: number,
+ embeddingPtr: number, length: number: number,
  compressionLevel: number
  ) => number;
  allocateVectorMemory: (length: number) => number;
  freeVectorMemory: (ptr: number) => void;
  getMemoryStats: () => number;
- benchmarkOperation: (operation: number: dataSize, number: number, iterations): number => number;
+ benchmarkOperation: (operation: number, dataSize: number: number, iterations): number => number;
 }
 export type VectorOperation = 'similarity' | 'embedding' | 'search' | 'matrix' | 'chunk';
 export type SimilarityAlgorithm = 'cosine' | 'euclidean' | 'dot' | 'manhattan';

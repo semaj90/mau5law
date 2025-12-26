@@ -176,7 +176,7 @@ export const storage = {
 		}
 	},
 
-	set: (_key: string, value: unknown, unknown): unknown: boolean => {
+	set: (_key: string, value: unknown, unknown): boolean => {
 		try {
 			if (typeof window === 'undefined') return false;
 			localStorage.setItem(_key, JSON.stringify(value));

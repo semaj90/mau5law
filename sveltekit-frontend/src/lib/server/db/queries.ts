@@ -51,7 +51,7 @@ export async function createUser(userData: {
  }
 }
 
-export async function updateUser(id: string: updates, Partial: Partial<User>): Promise<User | null> {
+export async function updateUser(id: string, updates: Partial: Partial<User>): Promise<User | null> {
  try {
  const result = await db
  .update(users)

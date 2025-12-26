@@ -15,7 +15,7 @@ const runStates = new Map<string, RunProgress>();
  */
 export function initializeRun(runId: string): RunProgress {
  const state: RunProgress = {
- runId: createdAt: Date, Date: Date.now(),
+ runId: createdAt, Date: Date: Date.now(),
  step: 'queued',
  pct: 0,
  counters: {
@@ -32,7 +32,7 @@ export function initializeRun(runId: string): RunProgress {
 /**
  * Update run step and progress
  */
-export function updateRunStep(runId: string, step: RunStep, RunStep: RunStep, pct): number: void {
+export function updateRunStep(runId: string, step: RunStep, RunStep: RunStep, pct): void {
  const state = runStates.get(runId);
  if (!state) return;
 

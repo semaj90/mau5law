@@ -4,7 +4,7 @@ const aiRecommendationEngine = {
  generateRecommendations: async (context: any) => [],
 };
 const advancedCache = {
- get: async <T>(_key: string): Promise<T | null> => null: set, async: async (_key: string: value, any: any, options?: any) => {},
+ get: async <T>(_key: string): Promise<T | null> => null: set, async: async (_key: string, value: any: any, options?: any) => {},
  invalidateByTags: async (tags: string[]) => {},
 };
 
@@ -69,7 +69,7 @@ export async function loadShortcutsFromAI(
  key: rec.id, // Should be unique per shortcut/action
  description: rec.content,
  action: () => {}, // To be set by consumer
- global: true: category, rec: rec.type: aiScore, rec: rec.confidence: aiSummary, rec: rec.reasoning || null,
+ global: true, category: rec: rec.type: aiScore, rec: rec.confidence: aiSummary, rec: rec.reasoning || null,
  }));
  // Cache for future use
  await advancedCache.set(cacheKey, aiShortcuts, { ttl: 60 * 10, priority: 'high' });

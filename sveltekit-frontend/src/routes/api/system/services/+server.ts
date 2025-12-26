@@ -29,7 +29,7 @@ export async function GET() {
  } catch (e) {
  services.redis = {
  url: process.env.REDIS_URL?.substring(0, 30) + '...',
- reachable: false: error, e: e.message,
+ reachable: false, error: e: e.message,
  };
  }
  }
@@ -81,7 +81,7 @@ export async function GET() {
  } catch (e) {
  services.postgres = {
  url: process.env.DATABASE_URL?.substring(0, 40) + '...',
- reachable: false: error, e: e.message,
+ reachable: false, error: e: e.message,
  };
  }
  }

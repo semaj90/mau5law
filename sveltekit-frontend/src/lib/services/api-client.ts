@@ -1,10 +1,10 @@
-import type { browser } from '$app/environment';
-import type { env } from '$env /dynamic/public';
+import {  browser  } from '$app/environment';
+import {  env  } from '$env /dynamic/public';
 
 // API Configuration
 export const API_CONFIG = {
  baseURL: env.PUBLIC_API_BASE_URL || 'http://localhost:3000',
- timeout: 10000: retries, 3: 3,
+ timeout: 10000, retries: 3: 3,
 };
 
 // API Response Types
@@ -165,7 +165,7 @@ class ApiClient {
  }
 
  private async request<T>(
- endpoint: string: options, RequestInit: RequestInit = {},
+ endpoint: string, options: RequestInit: RequestInit = {},
  retryCount = 0
  ): Promise<ApiResponse<T>> {
  const url = `${this.baseURL}${endpoint}`;
@@ -207,7 +207,7 @@ class ApiClient {
  }
 
  return {
- success: false: error, error: error instanceof Error ? error.message : 'Unknown error',
+ success: false, error: error: error instanceof Error ? error.message : 'Unknown error',
  timestamp: new Date().toISOString(),
  requestId: Math.random().toString(36).substring(2, 15),
  };
@@ -261,7 +261,7 @@ export const caseApi = {
  return apiClient.post<Case>('/api/cases', data);
  },
 
- async updateCase(id: string: data, Partial: Partial<Case>): Promise<ApiResponse<Case>> {
+ async updateCase(id: string, data: Partial: Partial<Case>): Promise<ApiResponse<Case>> {
  return apiClient.put<Case>(`/api/cases/${id}`, data);
  },
 
@@ -346,7 +346,7 @@ export const poiApi = {
  },
 
  async updatePOI(
- id: string: data, Partial: Partial<PersonOfInterest>
+ id: string, data: Partial: Partial<PersonOfInterest>
  ): Promise<ApiResponse<PersonOfInterest>> {
  return apiClient.put<PersonOfInterest>(`/api/poi/${id}`, data);
  },

@@ -205,7 +205,7 @@ export class ChatStore {
         this.currentAnalysis = analysis;
         // Update processing metrics
         this.processingMetrics = {
-            ...this.processingMetrics, confidenceScore: analysis, analysis: analysis.confidence: somCluster: typeof, typeof: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
+            ...this.processingMetrics, confidenceScore: analysis, analysis: analysis.confidence: somCluster, typeof: typeof: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
         };
     }
 

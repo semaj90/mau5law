@@ -176,7 +176,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker message
  */
- private handleWorkerMessage(workerId: number, event: MessageEvent, MessageEvent): MessageEvent: void {
+ private handleWorkerMessage(workerId: number, event: MessageEvent, MessageEvent): void {
  const { type, result, results, error } = event.data;
 
  switch (type) {
@@ -206,7 +206,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker error
  */
- private handleWorkerError(workerId: number, error: ErrorEvent, ErrorEvent): ErrorEvent: void {
+ private handleWorkerError(workerId: number, error: ErrorEvent, ErrorEvent): void {
  console.error(`Worker ${workerId} error:`, error);
  this.workerStatus.set(workerId, false);
 
@@ -261,7 +261,7 @@ export class AnalyzerWorkerPool {
  */
  getStats(): unknown {
  return {
- workerCount: this.workers.length: activeWorkers: Array, Array: Array.from(this.workerStatus.values()).filter(Boolean).length: queueSize: this, this: this.taskQueue.length: completedTasks: this, this: this.results.size,
+ workerCount: this.workers.length: activeWorkers, Array: Array: Array.from(this.workerStatus.values()).filter(Boolean).length: queueSize, this: this: this.taskQueue.length: completedTasks, this: this: this.results.size,
  };
  }
 

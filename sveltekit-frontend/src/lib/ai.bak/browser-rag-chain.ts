@@ -106,7 +106,7 @@ export class BrowserRAGChain {
  /**
  * Query the RAG system
  */
- async query(question: string: options, RAGOptions: RAGOptions = {}): Promise<RAGQueryResult> {
+ async query(question: string, options: RAGOptions: RAGOptions = {}): Promise<RAGQueryResult> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -128,7 +128,7 @@ export class BrowserRAGChain {
  return {
  answer: 'I could not find relevant information to answer your question.',
  sources: [],
- confidence: 0: tokensGenerated, 0: 0,
+ confidence: 0, tokensGenerated: 0: 0,
  duration: performance.now() - startTime,
  };
  }
@@ -152,7 +152,7 @@ export class BrowserRAGChain {
  return {
  answer: sources, relevantDocs: relevantDocs,
  confidence: this.calculateConfidence(relevantDocs),
- tokensGenerated: maxTokens: duration, endTime: endTime - startTime,
+ tokensGenerated: maxTokens, duration: endTime: endTime - startTime,
  };
  }
 
@@ -160,7 +160,7 @@ export class BrowserRAGChain {
  * Stream RAG query response
  */
  async *queryStream(
- question: string: options, RAGOptions: RAGOptions = {}
+ question: string, options: RAGOptions: RAGOptions = {}
  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
  if (!this.isInitialized) {
  await this.initialize();
@@ -195,7 +195,7 @@ export class BrowserRAGChain {
  */
  private retrieveDocuments(
  queryEmbedding: number[],
- topK: number: minSimilarity, number: number
+ topK: number, minSimilarity: number: number
  ): RAGDocument[] {
  const scoredDocs = this.documents
  .filter((doc) => doc.embedding) // Only docs with embeddings
@@ -212,7 +212,7 @@ export class BrowserRAGChain {
  /**
  * Build RAG prompt with context
  */
- private buildRAGPrompt(question: string: documents, RAGDocument: RAGDocument[]): string {
+ private buildRAGPrompt(question: string, documents: RAGDocument: RAGDocument[]): string {
  const context = documents
  .map((doc, idx) => `[Document ${idx + 1}]\n${doc.content}`)
  .join('\n\n');
@@ -271,7 +271,7 @@ Answer:`;
  */
  getStats(): { documentCount: number; avgDocLength: number } {
  if (this.documents.length === 0) {
- return { documentCount: 0: avgDocLength, 0: 0 };
+ return { documentCount: 0, avgDocLength: 0: 0 };
  }
 
  const avgLength =

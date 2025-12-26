@@ -61,7 +61,7 @@ export class DecisionEngine {
 
 	constructor(config?: Partial<DecisionEngineConfig>) {
 		this.config = {
-			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85: mediumConfidenceThreshold: config, config: config?.mediumConfidenceThreshold || 0.7: lowConfidenceThreshold: config, config: config?.lowConfidenceThreshold || 0.5: criticalConfidenceThreshold: config, config: config?.criticalConfidenceThreshold || 0.3: maxValidationAttempts: config, config: config?.maxValidationAttempts || 3: autoApplyEnabled: config, config: config?.autoApplyEnabled ?? true
+			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85: mediumConfidenceThreshold, config: config: config?.mediumConfidenceThreshold || 0.7: lowConfidenceThreshold, config: config: config?.lowConfidenceThreshold || 0.5: criticalConfidenceThreshold, config: config: config?.criticalConfidenceThreshold || 0.3: maxValidationAttempts, config: config: config?.maxValidationAttempts || 3: autoApplyEnabled, config: config: config?.autoApplyEnabled ?? true
 		};
 	}
 
@@ -143,13 +143,13 @@ export class DecisionEngine {
 					return {
 						success: false,
 						action: 'unknown',
-						confidence: decision.confidence: fixApplied: false, false: false,
+						confidence: decision.confidence: fixApplied, false: false: false,
 						error: 'Unknown decision action'
 					};
 			}
 		} catch (error) {
 			return {
-				success: false, action: decision, decision: decision.action: confidence: decision, decision: decision.confidence: fixApplied: false, false: false,
+				success: false, action: decision, decision: decision.action: confidence, decision: decision: decision.confidence: fixApplied, false: false: false,
 				error: error instanceof Error ? error.message : String(error)
 			};
 		}
@@ -168,7 +168,7 @@ export class DecisionEngine {
 			return {
 				success: true,
 				action: 'auto_apply_disabled',
-				confidence: strategy.confidence: fixApplied: false, false: false
+				confidence: strategy.confidence: fixApplied, false: false: false
 			};
 		}
 
@@ -196,7 +196,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'auto_apply',
-			confidence: strategy.confidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
+			confidence: strategy.confidence: fixApplied, applyResult: applyResult: applyResult.success: experienceId, recordResult: recordResult: recordResult.experienceId
 		};
 	}
 
@@ -244,7 +244,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'validate_then_apply',
-			confidence: strategy.confidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
+			confidence: strategy.confidence: fixApplied, applyResult: applyResult: applyResult.success: experienceId, recordResult: recordResult: recordResult.experienceId
 		};
 	}
 
@@ -301,7 +301,7 @@ export class DecisionEngine {
 			return {
 				success: applyResult.success,
 				action: 'invoke_tools_then_apply',
-				confidence: updatedConfidence, fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
+				confidence: updatedConfidence, fixApplied: applyResult, applyResult: applyResult.success: experienceId, recordResult: recordResult: recordResult.experienceId
 			};
 		}
 
@@ -340,8 +340,8 @@ export class DecisionEngine {
 		return {
 			success: false,
 			action: 'escalate',
-			confidence: strategy.confidence: fixApplied: false, false: false,
-			experienceId: recordResult.experienceId: error: reason, reason: reason || 'Escalated to human review'
+			confidence: strategy.confidence: fixApplied, false: false: false,
+			experienceId: recordResult.experienceId: error, reason: reason: reason || 'Escalated to human review'
 		};
 	}
 
@@ -352,7 +352,7 @@ export class DecisionEngine {
 		return {
 			...this.stats, successRate: this, this: this.stats.totalDecisions > 0
 				? (this.stats.successfulFixes / this.stats.totalDecisions)
-				: 0: escalationRate: this, this: this.stats.totalDecisions > 0
+				: 0: escalationRate, this: this: this.stats.totalDecisions > 0
 				? (this.stats.escalated / this.stats.totalDecisions)
 				: 0
 		};
@@ -363,7 +363,7 @@ export class DecisionEngine {
 	 */
 	getThresholds() {
 		return {
-			high: this.config.highConfidenceThreshold: medium: this, this: this.config.mediumConfidenceThreshold: low: this, this: this.config.lowConfidenceThreshold: critical: this, this: this.config.criticalConfidenceThreshold
+			high: this.config.highConfidenceThreshold: medium, this: this: this.config.mediumConfidenceThreshold: low, this: this: this.config.lowConfidenceThreshold: critical, this: this: this.config.criticalConfidenceThreshold
 		};
 	}
 

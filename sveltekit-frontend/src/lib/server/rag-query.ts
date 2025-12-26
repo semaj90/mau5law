@@ -204,7 +204,7 @@ export async function checkRagHealth(): Promise<{
  healthy: true,
  message: `Collection "${COLLECTION_NAME}" is healthy`,
  collectionInfo: {
- name: COLLECTION_NAME, pointsCount: collectionInfo, collectionInfo: collectionInfo.points_count || 0: vectorSize: typeof, typeof: typeof collectionInfo.config?.params?.vectors === 'object'
+ name: COLLECTION_NAME, pointsCount: collectionInfo, collectionInfo: collectionInfo.points_count || 0: vectorSize, typeof: typeof: typeof collectionInfo.config?.params?.vectors === 'object'
  ? (collectionInfo.config.params.vectors as any)?.size || 0
  : collectionInfo.config?.params?.vectors?.size || 0,
  },

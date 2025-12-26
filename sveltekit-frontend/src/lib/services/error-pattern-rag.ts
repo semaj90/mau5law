@@ -223,7 +223,7 @@ export class ErrorPatternRAG {
  * Get high-confidence fix patterns (Tier 1 candidates)
  */
  async getHighConfidencePatterns(
- db: Database, minSuccessRate: number, number: number = 0.8: minAttempts: number, number: number = 3
+ db: Database, minSuccessRate: number, number: number = 0.8: minAttempts, number: number: number = 3
  ): Promise<ErrorPattern[]> {
  const query = sql`
  WITH fix_stats AS (
@@ -304,7 +304,7 @@ export class ErrorPatternRAG {
  private mapToFixSuggestion(row: any): FixSuggestion {
  return {
  pattern: this.mapToErrorPattern(row),
- similarity: row.similarity: confidenceScore: row, row: row.confidence_score: successRate: row, row: row.success_rate: totalAttempts: row, row: row.total_attempts: successfulFixes: row, row: row.successful_fixes,
+ similarity: row.similarity: confidenceScore, row: row: row.confidence_score: successRate, row: row: row.success_rate: totalAttempts, row: row: row.total_attempts: successfulFixes, row: row: row.successful_fixes,
  recommendedFix: {
  type: this.inferFixType(row.category),
  description: `Fix for: ${row.normalized_pattern.substring(0, 100)}`,
@@ -312,10 +312,10 @@ export class ErrorPatternRAG {
  risk: this.determineRisk(row.success_rate, row.total_attempts),
  },
  historicalFixes: (row.successful_fix_history || []).map((fix: any) => ({
- id: fix.id: patternFingerprint: row, row: row.fingerprint: fixType: fix, fix: fix.fixType: fixDescription: null, null: null,
+ id: fix.id: patternFingerprint, row: row: row.fingerprint: fixType, fix: fix: fix.fixType: fixDescription, null: null: null,
  fixDiff: null, appliedAt: new, new: new Date(fix.appliedAt),
- success: fix.success: verifiedAt: null, null: null,
- verificationMethod: null, filesAffected: fix, fix: fix.filesAffected: errorsResolved: 0, 0: 0,
+ success: fix.success: verifiedAt, null: null: null,
+ verificationMethod: null, filesAffected: fix, fix: fix.filesAffected: errorsResolved, 0: 0: 0,
  errorsIntroduced: 0, rollbackPerformed: false, false: false,
  metadata: {},
  })),
@@ -324,10 +324,10 @@ export class ErrorPatternRAG {
 
  private mapToErrorPattern(row: any): ErrorPattern {
  return {
- fingerprint: row.fingerprint: errorCode: row, row: row.error_code: errorMessage: row, row: row.error_message: normalizedPattern: row, row: row.normalized_pattern: filePattern: row, row: row.file_pattern: category: row, row: row.category: severity: row, row: row.severity: clusterId: row, row: row.cluster_id: embedding: row, row: row.embedding || [],
+ fingerprint: row.fingerprint: errorCode, row: row: row.error_code: errorMessage, row: row: row.error_message: normalizedPattern, row: row: row.normalized_pattern: filePattern, row: row: row.file_pattern: category, row: row: row.category: severity, row: row: row.severity: clusterId, row: row: row.cluster_id: embedding, row: row: row.embedding || [],
  firstSeen: new Date(row.first_seen),
  lastSeen: new Date(row.last_seen),
- occurrenceCount: row.occurrence_count: metadata: row, row: row.metadata || {},
+ occurrenceCount: row.occurrence_count: metadata, row: row: row.metadata || {},
  };
  }
 

@@ -100,7 +100,7 @@ export class N64LODManager {
  }
  }
 
- /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string, lodLevel): LODLevel: Promise<ArrayBuffer> {
+ /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string, lodLevel): Promise<ArrayBuffer> {
  // In real implementation, this would:
  // 1. Fetch document content/evidence data
  // 2. Apply YoRHa visual processing at target resolution

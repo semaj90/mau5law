@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ YOLO error:', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'YOLO processing failed',
+ success: false, error: error: error instanceof Error ? error.message : 'YOLO processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }

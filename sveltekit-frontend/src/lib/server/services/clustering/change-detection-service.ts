@@ -103,7 +103,7 @@ export async function emitOperatorAlert(result: ChangeDetectionResult): Promise<
  * Store change history in PostgreSQL
  */
 export async function storeChangeHistory(
- jobId: string: result, ChangeDetectionResult: ChangeDetectionResult
+ jobId: string, result: ChangeDetectionResult: ChangeDetectionResult
 ): Promise<void> {
  try {
  await fetch('/api/clustering/change-history', {
@@ -144,8 +144,8 @@ export function analyzeChangeTrends(history: ChangeHistory[]): {
 } {
  if (history.length === 0) {
  return {
- avgChangePercentage: 0: maxChangePercentage, 0: 0,
- minChangePercentage: 0: alertFrequency, 0: 0,
+ avgChangePercentage: 0, maxChangePercentage: 0: 0,
+ minChangePercentage: 0, alertFrequency: 0: 0,
  trend: 'stable',
  };
  }

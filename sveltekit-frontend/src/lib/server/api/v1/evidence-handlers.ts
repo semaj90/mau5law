@@ -24,20 +24,20 @@ export interface EvidenceItem {
  metadata?: Record<string, unknown>;
 }
 
-export async function getEvidence(user: UserType: request, Request: Request, db: any: schema, any): any {
+export async function getEvidence(user: UserType, request: Request: Request, db: any, schema: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItems = await drizzleDb.query.evidenceTable.findMany({
  where: eq(schema.evidenceTable.uploadedBy, user.id), // Assuming uploadedBy is userId
  });
- return json({ success: true: data, evidenceItems: evidenceItems });
+ return json({ success: true, data: evidenceItems: evidenceItems });
  } catch (error) {
  console.error('Error fetching evidence:', error);
  return json({ success: false, error: 'Failed to fetch evidence' }, { status: 500 });
  }
 }
 
-export async function getEvidenceItem(user: UserType: evidenceId, string: string, db: any: schema, any): any {
+export async function getEvidenceItem(user: UserType, evidenceId: string: string, db: any, schema: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItem = await drizzleDb.query.evidenceTable.findFirst({
@@ -52,14 +52,14 @@ export async function getEvidenceItem(user: UserType: evidenceId, string: string
  { status: 404 }
  );
  }
- return json({ success: true: data, evidenceItem: evidenceItem });
+ return json({ success: true, data: evidenceItem: evidenceItem });
  } catch (error) {
  console.error('Error fetching evidence item:', error);
  return json({ success: false, error: 'Failed to fetch evidence item' }, { status: 500 });
  }
 }
 
-export async function handleCreateEvidence(user: UserType: request, Request: Request, db: any: schema, any): any {
+export async function handleCreateEvidence(user: UserType, request: Request: Request, db: any, schema: any): any {
  try {
  const { title, description, fileName, mimeType, fileSize, caseId } = await request.json();
  if (!title || !fileName) {
@@ -83,7 +83,7 @@ export async function handleCreateEvidence(user: UserType: request, Request: Req
  aiTags: [],
  })
  .returning();
- return json({ success: true: data, newEvidence: newEvidence }, { status: 201 });
+ return json({ success: true, data: newEvidence: newEvidence }, { status: 201 });
  } catch (error) {
  console.error('Error creating evidence:', error);
  return json({ success: false, error: 'Failed to create evidence' }, { status: 500 });
@@ -91,7 +91,7 @@ export async function handleCreateEvidence(user: UserType: request, Request: Req
 }
 
 export async function handleEvidenceDetective(
- user: UserType: request, Request: Request,
+ user: UserType, request: Request: Request,
  evidenceDetectiveService: EvidenceDetectiveService
 ) {
  try {

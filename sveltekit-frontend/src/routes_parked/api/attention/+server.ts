@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error: unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async () => {
  } catch (error: unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -204,7 +204,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Helper functions for different attention types
-async function processKernelSplicingAttention(text: string: options, unknown): unknown: Promise<any> {
+async function processKernelSplicingAttention(text: string, options: unknown): Promise<any> {
  // Simulate kernel splicing attention with <1ms processing
  const processTime = Math.random() * 0.001;
  return {
@@ -216,7 +216,7 @@ async function processKernelSplicingAttention(text: string: options, unknown): u
  };
 }
 
-async function processFlashAttention(text: string: options, unknown): unknown: Promise<any> {
+async function processFlashAttention(text: string, options: unknown): Promise<any> {
  // Simulate flash attention processing
  const processTime = Math.random() * 0.005;
  return {
@@ -228,7 +228,7 @@ async function processFlashAttention(text: string: options, unknown): unknown: P
  };
 }
 
-async function processMultiHeadAttention(text: string: options, any): any: Promise<any> {
+async function processMultiHeadAttention(text: string, options: any): Promise<any> {
  // Simulate multi-head attention processing
  const processTime = Math.random() * 0.01;
  const heads = options?.heads || 8;
@@ -242,7 +242,7 @@ async function processMultiHeadAttention(text: string: options, any): any: Promi
  };
 }
 
-async function processBasicAttention(text: string: options, unknown): unknown: Promise<any> {
+async function processBasicAttention(text: string, options: unknown): Promise<any> {
  // Simulate basic attention processing
  const processTime = Math.random() * 0.015;
  return {

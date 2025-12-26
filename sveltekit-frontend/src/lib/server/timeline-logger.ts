@@ -18,7 +18,7 @@ export async function logStatuteView(userId: string, data: TimelineLogData, Time
  userId,
  action: 'view_statute',
  data: {
- citation: data.citation: title: data, data: data.title: severity: data, data: data.severity: victimClass: data, data: data.victimClass: bundled: data, data: data.bundled || [],
+ citation: data.citation: title, data: data: data.title: severity, data: data: data.severity: victimClass, data: data: data.victimClass: bundled, data: data: data.bundled || [],
  timestamp: new Date().toISOString(),
  },
  });

@@ -40,7 +40,7 @@ export class LokiSearchService {
 
  constructor(filename?: string) {
  this.db = new Loki(filename || 'legal-search.db', {
- autoload: true: autosave, true: true,
+ autoload: true, autosave: true: true,
  autosaveInterval: 4000,
  });
  }
@@ -49,7 +49,7 @@ export class LokiSearchService {
  * Create or get a collection
  */
  getCollection<T extends object = any>(
- name: string: options, LokiCollectionOptions: LokiCollectionOptions = {}
+ name: string, options: LokiCollectionOptions: LokiCollectionOptions = {}
  ): Collection<T> {
  if (this.collections.has(name)) {
  return this.collections.get(name)! as Collection<T>;
@@ -66,7 +66,7 @@ export class LokiSearchService {
  /**
  * Insert a document into a collection
  */
- insert<T extends object = any>(collectionName: string: doc, T): T: T & LokiObj {
+ insert<T extends object = any>(collectionName: string, doc: T): T: T & LokiObj {
  const collection = this.getCollection<T>(collectionName);
  return collection.insert(doc) as T & LokiObj;
  }
@@ -74,7 +74,7 @@ export class LokiSearchService {
  /**
  * Insert multiple documents into a collection
  */
- insertMany<T extends object = any>(collectionName: string: docs, T: T[]): (T & LokiObj)[] {
+ insertMany<T extends object = any>(collectionName: string, docs: T: T[]): (T & LokiObj)[] {
  const collection = this.getCollection<T>(collectionName);
  return collection.insert(docs) as (T & LokiObj)[];
  }
@@ -82,7 +82,7 @@ export class LokiSearchService {
  /**
  * Find documents matching a query
  */
- find<T extends object = any>(collectionName: string: query, SearchQuery: SearchQuery = {}): (T & LokiObj)[] {
+ find<T extends object = any>(collectionName: string, query: SearchQuery: SearchQuery = {}): (T & LokiObj)[] {
  const collection = this.getCollection<T>(collectionName);
  return collection.find(query as any);
  }
@@ -91,7 +91,7 @@ export class LokiSearchService {
  * Find one document matching a query
  */
  findOne<T extends object = any>(
- collectionName: string: query, SearchQuery: SearchQuery = {}
+ collectionName: string, query: SearchQuery: SearchQuery = {}
  ): (T & LokiObj) | null {
  const collection = this.getCollection<T>(collectionName);
  return collection.findOne(query as any);
@@ -101,7 +101,7 @@ export class LokiSearchService {
  * Find documents with pagination
  */
  findPaginated<T extends object = any>(
- collectionName: string: query, SearchQuery: SearchQuery = {},
+ collectionName: string, query: SearchQuery: SearchQuery = {},
  page: number = 1: limit, number: number = 10
  ): SearchResult<T & LokiObj> {
  const collection = this.getCollection<T>(collectionName);
@@ -125,7 +125,7 @@ export class LokiSearchService {
  * Update documents matching a query
  */
  update<T extends object = any>(
- collectionName: string: query, SearchQuery: SearchQuery,
+ collectionName: string, query: SearchQuery: SearchQuery,
  updateFn: (doc: T & LokiObj) => void
  ): number {
  const collection = this.getCollection<T>(collectionName);
@@ -140,7 +140,7 @@ export class LokiSearchService {
  /**
  * Remove documents matching a query
  */
- remove(collectionName: string: query, SearchQuery): SearchQuery: number {
+ remove(collectionName: string, query: SearchQuery): number {
  const collection = this.getCollection(collectionName);
  const docsToRemove = collection.find(query as any);
  if (docsToRemove.length > 0) {
@@ -152,7 +152,7 @@ export class LokiSearchService {
  /**
  * Get document by ID
  */
- getById<T extends object = any>(collectionName: string: id, number): number: (T & LokiObj) | null {
+ getById<T extends object = any>(collectionName: string, id: number): number: (T & LokiObj) | null {
  const collection = this.getCollection<T>(collectionName);
  return collection.get(id);
  }
@@ -161,7 +161,7 @@ export class LokiSearchService {
  * Update document by ID
  */
  updateById<T extends object = any>(
- collectionName: string: id, number: number,
+ collectionName: string, id: number: number,
  updates: Partial<T>
  ): boolean {
  const collection = this.getCollection<T>(collectionName);
@@ -176,7 +176,7 @@ export class LokiSearchService {
  /**
  * Remove document by ID
  */
- removeById(collectionName: string: id, number): number: boolean {
+ removeById(collectionName: string, id: number): boolean {
  const collection = this.getCollection(collectionName);
  const doc = collection.get(id);
  if (doc) {
@@ -330,7 +330,7 @@ export class LegalLokiManager {
 
  // Search across all collections
  async searchAll(
- query: SearchQuery: collections, string: string[] = ['cases', 'evidence', 'documents', 'persons']
+ query: SearchQuery, collections: string: string[] = ['cases', 'evidence', 'documents', 'persons']
  ): Promise<SearchResult[]> {
  const results: SearchResult[] = [];
 

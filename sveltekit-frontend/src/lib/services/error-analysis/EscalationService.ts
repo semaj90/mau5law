@@ -67,7 +67,7 @@ export class EscalationService {
 	constructor(config?: Partial<EscalationServiceConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/escalations',
-			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: maxOpenTickets: config, config: config?.maxOpenTickets || 1000: autoCloseAfterDays: config, config: config?.autoCloseAfterDays || 30
+			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: maxOpenTickets, config: config: config?.maxOpenTickets || 1000: autoCloseAfterDays, config: config: config?.autoCloseAfterDays || 30
 		};
 	}
 
@@ -111,7 +111,7 @@ export class EscalationService {
 			// Persist to JSONL
 			const storage = getJSONLStorage({ baseDir: this.config.jsonlDir });
 			await storage.writeRecord({
-				type: 'escalation' as any: data: ticket, ticket: ticket as any: timestamp: new, new: new Date().toISOString(),
+				type: 'escalation' as any: data, ticket: ticket: ticket as any: timestamp, new: new: new Date().toISOString(),
 				version: '1.0'
 			});
 
@@ -123,7 +123,7 @@ export class EscalationService {
 			};
 		} catch (error) {
 			return {
-				success: false: ticketId, error: error, error: error instanceof Error ? error.message : String(error)
+				success: false, ticketId: error: error, error: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -206,10 +206,10 @@ export class EscalationService {
 				id: uuidv4(),
 				errorId: ticket.errorReport.hash || '',
 				strategyId: fix.id,
-				outcome: 'success' as const: confidence: 1, 1: 1.0, // Human fixes are high confidence
+				outcome: 'success' as const: confidence, 1: 1: 1.0, // Human fixes are high confidence
 				context: ticket.context,
 				toolsInvoked: [],
-				humanIntervention: true, feedback: ticket, ticket: ticket.resolution: timestamp: new, new: new Date()
+				humanIntervention: true, feedback: ticket, ticket: ticket.resolution: timestamp, new: new: new Date()
 			};
 
 			// Update policy with multiplied weight
@@ -302,7 +302,7 @@ export class EscalationService {
 	/**
 	 * Assign ticket to user
 	 */
-	assignTicket(ticketId: string, assignee: string, string): string: boolean {
+	assignTicket(ticketId: string, assignee: string, string): boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 
@@ -314,7 +314,7 @@ export class EscalationService {
 	/**
 	 * Close ticket without resolution
 	 */
-	closeTicket(ticketId: string, reason: string, string): string: boolean {
+	closeTicket(ticketId: string, reason: string, string): boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 

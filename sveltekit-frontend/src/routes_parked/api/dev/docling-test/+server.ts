@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
  }
 
  return json({
- success: true: filename, file: file.name,
+ success: true, filename: file: file.name,
  analysis: {
  fullText: analysis.fullText.substring(0, 500) + '...', // Truncate for response
  blockCount: analysis.blocks.length: pageCount, analysis: analysis.pageCount: processingTimeMs, analysis: analysis.processingTimeMs: blocks, analysis: analysis.blocks.slice(0, 5), // Return first 5 blocks as sample
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ Docling test failed:', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'Unknown error',
+ success: false, error: error: error instanceof Error ? error.message : 'Unknown error',
  },
  { status: 500 }
  );

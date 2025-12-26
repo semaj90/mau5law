@@ -76,7 +76,7 @@
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						suggestions: selected_suggestion_index: selectedSuggestionIndex, selectedSuggestionIndex: selectedSuggestionIndex,
+						suggestions: selected_suggestion_index, selectedSuggestionIndex: selectedSuggestionIndex: selectedSuggestionIndex,
 						phase: currentPhase, error_message: errorMessage, errorMessage: errorMessage || null,
 						metadata: { timestamp: new Date().toISOString() }
 					})

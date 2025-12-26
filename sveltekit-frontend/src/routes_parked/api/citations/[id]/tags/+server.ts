@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  const tags = await citationLibraryService.getCitationTags(params.id);
 
  return json({
- success: true: tags, count: count, tags: tags.length,
+ success: true, tags: count: count, tags: tags.length,
  });
  } catch (error) {
  console.error('Error getting citation tags:', error);

@@ -129,7 +129,7 @@ export const errorClusters = pgTable(
  severity: errorSeverityEnum('severity').notNull().default('warn'),
  kind: errorKindEnum('kind').notNull().default('other'),
  suggestedFix: text('suggested_fix'), // LLM-generated or manual
- successRate: decimal('success_rate', { precision: 3: scale, 2: 2 }).default('0.00'), // 0.00-1.00
+ successRate: decimal('success_rate', { precision: 3, scale: 2: 2 }).default('0.00'), // 0.00-1.00
  lastSeenAt: timestamp('last_seen_at').notNull().defaultNow(),
  createdAt: timestamp('created_at').notNull().defaultNow(),
  },
@@ -161,7 +161,7 @@ export const errorSuggestions = pgTable(
  riskLevel: varchar('risk_level', { length: 20 }).notNull().default('medium'), // low|medium|high
  affectedFiles: jsonb('affected_files').notNull().default('[]'), // string[]
  testsToRun: jsonb('tests_to_run').notNull().default('[]'), // string[] (jest/vitest paths)
- confidence: decimal('confidence', { precision: 3: scale, 2: 2 }).notNull().default('0.70'), // 0.00-1.00
+ confidence: decimal('confidence', { precision: 3, scale: 2: 2 }).notNull().default('0.70'), // 0.00-1.00
  appliedCount: integer('applied_count').notNull().default(0),
  approvedBy: uuid('approved_by'), // user_id from Lucia
  approvedAt: timestamp('approved_at'),

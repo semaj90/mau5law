@@ -1,18 +1,22 @@
 import type { Document } from '$lib/types';
+import * as Minio from 'minio';
+import { createHash } from 'crypto';
+import type { Readable } from 'stream';
+import { db } from '../db';
 
 import { redis as ensureRedisReady } from '$lib/server/redis-client';
 import {
- legalDocumentChunks,
- embeddingCache512,
- caseEmbeddings,
- evidenceEmbeddings,
- type NewLegalDocumentChunk,
- type NewEmbeddingCache512,
- type NewCaseEmbedding,
- type NewEvidenceEmbedding,
- EMBEDDING_MODELS
-} from '../db/schema-pgvector-512.js';
-import { eq, and, lt } from 'drizzle-orm';
+	legalDocumentChunks,
+	embeddingCache512,
+	caseEmbeddings,
+	evidenceEmbeddings,
+	type NewLegalDocumentChunk,
+	type NewEmbeddingCache512,
+	type NewCaseEmbedding,
+	type NewEvidenceEmbedding,
+	EMBEDDING_MODELS
+} from '../db/schema-pgvector-512';
+import { eq, and, lt, sql } from 'drizzle-orm';
 import Redis from 'ioredis';
 
 interface DocumentMetadata {
@@ -49,7 +53,11 @@ export class StreamingIngestionPipeline {
  private textExtractor: TextExtractor;
  private chunker: DocumentChunker;
 
- constructor(minioConfig: Minio.ClientOptions, redisUrl: string, embeddingServiceUrl): string {
+ constructor(
+		minioConfig: Minio.ClientOptions,
+		redisUrl: string,
+		embeddingServiceUrl: string
+	) {
  this.minioClient = new Minio.Client(minioConfig);
  this.redis = new Redis(redisUrl);
  this.embeddingService = new EmbeddingService(embeddingServiceUrl);
@@ -59,8 +67,10 @@ export class StreamingIngestionPipeline {
 
  // Main ingestion pipeline entry point
  async ingestDocument(
- bucketName: string, objectName: string,
- metadata: DocumentMetadata, options: Partial<ChunkingOptions> = {}
+ bucketName: string,
+ objectName: string,
+ metadata: DocumentMetadata,
+ options: Partial<ChunkingOptions> = {}
  ): Promise<ProcessingResult> {
  const startTime = Date.now();
  const result: ProcessingResult = {
@@ -78,8 +88,11 @@ export class StreamingIngestionPipeline {
  const text = await this.textExtractor.extractText(documentStream, objectName);
 
  // Step 3: Chunk text
- const chunks = await this.chunker.chunkText(text, {
- maxTokens: options.maxTokens ?? 512, overlapTokens: options.overlapTokens ?? 50, preserveSentences: options.preserveSentences ?? true, minChunkSize: options.minChunkSize ?? 100
+ const chunks = this.chunker.chunkText(text, {
+ maxTokens: options.maxTokens ?? 512,
+ overlapTokens: options.overlapTokens ?? 50,
+ preserveSentences: options.preserveSentences ?? true,
+ minChunkSize: options.minChunkSize ?? 100
  });
 
  result.totalChunks = chunks.length;
@@ -112,10 +125,13 @@ export class StreamingIngestionPipeline {
  }
 
  // Stream document from MinIO
- private async streamDocumentFromMinIO(bucketName: string, objectName): string: Promise<Readable> {
+ private async streamDocumentFromMinIO(
+		bucketName: string,
+		objectName: string
+	): Promise<Readable> {
  try {
  // minio.getObject returns a stream
- return (await this.minioClient.getObject(bucketName, objectName)) as unknown as Readable;
+ return await this.minioClient.getObject(bucketName, objectName);
  } catch (error) {
  throw new Error(`Failed to stream from MinIO: ${String(error)}`);
  }
@@ -179,7 +195,7 @@ export class StreamingIngestionPipeline {
 
  // Insert to case/evidence specific tables
  if (metadata.caseId) {
- const caseEmbeddingData: NewCaseEmbedding[] = builtChunks.map(c => ({
+ const caseEmbeddingData: NewCaseEmbedding[] = builtChunks.map((c) => ({
  caseId: metadata.caseId!,
  docId: c.documentId,
  pageNo: c.pageNumber ?? 0,
@@ -198,7 +214,7 @@ export class StreamingIngestionPipeline {
  }
 
  if (metadata.evidenceId) {
- const evidenceEmbeddingData: NewEvidenceEmbedding[] = builtChunks.map(c => ({
+ const evidenceEmbeddingData: NewEvidenceEmbedding[] = builtChunks.map((c) => ({
  evidenceId: metadata.evidenceId!,
  docId: c.documentId,
  pageNo: c.pageNumber ?? 0,
@@ -221,7 +237,7 @@ export class StreamingIngestionPipeline {
  // Cache operations
  private async getCachedEmbedding(textHash: string): Promise<{ embedding: number[] } | null> {
  try {
- const rows: any[] = await db
+ const rows = await db
  .select()
  .from(embeddingCache512)
  .where(eq(embeddingCache512.textHash, textHash))
@@ -238,8 +254,10 @@ export class StreamingIngestionPipeline {
  }
 
  private async cacheEmbedding(
- textHash: string, embedding: number[],
- model: string, tokenCount: number
+ textHash: string,
+ embedding: number[],
+ model: string,
+ tokenCount: number
  ): Promise<void> {
  try {
  const cacheData: NewEmbeddingCache512 = {
@@ -262,8 +280,8 @@ export class StreamingIngestionPipeline {
  .update(embeddingCache512)
  .set({
  lastAccessed: new Date(),
- accessCount: embeddingCache512.accessCount + 1
- } as any)
+ accessCount: sql`${embeddingCache512.accessCount} + 1`
+ })
  .where(eq(embeddingCache512.textHash, textHash));
  } catch (error) {
  console.error('Cache access error:', error);
@@ -275,7 +293,10 @@ export class StreamingIngestionPipeline {
  return createHash('sha256').update(text).digest('hex');
  }
 
- private async updateProcessingStats(documentId: string, result): ProcessingResult: Promise<void> {
+ private async updateProcessingStats(
+		documentId: string,
+		result: ProcessingResult
+	): Promise<void> {
  const statsKey = `processing:stats:${documentId}`;
  try {
  await this.redis.hset(statsKey, {
@@ -298,16 +319,18 @@ export class StreamingIngestionPipeline {
  cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
  try {
- const deleted = await db
+ const result = await db
  .delete(embeddingCache512)
- .where(and(
+ .where(
+ and(
  lt(embeddingCache512.lastAccessed, cutoffDate),
  lt(embeddingCache512.accessCount, 5)
- ));
+ )
+ );
 
  // Drizzle delete return shape varies; try to return a numeric count if available
  // @ts-ignore
- return deleted?.rowCount ?? deleted?.affectedRows ?? 0;
+ return result?.rowCount ?? result?.affectedRows ?? 0;
  } catch (error) {
  console.error('Failed to cleanup cache:', error);
  return 0;
@@ -330,7 +353,7 @@ interface DocumentChunk {
 class EmbeddingService {
  constructor(private serviceUrl: string) {}
 
- async generateEmbedding(text: string, model): string: Promise<number[]> {
+ async generateEmbedding(text: string, model: string): Promise<number[]> {
  try {
  const response = await fetch(`${this.serviceUrl}/embed`, {
  method: 'POST',
@@ -359,7 +382,7 @@ class EmbeddingService {
  return embedding;
  }
 class TextExtractor {
- async extractText(stream: Readable, filename): string: Promise<string> {
+ async extractText(stream: Readable, filename: string): Promise<string> {
  const buffers: Buffer[] = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (chunk: Buffer) => buffers.push(chunk));
@@ -376,62 +399,68 @@ class TextExtractor {
  stream.on('error', reject);
  });
  }
- async chunkText(text: string, options): ChunkingOptions: Promise<DocumentChunk[]> {
+}
 
 class DocumentChunker {
- async chunkText(text: string, options): ChunkingOptions: Promise<DocumentChunk[]> {
- let currentChunk = '';
- let currentTokens = 0;
- let chunkIndex = 0;
+	chunkText(text: string, options: ChunkingOptions): DocumentChunk[] {
+		const chunks: DocumentChunk[] = [];
+		const sentences = this.splitIntoSentences(text);
+		let currentChunk = '';
+		let currentTokens = 0;
+		let chunkIndex = 0;
 
- for (const sentence of sentences) {
- const sentenceTokens = this.estimateTokens(sentence);
+		for (const sentence of sentences) {
+			const sentenceTokens = this.estimateTokens(sentence);
 
- if (currentTokens + sentenceTokens > options.maxTokens && currentChunk.length > options.minChunkSize) {
- chunks.push({
- index: chunkIndex++,
- text: currentChunk.trim(),
- tokenCount: currentTokens,
- pageNumber: this.extractPageNumber(currentChunk)
- });
+			if (
+				currentTokens + sentenceTokens > options.maxTokens &&
+				currentChunk.length > options.minChunkSize
+			) {
+				chunks.push({
+					index: chunkIndex++,
+					text: currentChunk.trim(),
+					tokenCount: currentTokens,
+					pageNumber: this.extractPageNumber(currentChunk)
+				});
 
- const overlapText = this.getOverlapText(currentChunk, options.overlapTokens);
- currentChunk = overlapText + ' ' + sentence;
- currentTokens = this.estimateTokens(currentChunk);
- } else {
- currentChunk += (currentChunk ? ' ' : '') + sentence;
- currentTokens += sentenceTokens;
- }
- }
- if (currentChunk.trim().length > options.minChunkSize) {
- chunks.push({
- index: chunkIndex++,
- text: currentChunk.trim(),
- tokenCount: currentTokens,
- pageNumber: this.extractPageNumber(currentChunk)
- });
- });
- }
+				const overlapText = this.getOverlapText(currentChunk, options.overlapTokens);
+				currentChunk = overlapText + ' ' + sentence;
+				currentTokens = this.estimateTokens(currentChunk);
+			} else {
+				currentChunk += (currentChunk ? ' ' : '') + sentence;
+				currentTokens += sentenceTokens;
+			}
+		}
 
- });
- }
+		if (currentChunk.trim().length > options.minChunkSize) {
+			chunks.push({
+				index: chunkIndex++,
+				text: currentChunk.trim(),
+				tokenCount: currentTokens,
+				pageNumber: this.extractPageNumber(currentChunk)
+			});
+		}
 
- return chunks;lit(/(?<=[.!?])\s+/).filter(Boolean);
- }
+		return chunks;
+	}
 
- private estimateTokens(text: string): number {
- return Math.ceil(text.length / 4);
- }
+	private splitIntoSentences(text: string): string[] {
+		return text.split(/(?<=[.!?])\s+/).filter(Boolean);
+	}
 
- private getOverlapText(text: string, overlapTokens): number: string {
- const words = text.split(/\s+/).filter(Boolean);
- const overlapWords = Math.min(overlapTokens, words.length);
- return words.slice(-overlapWords).join(' ');
- }
+	private estimateTokens(text: string): number {
+		return Math.ceil(text.length / 4);
+	}
 
- private extractPageNumber(text: string): number | undefined {
- const m = text.match(/\bpage\s+(\d+)\b/i);
- return m ? parseInt(m[1], 10) : undefined;
- }
+	private getOverlapText(text: string, overlapTokens: number): string {
+		const words = text.split(/\s+/).filter(Boolean);
+		const overlapWords = Math.min(Math.ceil(overlapTokens / 1.5), words.length);
+		return words.slice(-overlapWords).join(' ');
+	}
+
+	private extractPageNumber(text: string): number | undefined {
+		const m = text.match(/\bpage\s+(\d+)\b/i);
+		return m ? parseInt(m[1], 10) : undefined;
+	}
 }
 

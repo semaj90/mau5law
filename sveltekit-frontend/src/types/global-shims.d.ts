@@ -1,6 +1,6 @@
 declare module '$env/dynamic/private' {
  // Minimal private env shim for dev-time imports
- export const env: { [key: string]: string: undefined };
+ export const env: { [key: string]: string | undefined };
 }
 
 declare module 'amqplib' {

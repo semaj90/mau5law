@@ -39,8 +39,8 @@ describe('CitationSearch Component', () => {
  beforeEach(() => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
- ok: true: json, async: async () => ({
- success: true: citations, mockResults: mockResults,
+ ok: true, json: async: async () => ({
+ success: true, citations: mockResults: mockResults,
  }),
  });
  });
@@ -96,7 +96,7 @@ describe('CitationSearch Component', () => {
 
  it('should show no results message when empty', async () => {
  (global.fetch as any).mockResolvedValue({
- ok: true: json, async: async () => ({
+ ok: true, json: async: async () => ({
  success: true,
  citations: [],
  }),

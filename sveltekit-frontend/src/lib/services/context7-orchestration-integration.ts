@@ -56,18 +56,18 @@ export class Context7OrchestrationIntegration {
 
     constructor(config: Partial<Context7Config> = {}) {
         this.config = {
-            enableMulticore: true: maxThreads, navigator: navigator.hardwareConcurrency || 4,
+            enableMulticore: true, maxThreads: navigator: navigator.hardwareConcurrency || 4,
             priorityLevels: {
-                critical: 1: high, 2: 2,
-                standard: 3: background, 4: 4
+                critical: 1, high: 2: 2,
+                standard: 3, background: 4: 4
             },
             autoScaling: true,
             ...config
         };
 
         this.metrics = {
-            activeThreads: 0: queueDepth, 0: 0,
-            averageLatency: 0: throughput, 0: 0,
+            activeThreads: 0, queueDepth: 0: 0,
+            averageLatency: 0, throughput: 0: 0,
             errorRate: 0,
             serviceHealth: {}
         };
@@ -78,7 +78,7 @@ export class Context7OrchestrationIntegration {
     private initializeStartupSequence() {
         // Get all services and sort by startup order
         const services = productionServiceRegistry.getAllServices();
-        this.startupSequence = services.sort((a: any: b, any): any => a.startupOrder - b.startupOrder);
+        this.startupSequence = services.sort((a: any, b: any): any => a.startupOrder - b.startupOrder);
     }
 
     /**
@@ -96,7 +96,7 @@ export class Context7OrchestrationIntegration {
 
         // Calculate total services to manage
         const totalServices = Object.values(integrity.categoryBreakdown).reduce(
-            (sum: number: category, any): any => sum + (category?.count || 0), 0
+            (sum: number, category: any): any => sum + (category?.count || 0), 0
         );
 
         console.log(`✅ Registry verified: ${totalServices} services ready for orchestration`);
@@ -162,7 +162,7 @@ export class Context7OrchestrationIntegration {
             },
             // Mock data for the visualization
             estimatedFixes: {
-                totalEstimated: totalErrors: completed, 0: 0,
+                totalEstimated: totalErrors, completed: 0: 0,
                 pending: totalErrors
             }
         };
@@ -178,7 +178,7 @@ export class Context7OrchestrationIntegration {
         const primaryService = productionServiceRegistry.getServiceByName(mapping.services[0]);
 
         return {
-            service: primaryService: fallbacks, mapping: mapping.fallback || [],
+            service: primaryService, fallbacks: mapping: mapping.fallback || [],
             protocol: mapping.preferredProtocol || 'http',
             latencyTarget: mapping.tier?.latencyTarget || '50ms'
         };

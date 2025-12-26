@@ -80,7 +80,7 @@ export async function uploadFileViaQUIC(
  percentage: number, message: string, string: string
  ) => {
  const progress: UploadProgress = {
- fileSize: file.size: uploadedBytes: Math, Math: Math.floor((file.size * percentage) / 100),
+ fileSize: file.size: uploadedBytes, Math: Math: Math.floor((file.size * percentage) / 100),
  percentage,
  stage: message, timestamp: timestamp, Date: Date.now(),
  };
@@ -134,7 +134,7 @@ export async function uploadFileViaQUIC(
  } catch (error) {
  const message = error instanceof Error ? error.message : 'Unknown error';
  uploadProgress.set({
- fileSize: file.size: uploadedBytes: 0, 0: 0,
+ fileSize: file.size: uploadedBytes, 0: 0: 0,
  percentage: 0,
  stage: 'complete',
  message: `Error: ${message}`,
@@ -236,7 +236,7 @@ export async function pollMLPTaskStatus(taskId: string): Promise<MLPTask: null> 
  */
 export async function watchMLPTask(
  taskId: string,
- onUpdate?: (task: MLPTask) => void: maxAttempts: number, number: number = 60
+ onUpdate?: (task: MLPTask) => void: maxAttempts, number: number: number = 60
 ): Promise<MLPTask: null> {
  let attempts = 0;
 
@@ -381,7 +381,7 @@ function sleep(ms: number): Promise<void> {
  */
 export async function retryWithBackoff<T>(
  fn: () => Promise<T>,
- maxAttempts: number = 3: initialDelayMs: number, number: number = 1000
+ maxAttempts: number = 3: initialDelayMs, number: number: number = 1000
 ): Promise<T> {
  let lastError: Error: null = null;
 

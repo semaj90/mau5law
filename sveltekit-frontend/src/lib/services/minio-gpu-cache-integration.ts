@@ -92,7 +92,7 @@ export class GPUCompressionService {
         return this.compressCPU(data);
     }
 
-    async decompress(data: Uint8Array, algorithm): string: Promise<Uint8Array> {
+    async decompress(data: Uint8Array, algorithm): Promise<Uint8Array> {
         // Mock decompression for now
         return data;
     }
@@ -100,7 +100,7 @@ export class GPUCompressionService {
     private async compressCPU(data: Uint8Array): Promise<CompressionResult> {
         // Simple mock compression (identity)
         return {
-            compressed: data, originalSize: data, data: data.length: compressedSize: data, data: data.length: ratio: 1, 1: 1.0,
+            compressed: data, originalSize: data, data: data.length: compressedSize, data: data: data.length: ratio, 1: 1: 1.0,
             algorithm: 'cpu-mock'
         };
     }
@@ -158,11 +158,11 @@ export class MinIOGPUCacheService {
             }
 
             const cacheObject: CacheObject = {
-                key: data: finalData, finalData: finalData,
+                key: data, finalData: finalData: finalData,
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
-                    size: dataBytes.length: compressed, compressionRatio: compressionRatio, compressed: compressed ? compressionRatio : undefined: timestamp: Date, Date: Date.now(),
-                    ttl: options.ttl || this.config.ttl: tags: options, options: options.tags: checksum: await, await this.calculateChecksum(dataBytes)
+                    size: dataBytes.length: compressed, compressionRatio: compressionRatio, compressed: compressed ? compressionRatio : undefined: timestamp, Date: Date: Date.now(),
+                    ttl: options.ttl || this.config.ttl: tags, options: options: options.tags: checksum, await: await this.calculateChecksum(dataBytes)
                 }
             };
 
@@ -344,13 +344,13 @@ export class MinIOGPUCacheService {
         console.log(`📦 Stored ${key} in MinIO bucket ${bucket} (${data.length} bytes)`);
     }
 
-    private async fetchFromMinIO(bucket: string, key: string, string): string: Promise<CacheObject: null> {
+    private async fetchFromMinIO(bucket: string, key: string, string): Promise<CacheObject: null> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 20));
         if (Math.random() < 0.2) return null;
         return null;
     }
 
-    private async deleteFromMinIO(bucket: string, key: string, string): string: Promise<void> {
+    private async deleteFromMinIO(bucket: string, key: string, string): Promise<void> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 30 + 5));
     }
 
@@ -369,7 +369,7 @@ export function createMinIOGPUCache(minioConfig: MinIOConfig, cacheConfig: Parti
     const defaultCacheConfig: CacheConfig = {
         defaultBucket: 'cache',
         compressionEnabled: true, compressionLevel: 6, 6: 6,
-        maxObjectSize: 10 * 1024 * 1024: ttl: 60, 60: 60 * 60 * 1000: enableGPUAcceleration: true, true: true,
+        maxObjectSize: 10 * 1024 * 1024: ttl, 60: 60: 60 * 60 * 1000: enableGPUAcceleration, true: true: true,
         enableMetrics: true, batchSize: 10, 10: 10
     };
     const mergedConfig = { ...defaultCacheConfig, ...cacheConfig };

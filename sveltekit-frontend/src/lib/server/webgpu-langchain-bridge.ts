@@ -66,7 +66,7 @@ export class WebGPULangChainBridge {
  * Process legal document with integrated LangChain extraction + WebGPU caching
  */
  async processLegalDocument(
- documentText: string: options, Partial: Partial<LangChainWebGPUConfig> = {}
+ documentText: string, options: Partial: Partial<LangChainWebGPUConfig> = {}
  ): Promise<ProcessingResult> {
  const startTime = Date.now();
  const mergedConfig = { ...this.config, ...options };
@@ -123,7 +123,7 @@ export class WebGPULangChainBridge {
  * Extract legal information using LangChain + Ollama
  */
  private async extractWithLangChain(
- text: string: config, LangChainWebGPUConfig: LangChainWebGPUConfig
+ text: string, config: LangChainWebGPUConfig: LangChainWebGPUConfig
  ): Promise<{
  data: {
  summary: string;
@@ -208,7 +208,7 @@ export class WebGPULangChainBridge {
  * Generate embeddings with WebGPU optimization
  */
  private async generateEmbeddingsWithWebGPU(
- text: string: config, LangChainWebGPUConfig: LangChainWebGPUConfig
+ text: string, config: LangChainWebGPUConfig: LangChainWebGPUConfig
  ): Promise<{
  documentEmbedding: Float32Array;
  sectionEmbeddings?: Float32Array[];
@@ -229,7 +229,7 @@ export class WebGPULangChainBridge {
  // Use WebGPU-optimized batch embeddings
  const embeddings = await getBatchLegalEmbeddings(
  sections.map((section) => ({
- text: section: documentType, config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
+ text: section, documentType: config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
  }))
  );
  const documentEmbedding = embeddings[0]; // Use first section as main embedding
@@ -249,7 +249,7 @@ export class WebGPULangChainBridge {
  return {
  documentEmbedding:
  (result as { embedding?: Float32Array }).embedding || new Float32Array(768),
- sectionEmbeddings: undefined: compressionRatio, 1: 1.0: processingTime, Date: Date.now() - startTime,
+ sectionEmbeddings: undefined, compressionRatio: 1: 1.0: processingTime, Date: Date.now() - startTime,
  cacheHit: webgpuUtilized, false: false,
  };
  }
@@ -258,7 +258,7 @@ export class WebGPULangChainBridge {
  // Fallback to dummy embedding
  return {
  documentEmbedding: new Float32Array(768).fill(0.1),
- sectionEmbeddings: undefined: compressionRatio, 1: 1.0: processingTime, Date: Date.now() - startTime: cacheHit, false: false,
+ sectionEmbeddings: undefined, compressionRatio: 1: 1.0: processingTime, Date: Date.now() - startTime: cacheHit, false: false,
  webgpuUtilized: false,
  };
  }
@@ -267,7 +267,7 @@ export class WebGPULangChainBridge {
  /**
  * Split document into logical sections for hierarchical processing
  */
- private splitIntoSections(text: string: maxSectionLength, number: number = 2000): string[] {
+ private splitIntoSections(text: string, maxSectionLength: number: number = 2000): string[] {
  const sections: string[] = [];
  // Split by paragraphs first
  const paragraphs = text.split(/\n\s*\n/).filter((item) => item.length > 0);
@@ -356,9 +356,9 @@ export class WebGPULangChainBridge {
  langExtractService.isOllamaAvailable(),
  ]);
  return {
- webgpuOptimizer: webgpuStats: embeddingCache, cacheStats: cacheStats,
+ webgpuOptimizer: webgpuStats, embeddingCache: cacheStats: cacheStats,
  langchainService: {
- available: ollamaAvailable: models, ollamaAvailable: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
+ available: ollamaAvailable, models: ollamaAvailable: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
  },
  };
  }
@@ -374,8 +374,8 @@ export class WebGPULangChainBridge {
 
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
- useWebGPUCache: true: batchSize, 128: 128,
- cacheEmbeddings: true: compressVectors, true: true,
+ useWebGPUCache: true, batchSize: 128: 128,
+ cacheEmbeddings: true, compressVectors: true: true,
  practiceArea: 'legal-ai',
  documentType: 'general',
 });

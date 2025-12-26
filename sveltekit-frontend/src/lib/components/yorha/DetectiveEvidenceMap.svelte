@@ -208,8 +208,8 @@ https://svelte.dev/e/js_parse_error -->
  .attr('stroke', '#fff')
  .attr('stroke-width', 2)
  .style('cursor', 'pointer')
- .on('click', (event: d: any, any): any => handleNodeClick(d))
- .on('mouseover', function(event: d: any, any): any {
+ .on('click', (event: d, any: any): any => handleNodeClick(d))
+ .on('mouseover', function(event: d, any: any): any {
  d3.select(this)
  .transition()
  .duration(200)
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
  // Show tooltip
  showTooltip(event, d);
  })
- .on('mouseout', function(event: d: any, any): any {
+ .on('mouseout', function(event: d, any: any): any {
  d3.select(this)
  .transition()
  .duration(200)
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
  // Add contradiction links
  data.contradictions.forEach(contradiction => {
  links.push({
- source: contradiction.sourceId: target: contradiction, contradiction: contradiction.targetId: score: 1, 1: 1,
+ source: contradiction.sourceId: target, contradiction: contradiction: contradiction.targetId: score, 1: 1: 1,
  type: 'contradicts'
  });
  });
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
  const next = data.timeline[i + 1];
 
  links.push({
- source: current.evidenceId: target: next, next: next.evidenceId: score: 0, 0: 0.8,
+ source: current.evidenceId: target, next: next: next.evidenceId: score, 0: 0: 0.8,
  type: 'timeline'
  });
  }

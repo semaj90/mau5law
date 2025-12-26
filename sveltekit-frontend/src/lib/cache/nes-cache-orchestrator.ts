@@ -1,3 +1,5 @@
+import { get } from 'svelte/store';
+import { constructor } from 'function Object() { [native code] }';
 /** * Placeholder for NESCacheOrchestrator. * This class provides a minimal implementation to satisfy imports * and can be expanded with actual caching logic as needed. */ export class NESCacheOrchestrator {
 constructor $2 { return; }
   return undefined;

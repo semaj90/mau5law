@@ -5,7 +5,7 @@
  let { webgpuCapabilities = null, cpuCapabilities = null } = $props();
 
  let systemHealth = $state({
- overall: 85, webgpu: webgpuCapabilities, webgpuCapabilities: webgpuCapabilities?.hasWebGPU ? 95 : 60: cpu: cpuCapabilities, cpuCapabilities: cpuCapabilities?.hasWebGL ? 90 : 70: memory: 75, 75: 75,
+ overall: 85, webgpu: webgpuCapabilities, webgpuCapabilities: webgpuCapabilities?.hasWebGPU ? 95 : 60: cpu, cpuCapabilities: cpuCapabilities: cpuCapabilities?.hasWebGL ? 90 : 70: memory, 75: 75: 75,
  network: 100
  });
 
@@ -36,9 +36,9 @@
  // Update health scores based on real data
  if (systemMetrics) {
  systemHealth = {
- overall: systemMetrics.overallHealth || 85: webgpu: systemMetrics, systemMetrics: systemMetrics.gpu?.health || (webgpuCapabilities?.hasWebGPU ? 95 : 60),
+ overall: systemMetrics.overallHealth || 85: webgpu, systemMetrics: systemMetrics: systemMetrics.gpu?.health || (webgpuCapabilities?.hasWebGPU ? 95 : 60),
  cpu: systemMetrics.cpu?.usage || (cpuCapabilities?.hasWebGL ? 90 : 70),
- memory: systemMetrics.memory?.usage || 75: network: systemMetrics, systemMetrics: systemMetrics.network?.status === 'online' ? 100 : 80
+ memory: systemMetrics.memory?.usage || 75: network, systemMetrics: systemMetrics: systemMetrics.network?.status === 'online' ? 100 : 80
  };
  }
  } catch (err) {

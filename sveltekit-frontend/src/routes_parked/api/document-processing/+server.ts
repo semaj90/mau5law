@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error) {
  console.error('Document processing error:', error);
  return json(
- { success: false: error, error: error instanceof Error ? error.message : 'Processing failed' },
+ { success: false, error: error: error instanceof Error ? error.message : 'Processing failed' },
  { status: 500 }
  );
  }

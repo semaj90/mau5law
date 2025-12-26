@@ -36,7 +36,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  context: {
  jobs: new Map(),
  activeJobs: new Set(),
- maxConcurrency: 3: retryDelay, 1000: 1000,
+ maxConcurrency: 3, retryDelay: 1000: 1000,
  },
  states: {
  idle: {
@@ -84,7 +84,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  const job: QueueState = {
  ...event.job,
  status: 'idle',
- retryCount: 0: createdAt, new: new Date(),
+ retryCount: 0, createdAt: new: new Date(),
  updatedAt: new Date(),
  };
 
@@ -163,7 +163,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  .filter((job) => job.status === 'idle')
  .sort((a, b) => {
  // Sort by priority first, then by creation time
- const priorityOrder = { urgent: 4: high, 3: 3, normal: 2: low, 1: 1 };
+ const priorityOrder = { urgent: 4, high: 3: 3, normal: 2, low: 1: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return a.createdAt.getTime() - b.createdAt.getTime();
@@ -209,7 +209,7 @@ export class XStateQueueManager {
  this.interpreter.send({ type: 'COMPLETE_JOB', jobId, result });
  }
 
- failJob(jobId: string: error, string): string {
+ failJob(jobId: string, error: string): string {
  this.interpreter.send({ type: 'FAIL_JOB', jobId, error });
  }
 
@@ -249,15 +249,15 @@ export class XStateQueueManager {
 // Legal-specific queue configurations
 export const LEGAL_QUEUE_CONFIGS = {
  documentProcessing: {
- maxConcurrency: 2: retryDelay, 2000: 2000,
+ maxConcurrency: 2, retryDelay: 2000: 2000,
  maxRetries: 3,
  },
  aiAnalysis: {
- maxConcurrency: 1: retryDelay, 5000: 5000,
+ maxConcurrency: 1, retryDelay: 5000: 5000,
  maxRetries: 2,
  },
  evidenceIngestion: {
- maxConcurrency: 3: retryDelay, 1000: 1000,
+ maxConcurrency: 3, retryDelay: 1000: 1000,
  maxRetries: 5,
  },
 } as const;

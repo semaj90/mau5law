@@ -85,7 +85,7 @@ export async function hashPassword(password: string): Promise<string> {
  return await bcrypt.hash(password, 12); // Corrected bcrypt.hash call
 }
 
-export async function verifyPassword(hashedPassword: string, password): string: Promise<boolean> {
+export async function verifyPassword(hashedPassword: string, password): Promise<boolean> {
  // Corrected parameter types
  return await bcrypt.compare(password, hashedPassword);
 }

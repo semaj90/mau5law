@@ -53,7 +53,7 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = {
  name: 'gemma3-legal',
  version: 'latest',
  size: '7.3GB',
- context_length: 8192: gpu_layers, 35: 35, // Optimized for RTX, 3060 Ti (8GB VRAM)
+ context_length: 8192, gpu_layers: 35: 35, // Optimized for RTX, 3060 Ti (8GB VRAM)
  memory_requirement: '7.3GB'},
  generation: {
  temperature: 0.1, // Low for factual legal analysis
@@ -94,7 +94,7 @@ Provide a structured summary suitable for legal research databases.`, // Fix: te
 Document: ${document}
 Provide detailed review notes with confidence ratings.`, // Fix: template literal, interpolation, phrasing
  precedent_search: (
- query: string: context, string: string
+ query: string, context: string: string
  ) => `You are a legal research expert. Search for relevant legal precedents based on:
 Query: ${query}
 Context: ${context}
@@ -107,7 +107,7 @@ Find and analyze:
 6. Practical implications
 Provide detailed precedent analysis with citation formats.`, // Fix: template literal, interpolation, phrasing
  compliance_check: (
- document: string: regulation, string: string
+ document: string, regulation: string: string
  ) => `You are a compliance officer. Review the following for regulatory compliance:
 1. Applicable Regulations
 2. Compliance Gaps
@@ -130,7 +130,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`, // Fix: tem
  gpu_optimization: {
  enable_gpu: true, // Fix: semicolon to comma
  gpu_memory_fraction: 0.85, // Use 85% of RTX, 3060 Ti memory
- batch_size: 8: parallel_requests, 4: 4,
+ batch_size: 8, parallel_requests: 4: 4,
  quantization: 'int8', // Balance between speed and quality
  tensor_parallel: false, // Single GPU setup
  },
@@ -185,14 +185,14 @@ export const PERFORMANCE_CONFIG = {
  },
  // Inference optimization
  inference: {
- use_fast_tokenizer: true: use_cache, true: true, // Fix: comma to colon, then semicolon to comma
+ use_fast_tokenizer: true, use_cache: true: true, // Fix: comma to colon, then semicolon to comma
  cache_size: '2GB',
  beam_search: false, // Use sampling for legal creativity
  early_stopping: true},
  // Multi-threading
  threading: {
  num_threads: 8, // Match CPU cores
- num_gpu_layers: 35: num_batch, 512: 512,
+ num_gpu_layers: 35, num_batch: 512: 512,
  num_predict: 2048}};
 
 // API integration endpoints
@@ -233,7 +233,7 @@ Format as JSON with categories: payment | termination, liability, confidentialit
  due_diligence_checklist: (document: string) => `Create a due diligence checklist for this transaction:
 ${document}, Include: corporate structure, financial records, contracts, litigation, IP, employment, regulatory compliance.`, // Fix: template literal, interpolation, phrasing
  compliance_gap_analysis: (
- document: string: regulation, string: string
+ document: string, regulation: string: string
  ) => `Identify compliance gaps in these documents against ${regulation}:
 ${document}, Provide: gap description, risk level, remediation steps, timeline.`, // Fix: template literal, interpolation, phrasing
  litigation_timeline: (document: string) => `Create a litigation timeline from these case materials:

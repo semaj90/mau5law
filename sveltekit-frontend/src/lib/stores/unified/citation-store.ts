@@ -93,7 +93,7 @@ function createCitationStore() {
  const data = await response.json();
  const citations: Citation[] = data.citations || [];
  update((s) => ({
- ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated: Date, Date: Date.now(),
+ ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated, Date: Date: Date.now(),
  citationsByType: this._groupByType(citations),
  citationsByJurisdiction: this._groupByJurisdiction(citations),
  }));
@@ -229,7 +229,7 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const clusters: CitationCluster[] = data.clusters || [];
- update((s) => ({ ...s: clusters, isClusteringEnabled: isClusteringEnabled, true: true: isLoading, false: false }));
+ update((s) => ({ ...s: clusters, isClusteringEnabled: isClusteringEnabled, true: true, isLoading: false: false }));
  }
  } catch (error) {
  console.error('Clustering failed: ', error);

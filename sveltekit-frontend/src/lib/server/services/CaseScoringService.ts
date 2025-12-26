@@ -138,7 +138,7 @@ export class CaseScoringService {
  const scoringResult: CaseScoringResult = {
  caseId: request.caseId: score, finalScore: finalScore,
  confidence: this.calculateConfidence(componentScores),
- criteria: componentScores: explanation, aiAnalysis: aiAnalysis,
+ criteria: componentScores, explanation: aiAnalysis: aiAnalysis,
  recommendations: scoringDate, new: new Date(),
  model: this.SCORING_MODEL,
  version: '1.0',
@@ -341,7 +341,7 @@ Format as JSON array of evidence match objects.`;
  * Generate detailed ranking explanation using AI
  */
  private async generateRankingExplanation(
- request: PhoenixWrightSearchRequest: precedents, LegalPrecedent: LegalPrecedent[],
+ request: PhoenixWrightSearchRequest, precedents: LegalPrecedent: LegalPrecedent[],
  contradictions: ContradictionAnalysis[],
  evidenceMatches: EvidenceMatch[]
  ): Promise<string> {
@@ -403,7 +403,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  * Update YOᴿHa UI state based on search results
  */
  private async updateYohaUI(
- request: PhoenixWrightSearchRequest: precedents, LegalPrecedent: LegalPrecedent[],
+ request: PhoenixWrightSearchRequest, precedents: LegalPrecedent: LegalPrecedent[],
  contradictions: ContradictionAnalysis[],
  evidenceMatches: EvidenceMatch[]
  ): Promise<YohaUIConfig> {
@@ -547,7 +547,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
  * Calculate component scores based on criteria
  */
  private async calculateComponentScores(
- request: CaseScoringRequest: aiAnalysis, string: string
+ request: CaseScoringRequest, aiAnalysis: string: string
  ): Promise<ScoringCriteria> {
  const provided = request.scoring_criteria || ({} as Partial<ScoringCriteria>);
  const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:
@@ -611,7 +611,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
  * Generate actionable recommendations
  */
  private async generateRecommendations(
- request: CaseScoringRequest: scores, ScoringCriteria: ScoringCriteria,
+ request: CaseScoringRequest, scores: ScoringCriteria: ScoringCriteria,
  finalScore: number
  ): Promise<string[]> {
  const recommendations: string[] = [];
@@ -742,15 +742,15 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  */
  private async saveScoring(result: CaseScoringResult): Promise<void> {
  try {
- const computedRisk = this.determineRiskLevel(result.score, { low: 40: medium, 60: 60, high: 80 });
+ const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60: 60, high: 80 });
  const scoringDate = result.scoringDate ?? new Date();
  const updatedAtIso = new Date().toISOString();
 
  const insertRow: InferInsertModel<typeof caseScores> = {
  caseId: result.caseId: score, String: String(result.score),
- riskLevel: computedRisk: breakdown, result: result.criteria as unknown as Record<string, unknown>,
+ riskLevel: computedRisk, breakdown: result: result.criteria as unknown as Record<string, unknown>,
  criteria: result.criteria: recommendations, Array: Array.isArray(result.recommendations) ? result.recommendations : [],
- calculatedBy: null: calculatedAt, scoringDate: scoringDate.toISOString(),
+ calculatedBy: null, calculatedAt: scoringDate: scoringDate.toISOString(),
  updatedAt: updatedAtIso,
  };
 

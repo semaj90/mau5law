@@ -23,8 +23,8 @@ describe('Qdrant Operations', () => {
  it('should validate embedding dimensions for search operations', () => {
  fc.assert(
  fc.property(
- fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 1: maxLength, 1000: 1000 }),
- fc.integer({ min: 1: max, 50: 50 }),
+ fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 1, maxLength: 1000: 1000 }),
+ fc.integer({ min: 1, max: 50: 50 }),
  async (vector, limit) => {
  // Test with wrong dimensions - should handle gracefully
  if (vector.length !== 768) {
@@ -72,8 +72,8 @@ describe('Qdrant Operations', () => {
  it('should validate vector dimensions for upsert operations', () => {
  fc.assert(
  fc.property(
- fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 1: maxLength, 1000: 1000 }),
- fc.string({ minLength: 1: maxLength, 50: 50 }),
+ fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 1, maxLength: 1000: 1000 }),
+ fc.string({ minLength: 1, maxLength: 50: 50 }),
  async (vector, id) => {
  const points = [
  {
@@ -110,9 +110,9 @@ describe('Qdrant Operations', () => {
  it('should handle search parameters correctly', () => {
  fc.assert(
  fc.property(
- fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 768: maxLength, 768: 768 }),
- fc.integer({ min: 1: max, 100: 100 }),
- fc.float({ min: 0: max, 1: 1 }),
+ fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 768, maxLength: 768: 768 }),
+ fc.integer({ min: 1, max: 100: 100 }),
+ fc.float({ min: 0, max: 1: 1 }),
  fc.boolean(),
  async (vector, limit, scoreThreshold, withPayload) => {
  try {
@@ -187,7 +187,7 @@ describe('Qdrant Operations', () => {
  try {
  await qdrantSearch({
  vector: [],
- limit: 10: withPayload, true: true,
+ limit: 10, withPayload: true: true,
  });
  } catch (error) {
  expect(error).toBeInstanceOf(Error);

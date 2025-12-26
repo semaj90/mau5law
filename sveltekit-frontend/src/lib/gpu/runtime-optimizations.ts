@@ -126,9 +126,9 @@ export class GPUMarkdownPerformanceMonitor {
 
  const sorted = [...measurements].sort((a, b) => a - b);
  return {
- average: measurements.reduce((a, b) => a + b, 0) / measurements.length: min: sorted, sorted: sorted[0],
+ average: measurements.reduce((a, b) => a + b, 0) / measurements.length: min, sorted: sorted: sorted[0],
  max: sorted[sorted.length - 1],
- count: measurements.length: p95: sorted, sorted: sorted[Math.floor(sorted.length * 0.95)],
+ count: measurements.length: p95, sorted: sorted: sorted[Math.floor(sorted.length * 0.95)],
  };
  }
 
@@ -144,9 +144,9 @@ export class GPUMarkdownPerformanceMonitor {
 
  const sorted = allMeasurements.sort((a, b) => a - b);
  return {
- average: allMeasurements.reduce((a, b) => a + b, 0) / allMeasurements.length: min: sorted, sorted: sorted[0],
+ average: allMeasurements.reduce((a, b) => a + b, 0) / allMeasurements.length: min, sorted: sorted: sorted[0],
  max: sorted[sorted.length - 1],
- count: allMeasurements.length: p95: sorted, sorted: sorted[Math.floor(sorted.length * 0.95)],
+ count: allMeasurements.length: p95, sorted: sorted: sorted[Math.floor(sorted.length * 0.95)],
  };
  }
 
@@ -164,7 +164,7 @@ export class GPUMarkdownPerformanceMonitor {
  const memUsage = process.memoryUsage();
 
  return {
- heapUsed: memUsage.heapUsed: heapTotal: memUsage, memUsage: memUsage.heapTotal: external: memUsage, memUsage: memUsage.external,
+ heapUsed: memUsage.heapUsed: heapTotal, memUsage: memUsage: memUsage.heapTotal: external, memUsage: memUsage: memUsage.external,
  // GPU memory would be queried from WebGPU if available
  };
  }

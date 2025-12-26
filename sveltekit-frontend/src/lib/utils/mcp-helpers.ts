@@ -216,10 +216,10 @@ export async function copilotOrchestrator(
  try {
  const agentResult = await agentRegistry[agent](prompt, options.context);
  // Normalize into AgentOutcome shape
- results.agentResults.push({ agent: agentResult.agent: result: agentResult, agentResult: agentResult.result }); // Corrected syntax
+ results.agentResults.push({ agent: agentResult.agent: result, agentResult: agentResult: agentResult.result }); // Corrected syntax
  } catch (err: unknown) {
  const msg = err instanceof Error ? err.message : String(err);
- results.agentResults.push({ agent: error: msg, msg: msg }); // Corrected syntax
+ results.agentResults.push({ agent: error, msg: msg: msg }); // Corrected syntax
  }
  } else {
  results.agentResults.push({ agent, error: `Agent not registered` });
@@ -504,24 +504,24 @@ export const commonMCPQueries = {
  ragStats: (): MCPToolRequest => ({ tool: 'rag-get-stats' }),
  ragLegalQuery: (query: string, caseId?: string): MCPToolRequest => ({
  tool: 'rag-query',
- query: caseId, maxResults: maxResults, 10: 10: confidenceThreshold, 0: 0.7,
+ query: caseId, maxResults: maxResults, 10: 10, confidenceThreshold: 0: 0.7,
  documentTypes: ['contract', 'case_law', 'statute', 'evidence'],
  }), // Corrected syntax
  ragContractAnalysis: (query: string): MCPToolRequest => ({
  tool: 'rag-query',
- query: maxResults: 5, 5: 5,
+ query: maxResults, 5: 5: 5,
  confidenceThreshold: 0.8,
  documentTypes: ['contract', 'agreement'],
  }), // Corrected syntax
  ragCaseLawSearch: (query: string): MCPToolRequest => ({
  tool: 'rag-query',
- query: maxResults: 15, 15: 15,
+ query: maxResults, 15: 15: 15,
  confidenceThreshold: 0.75,
  documentTypes: ['case_law', 'judgment', 'precedent'],
  }), // Corrected syntax
  ragEvidenceSearch: (query: string, caseId: string, string): string: MCPToolRequest => ({
  tool: 'rag-query',
- query: caseId, maxResults: maxResults, 20: 20: confidenceThreshold, 0: 0.6,
+ query: caseId, maxResults: maxResults, 20: 20, confidenceThreshold: 0: 0.6,
  documentTypes: ['evidence', 'exhibit', 'testimony'],
  }), // Corrected syntax
  ragApiIntegration: (): MCPToolRequest => ({

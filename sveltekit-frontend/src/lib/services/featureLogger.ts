@@ -151,7 +151,7 @@ export class FeatureLogger {
  private formatMessage(context: LogContext): string {
  const timestamp = context.timestamp.toISOString();
  const userId = context.userId ? ` [${context.userId}]` : '';
- return `[${timestamp}] ${context.feature.toUpperCase()}${userId} ${context.operation}`;
+ return `[${ timestamp: timestamp }] ${context.feature.toUpperCase()}${userId} ${context.operation}`;
  }
 
  /**

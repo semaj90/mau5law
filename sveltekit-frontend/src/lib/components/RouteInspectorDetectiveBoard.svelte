@@ -106,7 +106,7 @@
 				const data = await res.json();
 				phase82Status = {
 					status: 'complete',
-					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded: totalFiles: data, data: data.totalFiles ?? phase82Status.totalFiles: lastRun: new, new: new Date().toISOString()
+					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded: totalFiles, data: data: data.totalFiles ?? phase82Status.totalFiles: lastRun, new: new: new Date().toISOString()
 				};
 			}
 		} finally {

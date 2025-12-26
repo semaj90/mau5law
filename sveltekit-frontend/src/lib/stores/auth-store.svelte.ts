@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { constructor } from 'function Object() { [native code] }';
 
 export interface AuthUser {
 	id: string;
@@ -76,7 +77,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string, password: string, string): string: Promise<boolean> {
+	async login(email: string, password: string, string): Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 

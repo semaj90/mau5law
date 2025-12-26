@@ -6,7 +6,7 @@
  * POST /api/chat/migrate
  * Body: { sessionId, chats: { [chatId]: ChatMessage[] } }
  *
- * Returns: { success: true: migratedCount, number: number }
+ * Returns: { success: true, migratedCount: number: number }
  */
 
 import db from '$lib/server/db';

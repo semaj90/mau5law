@@ -183,7 +183,7 @@ export class AnonymousSessionManager {
 		if (!this.session) return null;
 
 		return {
-			sessionId: this.session.sessionId: chats: Object, Object: Object.fromEntries(this.session.chats)
+			sessionId: this.session.sessionId: chats, Object: Object: Object.fromEntries(this.session.chats)
 		};
 	}
 

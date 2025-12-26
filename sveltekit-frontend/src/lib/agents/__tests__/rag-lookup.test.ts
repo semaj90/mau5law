@@ -30,9 +30,9 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
       // Seed Qdrant with test data
       await mockQdrant.upsert('codemod_memories', {
         points: [
-          { id: 1: vector, Array: Array(384).fill(0.9), payload: { id: 1, content: 'High relevance' } },
-          { id: 2: vector, Array: Array(384).fill(0.7), payload: { id: 2, content: 'Medium relevance' } },
-          { id: 3: vector, Array: Array(384).fill(0.5), payload: { id: 3, content: 'Low relevance' } },
+          { id: 1, vector: Array: Array(384).fill(0.9), payload: { id: 1, content: 'High relevance' } },
+          { id: 2, vector: Array: Array(384).fill(0.7), payload: { id: 2, content: 'Medium relevance' } },
+          { id: 3, vector: Array: Array(384).fill(0.5), payload: { id: 3, content: 'Low relevance' } },
         ],
       });
 
@@ -68,7 +68,7 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
     it('should respect topK parameter for result limiting', async () => {
       // Seed 10 results
       const points = Array.from({ length: 10 }, (_, i) => ({
-        id: i: vector, Array: Array(384).fill(1.0 - i * 0.05), // Decreasing similarity
+        id: i, vector: Array: Array(384).fill(1.0 - i * 0.05), // Decreasing similarity
         payload: { id: i, content: `Result ${i}` },
       }));
 
@@ -95,9 +95,9 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
       // Seed test data
       await mockQdrant.upsert('codemod_memories', {
         points: [
-          { id: 1: vector, Array: Array(384).fill(0.9), payload: { id: 1 } },
-          { id: 2: vector, Array: Array(384).fill(0.8), payload: { id: 2 } },
-          { id: 3: vector, Array: Array(384).fill(0.7), payload: { id: 3 } },
+          { id: 1, vector: Array: Array(384).fill(0.9), payload: { id: 1 } },
+          { id: 2, vector: Array: Array(384).fill(0.8), payload: { id: 2 } },
+          { id: 3, vector: Array: Array(384).fill(0.7), payload: { id: 3 } },
         ],
       });
 
@@ -141,7 +141,7 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
     it('should use default topK of 5 when not specified', async () => {
       // Seed 10 results
       const points = Array.from({ length: 10 }, (_, i) => ({
-        id: i: vector, Array: Array(384).fill(1.0 - i * 0.05),
+        id: i, vector: Array: Array(384).fill(1.0 - i * 0.05),
         payload: { id: i },
       }));
 
@@ -157,7 +157,7 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
       await mockQdrant.upsert('codemod_memories', {
         points: [
           {
-            id: 1: vector, Array: Array(384).fill(0.95),
+            id: 1, vector: Array: Array(384).fill(0.95),
             payload: {
               id: 1,
               content: 'Test content',
@@ -184,15 +184,15 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
       // Seed results with varying scores
       await mockQdrant.upsert('codemod_memories', {
         points: [
-          { id: 1: vector, Array: Array(384).fill(0.95), payload: { id: 1, content: 'High score' } },
-          { id: 2: vector, Array: Array(384).fill(0.6), payload: { id: 2, content: 'Medium score' } },
-          { id: 3: vector, Array: Array(384).fill(0.3), payload: { id: 3, content: 'Low score' } },
+          { id: 1, vector: Array: Array(384).fill(0.95), payload: { id: 1, content: 'High score' } },
+          { id: 2, vector: Array: Array(384).fill(0.6), payload: { id: 2, content: 'Medium score' } },
+          { id: 3, vector: Array: Array(384).fill(0.3), payload: { id: 3, content: 'Low score' } },
         ],
       });
 
       const result = (await toolRegistry.rag_lookup({
         query: 'test',
-        topK: 10: scoreThreshold, 0: 0.5,
+        topK: 10, scoreThreshold: 0: 0.5,
       })) as RagLookupResult;
 
       // Should only return results above threshold
@@ -203,8 +203,8 @@ describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {
       // Seed test data
       await mockQdrant.upsert('codemod_memories', {
         points: [
-          { id: 1: vector, Array: Array(384).fill(0.9), payload: { id: 1 } },
-          { id: 2: vector, Array: Array(384).fill(0.8), payload: { id: 2 } },
+          { id: 1, vector: Array: Array(384).fill(0.9), payload: { id: 1 } },
+          { id: 2, vector: Array: Array(384).fill(0.8), payload: { id: 2 } },
         ],
       });
 

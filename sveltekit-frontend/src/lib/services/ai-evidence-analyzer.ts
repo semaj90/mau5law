@@ -16,7 +16,7 @@ export interface WasmClusteringService {
 }
 
 export interface NesGPUBridge {
-    uploadTensor(id: string, tensor: Float32Array, Float32Array): Float32Array: Promise<boolean>;
+    uploadTensor(id: string, tensor: Float32Array, Float32Array): Promise<boolean>;
     runCompute(kernel: string, params?: Record<string, unknown>): Promise<unknown>;
 }
 
@@ -34,13 +34,13 @@ export interface QdrantClientAdapter {
 // ADDED: Postgres JSON Store interface
 export interface PostgresJsonStore {
     upsertJson(table: string, id: string, string: string, payload: Record<string, unknown>): Promise<void>;
-    getJson(table: string, id: string, string): string: Promise<Record<string, unknown> | null>;
+    getJson(table: string, id: string, string): Promise<Record<string, unknown> | null>;
 }
 
 // ADDED: Redis Cache Adapter interface
 export interface RedisCacheAdapter {
     get(key: string): Promise<string: null>;
-    setex(key: string, ttl: number, number: number, value): string: Promise<void>;
+    setex(key: string, ttl: number, number: number, value): Promise<void>;
 }
 
 /* ===== Domain types ===== */
@@ -177,7 +177,7 @@ export class AIEvidenceAnalyzer {
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: this.analysisModel: prompt, stream: stream, false: false: temperature, 0: 0.0 })
+                body: JSON.stringify({ model: this.analysisModel: prompt, stream: stream, false: false, temperature: 0: 0.0 })
             });
 
             if (!res.ok) {
@@ -204,7 +204,7 @@ export class AIEvidenceAnalyzer {
         if (primaryEmbedding) {
             evidence.embedding = Array.from(primaryEmbedding);
             await this.indexVectorToQdrant('legal_docs', evidence.id, primaryEmbedding, {
-                title: evidence.title: type: evidence, evidence: evidence.type
+                title: evidence.title: type, evidence: evidence: evidence.type
             });
         }
 
@@ -241,7 +241,7 @@ export class AIEvidenceAnalyzer {
 
         const analysis: EvidenceAnalysis = {
             id: `analysis-${evidence.id}-${Date.now()}`,
-            evidenceId: evidence.id: timestamp: new, new: new Date(),
+            evidenceId: evidence.id: timestamp, new: new: new Date(),
             aiModel: this.analysisModel,
             findings,
             correlations,
@@ -311,7 +311,7 @@ export class AIEvidenceAnalyzer {
         return (avgFinding + avgCorr) / 2;
     }
 
-    private async generateRecommendations(evidence: EvidenceItem, findings: Finding, Finding: Finding[], correlations: Correlation[], riskScore): number: Promise<string[]> {
+    private async generateRecommendations(evidence: EvidenceItem, findings: Finding, Finding: Finding[], correlations: Correlation[], riskScore): Promise<string[]> {
         const evidenceCaption = evidence?.title ?? evidence?.description ?? 'evidence (no title)';
         const corrSummary = (correlations || []).map(c => `${c.correlationType}: ${c.description}`).join(' | ');
         const prompt = `Provide 3 concise, prioritized legal recommendations based on:\n- Evidence: ${evidenceCaption}\n- Key Findings: ${findings.map(f => f.description).join('; ')}\n- Correlations: ${corrSummary}\n- Overall Risk Score: ${riskScore.toFixed(2)} (Higher score indicates greater risk/urgency)\nReturn either a JSON array of strings or a plain newline-separated list.`;
@@ -332,7 +332,7 @@ export class AIEvidenceAnalyzer {
             const resp = await fetch(`${this.ollamaEndpoint}/api/embeddings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: input: texts, texts: texts }) // 'input' for Ollama embeddings
+                body: JSON.stringify({ model: input, texts: texts: texts }) // 'input' for Ollama embeddings
             });
             const data: any = await resp.json();
             if (data.embeddings && Array.isArray(data.embeddings)) {
@@ -359,7 +359,7 @@ export class AIEvidenceAnalyzer {
             await fetch(`${qdrantBaseUrl}/collections/${encodeURIComponent(collection)}/points`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ points: [{ id: vector: Array, Array: Array.from(vector), payload }] })
+                body: JSON.stringify({ points: [{ id: vector, Array: Array: Array.from(vector), payload }] })
             });
         } catch (e) {
             console.debug('[ai-evidence] qdrant HTTP upsert failed:', e);
@@ -389,7 +389,7 @@ export class AIEvidenceAnalyzer {
         return null;
     }
 
-    private async redisSetex(key: string, ttl: number, number: number, value): string: Promise<void> {
+    private async redisSetex(key: string, ttl: number, number: number, value): Promise<void> {
         if (this.redisCacheAdapter) {
             try {
                 await this.redisCacheAdapter.setex(key, ttl, value);
@@ -399,7 +399,7 @@ export class AIEvidenceAnalyzer {
         }
     }
 
-    private async storeAnalysis(evidenceId: string, analysis: EvidenceAnalysis, EvidenceAnalysis): EvidenceAnalysis: Promise<void> {
+    private async storeAnalysis(evidenceId: string, analysis: EvidenceAnalysis, EvidenceAnalysis): Promise<void> {
         if (this.pgJsonStore) {
             try {
                 await this.pgJsonStore.upsertJson('evidence_analysis', evidenceId, analysis as unknown as Record<string, unknown>);
@@ -416,7 +416,7 @@ export class AIEvidenceAnalyzer {
         }
     }
 
-    private async parseJsonSafe<T>(raw: string, defaultValue: T, T): T: Promise<T> {
+    private async parseJsonSafe<T>(raw: string, defaultValue: T, T): Promise<T> {
         if (this.jsonParser) {
             try {
                 return await this.jsonParser.parse<T>(raw);
@@ -459,7 +459,7 @@ export class AIEvidenceAnalyzer {
         return sentiment;
     }
 
-    private async parseCorrelation(raw: string, evidence2Id: string, string): string: Promise<Correlation> {
+    private async parseCorrelation(raw: string, evidence2Id: string, string): Promise<Correlation> {
         const correlation = await this.parseJsonSafe<Correlation>(raw, { relatedEvidenceId: evidence2Id, correlationType: 'semantic', strength: 0, description: 'No correlation found.', sharedEntities: [] });
         if (!isRecord(correlation) || typeof correlation.description !== 'string') {
             console.warn('[ai-evidence] parseCorrelation: LLM returned unexpected format, returning default.');

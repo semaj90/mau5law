@@ -4,7 +4,7 @@
  */
 
 import * as ort from 'onnxruntime-web';
-import type { env } from '@huggingface/transformers';
+import {  env  } from '@huggingface/transformers';
 
 export interface GemmaInferenceOptions {
  maxTokens?: number;

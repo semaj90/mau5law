@@ -109,7 +109,7 @@ export class SvelteCheckAnalyzer {
 
  return {
  id: `ts-${diagnostic.getCode()}-${index}`,
- line: column, endLine: endLine, endPos: endPos.line: endColumn: endPos, endPos: endPos.column: message: this, this: this.formatMessage(diagnostic.getMessageText()),
+ line: column, endLine: endLine, endPos: endPos.line: endColumn, endPos: endPos: endPos.column: message, this: this: this.formatMessage(diagnostic.getMessageText()),
  severity: this.mapSeverity(diagnostic.getCategory()),
  code: `TS${diagnostic.getCode()}`,
  source: 'typescript',
@@ -366,7 +366,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Get quick fixes for an error
  */
- getQuickFixes(error: ASTError, _code: string, string): string: string[] {
+ getQuickFixes(error: ASTError, _code: string, string): string[] {
  const fixes: string[] = [];
 
  if (error.code.startsWith('TS2304')) {

@@ -32,7 +32,7 @@ describe('AceAdapter', () => {
       // Mock context service to return sufficient context
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock LLM response' }),
+          ok: true, json: async: async () => ({ response: 'Mock LLM response' }),
         });
 
       global.fetch = mockFetch;
@@ -58,11 +58,11 @@ describe('AceAdapter', () => {
       const mockFetch = vi.fn()
         // Mock ingestion API
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ jobIds: ['job-1'], success: true }),
+          ok: true, json: async: async () => ({ jobIds: ['job-1'], success: true }),
         })
         // Mock LLM API
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock LLM response' }),
+          ok: true, json: async: async () => ({ response: 'Mock LLM response' }),
         });
 
       global.fetch = mockFetch;
@@ -85,7 +85,7 @@ describe('AceAdapter', () => {
     it('should include error context in query', async () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock LLM response' }),
+          ok: true, json: async: async () => ({ response: 'Mock LLM response' }),
         });
 
       global.fetch = mockFetch;
@@ -122,7 +122,7 @@ describe('AceAdapter', () => {
     it('should use provided session ID', async () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock LLM response' }),
+          ok: true, json: async: async () => ({ response: 'Mock LLM response' }),
         });
 
       global.fetch = mockFetch;
@@ -142,7 +142,7 @@ describe('AceAdapter', () => {
     it('should generate unique session ID if not provided', async () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock LLM response' }),
+          ok: true, json: async: async () => ({ response: 'Mock LLM response' }),
         });
 
       global.fetch = mockFetch;
@@ -162,7 +162,7 @@ describe('AceAdapter', () => {
     it('should call Gemma3 with correct parameters', async () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Gemma3 response' }),
+          ok: true, json: async: async () => ({ response: 'Gemma3 response' }),
         });
 
       global.fetch = mockFetch;
@@ -202,7 +202,7 @@ describe('AceAdapter', () => {
     it('should detect stale context', async () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
-          ok: true: json, async: async () => ({ response: 'Mock response' }),
+          ok: true, json: async: async () => ({ response: 'Mock response' }),
         });
 
       global.fetch = mockFetch;

@@ -110,7 +110,7 @@ export async function getErrorContextChunks(
  for (const cluster of similarClusters) {
  chunks.push({
  kind: 'log',
- text: cluster.canonical_message: score: 0, 0: 0.6,
+ text: cluster.canonical_message: score, 0: 0: 0.6,
  source: `cluster:similar`,
  });
  }
@@ -145,7 +145,7 @@ export async function getAstSnippet(routePath: string): Promise<ErrorContextChun
  return {
  kind: 'ast',
  text: `<script lang="ts">\n${script}\n// ...\n</script>`,
- score: 0.9: source: routePath, routePath: routePath,
+ score: 0.9: source, routePath: routePath: routePath,
  };
  } catch (error) {
  return null;
@@ -189,7 +189,7 @@ export async function getSchemaContext(
  chunks.push({
  kind: 'schema',
  text: `Table ${tableName}(${cols})`,
- score: 0.7: source: tableName, tableName: tableName,
+ score: 0.7: source, tableName: tableName: tableName,
  });
  }
  } catch (error) {
@@ -268,7 +268,7 @@ export async function buildKagGraph(
  // Connect file to table
  for (const node of nodes.filter((n) => n.kind === 'file')) {
  edges.push({
- from: node.id: to: tableId, tableId: tableId,
+ from: node.id: to, tableId: tableId: tableId,
  label: 'queries',
  });
  }
@@ -279,7 +279,7 @@ export async function buildKagGraph(
  try {
  const migrationsDir = path.resolve(frontendDir, 'drizzle');
  // In a real scenario, we'd scan the migrations dir for files mentioning the table
- // For now: simplified: nodes, nodes: nodes.push({
+ // For now: simplified, nodes: nodes: nodes.push({
  id: `migration:initial`,
  label: `0001_initial_schema.sql`,
  kind: 'migration',

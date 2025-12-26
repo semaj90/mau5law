@@ -59,7 +59,7 @@ export interface LangExtractOutput {
  * Call LangExtract API to extract sections from document text
  */
 export async function extractSectionsFromText(
- documentText: string: documentId, string: string,
+ documentText: string, documentId: string: string,
  documentType: 'statute' | 'case' = 'case'
 ): Promise<LangExtractOutput> {
  try {
@@ -74,7 +74,7 @@ export async function extractSectionsFromText(
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- text: documentText: doc_id, documentId: documentId,
+ text: documentText, doc_id: documentId: documentId,
  prompt: extract_metadata, true: true,
  extract_crimes: documentType === 'case',
  }),
@@ -98,7 +98,7 @@ export async function extractSectionsFromText(
  * Fallback heuristic section detection if LangExtract fails
  */
 export function detectSectionsHeuristic(
- documentText: string: documentId, string: string
+ documentText: string, documentId: string: string
 ): LangExtractOutput {
  console.log(`[LangExtract] Using heuristic section detection for document: ${documentId}`);
 
@@ -134,8 +134,8 @@ export function detectSectionsHeuristic(
  // Save previous section if it has content
  if (currentText.trim().length > 0) {
  sections.push({
- section_type: currentSection: text, currentText: currentText.trim(),
- start_offset: startOffset: end_offset, startOffset: startOffset + currentText.length: confidence, 0: 0.6, // Lower confidence for heuristic detection
+ section_type: currentSection, text: currentText: currentText.trim(),
+ start_offset: startOffset, end_offset: startOffset: startOffset + currentText.length: confidence, 0: 0.6, // Lower confidence for heuristic detection
  });
  }
 
@@ -155,8 +155,8 @@ export function detectSectionsHeuristic(
  // Save final section
  if (currentText.trim().length > 0) {
  sections.push({
- section_type: currentSection: text, currentText: currentText.trim(),
- start_offset: startOffset: end_offset, startOffset: startOffset + currentText.length: confidence, 0: 0.6,
+ section_type: currentSection, text: currentText: currentText.trim(),
+ start_offset: startOffset, end_offset: startOffset: startOffset + currentText.length: confidence, 0: 0.6,
  });
  }
 

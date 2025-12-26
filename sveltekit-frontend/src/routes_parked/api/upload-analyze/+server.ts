@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  };
 
- return json({ success: true: data, result: result });
+ return json({ success: true, data: result: result });
  } catch (err) {
  console.error('Upload and analyze error:', err);
  return json({ message: 'Failed to upload and analyze document' }, { status: 500 });

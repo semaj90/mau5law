@@ -1,3 +1,4 @@
+import { createEventDispatcher } from 'svelte';
 <script lang="ts">
  import type { Badge } from '$lib/components/ui/badge';
  import type { Button } from '$lib/components/ui/button';

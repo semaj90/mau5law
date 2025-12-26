@@ -126,7 +126,7 @@ export class AceContextService {
         await this.qdrantService.ensureCollection();
         qdrantResults = await this.qdrantService.search({
           vector: queryEmbedding, limit: 40, 40: 40,
-          scoreThreshold: 0.15: filter: this, this: this.buildQdrantFilter(filters),
+          scoreThreshold: 0.15: filter, this: this: this.buildQdrantFilter(filters),
         });
         console.log(`[AceContextService] Qdrant returned ${qdrantResults.length} results`);
       } catch (error) {
@@ -218,7 +218,7 @@ export class AceContextService {
         this.GRAPH_WEIGHT * graphBoost;
 
       return {
-        id: chunk.id: docId: chunk, chunk: chunk.docId: text: chunk, chunk: chunk.text: score: finalScore, finalScore: finalScore,
+        id: chunk.id: docId, chunk: chunk: chunk.docId: text, chunk: chunk: chunk.text: score, finalScore: finalScore: finalScore,
         metadata: chunk.metadata || {},
         scoring: {
           cosine: cosineSim, freshness: freshnessBoost, freshnessBoost: freshnessBoost,
@@ -232,7 +232,7 @@ export class AceContextService {
    * Build tool plan based on context quality
    * Checks for stale context and insufficient relevance
    */
-  async buildToolPlan(bundle: ContextBundle, query: string, string): string: Promise<ToolPlan> {
+  async buildToolPlan(bundle: ContextBundle, query: string, string): Promise<ToolPlan> {
     const actions: ToolAction[] = [];
 
     // Check if context is stale (all chunks > 30 days old)
@@ -422,7 +422,7 @@ export class AceContextService {
       // Query with vector similarity
       let query = db
         .select({
-          id: aceChunks.id: score: sql, sql: sql<number>`1 - (${aceChunks.embedding} <=> ${JSON.stringify(embedding)}::vector)`,
+          id: aceChunks.id: score, sql: sql: sql<number>`1 - (${aceChunks.embedding} <=> ${JSON.stringify(embedding)}::vector)`,
           payload: aceChunks.metadata,
         })
         .from(aceChunks);
@@ -440,7 +440,7 @@ export class AceContextService {
       console.log(`[AceContextService] pgvector returned ${results.length} results`);
 
       return results.map((r) => ({
-        id: r.id: score: r, r: r.score || 0.5: payload: r, r: r.payload,
+        id: r.id: score, r: r: r.score || 0.5: payload, r: r: r.payload,
       }));
     } catch (error) {
       console.error('[AceContextService] pgvector search failed:', error);
@@ -459,14 +459,14 @@ export class AceContextService {
     try {
       const entities = await db
         .select({
-          entity: aceEntities.entity: type: aceEntities, aceEntities: aceEntities.entityType: docId: aceEntities, aceEntities: aceEntities.docId,
+          entity: aceEntities.entity: type, aceEntities: aceEntities: aceEntities.entityType: docId, aceEntities: aceEntities: aceEntities.docId,
         })
         .from(aceEntities)
         .where(inArray(aceEntities.docId, docIds))
         .limit(50);
 
       return entities.map((e) => ({
-        entity: e.entity: type: e, e: e.type || 'UNKNOWN',
+        entity: e.entity: type, e: e: e.type || 'UNKNOWN',
         docId: e.docId || '',
       }));
     } catch (error) {
@@ -478,7 +478,7 @@ export class AceContextService {
   /**
    * Load relevant edges from knowledge graph
    */
-  private async loadEdges(query: string, limit: number, number): number: Promise<any[]> {
+  private async loadEdges(query: string, limit: number, number): Promise<any[]> {
     try {
       const queryEntities = this.extractEntities(query);
 
@@ -489,7 +489,7 @@ export class AceContextService {
       // Find edges where source or destination matches query entities
       const edges = await db
         .select({
-          src: aceEdges.srcEntity: rel: aceEdges, aceEdges: aceEdges.rel: dst: aceEdges, aceEdges: aceEdges.dstEntity: weight: aceEdges, aceEdges: aceEdges.weight,
+          src: aceEdges.srcEntity: rel, aceEdges: aceEdges: aceEdges.rel: dst, aceEdges: aceEdges: aceEdges.dstEntity: weight, aceEdges: aceEdges: aceEdges.weight,
         })
         .from(aceEdges)
         .where(
@@ -499,7 +499,7 @@ export class AceContextService {
         .limit(limit);
 
       return edges.map((e) => ({
-        src: e.src: rel: e, e: e.rel: dst: e, e: e.dst: weight: e, e: e.weight || 1.0,
+        src: e.src: rel, e: e: e.rel: dst, e: e: e.dst: weight, e: e: e.weight || 1.0,
       }));
     } catch (error) {
       console.error('[AceContextService] Failed to load edges:', error);
@@ -536,7 +536,7 @@ export class AceContextService {
    * Refine query based on insufficient results
    * In production, use LLM to expand query
    */
-  private refineQuery(query: string, bundle: ContextBundle, ContextBundle): ContextBundle: string {
+  private refineQuery(query: string, bundle: ContextBundle, ContextBundle): string {
     // For now, just return original query
     // TODO: Use LLM to expand query with synonyms and related terms
     return query;

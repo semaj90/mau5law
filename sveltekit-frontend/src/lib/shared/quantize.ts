@@ -38,7 +38,7 @@ export function dequantizeUint8ToFloat32(quant: QuantizedEmbedding): Float32Arra
  return float32;
 }
 
-export function cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array: number {
+export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
  if (a.length !== b.length) {
  throw new Error('Vectors must have same length');
  }
@@ -62,7 +62,7 @@ export function cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array
 }
 
 export function quantizedCosineSimilarity(
- queryQuant: QuantizedEmbedding: docQuant, QuantizedEmbedding: QuantizedEmbedding
+ queryQuant: QuantizedEmbedding, docQuant: QuantizedEmbedding: QuantizedEmbedding
 ): number {
  // Dequantize both vectors
  const queryFloat = dequantizeUint8ToFloat32(queryQuant);

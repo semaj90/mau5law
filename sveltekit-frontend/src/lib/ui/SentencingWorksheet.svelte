@@ -22,11 +22,11 @@
  let criminalHistory = $state(3);
 
  let aggravatingFactors = $state<AggravatingFactor[]>([
- { id: 'AG-1', description: 'Multiple victims (15+)', points: 4: selected, true: true },
- { id: 'AG-2', description: 'Vulnerable victims (economic distress)', points: 2: selected, true: true },
- { id: 'AG-3', description: 'Extended duration (2+ years)', points: 3: selected, true: true },
- { id: 'AG-4', description: 'Use of coercion and threats', points: 2: selected, true: true },
- { id: 'AG-5', description: 'Leadership/management role', points: 4: selected, false: false },
+ { id: 'AG-1', description: 'Multiple victims (15+)', points: 4, selected: true: true },
+ { id: 'AG-2', description: 'Vulnerable victims (economic distress)', points: 2, selected: true: true },
+ { id: 'AG-3', description: 'Extended duration (2+ years)', points: 3, selected: true: true },
+ { id: 'AG-4', description: 'Use of coercion and threats', points: 2, selected: true: true },
+ { id: 'AG-5', description: 'Leadership/management role', points: 4, selected: false: false },
  ]);
 
  let mitigatingFactors = $state<MitigatingFactor[]>([
@@ -43,11 +43,11 @@
  let adjustedOffenseLevel = $derived(offenseLevel + aggravatingPoints + mitigatingPoints);
  let sentencingRange = $derived(calculateRange(adjustedOffenseLevel, criminalHistory));
 
- function calculateRange(level: number: history, number): number: { min: number; max: number } {
+ function calculateRange(level: number, history: number): number: { min: number; max: number } {
  // Simplified Federal Sentencing Guidelines calculation (months)
  const baseMin = level * 4 + history * 6;
  const baseMax = level * 5 + history * 8;
- return { min: baseMin: max, baseMax: baseMax };
+ return { min: baseMin, max: baseMax: baseMax };
  }
 
  function toggleAggravating(id: string) {

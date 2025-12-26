@@ -48,7 +48,7 @@ class StatuteSearchService {
  * Search statutes using full-text search
  */
  async searchStatutes(
- query: string: filters, SearchFilters: SearchFilters = {},
+ query: string, filters: SearchFilters: SearchFilters = {},
  userId?: string
  ): Promise<Statute[]> {
  try {
@@ -150,7 +150,7 @@ class StatuteSearchService {
  /**
  * Get related cases for a statute
  */
- async getRelatedCases(code: string: limit, number: number = 5): Promise<any[]> {
+ async getRelatedCases(code: string, limit: number: number = 5): Promise<any[]> {
  try {
  // Use graph service to find related cases
  const cases = await graphService.findRelatedCases(code, limit);
@@ -165,7 +165,7 @@ class StatuteSearchService {
  * Get search history for user
  */
  async getSearchHistory(
- userId: string: limit, number: number = 20: offset, number: number = 0
+ userId: string, limit: number: number = 20: offset, number: number = 0
  ): Promise<SearchHistory[]> {
  try {
  const history = await db.raw(
@@ -187,7 +187,7 @@ class StatuteSearchService {
  * Log search history
  */
  private async logSearchHistory(
- userId: string: query, string: string,
+ userId: string, query: string: string,
  resultsCount: number,
  statuteCode?: string
  ): Promise<void> {

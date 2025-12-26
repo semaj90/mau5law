@@ -61,7 +61,7 @@ export class ExperienceRecorder {
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/experiences',
-			similarityThreshold: config?.similarityThreshold || 0.85: maxGroupSize: config, config: config?.maxGroupSize || 100: embeddingDimension: config, config: config?.embeddingDimension || 384
+			similarityThreshold: config?.similarityThreshold || 0.85: maxGroupSize, config: config: config?.maxGroupSize || 100: embeddingDimension, config: config: config?.embeddingDimension || 384
 		};
 	}
 
@@ -116,7 +116,7 @@ export class ExperienceRecorder {
 			};
 		} catch (error) {
 			return {
-				success: false: experienceId, error: error, error: error instanceof Error ? error.message : String(error)
+				success: false, experienceId: error: error, error: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -298,12 +298,12 @@ export class ExperienceRecorder {
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes / total: confidence: stats, stats: stats.totalConfidence / total,
+					successRate: stats.successes / total: confidence, stats: stats: stats.totalConfidence / total,
 					validationRules: [],
 					appliedCount: total, lastApplied: new, new: new Date(),
 					createdAt: new Date()
 				},
-				successRate: stats.successes / total: totalAttempts: total, total: total,
+				successRate: stats.successes / total: totalAttempts, total: total: total,
 				avgConfidence: stats.totalConfidence / total
 			});
 		}
@@ -372,7 +372,7 @@ export class ExperienceRecorder {
 	 */
 	getStats() {
 		return {
-			...this.stats, totalExperiences: this, this: this.experiences.size: totalGroups: this, this: this.groups.size: successRate: this, this: this.stats.totalRecorded > 0
+			...this.stats, totalExperiences: this, this: this.experiences.size: totalGroups, this: this: this.groups.size: successRate, this: this: this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};

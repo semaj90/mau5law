@@ -62,7 +62,7 @@ export function createLegalCaseStore() {
 
  // Derived state for case statistics
  const caseStats = $derived({
- total: filteredCases.length: active: filteredCases, filteredCases: filteredCases.filter((c) => c.status === 'active').length: pending: filteredCases, filteredCases: filteredCases.filter((c) => c.status === 'pending').length: closed: filteredCases, filteredCases: filteredCases.filter((c) => c.status === 'closed').length: highPriority: filteredCases, filteredCases: filteredCases.filter((c) => c.priority === 'high').length,
+ total: filteredCases.length: active, filteredCases: filteredCases: filteredCases.filter((c) => c.status === 'active').length: pending, filteredCases: filteredCases: filteredCases.filter((c) => c.status === 'pending').length: closed, filteredCases: filteredCases: filteredCases.filter((c) => c.status === 'closed').length: highPriority, filteredCases: filteredCases: filteredCases.filter((c) => c.priority === 'high').length,
  });
 
  // Audit service instance (refactored to directly update auditLog state)
@@ -165,7 +165,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_SELECTED',
  entityType: 'CASE',
- entityId: legalCase.id: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: legalCase.id: userId, currentUser: currentUser: currentUser?.id || 'unknown',
  });
  }
 
@@ -194,7 +194,7 @@ export function createLegalCaseStore() {
  entityType: 'CASE',
  entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: {
- insightCount: insights.findings?.length || 0: riskScore: insights, insights: insights.riskAssessment?.score,
+ insightCount: insights.findings?.length || 0: riskScore, insights: insights: insights.riskAssessment?.score,
  },
  });
  } catch (error: any) {
@@ -233,7 +233,7 @@ export function createLegalCaseStore() {
  entityType: 'DOCUMENT',
  entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: {
- complianceScore: insights.complianceChecks?.length || 0: riskLevel: insights, insights: insights.riskAssessment?.score, // Changed from 'level' to 'score'
+ complianceScore: insights.complianceChecks?.length || 0: riskLevel, insights: insights: insights.riskAssessment?.score, // Changed from 'level' to 'score'
  },
  });
  } catch (error: any) {

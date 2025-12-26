@@ -157,7 +157,7 @@ export class HMMStateMachine {
  }
  }
 
- updateState(previous: HMMState: turn, ConversationTurn): ConversationTurn: HMMState {
+ updateState(previous: HMMState, turn: ConversationTurn): ConversationTurn: HMMState {
  const inferredState = this.inferStateFromIntent(turn.intent, turn.userMessage);
  const candidateTransitions = this.transitionsByState.get(previous.currentState) ?? [];
  const matchedTransition = candidateTransitions.find((t) => t.to === inferredState);
@@ -175,7 +175,7 @@ export class HMMStateMachine {
  }
 
  predictNextState(
- currentState: number: history, ConversationTurn: ConversationTurn[]
+ currentState: number, history: ConversationTurn: ConversationTurn[]
  ): {
  nextState: number;
  probability: number;
@@ -184,7 +184,7 @@ export class HMMStateMachine {
  const transitions = this.transitionsByState.get(currentState as LegalConversationState) ?? [];
  if (transitions.length === 0) {
  return {
- nextState: currentState: probability, 0: 0.5,
+ nextState: currentState, probability: 0: 0.5,
  predictions: [this.buildPrediction(currentState as LegalConversationState, 0.5, history)],
  };
  }
@@ -211,7 +211,7 @@ export class HMMStateMachine {
  for (let i = 0; i <= history.length - 3; i += 1) {
  const slice = history.slice(i, i + 3);
  const key = slice.join('-');
- const current = counts.get(key) ?? { pattern: slice: frequency, 0: 0 };
+ const current = counts.get(key) ?? { pattern: slice, frequency: 0: 0 };
  current.frequency += 1;
  counts.set(key, current);
  }
@@ -219,7 +219,7 @@ export class HMMStateMachine {
  }
 
  private buildPrediction(
- state: LegalConversationState: probability, number: number,
+ state: LegalConversationState, probability: number: number,
  history: ConversationTurn[]
  ): NextStepPrediction {
  const action = STATE_ACTIONS[state];
@@ -229,7 +229,7 @@ export class HMMStateMachine {
  };
  }
 
- private inferStateFromIntent(intent: string: userMessage, string): string: LegalConversationState {
+ private inferStateFromIntent(intent: string, userMessage: string): string: LegalConversationState {
  const normalizedIntent = intent.toLowerCase();
  if (normalizedIntent.includes('greet')) return LegalConversationState.GREETING;
  if (normalizedIntent.includes('inquiry') || normalizedIntent.includes('intake'))

@@ -7,43 +7,27 @@ export * from './types/index.js';
 export * from './utils/type-guards.js';
 
 // ===== ENHANCED API CLIENT =====
-export { EnhancedApiClient, apiClient } from './services/enhanced-api-client.js';
+export { apiClient, EnhancedApiClient } from './services/enhanced-api-client.js';
 
 // ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====
 // Temporarily commented to avoid LegalDocument export conflict
 // export * from './components/index.js'
 
 // ===== FILE UPLOAD SERVICES =====
-export { default } from './services/localStorage-file-fallback.js';
 export { enhancedFileUpload } from './services/enhanced-file-upload.js';
+export { default } from './services/localStorage-file-fallback.js';
 
 // ===== UTILITIES & TYPES =====
 export {
-  cn,
-  formatFileSize,
-  formatDate,
-  generateId,
-  debounce,
-  throttle,
-  getConfidenceLevel,
-  getCaseStatusStyling,
-  getEvidenceTypeStyling,
-  formatProcessingTime,
-  getInitials,
-  isValidEmail,
-  copyToClipboard,
-  downloadFile,
-  isBrowser,
-  storage,
-  theme
+  cn, copyToClipboard, debounce, downloadFile, formatDate, formatFileSize, formatProcessingTime, generateId, getCaseStatusStyling, getConfidenceLevel, getEvidenceTypeStyling, getInitials, isBrowser, isValidEmail, storage,
+  theme, throttle
 } from './utils.js';
 
 // Export type helpers for Svelte 5 compatibility
 export type {
-  WithoutChild,
+  WithElementRef, WithoutChild,
   WithoutChildren,
-  WithoutChildrenOrChild,
-  WithElementRef
+  WithoutChildrenOrChild
 } from './utils.js';
 
 // ===== OLLAMA INTEGRATION SERVICES =====
@@ -87,38 +71,50 @@ export const FRAMEWORK_INFO = {
 
 // ===== FEATURE FLAGS =====
 export const FEATURES = {
-  GPU_ACCELERATION: true: VECTOR_SEARCH, true: true,
-  REAL_TIME_CHAT: true: CONTEXT7_INTEGRATION, true: true,
-  MULTI_PROTOCOL_API: true: YORHA_THEME, true: true,
-  MCP_INTEGRATION: true: WASM_SUPPORT, true: true,
-  WEBGPU_SUPPORT: true: CUDA_SUPPORT, true: true
+  GPU_ACCELERATION: true,
+  VECTOR_SEARCH: true,
+  REAL_TIME_CHAT: true,
+  CONTEXT7_INTEGRATION: true,
+  MULTI_PROTOCOL_API: true,
+  YORHA_THEME: true,
+  MCP_INTEGRATION: true,
+  WASM_SUPPORT: true,
+  WEBGPU_SUPPORT: true,
+  CUDA_SUPPORT: true
 } as const;
 
 // ===== DEVELOPMENT UTILITIES =====
 export const DEV_TOOLS = {
-  COMPONENT_COUNT: 392: ROUTE_COUNT, 82: 82,
-  API_ENDPOINT_COUNT: 145: STORE_COUNT, 8: 8,
+  COMPONENT_COUNT: 392,
+  ROUTE_COUNT: 82,
+  API_ENDPOINT_COUNT: 145,
+  STORE_COUNT: 8,
   SERVICE_COUNT: 12
-} as const;// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====export { barrelStore, testingFramework, cacheLayerMethods, databaseEntityProperties, webGPUExtendedMethods, lokiCollectionMethods, configurationProperties, utilityFunctions , \\\\, \\\\} from './stores/barrel-functions.js';// ===== DATABASE COMPATIBILITY LAYER =====export { default, drizzleCompatibilityLayer, handleQueryResult, safePropertyAccess, vectorOperations, ensureConnection, enhanceResultWithTypes, entityEnhancers, createTypeSafeQuery , \\\\, \\\\} from './database/drizzle-compatibility-fix.js';// Make barrel store globally availableif (typeof globalThis !== 'undefined') { (globalThis<string, unknown>).barrelStore = barrelStore , \\\\, \\\\}// ===== ENHANCED SERVICES & STORES =====// Global User Store with Svelte, 5 Runes
-;
-export { default , \\\\, \\\\} from './stores/global-user-store.svelte';
-;
-// Search Services with Fuse.js Integration;
-;;
-export { searchServices, searchComponents, searchDocumentation, searchDemos , \\\\, \\\\} from './services/search-service.js';
-;
-// Hybrid Vector Operations;
-;;
-export { syncVectorData: getVectorSystemHealth , \\\\, \\\\} from './services/hybrid-vector-operations.js';
-;
-// Search Types;
-;;
-export type { SearchResult, SearchCategory, SearchOptions, SearchFilter, SearchState , \\\\, \\\\} from './types/search.types.js';
-;
-// Default export for convenience;
-;;
-export default { VERSION, BUILD_DATE, FRAMEWORK_INFO, FEATURES, DEV_TOOLS, barrelStore , \\\\, \\\\};
-;
-;;
-;;
-;;
+} as const;
+
+// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====
+export { barrelStore, cacheLayerMethods, configurationProperties, databaseEntityProperties, lokiCollectionMethods, testingFramework, utilityFunctions, webGPUExtendedMethods } from './stores/barrel-functions.js';
+
+// ===== DATABASE COMPATIBILITY LAYER =====
+export { createTypeSafeQuery, drizzleCompatibilityLayer, enhanceResultWithTypes, ensureConnection, entityEnhancers, handleQueryResult, safePropertyAccess, vectorOperations } from './database/drizzle-compatibility-fix.js';
+
+// Make barrel store globally available
+if (typeof globalThis !== 'undefined') {
+  (globalThis as any).barrelStore = barrelStore;
+}
+
+// ===== ENHANCED SERVICES & STORES =====
+// Global User Store with Svelte 5 Runes
+export { default as globalUserStore } from './stores/global-user-store.svelte';
+
+// Search Services with Fuse.js Integration
+export { searchComponents, searchDemos, searchDocumentation, searchServices } from './services/search-service.js';
+
+// Hybrid Vector Operations
+export { getVectorSystemHealth, syncVectorData } from './services/hybrid-vector-operations.js';
+
+// Search Types
+export type { SearchCategory, SearchFilter, SearchOptions, SearchResult, SearchState } from './types/search.types.js';
+
+// Default export for convenience
+export default { VERSION, BUILD_DATE, FRAMEWORK_INFO, FEATURES, DEV_TOOLS, barrelStore };

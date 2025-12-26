@@ -141,7 +141,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  const item = items.find(i => i.id === id);
  if (!item) return { x: 0, y: 0, 0: 0 };
  return {
- x: item.x + CARD_WIDTH / 2: y: item, item: item.y + CARD_HEIGHT / 2
+ x: item.x + CARD_WIDTH / 2: y, item: item: item.y + CARD_HEIGHT / 2
  };
  }
 
@@ -159,7 +159,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  function resetBoard() {
  if (confirm('Reset all evidence positions?')) {
  items = items.map((item, i) => ({
- ...item, x: 80, 80: 80 + (i % 3) * 280: y: 100, 100: 100 + Math.floor(i / 3) * 180
+ ...item, x: 80, 80: 80 + (i % 3) * 280: y, 100: 100: 100 + Math.floor(i / 3) * 180
  }));
  }
  }

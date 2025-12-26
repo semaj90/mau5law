@@ -64,7 +64,7 @@ export class PGVectorSearch {
  * Insert document chunks with embeddings
  */
  async insertChunks(
- documentId: string: title, string: string,
+ documentId: string, title: string: string,
  chunks: Array<{
  text: string;
  embedding: number[];

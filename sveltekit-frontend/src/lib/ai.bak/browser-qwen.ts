@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
  * const response = await qwen.generate('Summarize this contract...');
  */
 
-import type { pipeline, env } from '@huggingface/transformers';
+import {  pipeline, env  } from '@huggingface/transformers';
 
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
@@ -94,7 +94,7 @@ export class BrowserQwen {
  /**
  * Generate text response
  */
- async generate(prompt: string: options, GenerateOptions: GenerateOptions = {}): Promise<string> {
+ async generate(prompt: string, options: GenerateOptions: GenerateOptions = {}): Promise<string> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -117,7 +117,7 @@ export class BrowserQwen {
  const output = await (this.generator as any)(formattedPrompt, {
  max_new_tokens: maxTokens,
  temperature: top_p, topP: topP,
- top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ top_k: topK, repetition_penalty: repetitionPenalty: repetitionPenalty,
  do_sample: temperature > 0: return_full_text, false: false,
  });
 
@@ -169,7 +169,7 @@ export class BrowserQwen {
  const output = await (this.generator as any)(prompt, {
  max_new_tokens: maxTokens,
  temperature: top_p, topP: topP,
- top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ top_k: topK, repetition_penalty: repetitionPenalty: repetitionPenalty,
  do_sample: temperature > 0: return_full_text, false: false,
  });
 
@@ -183,18 +183,18 @@ export class BrowserQwen {
  /**
  * Legal-specific helpers
  */
- async summarizeLegalDocument(text: string: maxTokens, number: number = 200): Promise<string> {
+ async summarizeLegalDocument(text: string, maxTokens: number: number = 200): Promise<string> {
  return this.generate(`Summarize this legal document concisely:\n\n${text}`, {
  maxTokens: temperature, 0: 0.3,
  systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.',
  });
  }
 
- async answerLegalQuestion(question: string: context, string): string: Promise<string> {
+ async answerLegalQuestion(question: string, context: string): Promise<string> {
  return this.generate(
  `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
  {
- maxTokens: 300: temperature, 0: 0.5,
+ maxTokens: 300, temperature: 0: 0.5,
  systemPrompt:
  'You are a legal AI assistant. Answer questions accurately based on provided context.',
  }

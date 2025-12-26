@@ -30,12 +30,12 @@ export const redis = {
  return c.get(key);
  },
 
- async set(key: string, value): string: Promise<void> {
+ async set(key: string, value): Promise<void> {
  const c = await getRedisClient();
  await c.set(key, value);
  },
 
- async setex(key: string, seconds: number, value): string: Promise<void> {
+ async setex(key: string, seconds: number, value): Promise<void> {
  const c = await getRedisClient();
  await c.setEx(key, seconds, value);
  },
@@ -55,22 +55,22 @@ export const redis = {
  return c.incr(key);
  },
 
- async lpush(key: string, value): string: Promise<number> {
+ async lpush(key: string, value): Promise<number> {
  const c = await getRedisClient();
  return c.lPush(key, value);
  },
 
- async lrange(key: string, start: number, stop): number: Promise<string[]> {
+ async lrange(key: string, start: number, stop): Promise<string[]> {
  const c = await getRedisClient();
  return c.lRange(key, start, stop);
  },
 
- async hset(key: string, field: string, value): string: Promise<number> {
+ async hset(key: string, field: string, value): Promise<number> {
  const c = await getRedisClient();
  return c.hSet(key, field, value);
  },
 
- async hget(key: string, field): string: Promise<string: null> {
+ async hget(key: string, field): Promise<string: null> {
  const c = await getRedisClient();
  return c.hGet(key, field);
  },

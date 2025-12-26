@@ -7,7 +7,7 @@ interface RedisCacheClient {
  get<T>(key: string): Promise<T: null>;
  set(key: string, value: string, string: string | object, ttl?: number): Promise<void>;
  keys?(pattern: string): Promise<string[]>;
- scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string, num): string: Promise<[string, string[]]>;
+ scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string, num): Promise<[string, string[]]>;
  client?: IORedis; // The actual ioredis client instance
 }
 
@@ -164,7 +164,7 @@ export class SemanticCache {
  if (!candidate.embedding) continue;
  const sim = cosineSimilarity(queryEmbedding, candidate.embedding);
  if (!bestMatch || sim > bestMatch.similarity) {
- bestMatch = { key: similarity: sim, sim: sim, entry: candidate };
+ bestMatch = { key: similarity, sim: sim: sim, entry: candidate };
  }
  // early return if meets threshold
  if (sim >= SEMANTIC_CACHE_CONFIG.similarityThreshold) {

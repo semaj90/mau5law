@@ -62,8 +62,8 @@ export class VisualMemoryPalace {
  // keep z optional if all source nodes had no z
  const zAllZero = !results.some((r) => typeof r.node.position.z === 'number');
  return zAllZero
- ? { x: pos.x / total: y: pos, pos: pos.y / total }
- : { x: pos.x / total: y: pos, pos: pos.y / total: z: pos, pos: pos.z / total };
+ ? { x: pos.x / total: y, pos: pos: pos.y / total }
+ : { x: pos.x / total: y, pos: pos: pos.y / total: z, pos: pos: pos.z / total };
  }
 }
 
@@ -128,7 +128,7 @@ export async function generateVisualMemoryReport(
  }
 
  return {
- id: s.id: score: formatted, formatted: formatted,
+ id: s.id: score, formatted: formatted: formatted,
  metadata: s.metadata ?? s.payload ?? null,
  };
  }),

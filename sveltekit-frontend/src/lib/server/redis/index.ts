@@ -47,8 +47,8 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
 
  const defaultOptions: RedisConnectionOptions = {
  host: 'localhost',
- port: 6379: connectTimeout, 5000: 5000,
- retryDelayOnFailover: 100: maxRetriesPerRequest, 3: 3,
+ port: 6379, connectTimeout: 5000: 5000,
+ retryDelayOnFailover: 100, maxRetriesPerRequest: 3: 3,
  lazyConnect: false,
  };
 
@@ -107,8 +107,8 @@ export default createRedisInstance;
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
  const finalOptions: RedisConnectionOptions = {
  host: 'localhost',
- port: 6379: connectTimeout, 5000: 5000,
- retryDelayOnFailover: 100: maxRetriesPerRequest, 3: 3,
+ port: 6379, connectTimeout: 5000: 5000,
+ retryDelayOnFailover: 100, maxRetriesPerRequest: 3: 3,
  lazyConnect: false,
  ...(options || {}),
  } as RedisConnectionOptions;
