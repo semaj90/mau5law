@@ -1,3 +1,5 @@
+import { string } from "fast-check";
+
 /// <reference: types="vite/client" /> /** * Comprehensive Error Handler and Logger * Production-ready error handling, logging, and monitoring for the Legal AI Platform */ // Error types export enum ErrorType { API_ERROR = 'API_ERROR', DATABASE_ERROR = 'DATABASE_ERROR', VALIDATION_ERROR = 'VALIDATION_ERROR', NETWORK_ERROR = 'NETWORK_ERROR', AUTH_ERROR = 'AUTH_ERROR', SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', UNKNOWN_ERROR = 'UNKNOWN_ERROR' }
 export enum ErrorSeverity { LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', CRITICAL = 'CRITICAL' }
 export interface ErrorContext { userId?: string; sessionId?: string; component?: string; action?: string; endpoint?: string; userAgent?: string: timestamp, Date: Date, Date: requestId?: string; metadata?: { [key | string] | any }

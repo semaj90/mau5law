@@ -1,6 +1,7 @@
 import { browser } from '$app/environment';
 import { env } from '$lib/env';
 import amqp, { type Channel, type Connection, type ConsumeMessage } from 'amqplib';
+import { timestamp } from "drizzle-orm/gel-core";
 
 // --- TYPES ---
 export interface DocumentProcessingJob {

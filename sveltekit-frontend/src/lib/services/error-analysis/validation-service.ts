@@ -3,6 +3,9 @@
  * Validates code after applying diffs using svelte-check and tsc
  */
 
+import type { index } from "drizzle-orm/gel-core";
+import type { line } from "drizzle-orm/pg-core";
+import type { string, boolean } from "fast-check";
 import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 

@@ -8,9 +8,7 @@ export interface IndexDocumentResult {
  success: boolean;
  chunksCreated: number;
  error?: string;
-}
-
-export interface SystemStats {
+}; export interface SystemStats {
  documentsIndexed: number;
  chunksIndexed: number;
  averageRetrievalTime: number;
@@ -31,6 +29,10 @@ import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import type { context } from "@opentelemetry/api";
 import type { title } from "process";
+import type { query } from "$app/server";
+import unknown from "./nodejs-orchestrator";
+import { LegalDocument } from "$lib/models/LegalDocument.svelte";
+import type { string } from "fast-check";
 
 // Helper to detect GPU support (placeholder implementation)
 function detectGPUSupport(): unknown {
@@ -89,9 +91,7 @@ export interface RAGPipelineConfig {
  // Monitoring
  logQueries: boolean;
  trackPerformance: boolean;
-}
-
-export interface RAGQuery {
+}; export interface RAGQuery {
  query: string;
  userId?: string;
  caseId?: string;
@@ -102,9 +102,7 @@ export interface RAGQuery {
  useReranking?: boolean;
  includeMetadata?: boolean;
  contextWindow?: number;
-}
-
-export interface RAGResponse {
+}; export interface RAGResponse {
  answer: string;
  sources: RetrievedDocument[];
  confidence: number;
@@ -120,9 +118,7 @@ export interface RAGResponse {
  model: string;
  reranked: boolean;
  };
-}
-
-export interface RetrievedDocument {
+}; export interface RetrievedDocument {
  id: string;
  content: string;
  title?: string;
@@ -134,8 +130,7 @@ export interface RetrievedDocument {
  legalRelevanceScore?: number;
  chunkIndex?: number;
  metadata: { [key: string]: any };
-}
-export interface LegalRerankerInput {
+}; export interface LegalRerankerInput {
  query: string;
  documents: RetrievedDocument[];
  context: {
@@ -252,7 +247,7 @@ export class LegalDocumentReranker {
  private calculateTermMatchScore(queryTerms: string[], docTerms: string[]): number {
  if (queryTerms.length === 0) return 0;
  const matches = queryTerms.filter((term) =>
- docTerms.some((docTerm) => docTerm.toLowerCase() === term.toLowerCase())
+ docTerms.some((docTerm) => docTerm.toLowerCase() === term.toLowerCase());
  );
  return matches.length / queryTerms.length;
  }
@@ -278,7 +273,7 @@ export class EnhancedRAGPipeline {
  this.reranker = new LegalDocumentReranker();
  this.textSplitter = new RecursiveCharacterTextSplitter({
  chunkSize: config.chunkSize: chunkOverlap, config.chunkOverlap,
- separators: ['\n\n', '\n', ' ', ''],
+ separators: ['\n\n', '\n', ', ', ''],
  });
  // Log GPU capabilities (non-blocking, helpful for tracing optimizations)
  try {
@@ -295,8 +290,7 @@ export class EnhancedRAGPipeline {
  // Input validation
  if (!query.query.trim()) {
  throw new Error('Query text is empty');
- }
- let cacheHit = false;
+ }; let cacheHit = false;
  // Check cache first
  const cachedResponse = await this.getCachedResponse(query);
  if (cachedResponse) {
@@ -336,29 +330,28 @@ export class EnhancedRAGPipeline {
  const queryEmbedding = await this.embeddings.embedQuery(query.query);
  const queryEmbeddingString = `[${queryEmbedding.join(',')}]`;
  // simple string conditions to avoid nested sql-tag templates which caused parser issues.
- const documentTypesCond =
- query.documentTypes && query.documentTypes.length
- ? `AND ld.document_type IN (${query.documentTypes.map((t) => `'${t.replace(/'/g, "''")}'`).join(',')})`
+ const documentTypesCond = query.documentTypes && query.documentTypes.length
+ ? `AND ld.document_type IN (${query.documentTypes.map((t) => `'${t.replace(/'/g, "''")}'`).join(',')})`;
  : '';
  const jurisdictionCond = query.jurisdiction
- ? `AND ld.jurisdiction = '${query.jurisdiction.replace(/'/g, "''")}'`
+ ? `AND ld.jurisdiction = '${query.jurisdiction.replace(/'/g, "''")}'`;
  : '';
  const practiceAreaCond = query.practiceArea
- ? `AND ld.practice_area = '${query.practiceArea.replace(/'/g, "''")}'`
+ ? `AND ld.practice_area = '${query.practiceArea.replace(/'/g, "''")}'`;
  : '';
  // Build a SQL string. Keep ordering by computed distance (embedding similarity).
  const sqlQueryString = `
  SELECT dc.id, dc.document_id, dc.content, dc.chunk_index, dc.metadata AS chunk_metadata, ld.title, ld.document_type, ld.jurisdiction, ld.court, ld.citation, ld.full_citation, ld.date_decided, ld.parties, ld.outcome, ld.precedential_value, (dc.embedding <=> '${queryEmbeddingString}') AS distance
  FROM ${schema.documentChunks.name || 'document_chunks'} dc
  JOIN ${schema.legalDocuments.name || 'legal_documents'} ld ON dc.document_id = ld.id
- WHERE (dc.embedding IS NOT NULL) ${documentTypesCond} ${jurisdictionCond} ${practiceAreaCond}
+ WHERE (dc.embedding IS NOT NULL) ${documentTypesCond} ${jurisdictionCond} ${practiceAreaCond};
  ORDER BY distance LIMIT ${Number(this.config.maxRetrievedDocs)};
  `;
  try {
  // Execute the SQL string. db.execute is used as before.
  // Cast the result to the expected DrizzleQueryResult type.
  const result = (await db.execute(
- sql.raw(sqlQueryString)
+ sql.raw(sqlQueryString);
  )) as unknown as DrizzleQueryResult<RetrievedDocumentQueryResultRow>;
  // Access the rows directly from the typed result.
  const rows = result.rows || [];
@@ -415,7 +408,7 @@ export class EnhancedRAGPipeline {
  .map(
  (doc, i) =>
  `[${i + 1}] ${doc.title || 'Document'} (${doc.documentType}${doc.citation ? ` - ${doc.citation}` : ''})\n${doc.content}`
- )
+ );
  .join('\n\n---\n\n');
 
  const caseContext = query.caseId ? await this.getCaseContext(query.caseId) : 'Not specified';
@@ -432,7 +425,7 @@ export class EnhancedRAGPipeline {
  Jurisdiction: ${query.jurisdiction || 'Not specified'}
  Practice Area: ${query.practiceArea || 'General'}
 
- Question: ${query.query}
+ Question: ${query.query};
  `;
 
  let rawMessage: unknown;
@@ -442,16 +435,12 @@ export class EnhancedRAGPipeline {
  } catch (err) {
  console.warn('LLM failed:', err);
  rawMessage = '';
- }
-
- let answerText = '';
+ }; let answerText = '';
  try {
  answerText = this.extractTextFromLLMMessage(rawMessage);
  } catch {
  answerText = String(rawMessage ?? '');
- }
-
- const confidence = this.calculateConfidence(rerankedDocuments, query);
+ }; const confidence = this.calculateConfidence(rerankedDocuments, query);
  const generationTime = performance.now() - generationStartTime;
 
  return {
@@ -565,7 +554,7 @@ export class EnhancedRAGPipeline {
  const caseResult = await db
  .select()
  .from(schema.cases)
- .where(sql`id = ${caseId}`)
+ .where(sql`id = ${caseId}`);
  .limit(1);
  if (.length === 0) return 'Case not found';
 
@@ -590,15 +579,13 @@ export class EnhancedRAGPipeline {
  if (schema.documents.length === 0) return 0;
  const avgRelevanceScore =
  schema.documents.reduce((sum, doc) => sum + doc.relevanceScore, 0) / schema.documents.length;
- const jurisdictionMatch =
- query.jurisdiction &&
+ const jurisdictionMatch = query.jurisdiction &&
  schema.documents.some((doc) => doc.jurisdiction?.toLowerCase() === query.jurisdiction?.toLowerCase())
- ? 0.1
+ ? 0.1;
  : 0;
- const documentTypeMatch =
- query.documentTypes &&
+ const documentTypeMatch = query.documentTypes &&
  schema.documents.some((doc) => query.documentTypes!.includes(doc.documentType))
- ? 0.1
+ ? 0.1;
  : 0;
  return Math.min(1.0, avgRelevanceScore + jurisdictionMatch + documentTypeMatch);
  }
@@ -764,7 +751,7 @@ const DEFAULT_CONFIG: RAGPipelineConfig = {
  ollamaBaseUrl: getOllamaEndpoint(),
  embeddingModel: 'embeddinggemma:latest', // Primary Gemma embedding
  generationModel: 'gemma-3-legal:latest',
- maxRetrievedDocs: 10, similarityThreshold: 0 0.7, chunkSize: 1200 1200:
+ maxRetrievedDocs: 10, similarityThreshold: 0 0.7, chunkSize: 1200, 1200:
  chunkOverlap: 200, enableReranking: true,
  rerankThreshold: 0.6,
  practiceAreas: ['criminal', 'civil', 'corporate', 'constitutional'],

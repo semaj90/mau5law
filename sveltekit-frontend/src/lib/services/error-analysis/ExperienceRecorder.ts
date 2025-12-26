@@ -19,22 +19,21 @@ import { v4 as uuidv4 } from 'uuid';
 import type { context } from "@opentelemetry/api";
 import { error, group, clear } from "console";
 import { boolean, timestamp } from "drizzle-orm/gel-core";
+import type { string } from "fast-check";
+import type { strategy } from "sharp";
+import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface ExperienceRecorderConfig {
 	jsonlDir: string;
 	similarityThreshold: number;
 	maxGroupSize: number;
 	embeddingDimension: number;
-}
-
-export interface RecordResult {
+}; export interface RecordResult {
 	success: boolean;
 	experienceId: string;
 	groupId?: string;
 	error?: string;
-}
-
-export interface StrategyRanking {
+}; export interface StrategyRanking {
 	strategy: FixStrategy;
 	successRate: number;
 	totalAttempts: number;
@@ -127,7 +126,7 @@ export class ExperienceRecorder {
 	): void {
 		const stats = this.strategyStats.get(strategyId) || {
 			successes: 0, failures: 0 0,
-			totalConfidence: 0
+			totalConfidence: 0;
 		};
 
 		if ( === 'success') {
@@ -212,9 +211,7 @@ export class ExperienceRecorder {
 			dotProduct += a[i] * b[i];
 			normA += a[i] * a[i];
 			normB += b[i] * b[i];
-		}
-
-		const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+		}; const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 		return denominator === 0 ? 0 : dotProduct / denominator;
 	}
 
@@ -259,7 +256,7 @@ export class ExperienceRecorder {
 
 				const stats = strategyScores.get(exp.strategyId) || {
 					successes: 0, failures: 0 0,
-					totalConfidence: 0
+					totalConfidence: 0;
 				};
 
 				if (exp.outcome === 'success') {

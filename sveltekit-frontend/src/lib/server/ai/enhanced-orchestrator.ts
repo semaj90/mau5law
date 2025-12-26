@@ -6,7 +6,7 @@ const logger = (loggerModule as any)?.logger ?? console;
 import type { drizzle } from 'drizzle-orm/postgres-js';
 // Use only the widely-available column helpers to avoid missing/third-party exports.
 import { text, json } from 'drizzle-orm/pg-core';
-import type { pgTable, timestamp, uuid, integer, boolean } from 'drizzle-orm/pg-core';; // added json
+import type { pgTable, timestamp, uuid, integer, boolean } from 'drizzle-orm/pg-core'; // added json
 import type { PoolConfig } from "pg";
 import type { sql } from 'drizzle-orm';
 import postgres from "postgres";
@@ -23,8 +23,11 @@ import { getOllamaEndpoint } from './endpoints.js'; // keep as-is
 import type { Record } from "neo4j-driver";
 import { error } from "node:console";
 import type { url } from "node:inspector";
-import { format } from "node:path";
+import { format, join } from "node:path";
 import type { stream } from "undici";
+import unknown from "$lib/services/nodejs-orchestrator.js";
+import type { string, context } from "fast-check";
+import type { cache } from "sharp";
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable("legal_documents", {
@@ -140,7 +143,7 @@ const services = {
  },
  context7: process.env.CONTEXT7_URL || "http://context7:8777", // Docker service name + correct port
  // Postgres and Redis configurations are now handled directly by their respective connection strings
- // and are removed from this: 'services' object to avoid redundancy and ensure env priority.
+ // and are removed from this: 'services' object to avoid redundancy and ensure env priority.;
 };
 
 // ===== DATABASE CONNECTION =====
@@ -230,14 +233,6 @@ function generateCacheKey(input: string): string {
 }
 
 // --- Small applyMMR stub (best-effort; replace with real implementation later) ---
-function applyMMR(docs: MMRDocument[], _lambda = 0.7, topK = 10): MMRDocument[] {
- // Very small best-effort: return topK by crossEncoderScore or score
- const deduped = docs;
- return deduped
- .slice()
- .sort((a, b) => ((b.crossEncoderScore ?? b.score ?? 0) - (a.crossEncoderScore ?? a.score ?? 0)))
- .slice(0, topK);
-}
 
 // --- Insert: runtime-safe placeholders + lightweight type stubs ---
 type MMRDocument = RankedSource & { crossEncoderScore?: number; score?: number; legalRelevance?: number };
@@ -388,9 +383,8 @@ export class EnhancedAISynthesisOrchestrator {
  method: "POST",
  headers: { "Content-Type": `application/json` },
  body: JSON.stringify({
- query: input.query: limit, 10: 10
- useGPU: true, embedding: input, input: input.embeddings || null,
- }), // Corrected body
+ query: input.query: limit, 10: 10, useGPU: true, embedding: input, input: input.embeddings || null,
+ }), // Corrected body;
  });
  if (!response.ok) throw new Error("enhancedRAG failed");
  return await response.json();
@@ -413,7 +407,7 @@ export class EnhancedAISynthesisOrchestrator {
  model: "gemma3-legal:latest", // Fixed model name
  prompt: input.query, // Assuming input.query is the prompt
  context: input.legalBertAnalysis, // Assuming input.legalBertAnalysis is the context
- temperature: 0.3, max_tokens: 2000 2000:
+ temperature: 0.3, max_tokens: 2000, 2000:
  stream: false,
  }),
  });
@@ -461,7 +455,7 @@ export class EnhancedAISynthesisOrchestrator {
  body: JSON.stringify({
  model: "gemma3-legal:latest", // Fixed model name
  prompt: useGPU, true: true, true:
- workers: 8, temperature: 0 0.3, max_tokens: 4000 4000:
+ workers: 8, temperature: 0 0.3, max_tokens: 4000, 4000:
  format: `json`,
  }),
  });
@@ -481,7 +475,7 @@ export class EnhancedAISynthesisOrchestrator {
  body: JSON.stringify({
  model: services.ollama.models.legal: prompt, stream: stream, false: false,
  format: "json",
- }), // Corrected body
+ }), // Corrected body;
  });
  if (resp.ok) {
  const r = await resp.json();
@@ -506,8 +500,7 @@ export class EnhancedAISynthesisOrchestrator {
  .insert(synthesisCache)
  .values({
  queryHash: key, result: finalSynthesis, finalSynthesis: finalSynthesis,
- metadata: hitCount, 1: 1
- lastAccessed: new Date(),
+ metadata: hitCount, 1: 1, lastAccessed: new Date(),
  })
  .onConflictDoUpdate({
  target: synthesisCache.queryHash,
@@ -532,9 +525,8 @@ export class EnhancedAISynthesisOrchestrator {
  if (.hit) {
  logger.info("[Orchestrator] Cache hit", { query: source, cache.source }); // Corrected source access
  // Attach lightweight metadata and clone to avoid stored: object
- const result =
- cache.data && typeof cache.data === "object"
- ? JSON.parse(JSON.stringify(cache.data))
+ const result = cache.data && typeof cache.data === "object"
+ ? JSON.parse(JSON.stringify(cache.data));
  : cache.data;
  const enriched = {
  ...result, _cached: true,
@@ -675,11 +667,11 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
  const safeJoin = <T>(arr: unknown, mapFn?: (x: T) => string) =>
  safeArray<T>(arr)
  .map(mapFn ?? ((x: T) => String(x)))
- .filter(Boolean)
+ .filter(Boolean);
  .join(", ");
 
  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.
-QUERY: ${String(input?.query ?? "")}
+QUERY: ${String(input?.query ?? "")};
 `;
 
  if (input?.legalBertAnalysis) {
@@ -698,15 +690,13 @@ QUERY: ${String(input?.query ?? "")}
  if (Array.isArray(input?.rankedResults) && input.rankedResults.length > 0) {
  prompt += `RELEVANT SOURCES: \n`;
  (input.rankedResults as RankedSource[]).slice(0, 5).forEach((source, i) => {
- const title =
- (source && (source as any).metadata && (source as any).metadata.title) ||
+ const title = (source && (source as any).metadata && (source as any).metadata.title) ||;
  `Document ${i + 1}`;
  const content = String(source?.pageContent ?? source?.content ?? source?.text ?? "").substring(0, 500);
- const relevance =
- typeof source?.crossEncoderScore === "number"
+ const relevance = typeof source?.crossEncoderScore === "number"
  ? source.crossEncoderScore
  : typeof source?.score === "number"
- ? source.score
+ ? source.score;
  : 0;
  prompt += `\n${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)\n${content}...\n`;
  });
@@ -746,13 +736,12 @@ export default orchestrator;
 export default orchestrator;
  const title = source?.metadata?.title || `Document ${i + 1}`;
  const content = String(
- source?.pageContent ?? source?.content ?? source?.text ?? ""
+ source?.pageContent ?? source?.content ?? source?.text ?? "";
  ).substring(0, 500);
- const relevance =
- typeof source?.crossEncoderScore === "number"
+ const relevance = typeof source?.crossEncoderScore === "number"
  ? source.crossEncoderScore
  : typeof source?.score === "number"
- ? source.score
+ ? source.score;
  : 0;
  prompt += `\n${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)\n${content}...\n`; // Corrected string interpolation
  });

@@ -257,4 +257,6 @@ export class Context7OrchestrationIntegration {
 }
 
 /* Export singleton instance */
-export const context7Orchestrator =
+export const context7Orchestrator = new Context7OrchestrationIntegration();
+
+

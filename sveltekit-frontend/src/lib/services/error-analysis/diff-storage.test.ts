@@ -3,7 +3,7 @@
  * Task 18.1: Write unit tests for diff storage
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffStorage } from './diff-storage.js';
 import type { Diff, ServiceConfig } from './types.js';

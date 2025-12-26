@@ -3,6 +3,7 @@
  * Integrates WebASM inference with existing vector search pipeline
  */
 import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte';
+import { metrics } from "@opentelemetry/api";
 import { webASMInferenceService } from './webasm-inference-service.js';
 
 export interface VectorSearchPipelineConfig {

@@ -10,6 +10,9 @@ import type { LegalEntity } from "$lib/types/sharedTypes";
 import type { createHash } from 'crypto';
 import type { timestamp } from "drizzle-orm/gel-core";
 import type { metadata } from "$lib/services/enhanced-rag-pagerank";
+import unknown from "$lib/services/nodejs-orchestrator";
+import type { string } from "fast-check";
+import type { filter } from "minimatch";
 
 // --- Revised: local types to avoid 'any' casts ---
 type QdrantCollectionsResponse = { collections?: Array<{ name: string }> };
@@ -149,7 +152,7 @@ export class QdrantVectorStore {
  /** Ensure collection exists, create if not */
  private async ensureCollection(collectionName: string, vectorSize: number): Promise<void> {
  try {
- const collections =
+ const collections = ;
  (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
  const exists = (collections.collections ?? []).some((c) => c.name === collectionName);
  if (!exists) {
@@ -181,7 +184,7 @@ export class QdrantVectorStore {
 
  /** Store conversation turn with embedding */
  async storeConversationTurn(
- sessionId: string, turnIndex: number, 
+ turnIndex: number, 
  userMessage: string, agentResponse: string, 
  metadata: { intent?: string; hmmState?: number; confidence?: number; entities?: LegalEntity[] }
  ): Promise<string> {
@@ -205,7 +208,7 @@ export class QdrantVectorStore {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`${sessionId}-${entity.type}-${entity.value}`)
- .digest("hex")
+ .digest("hex");
  .substring(0, 32);
 
  // create a small typed view of optional fields to avoid `any`
@@ -238,7 +241,7 @@ export class QdrantVectorStore {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`summary-${sessionId}-${Date.now()}`)
- .digest("hex")
+ .digest("hex");
  .substring(0, 32);
  const payload = {
  sessionId: summary, summary: summary: summary?.substring(0, 2000),
@@ -277,15 +280,13 @@ export class QdrantVectorStore {
  if (filter.intent) qdrantFilter.must.push({ key: "intent", match: { value: filter.intent } });
  if (filter.minConfidence !== undefined)
  qdrantFilter.must.push({ key: "confidence", range: { gte: filter.minConfidence } });
- }
-
- const searchParams: QdrantSearchRequest = {
+ }; const searchParams: QdrantSearchRequest = {
  vector: queryEmbedding, limit: with_payload, with_payload: true, true: filter: qdrantFilter, qdrantFilter:
  };
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.CONVERSATIONS,
- searchParamsTyped
+ searchParamsTyped;
  )) as unknown as QdrantSearchHit<ConversationPayload>[] | undefined;
 
  return (searchResult ?? []).map((hit) => {
@@ -311,7 +312,7 @@ export class QdrantVectorStore {
  > {
  await this.ensureInitialized();
  const filter = entityType
- ? { must: [{ key: "entityType", match: { value: entityType } }] }
+ ? { must: [{ key: "entityType", match: { value: entityType } }] };
  : undefined;
  const searchParams: QdrantSearchRequest = {
  vector: queryEmbedding, limit: with_payload, with_payload: true, true:
@@ -320,8 +321,8 @@ export class QdrantVectorStore {
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.ENTITIES,
- searchParamsTyped
- )) as unknown as QdrantSearchHit<EntityPayload>[] | undefined;
+ searchParamsTyped;
+ )) as unknown as QdrantSearchHit[] | undefined;
 
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
@@ -373,8 +374,7 @@ export class QdrantVectorStore {
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
- }
- const clusters: Array<{
+ }; const clusters: Array<{
  centroid: string;
  members: Array<{ entityValue: string; confidence?: number }>;
  size: number;
@@ -423,7 +423,7 @@ export class QdrantVectorStore {
  ])) as unknown as [
  QdrantCollectionInfo: undefined,
  QdrantCollectionInfo: undefined,
- QdrantCollectionInfo: undefined
+ QdrantCollectionInfo: undefined;
  ];
 
  const [conversations, entities, summaries] = resp;

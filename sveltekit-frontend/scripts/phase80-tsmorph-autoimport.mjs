@@ -30,18 +30,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = join(__dirname, '..');
 
-console.log('🔧 Phase 80 Chunk 9: ts-morph Automated Import Fixing\n');
+// Parse command line arguments
+const args = process.argv.slice(2);
+const allFiles = args.includes('--all');
+const batchSize = parseInt(args.find(a => a.startsWith('--batch='))?.split('=')[1] || '100');
+
+console.log(`🔧 Phase 80 Chunk 11: ts-morph Auto-Import Fixer${allFiles ? ' (ALL FILES)' : ''}\n`);
 
 // Read stratification report to get top broken files
 const reportPath = join(root, 'phase80-stratification-report.json');
 const report = JSON.parse(readFileSync(reportPath, 'utf-8'));
 
-// Get top 100 broken files
-const topFiles = report.topFiles
-  .slice(0, 100)
-  .map(f => join(root, f.file));
+// Get files to process
+const topFiles = allFiles
+  ? report.topFiles.map(f => join(root, f.file))
+  : report.topFiles.slice(0, 30).map(f => join(root, f.file));
 
-console.log(`📋 Processing top ${topFiles.length} broken files\n`);
+console.log(`📋 Processing ${allFiles ? 'ALL' : 'top 30'} broken files (${topFiles.length} files)\n`);
+console.log(`📦 Batch size: ${batchSize} files at a time\n`);
 
 // Initialize ts-morph project
 const project = new Project({

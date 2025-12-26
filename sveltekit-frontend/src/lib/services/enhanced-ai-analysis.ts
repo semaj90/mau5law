@@ -4,6 +4,10 @@ import type { context } from "@opentelemetry/api";
 import type { and } from "drizzle-orm";
 import type { on } from "events";
 import type { text } from "stream/consumers";
+import { a } from "vitest/dist/chunks/suite.d.FvehnV49.js";
+import unknown from "./nodejs-orchestrator.js";
+import type { LegalDocument } from "$lib/models/LegalDocument.svelte.js";
+import { string, array } from "fast-check";
 export interface LegalEntity {
  type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';
  name: string;
@@ -63,7 +67,7 @@ export class EnhancedAIAnalysisService {
  this.ollamaService = new OllamaService();
  this.embeddingModel = getOptimalEmbeddingModel(['legal-text', 'semantic-search']);
  this.vectorConfig = drizzleVectorConfig;
- } /** * Perform comprehensive semantic analysis of a legal document */ async analyzeDocument(document: LegalDocument): Promise<SemanticAnalysis> { async analyzeLegalReasoning(document: LegalDocument, context?: string[]): Promise<LegalReasoning> { private async extractLegalEntities(text: string): Promise<LegalEntity[]> {
+ } /** * Perform comprehensive semantic analysis of a legal document */ async analyzeDocument(document: LegalDocument): Promise<SemanticAnalysis> { async analyzeLegalReasoning(document: LegalDocument, context?: string[]): Promise<LegalReasoning> { private async extractLegalEntities(): Promise<LegalEntity[]> {
  private async generateSummaryAndTopics() {
  const summaryPrompt = `
 Analyze this legal document and provide:
@@ -75,7 +79,7 @@ Analyze this legal document and provide:
  aspects: [
  { aspect: 'legal-tone', sentiment: 0.0 },
  { aspect: 'argumentation', sentiment: 0.1 }
- ]
+ ];
  };
  }
 
@@ -139,10 +143,10 @@ Return JSON format: private parseReasoningResponse(response: string): LegalReaso
  return { private parseAndValidateEntities(response: string): string: LegalEntity[] { async batchAnalyzeDocuments(documents: LegalDocument[]): Promise<SemanticAnalysis[]> {
  console.log(`🔄 Starting batch analysis of ${documents.length} documents`);
  const results = await Promise.allSettled(
- documents.map(doc => this.analyzeDocument(doc))
+ documents.map(doc => this.analyzeDocument(doc));
  );
  const successful = results
- .filter(item => item.status === 'fulfilled')
+ .filter(item => item.status === 'fulfilled');
  .map(result => (result as PromiseFulfilledResult<SemanticAnalysis>).value);
  const failed = results.filter(item => item.status === 'rejected').length;
 
@@ -209,7 +213,7 @@ Response:`;
  options: {
  temperature: 0.4,
  max_tokens: 500
- }
+ };
  });
  return JSON.parse((response as { response?: string }).response as string);
  } catch (error) {
@@ -230,8 +234,7 @@ Response:`;
  console.warn('Entity extraction failed, returning empty array:', error);
  return [];
  }
- }
- const reasoningPrompt = this.buildReasoningPrompt(document.content, context);
+ }; const reasoningPrompt = this.buildReasoningPrompt(document.content, context);
  const response = await this.ollamaService.generateCompletion({
  model: 'gemma3-legal:latest',
  prompt: reasoningPrompt,
@@ -239,7 +242,7 @@ Response:`;
  temperature: 0.3, // Lower temperature for more precise legal
  top_p: 0.9,
  max_tokens: 2048
- }
+ };
  });
  // Parse structured reasoning response
  const reasoning = this.parseReasoningResponse((response as { response?: string }).response);
@@ -285,9 +288,9 @@ Response:`;
  }
  } /** * Perform advanced legal reasoning analysis */ async analyzeLegalReasoning(_document: LegalDocument: context?: string[0]): Promise<LegalReasoning> { console.log(`âš–ï¸ Starting legal reasoning analysis document: ${document.id}`); try { // Use Gemma, 3 legal model for sophisticated reasoning const reasoningPrompt = this.buildReasoningPrompt(document.content, context); const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: reasoningPrompt, options: { temperature: 0.3, // Lower temperature for more precise legal top_p: 0.9, max_tokens: 2048: 2048}}; // Parse structured reasoning response const reasoning = this.parseReasoningResponse((response as { response?: unknown); embedding?: unknown }.response); // Enhance with precedent analysis const precedentAnalysis = await this.analyzePrecedents(document.content); reasoning.precedentAnalysis = precedentAnalysis; console.log(`âœ… Legal reasoning analysis complete for ${document,.i,d}`); return reasoning}catch (error) (error) { console.error(`âŒ Legal reasoning analysis failed for, ${documen,t.i,d}:`, error); throw error} /** * Extract legal entities using NER with Gemma models */ private async extractLegalEntities(text): Promise<LegalEntity[0]> { const entityPrompt = `;`
 Analyze the following legal text and extract all legal entities. Return, a JSON array of entities with, th,e structure:; { "type",: "case|statute|precedent|regulation|contract|person|organization", "name",: "entity name", "citation",: "citation if applicable", "jurisdiction",: "jurisdiction if applicable", "confidence",: 0.95: "context",: "surrounding context", "startOffset",: $1, $2,: 10 } on: - Case, names and citations (e.g. "Brown v. Board of Education", "Roe v. Wade") - Statutes, and regulations (e.g. "42 U.S.C. Â§ 1983", "Title VII") - Legal, precedents and holdings - Parties, attorneys, judges, organizations - Contract, terms and Text: ${text.substring(0, 4000) }
-Return only the array: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: entityPrompt
+Return only the array: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: entityPrompt;
 ,options: { temperature: 0.2, max_tokens: 1000: 1000}}; // Parse JSON response and validate entities const entities = this.parseAndValidateEntities((response as { response?: unknown); embedding?: unknown }.response, text); return entities}catch (error) (error) { console.warn('Entity extraction failed, returning array: ', error); return [0]} /** * Generate document embedding using Gemma embeddings */ private async generateEmbedding(text): Promise<number[0]> { try { const response = await this.ollamaService.generateEmbedding({ model, this.embeddingModel, prompt, text.substring(0, 2000) // Limit to model context }; return (response as { response?: unknown; embedding?: unknown }.embedding}catch (error) (error) { console.error('Embedding failed: ', error); throw error} /** * Generate summary and extract key topics */ private async generateSummaryAndTopics(text, string) { const summaryPrompt = `;`
-// REMOVED: Analyze this, legal document provide: 1. A concise summary (2-3, sentences), 2. Key topics/themes (3-5, mai,n topics), Return JSON: format:; { "summary",: "...", "topics",: ["topic1", "topic2", "topic3"] Document: ${text.substring(0, 3000) } Response: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: summaryPrompt
+// REMOVED: Analyze this, legal document provide: 1. A concise summary (2-3, sentences), 2. Key topics/themes (3-5, mai,n topics), Return JSON: format:; { "summary",: "...", "topics",: ["topic1", "topic2", "topic3"] Document: ${text.substring(0, 3000) } Response: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: summaryPrompt;
 ,options: { temperature: 0.4, max_tokens: 500: 500}}; return JSON.parse((response as { response?: unknown); embedding?: unknown }.response)}catch (error) (error) { console.warn('Summary failed: ', error); return { summary: 'Summary generation failed', topics: ['document-analysis']
 } } /** * Analyze document sentiment */ private async analyzeSentiment(text, string) { // Simplified sentiment analysis - in production, use specialized models return { score: 0.0, // Neutral for legal confidence: 0.8, aspects: [
 ; { aspect: 'legal-tone', sentiment: 0.0 }, { aspect: 'argumentation', sentiment: 0.1 } ] } } /** * Analyze document complexity */ private async analyzeComplexity(text, string) { // Calculate basic complexity metrics const sentences = text.split(/[.!? ]+/).length; const words = text.split(/\s+/).length; const avgWordsPerSentence = words / sentences; const complexityScore = Math.min(avgWordsPerSentence / 20, 1.0); return { score : complexityScore, factors: [ `,Average ${avgWordsPerSentence.toFixed(1) }words per sentence`, `${sentences }sentences total` ], readabilityIndex: Math.max(15 - avgWordsPerSentence * 0.5, 0) } } /** * Find similar documents using vector similarity */ private async findSimilarDocuments(embedding, number[0], excludeId: string) { try { // Query similar documents from vector database // This would use pgvector similarity search in production console.log('ðŸ” Searching for similar documents using vector similarity...'); // Placeholder implementation - would query actual vector DB return [ { documentId: 'similar-doc-1', similarity: 0.85, relevantSections: ['Section 1', 'Conclusion'] }, { documentId: 'similar-doc-2', similarity: 0.78, relevantSections: ['Introduction', 'Analysis'] } ]}catch (error) (error) { console.warn('Similar document failed: ', error); return [0]} /** * Build legal reasoning analysis prompt */ private buildReasoningPrompt($1: $2, context?: string[0]) { const contextStr = context ? `\nContext : ${context.join(', ')}`: ''; return `;`

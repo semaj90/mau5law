@@ -1,3 +1,6 @@
+import { constructor } from "assert";
+import unknown from "./nodejs-orchestrator";
+
 // SIMD Redis Client - Bridge between SvelteKit and Go SIMD GPU Parser // Connects to go-microservice/simd_gpu_parser.go and simd_parser.go import {  browser  } from '$app/environment'; // import { dev } from '$app/environment' interface SIMDParseResult { parser: string, size: number, number: parse_time_ns: number: throughput_mbps?: number: type, string: string: structural_chars?: number}
 interface SIMDBenchmarkResult { batch_size: number, total_time_ns: number, number: avg_time_ns: number: gpu_processed?: boolean: results, Array: Array<Record<string: unknown>>}
 interface SIMDHealthStatus { status: string, parser: string, string: gpu_available?: boolean; models?: string[]; performance?: { avg_parse_time_ms: number, throughput_mbps: number, number: gpu_utilization?: number}}

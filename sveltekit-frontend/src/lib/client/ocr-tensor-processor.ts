@@ -66,15 +66,11 @@ declare global {
  // use the stricter TesseractLike type instead of `any`
  Tesseract?: TesseractLike;
  }
-}
-
-export interface OCRResult {
+}; export interface OCRResult {
  text: string;
  confidence: number;
  boundingBoxes: Array<{ text: string; bbox: BBox; confidence: number }>;
-}
-
-export interface TensorData {
+}; export interface TensorData {
  embeddings: Float32Array;
  dimensions: number;
  metadata: {
@@ -83,9 +79,7 @@ export interface TensorData {
  tensor_id: string;
  confidence: number;
  };
-}
-
-export interface ProcessingResult {
+}; export interface ProcessingResult {
  ocr: OCRResult;
  embeddings: TensorData;
  searchIndex: Float32Array;
@@ -102,9 +96,7 @@ export interface EmbeddingAPIResponse {
  result?: unknown;
  error?: string;
  tensor_id?: string;
-}
-
-export interface OCRProcessOptions {
+}; export interface OCRProcessOptions {
  language?: string;
  oem?: number;
  psm?: number;
@@ -113,9 +105,7 @@ export interface OCRProcessOptions {
  tessjs_create_pdf?: boolean;
  tessjs_create_hocr?: boolean;
  tessjs_create_tsv?: boolean;
-}
-
-export interface BatchProcessingItem {
+}; export interface BatchProcessingItem {
  image: ImageData | HTMLCanvasElement | File;
  priority: number;
  options: OCRProcessOptions;
@@ -132,9 +122,7 @@ interface IShaderCacheManager {
  outputSize: number
  ): Promise<GPUBuffer>;
  dispose(): void;
-}
-
-export class OCRTensorProcessor {
+}; export class OCRTensorProcessor {
  // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
  private worker?: Worker | ServiceWorker;
  private serviceWorkerRegistration?: ServiceWorkerRegistration;
@@ -277,8 +265,7 @@ export class OCRTensorProcessor {
  }
 
  private async performOCR(
- imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions // Use OCRProcessOptions
- ): Promise<OCRResult> {
+ imageData: ImageData | HTMLCanvasElement | File: options ): Promise<OCRResult> {
  if (!this.ocrInitialized || !window.Tesseract) {
  throw new Error('OCR.js not initialized');
  }
@@ -289,8 +276,7 @@ export class OCRTensorProcessor {
  const tesseractInstance = window.Tesseract as TesseractLike;
  if (!tesseractInstance || typeof tesseractInstance.recognize !== 'function') {
  throw new Error('Tesseract runtime does not expose recognize()');
- }
- const recognize = tesseractInstance.recognize.bind(tesseractInstance);
+ }; const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  // Apply LOD-based OCR optimization
  const ocrOptions = this.getOCROptionsForLOD();
  const result: RecognizeResult = await recognize(
@@ -324,20 +310,17 @@ export class OCRTensorProcessor {
  switch (this.currentLODLevel) {
  case 'low': // 8-bit NES level optimization
  return {
- psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8: oem, 1: 1
- tessjs_create_pdf: false, tessjs_create_hocr: false,
+ psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8: oem, 1: 1, tessjs_create_pdf: false, tessjs_create_hocr: false,
  tessjs_create_tsv: false,
  };
  case 'medium': // 16-bit SNES level optimization
  return {
- psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8: oem, 2: 2
- tessjs_create_pdf: false, tessjs_create_hocr: true,
+ psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8: oem, 2: 2, tessjs_create_pdf: false, tessjs_create_hocr: true,
  tessjs_create_tsv: false,
  };
  case 'high': // N64 level optimization with DNN LOD system
  return {
- psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13: oem, 3: 3
- tessjs_create_pdf: true, tessjs_create_hocr: true,
+ psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13: oem, 3: 3, tessjs_create_pdf: true, tessjs_create_hocr: true,
  tessjs_create_tsv: true,
  };
  default:
@@ -440,8 +423,7 @@ export class OCRTensorProcessor {
 
  if (!response.ok) {
  throw new Error(`Embedding API failed: ${response.status}`);
- }
- const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
+ }; const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
  embeddings: new Float32Array(data.embedding), // Access properties directly
  fromCache: data.fromCache || false: model, data: data: data?.model || 'unknown',
@@ -469,7 +451,7 @@ export class OCRTensorProcessor {
  // Get SIMD parsing shader
  const simdShader = await this.shaderCacheManager.createTensorShader(
  'simd_parse',
- embeddings.length
+ embeddings.length;
  );
  // Create input buffer
  const inputBuffer = this.webgpuDevice.createBuffer({
@@ -481,7 +463,7 @@ export class OCRTensorProcessor {
  const outputBuffer = await this.shaderCacheManager.executeTensorOperation(
  simdShader,
  [inputBuffer],
- embeddings.byteLength
+ embeddings.byteLength;
  );
 
  // Read results back
@@ -571,7 +553,7 @@ export class OCRTensorProcessor {
  .filter(
  (result): result is PromiseFulfilledResult<ProcessingResult | null> =>
  result.status === 'fulfilled' && result.value !== null
- ) // Use PromiseFulfilledResult directly
+ ) // Use PromiseFulfilledResult directly;
  .map((result) => result.value!); // Use PromiseFulfilledResult directly
  results.push(...successfulResults);
 
@@ -610,9 +592,7 @@ export class OCRTensorProcessor {
  if (!this.worker && !this.serviceWorkerRegistration) {
  reject(new Error('Web Worker / Service Worker not available'));
  return;
- }
-
- const handleMessage = (ev: MessageEvent) => {
+ }; const handleMessage = (ev: MessageEvent) => {
  const payload = ev?.data ?? {};
  if (payload.type === 'ocr-result') {
  cleanup();
@@ -676,13 +656,8 @@ export class OCRTensorProcessor {
  }
 
  // Timeout after 30 seconds
- const timer = setTimeout(() => {
- cleanup();
- reject(new Error('OCR processing timeout'));
- }, 30000);
 
  // ensure cleanup clears timer
- const realCleanup = cleanup;
  // override cleanup to clear timer
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  });

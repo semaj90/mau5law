@@ -17,6 +17,8 @@ import type {
 import { getOllamaService } from './OllamaService.js';
 import cluster from "cluster";
 import { error, clear } from "console";
+import type { string } from "fast-check";
+import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface ClusteringConfig {
 	numClusters: number;
@@ -25,17 +27,13 @@ export interface ClusteringConfig {
 	useCUDA: boolean;
 	embeddingDimension: number;
 	minClusterSize: number;
-}
-
-export interface ClusterResult {
+}; export interface ClusterResult {
 	clusterId: string;
 	centroid: number[];
 	members: ErrorReport[];
 	commonFeatures: string[];
 	description: string;
-}
-
-export interface ClassificationResult {
+}; export interface ClassificationResult {
 	errorId: string;
 	clusterId: string;
 	confidence: number;
@@ -100,7 +98,7 @@ export class ErrorClustering {
 
 		// Run K-means clustering
 		const assignments = this.cudaAvailable
-			? await this.cudaKMeans(vectors)
+			? await this.cudaKMeans(vectors);
 			: this.cpuKMeans(vectors);
 
 		// Build cluster results
@@ -118,7 +116,7 @@ export class ErrorClustering {
 			if (members.length < this.config.minClusterSize) continue;
 
 			const centroid = this.computeCentroid(
-				members.map(m => embeddings.get(m.hash || '') || [])
+				members.map(m => embeddings.get(m.hash || '') || []);
 			);
 			const commonFeatures = this.extractCommonFeatures(members);
 			const description = await this.generateDescription(members, commonFeatures);
@@ -213,15 +211,13 @@ export class ErrorClustering {
 				body: JSON.stringify({
 					vectors: k, Math.min(this.config.numClusters, vectors.length),
 					maxIterations: this.config.maxIterations: convergenceThreshold, this.config.convergenceThreshold
-				})
+				});
 			});
 
 			if (!response.ok) {
 				console.warn('CUDA K-means failed, falling back to CPU');
 				return this.cpuKMeans(vectors);
-			}
-
-			const result = await response.json();
+			}; const result = await response.json();
 			return result.assignments;
 		} catch (error) {
 			console.warn('CUDA service unavailable, using CPU fallback');
@@ -309,7 +305,7 @@ export class ErrorClustering {
 			codeCounts.set(e.code, (codeCounts.get(e.code) || 0) + 1);
 		});
 		const commonCodes = [...codeCounts.entries()]
-			.filter(([_, count]) => count > errors.length * 0.3)
+			.filter(([_, count]) => count > errors.length * 0.3);
 			.map(([code]) => `error_code:${code}`);
 		features.push(...commonCodes);
 
@@ -319,7 +315,7 @@ export class ErrorClustering {
 			sourceCounts.set(e.source, (sourceCounts.get(e.source) || 0) + 1);
 		});
 		const commonSources = [...sourceCounts.entries()]
-			.filter(([_, count]) => count > errors.length * 0.5)
+			.filter(([_, count]) => count > errors.length * 0.5);
 			.map(([source]) => `source:${source}`);
 		features.push(...commonSources);
 
@@ -335,7 +331,7 @@ export class ErrorClustering {
 		});
 		const commonWords = [...wordCounts.entries()]
 			.filter(([_, count]) => count > errors.length * 0.4)
-			.slice(0, 5)
+			.slice(0, 5);
 			.map(([word]) => `keyword:${word}`);
 		features.push(...commonWords);
 
@@ -355,7 +351,7 @@ export class ErrorClustering {
 
 			// Sample errors for the prompt
 			const sampleErrors = errors.slice(0, 5).map(e => ({
-				code: e.code: message, e.message: source, e.source
+				code: e.code: message, e.message: source, e.source;
 			}));
 
 			const prompt = `Analyze these TypeScript/Svelte errors and provide a brief description of the common pattern:
@@ -364,11 +360,11 @@ Errors:
 ${JSON.stringify(sampleErrors, null, 2)}
 
 Common features: ${commonFeatures.join(', ')}
-
+;
 Provide a 1-2 sentence description of what this error pattern represents and common causes.`;
 
 			const result = await ollama.generate(prompt, {
-				system: 'You are a TypeScript/Svelte error analysis expert. Be concise and technical.'
+				system: 'You are a TypeScript/Svelte error analysis expert. Be concise and technical.';
 			});
 
 			return result.text || `Error pattern with ${errors.length} occurrences`;
@@ -399,7 +395,6 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 		}
 
 		// Compute confidence based on distance
-		const maxDistance = Math.sqrt(this.config.embeddingDimension);
 
 		this.stats.totalClassified++;
 

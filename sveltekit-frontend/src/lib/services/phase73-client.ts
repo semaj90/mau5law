@@ -4,6 +4,10 @@
  * Phase 74 Task 12: Implement Phase 73 Backend Client
  */
 
+import type { query } from "$app/server";
+import type { string } from "fast-check";
+import { Record } from "neo4j-driver";
+
 export interface ClusterData {
  clusterId: string;
  clusterType: string;

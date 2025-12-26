@@ -5,19 +5,19 @@
  * Tests for performance monitoring and metrics collection
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
- recordMessageLatency,
- recordBatchProcessingTime,
- recordConnectionStart,
- recordConnectionEnd,
- startMemoryMonitoring,
- stopMemoryMonitoring,
- getMetrics,
- resetMetrics,
- getMetricsSummary,
+    getMetrics,
+    getMetricsSummary,
+    recordBatchProcessingTime,
+    recordConnectionEnd,
+    recordConnectionStart,
+    recordMessageLatency,
+    resetMetrics,
+    startMemoryMonitoring,
+    stopMemoryMonitoring,
 } from './healthUpdatesPerformance.js';
+;
 
 describe('Phase 10.6: Performance Monitoring', () => {
  beforeEach(() => {

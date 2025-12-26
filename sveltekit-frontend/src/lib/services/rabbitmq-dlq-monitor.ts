@@ -1,4 +1,5 @@
 /** * Dead Letter Queue Monitor and Retry Service * Handles failed jobs with exponential backoff retry logic */
+import { timestamp } from "drizzle-orm/gel-core";
 import type { rabbitMQService } from './rabbitmq-service.js';
 import type { DocumentProcessingJob } from './rabbitmq-service.js';
 

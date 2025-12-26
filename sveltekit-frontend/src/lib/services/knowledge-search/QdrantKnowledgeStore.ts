@@ -11,6 +11,9 @@
  * Property 3: Search Result Schema Completeness
  */
 
+import type { point } from "drizzle-orm/pg-core";
+import type { string } from "fast-check";
+import { vector, Record } from "neo4j-driver";
 import type {
   SearchResult,
   SearchOptions,

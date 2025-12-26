@@ -18,6 +18,8 @@ import type { request } from "http";
 import type { Record } from "neo4j-driver";
 import { version, getPriority } from "os";
 import { title, config } from "process";
+import unknown from "$lib/services/nodejs-orchestrator.js";
+import type { string } from "fast-check";
 
 // --- added: promisified gunzip helper
 const gunzip = promisify(zlib.gunzip);
@@ -163,18 +165,14 @@ export interface LegalPrecedent {
  similarity: number;
  contradictions: string[];
  supportingEvidence: string[];
-}
-
-export interface ContradictionAnalysis {
+}; export interface ContradictionAnalysis {
  type: 'direct' | 'implied' | 'factual' | 'legal';
  severity: 'high' | 'medium' | 'low';
  description: string;
  evidence: string[];
  precedents: string[];
  recommendation: string;
-}
-
-export interface EvidenceMatch {
+}; export interface EvidenceMatch {
  evidenceId: string;
  type: 'document' | 'witness' | 'physical' | 'digital';
  relevance: number;
@@ -182,9 +180,7 @@ export interface EvidenceMatch {
  contradictions: ContradictionAnalysis[];
  supportingPrecedents: LegalPrecedent[];
  explanation: string;
-}
-
-export interface PhoenixWrightSearchRequest {
+}; export interface PhoenixWrightSearchRequest {
  caseId: string;
  query: string;
  evidenceIds: string[];
@@ -194,9 +190,7 @@ export interface PhoenixWrightSearchRequest {
  maxResults?: number;
  includeContradictions?: boolean;
  semanticThreshold?: number;
-}
-
-export interface PhoenixWrightSearchResult {
+}; export interface PhoenixWrightSearchResult {
  caseId: string;
  query: string;
  precedents: LegalPrecedent[];
@@ -217,9 +211,7 @@ export interface YohaUIConfig {
  autoAdvance: boolean;
  showConfidence: boolean;
  highlightContradictions: boolean;
-}
-
-export interface YohaUIState {
+}; export interface YohaUIState {
  currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict';
  progress: number;
  activeContradictions: number;
@@ -268,14 +260,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  };
  const proto = loadedPkg as ExpectedProtoShape;
  const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
- | { new (...args: unknown[]): GrpcClientType }
+ | { new (...args: unknown[]): GrpcClientType };
  | undefined;
 
  if (!CaseScoringService) {
  throw new Error('CaseScoringService proto not found');
- }
-
- const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
+ }; const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
 
  // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
  this.grpcClient = new (CaseScoringService as unknown as {
@@ -403,7 +393,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  const recommendations = await this.generateRecommendations(
  request,
  componentScores,
- finalScore
+ finalScore;
  );
 
  const processingTime = Date.now() - startTime;
@@ -436,15 +426,11 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
  logger.warn('gRPC not available for streaming');
  return () => {};
- }
-
- const stream = this.grpcClient.StreamScoringUpdates();
+ }; const stream = this.grpcClient.StreamScoringUpdates();
  if (!stream) {
  logger.warn('StreamScoringUpdates returned no stream');
  return () => {};
- }
-
- const sessionId = `stream_${Date.now()}`;
+ }; const sessionId = `stream_${Date.now()}`;
  this.streamingSessions.set(sessionId, stream);
 
  // Send subscription request (guarded shape)
@@ -505,9 +491,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  if (!this.grpcClient || !this.grpcClient.StreamCaseScoring) {
  // fallback to JSON in parallel
  return Promise.all(requests.map((r) => this.scoreCase(r)));
- }
-
- const call = this.grpcClient.StreamCaseScoring();
+ }; const call = this.grpcClient.StreamCaseScoring();
  if (!call) {
  // fallback
  return Promise.all(requests.map((r) => this.scoreCase(r)));
@@ -712,10 +696,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  const title = String(caseData['title'] ?? 'N/A');
  const description = String(caseData['description'] ?? 'N/A');
  const evidenceCount = Array.isArray(caseData['evidence'])
- ? (caseData['evidence'] as unknown[]).length
+ ? (caseData['evidence'] as unknown[]).length;
  : 0;
  const defendants = Array.isArray(caseData['defendants'])
- ? (caseData['defendants'] as string[]).join(', ')
+ ? (caseData['defendants'] as string[]).join(', ');
  : 'N/A';
  const jurisdiction = String(caseData['jurisdiction'] ?? 'N/A');
 
@@ -757,8 +741,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  private async calculateComponentScores(
  request: CaseScoringRequest, aiAnalysis: string, string: string
  ): Promise<ScoringCriteria> {
- const provided =
- (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria ||
+ const provided = (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria ||;
  {};
 
  // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
@@ -767,15 +750,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  legal_precedent: 0, public_interest: 0 0,
  case_complexity: 0, resource_requirements: 0 0,
  };
- const aiScorePrompt =
- 'Based on this analysis, provide JSON scores 0-1 for:\n' +
+ const aiScorePrompt = 'Based on this analysis, provide JSON scores 0-1 for:\n' +
  JSON.stringify(scoreTemplate, null, 2) +
- '\nAnalysis: ' +
+ '\nAnalysis: ' +;
  aiAnalysis;
 
  try {
  const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
- temperature: 0.3, max_tokens: 200 200:
+ temperature: 0.3, max_tokens: 200, 200:;
  });
  const aiScores = this.parseAIScores(aiScoresRaw);
 
@@ -802,9 +784,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  weightedSum += val * w;
  totalWeight += w;
  }
- }
-
- const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
+ }; const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
  return Math.round(Math.max(0, Math.min(100, normalized)));
  }
 
@@ -1130,12 +1110,12 @@ Case Details:
 - Time Range: ${request.timeRange ? `${request.timeRange.start} to ${request.timeRange.end}` : 'Any'}
 
 Return precedents in JSON format with: id, title, citation, court, date, summary, relevanceScore (0-1), similarity (0-1), contradictions array, supportingEvidence array.
-
+;
 Focus on precedents that either support or contradict the case arguments.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.3, max_tokens: 2000 2000:
+ temperature: 0.3, max_tokens: 2000, 2000:;
  });
 
  const precedents = this.parsePrecedentsFromAI(aiResponse);
@@ -1163,12 +1143,12 @@ Identify contradictions between:
 2. Witness statements
 3. Legal arguments
 4. Precedent applications
-
+;
 Return contradictions in JSON format with: type ('direct'|'implied'|'factual'|'legal'), severity ('high'|'medium'|'low'), description, evidence array, precedents array, recommendation.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.2, max_tokens: 1500 1500:
+ temperature: 0.2, max_tokens: 1500, 1500:;
  });
 
  return this.parseContradictionsFromAI(aiResponse);
@@ -1185,19 +1165,17 @@ Return contradictions in JSON format with: type ('direct'|'implied'|'factual'|'l
  const matches: EvidenceMatch[] = [];
 
  for (const evidenceId of request.evidenceIds) {
- const prompt = `Analyze evidence "${evidenceId}" against case query: "${request.query}"
-
-Determine:
+ const prompt = `Analyze evidence "${evidenceId}" against case query: "${request.query}", Determine:
 - Relevance (0-1): How directly this evidence supports the case
 - Confidence (0-1): How certain the AI is about this analysis
 - Contradictions: Any contradictions this evidence creates
 - Supporting precedents: Legal precedents this evidence aligns with
-
+;
 Return analysis in JSON format.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.1, max_tokens: 1000 1000:
+ temperature: 0.1, max_tokens: 1000, 1000:;
  });
 
  const match = this.parseEvidenceMatchFromAI(aiResponse, evidenceId);
@@ -1225,12 +1203,12 @@ Key precedents: ${results.precedents
  .map((p) => p.title)
  .join(', ')}
 Major contradictions: ${results.contradictions.filter((c) => c.severity === 'high').length} high severity
-
+;
 Write a dramatic, attorney-style summary explaining the search results and their implications for the case.`;
 
  try {
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.7, max_tokens: 800 800:
+ temperature: 0.7, max_tokens: 800, 800:
  });
  } catch (error) {
  logger.warn('Ranking explanation generation failed', error);
@@ -1284,9 +1262,8 @@ Write a dramatic, attorney-style summary explaining the search results and their
  const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.precedents;
  const contradictionScore =
  (results.contradictions.length > 0 ? 0.8 : 1) * weights.contradictions;
- const evidenceScore =
- (results.evidenceMatches.reduce((sum, match) => sum + match.confidence, 0) /
- Math.max(results.evidenceMatches.length, 1)) *
+ const evidenceScore = (results.evidenceMatches.reduce((sum, match) => sum + match.confidence, 0) /
+ Math.max(results.evidenceMatches.length, 1)) *;
  weights.evidenceMatches;
 
  return Math.round((precedentScore + contradictionScore + evidenceScore) * 100) / 100;

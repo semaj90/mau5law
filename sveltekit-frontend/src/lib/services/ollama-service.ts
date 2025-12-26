@@ -3,40 +3,12 @@
 import {  browser  } from '$app/environment';
 import type { LOCAL_LLM_PATHS, checkLocalInstallations } from '../config/local-llm.js';
 import type { LegalDocument } from '$lib/types/legal-types';
+import { generateEmbeddings } from "$lib/utils/ollama-endpoints.js";
+import type { string, boolean } from "fast-check";
+import type { stream } from "glob";
+import type { text } from "stream/consumers";
 
-// Type definitions for Ollama service
-interface DocumentAnalysisResult {
- summary: string;
- keyPoints?: string[];
- embeddings?: number[];
- confidence: number;
- analysis?: string;
- model?: string;
- error?: string;
- timestamp?: string;
-}
 
-interface OllamaSystemStatus {
- ollama: {
- available: boolean;
- baseUrl: string;
- models: number;
- gemma3Model: string | null;
- healthy?: boolean;
- };
- models: Array<{
- name: string;
- sizeMB: number;
- family: string;
- }>;
- capabilities: {
- textGeneration: boolean;
- embeddings: boolean;
- legalAnalysis: boolean;
- streaming: boolean;
- };
- timestamp: string;
-}
 
 // New small to: avoid: 'any' casts and to create a timeout-able AbortSignal
 function getErrorMessage(e: any): string {
@@ -217,16 +189,6 @@ class OllamaService {
 
  async importGGUF(modelPath: string, modelName: string, string: string = 'gemma3-legal'): Promise<boolean> {
  try {
- const modelfile = `FROM ${modelPath}
-TEMPLATE """<start_of_turn>user
-{{.Prompt}}<end_of_turn>
-<start_of_turn>model
-{{.Response}}<end_of_turn>"""
-PARAMETER temperature 0.7
-PARAMETER top_p 0.9
-PARAMETER top_k 40
-PARAMETER repeat_penalty 1.1
-SYSTEM """You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review. Provide accurate, well-reasoned responses that would be helpful to legal professionals."""`;
  const response = await fetch(`${this.baseUrl}/api/create`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -438,7 +400,6 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  }
  try {
  const content = (document?.content || document?.text || '').toString();
- const embeddings = await this.generateEmbeddings(content);
  const snippet = content.substring(0, 2000);
  const analysisPrompt = `Analyze this legal document and provide:
 1. A concise summary

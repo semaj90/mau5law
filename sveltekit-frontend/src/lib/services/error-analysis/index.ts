@@ -29,11 +29,11 @@
 export * from './types.js';
 
 // Cache Service
-export { CacheService, getCacheService, computeFileHash } from './CacheService.js';
+export { CacheService, computeFileHash, getCacheService } from './CacheService.js';
 
 // Ollama Service
-export { OllamaService, getOllamaService, getOllamaEndpoint } from './OllamaService.js';
-export type { OllamaConfig, EmbeddingResult, GenerationResult } from './OllamaService.js';
+export { OllamaService, getOllamaEndpoint, getOllamaService } from './OllamaService.js';
+export type { EmbeddingResult, GenerationResult, OllamaConfig } from './OllamaService.js';
 
 // RAG Retriever
 export { RAGRetriever, getRAGRetriever } from './RAGRetriever.js';
@@ -41,7 +41,7 @@ export type { RAGConfig, VectorSearchResult } from './RAGRetriever.js';
 
 // KAG Traverser
 export { KAGTraverser, getKAGTraverser } from './KAGTraverser.js';
-export type { KAGConfig, GraphNode, GraphPath } from './KAGTraverser.js';
+export type { GraphNode, GraphPath, KAGConfig } from './KAGTraverser.js';
 
 // GRPO Policy
 export { GRPOPolicy, getGRPOPolicy } from './GRPOPolicy.js';
@@ -49,7 +49,7 @@ export type { GRPOConfig } from './GRPOPolicy.js';
 
 // Fix Synthesizer
 export { FixSynthesizer, getFixSynthesizer } from './FixSynthesizer.js';
-export type { FixSynthesizerConfig, FixResult, ApplyResult } from './FixSynthesizer.js';
+export type { ApplyResult, FixResult, FixSynthesizerConfig } from './FixSynthesizer.js';
 
 // Tool Invoker
 export { ToolInvoker, getToolInvoker } from './ToolInvoker.js';
@@ -57,15 +57,15 @@ export type { ToolInvokerConfig, ToolResult } from './ToolInvoker.js';
 
 // JSONL Storage
 export { JSONLStorage, getJSONLStorage } from './JSONLStorage.js';
-export type { JSONLStorageConfig, WriteResult, ReadStats, BatchWriteResult } from './JSONLStorage.js';
+export type { BatchWriteResult, JSONLStorageConfig, ReadStats, WriteResult } from './JSONLStorage.js';
 
 // Error Clustering
 export { ErrorClustering, getErrorClustering } from './ErrorClustering.js';
-export type { ClusteringConfig, ClusterResult, ClassificationResult } from './ErrorClustering.js';
+export type { ClassificationResult, ClusterResult, ClusteringConfig } from './ErrorClustering.js';
 
 // Pattern Storage
 export { PatternStorage, getPatternStorage } from './PatternStorage.js';
-export type { PatternStorageConfig, StorageResult, PatternQuery } from './PatternStorage.js';
+export type { PatternQuery, PatternStorageConfig, StorageResult } from './PatternStorage.js';
 
 // Experience Recorder
 export { ExperienceRecorder, getExperienceRecorder } from './ExperienceRecorder.js';
@@ -78,10 +78,7 @@ export type { DecisionEngineConfig, DecisionResult, ProcessResult } from './Deci
 // Escalation Service
 export { EscalationService, getEscalationService } from './EscalationService.js';
 export type {
-  EscalationServiceConfig,
-  EscalationResult,
-  HumanFixResult,
-  EscalationAnalysis,
+    EscalationAnalysis, EscalationResult, EscalationServiceConfig, HumanFixResult
 } from './EscalationService.js';
 
 // Learning Pipeline
@@ -90,12 +87,12 @@ export type { LearningPipelineConfig, PipelineStatus, UpdateResult } from './Lea
 
 // Metrics Collector
 export { MetricsCollector, getMetricsCollector } from './MetricsCollector.js';
-export type { MetricsConfig, MetricPoint, MetricsSnapshot } from './MetricsCollector.js';
+export type { MetricPoint, MetricsConfig, MetricsSnapshot } from './MetricsCollector.js';
 
 // Route Consolidation
 export { RouteConsolidation, getRouteConsolidation } from './RouteConsolidation.js';
-export type { RouteConsolidationConfig, ScanResult, MigrationStep } from './RouteConsolidation.js';
+export type { MigrationStep, RouteConsolidationConfig, ScanResult } from './RouteConsolidation.js';
 
 // Multi-Language Detector
 export { MultiLanguageDetector, getMultiLanguageDetector } from './MultiLanguageDetector.js';
-export type { MultiLanguageConfig, DetectionResult } from './MultiLanguageDetector.js';
+export type { DetectionResult, MultiLanguageConfig } from './MultiLanguageDetector.js';

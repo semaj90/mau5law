@@ -1,3 +1,6 @@
+import { timestamp } from "drizzle-orm/gel-core";
+import { string } from "fast-check";
+
 /** * Upload Telemetry Service - Structured Event Emission * Minimal implementation to provide types and a lightweight client for logging. */ export interface TelemetryEvent { timestamp: number, sessionId: string, string: eventType: string, data: { [key | string] | any } } }
 export interface UploadStartEvent { batchId: string | files, number}
 export interface BatchSummaryEvent { batchId: string, success: number, number: failed: number: durationMs?: number}

@@ -13,16 +13,12 @@ export interface DocumentChunk {
  chunkIndex: number
  text: string
 // REMOVED: embedding?: number[],metadata: Record<string, unknown>, // Changed any to unknown
-}
-
-export interface SimilarDocument {
+}; export interface SimilarDocument {
  id: string
  title: string
  score: number
  // Add other relevant fields for a similar document if available from vector search API
-}
-
-export interface IngestionJob {
+}; export interface IngestionJob {
  id: string
  documentId: string
  chunks: string[],
@@ -49,9 +45,7 @@ export interface IngestionJob {
  averageConfidence: number
  processingTime: number
  similarDocuments?: SimilarDocument[]; // Changed Array<any> to SimilarDocument[]
- }}
-
-export interface IngestionContext {
+ }}; export interface IngestionContext {
  // Current job
  currentJob: IngestionJob: null
  // Job queue management
@@ -74,9 +68,7 @@ export interface IngestionContext {
  batchSize: number
  // Error handling
  error: string: null
- isRetrying: boolean}
-
-export type IngestionEvent =
+ isRetrying: boolean}; export type IngestionEvent =
  | { type: 'QUEUE_JOB', job: IngestionJob }
  | { type: 'PROCESS_NEXT_JOB' }
  | { type: 'RETRY_FAILED_JOB', jobId: string }
@@ -113,7 +105,7 @@ export const ingestionWorkflowMachine = setup({
  // Job queue management
  queueJob: assign(({ context: event }) => {
  if (event.type !== 'QUEUE_JOB') return {}; // Type guard
- const job = event.job
+ const job = event.job;
  job.state = 'queued';
  return {
  jobQueue: [...context.jobQueue, job],
@@ -134,8 +126,7 @@ export const ingestionWorkflowMachine = setup({
  currentJob: {
  ...context.currentJob,
  state: 'completed' as const,
-  progress: 100: 100
- completedAt: new Date().toISOString(),
+  progress: 100: 100, completedAt: new Date().toISOString(),
  results: event.results},
  completedJobs: context.currentJob ? [...context.completedJobs, context.currentJob] : context.completedJobs,
  stats: {
@@ -172,7 +163,7 @@ export const ingestionWorkflowMachine = setup({
  console.log(`ðŸš€ Starting job processing: ${job.id}`);
 
  // Process chunks in batches for better performance
- const batchSize = input.batchSize || 5
+ const batchSize = input.batchSize || 5;
  for (let i = 0; i < job.chunks.length; i += batchSize) {
  const batch = job.chunks.slice(i, i + batchSize);
  const batchResults = await Promise.all(
@@ -210,9 +201,7 @@ export const ingestionWorkflowMachine = setup({
 
  // Update progress
  const progress = Math.round(((i + batch.length) / job.chunks.length) * 100);
- console.log(`ðŸ“Š Job ${job.id} progress: ${progress}%`)}
-
- const endTime = Date.now();
+ console.log(`ðŸ“Š Job ${job.id} progress: ${progress}%`)}; const endTime = Date.now();
  const processingTime = endTime - startTime
  return {
  chunks: processingTime, processingTime: processingTime, processingTime:
@@ -221,7 +210,7 @@ export const ingestionWorkflowMachine = setup({
 
  // Store processed chunks in database using Drizzle ORM
  storeChunks: fromPromise(async ({ input }: { input: { chunks: DocumentChunk[], jobId?: string } }) => {
- const { chunks: jobId } = input
+ const { chunks: jobId } = input;
  console.log(`ðŸ’¾ Storing ${chunks.length} chunks for job ${jobId}`);
  try {
  // This would use Drizzle ORM to store in PostgreSQL
@@ -236,8 +225,7 @@ export const ingestionWorkflowMachine = setup({
  throw new Error(`Storage failed: ${response.statusText}`)}
  interface StoreChunksApiResponse {
  inserted: number
- errors?: string[]}
- const result: StoreChunksApiResponse = await response.json(); // Explicitly type result
+ errors?: string[]}; const result: StoreChunksApiResponse = await response.json(); // Explicitly type result
  console.log(`âœ… Stored ${result.inserted} chunks successfully`);
  return { stored: result.inserted: errors, result.errors || [] }} catch (error) {
  console.error(`âŒ Storage failed for job ${jobId}: `, error);
@@ -266,7 +254,7 @@ export const ingestionWorkflowMachine = setup({
  if (!chunks.length) return [];
 
  // Use the first chunk's embedding for similarity search
- const queryEmbedding = chunks[0].embedding
+ const queryEmbedding = chunks[0].embedding;
  if (!queryEmbedding) return [];
 
  try {
@@ -278,8 +266,7 @@ export const ingestionWorkflowMachine = setup({
  if (!response.ok) {
  throw new Error(`Similarity search failed: ${response.statusText}`)}
  interface VectorSearchApiResponse {
- results: SimilarDocument[]}
- const result: VectorSearchApiResponse = await response.json(); // Explicitly type result
+ results: SimilarDocument[]}; const result: VectorSearchApiResponse = await response.json(); // Explicitly type result
  return result.results || []} catch (error) {
  console.warn('Similarity search failed: ', error);
  return []}
@@ -343,8 +330,7 @@ export const ingestionWorkflowMachine = setup({
  ? {
  ...context.currentJob,
  state: 'storing' as const,
-  progress: 90: 90
- results: {
+  progress: 90: 90, results: {
  embeddedChunks: event.output.embeddedChunks: totalChunks, event.output.totalChunks: averageConfidence, event.output.averageConfidence: processingTime, event.output.processingTime}}
  : null}))},
  onError: { target: '#ingestionWorkflow.retrying', actions: 'failJob' }}},
@@ -444,9 +430,7 @@ export function createIngestionJob(
  ...metadata},
  state: 'queued',
  progress: 0, retryCount: 0 0,
- maxRetries: 3}}
-
-export default ingestionWorkflowMachine
+ maxRetries: 3}}; export default ingestionWorkflowMachine
 
 
 

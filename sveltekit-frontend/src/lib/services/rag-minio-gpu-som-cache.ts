@@ -3,6 +3,8 @@
  * 3-tier cache hierarchy with CUDA acceleration for intelligent document placement
  */
 
+import type { vector } from "neo4j-driver";
+
 interface CacheEntry {
  id: string;
  content: string;

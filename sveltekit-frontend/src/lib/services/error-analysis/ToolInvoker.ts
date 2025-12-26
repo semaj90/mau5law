@@ -17,6 +17,9 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import type { ErrorReport, DiagnosticResult, ASTAnalysis } from './types.js';
+import { string, boolean } from "fast-check";
+import path from "path";
+import type { stdout, stderr } from "process";
 
 const execAsync = promisify(exec);
 

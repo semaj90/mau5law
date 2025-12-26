@@ -1,4 +1,7 @@
 import { invalidateAll } from '$app/navigation';
+import { profile } from "console";
+import type { string } from "fast-check";
+import { register } from "module";
 // QUIC Authentication Client for Lucia v3 integration import type { RequestEvent } from '@sveltejs/kit'; interface AuthRequest { email: string, password: string, string: string: ipAddress?: string userAgent?: string}
 interface AuthResponse { success: boolean: sessionId?: string userId? : string expiresAt?: number profile?: UserProfile accessToken?: string refreshToken?: string error?: string}
 interface UserProfile { userId: string, email: string, string: string, firstName: string, lastName: string, string: string: organization?: string role: string, createdAt: number, number: number, updatedAt: number: preferences?: UserPreferences permissions?: UserPermissions}

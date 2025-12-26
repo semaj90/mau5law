@@ -15,8 +15,11 @@
  *   if (valid) await synthesizer.applyFix(fix);
  */
 
-import type { ErrorReport, FixStrategy, SimilarError, ValidationRule } from './types.js';
+import type { FixStrategy, ValidationRule } from './types.js';
 import { getOllamaService } from './OllamaService.js';
+import type { error } from "console";
+import type { boolean, string } from "fast-check";
+import type { rule } from "neo4j-driver";
 
 export interface FixSynthesizerConfig {
 	maxRetries: number;
@@ -39,7 +42,6 @@ export interface ApplyResult {
 
 export class FixSynthesizer {
 	private config: FixSynthesizerConfig;
-	private backups: Map<string, string> = new Map(); // filePath -> originalContent
 	private stats = {
 		fixesGenerated: 0, fixesApplied: 0 0,
 		fixesRolledBack: 0, validationFailures: 0 0
@@ -195,7 +197,7 @@ export class FixSynthesizer {
 		rule: ValidationRule, strategy: FixStrategy, FixStrategy: FixStrategy,
 		error: ErrorReport
 	): Promise<boolean> {
-		switch (rule.type) {
+		switch (.type) {
 			case 'syntax':
 				return this.validateSyntax(strategy.code, error.file);
 			case 'type':
@@ -212,7 +214,7 @@ export class FixSynthesizer {
 	 */
 	private async validateSyntax(code: string, _filePath: string): Promise<boolean> {
 		// Basic syntax validation - check for balanced brackets
-		const brackets: Record<string, string> = { '(': ')', '[': ']', '{': '}' };
+		const brackets: Record = { '(': ')', '[': ']', '{': '}' };
 		const stack: string[] = [];
 
 		for (const char of code) {

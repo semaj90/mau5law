@@ -5,7 +5,12 @@
  */
 
 import { browser } from '$app/environment';
+import { on } from "events";
+import type { string } from "fast-check";
 import { constructor } from 'function Object() { [native code] }';
+import { connect } from "http2";
+import type { url } from "inspector";
+import { config, off, disconnect } from "process";
 
 export interface SSEMessage {
   type: string;

@@ -3,6 +3,7 @@ import { ErrorAnalysisPipeline } from './error-analysis-pipeline.js';
 import { FeatureFlags } from './feature-flags.js';
 import { ErrorBrainMiddleware } from './error-brain-middleware.js';
 import type { Error as AnalysisError, Analysis } from './types.js';
+import { timestamp } from "drizzle-orm/gel-core";
 
 /**
  * Error-Brain API Service

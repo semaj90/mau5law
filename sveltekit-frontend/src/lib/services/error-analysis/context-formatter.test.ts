@@ -5,7 +5,7 @@
  * Validates: Requirements 3.1, 3.3
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ContextFormatter } from './context-formatter.js';

@@ -3,7 +3,7 @@
  * Task 16.1: Write unit tests for diff application
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffApplicator } from './diff-applicator.js';
 import type { Diff, ServiceConfig } from './types.js';

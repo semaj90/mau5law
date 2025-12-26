@@ -4,14 +4,12 @@
  */
 
 import type {
- PersonOfInterest,
- KnownAssociate,
- POIListResponse,
- POICreateRequest,
- POIUpdateRequest,
- AssociateCreateRequest,
- POISearchRequest,
- POISearchResult,
+    KnownAssociate,
+    PersonOfInterest,
+    POICreateRequest,
+    POIListResponse,
+    POISearchRequest,
+    POISearchResult
 } from '$lib/types/poi';
 
 const API_BASE = '/api/persons-of-interest';

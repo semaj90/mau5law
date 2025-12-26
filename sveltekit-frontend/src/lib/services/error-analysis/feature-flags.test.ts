@@ -4,11 +4,12 @@
  * Property 7: Feature Flag Enforcement
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import fc from 'fast-check';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { FeatureFlags } from './feature-flags.js';
 import type { ServiceConfig } from './types.js';
+;
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

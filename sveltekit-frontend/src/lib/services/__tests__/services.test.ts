@@ -3,7 +3,7 @@
  * Test WebSearchService, RAGCodebaseService, and Phase73Client
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { WebSearchService } from '../web-search.js';
 import { RAGCodebaseService, type CodebaseFile } from '../rag-codebase.js';

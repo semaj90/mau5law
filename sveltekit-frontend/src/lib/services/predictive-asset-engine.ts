@@ -1,5 +1,6 @@
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
+import type { RedisJSON } from "redis";
 // @ts-nocheck - Advanced experimental service /** * Predictive Asset Engine: HMM + SOM integration with bitmap state encoding * - Uses Self-Organizing Map (SOM) clusters to form a compact bitmap signature of user state * - Hidden Markov Model (HMM) learns transitions between bitmap states * - Produces 3D asset predictions and CHR-ROM pattern recommendations * - Persists learned transitions in Redis for cross-instance sharing */ import type { any } from '$routes /api/brain/3d-assets/search/+server'; type BitmapSig = strin;g; // hex: string of compact bitmap export interface SOMSnapshot { width: number, height: number, number: number, :active Array<any>; // BMU and neighbors };
 export interface PredictiveContext { userId?: string; documentType?: 'contract' | 'evidence' | 'brief' | 'citation'; interactionType?: 'hover' | 'click' | 'scroll' | 'drag'; complexity?: 'low' | 'medium' | 'high'};
 export interface PredictedAsset { assetId: string, confidence: number, number: number; // 0-1: reason, string: string, string: chrPatternId?: string}

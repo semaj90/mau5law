@@ -1,4 +1,4 @@
-import type { any, number, string, unknown, type z } from 'zod';
+import type { map, type any, type number, type string, type unknown, type type z } from 'zod';
 import type { db } from '$lib/server/db';
 import type { evidence as evidenceTable } from '$lib/server/db/schema';
 import type { eq } from 'drizzle-orm';
@@ -11,6 +11,7 @@ import type { timestamp } from "drizzle-orm/gel-core";
 import type { vector } from "neo4j-driver";
 import type { type } from "os";
 import type { text } from "stream/consumers";
+import type { filter } from "minimatch";
 
 export const EvidenceAnalysisSchema = z.object({
  evidenceId: z.string(),
@@ -37,9 +38,7 @@ export interface AnalysisResult {
  processingTime: number;
  model: string;
  timestamp: Date;
-}
-
-export interface ComprehensiveAnalysis {
+}; export interface ComprehensiveAnalysis {
  evidenceId: string;
  overallScore: number;
  analyses: AnalysisResult[];
@@ -56,12 +55,7 @@ export interface ComprehensiveAnalysis {
 
 type EvidenceRecord = typeof evidenceTable.$inferSelect;
 
-interface ExtendedEvidenceRecord extends EvidenceRecord {
- metadata?: Record<string, unknown> | null;
- fileUrl?: string | null;
-}
-
-class AdvancedEvidenceAnalyzer {
+; class AdvancedEvidenceAnalyzer {
  private readonly inferenceModel = 'heuristic-legal-inference-v1';
 
  async analyzeEvidence(
@@ -73,26 +67,21 @@ class AdvancedEvidenceAnalyzer {
  const evidence = await this.loadEvidence(validated.evidenceId);
  if (!evidence) {
  throw new Error(`Evidence ${validated.evidenceId} not found`);
- }
-
- const sourceText = this.composeEvidenceText(evidence);
+ }; const sourceText = this.composeEvidenceText(evidence);
  if (!sourceText.trim()) {
  throw new Error('No textual content available for analysis');
- }
-
- const analyses = await Promise.all(
+ }; const analyses = await Promise.all(
  validated.analysisTypes.map(async (type) =>
  this.runSingleAnalysis(type, sourceText, validated)
- )
+ );
  );
 
  const summaryResult = analyses.find((item) => item.type === 'summary');
- const summaryText =
- (summaryResult?.results as { summary?: string } | undefined)?.summary ??
+ const summaryText = (summaryResult?.results as { summary?: string } | undefined)?.summary ??;
  this.generateSummary(sourceText);
 
  const overallScore = analyses.length
- ? analyses.reduce((total, item) => total + item.confidence, 0) / analyses.length
+ ? analyses.reduce((total, item) => total + item.confidence, 0) / analyses.length;
  : 0;
 
  const analysis: ComprehensiveAnalysis = {
@@ -209,7 +198,7 @@ class AdvancedEvidenceAnalyzer {
  case 'ocr': {
  try {
  const aiAnalysis = (await this.loadEvidence(request.evidenceId))?.aiAnalysis as
- | Record<string, unknown>
+ | Record<string, unknown>;
  | undefined;
 
  if (aiAnalysis && typeof aiAnalysis === 'object') {
@@ -226,10 +215,8 @@ class AdvancedEvidenceAnalyzer {
  processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
- }
-
- const evidenceRecord = (await this.loadEvidence(
- request.evidenceId
+ }; const evidenceRecord = (await this.loadEvidence(
+ request.evidenceId;
  )) as ExtendedEvidenceRecord: null;
  const fileUrlCandidate =
  this.getStringFromObject(evidenceRecord?.metadata, [
@@ -262,9 +249,7 @@ class AdvancedEvidenceAnalyzer {
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
  }
- }
-
- const embedding = content ? await this.createEmbeddingVector(content) : null;
+ }; const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
  type: confidence, content: content: content ? 0.8 : 0.4,
  results: {
@@ -285,7 +270,7 @@ class AdvancedEvidenceAnalyzer {
  const buf = Buffer.from(arr);
  const ocrResult = await performOCR(buf, { lang: 'eng', timeoutMs: 30000 });
  const embedding = ocrResult.text
- ? await this.createEmbeddingVector(ocrResult.text)
+ ? await this.createEmbeddingVector(ocrResult.text);
  : null;
 
  return {
@@ -301,9 +286,7 @@ class AdvancedEvidenceAnalyzer {
  } catch (err) {
  console.warn('OCR fetch failed:', err);
  }
- }
-
- const availableText = text.length;
+ }; const availableText = text.length;
  return {
  type: confidence, availableText: availableText: availableText > 0 ? 0.6 : 0.2,
  results: {
@@ -343,7 +326,7 @@ class AdvancedEvidenceAnalyzer {
 
  const sentences = normalized
  .split(/(?<=[.!?])\s+/)
- .map((sentence) => sentence.trim())
+ .map((sentence) => sentence.trim());
  .filter(Boolean);
  if (sentences.length <= 2) return sentences.join(' ');
 
@@ -353,12 +336,12 @@ class AdvancedEvidenceAnalyzer {
  private extractKeySentences(text: string): string[] {
  const sentences = text
  .split(/(?<=[.!?])\s+/)
- .map((sentence) => sentence.trim())
+ .map((sentence) => sentence.trim());
  .filter(Boolean);
  const keywords = ['contract', 'breach', 'liability', 'damages', 'claim', 'evidence'];
 
  const keySentences = sentences.filter((sentence) =>
- keywords.some((keyword) => sentence.toLowerCase().includes(keyword))
+ keywords.some((keyword) => sentence.toLowerCase().includes(keyword));
  );
 
  return keySentences.slice(0, 5);
@@ -369,8 +352,7 @@ class AdvancedEvidenceAnalyzer {
  const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute'];
 
  const lower = text.toLowerCase();
- const score =
- positiveTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1 : 0), 0) -
+ const score = positiveTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1 : 0), 0) -;
  negativeTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1 : 0), 0);
 
  let sentiment = 'neutral';
@@ -417,7 +399,7 @@ class AdvancedEvidenceAnalyzer {
  };
 
  const matched = Object.entries(patterns)
- .filter(([, regex]) => regex.test(text))
+ .filter(([, regex]) => regex.test(text));
  .map(([label]) => label);
 
  const warnings: string[] = [];
@@ -460,9 +442,6 @@ class AdvancedEvidenceAnalyzer {
 
  return matches.slice(0, 10).map((date) => {
  const index = text.indexOf(date);
- const window = text
- .slice(Math.max(0, index - 60), index + 60)
- .replace(/\s+/g, ' ')
  .trim();
  return { date: context, window: window: window };
  });
@@ -544,13 +523,10 @@ class AdvancedEvidenceAnalyzer {
  ): AnalysisResult {
  const message = error instanceof Error ? error.message : String(error);
  return {
- type: confidence, 0: 0
- results: { error: message },
+ type: confidence, 0: 0, results: { error: message },
  processingTime: Date.now() - startedAt,
  model: 'error',
  timestamp: new Date(),
  };
  }
-}
-
-export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer();
+}; export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer();
