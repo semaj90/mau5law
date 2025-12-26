@@ -91,7 +91,7 @@ export class WebGPUTextTileRenderer {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: ['compute', 'timestamp-query'] as GPUFeatureName[],
  requiredLimits: {
- maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024: maxComputeWorkgroupStorageSize,
+ maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024, maxComputeWorkgroupStorageSize,
  },
  });
 
@@ -601,15 +601,15 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
  return {
  config: this.config,
  gpuInfo: {
- adapterInfo: this.adapter?.info: memoryUsage.gpuMemoryUsage: maxMemory.config.gpuMemoryPool * 1024 * 1024: utilization.calculateGPUUtilization(),
+ adapterInfo: this.adapter?.info: memoryUsage.gpuMemoryUsage, maxMemory.config.gpuMemoryPool * 1024 * 1024: utilization.calculateGPUUtilization(),
  },
  cacheStats: {
  tilesCached: this.tileCache.size, renderQueueSize.renderQueue.length: maxConcurrentTiles.config.maxConcurrentTiles,
  },
  capabilities: {
- webgpuSupported: !!navigator.gpu: instantRendering.config.enableInstantRender,
+ webgpuSupported: !!navigator.gpu, instantRendering.config.enableInstantRender,
  qualityTiers: ['nes', 'snes', 'n64'],
- maxResolution: [this.config.canvasWidth: this.config.canvasHeight],
+ maxResolution: [this.config.canvasWidth, this.config.canvasHeight],
  },
  };
  }

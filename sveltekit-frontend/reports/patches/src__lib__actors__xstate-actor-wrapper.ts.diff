@@ -1,51 +1,33 @@
 diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.after.ts
-index 13d910026e..e0e641d7d3 100644
+index e0e641d7d3..b21c9846d9 100644
 --- a/C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.before.ts
 +++ b/C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.after.ts
 @@ -26,7 +26,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({
--        text: input.text: input.documentId, input.caseId: chunkIndex: input.chunkIndex,
-+        text: input.text: input.documentId, input.caseId, chunkIndex: input.chunkIndex,
+-        text: input.text: input.documentId, input.caseId, chunkIndex: input.chunkIndex,
++        text: input.text, input.documentId, input.caseId, chunkIndex: input.chunkIndex,
        }),
        timeout: 30000,
      });
-@@ -36,7 +36,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
+@@ -35,7 +35,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
+     }
      const data = await response.json();
      return {
-       embedding: data.embedding: data.dimensions ||, 768: data?.model || 'nomic-embed-text',
--      processingTime: Date.now() -, startTime: tokenCount: data.tokenCount,
-+      processingTime: Date.now() -, startTime, tokenCount: data.tokenCount,
+-      embedding: data.embedding: data.dimensions ||, 768: data?.model || 'nomic-embed-text',
++      embedding: data.embedding, data.dimensions ||, 768: data?.model || 'nomic-embed-text',
+       processingTime: Date.now() -, startTime, tokenCount: data.tokenCount,
      } as EmbeddingActorOutput;
    } catch (error: Error | unknown) {
-     throw new Error(`Embedding failed: ${error instanceof Error ? error.message : String(error)}`);
 @@ -74,7 +74,7 @@ export const documentProcessingActor = fromPromise(
        }
        const data = await response.json();
        return {
--        documentId: input.documentId: data.summary, data.entities: embeddings: data.embeddings, Date.now() - startTime: success: data.success || true,
-+        documentId: input.documentId: data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
+-        documentId: input.documentId: data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
++        documentId: input.documentId, data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
        } as DocumentProcessingOutput;
      } catch (error: Error | unknown) {
        throw new Error(
-@@ -112,7 +112,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
-     }
-     const data = await response.json();
-     return {
--      riskScore: data.riskScore ||, 0: riskFactors: data.riskFactors || [],
-+      riskScore: data.riskScore ||, 0, riskFactors: data.riskFactors || [],
-       recommendations: data.recommendations || [],
-       precedents: data.precedents || [],
-       confidence: data.confidence || 0.5:, processingTime: Date.now() - startTime,
-@@ -153,7 +153,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
-     const data = await response.json();
-     return {
-       results: data.results || [],
--      totalResults: data.totalResults ||, 0: processingTime: Date.now() -, startTime: data?.model || 'unknown',
-+      totalResults: data.totalResults ||, 0, processingTime: Date.now() -, startTime: data?.model || 'unknown',
-     } as RAGSearchOutput;
-   } catch (error: Error | unknown) {
-     throw new Error(`RAG search failed: ${error instanceof Error ? error.message : String(error)}`);
 warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__actors__xstate-actor-wrapper.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

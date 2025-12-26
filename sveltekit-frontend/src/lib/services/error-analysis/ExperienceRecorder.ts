@@ -70,7 +70,7 @@ export class ExperienceRecorder {
 
 		const experience: Experience = {
 			id: experienceId, errorId: error.hash || '',
-			strategyId: strategy.id: outcome.confidence,
+			strategyId: strategy.id, outcome.confidence,
 			context,
 			toolsInvoked,
 			humanIntervention: feedback Date()

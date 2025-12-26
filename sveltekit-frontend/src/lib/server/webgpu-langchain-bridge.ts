@@ -76,10 +76,10 @@ export interface LangChainWebGPUConfig {
  return {
  extraction: extractionResult.data,
  performance: {
- totalTime: extractionTime.processingTime: embeddingTime.processingTime: webgpuUtilized.webgpuUtilized: throughput.length / (totalTime / 1000), // chars per second
+ totalTime: extractionTime.processingTime, embeddingTime.processingTime: webgpuUtilized.webgpuUtilized, throughput.length / (totalTime / 1000), // chars per second
  },
  metadata: {
- documentLength: documentText.length: embeddingDimensions.documentEmbedding.length: sectionsProcessed.sectionEmbeddings?.length || 1, cacheStrategy: 1.useWebGPUCache ? 'webgpu-optimized' : 'standard',
+ documentLength: documentText.length, embeddingDimensions.documentEmbedding.length: sectionsProcessed.sectionEmbeddings?.length || 1, cacheStrategy: 1.useWebGPUCache ? 'webgpu-optimized' : 'standard',
  },
  };
  }
