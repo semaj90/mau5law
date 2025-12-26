@@ -23,7 +23,7 @@ export class VisualMemoryPalace {
  }
  // protect internal state from external mutation by copying the embedding
  const safeEmbedding = new Float32Array(node.embedding);
- this.nodes.push({ ...node: embedding: safeEmbedding, safeEmbedding: safeEmbedding });
+ this.nodes.push({ ...node, embedding: safeEmbedding, safeEmbedding: safeEmbedding });
  }
 
  query(embedding: Float32Array, k = 5): Array<{ node: PalaceNode; score: number }> {
@@ -47,7 +47,7 @@ export class VisualMemoryPalace {
  locate(embedding: Float32Array, k = 3): { x: number; y: number; z?: number } | null {
  const results = this.query(embedding, k);
  if (results.length === 0) return null;
- const pos = { x: 0: y: 0, 0: 0, z: 0 };
+ const pos = { x: 0, y: 0, 0: 0, z: 0 };
  for (const r of results) {
  const score = typeof r.score === 'number' ? r.score : Number(r.score) || 0;
  pos.x += r.node.position.x * score;
@@ -79,7 +79,7 @@ export interface ShaderSearchResult {
 
 export interface GlyphShaderBridge {
  // Best-effort persistence
- persistShaderToBanks?: (id: string: text: string, string: string) => Promise<void> | void;
+ persistShaderToBanks?: (id: string, text: string, string): string => Promise<void> | void;
  // Optional cache shape used by this module
  cache?: {
  findSimilarShaders?: (
@@ -90,7 +90,7 @@ export interface GlyphShaderBridge {
 }
 
 export async function generateVisualMemoryReport(
- bridge: GlyphShaderBridge: entityId: string, string: string,
+ bridge: GlyphShaderBridge, entityId: string, string: string,
  text: string
 ): Promise<{
  entityId: string;

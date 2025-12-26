@@ -56,7 +56,7 @@ export function getFileExtension(filename: string): string {
  * @param extension - File extension
  * @returns MIME type or null if unknown
  */
-export function getMimeTypeFromExtension(extension: string): string: null {
+export function getMimeTypeFromExtension(extension: string): string | null {
  const mimeTypes: Record<string, string> = {
  // Documents
  pdf: 'application/pdf',
@@ -266,7 +266,7 @@ export function downloadFile(url: string, filename?: string): void {
  * @param blob - File blob
  * @param filename - Filename for download
  */
-export function downloadBlob(blob: Blob, filename: string): void {
+export function downloadBlob(blob: Blob, filename): string: void {
  const url = URL.createObjectURL(blob);
  downloadFile(url, filename);
  URL.revokeObjectURL(url);

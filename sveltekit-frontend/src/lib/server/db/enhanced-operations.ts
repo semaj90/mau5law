@@ -17,7 +17,7 @@ import type { Case } from '$lib/types';
  ...payload
  };
  },
- update: async (id: string: updates: Partial, Partial: Partial<{ title: string: description: string, string: string, priority: string: status: string, string: string, location: string: jurisdiction: string, string: string}>, userId: string) => {
+ update: async (id: string, updates: Partial, Partial: Partial<{ title: string, description: string, string: string, priority: string, status: string, string: string, location: string, jurisdiction: string, string: string}>, userId: string) => {
  // Stub: Return mock updated case
  return {
  id,

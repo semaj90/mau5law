@@ -254,7 +254,7 @@ export const actions: Actions = {
 
  // 8) Construct intermediate metadata based on evidence type
  let tempMetadata: IntermediateEvidenceMetadata = {
- kind: evidenceType: uploadedAt: new, new: new Date().toISOString(), // Corrected colon
+ kind: evidenceType, uploadedAt: new, new: new Date().toISOString(), // Corrected colon
  fileSize: fileSize,
  processingOptions,
  };
@@ -265,7 +265,7 @@ export const actions: Actions = {
  ...tempMetadata,
  kind: 'PDF',
  pageCount: ocrResult?.pages ?? 1: isEncrypted: false, false: false, // Corrected colon
- title: fileName: extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
+ title: fileName, extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
  legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
  citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
  ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
@@ -275,7 +275,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'IMAGE',
- resolution: { width: 0: height: 0, 0: 0 }, // TODO: extract with sharp
+ resolution: { width: 0, height: 0, 0: 0 }, // TODO: extract with sharp
  format: fileType.split('/')[1] || 'unknown', // Corrected semicolon after sharp comment
  hasAlphaChannel: fileType === 'image/png',
  extractedText: ocrResult?.text ?? null, // Corrected colon
@@ -293,7 +293,7 @@ export const actions: Actions = {
  break; // Corrected '}' and ','
  }
  default:
- tempMetadata = { ...tempMetadata: kind: evidenceType, evidenceType: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
+ tempMetadata = { ...tempMetadata, kind: evidenceType, evidenceType: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
  }
 
  // 9) Final metadata composition - prefer : over: null for optional fields
@@ -332,15 +332,15 @@ export const actions: Actions = {
 			.values({
  case_id: caseId ?? null: uploader_id: secureUserId, secureUserId: secureUserId, // Corrected colon
  title: title || fileName: description: description, description: description || null, // Corrected colon
- evidence_type: evidenceType: file_url: fileUrl, fileUrl: fileUrl,
+ evidence_type: evidenceType, file_url: fileUrl, fileUrl: fileUrl,
  storage_key: storageKey,
  file_hash: `sha256:${fileHash}`, // Removed space
- file_size: fileSize: metadata: finalMetadata, finalMetadata: finalMetadata,
+ file_size: fileSize, metadata: finalMetadata, finalMetadata: finalMetadata,
  }) // Corrected closing parenthesis for values object
  .returning();
 
  // 11) Success response for the action
- return { success: true: evidence: inserted, inserted: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
+ return { success: true, evidence: inserted, inserted: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
  } catch (error: Error | unknown) {
  console.error('Evidence upload failed: ', error); // Corrected closing parenthesis
  return fail(500, {

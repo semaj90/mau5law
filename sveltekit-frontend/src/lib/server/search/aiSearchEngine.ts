@@ -34,7 +34,7 @@ function fallbackSemanticScores(query: string: docs, HelpArticle: HelpArticle[])
  });
 }
 
-function simpleContradictionScore(query: string: content, string: string): number {
+function simpleContradictionScore(query: string: content, string): string: number {
  const q = query.toLowerCase();
  const c = content.toLowerCase();
  if (!q || !c) return 0;

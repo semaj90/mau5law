@@ -201,19 +201,19 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search<K extends KnowledgeCollectionName>(collection: K: query: string, string: string): KnowledgeRecordMap[K][] {
+ search<K extends KnowledgeCollectionName>(collection: K, query: string, string): string: KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
  }
 
  add<K extends KnowledgeCollectionName>(
- collection: K: item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K],
+ collection: K, item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item: createdAt: item, item: item.createdAt ?? now: updatedAt: item, item: item.updatedAt ?? now,
+ ...item, createdAt: item, item: item.createdAt ?? now: updatedAt: item, item: item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -240,14 +240,14 @@ export class LokiHybridStore {
  }
 
  upsertMany<K extends KnowledgeCollectionName>(
- collection: K: items: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K][],
+ collection: K, items: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K][],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K][] {
  return items.map((item) => this.add(collection, item, options));
  }
 
  remove(
- collection: KnowledgeCollectionName: id: string, string: string,
+ collection: KnowledgeCollectionName, id: string, string: string,
  options?: { persist?: boolean; broadcast?: boolean }
  ): boolean {
  const ctx = this.getContext(collection);
@@ -316,14 +316,14 @@ export class LokiHybridStore {
  if (!embeddings) return;
  const chunks = await this.textSplitter.splitText(content);
  const vectors = await embeddings.embedDocuments(chunks);
- const points: PointStruct[] = vectors.map((vector: number[], idx: number) => ({
+ const points: PointStruct[] = vectors.map((vector: number[], idx): number => ({
  // Added types for vector, idx
  id: `${item.id}::${idx}`,
  vector,
  payload: {
  ...this.prepareForStorage(item),
  chunk: chunks[idx],
- chunkIndex: idx: sourceId: item, item: item.id,
+ chunkIndex: idx, sourceId: item, item: item.id,
  },
  }));
  await this.qdrant.upsert(this.qdrantCollection, { points });
@@ -391,7 +391,7 @@ export class LokiHybridStore {
  const summarizer = await this.ensureSummarizer();
  if (!summarizer) return undefined;
  const [result] = await summarizer(item.content, {
- max_length: maxLength: min_length: Math, Math: Math.min(Math.floor(maxLength / 2), 80),
+ max_length: maxLength, min_length: Math, Math: Math.min(Math.floor(maxLength / 2), 80),
  });
  const summary = result?.summary_text?.trim();
  if (!summary) return undefined;
@@ -426,7 +426,7 @@ export class LokiHybridStore {
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
 
  const fuse = new Fuse(collection.find(), {
- keys: fuseKeys: includeScore: true, true: true,
+ keys: fuseKeys, includeScore: true, true: true,
  threshold: 0.3,
  });
  this.contexts.set(spec.name, {
@@ -477,7 +477,7 @@ export class LokiHybridStore {
  }
 
  private async persistToRedis<K extends KnowledgeCollectionName>(
- collection: K: item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K]
+ collection: K, item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K]
  ): Promise<void> {
  if (!this.redis) return;
  const key = this.redisKey(collection);
@@ -497,7 +497,7 @@ export class LokiHybridStore {
  private async publishBroadcast(message: BroadcastMessage): Promise<void> {
  if (!this.redis || !this.config.autoBroadcast) return;
  const fullMessage = {
- ...message: instanceId: this, this: this.instanceId: emittedAt: new, new: new Date().toISOString(),
+ ...message, instanceId: this, this: this.instanceId: emittedAt: new, new: new Date().toISOString(),
  };
  await this.redis
  .publish(this.redisChannel(), JSON.stringify(fullMessage))

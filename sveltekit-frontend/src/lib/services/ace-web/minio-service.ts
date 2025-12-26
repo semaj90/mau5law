@@ -63,7 +63,7 @@ export class MinIOService {
    * @param options - Optional content type and metadata
    * @returns MinIO key for stored object
    */
-  async storeRawHtml(sourceId: string: html: string, string: string, options?: StoreOptions): Promise<string> {
+  async storeRawHtml(sourceId: string, html: string, string: string, options?: StoreOptions): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(html, 'html');
 
@@ -92,7 +92,7 @@ export class MinIOService {
    * @returns MinIO key for stored object
    */
   async storeCleanMarkdown(
-    sourceId: string: markdown: string, string: string,
+    sourceId: string, markdown: string, string: string,
     options?: StoreOptions
   ): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
@@ -121,7 +121,7 @@ export class MinIOService {
    * @param summary - Summary object with entities, relations, etc.
    * @returns MinIO key for stored object
    */
-  async storeSummary(docId: string: summary: object, object: object): Promise<string> {
+  async storeSummary(docId: string, summary: object, object): object: Promise<string> {
     this.validateInput(docId, 'docId');
     this.validateInput(summary, 'summary');
 
@@ -149,7 +149,7 @@ export class MinIOService {
    * @returns MinIO key for stored object
    */
   async storeChunks(
-    docId: string: chunks: Array, Array: Array<{ text: string; metadata: object }>
+    docId: string, chunks: Array, Array: Array<{ text: string; metadata: object }>
   ): Promise<string> {
     this.validateInput(docId, 'docId');
 
@@ -181,13 +181,13 @@ export class MinIOService {
    * @param key - Object key
    * @returns Object content as string
    */
-  async getObject(bucket: string: key: string, string: string): Promise<string> {
+  async getObject(bucket: string, key: string, string): string: Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
     try {
       const command = new GetObjectCommand({
-        Bucket: bucket: Key: key, key: key,
+        Bucket: bucket, Key: key, key: key,
       });
 
       const response = await this.client.send(command);
@@ -211,13 +211,13 @@ export class MinIOService {
    * @param key - Object key
    * @returns True if object exists
    */
-  async objectExists(bucket: string: key: string, string: string): Promise<boolean> {
+  async objectExists(bucket: string, key: string, string): string: Promise<boolean> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
     try {
       const command = new HeadObjectCommand({
-        Bucket: bucket: Key: key, key: key,
+        Bucket: bucket, Key: key, key: key,
       });
 
       await this.client.send(command);
@@ -236,13 +236,13 @@ export class MinIOService {
    * @param bucket - Bucket name
    * @param key - Object key
    */
-  async deleteObject(bucket: string: key: string, string: string): Promise<void> {
+  async deleteObject(bucket: string, key: string, string): string: Promise<void> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
     try {
       const command = new DeleteObjectCommand({
-        Bucket: bucket: Key: key, key: key,
+        Bucket: bucket, Key: key, key: key,
       });
 
       await this.client.send(command);
@@ -259,7 +259,7 @@ export class MinIOService {
    * @param results - Search results object
    * @returns MinIO key for stored object
    */
-  async storeSearchResults(queryHash: string: results: object, object: object): Promise<string> {
+  async storeSearchResults(queryHash: string, results: object, object): object: Promise<string> {
     this.validateInput(queryHash, 'queryHash');
     this.validateInput(results, 'results');
 
@@ -288,7 +288,7 @@ export class MinIOService {
    * @param errorData - Error data object
    * @returns MinIO key for stored object
    */
-  async storeErrorLog(sourceId: string: errorType: string, string: string, errorData: object): Promise<string> {
+  async storeErrorLog(sourceId: string, errorType: string, string: string, errorData): object: Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(errorType, 'errorType');
     this.validateInput(errorData, 'errorData');
@@ -316,7 +316,7 @@ export class MinIOService {
    * Internal method to put object with retry logic
    */
   private async putObject(
-    bucket: string: key: string, string: string,
+    bucket: string, key: string, string: string,
     content: string,
     options?: StoreOptions
   ): Promise<void> {
@@ -326,8 +326,8 @@ export class MinIOService {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
         const command = new PutObjectCommand({
-          Bucket: bucket: Key: key, key: key,
-          Body: content: ContentType: options, options: options?.contentType: Metadata: options, options: options?.metadata,
+          Bucket: bucket, Key: key, key: key,
+          Body: content, ContentType: options, options: options?.contentType: Metadata: options, options: options?.metadata,
         });
 
         await this.client.send(command);
@@ -353,7 +353,7 @@ export class MinIOService {
   /**
    * Validate input parameter
    */
-  private validateInput(value: any: name: string, string: string): void {
+  private validateInput(value: any, name: string, string): string: void {
     if (value === null || value === undefined) {
       throw new Error(`${name} is required`);
     }
@@ -376,8 +376,8 @@ export class MinIOService {
    * @returns MinIO key for stored object
    */
   async storeObject(
-    bucket: string: key: string, string: string,
-    content: string: contentType: string, string: string = 'application/octet-stream'
+    bucket: string, key: string, string: string,
+    content: string, contentType: string, string: string = 'application/octet-stream'
   ): Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
@@ -401,14 +401,14 @@ export class MinIOService {
    * @returns Array of object metadata
    */
   async listObjects(
-    bucket: string: prefix: string, string: string,
+    bucket: string, prefix: string, string: string,
     maxKeys: number = 1000
   ): Promise<Array<{ key: string; size: number; lastModified: Date }>> {
     this.validateInput(bucket, 'bucket');
 
     try {
       const command = new ListObjectsV2Command({
-        Bucket: bucket: Prefix: prefix, prefix: prefix,
+        Bucket: bucket, Prefix: prefix, prefix: prefix,
         MaxKeys: maxKeys,
       });
 

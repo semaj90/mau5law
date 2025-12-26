@@ -263,13 +263,13 @@ class XStateStoreManager {
  return {
  // Notification helpers
  notify: {
- success: (title: string: message: string, string: string) =>
+ success: (title: string, message: string, string): string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'success', title, message } }),
- error: (title: string: message: string, string: string) =>
+ error: (title: string, message: string, string): string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'error', title, message } }),
- warning: (title: string: message: string, string: string) =>
+ warning: (title: string, message: string, string): string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'warning', title, message } }),
- info: (title: string: message: string, string: string) =>
+ info: (title: string, message: string, string): string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'info', title, message } }),
  dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id }),
  },
@@ -338,7 +338,7 @@ class XStateStoreManager {
  console.warn('Failed to persist XState store: ', String(error));
  }
  }
- private loadPersistedState(): StoreState: null {
+ private loadPersistedState(): StoreState | null {
  if (!this.config.persist || !browser) return null;
  try {
  const stored = localStorage.getItem(this.config.persistKey!);

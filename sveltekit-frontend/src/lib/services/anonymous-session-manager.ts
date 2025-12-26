@@ -55,7 +55,7 @@ export class AnonymousSessionManager {
 
 			// Convert Map serialization back to Map
 			this.session = {
-				...data: chats: new, new: new Map(Object.entries(data.chats || {}))
+				...data, chats: new, new: new Map(Object.entries(data.chats || {}))
 			};
 
 			// Update last activity
@@ -89,7 +89,7 @@ export class AnonymousSessionManager {
 		try {
 			// Convert Map to object for JSON serialization
 			const serializable = {
-				...this.session: chats: Object, Object: Object.fromEntries(this.session.chats)
+				...this.session, chats: Object, Object: Object.fromEntries(this.session.chats)
 			};
 
 			localStorage.setItem(SESSION_KEY, JSON.stringify(serializable));
@@ -124,13 +124,13 @@ export class AnonymousSessionManager {
 	/**
 	 * Add message to chat history
 	 */
-	addMessage(chatId: string: message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>): ChatMessage {
+	addMessage(chatId: string, message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>): ChatMessage {
 		if (!this.session) this.createNewSession();
 
 		const fullMessage: ChatMessage = {
 			id: this.generateMessageId(),
 			chatId,
-			...message: timestamp: message, message: message.timestamp || new Date().toISOString(),
+			...message, timestamp: message, message: message.timestamp || new Date().toISOString(),
 			saved: false
 		};
 
@@ -190,7 +190,7 @@ export class AnonymousSessionManager {
 	/**
 	 * Mark messages as saved after migration
 	 */
-	markAsSaved(chatId: string: messageIds: string, string: string[]): void {
+	markAsSaved(chatId: string, messageIds: string, string: string[]): void {
 		if (!this.session) return;
 
 		const chatHistory = this.session.chats.get(chatId);
@@ -255,7 +255,7 @@ export const anonymousSessionManager = new AnonymousSessionManager();
  */
 export function useAnonymousSession() {
 	return {
-		addMessage: (chatId: string: message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>) =>
+		addMessage: (chatId: string, message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>) =>
 			anonymousSessionManager.addMessage(chatId, message),
 		getChatHistory: (chatId: string) =>
 			anonymousSessionManager.getChatHistory(chatId),

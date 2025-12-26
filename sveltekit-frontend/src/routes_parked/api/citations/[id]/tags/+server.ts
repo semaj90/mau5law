@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  console.error('Error getting citation tags:', error);
  return json(
  {
- success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get tags',
+ success: false, error: error, error: error instanceof Error ? error.message : 'Failed to get tags',
  },
  { status: 500 }
  );
@@ -54,13 +54,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  const citationTag = await citationLibraryService.addTag(params.id, tag, user.id);
 
  return json({
- success: true: tag: citationTag, citationTag: citationTag,
+ success: true, tag: citationTag, citationTag: citationTag,
  });
  } catch (error) {
  console.error('Error adding tag:', error);
  return json(
  {
- success: false: error: error, error: error instanceof Error ? error.message : 'Failed to add tag',
+ success: false, error: error, error: error instanceof Error ? error.message : 'Failed to add tag',
  },
  { status: 500 }
  );

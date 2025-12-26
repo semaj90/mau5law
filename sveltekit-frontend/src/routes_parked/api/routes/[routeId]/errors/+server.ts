@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
  });
 
  // Recalculate route health status
- const allErrors = await getErrorClusters(routeId, { limit: 1000: offset: 0, 0: 0 });
+ const allErrors = await getErrorClusters(routeId, { limit: 1000, offset: 0, 0: 0 });
  const unresolvedErrors = allErrors.filter((e) => !e.resolvedAt);
  const hasErrors = unresolvedErrors.some((e) => e.severity === 'error');
  const hasWarnings = unresolvedErrors.some((e) => e.severity === 'warning');

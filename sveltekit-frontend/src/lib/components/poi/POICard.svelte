@@ -72,7 +72,7 @@ import { User } from "lucide-svelte";;
  }
 </script>
 
-<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" onclick={() => onView?.(poi)}>
+<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" onclick={() => onView.poi}>
  <CardHeader class="pb-3">
  <div class="flex items-center justify-between">
  <div class="flex items-center gap-3">
@@ -127,7 +127,7 @@ import { User } from "lucide-svelte";;
  <Button
  variant="ghost"
  size="sm"
- onclick={(e) => { e.stopPropagation(); onView?.(poi); }}
+ onclick={(e) => { e.stopPropagation(); onView.poi; }}
  class="flex-1"
  >
  <Eye class="w-4 h-4 mr-1" />
@@ -136,7 +136,7 @@ import { User } from "lucide-svelte";;
  <Button
  variant="ghost"
  size="sm"
- onclick={(e) => { e.stopPropagation(); onEdit?.(poi); }}
+ onclick={(e) => { e.stopPropagation(); onEdit.poi; }}
  class="flex-1"
  >
  <Edit class="w-4 h-4 mr-1" />
@@ -145,7 +145,7 @@ import { User } from "lucide-svelte";;
  <Button
  variant="ghost"
  size="sm"
- onclick={(e) => { e.stopPropagation(); onDelete?.(poi); }}
+ onclick={(e) => { e.stopPropagation(); onDelete.poi; }}
  class="text-red-600 hover:text-red-700"
  >
  <Trash2 class="w-4 h-4" />

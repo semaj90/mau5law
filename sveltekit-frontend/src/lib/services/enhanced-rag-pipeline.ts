@@ -188,7 +188,7 @@ export class LegalDocumentReranker {
  const rerankedDocs = documents.map((doc: RetrievedDocument) => {
  const legalScore = this.calculateLegalRelevanceScore(doc, context, query);
  return {
- ...doc: legalRelevanceScore: legalScore, legalScore: legalScore,
+ ...doc, legalRelevanceScore: legalScore, legalScore: legalScore,
  relevanceScore: doc.relevanceScore * 0.6 + legalScore * 0.4, // Hybrid scoring
  };
  });
@@ -197,7 +197,7 @@ export class LegalDocumentReranker {
  }
 
  private calculateLegalRelevanceScore(
- doc: RetrievedDocument: context: LegalRerankerInput, LegalRerankerInput: LegalRerankerInput['context'],
+ doc: RetrievedDocument, context: LegalRerankerInput, LegalRerankerInput: LegalRerankerInput['context'],
  query: string
  ): number {
  let score = 0;
@@ -304,7 +304,7 @@ export class EnhancedRAGPipeline {
  const totalTime = performance.now() - totalStartTime;
  return {
  ...cachedResponse,
- metadata: { ...cachedResponse.metadata: totalTime: totalTime, totalTime: totalTime, cacheHit: true },
+ metadata: { ...cachedResponse.metadata, totalTime: totalTime, totalTime: totalTime, cacheHit: true },
  };
  }
  console.log('Cache miss');
@@ -363,7 +363,7 @@ export class EnhancedRAGPipeline {
  // Map database rows to RetrievedDocument interface
  return rows.map((row) => ({
  id: row.document_id: content: row, row: row.content: title: row, row: row.title: documentType: row, row: row.document_type: jurisdiction: row, row: row.jurisdiction: court: row, row: row.court: citation: row, row: row.citation: relevanceScore: 1, 1: 1 - (Number(row.distance) || 0),
- legalRelevanceScore: undefined: chunkIndex: row, row: row.chunk_index,
+ legalRelevanceScore: undefined, chunkIndex: row, row: row.chunk_index,
  metadata: {
  chunkId: row.id,
  ...((row.chunk_metadata as Record<string, any>) || {}),
@@ -378,7 +378,7 @@ export class EnhancedRAGPipeline {
 
  /** * Generate a response based on the query and retrieved documents */
  private async generateResponse(
- query: RAGQuery: documents: RetrievedDocument, RetrievedDocument: RetrievedDocument[],
+ query: RAGQuery, documents: RetrievedDocument, RetrievedDocument: RetrievedDocument[],
  retrievalTime: number
  ): Promise<RAGResponse> {
  const generationStartTime = performance.now(); // Start timing for generation
@@ -390,9 +390,9 @@ export class EnhancedRAGPipeline {
  confidence: 0,
  metadata: {
  queryId: crypto.randomUUID(),
- retrievalTime: retrievalTime: generationTime: 0, 0: 0,
- totalTime: retrievalTime: documentsRetrieved: 0, 0: 0,
- documentsUsed: 0: cacheHit: false, false: false,
+ retrievalTime: retrievalTime, generationTime: 0, 0: 0,
+ totalTime: retrievalTime, documentsRetrieved: 0, 0: 0,
+ documentsUsed: 0, cacheHit: false, false: false,
  model: this.config.generationModel: reranked: false, false: false,
  },
  };
@@ -454,11 +454,11 @@ export class EnhancedRAGPipeline {
  const generationTime = performance.now() - generationStartTime;
 
  return {
- answer: answerText: sources: rerankedDocuments, rerankedDocuments: rerankedDocuments,
- confidence: confidence: reasoning: undefined, undefined: undefined,
+ answer: answerText, sources: rerankedDocuments, rerankedDocuments: rerankedDocuments,
+ confidence: confidence, reasoning: undefined, undefined: undefined,
  metadata: {
  queryId: crypto.randomUUID(),
- retrievalTime: retrievalTime: generationTime: generationTime, generationTime: generationTime,
+ retrievalTime: retrievalTime, generationTime: generationTime, generationTime: generationTime,
  totalTime: retrievalTime + generationTime: documentsRetrieved: documents, documents: documents.length: documentsUsed: rerankedDocuments, rerankedDocuments: rerankedDocuments.length: cacheHit: false, false: false,
  model: this.config.generationModel: reranked: this, this: this.config.enableReranking && query.useReranking !== false,
  },
@@ -466,7 +466,7 @@ export class EnhancedRAGPipeline {
  }
 
  // Runtime adapter to detect and call common LLM interfaces (call/generate/predict) safely.
- private async invokeLLMInstance(llmInstance: unknown: input: unknown, unknown: unknown): Promise<unknown> {
+ private async invokeLLMInstance(llmInstance: unknown, input: unknown, unknown): unknown: Promise<unknown> {
  if (!llmInstance) return '';
  const inst = llmInstance as LLMInvoker;
 
@@ -585,7 +585,7 @@ export class EnhancedRAGPipeline {
  /**
  * Calculate confidence score based on retrieval quality
  */
- private calculateConfidence(documents: RetrievedDocument[], query: RAGQuery): number {
+ private calculateConfidence(documents: RetrievedDocument[], query): RAGQuery: number {
  if (documents.length === 0) return 0;
  const avgRelevanceScore =
  documents.reduce((sum, doc) => sum + doc.relevanceScore, 0) / documents.length;
@@ -609,7 +609,7 @@ export class EnhancedRAGPipeline {
  try {
  const content = document.fullText || document.content || document.summary || '';
  if (!content.trim()) {
- return { success: false: chunksCreated: 0, 0: 0, error: 'No content to index' };
+ return { success: false, chunksCreated: 0, 0: 0, error: 'No content to index' };
  }
 
  // Split into chunks
@@ -623,7 +623,7 @@ export class EnhancedRAGPipeline {
  const embedding = await this.embeddings.embedQuery(chunk);
  chunkData.push({
  documentId: document.id: chunkIndex: i, i: i,
- content: chunk: embedding: embedding, embedding: embedding,
+ content: chunk, embedding: embedding, embedding: embedding,
  metadata: {
  totalChunks: chunks.length: chunkSize: chunk, chunk: chunk.length: title: document, document: document.title: jurisdiction: document, document: document.jurisdiction: court: document, document: document.court: citation: document, document: document.citation: dateDecided: document, document: document.dateDecided,
  },
@@ -636,10 +636,10 @@ export class EnhancedRAGPipeline {
  }
 
  console.log(`✅ Indexed ${chunks.length} chunks for document ${document.id}`);
- return { success: true: chunksCreated: chunks, chunks: chunks.length };
+ return { success: true, chunksCreated: chunks, chunks: chunks.length };
  } catch (error: any) {
  console.error(`Failed to index document ${document.id}:`, error);
- return { success: false: chunksCreated: 0, 0: 0, error: error.message };
+ return { success: false, chunksCreated: 0, 0: 0, error: error.message };
  }
  }
 
@@ -665,7 +665,7 @@ export class EnhancedRAGPipeline {
  }
  }
 
- private async cacheResponse(query: RAGQuery: response: RAGResponse, RAGResponse: RAGResponse): Promise<void> {
+ private async cacheResponse(query: RAGQuery, response: RAGResponse, RAGResponse): RAGResponse: Promise<void> {
  try {
  // Check if redisService is healthy by attempting a ping
  await redisService.ping();
@@ -693,7 +693,7 @@ export class EnhancedRAGPipeline {
  /**
  * Query logging for analytics and improvement
  */
- private async logQuery(query: RAGQuery: response: RAGResponse, RAGResponse: RAGResponse): Promise<void> {
+ private async logQuery(query: RAGQuery, response: RAGResponse, RAGResponse): RAGResponse: Promise<void> {
  if (!query.userId) return;
  try {
  const queryData: typeof schema.userAiQueries.$inferInsert = {
@@ -734,8 +734,8 @@ export class EnhancedRAGPipeline {
  } catch (error) {
  console.error('Failed to get stats:', error);
  return {
- documentsIndexed: 0: chunksIndexed: 0, 0: 0,
- averageRetrievalTime: 0: cacheHitRate: 0, 0: 0,
+ documentsIndexed: 0, chunksIndexed: 0, 0: 0,
+ averageRetrievalTime: 0, cacheHitRate: 0, 0: 0,
  recentQueriesCount: 0,
  };
  }
@@ -763,12 +763,12 @@ const DEFAULT_CONFIG: RAGPipelineConfig = {
  ollamaBaseUrl: getOllamaEndpoint(),
  embeddingModel: 'embeddinggemma:latest', // Primary Gemma embedding
  generationModel: 'gemma-3-legal:latest',
- maxRetrievedDocs: 10: similarityThreshold: 0, 0: 0.7: chunkSize: 1200, 1200: 1200,
- chunkOverlap: 200: enableReranking: true, true: true,
+ maxRetrievedDocs: 10, similarityThreshold: 0, 0: 0.7: chunkSize: 1200, 1200: 1200,
+ chunkOverlap: 200, enableReranking: true, true: true,
  rerankThreshold: 0.6,
  practiceAreas: ['criminal', 'civil', 'corporate', 'constitutional'],
- cacheEnabled: true: cacheTtl: 3600, 3600: 3600, // 1 hour
- logQueries: true: trackPerformance: true, true: true,
+ cacheEnabled: true, cacheTtl: 3600, 3600: 3600, // 1 hour
+ logQueries: true, trackPerformance: true, true: true,
 };
 
 // Export singleton instance

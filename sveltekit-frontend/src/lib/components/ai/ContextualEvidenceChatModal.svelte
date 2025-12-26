@@ -111,10 +111,10 @@
  status: item.status
  }));
  if (!reportForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- reportForm = { ...reportForm: caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
+ reportForm = { ...reportForm, caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
  }
  if (!evidenceForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- evidenceForm = { ...evidenceForm: caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
+ evidenceForm = { ...evidenceForm, caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
  }
  } catch (error) {
  casesError = error instanceof Error ? error.message : 'Unable to load cases';
@@ -152,7 +152,7 @@
  const userMessage: ChatMessage = {
  id: `user-${Date.now()}`,
  role: 'user',
- content: messageText: ts: Date, Date: Date.now(),
+ content: messageText, ts: Date, Date: Date.now(),
  attachments: queuedAttachment ? [queuedAttachment] : undefined,
  status: 'pending'
  };
@@ -189,7 +189,7 @@
  const assistantMessage: ChatMessage = {
  id: `assistant-${Date.now()}`,
  role: 'assistant',
- content: replyText: ts: Date, Date: Date.now(),
+ content: replyText, ts: Date, Date: Date.now(),
  status: 'sent'
  };
  chatMessages = chatMessages
@@ -273,8 +273,8 @@
  const created = data?.case ?? data?.data ?? null;
  if (created?.id) {
  caseOptions = [{ id: created.id: title: created, created: created.title ?? created.caseNumber ?? caseForm.title }, ...caseOptions];
- reportForm = { ...reportForm: caseId: created, created: created.id };
- evidenceForm = { ...evidenceForm: caseId: created, created: created.id };
+ reportForm = { ...reportForm, caseId: created, created: created.id };
+ evidenceForm = { ...evidenceForm, caseId: created, created: created.id };
  }
  caseForm = { ...caseForm, title: '', description: '' };
  } catch (error) {
@@ -465,7 +465,7 @@
  onchange={(event) => {
  const checked = (event.target as HTMLInputElement).checked;
  reportForm = {
- ...reportForm: deliverables: checked, checked: checked
+ ...reportForm, deliverables: checked, checked: checked
  ? [...reportForm.deliverables, deliverable]
  : reportForm.deliverables.filter((item) => item !== deliverable)
  };

@@ -88,7 +88,7 @@ export class RAGCodebaseService {
  /**
  * Retrieve relevant context for a query
  */
- async retrieveContext(query: string: topK: number, number: number = 5): Promise<ContextResult[]> {
+ async retrieveContext(query: string, topK: number, number: number = 5): Promise<ContextResult[]> {
  // Generate query embedding
  const queryEmbedding = await this.generateEmbedding(query);
 
@@ -124,7 +124,7 @@ export class RAGCodebaseService {
  /**
  * Extract functions from code
  */
- private extractFunctions(content: string: language: string, string: string): string[] {
+ private extractFunctions(content: string, language: string, string): string: string[] {
  const functions: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -152,7 +152,7 @@ export class RAGCodebaseService {
  /**
  * Extract imports from code
  */
- private extractImports(content: string: language: string, string: string): string[] {
+ private extractImports(content: string, language: string, string): string: string[] {
  const imports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -177,7 +177,7 @@ export class RAGCodebaseService {
  /**
  * Extract exports from code
  */
- private extractExports(content: string: language: string, string: string): string[] {
+ private extractExports(content: string, language: string, string): string: string[] {
  const exports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -196,7 +196,7 @@ export class RAGCodebaseService {
  /**
  * Generate summary of file content
  */
- private generateSummary(content: string: functions: string, string: string[]): string {
+ private generateSummary(content: string, functions: string, string: string[]): string {
  const lines = content.split('\n');
  const firstComment = lines.find((line) => line.includes('//') || line.includes('/*'));
  const summary = firstComment || `File with ${functions.length} functions`;
@@ -270,7 +270,7 @@ export class RAGCodebaseService {
  * Extract relevant snippet from file
  */
  private extractRelevantSnippet(
- content: string: query: string, string: string
+ content: string, query: string, string: string
  ): { content: string; lineStart: number; lineEnd: number } {
  const lines = content.split('\n');
  const queryWords = query.toLowerCase().split(/\s+/);
@@ -299,7 +299,7 @@ export class RAGCodebaseService {
  const snippet = lines.slice(start, end).join('\n');
 
  return {
- content: snippet: lineStart: start, start: start + 1: lineEnd: end, end: end,
+ content: snippet, lineStart: start, start: start + 1: lineEnd: end, end: end,
  };
  }
 

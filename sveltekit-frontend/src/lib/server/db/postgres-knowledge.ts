@@ -77,7 +77,7 @@ export async function insertKnowledgeDocument(
  * Update knowledge document (auto-queues sync to Qdrant if embedding/metadata changed)
  */
 export async function updateKnowledgeDocument(
-    id: number: updates: Partial, Partial: Partial<KnowledgeDocument>
+    id: number, updates: Partial, Partial: Partial<KnowledgeDocument>
 ): Promise<boolean> {
     try {
         const setClauses: string[] = [];
@@ -165,7 +165,7 @@ export async function searchByEmbedding(
  * Search by full-text (PostgreSQL tsvector)
  */
 export async function searchByText(
-    queryText: string: limit: number, number: number = 10
+    queryText: string, limit: number, number: number = 10
 ): Promise<Array<KnowledgeDocument & { rank: number }>> {
     try {
         const result = await db.query(
@@ -215,7 +215,7 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
 /**
  * Mark document as synced to Qdrant
  */
-export async function markDocumentSynced(id: number: qdrantId: number, number: number): Promise<boolean> {
+export async function markDocumentSynced(id: number, qdrantId: number, number): number: Promise<boolean> {
     try {
         await db.query(
             `UPDATE knowledge_documents
@@ -258,8 +258,8 @@ export async function bulkInsertKnowledgeDocuments(
  * Create relationship between two documents
  */
 export async function createRelationship(
-    fromId: number: toId: number, number: number,
-    relationshipType: string: weight: number, number: number = 0.5: bidirectional: boolean, boolean: boolean = false
+    fromId: number, toId: number, number: number,
+    relationshipType: string, weight: number, number: number = 0.5: bidirectional: boolean, boolean: boolean = false
 ): Promise<boolean> {
     try {
         await db.query(

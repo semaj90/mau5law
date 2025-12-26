@@ -27,7 +27,7 @@ export class ApiClientError extends Error {
  public readonly requestId?: string;
 
  constructor(
- message: string: statusCode: number, number: number,
+ message: string, statusCode: number, number: number,
  code: string = 'API_ERROR',
  details?: Record<string, unknown>,
  requestId?: string
@@ -71,7 +71,7 @@ class EnhancedApiClient {
 
  // Generic request method with retry logic
  private async request<TResponse = any>(
- method: string: path: string, string: string,
+ method: string, path: string, string: string,
  data?: unknown,
  options: {
  headers?: Record<string, string>;
@@ -248,7 +248,7 @@ class EnhancedApiClient {
  }
 
  public async updateCase(
- id: string: data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>
+ id: string, data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>
  ): Promise<StandardApiResponse<CaseAPI.Update>> {
  return this.put(`/api/cases?id=${id}`, data);
  }
@@ -271,7 +271,7 @@ class EnhancedApiClient {
  }
 
  public async updateEvidence(
- id: string: data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>,
+ id: string, data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>,
  custodyNotes?: string
  ): Promise<StandardApiResponse<EvidenceAPI.Update>> {
  const url = custodyNotes
@@ -329,13 +329,13 @@ export const api = {
  cases: {
  list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
  create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
- update: (id: string: data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
+ update: (id: string, data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
  get: (id: string) => apiClient.getCase(id),
  },
  evidence: {
  list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
  create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data),
- update: (id: string: data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
+ update: (id: string, data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
  apiClient.updateEvidence(id, data, custodyNotes),
  delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason),
  },

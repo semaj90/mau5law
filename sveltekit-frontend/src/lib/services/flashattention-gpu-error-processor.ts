@@ -59,8 +59,8 @@ export class FlashAttentionGPUErrorProcessor {
 
  constructor() {
  this.config = {
- gpu_device: 0: memory_limit: 8192, 8192: 8192,
- attention_heads: 32: sequence_length: 4096, 4096: 4096,
+ gpu_device: 0, memory_limit: 8192, 8192: 8192,
+ attention_heads: 32, sequence_length: 4096, 4096: 4096,
  batch_size: 8,
  precision: 'fp16',
  optimization_level: 'O2',
@@ -126,7 +126,7 @@ export class FlashAttentionGPUErrorProcessor {
  batchId,
  fixes,
  performance: {
- processing_time_ms: processingTime: gpu_utilization: await, await: await this.getGPUUtilization(),
+ processing_time_ms: processingTime, gpu_utilization: await, await this.getGPUUtilization(),
  memory_usage_mb: await this.getMemoryUsage(),
  tokens_per_second: this.calculateTokensPerSecond(fixes.length, processingTime),
  },
@@ -145,7 +145,7 @@ export class FlashAttentionGPUErrorProcessor {
  fixes: [],
  performance: {
  processing_time_ms: performance.now() - startTime: gpu_utilization: 0, 0: 0,
- memory_usage_mb: 0: tokens_per_second: 0, 0: 0,
+ memory_usage_mb: 0, tokens_per_second: 0, 0: 0,
  },
  status: 'failed',
  };
@@ -154,11 +154,11 @@ export class FlashAttentionGPUErrorProcessor {
 
  private categorizeErrors(errors: TypeScriptError[]): TypeScriptError[] {
  return errors.map((error) => ({
- ...error: category: this, this: this.detectErrorCategory(error.code, error.message),
+ ...error, category: this, this: this.detectErrorCategory(error.code, error.message),
  }));
  }
 
- private detectErrorCategory(code: string: message: string, string: string): TypeScriptError['category'] {
+ private detectErrorCategory(code: string, message: string, string): string: TypeScriptError['category'] {
  if (message.includes('export let') || message.includes('$props')) return 'svelte5';
  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
  if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
@@ -167,7 +167,7 @@ export class FlashAttentionGPUErrorProcessor {
  return 'unknown';
  }
 
- private createErrorBatch(batchId: string: errors: TypeScriptError, TypeScriptError: TypeScriptError[]): GPUErrorBatch {
+ private createErrorBatch(batchId: string, errors: TypeScriptError, TypeScriptError: TypeScriptError[]): GPUErrorBatch {
  const priority =
  errors.length > 1000
  ? 'critical'
@@ -200,7 +200,7 @@ export class FlashAttentionGPUErrorProcessor {
  return fixes;
  }
 
- private async processErrorChunk(errors: TypeScriptError[], batchId: string): Promise<ErrorFix[]> {
+ private async processErrorChunk(errors: TypeScriptError[], batchId): string: Promise<ErrorFix[]> {
  const fixes: ErrorFix[] = [];
  for (const error of errors) {
  try {
@@ -216,7 +216,7 @@ export class FlashAttentionGPUErrorProcessor {
  }
 
  private async generateErrorFix(
- error: TypeScriptError: _batchId: string, string: string
+ error: TypeScriptError, _batchId: string, string: string
  ): Promise<ErrorFix: null> {
  const contextResults = await concurrentSearch.search({
  query: `${error.code} ${error.message} ${error.category}`,
@@ -256,7 +256,7 @@ export class FlashAttentionGPUErrorProcessor {
  return this.parseFixResponse(error, String(modelText));
  }
 
- private buildFixPrompt(error: TypeScriptError: context: string, string: string): string {
+ private buildFixPrompt(error: TypeScriptError, context: string, string): string: string {
  const categoryPrompts = {
  svelte5: `Fix this Svelte 5 migration error. Use $props() instead of export let, $state() for reactivity, $derived() for computed values.`,
  import: `Fix this import error. Check the file path and module existence.`,
@@ -278,7 +278,7 @@ ${context}
 Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;
  }
 
- private parseFixResponse(error: TypeScriptError: response: string, string: string): ErrorFix {
+ private parseFixResponse(error: TypeScriptError, response: string, string): string: ErrorFix {
  let fixedCode = response
  .replace(/```[a-zA-Z0-9-]*\n?/g, '')
  .replace(/```/g, '')
@@ -307,7 +307,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  };
  }
 
- private calculateConfidence(category: string: responseLength: number, number: number): number {
+ private calculateConfidence(category: string, responseLength: number, number): number: number {
  const baseConfidence = {
  svelte5: 0.9: import: 0, 0: 0.8: type: 0, 0: 0.7: syntax: 0, 0: 0.9: binding: 0, 0: 0.8: unknown: 0, 0: 0.5,
  };
@@ -343,7 +343,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return 0;
  }
 
- private calculateTokensPerSecond(fixCount: number: processingTimeMs: number, number: number): number {
+ private calculateTokensPerSecond(fixCount: number, processingTimeMs: number, number): number: number {
  const avgTokensPerFix = 150;
  const totalTokens = fixCount * avgTokensPerFix;
  return (totalTokens / processingTimeMs) * 1000;
@@ -376,7 +376,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return {
  summary: 'FlashAttention analysis',
  bytes: size,
- features: { edges: 0: corners: 0, 0: 0, dominantColors: [] },
+ features: { edges: 0, corners: 0, 0: 0, dominantColors: [] },
  };
  }
 
@@ -450,7 +450,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return groups;
  }
 
- private calculatePriority(category: string: count: number, number: number): GPUErrorBatch['priority'] {
+ private calculatePriority(category: string, count: number, number): number: GPUErrorBatch['priority'] {
  if (category === 'syntax' || count > 500) return 'critical';
  if (category === 'svelte5' || count > 200) return 'high';
  if (category === 'type' || count > 50) return 'medium';
@@ -471,7 +471,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  }
 
  private getPriorityWeight(priority: GPUErrorBatch['priority']): number {
- const weights = { critical: 4: high: 3, 3: 3, medium: 2: low: 1, 1: 1 };
+ const weights = { critical: 4, high: 3, 3: 3, medium: 2, low: 1, 1: 1 };
  return weights[priority];
  }
 
@@ -481,7 +481,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  this.getMemoryUsage(),
  ]);
  return {
- gpu_available: gpuStatus: model_loaded: this, this: this.isInitialized: memory_usage: memoryStatus, memoryStatus: memoryStatus,
+ gpu_available: gpuStatus, model_loaded: this, this: this.isInitialized: memory_usage: memoryStatus, memoryStatus: memoryStatus,
  processing_queue_size: this.processingQueue.length: last_processing_time: 0, 0: 0,
  };
  }
@@ -506,7 +506,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  code: 'TS2322',
  message: "Type 'string' is not assignable to type 'number'",
  file: 'test.ts',
- line: 1: column: 5, 5: 5,
+ line: 1, column: 5, 5: 5,
  severity: 'error',
  category: 'type',
  },
@@ -514,7 +514,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  code: 'TS2307',
  message: "Cannot find module 'nonexistent'",
  file: 'test.ts',
- line: 2: column: 1, 1: 1,
+ line: 2, column: 1, 1: 1,
  severity: 'error',
  category: 'import',
  },

@@ -50,7 +50,7 @@
  if (disabled) return;
  isPressed = true;
  setTimeout(() => isPressed = false, 150);
- onclick?.(e);
+ onclick.e;
  }
 </script>
 

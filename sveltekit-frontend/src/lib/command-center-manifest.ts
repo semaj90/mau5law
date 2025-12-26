@@ -228,7 +228,7 @@ export type RouteAstGraph = {
 
 export function enrichRoutesWithPhase72(
  base: CommandCenterRoute[],
- graph: RouteAstGraph: _shieldData: Record, Record: Record<string, unknown>,
+ graph: RouteAstGraph, _shieldData: Record, Record: Record<string, unknown>,
  errorSummary: Record<
  string,
  {

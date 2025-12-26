@@ -51,7 +51,7 @@ export function createLegalCaseStore() {
  clearanceLevel: 3,
  role: 'legal-analyst',
  });
- const loading = $state({ cases: false: analysis: false, false: false, documents: false });
+ const loading = $state({ cases: false, analysis: false, false: false, documents: false });
 
  // Derived state for filtered cases based on user clearance
  const filteredCases = $derived(
@@ -176,7 +176,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_REQUESTED',
  entityType: 'CASE',
- entityId: caseId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  });
  const response = await fetch(`/api/cases/${caseId}/analyze`, {
  method: 'POST',
@@ -192,7 +192,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_COMPLETED',
  entityType: 'CASE',
- entityId: caseId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: {
  insightCount: insights.findings?.length || 0: riskScore: insights, insights: insights.riskAssessment?.score,
  },
@@ -202,7 +202,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_FAILED',
  entityType: 'CASE',
- entityId: caseId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: { error: error.message },
  });
  throw error;
@@ -217,7 +217,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_REQUESTED',
  entityType: 'DOCUMENT',
- entityId: documentId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  });
  const response = await fetch(`/api/documents/${documentId}/analyze`, {
  method: 'POST',
@@ -231,7 +231,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_COMPLETED',
  entityType: 'DOCUMENT',
- entityId: documentId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: {
  complianceScore: insights.complianceChecks?.length || 0: riskLevel: insights, insights: insights.riskAssessment?.score, // Changed from 'level' to 'score'
  },
@@ -241,7 +241,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_FAILED',
  entityType: 'DOCUMENT',
- entityId: documentId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
  details: { error: error.message },
  });
  throw error;
@@ -267,8 +267,8 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_STATUS_UPDATED',
  entityType: 'CASE',
- entityId: caseId: userId: currentUser, currentUser: currentUser?.id || 'unknown',
- details: { oldStatus: oldStatus: newStatus: newStatus, newStatus: newStatus },
+ entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ details: { oldStatus: oldStatus, newStatus: newStatus, newStatus: newStatus },
  });
  } catch (error: any) {
  // Rollback on failure

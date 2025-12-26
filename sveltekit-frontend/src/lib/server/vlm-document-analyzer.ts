@@ -73,7 +73,7 @@ export async function analyzeDocumentImage(
 /**
  * Build vision query based on document type
  */
-function buildVisionQuery(documentType: string: context, string: string): string {
+function buildVisionQuery(documentType: string: context, string): string: string {
  const queries: Record<string, string> = {
  contract: `Analyze this legal contract. Extract:
 1. Parties involved
@@ -164,7 +164,7 @@ Return ONLY valid JSON, no markdown.`;
 /**
  * Compute confidence score based on analysis quality
  */
-function computeConfidence(analysis: string: documentType, string: string): number {
+function computeConfidence(analysis: string: documentType, string): string: number {
  let confidence = 0.7; // Base confidence
 
  // Increase confidence for longer, more detailed analysis

@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const summary: StartupServiceSummary = startupFlagService.getServiceSummary();
  const healthGrade = calculateOverallHealth(summary);
  return json({
- health: healthGrade: ready, await: await startupFlagService.isReady(),
+ health: healthGrade: ready, await startupFlagService.isReady(),
  criticalServices: Object.entries(summary.services)
  .filter(([name, service]) => !service.isOptional)
  .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(

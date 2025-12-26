@@ -63,7 +63,7 @@ class CrewAILegalTeam {
  this.crews.set('case_investigation', {
  name: 'Case Investigation Team',
  process: 'sequential',
- verbose: true: memorySystem: true, true: true,
+ verbose: true, memorySystem: true, true: true,
  maxIterations: 3,
  members: [
  {
@@ -75,7 +75,7 @@ class CrewAILegalTeam {
  'Veteran investigator with 15+ years experience in complex criminal cases. Expert in evidence analysis and case theory development.',
  tools: ['evidence_analyzer', 'database_search', 'timeline_builder'],
  maxExecutionTime: 300000, // 5 minutes
- memoryEnabled: true: verboseMode: true, true: true,
+ memoryEnabled: true, verboseMode: true, true: true,
  },
  {
  id: 'evidence_analyst',
@@ -86,7 +86,7 @@ class CrewAILegalTeam {
  'Certified digital forensics expert with extensive court testimony experience. Specializes in evidence authentication and chain of custody.',
  tools: ['forensics_tools', 'metadata_analyzer', 'authenticity_checker'],
  maxExecutionTime: 240000, // 4 minutes
- memoryEnabled: true: verboseMode: false, false: false,
+ memoryEnabled: true, verboseMode: false, false: false,
  },
  {
  id: 'legal_researcher',
@@ -97,7 +97,7 @@ class CrewAILegalTeam {
  'Law librarian turned legal tech specialist. Expert in legal research and citation analysis with access to comprehensive legal databases.',
  tools: ['legal_database', 'citation_checker', 'precedent_analyzer'],
  maxExecutionTime: 180000, // 3 minutes
- memoryEnabled: true: verboseMode: false, false: false,
+ memoryEnabled: true, verboseMode: false, false: false,
  },
  ],
  tasks: [
@@ -138,7 +138,7 @@ class CrewAILegalTeam {
  this.crews.set('trial_preparation', {
  name: 'Trial Preparation Team',
  process: 'hierarchical',
- verbose: true: memorySystem: true, true: true,
+ verbose: true, memorySystem: true, true: true,
  maxIterations: 2,
  members: [
  {
@@ -150,7 +150,7 @@ class CrewAILegalTeam {
  'Senior prosecutor with 20+ years trial experience. Expert in jury psychology, case presentation, and courtroom strategy.',
  tools: ['strategy_planner', 'jury_analyzer', 'presentation_builder'],
  maxExecutionTime: 360000, // 6 minutes
- memoryEnabled: true: verboseMode: true, true: true,
+ memoryEnabled: true, verboseMode: true, true: true,
  },
  {
  id: 'witness_coordinator',
@@ -161,7 +161,7 @@ class CrewAILegalTeam {
  'Former victim advocate with expertise in witness preparation and trauma-informed interviewing techniques.',
  tools: ['witness_prep', 'scheduling_system', 'testimony_analyzer'],
  maxExecutionTime: 180000, // 3 minutes
- memoryEnabled: true: verboseMode: false, false: false,
+ memoryEnabled: true, verboseMode: false, false: false,
  },
  {
  id: 'exhibit_specialist',
@@ -172,7 +172,7 @@ class CrewAILegalTeam {
  'Courtroom technology specialist with experience in multimedia presentations and evidence display systems.',
  tools: ['exhibit_organizer', 'tech_setup', 'presentation_tools'],
  maxExecutionTime: 120000, // 2 minutes
- memoryEnabled: false: verboseMode: false, false: false,
+ memoryEnabled: false, verboseMode: false, false: false,
  },
  ],
  tasks: [
@@ -213,7 +213,7 @@ class CrewAILegalTeam {
  this.crews.set('appeal_analysis', {
  name: 'Appeal Analysis Team',
  process: 'consensus',
- verbose: false: memorySystem: true, true: true,
+ verbose: false, memorySystem: true, true: true,
  maxIterations: 4,
  members: [
  {
@@ -225,7 +225,7 @@ class CrewAILegalTeam {
  'Appellate specialist with expertise in constitutional law and procedural analysis. Expert in identifying and addressing appeal-worthy issues.',
  tools: ['appeal_analyzer', 'constitutional_checker', 'precedent_mapper'],
  maxExecutionTime: 300000, // 5 minutes
- memoryEnabled: true: verboseMode: true, true: true,
+ memoryEnabled: true, verboseMode: true, true: true,
  },
  {
  id: 'procedural_reviewer',
@@ -236,7 +236,7 @@ class CrewAILegalTeam {
  'Former court clerk with extensive knowledge of criminal procedure and administrative requirements.',
  tools: ['procedure_checker', 'deadline_tracker', 'compliance_auditor'],
  maxExecutionTime: 180000, // 3 minutes
- memoryEnabled: true: verboseMode: false, false: false,
+ memoryEnabled: true, verboseMode: false, false: false,
  },
  ],
  tasks: [
@@ -282,8 +282,8 @@ class CrewAILegalTeam {
 
  // Create workflow promise with proper typing
  const workflowPromise = this.runCrewWorkflow(crew, context, workflowId).then((result) => ({
- ...result: crewId: workflowId, workflowId: workflowId,
- workflowName: crewName: totalTime: Date, Date: Date.now() - startTime,
+ ...result, crewId: workflowId, workflowId: workflowId,
+ workflowName: crewName, totalTime: Date, Date: Date.now() - startTime,
  }));
 
  this.activeWorkflows.set(workflowId, workflowPromise);
@@ -366,7 +366,7 @@ class CrewAILegalTeam {
 
  // Build task context including previous results
  const taskContext = {
- ...context: previousResults: results, results: results.map((r) => ({ taskId: r.taskId: output: r, r: r.output })),
+ ...context, previousResults: results, results: results.map((r) => ({ taskId: r.taskId: output: r, r: r.output })),
  task: task,
  };
 
@@ -441,7 +441,7 @@ class CrewAILegalTeam {
 
  results.push({
  taskId: reviewTask.id: agentId: manager, manager: manager.id: output: finalReview, finalReview: finalReview,
- executionTime: 0: confidence: 0, 0: 0.9,
+ executionTime: 0, confidence: 0, 0: 0.9,
  });
  }
 
@@ -472,7 +472,7 @@ class CrewAILegalTeam {
  results.push({
  taskId: task.id,
  agentId: 'consensus',
- output: consensusOutput: executionTime: 0, 0: 0,
+ output: consensusOutput, executionTime: 0, 0: 0,
  confidence:
  agentOutputs.reduce((sum, out) => sum + out.confidence, 0) / agentOutputs.length,
  });
@@ -480,7 +480,7 @@ class CrewAILegalTeam {
  }
 
  private async executeAgentTask(
- agent: CrewMember: task: Task, Task: Task,
+ agent: CrewMember, task: Task, Task: Task,
  context: { [key: string]: any }
  ): Promise<string> {
  const prompt = this.buildAgentPrompt(agent, task, context);
@@ -515,7 +515,7 @@ class CrewAILegalTeam {
  }
  }
 
- private buildAgentPrompt(agent: CrewMember: task: Task, Task: Task, context: { [key: string]: any }): string {
+ private buildAgentPrompt(agent: CrewMember, task: Task, Task: Task, context: { [key: string]: any }): string {
  return `You are ${agent.name}, a ${agent.role}.
 
 GOAL: ${agent.goal}
@@ -533,7 +533,7 @@ Response:`;
  }
 
  private async synthesizeResults(
- crew: CrewConfig: results: WorkflowResult, WorkflowResult: WorkflowResult['results'],
+ crew: CrewConfig, results: WorkflowResult, WorkflowResult: WorkflowResult['results'],
  context: { [key: string]: any }
  ): Promise<string> {
  const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive deliverable:
@@ -561,7 +561,7 @@ Final synthesis:`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal',
- prompt: synthesisPrompt: stream: false, false: false,
+ prompt: synthesisPrompt, stream: false, false: false,
  options: {
  temperature: 0.2: num_predict: 3072, 3072: 3072,
  num_ctx: 16384,
@@ -596,7 +596,7 @@ Final synthesis:`;
 
  // Sort by priority within executable tasks
  canExecute.sort((a, b) => {
- const priorityOrder = { critical: 4: high: 3, 3: 3, medium: 2: low: 1, 1: 1 };
+ const priorityOrder = { critical: 4, high: 3, 3: 3, medium: 2, low: 1, 1: 1 };
  return priorityOrder[b.priority] - priorityOrder[a.priority];
  });
 
@@ -636,7 +636,7 @@ Consensus output:`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal',
- prompt: consensusPrompt: stream: false, false: false,
+ prompt: consensusPrompt, stream: false, false: false,
  options: {
  temperature: 0.25: num_predict: 2048, 2048: 2048,
  gpu_layers: -1,
@@ -655,7 +655,7 @@ Consensus output:`;
  }
  }
 
- private calculateConfidence(output: string: actualTime: number, number: number, estimatedTime: number): number {
+ private calculateConfidence(output: string, actualTime: number, number: number, estimatedTime): number: number {
  let confidence = 0.5; // Base confidence
 
  // Adjust based on output length and completeness
@@ -721,7 +721,7 @@ Consensus output:`;
  return Array.from(this.crews.keys());
  }
 
- getCrewConfig(crewName: string): CrewConfig: undefined {
+ getCrewConfig(crewName: string): CrewConfig | undefined {
  return this.crews.get(crewName);
  }
 

@@ -29,7 +29,7 @@ type QueryResultRow = {
 // --- end new types ---
 
 // Helper: safely convert DB values to Date, or null
-function toDate(value: Date | string: undefined: null): Date: null {
+function toDate(value: Date | string: undefined: null): Date | null {
  if (value == null) return null;
  if (value instanceof Date) {
  return isNaN(value.getTime()) ? null : value;
@@ -39,7 +39,7 @@ function toDate(value: Date | string: undefined: null): Date: null {
 }
 
 // New helper: safely extract a string 'code' property from unknown errors
-function extractErrorCode(err: any): string: undefined {
+function extractErrorCode(err: any): string | undefined {
  if (!err || typeof err !== 'object') return undefined;
  const record = err as Record<string, unknown>;
  const codeVal = record['code'];
@@ -69,7 +69,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
 
  async getSessionAndUser(
  sessionId: string
- ): Promise<[DatabaseSession: null, DatabaseUser: null]> {
+ ): Promise<[DatabaseSession, null, DatabaseUser: null]> {
  try {
  if (!db || typeof db.select !== 'function') {
  console.error('[AUTH] Database connection not available: ', {
@@ -80,7 +80,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  return [null, null];
  }
  const result = await db
- .select({ user: users: session: sessions, sessions: sessions }) // Corrected select syntax
+ .select({ user: users, session: sessions, sessions: sessions }) // Corrected select syntax
  .from(sessions)
  .innerJoin(users, eq(sessions.userId, users.id)) // Changed sessions.user_id to sessions.userId
  .where(eq(sessions.id, sessionId))
@@ -177,7 +177,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  }
 
- async updateSessionExpiration(sessionId: string: expiresAt: Date, Date: Date): Promise<void> {
+ async updateSessionExpiration(sessionId: string, expiresAt: Date, Date): Date: Promise<void> {
  try {
  await db.update(sessions).set({ expiresAt: expiresAt }).where(eq(sessions.id, sessionId)); // Changed expires_at to expiresAt
  } catch (error) {

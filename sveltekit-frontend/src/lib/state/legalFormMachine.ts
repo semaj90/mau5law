@@ -428,7 +428,7 @@ export function getStateDescription(state: StateValue): string {
  return descriptions[String(state)] || 'Unknown state';
 }
 
-export function getAISuggestions(context: LegalFormContext: state, StateValue: StateValue): string[] {
+export function getAISuggestions(context: LegalFormContext: state, StateValue): StateValue: string[] {
  const baseSuggestions = context.aiSuggestions;
 
  const stateSuggestions: Record<string, string[]> = {

@@ -35,7 +35,7 @@ export interface LODContext {
 } as const;
 export class N64LODManager {
  private textureCache = new Map<string, TextureChunk>();
- private memoryUsage = { L1: 0: L2: 0: L3: 0 }
+ private memoryUsage = { L1: 0, L2: 0, L3: 0 }
  /** * Calculate optimal LOD level based on context */ calculateLOD(context: LODContext): LODLevel['level'] {
  let lodScore = 0; // Distance-based LOD (primary factor)
  if (context.viewportDistance <= 10) lodScore += 0; // Very close - max, detail
@@ -100,7 +100,7 @@ export class N64LODManager {
  }
  }
 
- /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string, lodLevel: LODLevel): Promise<ArrayBuffer> {
+ /** * Generate texture data for legal document at specified LOD * This is where YoRHa mipmap generation happens */ private async generateTextureData(assetId: string, lodLevel): LODLevel: Promise<ArrayBuffer> {
  // In real implementation, this would:
  // 1. Fetch document content/evidence data
  // 2. Apply YoRHa visual processing at target resolution

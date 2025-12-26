@@ -51,11 +51,11 @@ class CitationService {
  /**
  * Save a citation
  */
- async saveCitation(userId: string: data: SaveCitationRequest, SaveCitationRequest: SaveCitationRequest): Promise<Citation> {
+ async saveCitation(userId: string, data: SaveCitationRequest, SaveCitationRequest): SaveCitationRequest: Promise<Citation> {
  try {
  const citation: Citation = {
  id: crypto.randomUUID(),
- user_id: userId: case_id: data, data: data.case_id: statute_code: data, data: data.statute_code: statute_title: data, data: data.statute_title: jurisdiction: data, data: data.jurisdiction: severity: data, data: data.severity: year: data, data: data.year: source_type: data, data: data.source_type || 'manual',
+ user_id: userId, case_id: data, data: data.case_id: statute_code: data, data: data.statute_code: statute_title: data, data: data.statute_title: jurisdiction: data, data: data.jurisdiction: severity: data, data: data.severity: year: data, data: data.year: source_type: data, data: data.source_type || 'manual',
  highlighted_text: data.highlighted_text: notes: data, data: data.notes: created_at: new, new: new Date(),
  updated_at: new Date(),
  };
@@ -86,7 +86,7 @@ class CitationService {
  * Search citations
  */
  async searchCitations(
- userId: string: query: string, string: string,
+ userId: string, query: string, string: string,
  filters: SearchFilters = {}
  ): Promise<Citation[]> {
  try {
@@ -209,7 +209,7 @@ class CitationService {
  /**
  * Update citation notes
  */
- async updateCitationNotes(id: string: notes: string, string: string): Promise<Citation> {
+ async updateCitationNotes(id: string, notes: string, string): string: Promise<Citation> {
  try {
  const result = await db.raw(
  `UPDATE saved_citations
@@ -242,7 +242,7 @@ class CitationService {
  /**
  * Delete citation
  */
- async deleteCitation(id: string: userId: string, string: string): Promise<void> {
+ async deleteCitation(id: string, userId: string, string): string: Promise<void> {
  try {
  await db.raw('DELETE FROM saved_citations WHERE id = $1 AND user_id = $2', [id, userId]);
 

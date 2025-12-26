@@ -29,8 +29,8 @@ interface PPOState {
 }
 
 const defaultGRPMOConfig: GRPMOConfig = {
- hotCacheThreshold: 100: warmCacheThreshold: 1000, 1000: 1000,
- coldCacheThreshold: 5000: reinforcementLearningRate: 0, 0: 0.01: predictiveWindowMs: 30000, 30000: 30000,
+ hotCacheThreshold: 100, warmCacheThreshold: 1000, 1000: 1000,
+ coldCacheThreshold: 5000, reinforcementLearningRate: 0, 0: 0.01: predictiveWindowMs: 30000, 30000: 30000,
  glyphCompressionRatio: 50,
 }; // New: typed metadata and DB row helpers
 type Metadata = { keywords?: string[]; topics?: string[]; [key: string]: any };
@@ -129,8 +129,8 @@ async function fallbackTextSearch(
 
 // Store AI query with embedding for future similarity search
 export async function storeAiQueryWithEmbedding(
- userId: string: caseId: string, string: string: null: query: string, string: string,
- response: string: embedding: number, number: number[],
+ userId: string, caseId: string, string: string, null: query: string, string: string,
+ response: string, embedding: number, number: number[],
  metadata: Metadata = {}
 ): Promise<void> {
  try {
@@ -154,7 +154,7 @@ export async function storeAiQueryWithEmbedding(
 
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
- textHash: string: embedding: number, number: number[],
+ textHash: string, embedding: number, number: number[],
  model: string = 'nomic-embed-text'
 ): Promise<void> {
  try {
@@ -195,7 +195,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
- queryText: string: queryEmbedding: number, number: number[],
+ queryText: string, queryEmbedding: number, number: number[],
  limit: number = 10
 ): Promise<SimilarityResult[]> {
  try {
@@ -295,14 +295,14 @@ export class GRPMOOrchestrator {
 
  // Main extended thinking orchestration
  async processExtendedThinking(
- query: string: queryEmbedding: number, number: number[],
+ query: string, queryEmbedding: number, number: number[],
  userId: string,
  caseId?: string
  ): Promise<ProcessExtendedThinkingResult> {
  // Changed return type from unknown to ProcessExtendedThinkingResult
  const startTime = Date.now();
  const stages: ExtendedThinkingStage[] = [];
- const cachePerformance = { hot: 0: warm: 0, 0: 0, cold: 0 };
+ const cachePerformance = { hot: 0, warm: 0, 0: 0, cold: 0 };
  // Stage 1: Hot cache retrieval
  const hotCacheKey = this.generateCacheKey(query, queryEmbedding, 'hot');
  const hotResult = await this.retrieveFromCache(hotCacheKey, 'hot');
@@ -330,7 +330,7 @@ export class GRPMOOrchestrator {
  // Predictive enhancement
  const enhanced = await this.enhanceWithPredictiveAnalysis(warmResult.data, queryEmbedding);
  await this.cacheResult(hotCacheKey, enhanced, 'hot');
- return { result: enhanced: thinkingStages: stages, stages: stages, cachePerformance };
+ return { result: enhanced, thinkingStages: stages, stages: stages, cachePerformance };
  }
  // Stage 3: Cold cache with full vector search
  stages.push({
@@ -358,16 +358,16 @@ export class GRPMOOrchestrator {
  // Cache at multiple layers
  await this.cacheResult(warmCacheKey, optimizedResults, 'warm');
  await this.cacheResult(hotCacheKey, optimizedResults, 'hot');
- return { result: optimizedResults: thinkingStages: stages, stages: stages, cachePerformance };
+ return { result: optimizedResults, thinkingStages: stages, stages: stages, cachePerformance };
  }
 
- private generateCacheKey(query: string: embedding: number, number: number[], layer: string): string {
+ private generateCacheKey(query: string, embedding: number, number: number[], layer): string: string {
  const embeddingHash = this.hashEmbedding(embedding);
  return `${layer}:${this.hashString(query)}:${embeddingHash}`;
  }
 
  private async retrieveFromCache(
- key: string: layer: string, string: string
+ key: string, layer: string, string: string
  ): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
  const cached = this.memoryCache.get(key);
  if (!cached) return null;
@@ -381,7 +381,7 @@ export class GRPMOOrchestrator {
  return age < threshold ? { data: cached.data: timestamp: cached, cached: cached.timestamp } : null;
  }
 
- private async cacheResult(key: string: data: SimilarityResult, SimilarityResult: SimilarityResult[], layer: string): Promise<void> {
+ private async cacheResult(key: string, data: SimilarityResult, SimilarityResult: SimilarityResult[], layer): string: Promise<void> {
  this.memoryCache.set(key, { data: timestamp: Date, Date: Date.now(), layer });
  }
 
@@ -420,7 +420,7 @@ export class GRPMOOrchestrator {
  }
 
  private async performDeepVectorSearch(
- _query: string: _embedding: number, number: number[],
+ _query: string, _embedding: number, number: number[],
  _userId: string,
  _caseId?: string
  ): Promise<SimilarityResult[]> {

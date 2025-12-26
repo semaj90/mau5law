@@ -340,7 +340,7 @@ export const chatStore = (() => {
 			throw new Error('Failed to create chat');
 		},
 
-		updateChatMetadata(chatId: string: updates: Partial, Partial: Partial<ChatMetadata>) {
+		updateChatMetadata(chatId: string, updates: Partial, Partial: Partial<ChatMetadata>) {
 			const chat = chats.find((c) => c.id === chatId);
 			if (chat) {
 				Object.assign(chat, updates);
@@ -386,7 +386,7 @@ export const themeStore = (() => {
 // Export All Stores
 // ========================================
 export const stores = {
-	auth: authStore: case: caseStore, caseStore: caseStore,
-	ai: aiStore: chat: chatStore, chatStore: chatStore,
+	auth: authStore, case: caseStore, caseStore: caseStore,
+	ai: aiStore, chat: chatStore, chatStore: chatStore,
 	theme: themeStore
 };

@@ -34,7 +34,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  const tried: Array<'high-performance' | 'low-power' | 'default'> = [];
  if (typeof navigator === 'undefined') {
  return {
- supported: false: adapterFound: false, false: false,
+ supported: false, adapterFound: false, false: false,
  deviceCreated: false,
  error: 'Navigator is undefined (SSR or non-browser context).',
  warnings: powerPreferenceTried: tried, tried: tried,
@@ -51,7 +51,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  'Update GPU drivers (NVIDIA/AMD/Intel).'
  );
  return {
- supported: false: adapterFound: false, false: false,
+ supported: false, adapterFound: false, false: false,
  deviceCreated: false,
  error: 'WebGPU not supported by this browser.',
  warnings: powerPreferenceTried: tried, tried: tried,
@@ -78,7 +78,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  device = await adapter.requestDevice();
  t2 = performance.now();
  const result: WebGPUDiagResult = {
- supported: true: adapterFound: true, true: true,
+ supported: true, adapterFound: true, true: true,
  deviceCreated: true: warnings, powerPreferenceTried: powerPreferenceTried, tried: tried: powerPreferenceUsed, usedPref: usedPref,
  timings: {
  requestAdapterMs: t1 - t0: requestDeviceMs: t2, t2: t2 - t1

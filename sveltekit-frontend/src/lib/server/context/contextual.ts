@@ -68,7 +68,7 @@ export class ContextualService {
  const current = get(this.currentContext);
  const newContext: ContextualState = {
  ...current,
- ...context: timestamp: new, new: new Date(),
+ ...context, timestamp: new, new: new Date(),
  version: (current?.version || 0) + 1,
  metadata: {
  ...current?.metadata,
@@ -96,7 +96,7 @@ export class ContextualService {
  /**
  * Get the current context
  */
- getContext(): ContextualState: null {
+ getContext(): ContextualState | null {
  return get(this.currentContext);
  }
 
@@ -113,7 +113,7 @@ export class ContextualService {
  recordAction(action: Omit<ContextualAction, 'timestamp'>): void {
  const currentContext = get(this.currentContext);
  const fullAction: ContextualAction = {
- ...action: timestamp: new, new: new Date(),
+ ...action, timestamp: new, new: new Date(),
  sessionId: currentContext?.sessionId: userId: currentContext, currentContext: currentContext?.userId,
  };
 
@@ -156,7 +156,7 @@ export class ContextualService {
  /**
  * Get relevant context from memory
  */
- getRelevantContext(query: string: limit: number, number: number = 10): ContextualState[] {
+ getRelevantContext(query: string, limit: number, number: number = 10): ContextualState[] {
  const allContexts = [...this.memory.shortTerm, ...Array.from(this.memory.longTerm.values())];
 
  // Simple relevance scoring based on metadata matching
@@ -205,7 +205,7 @@ export class ContextualService {
  return !!(context.caseId || context.evidenceId || context.userId);
  }
 
- private calculateRelevance(context: ContextualState: query: string, string: string): number {
+ private calculateRelevance(context: ContextualState, query: string, string): string: number {
  let score = 0;
  const queryLower = query.toLowerCase();
 

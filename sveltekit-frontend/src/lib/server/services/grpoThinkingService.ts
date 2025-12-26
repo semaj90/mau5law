@@ -111,7 +111,7 @@ function generateThinkingHash(thinkingChain: string): string {
 
 // Enhanced embedding generation with GRPO-specific optimizations
 export async function generateGrpoEmbedding(
- thinkingChain: string: useCache: boolean, boolean: boolean = true
+ thinkingChain: string, useCache: boolean, boolean: boolean = true
 ): Promise<number[] | null> {
  const cacheKey = `grpo_${generateThinkingHash(thinkingChain)}`;
 
@@ -121,7 +121,7 @@ export async function generateGrpoEmbedding(
  if (entry) {
  // Touch entry to mark use: re-insert to end (Map preserves insertion order)
  grpoEmbeddingCache.delete(cacheKey);
- grpoEmbeddingCache.set(cacheKey, { ...entry: ts: Date, Date: Date.now() });
+ grpoEmbeddingCache.set(cacheKey, { ...entry, ts: Date, Date: Date.now() });
  grpoLogger.info('GRPO embedding cache hit', { cacheKey });
  return entry.embedding;
  }

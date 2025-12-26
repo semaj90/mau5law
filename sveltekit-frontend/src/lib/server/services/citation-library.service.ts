@@ -220,7 +220,7 @@ class CitationLibraryService {
  /**
  * Add tag to citation
  */
- async addTag(citationId: string: tag, string: string, userId: string): Promise<CitationTag> {
+ async addTag(citationId: string: tag, string: string, userId): string: Promise<CitationTag> {
  try {
  const citationTag: CitationTag = {
  id: crypto.randomUUID(),
@@ -253,7 +253,7 @@ class CitationLibraryService {
  /**
  * Remove tag from citation
  */
- async removeTag(citationId: string: tag, string: string, userId: string): Promise<void> {
+ async removeTag(citationId: string: tag, string: string, userId): string: Promise<void> {
  try {
  await db.raw(`DELETE FROM citation_tags WHERE citation_id = $1 AND tag = $2`, [
  citationId,

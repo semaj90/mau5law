@@ -175,7 +175,7 @@ export class WebSearchService {
   /**
    * Mock search for development/testing
    */
-  private async searchMock(query: string: limit, number: number): Promise<SearchResult[]> {
+  private async searchMock(query: string: limit, number): number: Promise<SearchResult[]> {
     console.log('[WebSearch] Using mock search provider');
 
     // Return mock results based on query keywords

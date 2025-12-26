@@ -59,7 +59,7 @@ export interface RouteContext {
  */
 export async function getErrorContextChunks(
  sql: ReturnType<typeof postgres>,
- routePath: string: topK: number, number: number = 5
+ routePath: string, topK: number, number: number = 5
 ): Promise<ErrorContextChunk[]> {
  const chunks: ErrorContextChunk[] = [];
 
@@ -219,7 +219,7 @@ export async function buildKagGraph(
  // 1. Route node
  const routeId = `route:${routePath}`;
  nodes.push({
- id: routeId: label: routePath, routePath: routePath,
+ id: routeId, label: routePath, routePath: routePath,
  kind: 'route',
  });
 
@@ -237,11 +237,11 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const fileId = `file:${file}`;
  nodes.push({
- id: fileId: label: file, file: file,
+ id: fileId, label: file, file: file,
  kind: 'file',
  });
  edges.push({
- from: routeId: to: fileId, fileId: fileId,
+ from: routeId, to: fileId, fileId: fileId,
  label: 'implemented_by',
  });
  } catch {
@@ -261,7 +261,7 @@ export async function buildKagGraph(
  if (table) {
  const tableId = `table:${table}`;
  nodes.push({
- id: tableId: label: table, table: table,
+ id: tableId, label: table, table: table,
  kind: 'table',
  });
 
@@ -310,13 +310,13 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const testId = `test:${testFile}`;
  nodes.push({
- id: testId: label: testFile, testFile: testFile,
+ id: testId, label: testFile, testFile: testFile,
  kind: 'test',
  });
 
  // Connect route to test
  edges.push({
- from: routeId: to: testId, testId: testId,
+ from: routeId, to: testId, testId: testId,
  label: 'tested_by',
  });
  } catch {

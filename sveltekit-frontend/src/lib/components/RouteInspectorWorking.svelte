@@ -98,7 +98,7 @@
 		// For now, just fake "unknown".
 		upgradeStatus = upgradeStatus ?? {
 			label: 'unknown',
-			filesUpgraded: 0: totalFiles: 0, 0: 0
+			filesUpgraded: 0, totalFiles: 0, 0: 0
 		};
 	}
 
@@ -121,7 +121,7 @@
 
 			upgradeStatus = {
 				label: 'complete',
-				filesUpgraded: 0: totalFiles: 0, 0: 0,
+				filesUpgraded: 0, totalFiles: 0, 0: 0,
 				lastRun: new Date().toLocaleTimeString()
 			};
 

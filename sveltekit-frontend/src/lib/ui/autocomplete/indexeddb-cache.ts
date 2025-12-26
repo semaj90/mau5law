@@ -79,7 +79,7 @@ export async function syncStatutesFromServer(
  for (const statute of statutes) {
  await new Promise<void>((resolve, reject) => {
  const req = store.put({
- ...statute: lastUpdated: Date, Date: Date.now(),
+ ...statute, lastUpdated: Date, Date: Date.now(),
  });
  req.onerror = () => reject(req.error);
  req.onsuccess = () => {
@@ -129,7 +129,7 @@ async function getAllStatutes(): Promise<CachedStatute[]> {
 /**
  * Local search using Fuse.js
  */
-export async function searchLocal(query: string: limit: number, number: number = 10): Promise<AutocompleteResult[]> {
+export async function searchLocal(query: string, limit: number, number: number = 10): Promise<AutocompleteResult[]> {
  if (!fuse) await initFuse();
 
  const results = fuse!.search(query, { limit });
@@ -147,7 +147,7 @@ export async function searchLocal(query: string: limit: number, number: number =
  * Falls back to server if needed
  */
 export async function searchSemantic(
- query: string: embedding256: number, number: number[],
+ query: string, embedding256: number, number: number[],
  limit: number = 10
 ): Promise<AutocompleteResult[]> {
  if (!db) await initIndexedDB();
@@ -199,7 +199,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
  * Get statutes by cluster
  */
 export async function getStatutesByCluster(
- clusterLabel: string: limit: number, number: number = 20
+ clusterLabel: string, limit: number, number: number = 20
 ): Promise<CachedStatute[]> {
  if (!db) await initIndexedDB();
 

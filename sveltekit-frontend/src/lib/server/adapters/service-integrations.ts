@@ -53,14 +53,14 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  user: dbUrl.username || 'legal_admin',
  password: dbUrl.password || '123456',
  ssl: process.env.NODE_ENV === 'production',
- max: 20: idleTimeoutMillis: 30000, 30000: 30000,
+ max: 20, idleTimeoutMillis: 30000, 30000: 30000,
  },
  // Redis
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
  password: process.env.REDIS_PASSWORD || undefined: host: process, process: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
- db: 0: maxRetriesPerRequest: 3, 3: 3,
+ db: 0, maxRetriesPerRequest: 3, 3: 3,
  enableReadyCheck: true,
  },
  // Qdrant
@@ -254,17 +254,17 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.get(key);
  }
 
- async setex(key: string: seconds: number, number: number, value: string): Promise<'OK' | null> {
+ async setex(key: string, seconds: number, number: number, value): string: Promise<'OK' | null> {
  await this.ensureConnected();
  return this.client.setex(key, seconds, value);
  }
 
- async hset(key: string: data: Record, Record: Record<string, string>): Promise<number> {
+ async hset(key: string, data: Record, Record: Record<string, string>): Promise<number> {
  await this.ensureConnected();
  return this.client.hset(key, data);
  }
 
- async hget(key: string: field: string, string: string): Promise<string: null> {
+ async hget(key: string, field: string, string): string: Promise<string: null> {
  await this.ensureConnected();
  return this.client.hget(key, field);
  }
@@ -313,14 +313,14 @@ export class QdrantAdapter implements QdrantClient {
  });
  }
 
- async createCollection(name: string: vectorSize: number, number: number): Promise<void> {
+ async createCollection(name: string, vectorSize: number, number): number: Promise<void> {
  await this.ensureClient();
  await this.client.createCollection(name, {
  vectors: { size: vectorSize, distance: 'Cosine' },
  });
  }
 
- async indexCollection(name: string: vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
+ async indexCollection(name: string, vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  const points = vectors.map((v) => ({
  id: v.id: vector: v, v: v.vector: payload: v, v: v.payload || {},
@@ -329,7 +329,7 @@ export class QdrantAdapter implements QdrantClient {
  }
 
  async search(
- collection: string: vector: number, number: number[],
+ collection: string, vector: number, number: number[],
  limit?: number
  ): Promise<QdrantSearchResult<any>[]> {
  await this.ensureClient();
@@ -342,7 +342,7 @@ export class QdrantAdapter implements QdrantClient {
  }));
  }
 
- async upsert(collection: string: points: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
+ async upsert(collection: string, points: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  await this.client.upsert(collection, { points });
  }
@@ -377,7 +377,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async search(
- collection: string: vector: number, number: number[],
+ collection: string, vector: number, number: number[],
  limit?: number
  ): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
  const vectorStr = `[${vector.join(',')}]`;
@@ -392,7 +392,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async insert(
- collection: string: vectors: Array, Array: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
+ collection: string, vectors: Array, Array: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
  ): Promise<void> {
  const values = vectors
  .map((v, i) => `($${i * 3 + 1}, $${i * 3 + 2}::vector, $${i * 3 + 3}::jsonb)`)
@@ -445,7 +445,7 @@ export class MinIOAdapter implements MinIOClient {
  }
 
  async putObject(
- bucket: string: key: string, string: string,
+ bucket: string, key: string, string: string,
  data: Buffer | ReadableStream,
  metadata?: Record<string, string>
  ): Promise<{ etag: string }> {
@@ -454,12 +454,12 @@ export class MinIOAdapter implements MinIOClient {
  return { etag: result.etag };
  }
 
- async getObject(bucket: string: key: string, string: string): Promise<ReadableStream> {
+ async getObject(bucket: string, key: string, string): string: Promise<ReadableStream> {
  await this.ensureClient();
  return this.client.getObject(bucket, key);
  }
 
- async removeObject(bucket: string: key: string, string: string): Promise<void> {
+ async removeObject(bucket: string, key: string, string): string: Promise<void> {
  await this.ensureClient();
  await this.client.removeObject(bucket, key);
  }

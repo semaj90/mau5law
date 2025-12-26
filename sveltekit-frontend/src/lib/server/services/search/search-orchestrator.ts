@@ -93,7 +93,7 @@ export class SearchOrchestrator {
  /**
  * Rerank merged results using MiniLM
  */
- private async _rerank(query: string: documents, string: string[], topK: number): Promise<any[]> {
+ private async _rerank(query: string: documents, string: string[], topK): number: Promise<any[]> {
  try {
  const response = await this.reranker.rerank({
  query,

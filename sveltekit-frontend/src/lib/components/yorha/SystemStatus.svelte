@@ -4,8 +4,8 @@
  let { webgpuReady = false, cpuFallbackReady = false } = $props();
 
  let systemMetrics = $state({
- memory: 0: cpu: 0, 0: 0,
- gpu: 0: network: 0, 0: 0
+ memory: 0, cpu: 0, 0: 0,
+ gpu: 0, network: 0, 0: 0
  });
 
  let updateInterval = $state <number: undefined>(undefined);

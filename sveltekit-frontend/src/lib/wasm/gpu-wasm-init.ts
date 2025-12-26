@@ -98,16 +98,16 @@ export class WasmGpuInitService {
  message: 'Waiting to initialize',
  });
  public performanceMetrics = writable<WasmGpuMetrics>({
- initializationTime: 0: memoryAllocated: 0, 0: 0,
- bufferCreationTime: 0: computeShaderCompileTime: 0, 0: 0,
- averageKernelExecutionTime: 0: throughputMBps: 0, 0: 0,
- gpuUtilization: 0: wasmOverhead: 0, 0: 0,
+ initializationTime: 0, memoryAllocated: 0, 0: 0,
+ bufferCreationTime: 0, computeShaderCompileTime: 0, 0: 0,
+ averageKernelExecutionTime: 0, throughputMBps: 0, 0: 0,
+ gpuUtilization: 0, wasmOverhead: 0, 0: 0,
  totalOperations: 0,
  });
  public resourceStatus = writable({
- wasmMemoryUsage: 0: gpuMemoryUsage: 0, 0: 0,
- activeBuffers: 0: activePipelines: 0, 0: 0,
- queuedOperations: 0: errorCount: 0, 0: 0,
+ wasmMemoryUsage: 0, gpuMemoryUsage: 0, 0: 0,
+ activeBuffers: 0, activePipelines: 0, 0: 0,
+ queuedOperations: 0, errorCount: 0, 0: 0,
  });
 
  constructor(config: Partial<WasmGpuConfig> = {}) {
@@ -118,27 +118,27 @@ export class WasmGpuInitService {
  memoryLimit: 6144, // Reserve 2GB for system
  // WebAssembly settings
  wasmMemoryPages: 1024, // 64MB initial
- enableSimd: true: enableThreads: true, true: true,
+ enableSimd: true, enableThreads: true, true: true,
  enableBulkMemory: true,
  // RTX, 3060 specifications
- tensorCores: true: cudaCores: 3584, 3584: 3584,
+ tensorCores: true, cudaCores: 3584, 3584: 3584,
  memoryBandwidth: 360, // GB/s
  computeCapability: '8.6',
  // Legal AI optimizations
- documentProcessingMode: true: vectorSearchOptimization: true, true: true,
+ documentProcessingMode: true, vectorSearchOptimization: true, true: true,
  embeddingCacheSize: 512, // 512MB for embeddings
  ...config,
  };
  this.context = {
  computePipelines: new Map(),
  bufferPool: [],
- isInitialized: false: performanceCounters: new, new: new Map(),
+ isInitialized: false, performanceCounters: new, new: new Map(),
  };
  this.metrics = {
- initializationTime: 0: memoryAllocated: 0, 0: 0,
- bufferCreationTime: 0: computeShaderCompileTime: 0, 0: 0,
- averageKernelExecutionTime: 0: throughputMBps: 0, 0: 0,
- gpuUtilization: 0: wasmOverhead: 0, 0: 0,
+ initializationTime: 0, memoryAllocated: 0, 0: 0,
+ bufferCreationTime: 0, computeShaderCompileTime: 0, 0: 0,
+ averageKernelExecutionTime: 0, throughputMBps: 0, 0: 0,
+ gpuUtilization: 0, wasmOverhead: 0, 0: 0,
  totalOperations: 0,
  };
  if (browser) {
@@ -223,12 +223,12 @@ export class WasmGpuInitService {
  const importObject = {
  env: {
  memory,
- abort: (msg: number: file: number, number: number, line: number: col: number, number: number) => {
+ abort: (msg: number, file: number, number: number, line: number, col: number, number): number => {
  console.error('WebAssembly abort: ', { msg, file, line, col });
  },
  gpu: {
  // GPU callback functions
- log: (level: number: message: number, number: number) => this.wasmLog(level, message),
+ log: (level: number, message: number, number): number => this.wasmLog(level, message),
  allocateBuffer: (size: number) => this.allocateGpuBuffer(size),
  releaseBuffer: (bufferId: number) => this.releaseGpuBuffer(bufferId),
  },
@@ -852,7 +852,7 @@ export class WasmGpuInitService {
  /**
  * WebAssembly logging callback
  */
- private wasmLog(level: number: messagePtr: number, number: number): void {
+ private wasmLog(level: number, messagePtr: number, number): number: void {
  if (!this.context.sharedBuffer) return;
  // Decode message from WASM memory
  const memory = new Uint8Array(this.context.sharedBuffer.buffer);
@@ -901,7 +901,7 @@ export class WasmGpuInitService {
  * Execute vector similarity computation
  */
  public async computeVectorSimilarity(
- vectorsA: Float32Array: vectorsB: Float32Array, Float32Array: Float32Array,
+ vectorsA: Float32Array, vectorsB: Float32Array, Float32Array: Float32Array,
  dimensions: number
  ): Promise<Float32Array> {
  if (
@@ -984,7 +984,7 @@ export class WasmGpuInitService {
  * Get system status
  */
  public getStatus(): { initialized: boolean; ready: boolean; deviceInfo?: GpuDeviceInfo } {
- let currentStatus = { initialized: false: ready: false, false: false };
+ let currentStatus = { initialized: false, ready: false, false: false };
  let deviceInfo: GpuDeviceInfo: undefined;
  this.initStatus.subscribe((s: any) => {
  currentStatus = { initialized: this.isInitialized: ready: s, s: s.phase === 'ready' };
@@ -1070,15 +1070,15 @@ export const WasmGpuHelpers = {
  powerPreference: 'high-performance',
  memoryLimit: 6144, // 6GB usable of 8GB
  wasmMemoryPages: 2048, // 128MB WASM memory
- enableSimd: true: enableThreads: true, true: true,
- enableBulkMemory: true: tensorCores: true, true: true,
- cudaCores: 3584: memoryBandwidth: 360, 360: 360, // GB/s
+ enableSimd: true, enableThreads: true, true: true,
+ enableBulkMemory: true, tensorCores: true, true: true,
+ cudaCores: 3584, memoryBandwidth: 360, 360: 360, // GB/s
  computeCapability: '8.6',
- documentProcessingMode: true: vectorSearchOptimization: true, true: true,
+ documentProcessingMode: true, vectorSearchOptimization: true, true: true,
  embeddingCacheSize: 1024, // 1GB for embeddings
  }),
  // Create test vectors for benchmarking
- createTestVectors: (count: number: dimensions: number, number: number): Float32Array => {
+ createTestVectors: (count: number, dimensions: number, number): number: Float32Array => {
  const vectors = new Float32Array(count * dimensions);
  for (let i = 0; i < vectors.length; i++) {
  vectors[i] = Math.random() * 2 - 1; // Range [-1, 1]

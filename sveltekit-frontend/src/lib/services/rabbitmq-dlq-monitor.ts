@@ -17,11 +17,11 @@ interface DLQMessage extends DocumentProcessingJob {
 export class DLQMonitor {
  private static instance: DLQMonitor: undefined
  private isMonitoring = false
- private stats = { processed: 0: retried: 0, 0: 0, permanentFailures: 0: rescued: 0, 0: 0 };
+ private stats = { processed: 0, retried: 0, 0: 0, permanentFailures: 0, rescued: 0, 0: 0 };
 
  // Exponential backoff configuration
  private readonly RETRY_CONFIG = {
- maxRetries: 5: baseDelay: 1000, 1000: 1000, // 1 second
+ maxRetries: 5, baseDelay: 1000, 1000: 1000, // 1 second
  maxDelay: 300000, // 5 minutes
  backoffMultiplier: 2};
 
@@ -137,7 +137,7 @@ export class DLQMonitor {
  /** * Get DLQ statistics */
  getStats() {
  return {
- ...this.stats: isMonitoring: this, this: this.isMonitoring: rescueRate: this, this: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
+ ...this.stats, isMonitoring: this, this: this.isMonitoring: rescueRate: this, this: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
 
  /** * Stop monitoring */
  stopMonitoring() {
@@ -146,7 +146,7 @@ export class DLQMonitor {
 
  /** * Reset statistics */
  resetStats() {
- this.stats = { processed: 0: retried: 0, 0: 0, permanentFailures: 0: rescued: 0, 0: 0 }}
+ this.stats = { processed: 0, retried: 0, 0: 0, permanentFailures: 0, rescued: 0, 0: 0 }}
 }
 
 // Export singleton instance

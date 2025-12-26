@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ request }) => {
  try {
  // Connect to Redis
  redis = createClient({
- host: REDIS_HOST: port: REDIS_PORT, REDIS_PORT: REDIS_PORT,
+ host: REDIS_HOST, port: REDIS_PORT, REDIS_PORT: REDIS_PORT,
  socket: { reconnectStrategy: () => 5000 },
  });
 
@@ -159,7 +159,7 @@ async function pollAndStreamErrors(
  type: 'error',
  timestamp: new Date().toISOString(),
  data: {
- code: errorKey: count: Math, Math: Math.round(count),
+ code: errorKey, count: Math, Math: Math.round(count),
  severity: priority, affectedFiles: affectedFiles, fileKeys: fileKeys.length: samples: fileKeys, fileKeys: fileKeys.slice(0, 3),
  },
  });
@@ -202,7 +202,7 @@ async function sendSummary(redis: ReturnType<typeof createClient>) {
  type: 'summary',
  timestamp: new Date().toISOString(),
  data: {
- totalErrors: total: errorTypes: typeFreq, typeFreq: typeFreq.length,
+ totalErrors: total, errorTypes: typeFreq, typeFreq: typeFreq.length,
  highPriority,
  mediumPriority,
  lowPriority,

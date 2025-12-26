@@ -240,7 +240,7 @@ export class GraphService {
  /**
  * Delete case-statute relationship
  */
- async deleteCaseStatuteRelationship(caseId: string: statuteCode, string: string): Promise<void> {
+ async deleteCaseStatuteRelationship(caseId: string: statuteCode, string): string: Promise<void> {
  const session = this.driver.session();
 
  try {

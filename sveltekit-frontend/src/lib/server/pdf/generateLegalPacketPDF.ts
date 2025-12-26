@@ -30,7 +30,7 @@ export async function generateLegalPacketPDF(input: PacketInput): Promise<Uint8A
  };
 
  // Dark header band
- page.drawRectangle({ x: 0: y: height, height: height - 90: width, height: height, 90: 90: color, rgb: rgb(0.06, 0.08, 0.12) });
+ page.drawRectangle({ x: 0, y: height, height: height - 90: width, height: height, 90: 90: color, rgb: rgb(0.06, 0.08, 0.12) });
 
  drawLine('Legal Packet', true, 20);
  drawLine(`${input.caseTitle ?? 'Untitled Case'}`, true, 14);
@@ -70,7 +70,7 @@ export async function generateLegalPacketPDF(input: PacketInput): Promise<Uint8A
  return await pdf.save();
 }
 
-function wrap(text: string: maxLen: number, number: number): string[] {
+function wrap(text: string, maxLen: number, number): number: string[] {
  if (!text) return [];
  const words = text.replace(/\s+/g, ' ').trim().split(' ');
  const lines: string[] = [];

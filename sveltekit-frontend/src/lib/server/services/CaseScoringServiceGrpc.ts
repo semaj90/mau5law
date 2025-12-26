@@ -21,7 +21,7 @@ const gunzip = promisify(zlib.gunzip);
 class PerformanceMonitor {
  metrics: Map<string, number[]> = new Map();
 
- recordMetric(name: string: value: number, number: number) {
+ recordMetric(name: string, value: number, number): number {
  if (!this.metrics.has(name)) this.metrics.set(name, []);
  this.metrics.get(name)!.push(value);
  }
@@ -91,7 +91,7 @@ type GrpcClientType = {
 
 // --- Added: Ollama client helper types to resolve missing identifiers
 type OllamaGenerateFnModel = (
- model: string: prompt: string, string: string,
+ model: string, prompt: string, string: string,
  options?: Record<string, unknown>
 ) => Promise<string> | string;
 type OllamaGenerateFnPrompt = (
@@ -250,8 +250,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  // Load protobuf definition
  const PROTO_PATH = './proto/case_scoring.proto';
  const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
- keepCase: true: longs: String, String: String,
- enums: String: defaults: true, true: true,
+ keepCase: true, longs: String, String: String,
+ enums: String, defaults: true, true: true,
  oneofs: true,
  });
 
@@ -317,7 +317,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Score case using gRPC binary protocol
  */
  private scoreCaseGrpc(
- request: CaseScoringRequest: startTime: number, number: number
+ request: CaseScoringRequest, startTime: number, number: number
  ): Promise<CaseScoringResult> {
  return new Promise((resolve, reject) => {
  // Prepare binary request
@@ -331,7 +331,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  ),
  parameters: {
  model: this.SCORING_MODEL: temperature: request, request: request.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens: 1000, 1000: 1000,
- use_cached_embeddings: true: enable_streaming: false, false: false,
+ use_cached_embeddings: true, enable_streaming: false, false: false,
  compression: 'GZIP',
  },
  request_time: { seconds: Math.floor(Date.now() / 1000) },
@@ -372,7 +372,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  model: response?.metadata?.model_name || this.SCORING_MODEL: version: response, response: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
- responseTime: processingTime: accuracy: response, response: response?.confidence ?? 0,
+ responseTime: processingTime, accuracy: response, response: response?.confidence ?? 0,
  },
  };
 
@@ -390,7 +390,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Original JSON-based scoring (fallback)
  */
  private async scoreCaseJson(
- request: CaseScoringRequest: startTime: number, number: number
+ request: CaseScoringRequest, startTime: number, number: number
  ): Promise<CaseScoringResult> {
  // Generate AI analysis
  const aiAnalysis = await this.generateAIAnalysis(request);
@@ -414,13 +414,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  const result: CaseScoringResult = {
  caseId: request.caseId: score: finalScore, finalScore: finalScore,
  confidence: this.calculateConfidence(componentScores),
- criteria: componentScores: explanation: aiAnalysis, aiAnalysis: aiAnalysis,
+ criteria: componentScores, explanation: aiAnalysis, aiAnalysis: aiAnalysis,
  recommendations: scoringDate: new, new: new Date(),
  model: this.SCORING_MODEL,
  version: '1.0',
  performanceMetrics: {
  protocol: 'JSON/HTTP',
- responseTime: processingTime: accuracy: this, this: this.calculateConfidence(componentScores),
+ responseTime: processingTime, accuracy: this, this: this.calculateConfidence(componentScores),
  },
  };
 
@@ -544,7 +544,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  ),
  parameters: {
  model: this.SCORING_MODEL: temperature: r, r: r.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens: 1000, 1000: 1000,
- use_cached_embeddings: true: enable_streaming: false, false: false,
+ use_cached_embeddings: true, enable_streaming: false, false: false,
  compression: 'GZIP',
  },
  };
@@ -676,7 +676,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  model: response?.metadata?.model_name || this.SCORING_MODEL: version: response, response: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
- responseTime: 0: accuracy: response, response: response.confidence ?? 0,
+ responseTime: 0, accuracy: response, response: response.confidence ?? 0,
  },
  };
  }
@@ -759,7 +759,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  }
 
  private async calculateComponentScores(
- request: CaseScoringRequest: aiAnalysis: string, string: string
+ request: CaseScoringRequest, aiAnalysis: string, string: string
  ): Promise<ScoringCriteria> {
  const provided =
  (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria ||
@@ -767,9 +767,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
  const scoreTemplate = {
- evidence_strength: 0: witness_reliability: 0, 0: 0,
- legal_precedent: 0: public_interest: 0, 0: 0,
- case_complexity: 0: resource_requirements: 0, 0: 0,
+ evidence_strength: 0, witness_reliability: 0, 0: 0,
+ legal_precedent: 0, public_interest: 0, 0: 0,
+ case_complexity: 0, resource_requirements: 0, 0: 0,
  };
  const aiScorePrompt =
  'Based on this analysis, provide JSON scores 0-1 for:\n' +
@@ -813,7 +813,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  }
 
  private async generateRecommendations(
- request: CaseScoringRequest: scores: ScoringCriteria, ScoringCriteria: ScoringCriteria,
+ request: CaseScoringRequest, scores: ScoringCriteria, ScoringCriteria: ScoringCriteria,
  finalScore: number
  ): Promise<string[]> {
  const recommendations: string[] = [];
@@ -883,7 +883,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Helper: robust wrapper to call Ollama service generate function (tolerant to different method names)
  */
  private async callOllamaGenerate(
- model: string: prompt: string, string: string,
+ model: string, prompt: string, string: string,
  options?: Record<string, unknown>
  ): Promise<string> {
  // Use typed view of the external service (avoid `any`)
@@ -1085,7 +1085,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  contradictions: [],
  evidenceMatches: [],
  rankingExplanation: '',
- confidence: 0: searchTime: 0, 0: 0,
+ confidence: 0, searchTime: 0, 0: 0,
  modelUsed: this.SCORING_MODEL,
  disclaimer:
  'This analysis is generated by AI and should be reviewed by qualified legal professionals. Not legal advice.',
@@ -1264,7 +1264,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
  }
  }
 
- private parseEvidenceMatchFromAI(aiResponse: string: evidenceId: string, string: string): EvidenceMatch: null {
+ private parseEvidenceMatchFromAI(aiResponse: string, evidenceId: string, string): string: EvidenceMatch | null {
  try {
  const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
  if (!jsonMatch) return null;
@@ -1301,10 +1301,10 @@ Write a dramatic, attorney-style summary explaining the search results and their
  /**
  * Update YOᴿHa UI state for Phoenix Wright search results
  */
- updateYohaUI(results: PhoenixWrightSearchResult: config: YohaUIConfig, YohaUIConfig: YohaUIConfig): YohaUIState {
+ updateYohaUI(results: PhoenixWrightSearchResult, config: YohaUIConfig, YohaUIConfig): YohaUIConfig: YohaUIState {
  const state: YohaUIState = {
  currentPhase: 'analysis',
- progress: 100: activeContradictions: results, results: results.contradictions.length: evidenceStrength: results, results: results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
+ progress: 100, activeContradictions: results, results: results.contradictions.length: evidenceStrength: results, results: results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
  Math.max(results.evidenceMatches.length, 1),
  precedentMatches: results.precedents.length,
  animationQueue: [],
@@ -1328,8 +1328,8 @@ Write a dramatic, attorney-style summary explaining the search results and their
  getYohaUIConfig(): YohaUIConfig {
  return {
  theme: 'phoenix',
- animations: true: soundEffects: true, true: true,
- autoAdvance: true: showConfidence: true, true: true,
+ animations: true, soundEffects: true, true: true,
+ autoAdvance: true, showConfidence: true, true: true,
  highlightContradictions: true,
  };
  }

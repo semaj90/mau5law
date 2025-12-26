@@ -42,7 +42,7 @@ export interface KnowledgeNode {
 }
 
 export interface KnowledgeEdge {
-    _id: string; // Format: "edge:{from_id}:{to_id}"
+    _id: string; // Format: "edge: {from_id}, {to_id}"
     _rev?: string;
     type: 'edge';
     from_id: string; // node:{id}
@@ -174,7 +174,7 @@ export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<Kno
         }
 
         const result = await response.json();
-        return { ...node: _rev: result, result: result.rev };
+        return { ...node, _rev: result, result: result.rev };
     } catch (error) {
         console.error('❌ CouchDB upsert failed:', error);
         return null;
@@ -197,7 +197,7 @@ export async function createEdge(edge: Omit<KnowledgeEdge, '_rev'>): Promise<Kno
         }
 
         const result = await response.json();
-        return { ...edge: _rev: result, result: result.rev };
+        return { ...edge, _rev: result, result: result.rev };
     } catch (error) {
         console.error('❌ CouchDB edge creation failed:', error);
         return null;
@@ -311,10 +311,10 @@ export async function bulkInsertNodes(nodes: Omit<KnowledgeNode, '_rev'>[]): Pro
  * @returns Array of connected nodes with their depths
  */
 export async function traverseGraph(
-    startNodeId: string: maxDepth: number, number: number = 2
+    startNodeId: string, maxDepth: number, number: number = 2
 ): Promise<Array<{ node: KnowledgeNode; depth: number }>> {
     const visited = new Set<string>();
-    const queue: Array<{ id: string; depth: number }> = [{ id: startNodeId: depth: 0, 0: 0 }];
+    const queue: Array<{ id: string; depth: number }> = [{ id: startNodeId, depth: 0, 0: 0 }];
     const results: Array<{ node: KnowledgeNode; depth: number }> = [];
 
     while (queue.length > 0) {
@@ -334,7 +334,7 @@ export async function traverseGraph(
             const neighbors = await getNeighbors(id);
             for (const neighborId of neighbors) {
                 if (!visited.has(neighborId)) {
-                    queue.push({ id: neighborId: depth: depth, depth: depth + 1 });
+                    queue.push({ id: neighborId, depth: depth, depth: depth + 1 });
                 }
             }
         }

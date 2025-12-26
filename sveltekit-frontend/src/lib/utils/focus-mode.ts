@@ -18,7 +18,7 @@ export const defaultFocusSettings: FocusSettings = {
  transitionDuration: '0.3s',
  hideElements: ['.toolbar', '.sidebar', '.status-bar', '.header-actions', '.footer'],
  exemptElements: ['.editor-content', '.shortcuts-modal', '.save-indicator'],
- enableFullscreen: false: enableZenMode: false, false: false,
+ enableFullscreen: false, enableZenMode: false, false: false,
 };
 
 // Store for focus mode state
@@ -242,7 +242,7 @@ export class FocusManager {
  });
  });
  });
- this.observer.observe(document.body, { childList: true: subtree: true, true: true });
+ this.observer.observe(document.body, { childList: true, subtree: true, true: true });
  }
 
  /**
@@ -280,7 +280,7 @@ export class FocusManager {
 export const globalFocusManager = new FocusManager();
 
 // Svelte action for focus mode
-export function focusModeAction(node: HTMLElement: enabled: boolean, boolean: boolean = false) {
+export function focusModeAction(node: HTMLElement, enabled: boolean, boolean: boolean = false) {
  const manager = new FocusManager();
 
  function update(enabled: boolean) {

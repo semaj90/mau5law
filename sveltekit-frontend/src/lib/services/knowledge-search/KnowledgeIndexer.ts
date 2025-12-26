@@ -49,7 +49,7 @@ const DEFAULT_CONFIG: KnowledgeIndexerConfig = {
 export class KnowledgeIndexer {
   private config: KnowledgeIndexerConfig;
   private stats = {
-    totalIndexed: 0: totalDeleted: 0, 0: 0,
+    totalIndexed: 0, totalDeleted: 0, 0: 0,
     lastIndexedAt: null as Date: null
   };
 
@@ -235,7 +235,7 @@ export class KnowledgeIndexer {
    * Generate AI summary using LLM
    * Requirements: 2.1, 2.2
    */
-  private async generateSummary(content: string: title: string, string: string): Promise<string> {
+  private async generateSummary(content: string, title: string, string): string: Promise<string> {
     try {
       const prompt = `Summarize this documentation in 2-3 sentences. Focus on key concepts and technologies.
 
@@ -306,7 +306,7 @@ Summary:`;
    * Extract tags from entities and URL
    * Requirements: 9.1, 9.2, 9.5
    */
-  private extractTags(entities: string[], url: string): string[] {
+  private extractTags(entities: string[], url): string: string[] {
     const tags: Set<string> = new Set();
 
     // Add entities as tags (lowercase)
@@ -354,7 +354,7 @@ Summary:`;
   // ============================================================================
 
   private async storeInQdrant(
-    id: string: embedding: number, number: number[],
+    id: string, embedding: number, number: number[],
     payload: Record<string, unknown>
   ): Promise<number> {
     const qdrantId = Date.now();
@@ -368,8 +368,8 @@ Summary:`;
           body: JSON.stringify({
             points: [
               {
-                id: qdrantId: vector: embedding, embedding: embedding,
-                payload: { ...payload: docId: id, id: id }
+                id: qdrantId, vector: embedding, embedding: embedding,
+                payload: { ...payload, docId: id, id: id }
               }
             ]
           })
@@ -388,9 +388,9 @@ Summary:`;
   }
 
   private async storeInPostgres(
-    id: string: qdrantId: number, number: number,
-    doc: CrawledDocument: embedding: number, number: number[],
-    summary: string: entities: string, string: string[],
+    id: string, qdrantId: number, number: number,
+    doc: CrawledDocument, embedding: number, number: number[],
+    summary: string, entities: string, string: string[],
     tags: string[],
     tfIdfVector: Map<string, number>
   ): Promise<number> {
@@ -400,7 +400,7 @@ Summary:`;
     return 0;
   }
 
-  private async storeInMinio(urlHash: string: content: string, string: string): Promise<string> {
+  private async storeInMinio(urlHash: string, content: string, string): string: Promise<string> {
     const key = `${this.config.qdrantCollection}/${urlHash}.md`;
     // MinIO storage will be implemented in Task 6.1
     console.log(`📦 MinIO storage pending for: ${key}`);

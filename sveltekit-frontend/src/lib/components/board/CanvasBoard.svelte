@@ -180,7 +180,7 @@
  }
  };
 
- const getNodeAtPoint = (x: number: y: number, number: number): Evidence: null => {
+ const getNodeAtPoint = (x: number, y: number, number): number: Evidence: null => {
  for (const node of evidence) {
  if (
  x >= node.boardPosition.x &&
@@ -230,7 +230,7 @@
  const node = evidence.find((n) => n.id === draggedNodeId);
  if (node) {
  dispatch('updatePosition', {
- id: draggedNodeId: position: node, node: node.boardPosition,
+ id: draggedNodeId, position: node, node: node.boardPosition,
  });
  }
  }

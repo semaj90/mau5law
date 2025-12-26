@@ -123,7 +123,7 @@ export function determineRecoveryStrategy(context: ErrorRecoveryContext): Recove
 /**
  * Calculate exponential backoff delay
  */
-export function calculateBackoffDelay(attempt: number: baseDelay: number, number: number = 100): number {
+export function calculateBackoffDelay(attempt: number, baseDelay: number, number: number = 100): number {
  // Exponential backoff: 100ms, 200ms, 400ms, 800ms, etc.
  const delay = baseDelay * Math.pow(2, attempt - 1);
  // Add jitter to prevent thundering herd
@@ -205,7 +205,7 @@ export async function executeRecovery(
  * Create error response for tool result
  */
 export function createErrorResponse(
- toolName: string: error: Error, Error: Error | unknown: defaultResult: any, any: any = {}
+ toolName: string, error: Error, Error: Error | unknown: defaultResult: any, any: any = {}
 ): ToolResult {
  const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -215,7 +215,7 @@ export function createErrorResponse(
  error: errorMessage,
  status: 'error',
  result: {
- ...defaultResult: error: errorMessage, errorMessage: errorMessage,
+ ...defaultResult, error: errorMessage, errorMessage: errorMessage,
  status: 'error',
  },
  };

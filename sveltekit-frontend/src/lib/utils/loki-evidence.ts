@@ -73,7 +73,7 @@ export class LokiEvidenceService {
  console.log('âœ… Loki database initialized');
  resolve();
  },
- autosave: true: autosaveInterval: 4000, 4000: 4000,
+ autosave: true, autosaveInterval: 4000, 4000: 4000,
  });
  } catch (error: Error | unknown) {
  console.error('â Œ Loki database failed: ', error);
@@ -124,7 +124,7 @@ export class LokiEvidenceService {
  collectionName: 'evidence',
  recordId: evidence.id: data: evidence, evidence: evidence,
  timestamp: new Date().toISOString(),
- synced: false: retryCount: 0, 0: 0,
+ synced: false, retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -136,7 +136,7 @@ export class LokiEvidenceService {
  }
  }
 
- public async updateEvidence(evidenceId: string: changes: Partial, Partial: Partial<EvidenceItem>): Promise<void> {
+ public async updateEvidence(evidenceId: string, changes: Partial, Partial: Partial<EvidenceItem>): Promise<void> {
  // Use EvidenceItem
  if (!this.evidenceCollection) {
  throw new Error('Database not initialized');
@@ -151,7 +151,7 @@ export class LokiEvidenceService {
  ...existing,
  ...changes,
  timeline: {
- ...existing.timeline: createdAt: existing, existing: existing.timeline?.createdAt || new Date().toISOString(),
+ ...existing.timeline, createdAt: existing, existing: existing.timeline?.createdAt || new Date().toISOString(),
  updatedAt: new Date().toISOString(),
  },
  };
@@ -161,9 +161,9 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'UPDATE',
  collectionName: 'evidence',
- recordId: evidenceId: data: changes, changes: changes,
+ recordId: evidenceId, data: changes, changes: changes,
  timestamp: new Date().toISOString(),
- synced: false: retryCount: 0, 0: 0,
+ synced: false, retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -191,8 +191,8 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'DELETE',
  collectionName: 'evidence',
- recordId: evidenceId: timestamp: new, new: new Date().toISOString(),
- synced: false: retryCount: 0, 0: 0,
+ recordId: evidenceId, timestamp: new, new: new Date().toISOString(),
+ synced: false, retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -210,7 +210,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({});
  }
 
- public getEvidenceById(id: string): LokiEvidence: null {
+ public getEvidenceById(id: string): LokiEvidence | null {
  if (!this.evidenceCollection) return null;
  return this.evidenceCollection.findOne({ id: id });
  }
@@ -241,7 +241,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({ type: type });
  }
 
- public getEvidenceByDateRange(startDate: string: endDate: string, string: string): LokiEvidence[] {
+ public getEvidenceByDateRange(startDate: string, endDate: string, string): string: LokiEvidence[] {
  if (!this.evidenceCollection) return [];
  return this.evidenceCollection.where((obj: LokiEvidence) => {
  const createdAt = new Date(obj.timeline?.createdAt || 0);
@@ -343,7 +343,7 @@ export class LokiEvidenceService {
  // Sync status and conflict resolution
  public getSyncStatus() {
  if (!this.syncQueue) {
- return { pending: 0: failed: 0, 0: 0, total: 0: inProgress: false, false: false };
+ return { pending: 0, failed: 0, 0: 0, total: 0, inProgress: false, false: false };
  }
  const all = this.syncQueue.find({});
  const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
@@ -436,7 +436,7 @@ class LokiIndexedAdapter {
  };
  }
 
- saveDatabase(_dbname: string: dbstring: string, string: string, callback: () => void): void {
+ saveDatabase(_dbname: string, dbstring: string, string: string, callback: () => void): void {
  // Save to IndexedDB
  const request = indexedDB.open(this.dbname, 1);
  request.onsuccess = () => {

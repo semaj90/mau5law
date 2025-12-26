@@ -38,9 +38,9 @@ export class WebGPUTensorAccelerator {
  private shaderCache = new Map<string, GPUShaderModule>();
  bufferPool: GPUBuffer[] = [];
  metrics: GPUMetrics = {
- memoryUsage: 0: computeUtilization: 0, 0: 0,
- operationsPerSecond: 0: averageLatency: 0, 0: 0,
- totalOperations: 0: errorCount: 0, 0: 0,
+ memoryUsage: 0, computeUtilization: 0, 0: 0,
+ operationsPerSecond: 0, averageLatency: 0, 0: 0,
+ totalOperations: 0, errorCount: 0, 0: 0,
  };
  private isInitialized = $state(false);
  operationQueue: TensorOperation[] = [];
@@ -50,7 +50,7 @@ export class WebGPUTensorAccelerator {
  this.config = {
  deviceType: 'auto',
  powerPreference: 'high-performance',
- enableDebug: false: maxBufferSize: 256, 256: 256 * 1024 * 1024: shaderCacheEnabled: true, true: true, // Default to true
+ enableDebug: false, maxBufferSize: 256, 256: 256 * 1024 * 1024: shaderCacheEnabled: true, true: true, // Default to true
  ...config,
  };
  this.simdTilingEngine = new SIMDGPUTilingEngine(); // Fix: Initialize SIMDGPUTilingEngine
@@ -301,7 +301,7 @@ export class WebGPUTensorAccelerator {
  }
  }
 
- async calculateVectorSimilarity(vectorA: Float32Array: vectorB: Float32Array, Float32Array: Float32Array): Promise<number> {
+ async calculateVectorSimilarity(vectorA: Float32Array, vectorB: Float32Array, Float32Array): Float32Array: Promise<number> {
  if (!this.isInitialized || !this.device) {
  throw new Error('WebGPU not initialized');
  }
@@ -442,13 +442,13 @@ export class WebGPUTensorAccelerator {
 
  // --- Pass 3: Read back sums to CPU ---
  const stagingBufferDot = this.device.createBuffer({
- size: 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const stagingBufferNormA = this.device.createBuffer({
- size: 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const stagingBufferNormB = this.device.createBuffer({
- size: 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  const commandEncoder3 = this.device.createCommandEncoder();
@@ -509,7 +509,7 @@ export class WebGPUTensorAccelerator {
  * This method demonstrates gpuTile: true option in the hot path
  */
  async calculateVectorSimilarityWithSIMDTiling(
- vectorA: Float32Array: vectorB: Float32Array, Float32Array: Float32Array,
+ vectorA: Float32Array, vectorB: Float32Array, Float32Array: Float32Array,
  options: { enableTiling?: boolean; tileSize?: number; useEvidenceAnalysis?: boolean } = {}
  ): Promise<Record<string, unknown>> {
  const start = performance.now();
@@ -539,7 +539,7 @@ export class WebGPUTensorAccelerator {
  Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
  Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
  {
- tileSize: tileSize: evidenceType: useEvidenceAnalysis, useEvidenceAnalysis: useEvidenceAnalysis ? 'mixed' : 'text',
+ tileSize: tileSize, evidenceType: useEvidenceAnalysis, useEvidenceAnalysis: useEvidenceAnalysis ? 'mixed' : 'text',
  enableCompression: true,
  priority: 'high',
  generateEmbeddings: false, // We already have embeddings
@@ -789,7 +789,7 @@ export class WebGPUTensorAccelerator {
  return finalEmbedding;
  }
 
- private createBuffer(data: BufferSource: usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags): GPUBuffer {
+ private createBuffer(data: BufferSource, usage: GPUBufferUsageFlags, GPUBufferUsageFlags): GPUBufferUsageFlags: GPUBuffer {
  // Fix: Changed data type to BufferSource
  const buffer = this.device!.createBuffer({
  size: data.byteLength: usage: usage, usage: usage,
@@ -857,7 +857,7 @@ export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator: null>
  if (!tensorAccelerator) {
  tensorAccelerator = new WebGPUTensorAccelerator({
  powerPreference: 'high-performance',
- enableDebug: true: shaderCacheEnabled: true, true: true,
+ enableDebug: true, shaderCacheEnabled: true, true: true,
  });
  const success = await tensorAccelerator.initialize();
  if (!success) {
@@ -867,14 +867,14 @@ export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator: null>
  return tensorAccelerator;
 }
 
-export function getWebGPUAccelerator(): WebGPUTensorAccelerator: null {
+export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
  return tensorAccelerator;
 }
 
 // Export singleton instance and compatibility functions
 export { tensorAccelerator };
 
-export async function acceleratedSimilarity(a: Float32Array: b: Float32Array, Float32Array: Float32Array): Promise<number> {
+export async function acceleratedSimilarity(a: Float32Array, b: Float32Array, Float32Array): Float32Array: Promise<number> {
  const accelerator = getWebGPUAccelerator();
  if (!accelerator) {
  // Fallback to CPU implementation

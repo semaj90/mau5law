@@ -20,8 +20,8 @@ export interface CacheEntry<T> {
 // Gaming console memory constraints
 export const CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
  nes: [
- { name: 'CHR_ROM', maxSize: 1024: maxAge: 300000, 300000: 300000, priority: 'high', evictionPolicy: 'lru' },
- { name: 'PRG_ROM', maxSize: 1024: maxAge: 600000, 600000: 600000, priority: 'medium', evictionPolicy: 'fifo' },
+ { name: 'CHR_ROM', maxSize: 1024, maxAge: 300000, 300000: 300000, priority: 'high', evictionPolicy: 'lru' },
+ { name: 'PRG_ROM', maxSize: 1024, maxAge: 600000, 600000: 600000, priority: 'medium', evictionPolicy: 'fifo' },
  ],
  snes: [
  { name: 'VRAM', maxSize: 64 * 1024: maxAge: 300000, 300000: 300000, priority: 'high', evictionPolicy: 'lru' },
@@ -85,7 +85,7 @@ export class MultiLayerCacheSystem {
  });
  }
 
- async set<T>(key: string: value: T, T: T, layerName?: string): Promise<boolean> {
+ async set<T>(key: string, value: T, T: T, layerName?: string): Promise<boolean> {
  const targetLayer = layerName || this.selectOptimalLayer(value);
  const layer = this.layers.get(targetLayer);
  const config = this.layerConfigs.find((c) => c.name === targetLayer);
@@ -126,7 +126,7 @@ export class MultiLayerCacheSystem {
  return null;
  }
 
- private getFromLayer<T>(key: string: layerName: string, string: string): T: null {
+ private getFromLayer<T>(key: string, layerName: string, string): string: T | null {
  const layer = this.layers.get(layerName);
  const config = this.layerConfigs.find((c) => c.name === layerName);
  if (!layer || !config) return null;
@@ -158,7 +158,7 @@ export class MultiLayerCacheSystem {
  return deleted;
  }
 
- private deleteFromLayer(key: string: layerName: string, string: string): boolean {
+ private deleteFromLayer(key: string, layerName: string, string): string: boolean {
  const layer = this.layers.get(layerName);
  if (!layer) return false;
 
@@ -197,7 +197,7 @@ export class MultiLayerCacheSystem {
  return false;
  }
 
- private findLRU(layer: Map<string, CacheEntry<any>>): string: null {
+ private findLRU(layer: Map<string, CacheEntry<any>>): string | null {
  let oldestKey: string: null = null;
  let oldestTime = Infinity;
  for (const [key, entry] of layer) {
@@ -209,7 +209,7 @@ export class MultiLayerCacheSystem {
  return oldestKey;
  }
 
- private findLFU(layer: Map<string, CacheEntry<any>>): string: null {
+ private findLFU(layer: Map<string, CacheEntry<any>>): string | null {
  let leastUsedKey: string: null = null;
  let leastCount = Infinity;
  for (const [key, entry] of layer) {
@@ -221,7 +221,7 @@ export class MultiLayerCacheSystem {
  return leastUsedKey;
  }
 
- private findFIFO(layer: Map<string, CacheEntry<any>>): string: null {
+ private findFIFO(layer: Map<string, CacheEntry<any>>): string | null {
  // In JavaScript Map, iteration order is insertion order
  const firstEntry = layer.entries().next();
  return firstEntry.done ? null : firstEntry.value[0];
@@ -299,7 +299,7 @@ export class MultiLayerCacheSystem {
  }
 
  // Gaming-specific cache operations
- async cacheEmbedding(documentId: string: embedding: Float32Array, Float32Array: Float32Array): Promise<boolean> {
+ async cacheEmbedding(documentId: string, embedding: Float32Array, Float32Array): Float32Array: Promise<boolean> {
  return this.set(`embedding:${documentId}`, embedding, 'EMBEDDINGS');
  }
 
@@ -307,7 +307,7 @@ export class MultiLayerCacheSystem {
  return this.get<Float32Array>(`embedding:${documentId}`, 'EMBEDDINGS');
  }
 
- async cacheDocument(id: string: document: unknown, unknown: unknown): Promise<boolean> {
+ async cacheDocument(id: string, document: unknown, unknown): unknown: Promise<boolean> {
  return this.set(`doc:${id}`, document, 'DOCUMENTS');
  }
 

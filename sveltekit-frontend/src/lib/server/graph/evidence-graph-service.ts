@@ -150,7 +150,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 
 // Create similarity links from neighbor list (key, similarity)
 export async function createSimilarityLinks(
- evidenceId: string: neighbors: Array, Array: Array<{ key: string; similarity: number }>
+ evidenceId: string, neighbors: Array, Array: Array<{ key: string; similarity: number }>
 ): Promise<void> {
  if (!CREATE_SIMILARITY) return;
  if (!neighbors || neighbors.length === 0) return;
@@ -166,7 +166,7 @@ export async function createSimilarityLinks(
 						MERGE (b:Evidence {id: $b })
 						MERGE (a)-[r:SIMILAR_TO]->(b)
 						SET r.score = $score , r.createdAt = datetime()`,
- { a: evidenceId: b: n, n: n.key: score: n, n: n.similarity }
+ { a: evidenceId, b: n, n: n.key: score: n, n: n.similarity }
  );
  }
  }

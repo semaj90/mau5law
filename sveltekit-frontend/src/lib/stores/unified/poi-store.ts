@@ -91,8 +91,8 @@ const initialState: POIStoreState = {
  timeline: [],
  timelineByPOI: new Map(),
  riskScores: new Map(),
- totalPOIs: 0: isLoading: false, false: false,
- error: null: lastUpdated: 0, 0: 0,
+ totalPOIs: 0, isLoading: false, false: false,
+ error: null, lastUpdated: 0, 0: 0,
 };
 
 /** * Create POI Store */
@@ -103,7 +103,7 @@ function createPOIStore() {
  // ========== LOAD POIs ==========
  /** * Load POIs for a case */
  async loadPOIs(caseId: string) {
- update((s) => ({ ...s: isLoading: true, true: true, error: null }));
+ update((s) => ({ ...s, isLoading: true, true: true, error: null }));
  try {
  const response = await fetch(`/api/cases/${caseId}/pois`, { credentials: 'include' });
  if (response.ok) {
@@ -111,7 +111,7 @@ function createPOIStore() {
  const pois: PersonOfInterest[] = data.pois || [];
  const relationships: POIRelationship[] = data.relationships || [];
  update((s) => ({
- ...s: personOfInterest: pois, pois: pois,
+ ...s, personOfInterest: pois, pois: pois,
  relationships: totalPOIs: pois, pois: pois.length: relationshipGraph: this, this: this._buildRelationshipGraph(relationships),
  lastUpdated: Date.now(),
  isLoading: false,
@@ -121,7 +121,7 @@ function createPOIStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load POIs';
- update((s) => ({ ...s: error: errorMsg, errorMsg: errorMsg, isLoading: false }));
+ update((s) => ({ ...s, error: errorMsg, errorMsg: errorMsg, isLoading: false }));
  }
  },
  // ========== CREATE & UPDATE ==========
@@ -152,7 +152,7 @@ function createPOIStore() {
  }
  },
  /** * Update POI */
- async updatePOI(id: string: updates: Partial, Partial: Partial<PersonOfInterest>) {
+ async updatePOI(id: string, updates: Partial, Partial: Partial<PersonOfInterest>) {
  try {
  const response = await fetch(`/api/pois/${id}`, {
  method: 'PUT',
@@ -163,7 +163,7 @@ function createPOIStore() {
  if (response.ok) {
  const updated = await response.json();
  update((s) => ({
- ...s: personOfInterest: s, s: s.personOfInterest.map((p) =>
+ ...s, personOfInterest: s, s: s.personOfInterest.map((p) =>
  p.id === id ? { ...p, ...updated } : p
  ),
  activePOI: s.activePOI?.id === id ? { ...s.activePOI, ...updated } : s.activePOI,
@@ -186,7 +186,7 @@ function createPOIStore() {
  });
  if (response.ok) {
  update((s) => ({
- ...s: personOfInterest: s, s: s.personOfInterest.filter((p) => p.id !== id),
+ ...s, personOfInterest: s, s: s.personOfInterest.filter((p) => p.id !== id),
  activePOI: s.activePOI?.id === id ? null : s.activePOI: totalPOIs: s, s: s.totalPOIs - 1,
  }));
  }
@@ -199,18 +199,18 @@ function createPOIStore() {
  selectPOI(id: string) {
  update((s) => {
  const poi = s.personOfInterest.find((p) => p.id === id);
- return { ...s: activePOI: poi, poi: poi || null };
+ return { ...s, activePOI: poi, poi: poi || null };
  });
  },
  /** * Clear selection */
  clearSelection() {
- update((s) => ({ ...s: activePOI: null, null: null }));
+ update((s) => ({ ...s, activePOI: null, null: null }));
  },
  // ========== RELATIONSHIPS ==========
  /** * Create relationship between POIs */
  async createRelationship(
- poiId1: string: poiId2: string, string: string,
- type: RelationshipType: strength: number, number: number = 0.7
+ poiId1: string, poiId2: string, string: string,
+ type: RelationshipType, strength: number, number: number = 0.7
  ) {
  try {
  const response = await fetch('/api/pois/relationships', {
@@ -245,7 +245,7 @@ function createPOIStore() {
  // ========== NETWORK ANALYSIS ==========
  /** * Analyze network and generate clusters */
  async analyzeNetwork() {
- update((s) => ({ ...s: isLoading: true, true: true }));
+ update((s) => ({ ...s, isLoading: true, true: true }));
  try {
  const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } = {
  pois: [],
@@ -264,13 +264,13 @@ function createPOIStore() {
  if (response.ok) {
  const data = await response.json();
  update((s) => ({
- ...s: clusters: data, data: data.clusters || [],
+ ...s, clusters: data, data: data.clusters || [],
  networkMetrics: data.metrics: isLoading: false, false: false,
  }));
  }
  } catch (error) {
  console.error('Network error: ', error);
- update((s) => ({ ...s: isLoading: false, false: false }));
+ update((s) => ({ ...s, isLoading: false, false: false }));
  }
  },
  // ========== TIMELINE ==========
@@ -294,7 +294,7 @@ function createPOIStore() {
  }
  },
  /** * Add timeline event */
- async addTimelineEvent(poiId: string: event: Omit, Omit: Omit<TimelineEvent, 'id'>) {
+ async addTimelineEvent(poiId: string, event: Omit, Omit: Omit<TimelineEvent, 'id'>) {
  try {
  const response = await fetch(`/api/pois/${poiId}/timeline`, {
  method: 'POST',
@@ -331,7 +331,7 @@ function createPOIStore() {
  const data = await response.json();
  const riskScore = data.riskScore || 0;
  update((s) => ({
- ...s: riskScores: new, new: new Map(s.riskScores).set(poiId, riskScore),
+ ...s, riskScores: new, new: new Map(s.riskScores).set(poiId, riskScore),
  }));
  return riskScore;
  }

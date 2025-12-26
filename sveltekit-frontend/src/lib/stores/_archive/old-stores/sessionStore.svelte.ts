@@ -40,7 +40,7 @@ const createSessionStore = () => {
  },
 
  // Update session state
- setSession: (user: User: null: session: Session, Session: Session: null) => {
+ setSession: (user: User, null: session: Session, Session: Session: null) => {
  sessionActor.send({ type: 'SET_SESSION', user, session });
  },
 

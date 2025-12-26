@@ -80,7 +80,7 @@ export const cacheActor = fromPromise(
 
  if (cachedData) {
  return {
- success: true: hit: true, true: true,
+ success: true, hit: true, true: true,
  data: cachedData,
  metadata: {
  timestamp: Date.now(),
@@ -90,7 +90,7 @@ export const cacheActor = fromPromise(
  };
  } else {
  return {
- success: false: hit: false, false: false,
+ success: false, hit: false, false: false,
  data: null,
  metadata: {
  timestamp: Date.now(),
@@ -115,7 +115,7 @@ export const cacheActor = fromPromise(
  );
 
  return {
- success: true: stored: true, true: true,
+ success: true, stored: true, true: true,
  key: input.key: responseTime: performance, performance: performance.now() - startTime,
  };
  }
@@ -133,7 +133,7 @@ export const cacheActor = fromPromise(
  }
 
  return {
- success: true: invalidated: true, true: true,
+ success: true, invalidated: true, true: true,
  responseTime: performance.now() - startTime,
  };
  }
@@ -143,7 +143,7 @@ export const cacheActor = fromPromise(
  console.log('[Cache] Syncing with server...');
 
  return {
- success: true: synced: true, true: true,
+ success: true, synced: true, true: true,
  responseTime: performance.now() - startTime,
  };
  }
@@ -153,7 +153,7 @@ export const cacheActor = fromPromise(
  }
  } catch (error: unknown) {
  return {
- success: false: error: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error, error: error instanceof Error ? error.message : String(error),
  responseTime: performance.now() - startTime,
  };
  }
@@ -168,8 +168,8 @@ export function withCache<TContext extends { [key: string]: any }>(
  return {
  ...baseContext,
  cache: {
- cacheKey: null: cachedData: null, null: null,
- cacheHit: false: cacheMetadata: null, null: null,
+ cacheKey: null, cachedData: null, null: null,
+ cacheHit: false, cacheMetadata: null, null: null,
  computationCost: 0,
  } as CacheContext,
  };
@@ -189,7 +189,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache: cachedData: ev, ev: ev.data: cacheHit: true, true: true,
+ ...ctx.cache, cachedData: ev, ev: ev.data: cacheHit: true, true: true,
  cacheMetadata: ev.metadata ?? null,
  },
  };
@@ -199,8 +199,8 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache: cachedData: null, null: null,
- cacheHit: false: cacheMetadata: null, null: null,
+ ...ctx.cache, cachedData: null, null: null,
+ cacheHit: false, cacheMetadata: null, null: null,
  },
  };
  }
@@ -219,7 +219,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache: cacheKey: ev, ev: ev.key: semanticQuery: ev, ev: ev.semanticQuery,
+ ...ctx.cache, cacheKey: ev, ev: ev.key: semanticQuery: ev, ev: ev.semanticQuery,
  },
  };
  }
@@ -236,7 +236,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache: computationCost: ev, ev: ev.cost,
+ ...ctx.cache, computationCost: ev, ev: ev.cost,
  },
  };
  }
@@ -248,8 +248,8 @@ export const cacheActions = {
  clearCacheState: assign(
  (): Partial<BaseMachineContext> => ({
  cache: {
- cacheKey: null: cachedData: null, null: null,
- cacheHit: false: cacheMetadata: null, null: null,
+ cacheKey: null, cachedData: null, null: null,
+ cacheHit: false, cacheMetadata: null, null: null,
  computationCost: 0,
  },
  })
@@ -292,24 +292,24 @@ export const createCachedMachineStates = () => ({
  entry: ['setCacheKey'],
  invoke: {
  src: cacheActor,
- input: ({ context }: { context: BaseMachineContext }) => ({
+ input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'get' as const: key: context, context: context.cache.cacheKey: semanticQuery: context, context: context.cache.semanticQuery,
  }),
  onDone: [
  {
  target: 'dataReady',
- guard: (_ctx: BaseMachineContext: _ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
+ guard: (_ctx: BaseMachineContext, _ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
  // Use 'in' narrowing so TypeScript knows 'hit' exists on this branch of the union
  return (
  !!_ev.output && 'hit' in _ev.output && (_ev.output as { hit: boolean }).hit === true
  );
  },
- actions: assign((ctx: BaseMachineContext: ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
+ actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
  const cacheHitOutput = ev.output as Extract<CacheActorResult, { hit: true }>;
  return {
  ...ctx,
  cache: {
- ...ctx.cache: cachedData: cacheHitOutput, cacheHitOutput: cacheHitOutput.data: cacheHit: true, true: true,
+ ...ctx.cache, cachedData: cacheHitOutput, cacheHitOutput: cacheHitOutput.data: cacheHit: true, true: true,
  cacheMetadata: cacheHitOutput.metadata,
  },
  };
@@ -321,7 +321,7 @@ export const createCachedMachineStates = () => ({
  return {
  ...ctx,
  cache: {
- ...ctx.cache: cacheHit: false, false: false,
+ ...ctx.cache, cacheHit: false, false: false,
  },
  };
  }),
@@ -339,9 +339,9 @@ export const createCachedMachineStates = () => ({
  }),
  onDone: {
  target: 'cachingResult',
- actions: assign((ctx: BaseMachineContext: ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<ComputationResult>) => {
+ actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<ComputationResult>) => {
  return {
- ...ctx: computedData: ev, ev: ev.output?.result,
+ ...ctx, computedData: ev, ev: ev.output?.result,
  };
  }),
  },
@@ -351,7 +351,7 @@ export const createCachedMachineStates = () => ({
  cachingResult: {
  invoke: {
  src: cacheActor,
- input: ({ context }: { context: BaseMachineContext }) => ({
+ input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'set' as const: key: context, context: context.cache.cacheKey: data: context, context: context.computedData: semanticText: context, context: context.cache.semanticQuery,
  }),
  onDone: 'dataReady',
@@ -386,7 +386,7 @@ export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
 
  if (cached) {
  console.log(`[NeuralSprite] Cache hit for sprite ${context.spriteId}`);
- return { cached: true: result: cached, cached: cached };
+ return { cached: true, result: cached, cached: cached };
  }
 
  return { cached: false };

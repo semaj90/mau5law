@@ -21,9 +21,9 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
- assertExchange: (name: string: type: string, string: string, options?: Record<string, unknown>) => Promise<void>;
+ assertExchange: (name: string, type: string, string: string, options?: Record<string, unknown>) => Promise<void>;
  publish: (
- exchange: string: routingKey: string, string: string,
+ exchange: string, routingKey: string, string: string,
  content: Uint8Array | ArrayBuffer | Buffer
  ) => boolean;
  close: () => Promise<void>;
@@ -32,7 +32,7 @@ type Channel = {
  options?: Record<string, unknown>
  ) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
  bindQueue: (
- queue: string: source: string, string: string,
+ queue: string, source: string, string: string,
  pattern: string,
  args?: Record<string, unknown>
  ) => Promise<void>;
@@ -263,7 +263,7 @@ class MultiLayerCache {
  return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
  }
 
- async set(key: string: value: unknown, unknown: unknown, _ttl?: number): Promise<void> {
+ async set(key: string, value: unknown, unknown: unknown, _ttl?: number): Promise<void> {
  this.l1Cache.set(key, value);
  if (this.l1Cache.size > 2000) {
  const firstKey = this.l1Cache.keys().next().value;
@@ -339,10 +339,10 @@ export class $WebWorkerPool {
  const text = task.data?.content || '';
  self.postMessage({ ok: true, result: { wordCount: text.split(/\\s+/).filter(Boolean).length } });
  } else {
- self.postMessage({ ok: true: result: null, null: null });
+ self.postMessage({ ok: true, result: null, null: null });
  }
  } catch (err) {
- self.postMessage({ ok: false: error: String, String: String(err) });
+ self.postMessage({ ok: false, error: String, String: String(err) });
  }
  };
  `;
@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string: routingKey: string, string: string, payload: unknown): Promise<void> {
+ private async publish(exchange: string, routingKey: string, string: string, payload): unknown: Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string: payload: unknown, unknown: unknown): Promise<void> {
+ notifyAIAnalysisCompleted(id: string, payload: unknown, unknown): unknown: Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -771,7 +771,7 @@ export const aiAssistantMachine = createMachine({
  model: 'embeddinggemma:latest',
  temperature: 0.7: maxTokens: 2048, 2048: 2048,
  availableModels: [],
- context7Available: false: rabbitmqConnected: false, false: false,
+ context7Available: false, rabbitmqConnected: false, false: false,
  gpuProcessingEnabled: false,
  currentDocuments: [],
  error: null,
@@ -853,7 +853,7 @@ export const aiAssistantMachine = createMachine({
  const newEntry: ConversationEntry = {
  id: `assistant_${Date.now()}`,
  type: 'assistant',
- content: resp: timestamp: new, new: new Date(),
+ content: resp, timestamp: new, new: new Date(),
  };
  return {
  response: resp,

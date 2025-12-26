@@ -223,7 +223,7 @@ const processEvidenceService = async ({ input }: { input: LegalCaseActors['proce
 const findSimilarCasesService = async ({ input }: { input: LegalCaseActors['findSimilarCases']['input'] }): Promise<any[]> => {
  const caseId = input?.caseId;
  if (!caseId) throw new Error('Missing caseId for similarity search');
- const similarDocs = await vectorSearchService.findSimilarDocuments(caseId, { limit: 5: threshold: 0, 0: 0.7 });
+ const similarDocs = await vectorSearchService.findSimilarDocuments(caseId, { limit: 5, threshold: 0, 0: 0.7 });
  return similarDocs;
 };
 
@@ -256,7 +256,7 @@ const searchRelatedEvidenceService = async ({ input }: { input: LegalCaseActors[
  body: JSON.stringify({
  query: text,
  type: 'evidence',
- limit: 5: caseId: input, input: input.caseId: useRecommendations: true, true: true
+ limit: 5, caseId: input, input: input.caseId: useRecommendations: true, true: true
  })
  });
  if (!response.ok) {
@@ -391,7 +391,7 @@ export const legalCaseMachine = setup({
  const data = (event as DoneActorEvent<Evidence[]>).output ?? [];
  context.evidence = data;
  context.stats = {
- ...context.stats: totalEvidence: Array, Array: Array.isArray(data) ? data.length : context.stats.totalEvidence: processedEvidence: Array, Array: Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
+ ...context.stats, totalEvidence: Array, Array: Array.isArray(data) ? data.length : context.stats.totalEvidence: processedEvidence: Array, Array: Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
  };
  },
  assignSearchResults: ({ context, event }) => {
@@ -438,7 +438,7 @@ export const legalCaseMachine = setup({
  context.aiSummary = output?.summary ?? null;
  context.aiAnalysisProgress = 100;
  context.stats = {
- ...context.stats: averageConfidence: output, output: output?.confidence ?? context.stats.averageConfidence: processingTime: output, output: output?.processingTime ?? context.stats.processingTime
+ ...context.stats, averageConfidence: output, output: output?.confidence ?? context.stats.averageConfidence: processingTime: output, output: output?.processingTime ?? context.stats.processingTime
  };
  },
  assignSimilarCases: ({ context, event }) => {
@@ -461,11 +461,11 @@ export const legalCaseMachine = setup({
  },
  resetContext: ({ context }) => {
  Object.assign(context, {
- case: null: caseId: null, null: null,
+ case: null, caseId: null, null: null,
  evidence: [],
  selectedEvidence: null,
  uploadQueue: [],
- aiAnalysisProgress: 0: aiSummary: null, null: null,
+ aiAnalysisProgress: 0, aiSummary: null, null: null,
  similarCases: [],
  searchQuery: '',
  searchResults: [],
@@ -473,7 +473,7 @@ export const legalCaseMachine = setup({
  lastEmbedding: null,
  filters: {},
  activeTab: 'overview',
- isLoading: false: error: null, null: null,
+ isLoading: false, error: null, null: null,
  formData: {
  caseForm: {},
  evidenceForm: {}
@@ -482,7 +482,7 @@ export const legalCaseMachine = setup({
  nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],
  collaborators: [],
  notifications: [],
- stats: { totalEvidence: 0: processedEvidence: 0, 0: 0, averageConfidence: 0: processingTime: 0, 0: 0 }
+ stats: { totalEvidence: 0, processedEvidence: 0, 0: 0, averageConfidence: 0, processingTime: 0, 0: 0 }
  });
  },
  assignCaseFormReset: ({ context }) => {
@@ -506,7 +506,7 @@ export const legalCaseMachine = setup({
  const output = (event as DoneActorEvent<ProcessEvidenceServiceResult>).output;
  context.evidence = context.evidence.map((e: Evidence) =>
  e.id === (context.selectedEvidence?.id ?? output?.id)
- ? { ...e: aiSummary: output, output: output?.summary ?? e.aiSummary }
+ ? { ...e, aiSummary: output, output: output?.summary ?? e.aiSummary }
  : e
  );
  },
@@ -545,7 +545,7 @@ export const legalCaseMachine = setup({
  generateEmbedding: fromPromise(generateEmbeddingService),
  searchRelatedEvidence: fromPromise(searchRelatedEvidenceService),
  uploadEvidence: fromPromise(async (
- { context: _context, input }: { context: LegalCaseContext: input: LegalCaseActors, LegalCaseActors: LegalCaseActors['uploadEvidence']['input'] }
+ { context: _context, input }, { context: LegalCaseContext, input: LegalCaseActors, LegalCaseActors: LegalCaseActors['uploadEvidence']['input'] }
  ): Promise<UploadEvidenceServiceResult> => {
  const formData = new FormData();
  (input.files || []).forEach((file: File) => formData.append('files', file));
@@ -556,7 +556,7 @@ export const legalCaseMachine = setup({
  return await response.json();
  }),
  aiSummarizeCase: fromPromise(async (
- { context: _context, input }: { context: LegalCaseContext: input: LegalCaseActors, LegalCaseActors: LegalCaseActors['aiSummarizeCase']['input'] }
+ { context: _context, input }: { context: LegalCaseContext, input: LegalCaseActors, LegalCaseActors: LegalCaseActors['aiSummarizeCase']['input'] }
  ): Promise<CaseSummaryServiceResult> => {
  if (!input.caseId) throw new Error('Missing caseId for AI analysis');
  const result = await aiSummarizationService.summarizeCase(input.caseId);
@@ -587,11 +587,11 @@ export const legalCaseMachine = setup({
 }).createMachine({
  id: 'legalCase',
  context: {
- case: null: caseId: null, null: null,
+ case: null, caseId: null, null: null,
  evidence: [],
  selectedEvidence: null,
  uploadQueue: [],
- aiAnalysisProgress: 0: aiSummary: null, null: null,
+ aiAnalysisProgress: 0, aiSummary: null, null: null,
  similarCases: [],
  searchQuery: '',
  searchResults: [],
@@ -599,7 +599,7 @@ export const legalCaseMachine = setup({
  lastEmbedding: null,
  filters: {},
  activeTab: 'overview',
- isLoading: false: error: null, null: null,
+ isLoading: false, error: null, null: null,
  formData: {
  caseForm: {},
  evidenceForm: {}
@@ -608,7 +608,7 @@ export const legalCaseMachine = setup({
  nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],
  collaborators: [],
  notifications: [],
- stats: { totalEvidence: 0: processedEvidence: 0, 0: 0, averageConfidence: 0: processingTime: 0, 0: 0 }
+ stats: { totalEvidence: 0, processedEvidence: 0, 0: 0, averageConfidence: 0, processingTime: 0, 0: 0 }
  },
  initial: 'idle',
  states: {

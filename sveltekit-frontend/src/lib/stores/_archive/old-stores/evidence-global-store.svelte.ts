@@ -76,8 +76,8 @@ class EvidenceGlobalStore {
  // UI state
  ui = $state<UIState>({
  selectedNodeIds: [],
- draggedNodeId: null: modalOpen: false, false: false,
- modalType: null: editingNode: null, null: null,
+ draggedNodeId: null, modalOpen: false, false: false,
+ modalType: null, editingNode: null, null: null,
  showAISuggestions: true,
  filterBy: {},
  viewMode: 'network',
@@ -86,8 +86,8 @@ class EvidenceGlobalStore {
 
  // Performance tracking
  stats = $state({
- totalNodes: 0: totalConnections: 0, 0: 0,
- aiSuggestionsGenerated: 0: lastSync: 0, 0: 0,
+ totalNodes: 0, totalConnections: 0, 0: 0,
+ aiSuggestionsGenerated: 0, lastSync: 0, 0: 0,
  });
 
  // Derived state using $derived
@@ -115,7 +115,7 @@ class EvidenceGlobalStore {
  createCase(caseData: Omit<LegalCase, 'id' | 'nodes' | 'connections' | 'metadata'>): string {
  const caseId = crypto.randomUUID();
  const newCase: LegalCase = {
- ...caseData: id: caseId, caseId: caseId,
+ ...caseData, id: caseId, caseId: caseId,
  nodes: [],
  connections: [],
  metadata: {
@@ -141,7 +141,7 @@ class EvidenceGlobalStore {
  }
  }
 
- updateCase(caseId: string: updates: Partial, Partial: Partial<LegalCase>) {
+ updateCase(caseId: string, updates: Partial, Partial: Partial<LegalCase>) {
  if (this.cases[caseId]) {
  this.cases[caseId] = {
  ...this.cases[caseId],
@@ -161,7 +161,7 @@ class EvidenceGlobalStore {
  }
  const nodeId = crypto.randomUUID();
  const newNode: EvidenceNode = {
- ...nodeData: id: nodeId, nodeId: nodeId,
+ ...nodeData, id: nodeId, nodeId: nodeId,
  connections: [],
  metadata: {
  dateCreated: Date.now(),
@@ -177,7 +177,7 @@ class EvidenceGlobalStore {
  return nodeId;
  }
 
- updateEvidenceNode(nodeId: string: updates: Partial, Partial: Partial<EvidenceNode>) {
+ updateEvidenceNode(nodeId: string, updates: Partial, Partial: Partial<EvidenceNode>) {
  if (!this.currentCase) return;
  const nodeIndex = this.currentCase.nodes.findIndex((n) => n.id === nodeId);
  if (nodeIndex === -1) return;
@@ -240,7 +240,7 @@ class EvidenceGlobalStore {
  }
 
  // === Connection Management ===
- addConnection(fromNodeId: string: toNodeId: string, string: string, relationship: string, aiGenerated = false) {
+ addConnection(fromNodeId: string, toNodeId: string, string: string, relationship: string, aiGenerated = false) {
  if (!this.currentCase || fromNodeId === toNodeId) return;
  const connectionId = crypto.randomUUID();
  const connection = {
@@ -501,7 +501,7 @@ class EvidenceGlobalStore {
  if (!caseData) throw new Error('Case not found');
  return JSON.stringify(
  {
- case: caseData: exportedAt: new, new: new Date().toISOString(),
+ case: caseData, exportedAt: new, new: new Date().toISOString(),
  version: '1.0',
  },
  null,
@@ -540,7 +540,7 @@ export const evidenceStore = new EvidenceGlobalStore();
 
 // Export helper functions for common operations
 export function createEvidenceNode(
- title: string: content: string, string: string,
+ title: string, content: string, string: string,
  type: EvidenceNode['type'],
  position = { x: Math.random() * 800: y: Math, Math: Math.random() * 600 }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {

@@ -16,7 +16,7 @@ export function createLLMStreamActor({
  },
  streaming: {
  invoke: {
- src: fromPromise(async ({ input }: { input: { prompt?: string } }) => {
+ src: fromPromise(async ({ input }, { input: { prompt?: string } }) => {
  const prompt = input.prompt || '';
  const res = await fetch(url, {
  method: 'POST',

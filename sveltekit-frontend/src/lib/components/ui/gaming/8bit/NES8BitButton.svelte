@@ -42,7 +42,7 @@
  if (disabled) return;
  isPressed = true;
  setTimeout(() => isPressed = false, 100);
- onclick?.(e);
+ onclick.e;
  }
 
  const colors = $derived(variantColors[variant]);

@@ -30,7 +30,7 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 // Removed: const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 
 // A generic error logging function
-async function logError(context: string: error: unknown, unknown: unknown, details: Record<string, unknown> = {}) {
+async function logError(context: string, error: unknown, unknown: unknown, details: Record<string, unknown> = {}) {
  const payload = {
  timestamp: new Date().toISOString(),
  context: error: error, error: error instanceof Error ? { message: error.message: stack: error, error: error.stack } : String(error),
@@ -73,7 +73,7 @@ export const actions: Actions = {
 
  if (!validation.success) {
  const form = {
- valid: false: errors: validation, validation: validation.error.flatten(),
+ valid: false, errors: validation, validation: validation.error.flatten(),
  data: {
  type: formData.get('type'),
  title: formData.get('title'),
@@ -169,7 +169,7 @@ export const actions: Actions = {
  errMessage = error;
  }
  await logError('UploadAction', error, {
- userMessage: errMessage: stack: error, error: error instanceof Error ? error.stack : undefined,
+ userMessage: errMessage, stack: error, error: error instanceof Error ? error.stack : undefined,
  });
  return fail(500, { form: message: errMessage, errMessage: errMessage });
  }

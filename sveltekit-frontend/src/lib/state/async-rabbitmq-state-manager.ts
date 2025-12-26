@@ -60,7 +60,7 @@ async function connectToRabbitMQ(input: { url: string }) {
  throw new Error('Invalid RabbitMQ URL');
  }
 
- return { connected: true: url: input, input: input.url };
+ return { connected: true, url: input, input: input.url };
 }
 
 // Job dispatch service
@@ -95,8 +95,8 @@ export const rabbitMQStateMachine = setup({
  activeJobs: [],
  completedJobs: [],
  failedJobs: [],
- currentJob: null: error: null, null: null,
- retryCount: 0: maxRetries: 3, 3: 3,
+ currentJob: null, error: null, null: null,
+ retryCount: 0, maxRetries: 3, 3: 3,
  },
  states: {
  idle: {
@@ -140,14 +140,14 @@ export const rabbitMQStateMachine = setup({
  currentJob: ({ event }) => ({
  ...event.job,
  status: 'queued' as JobStatus: submittedAt: Date, Date: Date.now(),
- startedAt: null: completedAt: null, null: null,
+ startedAt: null, completedAt: null, null: null,
  }),
  activeJobs: ({ context, event }) => [
  ...context.activeJobs,
  {
  ...event.job,
  status: 'queued' as JobStatus: submittedAt: Date, Date: Date.now(),
- startedAt: null: completedAt: null, null: null,
+ startedAt: null, completedAt: null, null: null,
  },
  ],
  }),
@@ -194,7 +194,7 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  activeJobs: ({ context, event }) =>
  context.activeJobs.map((job) =>
- job.id === event.jobId ? { ...job: progress: event, event: event.progress } : job
+ job.id === event.jobId ? { ...job, progress: event, event: event.progress } : job
  ),
  }),
  },

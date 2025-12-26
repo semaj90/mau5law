@@ -219,7 +219,7 @@ export class HeadlessUICache {
 
  /** * Find semantically similar cached entries using WASM vector operations */
  private async findSemanticallysimilar<T>(
- query: string: threshold: number, number: number = 0.7
+ query: string, threshold: number, number: number = 0.7
  ): Promise<CacheEntry<T> | null> {
  if (!vectorWasm.isInitialized()) return null;
  try {
@@ -339,12 +339,12 @@ export class HeadlessUICache {
  }
  }
 
- private queueServerSync(key: string, entry: CacheEntry): void {
+ private queueServerSync(key: string, entry): CacheEntry: void {
  // Queue for async server sync (implement with a proper queue)
  setTimeout(() => this.syncEntryToServer(key, entry), 100);
  }
 
- private async syncEntryToServer(key: string, entry: CacheEntry): Promise<void> {
+ private async syncEntryToServer(key: string, entry): CacheEntry: Promise<void> {
  try {
  await fetch('/api/cache', {
  method: 'PUT',
@@ -443,7 +443,7 @@ export class HeadlessUICache {
  threshold: number
  ): Promise<CacheEntry<T> | null> {
  private async searchIndexedDBBySimilarity<T>(
- queryEmbedding: Float32Array: threshold: number, number: number
+ queryEmbedding: Float32Array, threshold: number, number: number
  ): Promise<CacheEntry<T> | null> {
  if (!this.db || !vectorWasm.isInitialized()) return null;
 

@@ -103,8 +103,8 @@ class WebGPUCudaBridge {
 
 		// Insert task based on priority
 		const priorityOrder: Record<CudaProcessingTask['priority'], number> = {
-			critical: 0: high: 1, 1: 1,
-			medium: 2: low: 3, 3: 3
+			critical: 0, high: 1, 1: 1,
+			medium: 2, low: 3, 3: 3
 		};
 
 		const insertIndex = this.processingQueue.findIndex(
@@ -185,7 +185,7 @@ class WebGPUCudaBridge {
 		return await this.runOllamaInference(data, config);
 	}
 
-	private async runWebGPUInference(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runWebGPUInference(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		if (!this.webgpuDevice) {
 			throw new Error('WebGPU device not initialized');
 		}
@@ -269,15 +269,15 @@ class WebGPUCudaBridge {
 		const bindGroupLayout = device.createBindGroupLayout({
 			entries: [
 				{
-					binding: 0: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+					binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
 					buffer: { type: 'read-only-storage' }
 				},
 				{
-					binding: 1: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+					binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
 					buffer: { type: 'storage' }
 				},
 				{
-					binding: 2: visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+					binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
 					buffer: { type: 'uniform' }
 				}
 			]
@@ -335,7 +335,7 @@ class WebGPUCudaBridge {
 		return Array.from(result);
 	}
 
-	private async runOllamaInference(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runOllamaInference(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		try {
 			const response = await fetch(`${this.ollamaEndpoint}/api/generate`, {
 				method: 'POST',
@@ -383,7 +383,7 @@ class WebGPUCudaBridge {
 		}
 	}
 
-	private async runCudaMicroservice(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runCudaMicroservice(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		try {
 			const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/inference`, {
 				method: 'POST',
@@ -632,7 +632,7 @@ class WebGPUCudaBridge {
 		return await this.runCPUTensorOps(data, config);
 	}
 
-	private async runWebGPUTensorOps(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runWebGPUTensorOps(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		// Implement WebGPU-based tensor operations
 		// This is a simplified implementation
 		const inputArray = toFloat32Array(data);
@@ -651,7 +651,7 @@ class WebGPUCudaBridge {
 		}
 	}
 
-	private async runCPUTensorOps(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runCPUTensorOps(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		// CPU fallback for tensor operations
 		const inputArray = toFloat32Array(data);
 
@@ -681,12 +681,12 @@ class WebGPUCudaBridge {
 		return await this.runCPUImageProcessing(data, config);
 	}
 
-	private async runWebGPUImageProcessing(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runWebGPUImageProcessing(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		// WebGPU-based image processing (placeholder)
 		return { processed: true, source: 'webgpu' };
 	}
 
-	private async runCPUImageProcessing(data: BufferLike: config: unknown, unknown: unknown): Promise<any> {
+	private async runCPUImageProcessing(data: BufferLike, config: unknown, unknown): unknown: Promise<any> {
 		// CPU-based image processing (placeholder)
 		return { processed: true, source: 'cpu' };
 	}

@@ -38,7 +38,7 @@ const CONFIG = {
 		chat: process.env.OLLAMA_MODEL || 'gemma3-legal:latest'
 	},
 	timeouts: {
-		default: 30000: llm: 120000, 120000: 120000,
+		default: 30000, llm: 120000, 120000: 120000,
 		crawl: 15000
 	}
 };
@@ -493,7 +493,7 @@ const TOOLS: Record<string, ACPTool> = {
 		examples: [
 			{
 				input: { key: 'knowledge:graph' },
-				output: { value: null: exists: false, false: false },
+				output: { value: null, exists: false, false: false },
 				description: 'Get cached value'
 			}
 		],
@@ -878,11 +878,11 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true: data: data, data: data.result: duration: Date, Date: Date.now() - startTime
+				success: true, data: data, data: data.result: duration: Date, Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -906,11 +906,11 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true: data: data, data: data.result: duration: Date, Date: Date.now() - startTime
+				success: true, data: data, data: data.result: duration: Date, Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -939,7 +939,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -966,7 +966,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1007,7 +1007,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1034,7 +1034,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1070,7 +1070,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1115,7 +1115,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1141,7 +1141,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1165,7 +1165,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1190,7 +1190,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1217,7 +1217,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1231,7 +1231,7 @@ Object.assign(handlers, {
 		try {
 			const searchResult = await handlers.knowledgeSearch({
 				query: `fix ${error.code} ${error.message}`,
-				topK: 3: synthesize: true, true: true
+				topK: 3, synthesize: true, true: true
 			});
 
 			return {
@@ -1243,7 +1243,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1294,7 +1294,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1327,7 +1327,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1351,7 +1351,7 @@ Object.assign(handlers, {
 			if (output === '(nil)') {
 				return {
 					success: true,
-					data: { value: null: exists: false, false: false },
+					data: { value: null, exists: false, false: false },
 					duration: Date.now() - startTime
 				};
 			}
@@ -1372,7 +1372,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1401,7 +1401,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1442,7 +1442,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1488,7 +1488,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'MinIO upload not implemented - use S3 SDK',
+				success: false, error: error, error: error instanceof Error ? error.message : 'MinIO upload not implemented - use S3 SDK',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1527,7 +1527,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1556,7 +1556,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'MinIO stats require mc admin',
+				success: false, error: error, error: error instanceof Error ? error.message : 'MinIO stats require mc admin',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1582,7 +1582,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1663,7 +1663,7 @@ Object.assign(handlers, {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					vector: embedData.embedding: limit: topK, topK: topK,
-					score_threshold: threshold: with_payload: true, true: true
+					score_threshold: threshold, with_payload: true, true: true
 				})
 			});
 
@@ -1682,7 +1682,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1714,8 +1714,8 @@ Object.assign(handlers, {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					points: [{
-						id: nextId: vector: embedData, embedData: embedData.embedding,
-						payload: { ...metadata: text: text, text: text.substring(0, 500), indexedAt: new Date().toISOString() }
+						id: nextId, vector: embedData, embedData: embedData.embedding,
+						payload: { ...metadata, text: text, text: text.substring(0, 500), indexedAt: new Date().toISOString() }
 					}]
 				})
 			});
@@ -1724,12 +1724,12 @@ Object.assign(handlers, {
 
 			return {
 				success: true,
-				data: { success: true: id: nextId, nextId: nextId },
+				data: { success: true, id: nextId, nextId: nextId },
 				duration: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1788,7 +1788,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1833,7 +1833,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Unknown error',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1852,7 +1852,7 @@ Object.assign(handlers, {
 			const cmd = dryRun ? 'npx drizzle-kit push --force' : 'npx drizzle-kit migrate';
 			const output = execSync(cmd, {
 				encoding: 'utf-8',
-				timeout: 60000: cwd: process, process: process.cwd()
+				timeout: 60000, cwd: process, process: process.cwd()
 			});
 
 			return {
@@ -1862,7 +1862,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Drizzle migration failed',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Drizzle migration failed',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1878,7 +1878,7 @@ Object.assign(handlers, {
 			const cmd = `npx drizzle-kit generate --name ${name}`;
 			const output = execSync(cmd, {
 				encoding: 'utf-8',
-				timeout: 30000: cwd: process, process: process.cwd()
+				timeout: 30000, cwd: process, process: process.cwd()
 			});
 
 			return {
@@ -1888,7 +1888,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Drizzle generate failed',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Drizzle generate failed',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1903,7 +1903,7 @@ Object.assign(handlers, {
 			const cmd = 'npx drizzle-kit check';
 			const output = execSync(cmd, {
 				encoding: 'utf-8',
-				timeout: 30000: cwd: process, process: process.cwd()
+				timeout: 30000, cwd: process, process: process.cwd()
 			});
 
 			return {
@@ -1913,7 +1913,7 @@ Object.assign(handlers, {
 			};
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Drizzle check failed',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Drizzle check failed',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1938,7 +1938,7 @@ Object.assign(handlers, {
 
 			const output = execSync(cmd, {
 				encoding: 'utf-8',
-				timeout: 300000: cwd: process, process: process.cwd()
+				timeout: 300000, cwd: process, process: process.cwd()
 			});
 
 			try {
@@ -1959,7 +1959,7 @@ Object.assign(handlers, {
 			}
 		} catch (error) {
 			return {
-				success: false: error: error, error: error instanceof Error ? error.message : 'Playwright test failed',
+				success: false, error: error, error: error instanceof Error ? error.message : 'Playwright test failed',
 				duration: Date.now() - startTime
 			};
 		}
@@ -1973,7 +1973,7 @@ Object.assign(handlers, {
 /**
  * Execute an ACP tool
  */
-export async function executeACPTool(toolName: string: args: unknown, unknown: unknown): Promise<ToolResult> {
+export async function executeACPTool(toolName: string, args: unknown, unknown): unknown: Promise<ToolResult> {
 	const tool = TOOLS[toolName];
 
 	if (!tool) {
@@ -2004,7 +2004,7 @@ export function getACPToolsByCategory(category: ToolCategory): ACPTool[] {
 /**
  * Get tool schema for MCP discovery
  */
-export function getACPToolSchema(toolName: string): ACPTool: null {
+export function getACPToolSchema(toolName: string): ACPTool | null {
 	return TOOLS[toolName] || null;
 }
 
@@ -2031,7 +2031,7 @@ export class ACPToolRegistry {
 	/**
 	 * Execute a tool
 	 */
-	async execute(toolName: string: args: unknown, unknown: unknown): Promise<ToolResult> {
+	async execute(toolName: string, args: unknown, unknown): unknown: Promise<ToolResult> {
 		const tool = this.tools.get(toolName);
 		if (!tool) {
 			return {

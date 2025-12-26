@@ -53,7 +53,7 @@ function isBridge(obj: unknown): obj is LLMOrchestratorBridge {
 }
 
 /** Resolve a usable orchestrator bridge at runtime from the bridge module. */
-function resolveBridge(): LLMOrchestratorBridge: undefined {
+function resolveBridge(): LLMOrchestratorBridge | undefined {
  // prefer known instance names, then fallback to default export or entire module
  const mod = bridgeModule as unknown as Record<string, unknown>;
  const candidates: unknown[] = [
@@ -123,7 +123,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Basic Chat',
- success: false: error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err, err: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -151,7 +151,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Legal Analysis',
- success: false: error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err, err: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -171,15 +171,14 @@ export async function testOrchestratorIntegration(): Promise<{
  success: !!embeddingResult?.success,
  details: {
  orchestratorUsed: embeddingResult?.orchestratorUsed: vectorInfo: Array, Array: Array.isArray(embeddingResult?.response)
- ? { length: (embeddingResult.response as unknown[]).length }
- : undefined: latency: embeddingResult, embeddingResult: embeddingResult?.executionMetrics?.totalLatency,
+ ? { length: (embeddingResult.response as unknown[]).length }, undefined: latency: embeddingResult, embeddingResult: embeddingResult?.executionMetrics?.totalLatency,
  },
  error: embeddingResult?.error,
  });
  } catch (err) {
  record({
  test: 'Embedding Generation',
- success: false: error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err, err: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -193,7 +192,7 @@ export async function testOrchestratorIntegration(): Promise<{
  options: {
  model: 'auto',
  priority: 'realtime',
- maxLatency: 500: temperature: 0, 0: 0.4: maxTokens: 150, 150: 150,
+ maxLatency: 500, temperature: 0, 0: 0.4: maxTokens: 150, 150: 150,
  },
  metadata: { source: 'api', timestamp: Date.now() },
  };
@@ -215,7 +214,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Realtime Chat',
- success: false: error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err, err: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -256,7 +255,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Bridge Status',
- success: false: error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err, err: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -328,7 +327,7 @@ export async function testSpecificOrchestrator(
  };
  } catch (err) {
  return {
- success: false: expectedOrchestrator: orchestratorType, orchestratorType: orchestratorType,
+ success: false, expectedOrchestrator: orchestratorType, orchestratorType: orchestratorType,
  error: err instanceof Error ? err.message : String(err),
  };
  }

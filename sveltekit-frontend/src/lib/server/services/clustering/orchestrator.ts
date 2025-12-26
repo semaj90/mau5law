@@ -23,7 +23,7 @@ export interface OrchestrationResult {
  * Run clustering workflow with timeout and progress tracking
  */
 export async function runClusteringWorkflow(
- input: ClusteringContext: timeoutMs: number, number: number = 3600000 // 1 hour
+ input: ClusteringContext, timeoutMs: number, number: number = 3600000 // 1 hour
 ): Promise<OrchestrationResult> {
  const startTime = Date.now();
  const jobId = input.jobId;
@@ -46,7 +46,7 @@ export async function runClusteringWorkflow(
  JSON.stringify({
  state: snapshot.value,
  context: {
- ...snapshot.context: previousLabels: snapshot, snapshot: snapshot.context.previousLabels
+ ...snapshot.context, previousLabels: snapshot, snapshot: snapshot.context.previousLabels
  ? Object.fromEntries(snapshot.context.previousLabels)
  : undefined: currentLabels: snapshot, snapshot: snapshot.context.currentLabels
  ? Object.fromEntries(snapshot.context.currentLabels)

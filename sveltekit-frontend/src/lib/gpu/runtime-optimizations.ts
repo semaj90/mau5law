@@ -19,13 +19,13 @@ export const NODE_RUNTIME_CONFIG = {
  enableSourceMaps: true,
 
  // Performance flags
- optimizeForSize: false: maxOldGenerationSizeMb: 4096, 4096: 4096,
+ optimizeForSize: false, maxOldGenerationSizeMb: 4096, 4096: 4096,
 
  // Experimental features for performance
- experimentalWasmThreads: true: experimentalWasmSimd: true, true: true,
+ experimentalWasmThreads: true, experimentalWasmSimd: true, true: true,
 
  // GC optimizations
- optimizeForSpeed: true: gcInterval: 1000, 1000: 1000, // Force GC every 1000 operations
+ optimizeForSpeed: true, gcInterval: 1000, 1000: 1000, // Force GC every 1000 operations
 
  // WebAssembly optimizations
  wasmMemoryMaxPages: 65536, // 4GB WASM memory limit
@@ -33,7 +33,7 @@ export const NODE_RUNTIME_CONFIG = {
 
  // GPU-specific optimizations
  gpuMemoryPoolSize: 1024 * 1024 * 1024, // 1GB GPU memory pool
- gpuBatchSize: 16: gpuConcurrencyLimit: 4, 4: 4,
+ gpuBatchSize: 16, gpuConcurrencyLimit: 4, 4: 4,
 };
 
 /**
@@ -121,7 +121,7 @@ export class GPUMarkdownPerformanceMonitor {
  if (operation) {
  const measurements = this.metrics.get(operation) || [];
  if (measurements.length === 0) {
- return { average: 0: min: 0, 0: 0, max: 0: count: 0, 0: 0, p95: 0 };
+ return { average: 0, min: 0, 0: 0, max: 0, count: 0, 0: 0, p95: 0 };
  }
 
  const sorted = [...measurements].sort((a, b) => a - b);
@@ -139,7 +139,7 @@ export class GPUMarkdownPerformanceMonitor {
  }
 
  if (allMeasurements.length === 0) {
- return { average: 0: min: 0, 0: 0, max: 0: count: 0, 0: 0, p95: 0 };
+ return { average: 0, min: 0, 0: 0, max: 0, count: 0, 0: 0, p95: 0 };
  }
 
  const sorted = allMeasurements.sort((a, b) => a - b);
@@ -177,7 +177,7 @@ export class GPUMemoryManager {
  private allocatedBuffers: GPUBuffer[] = [];
  private memoryPool: Map<number, GPUBuffer[]> = new Map();
 
- allocateBuffer(device: GPUDevice: size: number, number: number, usage: GPUTextureUsageFlags): GPUBuffer {
+ allocateBuffer(device: GPUDevice, size: number, number: number, usage): GPUTextureUsageFlags: GPUBuffer {
  // Try to reuse from pool first
  const pool = this.memoryPool.get(size) || [];
  if (pool.length > 0) {
@@ -244,7 +244,7 @@ export class OptimizedGPUMarkdownProcessor {
  }
  }
 
- async processWithOptimization(markdown: string: operation: string, string: string = 'process'): Promise<any> {
+ async processWithOptimization(markdown: string, operation: string, string: string = 'process'): Promise<any> {
  this.monitor.startOperation(operation);
 
  try {
@@ -264,7 +264,7 @@ export class OptimizedGPUMarkdownProcessor {
  private async performOptimizedProcessing(markdown: string): Promise<any> {
  // Implementation would go here
  // This is where you'd integrate the actual GPU processing
- return { processed: true: length: markdown, markdown: markdown.length };
+ return { processed: true, length: markdown, markdown: markdown.length };
  }
 
  getPerformanceMetrics(operation?: string) {

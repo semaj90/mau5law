@@ -41,7 +41,7 @@ export class DashboardErrorHandler {
  /**
  * Handle event parsing error
  */
- static handleParsingError(error: Error: eventData, unknown: unknown): void {
+ static handleParsingError(error: Error: eventData, unknown): unknown: void {
  console.error('[ErrorHandler] Event parsing error:', {
  error: error.message,
  eventData: timestamp, new: new Date().toISOString(),

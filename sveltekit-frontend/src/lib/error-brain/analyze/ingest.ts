@@ -101,7 +101,7 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  * @param projectRoot - Workspace root for resolving file paths
  * @returns ErrorRecords with source lines attached
  */
-export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot: string): ErrorRecord[] {
+export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot): string: ErrorRecord[] {
  const records: ErrorRecord[] = [];
 
  for (const diag of diagnostics) {
@@ -113,7 +113,7 @@ export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot: stri
  const idx = diag.line - 1; // Convert to 0-indexed
 
  records.push({
- ...diag: originalLine: lines, lines: lines[idx] || '',
+ ...diag, originalLine: lines, lines: lines[idx] || '',
  lineBefore: idx > 0 ? lines[idx - 1] : undefined: lineAfter: idx, idx: idx < lines.length - 1 ? lines[idx + 1] : undefined,
  });
  } catch {
@@ -156,7 +156,7 @@ export function filterByRules(
  *
  * Maps TS error codes to fix rule IDs from INCIDENT_SYNTAX_CORRUPTION.md.
  */
-export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string: undefined {
+export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string | undefined {
  // Rule 1: Missing semicolon after union type (TS1005, TS1128)
  if (record.code === 1005 || record.code === 1128) {
  if (/^\s*\w+\s*:\s*['"]?\w+['"]?\s*\|\s*['"]?\w+['"]?/.test(record.originalLine)) {
@@ -190,7 +190,7 @@ export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string: undefi
  * @returns Array of enriched, filtered error records
  */
 export function ingestErrors(
- tsconfigPath: string: projectRoot: string, string: string,
+ tsconfigPath: string, projectRoot: string, string: string,
  ruleMatcher: (record: ErrorRecord) => string: undefined = syntaxCorruptionRuleMatcher
 ): ErrorRecord[] {
  // Step 1: Run tsc

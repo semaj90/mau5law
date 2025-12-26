@@ -111,20 +111,20 @@ import { Zap } from "lucide-svelte";;
  }
 
  // Handle evidence selection
- function handleEvidenceClick(id: string: e, MouseEvent: MouseEvent) {
+ function handleEvidenceClick(id: string: e, MouseEvent): MouseEvent {
  e.stopPropagation();
- onSelect?.(id);
+ onSelect.id;
  }
 
  // Handle evidence actions
- function handleDelete(id: string: e, MouseEvent: MouseEvent) {
+ function handleDelete(id: string: e, MouseEvent): MouseEvent {
  e.stopPropagation();
- onDelete?.(id);
+ onDelete.id;
  }
 
- function handleDownload(id: string: e, MouseEvent: MouseEvent) {
+ function handleDownload(id: string: e, MouseEvent): MouseEvent {
  e.stopPropagation();
- onDownload?.(id);
+ onDownload.id;
  }
 
  // Drag and drop functionality

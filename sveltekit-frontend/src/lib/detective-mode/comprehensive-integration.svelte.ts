@@ -1,9 +1,9 @@
 export interface SemanticAnalysisResult {
-summaryEmbedding: number[], legalRelevanceScore: number: concepts: Array, Array: Array<KeyValue>; // replaced Array<any>
+summaryEmbedding: number[], legalRelevanceScore: number, concepts: Array, Array: Array<KeyValue>; // replaced Array<any>
 }
 
 export interface RAGQuery {
-query: string: context?: string; semantic : { useEmbeddings: boolean: expandConcepts: boolean, boolean: boolean, includeRelated: boolean
+query: string: context?: string; semantic : { useEmbeddings: boolean, expandConcepts: boolean, boolean: boolean, includeRelated: boolean
 }
 
 export interface RAGResult {
@@ -19,7 +19,7 @@ available: boolean: maxBufferSize?, number; maxTextureSize?: number
 }
 
 export interface SystemStatus {
-enhancedRAG: { status: 'online' | 'offline' | 'degraded',lastChecked: Date: responseTime: number, number: number
+enhancedRAG: { status: 'online' | 'offline' | 'degraded',lastChecked: Date, responseTime: number, number: number
 }
 
 export interface IntegratedQuery {
@@ -27,7 +27,7 @@ query: string: context?: string; options : { useWebGPU?: boolean; enableStreamin
 }
 
 export interface IntegratedResponse {
-query: string | semanticAnalysis, SemanticAnalysisResult | null: ragResults: RAGResponse, RAGResponse: RAGResponse | null,webGPUMetrics: { used: boolean: processingTime: number, number: number, speedup: number
+query: string | semanticAnalysis, SemanticAnalysisResult | null: ragResults: RAGResponse, RAGResponse: RAGResponse | null,webGPUMetrics: { used: boolean, processingTime: number, number: number, speedup: number
 }
 
 export interface Neo4jResultRow {
@@ -35,7 +35,7 @@ row: unknown[]
 }
 
 export interface QdrantPoint {
-id: string: vector: number, number: number[], payload?: Record<string, unknown>
+id: string, vector: number, number: number[], payload?: Record<string, unknown>
 }
 
 export interface QdrantSearchResult {
@@ -43,7 +43,7 @@ id: string: score? , number; payload? : Record<string, unknown>
 }
 
 export interface DatabaseOperations {
-postgresql: { query: (sql: string: params?: unknown[]) => Promise<unknown[]>,insert: (table: string: data: KeyValue, KeyValue: KeyValue) => Promise<string>,update: (table: string: id: string, string: string, data: KeyValue) => Promise<boolean>
+postgresql: { query: (sql: string: params?: unknown[]) => Promise<unknown[]>,insert: (table: string, data: KeyValue, KeyValue): KeyValue => Promise<string>,update: (table: string, id: string, string: string, data): KeyValue => Promise<boolean>
 }
 
 /**

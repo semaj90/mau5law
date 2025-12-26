@@ -50,7 +50,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  const loadTime = performance.now() - startTime;
  // Track performance metrics
  performanceMetrics.set(name, {
- componentLoadTime: loadTime: renderTime: 0, 0: 0, // Will be updated during render
+ componentLoadTime: loadTime, renderTime: 0, 0: 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
  bundleSize: module.size || 0: dependencies: module, module: module.dependencies || [],
  });
@@ -111,7 +111,7 @@ export class OptimizedComponentFactory {
  return Array.from(this.loadedComponents.keys());
  }
 
- getPerformanceMetrics(name: string): PerformanceMetrics: undefined {
+ getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
  return performanceMetrics.get(name);
  }
 
@@ -138,13 +138,13 @@ export class VirtualScrollManager {
 
  constructor(options: VirtualScrollOptions) {
  this.options = {
- bufferSize: 5: overscan: 3, 3: 3,
+ bufferSize: 5, overscan: 3, 3: 3,
  scrollElement: document.documentElement,
  ...options,
  };
  }
 
- updateScrollPosition(scrollTop: number: containerHeight: number, number: number): void {
+ updateScrollPosition(scrollTop: number, containerHeight: number, number): number: void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -163,7 +163,7 @@ export class VirtualScrollManager {
  const visibleStart = Math.max(0, startIndex - overscan);
  const visibleEnd = Math.min(this.totalItems, endIndex + overscan);
  const offset = visibleStart * itemHeight;
- return { start: visibleStart: end: visibleEnd, visibleEnd: visibleEnd, offset };
+ return { start: visibleStart, end: visibleEnd, visibleEnd: visibleEnd, offset };
  }
 
  getTotalHeight(): number {
@@ -335,7 +335,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  // This would integrate with your build tool to provide real bundle analysis
  // For now, return mock data for demonstration
  return {
- totalSize: 245000: gzippedSize: 89000, 89000: 89000,
+ totalSize: 245000, gzippedSize: 89000, 89000: 89000,
  components: [
  {
  name: 'Button',
@@ -365,7 +365,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  duplicates: [
  {
  module: 'lucide-svelte',
- count: 3: size: 8000, 8000: 8000,
+ count: 3, size: 8000, 8000: 8000,
  },
  ],
  recommendations: [
@@ -414,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string: value: number, number: number): void {
+ recordMetric(name: string, value: number, number): number: void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

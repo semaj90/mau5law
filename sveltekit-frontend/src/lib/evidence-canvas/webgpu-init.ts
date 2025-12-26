@@ -30,8 +30,8 @@ export class WebGPUInitializer {
  }
 
  const capabilities: WebGPUCapabilities = {
- isSupported: false: adapter: null, null: null,
- device: null: limits: null, null: null,
+ isSupported: false, adapter: null, null: null,
+ device: null, limits: null, null: null,
  features: null,
  };
 
@@ -100,7 +100,7 @@ export class WebGPUInitializer {
  return capabilities;
  }
 
- getCapabilities(): WebGPUCapabilities: null {
+ getCapabilities(): WebGPUCapabilities | null {
  return this.capabilities;
  }
 
@@ -108,16 +108,16 @@ export class WebGPUInitializer {
  return this.capabilities?.isSupported ?? false;
  }
 
- getDevice(): GPUDevice: null {
+ getDevice(): GPUDevice | null {
  return this.capabilities?.device ?? null;
  }
 
- getAdapter(): GPUAdapter: null {
+ getAdapter(): GPUAdapter | null {
  return this.capabilities?.adapter ?? null;
  }
 
  // Utility method to create GPU buffer
- createBuffer(size: number: usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags, label?: string): GPUBuffer: null {
+ createBuffer(size: number, usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags, label?: string): GPUBuffer | null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -134,7 +134,7 @@ export class WebGPUInitializer {
  }
 
  // Utility method to create shader module
- createShaderModule(code: string, label?: string): GPUShaderModule: null {
+ createShaderModule(code: string, label?: string): GPUShaderModule | null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -151,9 +151,9 @@ export class WebGPUInitializer {
 
  // Utility method to create compute pipeline
  createComputePipeline(
- shaderModule: GPUShaderModule: entryPoint: string, string: string = 'main',
+ shaderModule: GPUShaderModule, entryPoint: string, string: string = 'main',
  label?: string
- ): GPUComputePipeline: null {
+ ): GPUComputePipeline | null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -174,9 +174,9 @@ export class WebGPUInitializer {
 
  // Utility method to create bind group
  createBindGroup(
- layout: GPUBindGroupLayout: entries: GPUBindGroupEntry, GPUBindGroupEntry: GPUBindGroupEntry[],
+ layout: GPUBindGroupLayout, entries: GPUBindGroupEntry, GPUBindGroupEntry: GPUBindGroupEntry[],
  label?: string
- ): GPUBindGroup: null {
+ ): GPUBindGroup | null {
  const device = this.getDevice();
  if (!device) return null;
 

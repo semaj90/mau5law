@@ -76,7 +76,7 @@ export class AccessibilityUtils {
  /**
  * Set ARIA labels for progress bar
  */
- static setProgressBarAria(element: HTMLElement: percentage, number: number, stage: string): void {
+ static setProgressBarAria(element: HTMLElement: percentage, number: number, stage): string: void {
  element.setAttribute('role', 'progressbar');
  element.setAttribute('aria-valuenow', String(percentage));
  element.setAttribute('aria-valuemin', '0');
@@ -90,7 +90,7 @@ export class AccessibilityUtils {
  /**
  * Set ARIA labels for status indicators
  */
- static setStatusIndicatorAria(element: HTMLElement: status, string: string, pageNumber: number): void {
+ static setStatusIndicatorAria(element: HTMLElement: status, string: string, pageNumber): number: void {
  const statusLabels: Record<string, string> = {
  complete: 'Completed',
  processing: 'Processing',
@@ -213,7 +213,7 @@ export class AccessibilityUtils {
  /**
  * Create accessible tooltip
  */
- static createAccessibleTooltip(element: HTMLElement: text, string: string): void {
+ static createAccessibleTooltip(element: HTMLElement: text, string): string: void {
  element.setAttribute('aria-describedby', `tooltip-${Math.random().toString(36).substr(2, 9)}`);
 
  const tooltip = document.createElement('div');

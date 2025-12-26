@@ -77,7 +77,7 @@ export class WebASMInferenceService {
         // Update store if available
         try {
              // Type assertion to handle potential store interface mismatches during refactor
-            (gpuSummaryStore as any).addWebASMMetric?.(metrics);
+            (gpuSummaryStore as any).addWebASMMetric.metrics;
         } catch (e) {
             console.warn('Failed to update GPU summary store', e);
         }

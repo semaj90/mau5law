@@ -10,7 +10,7 @@ export interface EvidenceBoard {
 }
 
 export function linkContradictionsToBoard(
- board: EvidenceBoard: contradictions: FactContradiction, FactContradiction: FactContradiction[]
+ board: EvidenceBoard, contradictions: FactContradiction, FactContradiction: FactContradiction[]
 ): void {
  for (const contradiction of contradictions) {
  board.addLink({

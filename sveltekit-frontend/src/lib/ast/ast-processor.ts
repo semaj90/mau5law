@@ -167,7 +167,7 @@ export class ASTProcessor {
  /**
  * Get all symbols available in the current scope
  */
- private getSymbolsInScope(sourceFile: SourceFile, position: number): string[] {
+ private getSymbolsInScope(sourceFile: SourceFile, position): number: string[] {
  const symbols: string[] = [];
 
  // Add imported symbols
@@ -217,7 +217,7 @@ export class ASTProcessor {
  /**
  * Generate suggestions for global scope
  */
- private generateGlobalSuggestions(symbolsInScope: string[], prefix: string): Autosuggestion[] {
+ private generateGlobalSuggestions(symbolsInScope: string[], prefix): string: Autosuggestion[] {
  return symbolsInScope
  .filter((symbol) => symbol.toLowerCase().startsWith(prefix.toLowerCase()))
  .map((symbol) => ({
@@ -419,7 +419,7 @@ Response:`;
 
  const result = await response.json();
  const aiSuggestions = JSON.parse(result.response || '[]');
- return aiSuggestions.map((suggestion: any, index: number) => ({
+ return aiSuggestions.map((suggestion: any, index): number => ({
  text: suggestion.text,
  kind: 'function' as const,
  description: suggestion.description,
@@ -435,7 +435,7 @@ Response:`;
  /**
  * Calculate confidence score for suggestions
  */
- private calculateConfidence(suggestions: Autosuggestion[], context: AutosuggestContext): number {
+ private calculateConfidence(suggestions: Autosuggestion[], context): AutosuggestContext: number {
  if (suggestions.length === 0) return 0;
 
  // Calculate confidence based on suggestion scores and context

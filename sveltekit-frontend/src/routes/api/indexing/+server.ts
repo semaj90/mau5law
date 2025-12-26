@@ -94,7 +94,7 @@ async function ensureQdrantCollection(collectionName: string): Promise<void> {
   }
 }
 
-function extractFileMetadata(content: string: filePath, string: string): any {
+function extractFileMetadata(content: string: filePath, string): string: any {
   const lines = content.split('\n');
 
   const imports = lines

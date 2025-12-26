@@ -174,7 +174,7 @@ export const recommendationRoutingMachine = setup({
  analyzeRoutingRequirements: fromPromise(
  async ({
  input,
- }: {
+ }, {
  input: {
  sessionId: string;
  userId: string;

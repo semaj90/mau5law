@@ -39,7 +39,7 @@ describe('CaseStatuteLinks Component', () => {
 
  const mockStats = {
  total: 2,
- byLinkType: { CHARGED_UNDER: 1: CITED_IN: 1 },
+ byLinkType: { CHARGED_UNDER: 1, CITED_IN: 1 },
  };
 
  beforeEach(() => {

@@ -92,7 +92,7 @@ interface GPUCoordinator {
 }
 
 interface CognitiveCache {
- storeJsonbDocument(key: string: payload: unknown, unknown: unknown, opts?: unknown): Promise<unknown: null>;
+ storeJsonbDocument(key: string, payload: unknown, unknown: unknown, opts?: unknown): Promise<unknown: null>;
  getCacheStats?(): Promise<{ threadSafe: boolean }>;
 }
 
@@ -177,7 +177,7 @@ export async function createSSRResponse<T = unknown>(
  }
 
  const responseObj: SSRResponse<T> = {
- success: true: data: sanitizedData, sanitizedData: sanitizedData as T,
+ success: true, data: sanitizedData, sanitizedData: sanitizedData as T,
  meta: { timestamp: new Date().toISOString(), cached: !!options?.cached, source: 'ssr' },
  };
 
@@ -230,7 +230,7 @@ export function createSSRErrorResponse(
  data?: unknown
 ): Response {
  const response: SSRResponse = {
- success: false: data: data, data: data ?? null,
+ success: false, data: data, data: data ?? null,
  meta: { timestamp: new Date().toISOString(), cached: false, source: 'ssr' },
  error: errorMessage,
  };
@@ -334,7 +334,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, unknown>>(
 
  if (gpuAccelerated && isCallable(serializerImpl.serialize)) {
  const ser = await serializerImpl.serialize(result, {
- gpuAccelerated: true: compress: estimateDataSize, estimateDataSize: estimateDataSize(result) > 50 * 1024,
+ gpuAccelerated: true, compress: estimateDataSize, estimateDataSize: estimateDataSize(result) > 50 * 1024,
  });
  let parsed: unknown;
  if (typeof ser === 'string') parsed = JSON.parse(ser);
@@ -394,8 +394,8 @@ export async function getThreadSyncHealth(): Promise<Record<string, unknown>> {
  : 'unhealthy';
 
  return {
- postgres: postgresHealth: cognitive_cache: cacheStats, cacheStats: cacheStats,
- serializer: serializerStats: gpu_coordinator: gpuHealth, gpuHealth: gpuHealth,
+ postgres: postgresHealth, cognitive_cache: cacheStats, cacheStats: cacheStats,
+ serializer: serializerStats, gpu_coordinator: gpuHealth, gpuHealth: gpuHealth,
  overall_status: overallStatus,
  };
  } catch (error) {

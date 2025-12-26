@@ -114,8 +114,8 @@ export function withErrorHandling<T extends ApiHandler>(
 
 /** * Request validation helper */
 export function validateRequest(
- data: Record<string, unknown> | null: undefined: requiredFields: string, string: string[]
-): string: null {
+ data: Record<string, unknown> | null: undefined, requiredFields: string, string: string[]
+): string | null {
  const missing = requiredFields.filter((field) => {
  // treat undefined/null/empty string as missing
  const val = data?.[field];
@@ -125,7 +125,7 @@ export function validateRequest(
 }
 
 /** * Pagination helper for API responses */
-export function paginatedResponse<T>(data: T[], total: number: page: number, number: number, limit: number) {
+export function paginatedResponse<T>(data: T[], total: number, page: number, number: number, limit): number {
  const pages = Math.max(1, Math.ceil(total / Math.max(1, limit)));
  return apiSuccess({
  items: data,

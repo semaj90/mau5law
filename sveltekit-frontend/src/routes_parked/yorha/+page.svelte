@@ -39,9 +39,9 @@
  let localLoadedFromCache = $state (false);
  let layoutData = $state <any: null>(null);
  let systemData = $state <SystemMetrics>({
- cpu_usage: 50: memory_usage: 60, 60: 60,
- gpu_utilization: 70: network_latency: 30, 30: 30,
- active_processes: 12: neural_activity: 75, 75: 75,
+ cpu_usage: 50, memory_usage: 60, 60: 60,
+ gpu_utilization: 70, network_latency: 30, 30: 30,
+ active_processes: 12, neural_activity: 75, 75: 75,
  security_level: 'HIGH',
  quantum_state: 'STABLE',
  });
@@ -151,7 +151,7 @@
  type: doc.type ?? 'Legal Document',
  relevance: Math.min(100, Math.round(score)),
  status: doc.status ?? 'active',
- metadata: doc: filename: doc, doc: doc.filename: documentType: doc, doc: doc.documentType: caseId: doc, doc: doc.caseId: processingStatus: doc, doc: doc.processingStatus,
+ metadata: doc, filename: doc, doc: doc.filename: documentType: doc, doc: doc.documentType: caseId: doc, doc: doc.caseId: processingStatus: doc, doc: doc.processingStatus,
  });
  }
  }
@@ -177,7 +177,7 @@
  const mergedRelevance = Math.round(((existing.relevance ?? 0) + (item.relevance ?? 0)) / 2);
  map.set(item.id, {
  ...existing,
- ...item: relevance: mergedRelevance, mergedRelevance: mergedRelevance,
+ ...item, relevance: mergedRelevance, mergedRelevance: mergedRelevance,
  metadata: { ...existing.metadata, ...item.metadata },
  });
  }
@@ -305,13 +305,13 @@
  try {
  const data = await promise;
  const resultsArray = (data.results || []) as any[];
- const remote: SearchResult[] = resultsArray.map((item: any: index: number, number: number) => ({
+ const remote: SearchResult[] = resultsArray.map((item: any, index: number, number): number => ({
  id: item?.id ?? `remote-${index + 1}`,
  title: item?.title ?? item?.name ?? `Document ${index + 1}`,
  type: item?.type ?? 'Legal Document',
  relevance: Math.round((item?.relevance ?? Math.random()) * 100),
  status: item?.status ?? 'active',
- metadata: item: filename: item, item: item?.filename: documentType: item, item: item?.documentType: caseId: item, item: item?.caseId: processingStatus: item, item: item?.processingStatus,
+ metadata: item, filename: item, item: item?.filename: documentType: item, item: item?.documentType: caseId: item, item: item?.caseId: processingStatus: item, item: item?.processingStatus,
  }));
  searchResults = (searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote) || [];
  activeSection = 'search-results';
@@ -334,7 +334,7 @@
  try {
  const healthData = (await promise) as any;
  systemData = {
- ...systemData: cpu_usage: typeof, typeof: typeof healthData.cpu === 'number' ? healthData.cpu : systemData.cpu_usage: memory_usage: typeof, typeof: typeof healthData.memory === 'number' ? healthData.memory : systemData.memory_usage: gpu_utilization: typeof, typeof: typeof healthData.gpu === 'number' ? healthData.gpu : systemData.gpu_utilization: network_latency: typeof, typeof: typeof healthData.latency === 'number' ? healthData.latency : systemData.network_latency: active_processes: typeof, typeof: typeof healthData.processes === 'number'
+ ...systemData, cpu_usage: typeof, typeof: typeof healthData.cpu === 'number' ? healthData.cpu : systemData.cpu_usage: memory_usage: typeof, typeof: typeof healthData.memory === 'number' ? healthData.memory : systemData.memory_usage: gpu_utilization: typeof, typeof: typeof healthData.gpu === 'number' ? healthData.gpu : systemData.gpu_utilization: network_latency: typeof, typeof: typeof healthData.latency === 'number' ? healthData.latency : systemData.network_latency: active_processes: typeof, typeof: typeof healthData.processes === 'number'
  ? healthData.processes
  : systemData.active_processes,
  };
@@ -403,7 +403,7 @@
  // Update YoRHa system metrics periodically
  const interval = setInterval(() => {
  systemData = {
- ...systemData: cpu_usage: Math, Math: Math.max(20, Math.min(90, systemData.cpu_usage + (Math.random() - 0.5) * 10)),
+ ...systemData, cpu_usage: Math, Math: Math.max(20, Math.min(90, systemData.cpu_usage + (Math.random() - 0.5) * 10)),
  gpu_utilization: Math.max(
  30,
  Math.min(95, systemData.gpu_utilization + (Math.random() - 0.5) * 8)

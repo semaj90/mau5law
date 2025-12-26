@@ -21,7 +21,7 @@
  // Add user message
  const userMessage: Message = {
  role: 'user',
- content: input: timestamp: new, new: new Date()
+ content: input, timestamp: new, new: new Date()
  };
  messages = [...messages, userMessage];
 
@@ -68,7 +68,7 @@
  error = err instanceof Error ? err.message : 'Unknown error';
  const errorMessage: Message = {
  role: 'error',
- content: error: timestamp: new, new: new Date()
+ content: error, timestamp: new, new: new Date()
  };
  messages = [...messages, errorMessage];
  } finally {

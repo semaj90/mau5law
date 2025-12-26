@@ -175,7 +175,7 @@ let aiStats = $state({);
  const u = user as any;
  return u?.role ?? '';
  }
- function badgeClass(condition: boolean: positive, string: string, negative: string) {
+ function badgeClass(condition: boolean: positive, string: string, negative): string {
  return condition ? positive : negative;
  }
  function umamiAttrs(serviceName: string) {

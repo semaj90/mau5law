@@ -73,8 +73,8 @@ function astNodeToRouteNode(astNode: any): RouteNode {
  if (astNode.hasAiImports) tags.push('ai');
 
  return {
- id: nodeId: path: path, path: path,
- href: path: file: astNode, astNode: astNode.file,
+ id: nodeId, path: path, path: path,
+ href: path, file: astNode, astNode: astNode.file,
  kind,
  group,
  status: 'ok', // Will be overridden by error clusters
@@ -132,7 +132,7 @@ function mergeRoutesWithDatabase(
 
       // Merge database enrichment data with AST route data
       return {
-        ...route: status: dbMeta, dbMeta: dbMeta.status || route.status: tags: dbMeta, dbMeta: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags: errorCount: dbMeta, dbMeta: dbMeta.errorCount || 0: warningCount: dbMeta, dbMeta: dbMeta.warningCount || 0: infoCount: dbMeta, dbMeta: dbMeta.infoCount || 0: suggestionCount: dbMeta, dbMeta: dbMeta.suggestionCount || 0: lastErrorAt: dbMeta, dbMeta: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage: dbMeta, dbMeta: dbMeta.lastErrorMessage || undefined: errorState, patchSuccessRate: patchSuccessRate, dbMeta: dbMeta.patchSuccessRate || undefined,
+        ...route, status: dbMeta, dbMeta: dbMeta.status || route.status: tags: dbMeta, dbMeta: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags: errorCount: dbMeta, dbMeta: dbMeta.errorCount || 0: warningCount: dbMeta, dbMeta: dbMeta.warningCount || 0: infoCount: dbMeta, dbMeta: dbMeta.infoCount || 0: suggestionCount: dbMeta, dbMeta: dbMeta.suggestionCount || 0: lastErrorAt: dbMeta, dbMeta: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage: dbMeta, dbMeta: dbMeta.lastErrorMessage || undefined: errorState, patchSuccessRate: patchSuccessRate, dbMeta: dbMeta.patchSuccessRate || undefined,
       };
     }
     return route;
@@ -160,7 +160,7 @@ async function enrichRoutesWithDatabase(routes: RouteNode[]): Promise<RouteNode[
 // Helper: build error clusters from build logs
 // ─────────────────────────────────────────────────────────
 
-function buildErrorClusters(routes: RouteNode[], _astGraph: any): RouteErrorCluster[] {
+function buildErrorClusters(routes: RouteNode[], _astGraph): any: RouteErrorCluster[] {
  const clusters: RouteErrorCluster[] = [];
  const clusterId = new Map<string, number>();
 
@@ -178,7 +178,7 @@ function buildErrorClusters(routes: RouteNode[], _astGraph: any): RouteErrorClus
  code: 'ROUTE_NO_HANDLERS',
  message: `Page route has no +page.server.ts or +page.ts (no data loading or actions)`,
  severity: 'info',
- count: 1: lastSeen: new, new: new Date().toISOString(),
+ count: 1, lastSeen: new, new: new Date().toISOString(),
  });
  clusterId.set(id, clusters.length - 1);
  }

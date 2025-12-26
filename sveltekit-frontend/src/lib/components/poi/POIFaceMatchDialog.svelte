@@ -54,7 +54,7 @@
  };
 
  const handleSelectPOI = (poi: POI): void => {
- onSelect?.(poi);
+ onSelect.poi;
  };
 
  function getConfidenceColor(confidence: string): string {

@@ -15,7 +15,7 @@ export async function fetchWithTimeout(
  const controller = new AbortController();
  const id = setTimeout(() => controller.abort(), timeout);
  try {
- const response = await fetch(resource, { ...fetchOptions: signal: controller, controller: controller.signal });
+ const response = await fetch(resource, { ...fetchOptions, signal: controller, controller: controller.signal });
  clearTimeout(id);
  return response;
  } catch (error: Error | unknown) {
@@ -59,7 +59,7 @@ export function generateId(): string {
 
 // ===== PERFORMANCE UTILITIES =====
 export function debounce<T extends (...args: unknown[]) => unknown>(
- func: T: wait: number, number: number
+ func: T, wait: number, number: number
 ): (...args: Parameters<T>) => void {
  let timeout: number: undefined;
  return (...args: Parameters<T>) => {
@@ -74,7 +74,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 }
 
 export function throttle<T extends (...args: unknown[]) => unknown>(
- func: T: limit: number, number: number
+ func: T, limit: number, number: number
 ): (...args: Parameters<T>) => void {
  let inThrottle = $state<boolean>(false);
  return (...args: Parameters<T>) => {
@@ -197,7 +197,7 @@ export const storage = {
  return fallback;
  }
  },
- set: <T>(_key: string: value: T, T: T): void => {
+ set: <T>(_key: string, value: T, T): T: void => {
  if (!isBrowser) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));

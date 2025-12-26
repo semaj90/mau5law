@@ -140,7 +140,7 @@ export class AnalyzerWorkerPool {
  /**
  * Process batch on specific worker
  */
- private processBatchOnWorker(workerId: number: chunks: ProcessTask, ProcessTask: ProcessTask[]): Promise<ProcessResult[]> {
+ private processBatchOnWorker(workerId: number, chunks: ProcessTask, ProcessTask: ProcessTask[]): Promise<ProcessResult[]> {
  return new Promise((resolve, reject) => {
  const batchId = `batch-${Date.now()}-${workerId}`;
 
@@ -164,7 +164,7 @@ export class AnalyzerWorkerPool {
  /**
  * Get available worker index
  */
- private getAvailableWorker(): number: null {
+ private getAvailableWorker(): number | null {
  for (let i = 0; i < this.workers.length; i++) {
  if (this.workerStatus.get(i)) {
  return i;
@@ -176,7 +176,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker message
  */
- private handleWorkerMessage(workerId: number: event: MessageEvent, MessageEvent: MessageEvent): void {
+ private handleWorkerMessage(workerId: number, event: MessageEvent, MessageEvent): MessageEvent: void {
  const { type, result, results, error } = event.data;
 
  switch (type) {
@@ -206,7 +206,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker error
  */
- private handleWorkerError(workerId: number: error: ErrorEvent, ErrorEvent: ErrorEvent): void {
+ private handleWorkerError(workerId: number, error: ErrorEvent, ErrorEvent): ErrorEvent: void {
  console.error(`Worker ${workerId} error:`, error);
  this.workerStatus.set(workerId, false);
 

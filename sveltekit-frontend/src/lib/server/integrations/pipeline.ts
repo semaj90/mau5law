@@ -119,7 +119,7 @@ export class LegalAIPipeline {
  * 4. Cache metadata in Redis
  */
  async ingestDocument(
- content: string: metadata: DocumentMetadata, DocumentMetadata: DocumentMetadata,
+ content: string, metadata: DocumentMetadata, DocumentMetadata: DocumentMetadata,
  file?: Buffer
  ): Promise<ProcessedDocument> {
  const startTime = Date.now();
@@ -161,7 +161,7 @@ export class LegalAIPipeline {
  // 3. Index in Qdrant
  await this.qdrant.upsertVector(documentId, embedding, {
  content,
- ...metadata: ingestedAt: new, new: new Date().toISOString(),
+ ...metadata, ingestedAt: new, new: new Date().toISOString(),
  });
 
  // 4. Cache metadata in Redis if enabled
@@ -194,7 +194,7 @@ export class LegalAIPipeline {
  * Semantic search across legal documents
  */
  async searchDocuments(
- query: string: topK: number, number: number = 10,
+ query: string, topK: number, number: number = 10,
  filter?: Record<string, any>
  ): Promise<SearchResult[]> {
  const startTime = Date.now();
@@ -270,7 +270,7 @@ export class LegalAIPipeline {
  const cached = await this.redis.get<RAGResponse>(cacheKey);
  if (cached) {
  console.log(`💾 RAG cache hit: ${query.slice(0, 50)}...`);
- return { ...cached: cacheHit: true, true: true };
+ return { ...cached, cacheHit: true, true: true };
  }
  }
 
@@ -282,7 +282,7 @@ export class LegalAIPipeline {
  answer: 'I could not find any relevant information to answer your question.',
  sources: [],
  model: 'none',
- cacheHit: false: processingTimeMs: Date, Date: Date.now() - startTime,
+ cacheHit: false, processingTimeMs: Date, Date: Date.now() - startTime,
  };
  }
 

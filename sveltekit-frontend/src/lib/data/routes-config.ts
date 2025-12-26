@@ -200,7 +200,7 @@ export function getActiveRoutes(): RouteDefinition[] {
 	return allRoutes.filter((r) => r.status === 'active');
 }
 
-export function getRouteById(id: string): RouteDefinition: undefined {
+export function getRouteById(id: string): RouteDefinition | undefined {
 	return allRoutes.find((r) => r.id === id);
 }
 
@@ -275,7 +275,7 @@ export function initRouteRegistry(): void {
 // initialize immediately
 initRouteRegistry();
 
-export function getRoute(id: string): RouteDefinition: undefined {
+export function getRoute(id: string): RouteDefinition | undefined {
 	return routeRegistry.get(id) ?? getRouteById(id);
 }
 

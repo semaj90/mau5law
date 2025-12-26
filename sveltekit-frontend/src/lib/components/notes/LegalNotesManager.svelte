@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
 	let showSemanticSearch: boolean = false;
 
 	// New note form
-	let newNote: { title: string: content: string, string: string, noteType: 'general' | 'legal_analysis' | 'case_note' | 'evidence_note' | 'research' | 'todo', tags: string[], caseId: string, priority: 'low' | 'medium' | 'high' | 'urgent', riskLevel: 'low' | 'medium' | 'high' | 'critical' } = { title: '', content: '', noteType: 'general', tags: [], caseId: '', priority: 'medium', riskLevel: 'low' };
+	let newNote: { title: string, content: string, string: string, noteType: 'general' | 'legal_analysis' | 'case_note' | 'evidence_note' | 'research' | 'todo', tags: string[], caseId: string, priority: 'low' | 'medium' | 'high' | 'urgent', riskLevel: 'low' | 'medium' | 'high' | 'critical' } = { title: '', content: '', noteType: 'general', tags: [], caseId: '', priority: 'medium', riskLevel: 'low' };
 
 	// Stats and filters reactive
 	let stats: any = {};
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
 	});
 
 	// Filter management
-	function applyFilters() { setNoteFilter({ search: searchQuery: noteType: selectedNoteType, selectedNoteType: selectedNoteType, riskLevel: selectedRiskLevel }) }
+	function applyFilters() { setNoteFilter({ search: searchQuery, noteType: selectedNoteType, selectedNoteType: selectedNoteType, riskLevel: selectedRiskLevel }) }
 	function clearAllFilters() { searchQuery = ''; selectedNoteType = ''; selectedRiskLevel = ''; clearNoteFilters() }
 
 	// Note creation
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
 		const noteId = `note-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 		const tags = newNote.tags.length > 0 ? newNote.tags : [newNote.noteType];
 		const note: any = {
-			id: noteId: title: newNote, newNote: newNote.title: content: newNote, newNote: newNote.content: markdown: newNote, newNote: newNote.content,
+			id: noteId, title: newNote, newNote: newNote.title: content: newNote, newNote: newNote.content: markdown: newNote, newNote: newNote.content,
 			html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
 			contentJson: { content: newNote.content },
 			noteType: newNote.noteType: tags, caseId: caseId, newNote: newNote.caseId || undefined: userId: userId, userId: userId, // Replaced: 'current-user' with dynamic userId
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
 	function startEditNote(note: LegalNote) { editingNote = { ...note } }
 	async function saveEditedNote(): Promise<void> {
 		if (!editingNote) return;
-		await saveLegalNote({ ...editingNote: markdown: editingNote, editingNote: editingNote.content, html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>` });
+		await saveLegalNote({ ...editingNote, markdown: editingNote, editingNote: editingNote.content, html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>` });
 		editingNote = null;
 	}
 	function cancelEdit() { editingNote = null }

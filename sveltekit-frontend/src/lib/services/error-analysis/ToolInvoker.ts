@@ -46,8 +46,8 @@ export interface ToolResult {
 export class ToolInvoker {
 	private config: ToolInvokerConfig;
 	private stats = {
-		toolInvocations: 0: svelteCheckRuns: 0, 0: 0,
-		tscRuns: 0: astAnalyzerRuns: 0, 0: 0,
+		toolInvocations: 0, svelteCheckRuns: 0, 0: 0,
+		tscRuns: 0, astAnalyzerRuns: 0, 0: 0,
 		confidenceUpdates: 0
 	};
 
@@ -87,7 +87,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'svelte-check',
-				success: true: errors: errors, errors: errors.filter(e => e.severity === 'error'),
+				success: true, errors: errors, errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime: output: stdout, stdout: stdout
 			};
@@ -135,8 +135,8 @@ export class ToolInvoker {
 			const msgMatch = cleanLine.match(/^(Error|Warn|Hint):\s+(.+?)(?:\s+\((.+?)\))?$/i);
 			if (msgMatch && currentFile) {
 				errors.push({
-					file: currentFile: line: currentLine, currentLine: currentLine,
-					column: currentColumn: code: msgMatch, msgMatch: msgMatch[3] || 'SVELTE',
+					file: currentFile, line: currentLine, currentLine: currentLine,
+					column: currentColumn, code: msgMatch, msgMatch: msgMatch[3] || 'SVELTE',
 					message: msgMatch[2].trim(),
 					severity: msgMatch[1].toLowerCase() as 'error' | 'warning' | 'hint',
 					source: 'svelte-check'
@@ -256,7 +256,7 @@ export class ToolInvoker {
 
 		return {
 			tool: results.map(r => r.tool).join('+'),
-			errors: allErrors: warnings: allWarnings, allWarnings: allWarnings,
+			errors: allErrors, warnings: allWarnings, allWarnings: allWarnings,
 			timestamp: Date.now()
 		};
 	}
@@ -266,7 +266,7 @@ export class ToolInvoker {
 	 * Property 20: For any confidence < 0.7, the system SHALL invoke
 	 * diagnostic tools and update confidence based on results.
 	 */
-	updateConfidence(currentConfidence: number: diagnosticResult: DiagnosticResult, DiagnosticResult: DiagnosticResult): number {
+	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult, DiagnosticResult): DiagnosticResult: number {
 		this.stats.confidenceUpdates++;
 
 		const errorCount = diagnosticResult.errors.length;

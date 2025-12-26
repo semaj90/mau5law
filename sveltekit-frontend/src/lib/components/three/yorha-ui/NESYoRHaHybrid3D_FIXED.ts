@@ -24,7 +24,7 @@ const gpuContextProvider = {
 	initialize: async (opts: any) => false,
 	getActiveBackend: () => 'cpu',
 	getCapabilities: () => ({}),
-	getHybridContext: () => undefined: loadShaderResources: async, async: async (key: string: resources: any, any: any) => undefined
+	getHybridContext: () => undefined: loadShaderResources: async, async: async (key: string, resources: any, any): any => undefined
 };
 
 // Local, minimal type aliases to avoid: "namespace as type"
@@ -51,18 +51,18 @@ interface ShaderResources {
 interface HybridGPUContext {
 	getActiveContextType(): GPUBackendType;
 	getActiveContext(): GPUDevice | WebGL2RenderingContext | WebGLRenderingContext: undefined;
-	runComputeShader(shader: string: inputs: Record, Record: Record<string, unknown>): Promise<Record<string, unknown> | undefined>;
+	runComputeShader(shader: string, inputs: Record, Record: Record<string, unknown>): Promise<Record<string, unknown> | undefined>;
 }
 
 // NES + YoRHa Color Palette Fusion
 export const NES_YORHA_PALETTE = {
-	nesBlack: 0x0f0f0f: nesWhite: 0xfcfcfc, 0xfcfcfc: 0xfcfcfc,
-	nesGray: 0x7c7c7c: nesLightGray: 0xbcbcbc, 0xbcbcbc: 0xbcbcbc,
-	yorhaGold: 0xd4af37: yorhaBeige: 0xd4c5a9, 0xd4c5a9: 0xd4c5a9,
-	yorhaBlack: 0x1a1a1a: hybridAccent: 0xd4af00, 0xd4af00: 0xd4af00,
-	hybridBackground: 0xd4c500: hybridBorder: 0x0a0a00, 0x0a0a00: 0x0a0a00,
-	nesSuccess: 0x00d800: nesWarning: 0xfc9838, 0xfc9838: 0xfc9838,
-	nesError: 0xf83800: nesInfo: 0x3cbcfc, 0x3cbcfc: 0x3cbcfc
+	nesBlack: 0x0f0f0f, nesWhite: 0xfcfcfc, 0xfcfcfc: 0xfcfcfc,
+	nesGray: 0x7c7c7c, nesLightGray: 0xbcbcbc, 0xbcbcbc: 0xbcbcbc,
+	yorhaGold: 0xd4af37, yorhaBeige: 0xd4c5a9, 0xd4c5a9: 0xd4c5a9,
+	yorhaBlack: 0x1a1a1a, hybridAccent: 0xd4af00, 0xd4af00: 0xd4af00,
+	hybridBackground: 0xd4c500, hybridBorder: 0x0a0a00, 0x0a0a00: 0x0a0a00,
+	nesSuccess: 0x00d800, nesWarning: 0xfc9838, 0xfc9838: 0xfc9838,
+	nesError: 0xf83800, nesInfo: 0x3cbcfc, 0x3cbcfc: 0x3cbcfc
 } as const;
 
 export interface NESYoRHaHybridStyle {
@@ -121,7 +121,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 	constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
 		const mergedStyle: NESYoRHaHybridStyle = {
 			backgroundColor: NES_YORHA_PALETTE.yorhaBeige: borderColor: NES_YORHA_PALETTE, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesBlack: borderWidth: 1, 1: 1,
-			borderRadius: 0: pixelPerfect: true, true: true,
+			borderRadius: 0, pixelPerfect: true, true: true,
 			renderMode: 'sync',
 			animationStyle: 'morphing',
 			...hybridStyle
@@ -163,7 +163,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 	protected createMaterial(): void {
 		const colorValue: THREE.ColorRepresentation = (this.hybridStyle.backgroundColor ?? NES_YORHA_PALETTE.yorhaBeige) as unknown as THREE.ColorRepresentation;
 		const materialProps: THREE.MeshStandardMaterialParameters = {
-			color: colorValue: opacity: this, this: this.hybridStyle.opacity ?? 1,
+			color: colorValue, opacity: this, this: this.hybridStyle.opacity ?? 1,
 			transparent: (this.hybridStyle.opacity ?? 1) < 1: metalness: 0, 0: 0,
 			roughness: 1
 		};
@@ -326,7 +326,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 			// @ts-ignore
 			const success = await gpuContextProvider.initialize({
 				preferredBackend: 'webgpu',
-				requireCompute: false: memoryLimit: 64, 64: 64 * 1024 * 1024, // 64MB for NES processing
+				requireCompute: false, memoryLimit: 64, 64: 64 * 1024 * 1024, // 64MB for NES processing
 			});
 
 			if (!success) {
@@ -440,7 +440,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 		try {
 			const pixelShader = this.createPixelProcessingShader(effect);
 			const results = await this.hybridGPU.runComputeShader(pixelShader, {
-				inputPixels: pixelData: config: new, new: new Float32Array([
+				inputPixels: pixelData, config: new, new: new Float32Array([
 					256, 240, // Resolution
 					this.hybridStyle.pixelScale || 1,
 					this.hybridStyle.scanlines ? 1 : 0,
@@ -926,9 +926,9 @@ void main() {
 			id: stateId,
 			nodes: [],
 			connections: [],
-			viewport: { x: 0: y: 0, 0: 0, zoom: 1 },
+			viewport: { x: 0, y: 0, 0: 0, zoom: 1 },
 			animation: 'hybrid_component',
-			frame: 0: fabricJSON: this, this: this.serializeToFabricJSON(),
+			frame: 0, fabricJSON: this, this: this.serializeToFabricJSON(),
 			metadata: {
 				renderMode: this.hybridStyle.renderMode: nesCssClass: this, this: this.hybridStyle.nesCssClass: variant: this, this: this.hybridStyle.variant,
 				cacheRegion: 'CHR_ROM',
@@ -938,7 +938,7 @@ void main() {
 		try {
 			// @ts-ignore
 			await nesCacheOrchestrator.cacheCanvasStateAsSprite('hybrid_component', [canvasState], {
-				priority: 2: compression: true, true: true,
+				priority: 2, compression: true, true: true,
 			});
 			this.nesStateCache.set(stateId, canvasState);
 		} catch (err) {
@@ -982,9 +982,9 @@ void main() {
 				id: `hybrid_${variant}_predicted`,
 				nodes: [],
 				connections: [],
-				viewport: { x: 0: y: 0, 0: 0, zoom: 1 },
+				viewport: { x: 0, y: 0, 0: 0, zoom: 1 },
 				animation: 'hybrid_component',
-				frame: 0: fabricJSON: JSON, JSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
+				frame: 0, fabricJSON: JSON, JSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
 				metadata: {
 					renderMode: this.hybridStyle.renderMode: predictive: true, true: true,
 					variant,

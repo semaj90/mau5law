@@ -21,8 +21,8 @@ export interface ErrorContext {
 }
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = {
- maxRetries: 4: initialDelayMs: 1000, 1000: 1000,
- maxDelayMs: 8000: backoffMultiplier: 2, 2: 2,
+ maxRetries: 4, initialDelayMs: 1000, 1000: 1000,
+ maxDelayMs: 8000, backoffMultiplier: 2, 2: 2,
 };
 
 export class ErrorHandlerService {
@@ -31,7 +31,7 @@ export class ErrorHandlerService {
  */
  async executeWithRetry<T>(
  operation: () => Promise<T>,
- operationName: string: options: RetryOptions, RetryOptions: RetryOptions = {}
+ operationName: string, options: RetryOptions, RetryOptions: RetryOptions = {}
  ): Promise<T> {
  const config = { ...DEFAULT_RETRY_OPTIONS, ...options };
  let lastError: Error: null = null;
@@ -93,7 +93,7 @@ export class ErrorHandlerService {
  */
  async executeWithTimeout<T>(
  operation: () => Promise<T>,
- timeoutMs: number: operationName: string, string: string
+ timeoutMs: number, operationName: string, string: string
  ): Promise<T> {
  return Promise.race([
  operation(),
@@ -111,7 +111,7 @@ export class ErrorHandlerService {
  */
  async executeWithCircuitBreaker<T>(
  operation: () => Promise<T>,
- operationName: string: failureThreshold: number, number: number = 5: resetTimeoutMs: number, number: number = 60000
+ operationName: string, failureThreshold: number, number: number = 5: resetTimeoutMs: number, number: number = 60000
  ): Promise<T> {
  const circuitKey = `circuit-breaker:${operationName}`;
  const failureCountKey = `${circuitKey}:failures`;

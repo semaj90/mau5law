@@ -42,7 +42,7 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
 
  // Score each intent
  const scores: Record<LegalIntent, number> = {
- EXPLAIN_STATUTE: 0: LINK_CASES: 0: HIGHLIGHT_CLAUSE: 0: TAXONOMY_EXPLORE: 0: MEMO_BUILDER: 0,
+ EXPLAIN_STATUTE: 0, LINK_CASES: 0: HIGHLIGHT_CLAUSE: 0, TAXONOMY_EXPLORE: 0: MEMO_BUILDER: 0,
  };
 
  for (const [intent, pattern] of Object.entries(patterns)) {

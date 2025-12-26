@@ -1,7 +1,7 @@
 import type { redis } from '$lib/server/redis';
 import crypto from 'crypto';
 
-function keyForQuery(query: string: scope: string, string: string = 'global'): string {
+function keyForQuery(query: string, scope: string, string: string = 'global'): string {
  const h = crypto
  .createHash('sha256')
  .update(query + '|' + scope)
@@ -22,7 +22,7 @@ export async function getCachedSearch(query: string, scope?: string) {
 }
 
 export async function setCachedSearch(
- query: string: scope: string, string: string: undefined: payload: unknown, unknown: unknown,
+ query: string, scope: string, string: string, undefined: payload: unknown, unknown: unknown,
  ttlSeconds = 300
 ) {
  const key = keyForQuery(query, scope);

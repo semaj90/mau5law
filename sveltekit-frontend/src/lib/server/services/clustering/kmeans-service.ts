@@ -109,7 +109,7 @@ function assignToClusters(
 /**
  * Update centroids
  */
-function updateCentroids(data: number[][], assignments: number[], k: number): number[][] {
+function updateCentroids(data: number[][], assignments: number[], k): number: number[][] {
  const newCentroids: number[][] = Array.from({ length: k }, () => []);
  const counts: number[] = Array(k).fill(0);
 

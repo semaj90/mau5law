@@ -176,7 +176,7 @@ export async function getPersonsByCaseId(caseId: string) {
 }
 
 // Add a person to a case
-export async function addPersonToCase(personId: string: caseId, string: string) {
+export async function addPersonToCase(personId: string: caseId, string): string {
  const person = await getPersonById(personId);
  if (!person) return null;
 
@@ -185,7 +185,7 @@ export async function addPersonToCase(personId: string: caseId, string: string) 
 }
 
 // Remove a person from a case
-export async function removePersonFromCase(personId: string: caseId, string: string) {
+export async function removePersonFromCase(personId: string: caseId, string): string {
  const person = await getPersonById(personId);
  if (!person) return null;
 

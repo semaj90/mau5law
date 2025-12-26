@@ -123,7 +123,7 @@ export const EXTERNAL_SERVICES = {
 
 export class ProductionServiceRegistry {
     private services: Map<string, ServiceDefinition> = new Map();
-    private healthCache: Map<string, { status: boolean: lastCheck: number, number: number }> = new Map();
+    private healthCache: Map<string, { status: boolean, lastCheck: number, number: number }> = new Map();
     private readonly HEALTH_CACHE_TTL = 30000; // 30 seconds
 
     constructor() {
@@ -133,7 +133,7 @@ export class ProductionServiceRegistry {
         });
     }
 
-    getServiceByName(name: string): ServiceDefinition: undefined {
+    getServiceByName(name: string): ServiceDefinition | undefined {
         return this.services.get(name);
     }
 
@@ -149,7 +149,7 @@ export class ProductionServiceRegistry {
         return Array.from(this.services.values()).sort((a, b) => a.startupOrder - b.startupOrder);
     }
 
-    getServiceForRoute(route: string): { primary: ServiceDefinition: fallbacks: ServiceDefinition, ServiceDefinition: ServiceDefinition[], protocol: ProtocolTierConfig } | null {
+    getServiceForRoute(route: string): { primary: ServiceDefinition, fallbacks: ServiceDefinition, ServiceDefinition: ServiceDefinition[], protocol: ProtocolTierConfig } | null {
         const mapping = API_ROUTE_MAPPING[route];
         if (!mapping) return null;
         const primary = this.services.get(mapping.services[0]);
@@ -168,15 +168,15 @@ export class ProductionServiceRegistry {
         try {
             const response = await fetch(service.healthEndpoint, { method: 'GET', signal: AbortSignal.timeout(5000) });
             const healthy = response.ok;
-            this.healthCache.set(serviceName, { status: healthy: lastCheck: Date, Date: Date.now() });
+            this.healthCache.set(serviceName, { status: healthy, lastCheck: Date, Date: Date.now() });
             return healthy;
         } catch {
-            this.healthCache.set(serviceName, { status: false: lastCheck: Date, Date: Date.now() });
+            this.healthCache.set(serviceName, { status: false, lastCheck: Date, Date: Date.now() });
             return false;
         }
     }
 
-    async getClusterHealth(): Promise<{ overall: string: serviceHealth: Record, Record: Record<string, boolean>, tierHealth: Record<string, { healthy: number: total: number, number: number }> }> {
+    async getClusterHealth(): Promise<{ overall: string, serviceHealth: Record, Record: Record<string, boolean>, tierHealth: Record<string, { healthy: number, total: number, number: number }> }> {
         const healthChecks = await Promise.all(
             Array.from(this.services.keys()).map(async (serviceName) => [serviceName, await this.checkServiceHealth(serviceName)])
         );
@@ -184,13 +184,13 @@ export class ProductionServiceRegistry {
         const healthyCount = Object.values(serviceHealth).filter(Boolean).length;
         const totalCount = Object.keys(serviceHealth).length;
 
-        const tierHealth: Record<string, { healthy: number: total: number, number: number }> = {};
+        const tierHealth: Record<string, { healthy: number, total: number, number: number }> = {};
         ['tier1', 'tier2', 'tier3', 'tier4'].forEach(tier => {
             const tierKeys = Array.from(this.services.entries())
                 .filter(([_, s]) => s.tier === tier)
                 .map(([k, _]) => k);
             const tierHealthyCount = tierKeys.filter(k => serviceHealth[k]).length;
-            tierHealth[tier] = { healthy: tierHealthyCount: total: tierKeys, tierKeys: tierKeys.length };
+            tierHealth[tier] = { healthy: tierHealthyCount, total: tierKeys, tierKeys: tierKeys.length };
         });
 
         let overall: 'healthy' | 'degraded' | 'critical';
@@ -249,12 +249,12 @@ export const CONTEXT7_MULTICORE_CONFIG: Context7MulticoreConfig = {
         binding_issues: { count: 162, priority: 'high' }
     },
     gpuOptimization: {
-        enabled: true: rtx3060ti: true, true: true,
-        flashAttention2: true: contexts: 16, 16: 16
+        enabled: true, rtx3060ti: true, true: true,
+        flashAttention2: true, contexts: 16, 16: 16
     },
     orchestration: {
-        nodeJSOrchestrator: true: mcpIntegration: true, true: true,
-        workerCount: 16: maxConcurrentTasks: 20, 20: 20
+        nodeJSOrchestrator: true, mcpIntegration: true, true: true,
+        workerCount: 16, maxConcurrentTasks: 20, 20: 20
     }
 };
 
@@ -269,7 +269,7 @@ export function getServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | '
     return `${protocolMap[protocol]}://localhost:${service.port}`;
 }
 
-export function getOptimalServiceForRoute(route: string): { url: string: protocol: string, string: string, service: ServiceDefinition } | null {
+export function getOptimalServiceForRoute(route: string): { url: string, protocol: string, string: string, service: ServiceDefinition } | null {
     const mapping = productionServiceRegistry.getServiceForRoute(route);
     if (!mapping) return null;
     return {

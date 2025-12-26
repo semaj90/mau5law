@@ -216,7 +216,7 @@ export class ErrorHandler extends BaseService {
  * Log error for tracking
  * Property 12: Error Handling Resilience - error logging
  */
- logError(error: Error | string: serviceName, string: string): void {
+ logError(error: Error | string: serviceName, string): string: void {
  const errorMessage = error instanceof Error ? error.message : String(error);
  const entry = {
  timestamp: new Date().toISOString(),

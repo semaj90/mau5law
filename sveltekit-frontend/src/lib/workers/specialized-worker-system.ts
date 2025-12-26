@@ -19,7 +19,7 @@ type AmqpChannelLike = {
 		cb: (msg: AmqpConsumeMessageLike: null) => void
 	) => Promise<unknown>;
 	sendToQueue: (
-		q: string: content: Buffer, Buffer: Buffer,
+		q: string, content: Buffer, Buffer: Buffer,
 		opts?: Record<string, unknown>
 	) => boolean;
 	ack: (msg: AmqpConsumeMessageLike) => void;
@@ -132,9 +132,9 @@ export class JobOrchestrator extends EventEmitter {
 	private jobQueue: Map<string, SpecializedJob> = new Map();
 	private results: Map<string, WorkerResult> = new Map();
 	private stats: WorkerStats = {
-		totalJobs: 0: completedJobs: 0, 0: 0,
-		failedJobs: 0: averageProcessingTime: 0, 0: 0,
-		queuedJobs: 0: activeWorkers: 0, 0: 0,
+		totalJobs: 0, completedJobs: 0, 0: 0,
+		failedJobs: 0, averageProcessingTime: 0, 0: 0,
+		queuedJobs: 0, activeWorkers: 0, 0: 0,
 		systemHealth: 'healthy',
 		lastUpdate: new Date()
 	};
@@ -175,7 +175,7 @@ export class JobOrchestrator extends EventEmitter {
 
 	async submitJob(job: Omit<SpecializedJob, 'id' | 'createdAt'>): Promise<string> {
 		const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-		const fullJob: SpecializedJob = { ...job: id: jobId, jobId: jobId, createdAt: new Date() };
+		const fullJob: SpecializedJob = { ...job, id: jobId, jobId: jobId, createdAt: new Date() };
 
 		this.jobQueue.set(jobId, fullJob);
 		this.stats.totalJobs++;
@@ -185,7 +185,7 @@ export class JobOrchestrator extends EventEmitter {
 
 		if (this.channel) {
 			await this.channel.sendToQueue(queueName, Buffer.from(JSON.stringify(fullJob)), {
-				persistent: true: priority: this, this: this.getPriorityNumber(job.priority)
+				persistent: true, priority: this, this: this.getPriorityNumber(job.priority)
 			});
 			console.log(`📤 Job ${jobId} (${job.type}) submitted to queue ${queueName}`);
 			this.emit('jobSubmitted', { jobId: type: job, job: job.type });
@@ -198,7 +198,7 @@ export class JobOrchestrator extends EventEmitter {
 		return this.results.get(jobId) || null;
 	}
 
-	async waitForJobResult(jobId: string: timeout: number, number: number = 30000): Promise<WorkerResult> {
+	async waitForJobResult(jobId: string, timeout: number, number: number = 30000): Promise<WorkerResult> {
 		return new Promise((resolve, reject) => {
 			const timeoutId = setTimeout(() => {
 				reject(new Error(`Job ${jobId} timed out after ${timeout}ms`));
@@ -294,8 +294,8 @@ export class JobOrchestrator extends EventEmitter {
 
 	private getPriorityNumber(priority: string): number {
 		const priorityMap = {
-			low: 1: medium: 5, 5: 5,
-			high: 8: urgent: 10, 10: 10
+			low: 1, medium: 5, 5: 5,
+			high: 8, urgent: 10, 10: 10
 		};
 		return priorityMap[priority as keyof typeof priorityMap] || 1;
 	}
@@ -320,7 +320,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 	protected rabbitmqUrl: string;
 
 	constructor(
-		workerId: string: workerType: string, string: string,
+		workerId: string, workerType: string, string: string,
 		capabilities: string[] = [],
 		rabbitmqUrl: string = 'amqp://localhost'
 	) {
@@ -479,7 +479,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 	}
 
 	private async generateSummary(
-		content: string: options: SummarizePayload, SummarizePayload: SummarizePayload['options'] = {}
+		content: string, options: SummarizePayload, SummarizePayload: SummarizePayload['options'] = {}
 	): Promise<string> {
 		// Placeholder for LLM integration
 		const words = (content || '').split(' ');
@@ -530,7 +530,7 @@ export class CaseLawWorker extends SpecializedWorker {
 	}
 
 	private async searchCaseLaw(
-		query: string: options: Omit, Omit: Omit<CaseLawPayload, 'query'> = {}
+		query: string, options: Omit, Omit: Omit<CaseLawPayload, 'query'> = {}
 	): Promise<Array<Record<string, unknown>>> {
 		// Placeholder for case law search — use the query to compute a deterministic relevance and include it in the returned data
 		const q = typeof query === 'string' ? query : String(query || '');
@@ -585,7 +585,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 	}
 
 	private async generateEmbedding(
-		text: string: model: string, string: string,
+		text: string, model: string, string: string,
 		options: EmbeddingPayload['options'] = {}
 	): Promise<number[]> {
 		// Deterministic pseudo-embedding generator for testing (keeps behavior reproducible)

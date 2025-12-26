@@ -7,22 +7,23 @@
  import { Camera, ChevronLeft, ChevronRight, Download, Eye, X, ZoomIn, ZoomOut } from "lucide-svelte";
  // Migrated from createEventDispatcher to callback props;
 
- let { photos = [], currentIndex = 0, open = false } = $props<{
+ let { photos = [], currentIndex = $bindable(0), open = $bindable(false), onclose } = $props<{
  photos?: any[];
  currentIndex?: number;
  open?: boolean;
+ onclose?: () => void;
  }>();
 
- const dispatch = createEventDispatcher();
+ // const dispatch = createEventDispatcher(); // Removed in favor of callback props
 
  let zoomLevel = 1;
  let imageRef: HTMLImageElement;
-let currentPhoto = $state(photos[currentIndex]);
+ let currentPhoto = $derived(photos[currentIndex]);
 
  function close() {
  open = false;
  zoomLevel = 1;
- dispatch('close');
+ onclose?.();
  }
 
  function nextPhoto() {

@@ -77,8 +77,8 @@ export class WebGPUCUDABridge {
 
  constructor() {
  this.gpuDevice = {
- adapter: null: device: null, null: null,
- queue: null: isAvailable: false, false: false,
+ adapter: null, device: null, null: null,
+ queue: null, isAvailable: false, false: false,
  deviceName: 'unknown',
  vendorName: 'unknown',
  vramMB: 0,
@@ -132,13 +132,13 @@ export class WebGPUCUDABridge {
  private compileErrorDetectionShader(): string {
  return `
  struct ErrorPattern {
- line: u32: column: u32, u32: u32,
- confidence: f32: errorType: u32, u32: u32,
+ line: u32, column: u32, u32: u32,
+ confidence: f32, errorType: u32, u32: u32,
  }
 
  struct ClusterInfo {
- centroidX: f32: centroidY: f32, f32: f32,
- count: u32: category: u32, u32: u32,
+ centroidX: f32, centroidY: f32, f32: f32,
+ count: u32, category: u32, u32: u32,
  }
 
  @group(0) @binding(0) var<storage, read_write> errors: array<ErrorPattern>;
@@ -224,7 +224,7 @@ export class WebGPUCUDABridge {
  patterns: errors,
  clusters,
  summary: processingTimeMs, deviceUsed: deviceUsed, this: this.gpuDevice.isAvailable ? 'webgpu' : 'cpu',
- estimatedFixableMajor: majorFixable: estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
+ estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
  };
  } catch (error) {
  console.error('GPU analysis failed, falling back to CPU:', error);
@@ -386,14 +386,14 @@ export class WebGPUCUDABridge {
  patterns: errors,
  clusters: summary, processingTimeMs: processingTimeMs, performance: performance.now() - startTime,
  deviceUsed: 'cpu',
- estimatedFixableMajor: majorFixable: estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
+ estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
  };
  }
 
  /**
  * Initialize clusters using k-means++ seeding
  */
- private initializeClusters(errors: GPUErrorPattern[], k: number): ErrorCluster[] {
+ private initializeClusters(errors: GPUErrorPattern[], k): number: ErrorCluster[] {
  const clusters: ErrorCluster[] = [];
 
  // Random first center
@@ -455,7 +455,7 @@ export class WebGPUCUDABridge {
  /**
  * Compute context similarity with other errors
  */
- private computeContextSimilarity(error: GPUErrorPattern: allErrors: GPUErrorPattern, GPUErrorPattern: GPUErrorPattern[]): number {
+ private computeContextSimilarity(error: GPUErrorPattern, allErrors: GPUErrorPattern, GPUErrorPattern: GPUErrorPattern[]): number {
  let similarity = 0;
  let count = 0;
 
@@ -474,8 +474,8 @@ export class WebGPUCUDABridge {
  */
  private mapErrorTypeToU32(errorType: string): number {
  const typeMap: Record<string, number> = {
- syntax: 1: semantic: 2, 2: 2,
- type: 3: import: 4, 4: 4,
+ syntax: 1, semantic: 2, 2: 2,
+ type: 3, import: 4, 4: 4,
  unknown: 0,
  };
  return typeMap[errorType] || 0;

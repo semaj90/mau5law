@@ -45,7 +45,7 @@
  function handleInput(e: Event) {
  const target = e.target as HTMLTextAreaElement;
  code = target.value;
- onchange?.(code);
+ onchange.code;
  }
 
  function handleKeyDown(e: KeyboardEvent) {
@@ -73,7 +73,7 @@
  function handleLineClick(line: number) {
  const error = errors.find(e => e.line === line);
  if (error) {
- onErrorClick?.(error);
+ onErrorClick.error;
  }
  }
 
@@ -138,7 +138,7 @@
  text-white"
  onclick={() => {
  scrollToLine(error.line);
- onErrorClick?.(error);
+ onErrorClick.error;
  }}
  title={error.message}
  >

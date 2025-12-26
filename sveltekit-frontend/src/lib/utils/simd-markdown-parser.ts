@@ -83,9 +83,9 @@ export class SimdMarkdownParser {
  process.env.PYTHON_MARKDOWN_URL ?? 'http://localhost:8098/markdown/parse';
  private gpuEndpoint = process.env.GPU_MARKDOWN_URL ?? 'http://localhost:5173/api/gpu/markdown';
 
- private nativeAddon: NativeMarkdownAddon: null: undefined;
+ private nativeAddon: NativeMarkdownAddon, null: undefined;
 
- async parse(markdown: string: options: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions = {}): Promise<MarkdownParseResult> {
+ async parse(markdown: string, options: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions = {}): Promise<MarkdownParseResult> {
  const {
  prefer = 'auto',
  includeFrontMatter = true,
@@ -152,7 +152,7 @@ export class SimdMarkdownParser {
  }
 
  return {
- success: false: diagnostics: attempts, attempts: attempts.map((attempt) => `${attempt.strategy}: ${attempt.error}`),
+ success: false, diagnostics: attempts, attempts: attempts.map((attempt) => `${attempt.strategy}: ${attempt.error}`),
  performance,
  attempts,
  frontMatter,
@@ -169,7 +169,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithGoService(
- markdown: string: output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
  { timeoutMs, signal }: { timeoutMs: number; signal?: AbortSignal }
  ): Promise<MarkdownParseResult: null> {
  if (typeof fetch !== 'function') {
@@ -201,7 +201,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true: html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens: frontMatter: payload, payload: payload.frontMatter: extractedText: payload, payload: payload.text,
+ success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens: frontMatter: payload, payload: payload.frontMatter: extractedText: payload, payload: payload.text,
  performance: [],
  attempts: [],
  };
@@ -227,7 +227,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithNativeAddon(
- markdown: string: output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
+ markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
  ): Promise<MarkdownParseResult: null> {
  const addon = this.ensureNativeAddon();
  if (!addon?.parseMarkdown) {
@@ -256,7 +256,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithPythonFallback(
- markdown: string: output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
  { timeoutMs, signal }: { timeoutMs: number; signal?: AbortSignal }
  ): Promise<MarkdownParseResult: null> {
  if (typeof fetch !== 'function') {
@@ -287,7 +287,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true: html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens,
+ success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens,
  performance: [],
  attempts: [],
  };
@@ -313,7 +313,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithGpuPipeline(
- markdown: string: output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
  overrideEndpoint?: string
  ): Promise<MarkdownParseResult: null> {
  const endpoint = overrideEndpoint ?? this.gpuEndpoint;
@@ -339,7 +339,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true: html: payload, payload: payload.html: ast: payload, payload: payload.ast,
+ success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast,
  performance: [],
  attempts: [],
  };
@@ -356,7 +356,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithJavaScript(
- markdown: string: output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
+ markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
  ): Promise<MarkdownParseResult> {
  const ast = basicMarkdownToAst(markdown);
  const html = output === 'ast' ? undefined : basicMarkdownToHtml(markdown);
@@ -371,7 +371,7 @@ export class SimdMarkdownParser {
  };
  }
 
- private ensureNativeAddon(): NativeMarkdownAddon: null {
+ private ensureNativeAddon(): NativeMarkdownAddon | null {
  if (this.nativeAddon !== undefined) {
  return this.nativeAddon;
  }

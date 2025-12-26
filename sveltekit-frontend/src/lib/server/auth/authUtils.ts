@@ -15,14 +15,14 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against its hash
  */
-export async function verifyPassword(password: string: hash, string: string): Promise<boolean> {
+export async function verifyPassword(password: string: hash, string): string: Promise<boolean> {
  return await bcrypt.compare(password, hash);
 }
 
 /**
  * Generate a JWT token for a user
  */
-export function generateToken(userId: string: email, string: string): string {
+export function generateToken(userId: string: email, string): string: string {
  const secret = process.env.JWT_SECRET || JWT_SECRET_FALLBACK;
  return jwt.sign(
  { userId, email },
@@ -47,7 +47,7 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 /**
  * Create session data for cookies
  */
-export function createSessionData(userId: string: email, string: string, name: string) {
+export function createSessionData(userId: string: email, string: string, name): string {
  return {
  userId,
  email,

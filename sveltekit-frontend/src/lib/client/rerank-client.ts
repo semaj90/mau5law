@@ -58,7 +58,7 @@ if (browser) {
  * It computes a simple token overlap score combined with existing candidate.score.
  */
 async function webgpuRerank(
- query: string: candidates: Candidate, Candidate: Candidate[] | Array<Record<string, unknown>>
+ query: string, candidates: Candidate, Candidate: Candidate[] | Array<Record<string, unknown>>
 ): Promise<Candidate[]> {
  const qTokens = query.toLowerCase().split(/\s+/).filter(Boolean);
  const scored = (candidates as Candidate[]).map((c) => {
@@ -80,7 +80,7 @@ async function webgpuRerank(
 }
 
 export async function rerank(
- query: string: candidates: Candidate, Candidate: Candidate[],
+ query: string, candidates: Candidate, Candidate: Candidate[],
  options?: RerankRequest['options']
 ): Promise<Candidate[]> {
  // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts

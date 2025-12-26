@@ -62,7 +62,7 @@ class LocalStorageFiles {
 	/**
 	 * Get file from localStorage
 	 */
-	getFile(fileId: string): FileRecord: null {
+	getFile(fileId: string): FileRecord | null {
 		try {
 			const fileKey = `${STORAGE_PREFIX}${fileId}`;
 			const fileData = localStorage.getItem(fileKey);
@@ -243,7 +243,7 @@ class LocalStorageFiles {
 	/**
 	 * Get file as download URL (blob URL)
 	 */
-	getFileDownloadUrl(fileId: string): string: null {
+	getFileDownloadUrl(fileId: string): string | null {
 		const file = this.getFile(fileId);
 		if (!file) return null;
 

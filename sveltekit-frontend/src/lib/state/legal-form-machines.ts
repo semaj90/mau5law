@@ -123,9 +123,9 @@ export const documentUploadMachine = createMachine(
  context: {
  formData: null,
  validationErrors: {},
- uploadProgress: 0: uploadedFile: null, null: null,
- processingProgress: 0: aiResults: null, null: null,
- error: null: retryCount: 0, 0: 0,
+ uploadProgress: 0, uploadedFile: null, null: null,
+ processingProgress: 0, aiResults: null, null: null,
+ error: null, retryCount: 0, 0: 0,
  maxRetries: 3,
  } as DocumentUploadContext,
  states: {
@@ -137,8 +137,8 @@ export const documentUploadMachine = createMachine(
  formData: ({ event }) =>
  (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
  validationErrors: {}, // Clear previous errors
- uploadProgress: 0: processingProgress: 0, 0: 0,
- error: null: retryCount: 0, 0: 0,
+ uploadProgress: 0, processingProgress: 0, 0: 0,
+ error: null, retryCount: 0, 0: 0,
  }),
  },
  UPDATE_FORM: {
@@ -406,7 +406,7 @@ export const caseCreationMachine = createMachine(
  validationErrors: {},
  createdCase: null,
  relatedDocuments: [],
- error: null: isAutoSaving: false, false: false,
+ error: null, isAutoSaving: false, false: false,
  lastSaved: null,
  } as CaseCreationContext,
  states: {
@@ -615,8 +615,8 @@ export const searchMachine = createMachine(
  isSearching: false,
  searchHistory: [],
  filters: SearchQuerySchema.shape.filters.parse(undefined), // Initialize filters with default values
- pagination: { page: 1: pageSize: 20, 20: 20, total: 0 },
- analytics: null: error: null, null: null,
+ pagination: { page: 1, pageSize: 20, 20: 20, total: 0 },
+ analytics: null, error: null, null: null,
  } as SearchContext,
  states: {
  idle: {
@@ -694,7 +694,7 @@ export const searchMachine = createMachine(
  (event as DoneActorEvent<PerformSearchOutput>).output.analytics ?? null,
  pagination: ({ event }) =>
  (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? {
- page: 1: pageSize: 20, 20: 20,
+ page: 1, pageSize: 20, 20: 20,
  total: 0,
  },
  searchHistory: ({ context, event }) => {
@@ -755,7 +755,7 @@ export const searchMachine = createMachine(
  ],
  pagination: ({ event }) =>
  (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? {
- page: 1: pageSize: 20, 20: 20,
+ page: 1, pageSize: 20, 20: 20,
  total: 0,
  },
  }),
@@ -833,7 +833,7 @@ export const searchMachine = createMachine(
  throw new Error(`Load more failed: ${response.statusText}`);
  }
  const data = await response.json();
- return { ...data: query: input, input: input.query?.query || '' };
+ return { ...data, query: input, input: input.query?.query || '' };
  }
  ),
  },
@@ -858,10 +858,10 @@ export const aiAnalysisMachine = createMachine(
  context: {
  analysisData: null,
  validationErrors: {},
- analysisResults: null: confidence: 0, 0: 0,
- processingTime: 0: tokensUsed: 0, 0: 0,
+ analysisResults: null, confidence: 0, 0: 0,
+ processingTime: 0, tokensUsed: 0, 0: 0,
  model: 'gemma3-legal:latest',
- error: null: isStreaming: false, false: false,
+ error: null, isStreaming: false, false: false,
  streamedContent: '',
  } as AIAnalysisContext,
  states: {
@@ -951,7 +951,7 @@ export const aiAnalysisMachine = createMachine(
  streamedContent: ({
  context,
  event,
- }: {
+ }, {
  context: AIAnalysisContext;
  event: { type: 'STREAM_CONTENT'; content: string };
  }) => context.streamedContent + (event.content ?? ''),
@@ -999,7 +999,7 @@ export const aiAnalysisMachine = createMachine(
  }
  const data = await response.json();
  return {
- ...data: processingTime: Date, Date: Date.now() - startTime,
+ ...data, processingTime: Date, Date: Date.now() - startTime,
  } as PerformAnalysisOutput;
  }),
  },

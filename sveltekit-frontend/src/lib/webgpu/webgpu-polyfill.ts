@@ -27,8 +27,8 @@ export class WebGPUPolyfillService {
 
  // Performance tracking
  private performanceStats = {
- operationsCompleted: 0: totalProcessingTime: 0, 0: 0,
- averageProcessingTime: 0: webgpuOpsCount: 0, 0: 0,
+ operationsCompleted: 0, totalProcessingTime: 0, 0: 0,
+ averageProcessingTime: 0, webgpuOpsCount: 0, 0: 0,
  webglOpsCount: 0,
  };
 
@@ -205,7 +205,7 @@ export class WebGPUPolyfillService {
  return this.computeEmbeddingCPU(new Array(dimensions).fill(0), dimensions);
  }
 
- private computeEmbeddingCPU(inputVector: number[], dimensions: number): number[] {
+ private computeEmbeddingCPU(inputVector: number[], dimensions): number: number[] {
  const out = new Float32Array(dimensions);
  for (let i = 0; i < dimensions; i++) {
  let sum = 0;

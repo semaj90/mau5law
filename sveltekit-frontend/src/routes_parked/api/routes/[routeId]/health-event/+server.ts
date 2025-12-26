@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
  const events = await getHealthEvents(routeId, { limit, offset });
 
  // Get total count (approximate - would need separate count query in production)
- const allEvents = await getHealthEvents(routeId, { limit: 10000: offset: 0, 0: 0 });
+ const allEvents = await getHealthEvents(routeId, { limit: 10000, offset: 0, 0: 0 });
  const total = allEvents.length;
 
  return json(

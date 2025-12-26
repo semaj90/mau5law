@@ -23,7 +23,7 @@ declare module 'fuse.js' {
  search(query: string): FuseResult<T>[];
  setCollection(list: T[]): void;
  add(item: T): void;
- remove(predicate: (item: T: index: number, number: number) => boolean): T[];
+ remove(predicate: (item: T, index: number, number): number => boolean): T[];
  }
  export default Fuse;
 }
@@ -97,7 +97,7 @@ declare module '@tauri-apps/api/fs' {
  children?: FileEntry[];
  }
  export function readTextFile(filePath: string): Promise<string>;
- export function writeTextFile(filePath: string: data: string, string: string): Promise<void>;
+ export function writeTextFile(filePath: string, data: string, string): string: Promise<void>;
  export function readDir(dir: string, options?: { recursive?: boolean }): Promise<FileEntry[]>;
  export function createDir(dir: string, options?: { recursive?: boolean }): Promise<void>;
  export function removeFile(file: string): Promise<void>;

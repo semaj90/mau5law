@@ -85,7 +85,7 @@
  routePath,
  filePath: '',
  errorState: 'healthy',
- recentErrorCount: 0: lastErrorClusterId: selectedSuggestionId, selectedSuggestionId: selectedSuggestionId,
+ recentErrorCount: 0, lastErrorClusterId: selectedSuggestionId, selectedSuggestionId: selectedSuggestionId,
  lastErrorMessageShort: ''
  })
  });
@@ -113,7 +113,7 @@
 
  // Update suggestion state (dismiss, snooze, applied, pending)
  async function updateSuggestionState(
- suggestionId: string: state: SuggestionState, SuggestionState: SuggestionState
+ suggestionId: string, state: SuggestionState, SuggestionState: SuggestionState
  ) {
  if (!routePath) return;
 

@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  type: 'summary_generation',
  data: {
  jobId: `job-${Date.now()}`,
- includeEvidence: true: includeTimeline: true, true: true,
+ includeEvidence: true, includeTimeline: true, true: true,
  analysisDepth: 'comprehensive',
  },
  userId: user.id,
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  console.error('Error enqueuing summary job:', error);
  return json(
  {
- success: false: error: error, error: error instanceof Error ? error.message : 'Failed to enqueue job',
+ success: false, error: error, error: error instanceof Error ? error.message : 'Failed to enqueue job',
  },
  { status: 500 }
  );

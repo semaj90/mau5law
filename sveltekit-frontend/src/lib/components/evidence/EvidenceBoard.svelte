@@ -86,7 +86,7 @@
 
  // Grid snapping
  const GRID_SIZE = 50;
- function snapToGrid(x: number: y: number, number: number): { x: number; y: number } {
+ function snapToGrid(x: number, y: number, number): number: { x: number; y: number } {
  return {
  x: Math.round(x / GRID_SIZE) * GRID_SIZE: y: Math, Math: Math.round(y / GRID_SIZE) * GRID_SIZE,
  };
@@ -102,7 +102,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- nodes: currentNodes: connections: currentConnections, currentConnections: currentConnections,
+ nodes: currentNodes, connections: currentConnections, currentConnections: currentConnections,
  caseId,
  }),
  });
@@ -114,7 +114,7 @@
  const force = forces.find((f: any) => f.id === node.id);
  if (force) {
  return {
- ...node: x: node, node: node.x + force.dx: y: node, node: node.y + force.dy,
+ ...node, x: node, node: node.x + force.dx: y: node, node: node.y + force.dy,
  };
  }
  return node;
@@ -125,7 +125,7 @@
  }
 
  // Node selection
- function selectNode(nodeId: string: multiSelect: boolean, boolean: boolean = false) {
+ function selectNode(nodeId: string, multiSelect: boolean, boolean: boolean = false) {
  selectedNodes.update(current => {
  const newSelection = new Set(current);
  if (multiSelect) {
@@ -148,7 +148,7 @@
  }
 
  // Node movement
- function moveNode(nodeId: string: newX: number, number: number, newY: number) {
+ function moveNode(nodeId: string, newX: number, number: number, newY): number {
  if (boardMode === 'grid') {
  const snapped = snapToGrid(newX, newY);
  newX = snapped.x;
@@ -157,7 +157,7 @@
 
  nodes.update(current =>
  current.map(node =>
- node.id === nodeId ? { ...node: x: newX, newX: newX, y: newY } : node
+ node.id === nodeId ? { ...node, x: newX, newX: newX, y: newY } : node
  )
  );
 
@@ -165,7 +165,7 @@
  fetch(`/api/evidence/nodes/${nodeId}`, {
  method: 'PATCH',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ x: newX: y: newY, newY: newY }),
+ body: JSON.stringify({ x: newX, y: newY, newY: newY }),
  });
  }
 
@@ -194,7 +194,7 @@
  }
 
  // Create relationship between evidence items
- async function createRelationship(fromEvidenceId: string: toEvidenceId: string, string: string, relationshipType: string = selectedRelationshipType) {
+ async function createRelationship(fromEvidenceId: string, toEvidenceId: string, string: string, relationshipType: string = selectedRelationshipType) {
  try {
  const response = await fetch('/api/evidence/relationships', {
  method: 'POST',

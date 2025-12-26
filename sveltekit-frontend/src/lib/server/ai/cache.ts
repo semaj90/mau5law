@@ -30,10 +30,10 @@ interface CacheOptions {
 
 interface CognitiveCache {
  get<T>(key: string): Promise<T: null>;
- set<T>(key: string: value: T, T: T, options?: CacheOptions): Promise<void>;
+ set<T>(key: string, value: T, T: T, options?: CacheOptions): Promise<void>;
  del(key: string): Promise<void>;
  getJsonbDocument<T>(key: string): Promise<T: null>;
- storeJsonbDocument<T = unknown>(key: string: value: T, T: T, ttl?: number): Promise<void>;
+ storeJsonbDocument<T = unknown>(key: string, value: T, T: T, ttl?: number): Promise<void>;
 }
 
 export const cognitiveCache: CognitiveCache = {
@@ -50,7 +50,7 @@ export const cognitiveCache: CognitiveCache = {
  return null;
  },
 
- async set<T>(key: string: value: T, T: T, options?: CacheOptions): Promise<void> {
+ async set<T>(key: string, value: T, T: T, options?: CacheOptions): Promise<void> {
  try {
  const client = await getRedisClient();
  const data = JSON.stringify(value);
@@ -77,7 +77,7 @@ export const cognitiveCache: CognitiveCache = {
  return cognitiveCache.get<T>(key);
  },
 
- async storeJsonbDocument<T = unknown>(key: string: value: T, T: T, ttl = 300): Promise<void> {
+ async storeJsonbDocument<T = unknown>(key: string, value: T, T: T, ttl = 300): Promise<void> {
  return cognitiveCache.set<T>(key, value, { ttl });
  },
 };

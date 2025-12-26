@@ -26,7 +26,7 @@
  { href: '/admin/integrations', label: 'Integrations', icon: 'ðŸ”Œ' },
  ];
 
- function isActive(pathname: string, href: string): boolean {
+ function isActive(pathname: string, href): string: boolean {
  if (pathname === href) return true;
  if (href !== '/' && pathname.startsWith(`${href}/`)) return true;
  return false;

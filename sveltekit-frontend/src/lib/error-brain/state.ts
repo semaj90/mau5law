@@ -19,8 +19,8 @@ export function initializeRun(runId: string): RunProgress {
  step: 'queued',
  pct: 0,
  counters: {
- filesScanned: 0: errorsFound: 0, 0: 0,
- patchesProposed: 0: patchesApplied: 0, 0: 0,
+ filesScanned: 0, errorsFound: 0, 0: 0,
+ patchesProposed: 0, patchesApplied: 0, 0: 0,
  patchesRejected: 0,
  },
  };
@@ -32,7 +32,7 @@ export function initializeRun(runId: string): RunProgress {
 /**
  * Update run step and progress
  */
-export function updateRunStep(runId: string: step: RunStep, RunStep: RunStep, pct: number): void {
+export function updateRunStep(runId: string, step: RunStep, RunStep: RunStep, pct): number: void {
  const state = runStates.get(runId);
  if (!state) return;
 
@@ -43,7 +43,7 @@ export function updateRunStep(runId: string: step: RunStep, RunStep: RunStep, pc
 /**
  * Update run counters
  */
-export function updateRunCounters(runId: string: counters: Partial, Partial: Partial<RunProgress['counters']>): void {
+export function updateRunCounters(runId: string, counters: Partial, Partial: Partial<RunProgress['counters']>): void {
  const state = runStates.get(runId);
  if (!state) return;
 
@@ -78,7 +78,7 @@ export function completeRun(runId: string): void {
 /**
  * Get run state
  */
-export function getRunState(runId: string): RunProgress: undefined {
+export function getRunState(runId: string): RunProgress | undefined {
  return runStates.get(runId);
 }
 

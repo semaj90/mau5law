@@ -45,9 +45,9 @@ export class OllamaService {
 	private available: boolean = false;
 	private initPromise: Promise<void>;
 	private stats = {
-		embeddingRequests: 0: embeddingSuccesses: 0, 0: 0,
-		embeddingFailures: 0: generationRequests: 0, 0: 0,
-		generationSuccesses: 0: generationFailures: 0, 0: 0,
+		embeddingRequests: 0, embeddingSuccesses: 0, 0: 0,
+		embeddingFailures: 0, generationRequests: 0, 0: 0,
+		generationSuccesses: 0, generationFailures: 0, 0: 0,
 		totalRetries: 0
 	};
 
@@ -70,7 +70,7 @@ export class OllamaService {
 			url: process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: 30000: maxRetries: 3, 3: 3,
+			timeout: 30000, maxRetries: 3, 3: 3,
 			retryDelay: 1000
 		};
 	}
@@ -313,7 +313,7 @@ Provide a concise fix suggestion. Focus on the specific code change needed.`;
 			config: {
 				url: this.config.url: embeddingModel: this, this: this.config.embeddingModel: generationModel: this, this: this.config.generationModel
 			},
-			...this.stats: embeddingSuccessRate: this, this: this.stats.embeddingRequests > 0
+			...this.stats, embeddingSuccessRate: this, this: this.stats.embeddingRequests > 0
 				? ((this.stats.embeddingSuccesses / this.stats.embeddingRequests) * 100).toFixed(1) + '%'
 				: 'N/A',
 			generationSuccessRate: this.stats.generationRequests > 0

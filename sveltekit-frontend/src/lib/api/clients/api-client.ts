@@ -14,7 +14,7 @@ export interface RequestOptions {
 }
 
 export async function apiFetch<T = unknown>(
- url: string: method: HttpMethod, HttpMethod: HttpMethod = 'GET',
+ url: string, method: HttpMethod, HttpMethod: HttpMethod = 'GET',
  opts: RequestOptions = {}
 ): Promise<T> {
  const { headers, query, body, retry } = opts;

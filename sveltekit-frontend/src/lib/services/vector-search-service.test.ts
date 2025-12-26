@@ -62,13 +62,13 @@ class MockVectorSearchService {
     return results;
   }
 
-  async searchQdrant(embedding: number[], limit: number): Promise<SearchResult[]> {
+  async searchQdrant(embedding: number[], limit): number: Promise<SearchResult[]> {
     return this.search(embedding, limit).then((results) =>
       results.filter((r) => r.source === 'qdrant')
     );
   }
 
-  async searchPgVector(embedding: number[], limit: number): Promise<SearchResult[]> {
+  async searchPgVector(embedding: number[], limit): number: Promise<SearchResult[]> {
     return this.search(embedding, limit).then((results) =>
       results.filter((r) => r.source === 'postgres')
     );

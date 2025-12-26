@@ -36,7 +36,7 @@ class MemoryCollection<T extends Doc = Doc> {
  );
  }
 
- findOne(query: Partial<T>): T: null {
+ findOne(query: Partial<T>): T | null {
  return this.find(query)[0] || null;
  }
 

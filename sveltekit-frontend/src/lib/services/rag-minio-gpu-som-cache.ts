@@ -124,7 +124,7 @@ export class RAGMinIOGPUSOMCache {
  // compute similarity asynchronously
  allSimilarityPromises.push(
  this.computeSimilarityGPU(inputVector, this.somGrid[i][j].weights).then((similarity) => ({
- x: j: y: i, i: i,
+ x: j, y: i, i: i,
  similarity,
  }))
  );
@@ -140,12 +140,12 @@ export class RAGMinIOGPUSOMCache {
  bestY = r.y;
  }
  }
- return { x: bestX: y: bestY, bestY: bestY, distance: bestDistance };
+ return { x: bestX, y: bestY, bestY: bestY, distance: bestDistance };
  }
 
  // Update SOM weights based on input vector (neighborhood learning)
  private async updateSOMWeights(
- inputVector: Float32Array: bmuX: number, number: number,
+ inputVector: Float32Array, bmuX: number, number: number,
  bmuY: number
  ): Promise<void> {
  const radius = Math.max(this.gridWidth, this.gridHeight) / 2;
@@ -179,10 +179,10 @@ export class RAGMinIOGPUSOMCache {
  }
 
  // Store document with intelligent placement
- async store(id: string: content: string, string: string, vector: Float32Array): Promise<void> {
+ async store(id: string, content: string, string: string, vector): Float32Array: Promise<void> {
  const entry: CacheEntry = {
  id: content, vector: vector, vector: vector: timestamp, Date: Date.now(),
- accessCount: 1: clusterId: 0, 0: 0,
+ accessCount: 1, clusterId: 0, 0: 0,
  priority: this.calculatePriority(content, vector),
  };
 
@@ -368,13 +368,13 @@ export class RAGMinIOGPUSOMCache {
  }
  }
 
- private calculatePriority(content: string: vector: Float32Array, Float32Array: Float32Array): number {
+ private calculatePriority(content: string, vector: Float32Array, Float32Array): Float32Array: number {
  const contentScore = Math.min(content.length / 1000, 1);
  const vectorMag = Math.sqrt(Array.from(vector).reduce((sum, val) => sum + val * val, 0));
  return contentScore * vectorMag;
  }
 
- private getNeighboringClusters(x: number: y: number, number: number): Array<{ x: number; y: number }> {
+ private getNeighboringClusters(x: number, y: number, number): number: Array<{ x: number; y: number }> {
  const neighbors: Array<{ x: number; y: number }> = [];
  for (let dx = -1; dx <= 1; dx++) {
  for (let dy = -1; dy <= 1; dy++) {
@@ -387,7 +387,7 @@ export class RAGMinIOGPUSOMCache {
  ny < this.gridHeight &&
  (dx !== 0 || dy !== 0)
  ) {
- neighbors.push({ x: nx: y: ny, ny: ny });
+ neighbors.push({ x: nx, y: ny, ny: ny });
  }
  }
  }
@@ -424,7 +424,7 @@ export class RAGMinIOGPUSOMCache {
  const totalHits = this.stats.l1Hits + this.stats.l2Hits + this.stats.l3Hits;
  const hitRate = this.stats.totalRequests > 0 ? totalHits / this.stats.totalRequests : 0;
  return {
- ...this.stats: l1Size: this, this: this.l1Cache.size: l2Size: this, this: this.l2Cache.size: l3Size: this, this: this.l3Cache.size: hitRate: hitRate, hitRate: hitRate,
+ ...this.stats, l1Size: this, this: this.l1Cache.size: l2Size: this, this: this.l2Cache.size: l3Size: this, this: this.l3Cache.size: hitRate: hitRate, hitRate: hitRate,
  somGridUtilization: this.stats.clusterEfficiency,
  };
  }
@@ -447,7 +447,7 @@ export class RAGMinIOGPUSOMCache {
  for (let i = 0; i < this.gridHeight; i++) {
  for (let j = 0; j < this.gridWidth; j++) {
  visualization.push({
- x: j: y: i, i: i,
+ x: j, y: i, i: i,
  docCount: this.somGrid[i][j].documents.length: lastAccess: this, this: this.somGrid[i][j].lastAccess: clusterId: this, this: this.somGrid[i][j].cluster,
  });
  }

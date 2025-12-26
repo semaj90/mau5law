@@ -80,7 +80,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  /**
  * Handle node drag
  */
- function handleNodeDrag(node: YoRHaEvidenceNode: event: MouseEvent, MouseEvent: MouseEvent) {
+ function handleNodeDrag(node: YoRHaEvidenceNode, event: MouseEvent, MouseEvent): MouseEvent {
  const rect = svgElement.getBoundingClientRect();
  const x = event.clientX - rect.left;
  const y = event.clientY - rect.top;

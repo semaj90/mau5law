@@ -62,8 +62,8 @@
  let citations = $state <string[]>([]);
  let isSaving = $state <boolean>(false);
  let systemStatus = $state ({
- evidenceCanvas: true: detectiveAnalysis: true, true: true,
- aiAssistant: false: webgpuAcceleration: false, false: false,
+ evidenceCanvas: true, detectiveAnalysis: true, true: true,
+ aiAssistant: false, webgpuAcceleration: false, false: false,
  ollamaConnection: false,
  });
 

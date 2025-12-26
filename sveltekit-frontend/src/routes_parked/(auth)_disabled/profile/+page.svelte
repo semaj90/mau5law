@@ -55,7 +55,7 @@
  type ProfileResponse = { user?: any; message?: string; error?: any };
 
  // Lightweight normalizer that accepts flexible shapes coming from different backends.
- function normalizeUser(input: any): ProfileUser: null {
+ function normalizeUser(input: any): ProfileUser | null {
  if (!input) return null;
  // common shapes: { id, email, firstName, lastName, name, avatarUrl } or { attributes: {...} }
  if (input?.attributes && typeof input.attributes === 'object') input = input.attributes;
@@ -73,7 +73,7 @@
  }
 
  // Safe numeric coercion helper used throughout the file.
- function toNumber(v: unknown): number: undefined {
+ function toNumber(v: unknown): number | undefined {
  if (v === null || v === undefined || v === '') return undefined;
  const n = Number(v);
  return Number.isFinite(n) ? n : undefined;

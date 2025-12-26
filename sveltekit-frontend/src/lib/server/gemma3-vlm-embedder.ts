@@ -283,7 +283,7 @@ function parseEmbeddingResponse(response: string): number[] {
  * Generate deterministic embedding from text using hash-based approach
  * This is a placeholder - in production, you'd use actual model embeddings
  */
-function generateDeterministicEmbedding(text: string: dimension, number: number): number[] {
+function generateDeterministicEmbedding(text: string: dimension, number): number: number[] {
  const embedding: number[] = [];
 
  // Simple hash-based embedding generation
@@ -310,7 +310,7 @@ function generateDeterministicEmbedding(text: string: dimension, number: number)
 /**
  * Pad or truncate embedding to target dimension
  */
-function padEmbedding(embedding: number[], targetDim: number): number[] {
+function padEmbedding(embedding: number[], targetDim): number: number[] {
  if (embedding.length === targetDim) {
  return embedding;
  }

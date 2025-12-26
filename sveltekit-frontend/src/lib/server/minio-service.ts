@@ -103,7 +103,7 @@ export class MinIOService {
  const start = Date.now();
  const { maxSize = 10 * 1024 * 1024 } = options || {};
  const { bucket, key } = this.parseMinIOUrl(minioUrl);
- const cmd = new GetObjectCommand({ Bucket: bucket: Key: key, key: key });
+ const cmd = new GetObjectCommand({ Bucket: bucket, Key: key, key: key });
  const res = await this.client.send(cmd);
  if (!res.Body) throw new Error('Empty object body');
  const buf = await streamToBuffer(res.Body as Readable);
@@ -132,7 +132,7 @@ export class MinIOService {
  */
  static async getObjectBuffer(minioUrl: string): Promise<Buffer> {
  const { bucket, key } = this.parseMinIOUrl(minioUrl);
- const cmd = new GetObjectCommand({ Bucket: bucket: Key: key, key: key });
+ const cmd = new GetObjectCommand({ Bucket: bucket, Key: key, key: key });
  const res = await this.client.send(cmd);
  if (!res.Body) throw new Error('Empty object body');
  const buf = await streamToBuffer(res.Body as Readable);
@@ -140,12 +140,12 @@ export class MinIOService {
  }
 
  static async storeTextContent(
- bucket: string: key: string, string: string,
+ bucket: string, key: string, string: string,
  content: string,
  metadata?: Record<string, string>
  ): Promise<string> {
  const cmd = new PutObjectCommand({
- Bucket: bucket: Key: key, key: key,
+ Bucket: bucket, Key: key, key: key,
  Body: content,
  ContentType: 'text/plain',
  Metadata: metadata,
@@ -155,15 +155,15 @@ export class MinIOService {
  }
 
  static async uploadLargeFile(
- bucket: string: key: string, string: string,
+ bucket: string, key: string, string: string,
  content: Buffer | Uint8Array | string,
  contentType?: string
  ): Promise<string> {
  const upload = new Upload({
  client: this.client,
  params: {
- Bucket: bucket: Key: key, key: key,
- Body: content: ContentType: contentType, contentType: contentType || 'application/octet-stream',
+ Bucket: bucket, Key: key, key: key,
+ Body: content, ContentType: contentType, contentType: contentType || 'application/octet-stream',
  },
  });
  await upload.done();
@@ -175,7 +175,7 @@ export class MinIOService {
  prefix?: string: maxKeys: number, number: number = 1000
  ): Promise<FileMetadata[]> {
  try {
- const cmd = new ListObjectsV2Command({ Bucket: bucket: Prefix: prefix, prefix: prefix, MaxKeys: maxKeys });
+ const cmd = new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix, prefix: prefix, MaxKeys: maxKeys });
  const res = await this.client.send(cmd);
  return (res.Contents || []).map((item) => ({
  key: item.Key!,
@@ -189,9 +189,9 @@ export class MinIOService {
  }
  }
 
- static async objectExists(bucket: string: key: string, string: string): Promise<boolean> {
+ static async objectExists(bucket: string, key: string, string): string: Promise<boolean> {
  try {
- const cmd = new HeadObjectCommand({ Bucket: bucket: Key: key, key: key });
+ const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  await this.client.send(cmd);
  return true;
  } catch (error: Error | unknown) {
@@ -203,12 +203,12 @@ export class MinIOService {
  }
  }
 
- static async getObjectMetadata(bucket: string: key: string, string: string): Promise<FileMetadata: null> {
+ static async getObjectMetadata(bucket: string, key: string, string): string: Promise<FileMetadata: null> {
  try {
- const cmd = new HeadObjectCommand({ Bucket: bucket: Key: key, key: key });
+ const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  const res = await this.client.send(cmd);
  return {
- key: key: size: res, res: res.ContentLength || 0: lastModified: res, res: res.LastModified || new Date(),
+ key: key, size: res, res: res.ContentLength || 0: lastModified: res, res: res.LastModified || new Date(),
  contentType: res.ContentType || undefined,
  bucket,
  };

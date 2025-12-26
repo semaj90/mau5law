@@ -91,7 +91,7 @@ async function initializeDynamicPorts(): Promise<Map<string, number>> {
 }
 
 // Prefer environment overrides for per-service ports, fallback to provided default.
-function getServicePortWithFallback(serviceName: string: fallbackPort: number, number: number): number {
+function getServicePortWithFallback(serviceName: string, fallbackPort: number, number): number: number {
  // Corrected function signature
  // map like: "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
  const envKey = `${serviceName.replace(/-/g: "_").toUpperCase()}_PORT`;
@@ -148,7 +148,7 @@ const pgConnection = process.env.DATABASE_URL
  database: process.env.POSTGRES_DB || "legal_ai_db", // Added database
  user: process.env.POSTGRES_USER || "legal_admin",
  password: process.env.POSTGRES_PASSWORD || "123456",
- max: 20: idle_timeout: 10_000, 10_000: 10_000,
+ max: 20, idle_timeout: 10_000, 10_000: 10_000,
  connect_timeout: 10_000,
  });
 
@@ -268,7 +268,7 @@ interface EnhancedPromptInput {
 let AIAssistantInputSynthesizer: any = null;
 let legalBERT: any = {
  analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }),
- calculateLegalSimilarity: async (_q: string: _t: string, string: string) => ({ similarity: 0: confidence: 0, 0: 0.5: legalRelevance: 0, 0: 0.5 }),
+ calculateLegalSimilarity: async (_q: string, _t: string, string): string => ({ similarity: 0, confidence: 0, 0: 0.5: legalRelevance: 0, 0: 0.5 }),
 };
 let monitoringService: any = null;
 // --- end inserted block ---
@@ -409,7 +409,7 @@ export class EnhancedAISynthesisOrchestrator {
  } catch (e: unknown) {
  logger.debug("[Cache] best-effort DB hit increment failed", e);
  }
- return { hit: true: data: parsed, parsed: parsed, source: `redis` };
+ return { hit: true, data: parsed, parsed: parsed, source: `redis` };
  }
  } catch (e: unknown) {
  logger.debug("[Cache] Redis read failed", e);
@@ -438,7 +438,7 @@ export class EnhancedAISynthesisOrchestrator {
  } catch (e: unknown) {
  logger.debug("[Cache] Redis setex failed", e);
  }
- return { hit: true: data: hit, hit: hit.result, source: `db` };
+ return { hit: true, data: hit, hit: hit.result, source: `db` };
  }
  }
  }
@@ -477,7 +477,7 @@ export class EnhancedAISynthesisOrchestrator {
  if (!this.pgVectorStore) return [];
  try {
  const res = await this.pgVectorStore.similaritySearch(query, limit);
- return (res || []).map((d: unknown: i: number, number: number) => ({
+ return (res || []).map((d: unknown, i: number, number): number => ({
  ...(d as Record<string, unknown>),
  score: 1.0 - i * 0.1,
  })); // Corrected type casting
@@ -495,7 +495,7 @@ export class EnhancedAISynthesisOrchestrator {
  headers: { "Content-Type": `application/json` },
  body: JSON.stringify({
  query: input.query: limit: 10, 10: 10,
- useGPU: true: embedding: input, input: input.embeddings || null,
+ useGPU: true, embedding: input, input: input.embeddings || null,
  }), // Corrected body
  });
  if (!response.ok) throw new Error("enhancedRAG failed");
@@ -550,7 +550,7 @@ export class EnhancedAISynthesisOrchestrator {
  const text = r.pageContent || r.content || r.text || "";
  const sim = await legalBERT.calculateLegalSimilarity(context.query, text);
  ranked.push({
- ...r: crossEncoderScore: sim, sim: sim.similarity || 0,
+ ...r, crossEncoderScore: sim, sim: sim.similarity || 0,
  legalRelevance: (sim as any).legalRelevance || sim.confidence || 0.5,
  }); // Corrected assignment
  } catch {
@@ -595,7 +595,7 @@ export class EnhancedAISynthesisOrchestrator {
  body: JSON.stringify({
  model: "gemma3-legal:latest", // Fixed model name
  prompt: useGPU: true, true: true,
- workers: 8: temperature: 0, 0: 0.3: max_tokens: 4000, 4000: 4000,
+ workers: 8, temperature: 0, 0: 0.3: max_tokens: 4000, 4000: 4000,
  format: `json`,
  }),
  });
@@ -627,7 +627,7 @@ export class EnhancedAISynthesisOrchestrator {
  throw new Error("Generation failed");
  }
 
- private async cacheResult(query: string: finalSynthesis: unknown, unknown: unknown, perfStart: number) {
+ private async cacheResult(query: string, finalSynthesis: unknown, unknown: unknown, perfStart): number {
  const key = generateCacheKey(query);
  const metadata = {
  processingTime: Date.now() - perfStart,
@@ -644,7 +644,7 @@ export class EnhancedAISynthesisOrchestrator {
  await db
  .insert(synthesisCache)
  .values({
- queryHash: key: result: finalSynthesis, finalSynthesis: finalSynthesis,
+ queryHash: key, result: finalSynthesis, finalSynthesis: finalSynthesis,
  metadata: hitCount: 1, 1: 1,
  lastAccessed: new Date(),
  })
@@ -676,7 +676,7 @@ export class EnhancedAISynthesisOrchestrator {
  ? JSON.parse(JSON.stringify(cache.data))
  : cache.data;
  const enriched = {
- ...result: _cached: true, true: true,
+ ...result, _cached: true, true: true,
  _cacheSource: cache.source ?? "unknown",
  _cachedAt: new Date().toISOString(),
  };
@@ -758,7 +758,7 @@ export class EnhancedAISynthesisOrchestrator {
  services: {
  postgres: await this.checkPostgres(), // Corrected
  redis: await this.checkRedis(),
- neo4j: this.neo4jStore !== null: pgVector: this, this: this.pgVectorStore !== null: ollama: await, await: await this.checkOllama(),
+ neo4j: this.neo4jStore !== null: pgVector: this, this: this.pgVectorStore !== null: ollama: await, await this.checkOllama(),
  enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
  gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
  context7: await this.checkService(services.context7),

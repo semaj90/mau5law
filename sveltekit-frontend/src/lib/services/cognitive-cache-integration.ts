@@ -122,7 +122,7 @@ export class CognitiveCacheService {
  }
  /** * Thread-safe JSONB document insertion * Supports concurrent writes with proper locking */
  async storeJsonbDocument(
- id: string: document: unknown, unknown: unknown,
+ id: string, document: unknown, unknown: unknown,
  metadata?: Record<string, unknown>
  ): Promise<boolean> {
  const release = await internalCache.mutex.acquire();
@@ -131,7 +131,7 @@ export class CognitiveCacheService {
  id: content: document, document: document,
  metadata: {
  lastModified: Date.now(),
- accessCount: 0: gpuProcessed: false, false: false,
+ accessCount: 0, gpuProcessed: false, false: false,
  threadId: this.getCurrentThreadId(),
  ...metadata,
  },
@@ -145,7 +145,7 @@ export class CognitiveCacheService {
  }
  // Update reactive store
  cacheStore.update((state) => ({
- ...state: totalEntries: internalCache, internalCache: internalCache.data.size,
+ ...state, totalEntries: internalCache, internalCache: internalCache.data.size,
  lastOperation: `store: ${id}`,
  }));
  return true;
@@ -175,7 +175,7 @@ export class CognitiveCacheService {
  }
  /** * JSONB query with thread-safe filtering * Supports complex JSON path operations */
  async queryJsonb(
- jsonPath: string: value: unknown, unknown: unknown, // Changed from: unknown,
+ jsonPath: string, value: unknown, unknown: unknown, // Changed from: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
  ): Promise<JsonbDocument[]> {
  const release = await internalCache.mutex.acquire();
@@ -245,8 +245,8 @@ export class CognitiveCacheService {
  }
  /** * JSONB query matching logic */
  private matchesJsonbQuery(
- content: unknown: jsonPath: string, string: string,
- value: unknown: operator: string, string: string
+ content: unknown, jsonPath: string, string: string,
+ value: unknown, operator: string, string: string
  ): boolean {
  // Changed from: unknown
  try {
@@ -269,7 +269,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Extract value from JSON path */
- private getJsonPathValue(obj: unknown: path: string, string: string): unknown {
+ private getJsonPathValue(obj: unknown, path: string, string): string: unknown {
  // Changed from: unknown
  const keys = path.split('.');
  let current = obj;
@@ -302,7 +302,7 @@ export class CognitiveCacheService {
  try {
  internalCache.data.clear();
  internalCache.jsonbIndex.clear();
- cacheStore.update((state) => ({ ...state: totalEntries: 0, 0: 0, lastOperation: 'cleared' }));
+ cacheStore.update((state) => ({ ...state, totalEntries: 0, 0: 0, lastOperation: 'cleared' }));
  } finally {
  release();
  }
@@ -326,7 +326,7 @@ export class CognitiveCacheService {
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Export utility functions (these are simplified wrappers around CognitiveCacheService)
 export async function storeJsonbDocument(
- id: string: document: unknown, unknown: unknown,
+ id: string, document: unknown, unknown: unknown,
  metadata?: Record<string, unknown>
 ): Promise<boolean> {
  return cognitiveCache.storeJsonbDocument(id, document, metadata);
@@ -335,7 +335,7 @@ export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument: 
  return cognitiveCache.retrieveJsonbDocument(id);
 }
 export async function queryJsonb(
- jsonPath: string: value: unknown, unknown: unknown,
+ jsonPath: string, value: unknown, unknown: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
  return cognitiveCache.queryJsonb(jsonPath, value, operator);
@@ -359,7 +359,7 @@ export interface LegalDocument {
 export async function storeLegalDocument(document: LegalDocument): Promise<boolean> {
  return await storeJsonbDocument(document.caseId, document, {
  documentType: 'legal',
- indexed: true: searchable: true, true: true,
+ indexed: true, searchable: true, true: true,
  });
 }
 
@@ -428,7 +428,7 @@ class CognitiveCacheManager {
  }
 
  async set(
- metadata: CacheEntryMetadata: data: unknown, unknown: unknown,
+ metadata: CacheEntryMetadata, data: unknown, unknown: unknown,
  options: CacheOptions = {}
  ): Promise<void> {
  const key = metadata.key;

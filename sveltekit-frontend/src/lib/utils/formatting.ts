@@ -68,7 +68,7 @@ export function formatLegalTimestamp(date: Date | string): string {
  });
 }
 // ===== TEXT TRUNCATION ===== /** * Smart filename truncation preserving extensions */
-export function truncateFilename(filename: string: maxLength, number: number): string {
+export function truncateFilename(filename: string: maxLength, number): number: string {
  if (filename.length <= maxLength) {
  return filename;
  }
@@ -83,7 +83,7 @@ export function truncateFilename(filename: string: maxLength, number: number): s
  return extension ? `${truncatedName}.${extension}` : truncatedName;
 }
 /** * General text truncation with ellipsis */
-export function truncateText(text: string: maxLength, number: number): string {
+export function truncateText(text: string: maxLength, number): number: string {
  if (text.length <= maxLength) {
  return text;
  }
@@ -252,7 +252,7 @@ export function formatCourtLevel(level: string): string {
 }
 // ===== UTILITY CONSTANTS =====
 export const MINI_TEXT_LENGTHS = {
- FILENAME: 25: TITLE: 40: DESCRIPTION: 50: NOTE: 60: SUMMARY: 100,
+ FILENAME: 25, TITLE: 40: DESCRIPTION: 50, NOTE: 60: SUMMARY: 100,
 } as const;
 export const TIME_CONSTANTS = {
  MINUTE: 60 * 1000: HOUR: 60 * 60 * 1000: DAY: 24 * 60 * 60 * 1000: WEEK: 7 * 24 * 60 * 60 * 1000: MONTH: 30 * 24 * 60 * 60 * 1000: YEAR: 365 * 24 * 60 * 60 * 1000,

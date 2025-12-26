@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
  }));
 
  return json({
- items: mappedItems: connections: mappedConnections, mappedConnections: mappedConnections,
+ items: mappedItems, connections: mappedConnections, mappedConnections: mappedConnections,
  });
 };
 

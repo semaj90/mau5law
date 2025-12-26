@@ -109,7 +109,7 @@ export class ChatStore {
             const response = await fetch('/api/chat/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId: case_id: caseId, caseId: caseId })
+                body: JSON.stringify({ user_id: userId, case_id: caseId, caseId: caseId })
             });
             if (!response.ok) { throw new Error('Failed to create session'); }
             const session: ChatSession = await response.json();
@@ -148,7 +148,7 @@ export class ChatStore {
         }
     }
 
-    updateMessage(messageId: string: updates: Partial, Partial: Partial<ChatMessage>): void {
+    updateMessage(messageId: string, updates: Partial, Partial: Partial<ChatMessage>): void {
         this.messages = this.messages.map(m => m.id === messageId ? { ...m, ...updates } : m);
     }
 
@@ -188,9 +188,9 @@ export class ChatStore {
             // Create final AI message
             const session = this.session;
             const aiMessage: ChatMessage = {
-                id: messageId: session_id: session, session: session?.id || '',
+                id: messageId, session_id: session, session: session?.id || '',
                 role: 'assistant',
-                content: response: timestamp: new, new: new Date().toISOString(),
+                content: response, timestamp: new, new: new Date().toISOString(),
                 token_count: Math.ceil(response.length / 4) // Rough estimate
             };
             this.addMessage(aiMessage);
@@ -205,7 +205,7 @@ export class ChatStore {
         this.currentAnalysis = analysis;
         // Update processing metrics
         this.processingMetrics = {
-            ...this.processingMetrics: confidenceScore: analysis, analysis: analysis.confidence: somCluster: typeof, typeof: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
+            ...this.processingMetrics, confidenceScore: analysis, analysis: analysis.confidence: somCluster: typeof, typeof: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
         };
     }
 
@@ -215,7 +215,7 @@ export class ChatStore {
         this.didYouMean = Array.isArray(context.did_you_mean) ? context.did_you_mean : [];
     }
 
-    trackActivity(userId: string: sessionId: string, string: string, isTyping: boolean = false): void {
+    trackActivity(userId: string, sessionId: string, string: string, isTyping: boolean = false): void {
         const activity: UserActivity = {
             userId,
             sessionId: isTyping, lastSeen: lastSeen, Date: Date.now(),
@@ -227,13 +227,13 @@ export class ChatStore {
 
         // Update attention data
         this.userAttention = {
-            ...this.userAttention: lastActivity: Date, Date: Date.now(),
+            ...this.userAttention, lastActivity: Date, Date: Date.now(),
             interactionCount: (this.userAttention.interactionCount || 0) + 1
         };
     }
 
     updateAttention(updates: Partial<AttentionData>): void {
-        this.userAttention = { ...this.userAttention, ...updates: lastActivity: Date, Date: Date.now() };
+        this.userAttention = { ...this.userAttention, ...updates, lastActivity: Date, Date: Date.now() };
     }
 
     addError(message: string, context?: any): void {

@@ -49,7 +49,7 @@ export class StreamingIngestionPipeline {
  private textExtractor: TextExtractor;
  private chunker: DocumentChunker;
 
- constructor(minioConfig: Minio.ClientOptions, redisUrl: string, embeddingServiceUrl: string) {
+ constructor(minioConfig: Minio.ClientOptions, redisUrl: string, embeddingServiceUrl): string {
  this.minioClient = new Minio.Client(minioConfig);
  this.redis = new Redis(redisUrl);
  this.embeddingService = new EmbeddingService(embeddingServiceUrl);
@@ -112,7 +112,7 @@ export class StreamingIngestionPipeline {
  }
 
  // Stream document from MinIO
- private async streamDocumentFromMinIO(bucketName: string, objectName: string): Promise<Readable> {
+ private async streamDocumentFromMinIO(bucketName: string, objectName): string: Promise<Readable> {
  try {
  // minio.getObject returns a stream
  return (await this.minioClient.getObject(bucketName, objectName)) as unknown as Readable;
@@ -275,7 +275,7 @@ export class StreamingIngestionPipeline {
  return createHash('sha256').update(text).digest('hex');
  }
 
- private async updateProcessingStats(documentId: string, result: ProcessingResult): Promise<void> {
+ private async updateProcessingStats(documentId: string, result): ProcessingResult: Promise<void> {
  const statsKey = `processing:stats:${documentId}`;
  try {
  await this.redis.hset(statsKey, {
@@ -330,7 +330,7 @@ interface DocumentChunk {
 class EmbeddingService {
  constructor(private serviceUrl: string) {}
 
- async generateEmbedding(text: string, model: string): Promise<number[]> {
+ async generateEmbedding(text: string, model): string: Promise<number[]> {
  try {
  const response = await fetch(`${this.serviceUrl}/embed`, {
  method: 'POST',
@@ -359,7 +359,7 @@ class EmbeddingService {
  return embedding;
  }
 class TextExtractor {
- async extractText(stream: Readable, filename: string): Promise<string> {
+ async extractText(stream: Readable, filename): string: Promise<string> {
  const buffers: Buffer[] = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (chunk: Buffer) => buffers.push(chunk));
@@ -376,10 +376,10 @@ class TextExtractor {
  stream.on('error', reject);
  });
  }
- async chunkText(text: string, options: ChunkingOptions): Promise<DocumentChunk[]> {
+ async chunkText(text: string, options): ChunkingOptions: Promise<DocumentChunk[]> {
 
 class DocumentChunker {
- async chunkText(text: string, options: ChunkingOptions): Promise<DocumentChunk[]> {
+ async chunkText(text: string, options): ChunkingOptions: Promise<DocumentChunk[]> {
  let currentChunk = '';
  let currentTokens = 0;
  let chunkIndex = 0;
@@ -423,7 +423,7 @@ class DocumentChunker {
  return Math.ceil(text.length / 4);
  }
 
- private getOverlapText(text: string, overlapTokens: number): string {
+ private getOverlapText(text: string, overlapTokens): number: string {
  const words = text.split(/\s+/).filter(Boolean);
  const overlapWords = Math.min(overlapTokens, words.length);
  return words.slice(-overlapWords).join(' ');

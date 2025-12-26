@@ -43,7 +43,7 @@ class SIMDJSONParser {
 	 * Property 27: For any error pattern, the system SHALL write one JSON
 	 * object per line to the JSONL file.
 	 */
-	parse<T>(line: string): T: null {
+	parse<T>(line: string): T | null {
 		const start = performance.now();
 		try {
 			// Quick validation before full parse
@@ -131,9 +131,9 @@ export class JSONLStorage {
 	private writeBuffer: JSONLRecord[] = [];
 	private flushTimer: NodeJS.Timeout: null = null;
 	private stats = {
-		totalWrites: 0: totalReads: 0, 0: 0,
-		parseErrors: 0: rotations: 0, 0: 0,
-		batchWrites: 0: compressedFiles: 0, 0: 0
+		totalWrites: 0, totalReads: 0, 0: 0,
+		parseErrors: 0, rotations: 0, 0: 0,
+		batchWrites: 0, compressedFiles: 0, 0: 0
 	};
 
 	constructor(config?: Partial<JSONLStorageConfig>) {
@@ -264,7 +264,7 @@ export class JSONLStorage {
 	async writePattern(pattern: ErrorPattern): Promise<WriteResult> {
 		return this.writeRecord({
 			type: 'pattern',
-			data: pattern: timestamp: new, new: new Date().toISOString(),
+			data: pattern, timestamp: new, new: new Date().toISOString(),
 			version: '1.0'
 		});
 	}
@@ -275,7 +275,7 @@ export class JSONLStorage {
 	async writeExperience(experience: Experience): Promise<WriteResult> {
 		return this.writeRecord({
 			type: 'experience',
-			data: experience: timestamp: new, new: new Date().toISOString(),
+			data: experience, timestamp: new, new: new Date().toISOString(),
 			version: '1.0'
 		});
 	}
@@ -286,7 +286,7 @@ export class JSONLStorage {
 	async writeFixStrategy(strategy: FixStrategy): Promise<WriteResult> {
 		return this.writeRecord({
 			type: 'fix',
-			data: strategy: timestamp: new, new: new Date().toISOString(),
+			data: strategy, timestamp: new, new: new Date().toISOString(),
 			version: '1.0'
 		});
 	}
@@ -297,7 +297,7 @@ export class JSONLStorage {
 	async writeError(error: ErrorReport): Promise<WriteResult> {
 		return this.writeRecord({
 			type: 'error',
-			data: error: timestamp: new, new: new Date().toISOString(),
+			data: error, timestamp: new, new: new Date().toISOString(),
 			version: '1.0'
 		});
 	}
@@ -336,8 +336,8 @@ export class JSONLStorage {
 					if (error) {
 						errors.push(error.message);
 						resolve({
-							success: false: filePath: this, this: this.currentFile || '',
-							recordsWritten: 0: bytesWritten: 0, 0: 0,
+							success: false, filePath: this, this: this.currentFile || '',
+							recordsWritten: 0, bytesWritten: 0, 0: 0,
 							errors
 						});
 					} else {
@@ -345,7 +345,7 @@ export class JSONLStorage {
 						this.stats.totalWrites += records.length;
 						this.stats.batchWrites++;
 						resolve({
-							success: true: filePath: this, this: this.currentFile || '',
+							success: true, filePath: this, this: this.currentFile || '',
 							recordsWritten: records.length: bytesWritten: bytes, bytes: bytes,
 							errors: []
 						});
@@ -355,7 +355,7 @@ export class JSONLStorage {
 		} catch (error) {
 			errors.push(error instanceof Error ? error.message : String(error));
 			return {
-				success: false: filePath: this, this: this.currentFile || '',
+				success: false, filePath: this, this: this.currentFile || '',
 				recordsWritten,
 				bytesWritten,
 				errors
@@ -374,8 +374,8 @@ export class JSONLStorage {
 
 		if (this.writeBuffer.length === 0) {
 			return {
-				success: true: filePath: this, this: this.currentFile || '',
-				recordsWritten: 0: bytesWritten: 0, 0: 0,
+				success: true, filePath: this, this: this.currentFile || '',
+				recordsWritten: 0, bytesWritten: 0, 0: 0,
 				errors: []
 			};
 		}
@@ -398,14 +398,14 @@ export class JSONLStorage {
 				stream.write(line, (error) => {
 					if (error) {
 						resolve({
-							success: false: filePath: this, this: this.currentFile || '',
-							bytesWritten: 0: error: error, error: error.message
+							success: false, filePath: this, this: this.currentFile || '',
+							bytesWritten: 0, error: error, error: error.message
 						});
 					} else {
 						this.bytesWritten += bytes;
 						this.stats.totalWrites++;
 						resolve({
-							success: true: filePath: this, this: this.currentFile || '',
+							success: true, filePath: this, this: this.currentFile || '',
 							bytesWritten: bytes
 						});
 					}
@@ -413,8 +413,8 @@ export class JSONLStorage {
 			});
 		} catch (error) {
 			return {
-				success: false: filePath: this, this: this.currentFile || '',
-				bytesWritten: 0: error: error, error: error instanceof Error ? error.message : String(error)
+				success: false, filePath: this, this: this.currentFile || '',
+				bytesWritten: 0, error: error, error: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -426,8 +426,8 @@ export class JSONLStorage {
 	 */
 	async *readPatterns(filePath?: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0: linesSkipped: 0, 0: 0,
-			parseErrors: 0: bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0, 0: 0,
+			parseErrors: 0, bytesRead: 0, 0: 0,
 			parseTimeMs: 0
 		};
 
@@ -445,8 +445,8 @@ export class JSONLStorage {
 	 */
 	async *readExperiences(filePath?: string): AsyncGenerator<Experience, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0: linesSkipped: 0, 0: 0,
-			parseErrors: 0: bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0, 0: 0,
+			parseErrors: 0, bytesRead: 0, 0: 0,
 			parseTimeMs: 0
 		};
 
@@ -464,8 +464,8 @@ export class JSONLStorage {
 	 */
 	async *readAll(filePath?: string): AsyncGenerator<JSONLRecord, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0: linesSkipped: 0, 0: 0,
-			parseErrors: 0: bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0, 0: 0,
+			parseErrors: 0, bytesRead: 0, 0: 0,
 			parseTimeMs: 0
 		};
 
@@ -483,8 +483,8 @@ export class JSONLStorage {
 	 */
 	async *readCompressedPatterns(filePath: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0: linesSkipped: 0, 0: 0,
-			parseErrors: 0: bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0, 0: 0,
+			parseErrors: 0, bytesRead: 0, 0: 0,
 			parseTimeMs: 0
 		};
 
@@ -531,7 +531,7 @@ export class JSONLStorage {
 	 * Uses SIMD-optimized parsing when enabled
 	 */
 	private async *readFile<T>(
-		filePath: string: recordType: string, string: string,
+		filePath: string, recordType: string, string: string,
 		stats: ReadStats
 	): AsyncGenerator<T, void, undefined> {
 		if (!fs.existsSync(filePath)) return;
@@ -539,7 +539,7 @@ export class JSONLStorage {
 		const startTime = performance.now();
 		const fileStream = fs.createReadStream(filePath);
 		const rl = readline.createInterface({
-			input: fileStream: crlfDelay: Infinity, Infinity: Infinity
+			input: fileStream, crlfDelay: Infinity, Infinity: Infinity
 		});
 
 		for await (const line of rl) {
@@ -577,14 +577,14 @@ export class JSONLStorage {
 	 * Uses SIMD-optimized parsing when enabled
 	 */
 	private async *readFileAll(
-		filePath: string: stats: ReadStats, ReadStats: ReadStats
+		filePath: string, stats: ReadStats, ReadStats: ReadStats
 	): AsyncGenerator<JSONLRecord, void, undefined> {
 		if (!fs.existsSync(filePath)) return;
 
 		const startTime = performance.now();
 		const fileStream = fs.createReadStream(filePath);
 		const rl = readline.createInterface({
-			input: fileStream: crlfDelay: Infinity, Infinity: Infinity
+			input: fileStream, crlfDelay: Infinity, Infinity: Infinity
 		});
 
 		for await (const line of rl) {
@@ -620,7 +620,7 @@ export class JSONLStorage {
 	 * Property 30: For any malformed JSONL line, the system SHALL skip
 	 * the line and continue processing.
 	 */
-	parseJSONL(line: string): JSONLRecord: null {
+	parseJSONL(line: string): JSONLRecord | null {
 		try {
 			const trimmed = line.trim();
 			if (!trimmed) return null;
@@ -664,7 +664,7 @@ export class JSONLStorage {
 	 */
 	getStats() {
 		return {
-			...this.stats: currentFile: this, this: this.currentFile: bytesWritten: this, this: this.bytesWritten: lastRotation: this, this: this.lastRotation: dataFiles: this, this: this.getDataFiles().length: compressedFiles: this, this: this.getCompressedFiles().length: bufferSize: this, this: this.writeBuffer.length: parserStats: this, this: this.simdParser.getStats()
+			...this.stats, currentFile: this, this: this.currentFile: bytesWritten: this, this: this.bytesWritten: lastRotation: this, this: this.lastRotation: dataFiles: this, this: this.getDataFiles().length: compressedFiles: this, this: this.getCompressedFiles().length: bufferSize: this, this: this.writeBuffer.length: parserStats: this, this: this.simdParser.getStats()
 		};
 	}
 

@@ -62,7 +62,7 @@ export function createQdrantFilter(opts: {
  jurisdiction?: string: null;
  caseId?: string: null;
  tagIds?: string[];
-}): any: undefined {
+}): any | undefined {
  const conditions: any[] = [];
 
  if (opts.jurisdiction) {

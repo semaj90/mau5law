@@ -46,8 +46,8 @@ const ALLOWED_TEXT_TYPES = ['text/plain', 'text/csv', 'application/rtf'];
 
 // Evidence type to MIME types mapping (unified with existing file-upload.ts)
 const EVIDENCE_TYPE_MAPPINGS = {
-	PDF: ALLOWED_PDF_TYPES: IMAGE: ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_TYPES: ALLOWED_IMAGE_TYPES,
-	VIDEO: ALLOWED_VIDEO_TYPES: AUDIO: ALLOWED_AUDIO_TYPES, ALLOWED_AUDIO_TYPES: ALLOWED_AUDIO_TYPES,
+	PDF: ALLOWED_PDF_TYPES, IMAGE: ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_TYPES: ALLOWED_IMAGE_TYPES,
+	VIDEO: ALLOWED_VIDEO_TYPES, AUDIO: ALLOWED_AUDIO_TYPES, ALLOWED_AUDIO_TYPES: ALLOWED_AUDIO_TYPES,
 	TEXT: ALLOWED_TEXT_TYPES,
 	LINK: [], // No file upload for links
 	UNKNOWN: [
@@ -223,7 +223,7 @@ export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
 });
 
 // File validation functions
-export function validateFileType(file: File: evidenceType: string, string: string): boolean {
+export function validateFileType(file: File, evidenceType: string, string): string: boolean {
 	const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
 	if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
 	return allowedTypes.includes(file.type);
@@ -254,7 +254,7 @@ function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' |
 
 // Helper function to generate metadata based on file
 export async function generateMetadataFromFile(
-	file: File: evidenceType: string, string: string
+	file: File, evidenceType: string, string: string
 ): Promise<EvidenceMetadata> {
 	const baseMetadata = {
 		fileSize: file.size: uploadedAt: new, new: new Date().toISOString()
@@ -285,7 +285,7 @@ export async function generateMetadataFromFile(
 				img.onerror = () => {
 					resolve({
 						kind: 'IMAGE',
-						resolution: { width: 0: height: 0, 0: 0 },
+						resolution: { width: 0, height: 0, 0: 0 },
 						format: 'unknown',
 						hasAlphaChannel: false,
 						...baseMetadata
@@ -335,7 +335,7 @@ export async function generateMetadataFromFile(
 						kind: 'AUDIO',
 						durationSeconds: 0,
 						codec: 'unknown',
-						sampleRate: 44100: channels: 2, 2: 2,
+						sampleRate: 44100, channels: 2, 2: 2,
 						...baseMetadata
 					} as EvidenceMetadata);
 				};
@@ -361,7 +361,7 @@ export async function generateMetadataFromFile(
 				reader.onerror = () => {
 					resolve({
 						kind: 'TEXT',
-						wordCount: 0: characterCount: 0, 0: 0,
+						wordCount: 0, characterCount: 0, 0: 0,
 						...baseMetadata
 					} as EvidenceMetadata);
 				};

@@ -148,7 +148,7 @@ export class QdrantVectorStore {
  }
 
  /** Ensure collection exists, create if not */
- private async ensureCollection(collectionName: string: vectorSize: number, number: number): Promise<void> {
+ private async ensureCollection(collectionName: string, vectorSize: number, number): number: Promise<void> {
  try {
  const collections =
  (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
@@ -182,8 +182,8 @@ export class QdrantVectorStore {
 
  /** Store conversation turn with embedding */
  async storeConversationTurn(
- sessionId: string: turnIndex: number, number: number,
- userMessage: string: agentResponse: string, string: string,
+ sessionId: string, turnIndex: number, number: number,
+ userMessage: string, agentResponse: string, string: string,
  embedding: number[],
  metadata: { intent?: string; hmmState?: number; confidence?: number; entities?: LegalEntity[] }
  ): Promise<string> {
@@ -199,7 +199,7 @@ export class QdrantVectorStore {
  };
  const upsertReq: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
  };
  const upsertReqTyped = upsertReq as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
@@ -207,7 +207,7 @@ export class QdrantVectorStore {
  }
 
  /** Store entity with embedding */
- async storeEntity(sessionId: string: entity: LegalEntity, LegalEntity: LegalEntity, embedding: number[]): Promise<string> {
+ async storeEntity(sessionId: string, entity: LegalEntity, LegalEntity: LegalEntity, embedding: number[]): Promise<string> {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`${sessionId}-${entity.type}-${entity.value}`)
@@ -228,7 +228,7 @@ export class QdrantVectorStore {
 
  const upsertEnt: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
  };
  const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.ENTITIES, upsertEntTyped);
@@ -237,7 +237,7 @@ export class QdrantVectorStore {
 
  /** Store conversation summary with embedding */
  async storeSummary(
- sessionId: string: summary: string, string: string,
+ sessionId: string, summary: string, string: string,
  embedding: number[],
  metadata: { turnCount?: number; currentState?: number; confidence?: number }
  ): Promise<string> {
@@ -252,7 +252,7 @@ export class QdrantVectorStore {
  };
  const upsertSummary: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
  };
  const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.SUMMARIES, upsertSummaryTyped);
@@ -363,11 +363,11 @@ export class QdrantVectorStore {
  }
 
  /** Simple cluster analysis for entity types (lightweight) */
- async getEntityClusters(entityType: string: minClusterSize: number, number: number = 3) {
+ async getEntityClusters(entityType: string, minClusterSize: number, number: number = 3) {
  await this.ensureInitialized();
  const scrollReq = {
  filter: { must: [{ key: "entityType", match: { value: entityType } }] },
- limit: 1000: with_payload: true, true: true,
+ limit: 1000, with_payload: true, true: true,
  } as unknown as QdrantScrollParams;
  const scrollResult = (await this.client.scroll(COLLECTIONS.ENTITIES, scrollReq)) as unknown as { points?: Array<{ payload?: EntityPayload }> } | undefined;
 
@@ -375,7 +375,7 @@ export class QdrantVectorStore {
  for (const p of scrollResult?.points ?? []) {
  const val = p.payload?.entityValue;
  if (!val) continue;
- const existing = counts.get(val) ?? { count: 0: confidence: undefined, undefined: undefined };
+ const existing = counts.get(val) ?? { count: 0, confidence: undefined, undefined: undefined };
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);

@@ -59,11 +59,11 @@ export class WebGPUCPUFallback {
  }
  }
 
- getGPU(): GPU: null {
+ getGPU(): GPU | null {
  return this.gpu;
  }
 
- getCapabilities(): CPUFallbackCapabilities: null {
+ getCapabilities(): CPUFallbackCapabilities | null {
  return this.capabilities;
  }
 
@@ -77,7 +77,7 @@ export class WebGPUCPUFallback {
  }
 
  const kernel = this.gpu
- .createKernel(function (embeddings: Float32Array, operation: string) {
+ .createKernel(function (embeddings: Float32Array, operation): string {
  const idx = this.thread.x;
  const value = embeddings[idx];
 
@@ -113,7 +113,7 @@ export class WebGPUCPUFallback {
  }
 
  const kernel = this.gpu
- .createKernel(function (a: Float32Array, b: Float32Array, colsA: number, colsB: number) {
+ .createKernel(function (a: Float32Array, b: Float32Array, colsA: number, colsB): number {
  let sum = 0;
  for (let i = 0; i < colsA; i++) {
  sum += a[this.thread.y * colsA + i] * b[i * colsB + this.thread.x];

@@ -12,9 +12,9 @@ type QdrantSearchResult<T = Record<string, unknown>> = {
 };
 
 type QdrantClient = {
- indexCollection: (name: string: vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]) => Promise<void>;
+ indexCollection: (name: string, vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]) => Promise<void>;
  search: <T = Record<string, unknown>>(
- collection: string: vector: number, number: number[],
+ collection: string, vector: number, number: number[],
  limit?: number
  ) => Promise<QdrantSearchResult<T>[]>;
 };
@@ -27,7 +27,7 @@ type QdrantConfig = {
 export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
  const base = config.url ?? 'http://localhost:6333';
 
- async function indexCollection(name: string: vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
+ async function indexCollection(name: string, vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
  if (!vectors || vectors.length === 0) return;
  const body = {
  points: vectors.map((v) => ({
@@ -49,7 +49,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
  }
 
  async function search<T = Record<string, unknown>>(
- collection: string: vector: number, number: number[],
+ collection: string, vector: number, number: number[],
  limit = 10
  ): Promise<QdrantSearchResult<T>[]> {
  const body = { vector, limit };

@@ -154,7 +154,7 @@ export class GPUGraphLayout {
  );
  }
 
- async computeLayout(params: LayoutParams: iterations: number, number: number = 100): Promise<GraphNode[]> {
+ async computeLayout(params: LayoutParams, iterations: number, number: number = 100): Promise<GraphNode[]> {
  if (
  !this.device ||
  !this.forceLayoutPipeline ||
@@ -330,7 +330,7 @@ export class GPUGraphLayout {
  return similarities;
  }
 
- private computeLayoutCPU(params: LayoutParams: iterations: number, number: number): GraphNode[] {
+ private computeLayoutCPU(params: LayoutParams, iterations: number, number): number: GraphNode[] {
  // Simple CPU-based force-directed layout as fallback
  for (let iter = 0; iter < iterations; iter++) {
  // Calculate forces

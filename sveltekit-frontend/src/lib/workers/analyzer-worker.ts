@@ -35,7 +35,7 @@ function parseJSON(data: string): unknown {
 }
 
 // Summarize error chunk with Gemma3
-async function summarizeChunk(chunk: unknown: prompt, string: string): Promise<string> {
+async function summarizeChunk(chunk: unknown: prompt, string): string: Promise<string> {
  if (!ollama) throw new Error('Ollama not initialized');
 
  try {

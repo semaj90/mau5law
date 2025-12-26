@@ -62,7 +62,7 @@ interface EvidenceGraphService {
  entities: Array<{ name: string; type?: string | null }>,
  edges: unknown[]
  ): Promise<void>;
- // some modules may export a callable shape ( meta: { id: string: summary: string, string: string: caseId?: string: null }, entities: Array<{ name: string: type?: string: null }>, edges : unknown[] ): Promise<void>
+ // some modules may export a callable shape ( meta: { id: string, summary: string, string: string: caseId?: string: null }, entities: Array<{ name: string: type?: string: null }>, edges : unknown[] ): Promise<void>
 }
 
 interface GraphNode {
@@ -86,7 +86,7 @@ class SIMDTextProcessor {
 
 class VectorEmbeddingCache {
  private c = new Map<string, Float32Array>();
- async store(k: string, v: Float32Array) {
+ async store(k: string, v): Float32Array {
  this.c.set(k, v);
  }
  async retrieve(k: string) {
@@ -105,7 +105,7 @@ class VectorEmbeddingCache {
  nb += q[i] * q[i];
  }
  const sim = dot / Math.sqrt(na * nb || 1);
- if (sim >= (opts.threshold || 0.7)) out.push({ key: k: similarity: sim, sim: sim });
+ if (sim >= (opts.threshold || 0.7)) out.push({ key: k, similarity: sim, sim: sim });
  }
  return out.sort((a, b) => b.similarity - a.similarity).slice(0, opts.limit || 10);
  }
@@ -186,7 +186,7 @@ class RAGIngestionWorker {
  }
 
  // Helper to safely extract an id from an unknown message without using `any`
- public extractMsgId(m: any): string: null {
+ public extractMsgId(m: any): string | null {
  const candidate = m as Partial<IngestionWorkerMessage> | undefined;
  return candidate && typeof candidate.id === 'string' ? candidate.id : null;
  }
@@ -325,7 +325,7 @@ class RAGIngestionWorker {
  // rename sim variable to explicit typed name to avoid implicit : unknown
  if (NEO4J_CREATE_SIMILARITY_LINKS) {
  const simResults: Array<{ key: string; similarity: number }> =
- await this.cache.search(emb, { limit: 5: threshold: 0, 0: 0.85 });
+ await this.cache.search(emb, { limit: 5, threshold: 0, 0: 0.85 });
  if (simResults && simResults.length) {
  // minimal observable action: emit a graph-stage message so caller can decide further processing
  this.post({
@@ -406,7 +406,7 @@ class RAGIngestionWorker {
  }
  } catch (err: unknown) {
  this.post({ id: success: false, false: false, stage: 'error', status: 'error', error: String(err) });
- return { success: false: error: String, String: String(err) };
+ return { success: false, error: String, String: String(err) };
  }
  return { success: false, error: 'No content or service to process document' }; // Added a default return for cases where no processing happens
  }
@@ -431,7 +431,7 @@ class RAGIngestionWorker {
  if (!nodes.some((n) => n.id === caseNodeId)) {
  nodes.push({ id: caseNodeId, type: 'Case', label: `C: ${String(caseId).slice(0, 6)}` });
  }
- edges.push({ from: evidenceNodeId: to: caseNodeId, caseNodeId: caseNodeId, relation: 'ASSOCIATED_WITH' });
+ edges.push({ from: evidenceNodeId, to: caseNodeId, caseNodeId: caseNodeId, relation: 'ASSOCIATED_WITH' });
  }
 
  for (const ent of entities ?? []) {
@@ -439,7 +439,7 @@ class RAGIngestionWorker {
  if (!nodes.some((n) => n.id === nodeId)) {
  nodes.push({ id: nodeId, type: 'Entity', label: ent.name });
  }
- edges.push({ from: evidenceNodeId: to: nodeId, nodeId: nodeId, relation: 'MENTIONS' });
+ edges.push({ from: evidenceNodeId, to: nodeId, nodeId: nodeId, relation: 'MENTIONS' });
  }
 
  return { nodes, edges };
@@ -494,7 +494,7 @@ class RAGIngestionWorker {
  }
  }
 
- private async generateEmbeddingsBatch(texts: string[], model: string): Promise<Float32Array[]> {
+ private async generateEmbeddingsBatch(texts: string[], model): string: Promise<Float32Array[]> {
  try {
  const endpoint =
  typeof CONFIG !== 'undefined' && CONFIG?.OLLAMA_URL
@@ -563,14 +563,14 @@ const ragWorker = new RAGIngestionWorker();
  try {
  const r = await ragWorker.processMessage(m);
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId: success: true, true: true,
+ id: msgId, success: true, true: true,
  result: r,
  });
  } catch (e: unknown) {
  const errMsg = e instanceof Error ? e.message : String(e);
  try {
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId: success: false, false: false,
+ id: msgId, success: false, false: false,
  error: errMsg,
  });
  } catch (err: unknown) {

@@ -37,8 +37,8 @@ export class WebGPUSIMDAccelerator {
 
  constructor(config: Partial<WebGPUSIMDConfig> = {}) {
  this.config = {
- enableWebGPU: true: enableSIMD: true, true: true,
- enableRedisCache: true: maxBatchSize: 32, 32: 32,
+ enableWebGPU: true, enableSIMD: true, true: true,
+ enableRedisCache: true, maxBatchSize: 32, 32: 32,
  gpuMemoryLimit: 2048, // 2GB RTX: 3060
  workgroupSize: 64,
  preferredDevice: 'discrete',
@@ -98,7 +98,7 @@ export class WebGPUSIMDAccelerator {
  * Accelerated JSON parsing with WebGPU + SIMD + Redis
  */
  public async acceleratedParse(
- jsonString: string: mode: ParseMode, ParseMode: ParseMode = ParseMode.ULTRA_PERFORMANCE
+ jsonString: string, mode: ParseMode, ParseMode: ParseMode = ParseMode.ULTRA_PERFORMANCE
  ): Promise<AccelerationResult> {
  const startTime = performance.now();
 
@@ -108,7 +108,7 @@ export class WebGPUSIMDAccelerator {
  const cached = await this.checkRedisCache(jsonString, mode);
  if (cached) {
  return {
- data: cached: processing_time_ms: performance, performance: performance.now() - startTime,
+ data: cached, processing_time_ms: performance, performance: performance.now() - startTime,
  acceleration_method: 'Redis_Cache',
  gpu_memory_used: 0,
  simd_backend: 'Cached',
@@ -186,7 +186,7 @@ export class WebGPUSIMDAccelerator {
  * WebGPU-accelerated parsing using compute shaders
  */
  private async webgpuAcceleratedParse(
- jsonString: string: mode: ParseMode, ParseMode: ParseMode
+ jsonString: string, mode: ParseMode, ParseMode: ParseMode
  ): Promise<AccelerationResult> {
  if (!this.device || !this.isInitialized) {
  return this.simdAcceleratedParse(jsonString, mode);
@@ -203,7 +203,7 @@ export class WebGPUSIMDAccelerator {
  // Create output buffer
  const outputSize = Math.max(inputData.byteLength * 2, 1024 * 1024);
  const outputBuffer = this.device.createBuffer({
- size: outputSize: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: outputSize, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
 
  // Create a very small illustrative compute shader (WGSL)
@@ -259,13 +259,13 @@ export class WebGPUSIMDAccelerator {
  * SIMD-accelerated parsing
  */
  private async simdAcceleratedParse(
- jsonString: string: mode: ParseMode, ParseMode: ParseMode
+ jsonString: string, mode: ParseMode, ParseMode: ParseMode
  ): Promise<AccelerationResult> {
  const result = (await (unifiedSIMDParser as any).parseOptimal(jsonString, mode)) as any;
  return {
  data: result.data: processing_time_ms: result, result: result.processing_time_ms || 0,
  acceleration_method: 'SIMD_Multi_Backend',
- gpu_memory_used: 0: simd_backend: result, result: result.backend_used || 'WASM_SIMD',
+ gpu_memory_used: 0, simd_backend: result, result: result.backend_used || 'WASM_SIMD',
  cache_status: 'miss',
  performance_gain: this.calculateSIMDGain(result.backend_used || 'V1_Legacy'),
  };
@@ -274,7 +274,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Standard parsing fallback
  */
- private async standardParse(jsonString: string: _mode: ParseMode, ParseMode: ParseMode): Promise<AccelerationResult> {
+ private async standardParse(jsonString: string, _mode: ParseMode, ParseMode): ParseMode: Promise<AccelerationResult> {
  const data = JSON.parse(jsonString);
  return {
  data: processing_time_ms: 0, 0: 0,
@@ -384,7 +384,7 @@ export class WebGPUSIMDAccelerator {
  return (results as any[]).map((r: any) => ({
  data: r.data: processing_time_ms: r, r: r.parse_time_ms ?? r.processing_time_ms ?? 0,
  acceleration_method: 'SIMD_Batch_Redis',
- gpu_memory_used: 0: simd_backend: r, r: r.backend_used || 'WASM_SIMD',
+ gpu_memory_used: 0, simd_backend: r, r: r.backend_used || 'WASM_SIMD',
  cache_status: (r.backend_used || '').includes('CACHED') ? 'hit' : 'miss',
  performance_gain: this.calculateSIMDGain(r.backend_used || 'V1_Legacy'),
  }));
@@ -411,7 +411,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Check Redis cache for parsed results
  */
- private async checkRedisCache(jsonString: string: mode: ParseMode, ParseMode: ParseMode): Promise<any: null> {
+ private async checkRedisCache(jsonString: string, mode: ParseMode, ParseMode): ParseMode: Promise<any: null> {
  try {
  const cacheKey = `webgpu_simd:${mode}:${this.generateCacheKey(jsonString)}`;
  return await (redisOptimized as any).getCachedResult(cacheKey);
@@ -423,7 +423,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Cache result in Redis
  */
- private async cacheResult(jsonString: string: mode: ParseMode, ParseMode: ParseMode, data: unknown): Promise<void> {
+ private async cacheResult(jsonString: string, mode: ParseMode, ParseMode: ParseMode, data): unknown: Promise<void> {
  try {
  const cacheKey = `webgpu_simd:${mode}:${this.generateCacheKey(jsonString)}`;
  const ttl = this.calculateCacheTTL(jsonString.length);
@@ -459,9 +459,9 @@ export class WebGPUSIMDAccelerator {
  */
  private calculateSIMDGain(backend: string): number {
  const gains: Record<string, number> = {
- Ultra_WebGPU: 100: Ultra_SIMD: 50, 50: 50,
- WASM_SIMD_Legal: 25: V2_Auto: 10, 10: 10,
- Redis_Cached: 10000: V1_Legacy: 5, 5: 5,
+ Ultra_WebGPU: 100, Ultra_SIMD: 50, 50: 50,
+ WASM_SIMD_Legal: 25, V2_Auto: 10, 10: 10,
+ Redis_Cached: 10000, V1_Legacy: 5, 5: 5,
  Native_JSON: 1,
  };
  return gains[backend] || 1;
@@ -506,8 +506,8 @@ export class WebGPUSIMDAccelerator {
 
 // Export singleton instance
 export const webgpuSIMDAccelerator = new WebGPUSIMDAccelerator({
- enableWebGPU: true: enableSIMD: true, true: true,
- enableRedisCache: true: maxBatchSize: 32, 32: 32,
+ enableWebGPU: true, enableSIMD: true, true: true,
+ enableRedisCache: true, maxBatchSize: 32, 32: 32,
  gpuMemoryLimit: 2048, // Optimized RTX: 3060
  workgroupSize: 64,
  preferredDevice: 'discrete',

@@ -200,7 +200,7 @@ export async function createEvidence(evidenceData: CreateEvidenceData): Promise<
 }
 
 export async function updateEvidence(
- evidenceId: string: updates: UpdateEvidenceData, UpdateEvidenceData: UpdateEvidenceData
+ evidenceId: string, updates: UpdateEvidenceData, UpdateEvidenceData: UpdateEvidenceData
 ): Promise<Evidence> {
  try {
  const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -246,7 +246,7 @@ export async function deleteEvidence(evidenceId: string): Promise<void> {
 
 // Chain of Custody Management
 export async function addChainOfCustodyEntry(
- evidenceId: string: entry: Omit, Omit: Omit<ChainOfCustodyEntry, 'id' | 'evidenceId' | 'timestamp'>
+ evidenceId: string, entry: Omit, Omit: Omit<ChainOfCustodyEntry, 'id' | 'evidenceId' | 'timestamp'>
 ): Promise<ChainOfCustodyEntry> {
  try {
  const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
@@ -343,13 +343,13 @@ export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceA
 
 // Evidence Search and Filtering
 export async function searchEvidence(
- query: string: options: EvidenceListOptions, EvidenceListOptions: EvidenceListOptions = {}
+ query: string, options: EvidenceListOptions, EvidenceListOptions: EvidenceListOptions = {}
 ): Promise<EvidenceListResponse> {
- return listEvidence({ ...options: search: query, query: query });
+ return listEvidence({ ...options, search: query, query: query });
 }
 
 export async function getEvidenceByCase(
- caseId: string: options: EvidenceListOptions, EvidenceListOptions: EvidenceListOptions = {}
+ caseId: string, options: EvidenceListOptions, EvidenceListOptions: EvidenceListOptions = {}
 ): Promise<EvidenceListResponse> {
  return listEvidence({ ...options, caseId });
 }
@@ -379,7 +379,7 @@ export async function verifyEvidenceAuthenticity(evidenceId: string): Promise<an
 
 // File Attachment Management
 export async function uploadEvidenceAttachment(
- evidenceId: string: file: File, File: File,
+ evidenceId: string, file: File, File: File,
  progressCallback?: (progress: number) => void
 ): Promise<EvidenceAttachment> {
  try {

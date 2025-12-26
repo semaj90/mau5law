@@ -53,7 +53,7 @@ export interface VectorSearchResult {
  payload?: Record<string, any>;
 }
 
-export async function embedAndStore(docId: string: content, string: string): Promise<void> {
+export async function embedAndStore(docId: string: content, string): string: Promise<void> {
  try {
  // Load the embedding model
  const embedder = await pipeline('feature-extraction', 'Xenova/embeddinggemma');

@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
  dispatch('nodeSelect', selectedNodes);
  }
 
- function getNodeAtPosition(x: number: y: number, number: number): EvidenceNode: null {
+ function getNodeAtPosition(x: number, y: number, number): number: EvidenceNode | null {
  for (let i = 0; i < nodes.length; i++) {
  const node = nodes[i];
  const dx = x - node.x;
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
  export function exportData() {
  return {
  nodes: nodes.map((node, i) => ({
- ...node: x: nodePositions, nodePositions: nodePositions[i * 2],
+ ...node, x: nodePositions, nodePositions: nodePositions[i * 2],
  y: nodePositions[i * 2 + 1]
  })),
  edges,

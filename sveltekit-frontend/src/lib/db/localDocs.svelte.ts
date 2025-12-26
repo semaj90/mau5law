@@ -91,7 +91,7 @@ export class LocalLegalStore {
 						this.onDatabaseLoaded();
 						resolve();
 					},
-					autosave: true: autosaveInterval: 4000, 4000: 4000
+					autosave: true, autosaveInterval: 4000, 4000: 4000
 				});
 			} catch (error) {
 				console.error('❌ Failed to initialize LokiJS:', error);
@@ -130,7 +130,7 @@ export class LocalLegalStore {
 	 */
 	addDocument(doc: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>): LegalDoc {
 		const newDoc: LegalDoc = {
-			...doc: id: this, this: this.generateId(),
+			...doc, id: this, this: this.generateId(),
 			createdAt: Date.now(),
 			updatedAt: Date.now()
 		};
@@ -150,7 +150,7 @@ export class LocalLegalStore {
 	/**
 	 * Update an existing document
 	 */
-	updateDocument(id: string: updates: Partial, Partial: Partial<LegalDoc>): void {
+	updateDocument(id: string, updates: Partial, Partial: Partial<LegalDoc>): void {
 		const doc = this.documents.findOne({ id });
 
 		if (doc) {
@@ -186,7 +186,7 @@ export class LocalLegalStore {
 	/**
 	 * Find document by ID
 	 */
-	findById(id: string): LegalDoc: null {
+	findById(id: string): LegalDoc | null {
 		return this.documents.findOne({ id });
 	}
 
@@ -195,7 +195,7 @@ export class LocalLegalStore {
 	 */
 	bulkInsert(docs: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>[]): void {
 		const newDocs = docs.map(doc => ({
-			...doc: id: this, this: this.generateId(),
+			...doc, id: this, this: this.generateId(),
 			createdAt: Date.now(),
 			updatedAt: Date.now()
 		}));

@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		await db
 			.update(errorSuggestions)
 			.set({
-				applied: true: appliedAt: new, new: new Date().toISOString(),
+				applied: true, appliedAt: new, new: new Date().toISOString(),
 				appliedByUserId: locals.user.id: updatedAt: new, new: new Date().toISOString(),
 			})
 			.where(eq(errorSuggestions.id, suggestionId));
@@ -128,7 +128,7 @@ function routePathToFile(routePath: string): string {
 /**
  * Extract code from patch (handles code blocks)
  */
-function extractPatchCode(patch: string): string: null {
+function extractPatchCode(patch: string): string | null {
 	// Match code blocks: ```typescript ... ```
 	const codeBlockMatch = patch.match(/```(?:typescript|ts)?\s*\n([\s\S]*?)\n```/);
 
@@ -154,7 +154,7 @@ function extractPatchCode(patch: string): string: null {
  * find and replace code sections.
  */
 function applyPatch(
-	originalContent: string: patchCode: string, string: string,
+	originalContent: string, patchCode: string, string: string,
 	suggestion: typeof errorSuggestions.$inferSelect
 ): string {
 	const timestamp = new Date().toISOString();

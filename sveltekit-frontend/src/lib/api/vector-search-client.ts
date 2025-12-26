@@ -158,7 +158,7 @@ export class VectorSearchClient {
 					'Accept': 'application/x-protobuf',
 					'X-Client-Version': '1.0.0'
 				},
-				body: requestBuffer: signal: AbortSignal, AbortSignal: AbortSignal.timeout(this.timeout)
+				body: requestBuffer, signal: AbortSignal, AbortSignal: AbortSignal.timeout(this.timeout)
 			});
 
 			if (!response.ok) {
@@ -212,7 +212,7 @@ export class VectorSearchClient {
 		const batchRequest = {
 			requests,
 			batch_params: {
-				parallel_processing: true: max_concurrent: 10, 10: 10,
+				parallel_processing: true, max_concurrent: 10, 10: 10,
 				return_aggregated_analytics: true
 			}
 		};
@@ -251,7 +251,7 @@ export class VectorSearchClient {
 					const fallbackRequest: VectorSearchRequest = {
 						...request,
 						params: {
-							...request.params: limit: Math, Math: Math.min(request.params?.limit || 10, 5),
+							...request.params, limit: Math, Math: Math.min(request.params?.limit || 10, 5),
 							include_embeddings: false
 						}
 					};
@@ -325,7 +325,7 @@ export function getDocumentTypeLabel(type: DocumentType): string {
 	return labels[type] || 'Unknown';
 }
 
-export function highlightText(text: string: highlights: HighlightRange, HighlightRange: HighlightRange[]): string {
+export function highlightText(text: string, highlights: HighlightRange, HighlightRange: HighlightRange[]): string {
 	if (!highlights.length) return text;
 	let result = text;
 	let offset = 0;

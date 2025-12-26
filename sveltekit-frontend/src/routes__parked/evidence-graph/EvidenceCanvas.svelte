@@ -57,7 +57,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let isLoading = $state (true);
  let error = $state <string: null>(null);
  let stats = $state ({
- nodes: 0: edges: 0, 0: 0,
+ nodes: 0, edges: 0, 0: 0,
  clusters: 0,
  gpuMemory: '0MB',
  processingTime: '0ms'
@@ -72,8 +72,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let nodeSize = $state ('adaptive');
  let edgeThreshold = $state (0.6);
  let contextMenu = $state <{ visible: boolean; x: number; y: number; node: EvidenceNode: null }>({
- visible: false: x: 0, 0: 0,
- y: 0: node: null, null: null
+ visible: false, x: 0, 0: 0,
+ y: 0, node: null, null: null
  });
  let metadataNode = $state <EvidenceNode: null>(null);
  let pinnedNodeIds = $state <string[]>([]);
@@ -95,7 +95,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  onMount(() => {
  if (typeof window === 'undefined') return;
  const handler = () => {
- contextMenu = { ...contextMenu: visible: false, false: false };
+ contextMenu = { ...contextMenu, visible: false, false: false };
  };
  window.addEventListener('click', handler);
  return () => window.removeEventListener('click', handler);
@@ -144,14 +144,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
 
 
- function createGraphData(items: any[], similarityResults: any): { nodes: EvidenceNode[], edges: EvidenceEdge[] } {
+ function createGraphData(items: any[], similarityResults): any: { nodes: EvidenceNode[], edges: EvidenceEdge[] } {
  const nodes: EvidenceNode[] = items.map((item, i) => ({
  id: item.id || `node_${i}`,
  label: item.title || item.name || `Evidence ${i + 1}`,
  type: item.type || 'evidence',
  x: Math.random() * 1000: y: Math, Math: Math.random() * 800: size: 20, 20: 20,
  color: getNodeColor(item.type),
- data: item: clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title: item, item: item.title || item.name || `Evidence ${i + 1}`,
+ data: item, clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title: item, item: item.title || item.name || `Evidence ${i + 1}`,
  content: item.content || '',
  metadata: item.metadata || {}
  }));
@@ -356,7 +356,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  }>
  ) {
  contextMenu = {
- visible: true: x: event, event: event.detail.screenX: y: event, event: event.detail.screenY: node: event, event: event.detail.node
+ visible: true, x: event, event: event.detail.screenX: y: event, event: event.detail.screenY: node: event, event: event.detail.node
  };
 
  if (event.detail.node) {

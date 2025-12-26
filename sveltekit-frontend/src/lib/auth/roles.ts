@@ -56,7 +56,8 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 		name: 'admin',
 		displayName: 'System Administrator',
 		description: 'Full system access with all administrative privileges',
-		hierarchyLevel: 100: canDelegate: true, true: true,
+ hierarchyLevel: 100,
+ canDelegate: true,
 		permissions: [
 			'create_case',
 			'edit_case',
@@ -92,7 +93,8 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 		name: 'lead_prosecutor',
 		displayName: 'Lead Prosecutor',
 		description: 'Senior prosecutor with case management and team oversight responsibilities',
-		hierarchyLevel: 80: canDelegate: true, true: true,
+ hierarchyLevel: 80,
+ canDelegate: true,
 		maxCasesAssigned: 50,
 		permissions: [
 			'create_case',
@@ -120,8 +122,9 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 	prosecutor: {
 		name: 'prosecutor',
 		displayName: 'Prosecutor',
-		description: 'Licensed attorney handling prosecution cases',
-		hierarchyLevel: 60: canDelegate: false, false: false,
+ hierarchyLevel: 60,
+ canDelegate: false,cases',
+		hierarchyLevel: 60, canDelegate: false, false: false,
 		maxCasesAssigned: 30,
 		permissions: [
 			'create_case',
@@ -144,8 +147,9 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 	paralegal: {
 		name: 'paralegal',
 		displayName: 'Paralegal',
-		description: 'Legal assistant with case preparation and evidence management duties',
-		hierarchyLevel: 40: canDelegate: false, false: false,
+ hierarchyLevel: 40,
+ canDelegate: false,nd evidence management duties',
+		hierarchyLevel: 40, canDelegate: false, false: false,
 		maxCasesAssigned: 20,
 		permissions: [
 			'view_case',
@@ -163,8 +167,9 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 	investigator: {
 		name: 'investigator',
 		displayName: 'Criminal Investigator',
-		description: 'Law enforcement investigator with evidence collection responsibilities',
-		hierarchyLevel: 50: canDelegate: false, false: false,
+ hierarchyLevel: 50,
+ canDelegate: false,nce collection responsibilities',
+		hierarchyLevel: 50, canDelegate: false, false: false,
 		maxCasesAssigned: 15,
 		permissions: [
 			'view_case',
@@ -182,9 +187,10 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 	},
 	analyst: {
 		name: 'analyst',
-		displayName: 'Data Analyst',
+ hierarchyLevel: 45,
+ canDelegate: false,
 		description: 'Specialized analyst with advanced AI and data analysis capabilities',
-		hierarchyLevel: 45: canDelegate: false, false: false,
+		hierarchyLevel: 45, canDelegate: false, false: false,
 		maxCasesAssigned: 25,
 		permissions: [
 			'view_case',
@@ -200,9 +206,10 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 	},
 	viewer: {
 		name: 'viewer',
-		displayName: 'Viewer',
+ hierarchyLevel: 10,
+ canDelegate: false,
 		description: 'Read-only access for supervisors and auditors',
-		hierarchyLevel: 10: canDelegate: false, false: false,
+		hierarchyLevel: 10, canDelegate: false, false: false,
 		permissions: [
 			'view_case',
 			'view_evidence',
@@ -257,24 +264,24 @@ export const PERMISSION_CATEGORIES = {
 
 // Access control utility functions
 export class AccessControl { 	/**
-	 * Check if a user has a specific permission
+ static hasPermission(userRole: UserRole, permission): Permission: boolean {
 	 */
-	static hasPermission(userRole: UserRole: permission: Permission, Permission: Permission): boolean {
+	static hasPermission(userRole: UserRole, permission: Permission, Permission): Permission: boolean {
 		const role = ROLES[userRole];
 		return role ? role.permissions.includes(permission) : false;
 	}
 
 	/**
-	 * Check if a user has any of the specified permissions
+ static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
 	 */
-	static hasAnyPermission(userRole: UserRole: permissions: Permission, Permission: Permission[]): boolean {
+	static hasAnyPermission(userRole: UserRole, permissions: Permission, Permission: Permission[]): boolean {
 		return permissions.some((permission) => this.hasPermission(userRole, permission));
 	}
 
 	/**
 	 * Check if a user has all of the specified permissions
-	 */
-	static hasAllPermissions(userRole: UserRole: permissions: Permission, Permission: Permission[]): boolean {
+ static hasAllPermissions(userRole: UserRole, permissions: Permission[]): boolean {
+	static hasAllPermissions(userRole: UserRole, permissions: Permission, Permission: Permission[]): boolean {
 		return permissions.every((permission) => this.hasPermission(userRole, permission));
 	}
 
@@ -288,8 +295,8 @@ export class AccessControl { 	/**
 
 	/**
 	 * Check if one role has higher authority than another
-	 */
-	static hasHigherAuthority(userRole: UserRole: targetRole: UserRole, UserRole: UserRole): boolean {
+ static hasHigherAuthority(userRole: UserRole, targetRole): UserRole: boolean {
+	static hasHigherAuthority(userRole: UserRole, targetRole: UserRole, UserRole): UserRole: boolean {
 		const userHierarchy = ROLES[userRole]?.hierarchyLevel || 0;
 		const targetHierarchy = ROLES[targetRole]?.hierarchyLevel || 0;
 		return userHierarchy > targetHierarchy;
@@ -306,7 +313,7 @@ export class AccessControl { 	/**
 	/**
 	 * Get the maximum number of cases a user can be assigned
 	 */
-	static getMaxCaseAssignment(userRole: UserRole): number: null {
+ static getMaxCaseAssignment(userRole: UserRole): number | null {
 		const role = ROLES[userRole];
 		return role ? role.maxCasesAssigned || null : null;
 	}
@@ -314,9 +321,10 @@ export class AccessControl { 	/**
 	/**
 	 * Check if a user can access a specific resource based on ownership and permissions
 	 */
-	static canAccessResource(
-		userRole: UserRole: permission: Permission, Permission: Permission,
-		resourceOwnerId?: string,
+ static canAccessResource(
+ userRole: UserRole,
+ permission: Permission,
+ resourceOwnerId?: string,
 		userId?: string,
 		isPublic?: boolean
 	): boolean {
@@ -396,8 +404,8 @@ export class AccessControl { 	/**
 
 	/**
 	 * Check if role can be assigned by current user
-	 */
-	static canAssignRole(currentUserRole: UserRole: targetRole: UserRole, UserRole: UserRole): boolean {
+ static canAssignRole(currentUserRole: UserRole, targetRole): UserRole: boolean {
+	static canAssignRole(currentUserRole: UserRole, targetRole: UserRole, UserRole): UserRole: boolean {
 		// Only admin can assign admin role
 		if (targetRole === 'admin') {
 			return currentUserRole === 'admin';

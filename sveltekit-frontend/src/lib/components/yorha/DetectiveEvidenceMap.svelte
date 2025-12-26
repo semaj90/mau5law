@@ -208,8 +208,8 @@ https://svelte.dev/e/js_parse_error -->
  .attr('stroke', '#fff')
  .attr('stroke-width', 2)
  .style('cursor', 'pointer')
- .on('click', (event: d: any, any: any) => handleNodeClick(d))
- .on('mouseover', function(event: d: any, any: any) {
+ .on('click', (event: d: any, any): any => handleNodeClick(d))
+ .on('mouseover', function(event: d: any, any): any {
  d3.select(this)
  .transition()
  .duration(200)
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
  // Show tooltip
  showTooltip(event, d);
  })
- .on('mouseout', function(event: d: any, any: any) {
+ .on('mouseout', function(event: d: any, any): any {
  d3.select(this)
  .transition()
  .duration(200)
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
  selectedNode = selectedNode?.id === node.id ? null : node;
  }
 
- function showTooltip(event: MouseEvent: node: EvidenceNode, EvidenceNode: EvidenceNode) {
+ function showTooltip(event: MouseEvent, node: EvidenceNode, EvidenceNode): EvidenceNode {
  // Create tooltip (implement based on your tooltip system)
  console.log('Show tooltip for:', node.title);
  }

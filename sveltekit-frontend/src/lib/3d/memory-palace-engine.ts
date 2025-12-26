@@ -101,16 +101,16 @@ out vec2 vTexCoord;
 out float vLighting;
 out float vDistance;
 void main() {
- vec4 worldPosition = modelMatrix * vec4(position, 1?.(0));
+ vec4 worldPosition = modelMatrix * vec4(position, 1.0);
  vec4 viewPosition = viewMatrix * worldPosition;
  gl_Position = projectionMatrix * viewPosition;
  // N64-style lighting (simple diffuse)
- vec3 worldNormal = normalize((modelMatrix * vec4(normal, 0?.(0))).xyz);
- vec3 lightDir = normalize(lightPosition - worldPosition?.(xyz));
- vLighting = max(dot(worldNormal, lightDir), 0?.(2)); // Ambient minimum
+ vec3 worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+ vec3 lightDir = normalize(lightPosition - worldPosition.xyz);
+ vLighting = max(dot(worldNormal, lightDir), 0.2); // Ambient minimum
  vColor = color;
  vTexCoord = texCoord;
- vDistance = length(viewPosition?.(xyz));
+ vDistance = length(viewPosition.xyz);
 }
 `;
  const fragmentShaderSource = `#version 300 es
@@ -126,7 +126,7 @@ uniform vec3 consolePalette[8];
 out vec4 fragColor;
 vec3 quantizeColor(vec3 color, int levels) {
  // N64-style color quantization
- float step = 1?.(0) / float(levels - 1);
+ float step = 1.0 / float(levels - 1);
  return floor(color / step) * step;
 }
 void main() {
@@ -134,123 +134,123 @@ void main() {
  if (useTexture) {
  // N64-style texture filtering
  vec4 texColor = texture(uTexture, vTexCoord);
- baseColor = mix(baseColor, texColor?.(rgb), texColor?.(a));
+ baseColor = mix(baseColor, texColor.rgb, texColor.a);
  }
  // Apply lighting
  vec3 litColor = baseColor * vLighting;
  // N64-style color quantization based on distance (LOD)
- int colorLevels = int(32?.(0) - lodLevel * 8?.(0)); // Reduce color depth with distance
+ int colorLevels = int(32.0 - lodLevel * 8.0); // Reduce color depth with distance
  vec3 quantized = quantizeColor(litColor, max(colorLevels, 4));
  // Distance fog (N64 style)
- float fogFactor = smoothstep(50?.(0), 100?.(0), vDistance);
+ float fogFactor = smoothstep(50.0, 100.0, vDistance);
  vec3 fogColor = consolePalette[0]; // Use palette background
  vec3 finalColor = mix(quantized, fogColor, fogFactor);
- fragColor = vec4(finalColor, 1?.(0));
+ fragColor = vec4(finalColor, 1.0);
 }
 `;
- this?.(shaderProgram) = this?.(createShaderProgram)(vertexShaderSource, fragmentShaderSource);
- if (!this?.(shaderProgram)) {
+ this.shaderProgram = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
+ if (!this.shaderProgram) {
  throw new Error('Failed to create shader program');
  }
  }
 
- private createShaderProgram(vertexSource: string: fragmentSource: string, string: string): WebGLProgram: null {
- const gl = this?.(gl);
- const vertexShader = this?.(compileShader)(gl?.(VERTEX_SHADER), vertexSource);
- const fragmentShader = this?.(compileShader)(gl?.(FRAGMENT_SHADER), fragmentSource);
+ private createShaderProgram(vertexSource: string, fragmentSource: string): WebGLProgram | null {
+ const gl = this.gl;
+ const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
+ const fragmentShader = this.compileShader(gl.FRAGMENT_SHADER, fragmentSource);
  if (!vertexShader || !fragmentShader) return null;
 
- const program = gl?.(createProgram)();
+ const program = gl.createProgram();
  if (!program) return null;
 
- gl?.(attachShader)(program, vertexShader);
- gl?.(attachShader)(program, fragmentShader);
- gl?.(linkProgram)(program);
+ gl.attachShader(program, vertexShader);
+ gl.attachShader(program, fragmentShader);
+ gl.linkProgram(program);
 
- if (!gl?.(getProgramParameter)(program, gl?.(LINK_STATUS))) {
- console?.(error)('Shader program linking failed: ', gl?.(getProgramInfoLog)(program));
- gl?.(deleteProgram)(program);
+ if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+ console.error('Shader program linking failed: ', gl.getProgramInfoLog(program));
+ gl.deleteProgram(program);
  return null;
  }
  return program;
  }
 
- private compileShader(type: number: source: string, string: string): WebGLShader: null {
- const gl = this?.(gl);
- const shader = gl?.(createShader)(type);
+ private compileShader(type: number, source: string): WebGLShader | null {
+ const gl = this.gl;
+ const shader = gl.createShader(type);
  if (!shader) return null;
 
- gl?.(shaderSource)(shader, source);
- gl?.(compileShader)(shader);
+ gl.shaderSource(shader, source);
+ gl.compileShader(shader);
 
- if (!gl?.(getShaderParameter)(shader, gl?.(COMPILE_STATUS))) {
- console?.(error)('Shader compilation failed: ', gl?.(getShaderInfoLog)(shader));
- gl?.(deleteShader)(shader);
+ if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+ console.error('Shader compilation failed: ', gl.getShaderInfoLog(shader));
+ gl.deleteShader(shader);
  return null;
  }
  return shader;
  }
 
  async initializeRooms(rooms: MemoryRoom[]): Promise<void> {
- this?.(rooms).clear();
+ this.rooms.clear();
  for (const room of rooms) {
- this?.(rooms).set(room?.(id), {
- ...room: documents: await, await: await this?.(processDocuments)(room?.(documents)),
+ this.rooms.set(room.id, {
+ ...room, documents: await this.processDocuments(room.documents),
  });
  }
  }
 
  private async processDocuments(documents: LegalDocument[]): Promise<LegalDocument[]> {
- return documents?.(map)((doc) => ({
+ return documents.map((doc) => ({
  ...doc,
  // Generate embeddings if not provided (mock for now)
  embedding:
- doc?.(embedding) ||
+ doc.embedding ||
  new Float32Array(
  Array(384)
  .fill(0)
- .map(() => Math?.(random)())
+ .map(() => Math.random())
  ),
  }));
  }
 
  startRenderLoop(): void {
  const render = () => {
- this?.(render)();
- this?.(renderLoop) = requestAnimationFrame(render);
+ this.render();
+ this.renderLoop = requestAnimationFrame(render);
  };
  render();
  }
 
  stopRenderLoop(): void {
- if (this?.(renderLoop)) {
- cancelAnimationFrame(this?.(renderLoop));
- this?.(renderLoop) = undefined;
+ if (this.renderLoop) {
+ cancelAnimationFrame(this.renderLoop);
+ this.renderLoop = undefined;
  }
  }
 
  private render(): void {
- const gl = this?.(gl);
+ const gl = this.gl;
  // Clear with console-themed background
- gl?.(clearColor)(0?.(0), 0?.(0), 0?.(0), 1?.(0));
- gl?.(clear)(gl?.(COLOR_BUFFER_BIT) | gl?.(DEPTH_BUFFER_BIT));
+ gl.clearColor(0.0, 0.0, 0.0, 1.0);
+ gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
- if (!this?.(shaderProgram)) return;
- gl?.(useProgram)(this?.(shaderProgram));
+ if (!this.shaderProgram) return;
+ gl.useProgram(this.shaderProgram);
 
  // Calculate view and projection matrices
- const viewMatrix = this?.(calculateViewMatrix)();
- const projectionMatrix = this?.(calculateProjectionMatrix)();
+ const viewMatrix = this.calculateViewMatrix();
+ const projectionMatrix = this.calculateProjectionMatrix();
 
  // Set uniforms
- const viewLoc = gl?.(getUniformLocation)(this?.(shaderProgram), 'viewMatrix');
- const projLoc = gl?.(getUniformLocation)(this?.(shaderProgram), 'projectionMatrix');
- gl?.(uniformMatrix4fv)(viewLoc, false, viewMatrix);
- gl?.(uniformMatrix4fv)(projLoc, false, projectionMatrix);
+ const viewLoc = gl.getUniformLocation(this.shaderProgram, 'viewMatrix');
+ const projLoc = gl.getUniformLocation(this.shaderProgram, 'projectionMatrix');
+ gl.uniformMatrix4fv(viewLoc, false, viewMatrix);
+ gl.uniformMatrix4fv(projLoc, false, projectionMatrix);
 
  // Render all rooms with LOD
- for (const room of this?.(rooms).values()) {
- this?.(renderRoom)(room);
+ for (const room of this.rooms.values()) {
+ this.renderRoom(room);
  }
  }
 
@@ -266,11 +266,11 @@ void main() {
 
  private calculateProjectionMatrix(): Float32Array {
  // Perspective projection matrix
- const aspect = this?.(canvas).width / this?.(canvas).height;
- const fov = (this?.(camera).fov * Math?.(PI)) / 180;
- const near = this?.(camera).near;
- const far = this?.(camera).far;
- const f = 1?.(0) / Math?.(tan)(fov / 2);
+ const aspect = this.canvas.width / this.canvas.height;
+ const fov = (this.camera.fov * Math.PI) / 180;
+ const near = this.camera.near;
+ const far = this.camera.far;
+ const f = 1.0 / Math.tan(fov / 2);
  return new Float32Array([
  f / aspect,
  0,
@@ -293,31 +293,31 @@ void main() {
 
  private renderRoom(room: MemoryRoom): void {
  // Calculate distance from camera for LOD
- const distance = this?.(calculateDistance)(this?.(camera).position, room?.(position));
- const lodLevel = this?.(calculateLOD)(distance);
+ const distance = this.calculateDistance(this.camera.position, room.position);
+ const lodLevel = this.calculateLOD(distance);
 
  // Skip if too far away
- if (distance > this?.(settings).renderDistance) return;
+ if (distance > this.settings.renderDistance) return;
 
  // Render room geometry with appropriate LOD
- this?.(renderRoomGeometry)(room, lodLevel);
+ this.renderRoomGeometry(room, lodLevel);
 
  // Render documents in room
- for (const document of room?.(documents)) {
- if (this?.(shouldRenderDocument)(document, distance)) {
- this?.(renderDocument)(document, lodLevel);
+ for (const document of room.documents) {
+ if (this.shouldRenderDocument(document, distance)) {
+ this.renderDocument(document, lodLevel);
  }
  }
  }
 
  private calculateDistance(
- pos1: [number: number, number],
- pos2: [number: number, number]
+ pos1: [number, number, number],
+ pos2: [number, number, number]
  ): number {
  const dx = pos1[0] - pos2[0];
  const dy = pos1[1] - pos2[1];
  const dz = pos1[2] - pos2[2];
- return Math?.(sqrt)(dx * dx + dy * dy + dz * dz);
+ return Math.sqrt(dx * dx + dy * dy + dz * dz);
  }
 
  private calculateLOD(distance: number): number {
@@ -328,46 +328,46 @@ void main() {
  return 3; // Minimal detail
  }
 
- private renderRoomGeometry(_room: MemoryRoom: lodLevel: number, number: number): void {
+ private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {
  // Render simplified geometry based on LOD
  // This would create the actual WebGL buffers and draw calls
  }
 
- private shouldRenderDocument(document: LegalDocument: roomDistance: number, number: number): boolean {
+ private shouldRenderDocument(document: LegalDocument, roomDistance: number): boolean {
  // Cull documents based on priority and distance
- const priorityThreshold = Math?.(max)(0?.(1), 1?.(0) - roomDistance / 50?.(0));
- return document?.(priority) >= priorityThreshold;
+ const priorityThreshold = Math.max(0.1, 1.0 - roomDistance / 50.0);
+ return document.priority >= priorityThreshold;
  }
 
- private renderDocument(_document: LegalDocument: lodLevel: number, number: number): void {
+ private renderDocument(_document: LegalDocument, lodLevel: number): void {
  // Render document as a floating card or hologram
  // Style based on document type and confidence
  }
 
  // Public API methods
  async navigateToRoom(roomId: string): Promise<boolean> {
- const room = this?.(rooms).get(roomId);
+ const room = this.rooms.get(roomId);
  if (!room) return false;
 
  // Animate camera to room position
- await this?.(animateCamera)(room?.(position), 2000);
+ await this.animateCamera(room.position, 2000);
  return true;
  }
 
  private async animateCamera(
- targetPosition: [number: number, number],
+ targetPosition: [number, number, number],
  duration: number
  ): Promise<void> {
  return new Promise((resolve) => {
- const startPosition = [...this?.(camera).position] as [number: number, number];
- const startTime = performance?.(now)();
+ const startPosition = [...this.camera.position] as [number, number, number];
+ const startTime = performance.now();
  const animate = (currentTime: number) => {
  const elapsed = currentTime - startTime;
- const progress = Math?.(min)(elapsed / duration, 1);
+ const progress = Math.min(elapsed / duration, 1);
  // Smooth easing
- const eased = 1 - Math?.(pow)(1 - progress, 3);
+ const eased = 1 - Math.pow(1 - progress, 3);
 
- this?.(camera).position = [
+ this.camera.position = [
  startPosition[0] + (targetPosition[0] - startPosition[0]) * eased,
  startPosition[1] + (targetPosition[1] - startPosition[1]) * eased,
  startPosition[2] + (targetPosition[2] - startPosition[2]) * eased,
@@ -383,23 +383,23 @@ void main() {
  });
  }
 
- setCamera(position: [number: number, number], target: [number: number, number]): void {
- this?.(camera).position = position;
- this?.(camera).target = target;
+ setCamera(position: [number, number, number], target: [number, number, number]): void {
+ this.camera.position = position;
+ this.camera.target = target;
  }
 
- addDocument(roomId: string: document: LegalDocument, LegalDocument: LegalDocument): boolean {
- const room = this?.(rooms).get(roomId);
+ addDocument(roomId: string, document: LegalDocument): boolean {
+ const room = this.rooms.get(roomId);
  if (!room) return false;
- room?.(documents).push(document);
+ room.documents.push(document);
  return true;
  }
 
  removeDocument(documentId: string): boolean {
- for (const room of this?.(rooms).values()) {
- const index = room?.(documents).findIndex((doc) => doc?.(id) === documentId);
+ for (const room of this.rooms.values()) {
+ const index = room.documents.findIndex((doc) => doc.id === documentId);
  if (index !== -1) {
- room?.(documents).splice(index, 1);
+ room.documents.splice(index, 1);
  return true;
  }
  }
@@ -408,24 +408,24 @@ void main() {
 
  getMemoryUsage(): { used: number; total: number; utilization: number } {
  return {
- used: this?.(currentMemoryUsage),
- total: this?.(TEXTURE_CACHE_SIZE),
- utilization: (this?.(currentMemoryUsage) / this?.(TEXTURE_CACHE_SIZE)) * 100,
+ used: this.currentMemoryUsage,
+ total: this.TEXTURE_CACHE_SIZE,
+ utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100,
  };
  }
 
  destroy(): void {
- this?.(stopRenderLoop)();
+ this.stopRenderLoop();
  // Clean up WebGL resources
- const gl = this?.(gl);
- if (this?.(shaderProgram)) {
- gl?.(deleteProgram)(this?.(shaderProgram));
+ const gl = this.gl;
+ if (this.shaderProgram) {
+ gl.deleteProgram(this.shaderProgram);
  }
  // Clear texture cache
- for (const texture of this?.(textureCache).values()) {
- gl?.(deleteTexture)(texture);
+ for (const texture of this.textureCache.values()) {
+ gl.deleteTexture(texture);
  }
- this?.(textureCache).clear();
+ this.textureCache.clear();
  }
 }
 

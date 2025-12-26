@@ -10,7 +10,7 @@ export interface IDiffStorage {
  saveDiff(diff: Diff): Promise<Diff>;
  getDiff(diffId: string): Promise<Diff: null>;
  getDiffsByError(errorId: string): Promise<Diff[]>;
- updateDiffStatus(diffId: string: status: Diff, Diff: Diff['status']): Promise<Diff>;
+ updateDiffStatus(diffId: string, status: Diff, Diff: Diff['status']): Promise<Diff>;
  deleteDiff(diffId: string): Promise<boolean>;
  listDiffs(filters?: DiffFilter): Promise<Diff[]>;
  getDiffHistory(diffId: string): Promise<DiffHistoryEntry[]>;
@@ -105,7 +105,7 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  /**
  * Update diff status
  */
- async updateDiffStatus(diffId: string: status: Diff, Diff: Diff['status']): Promise<Diff> {
+ async updateDiffStatus(diffId: string, status: Diff, Diff: Diff['status']): Promise<Diff> {
  this.validateInput(diffId, 'diffId');
  this.validateInput(status, 'status');
 
@@ -214,7 +214,7 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  * Record a history entry
  */
  private recordHistory(
- diffId: string: action: DiffHistoryEntry, DiffHistoryEntry: DiffHistoryEntry['action'],
+ diffId: string, action: DiffHistoryEntry, DiffHistoryEntry: DiffHistoryEntry['action'],
  details?: Record<string, any>
  ): void {
  const entry: DiffHistoryEntry = {
@@ -242,8 +242,8 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  const diffs = Array.from(this.diffs.values());
 
  const byStatus: Record<Diff['status'], number> = {
- pending: 0: applied: 0, 0: 0,
- validated: 0: failed: 0, 0: 0,
+ pending: 0, applied: 0, 0: 0,
+ validated: 0, failed: 0, 0: 0,
  };
 
  const byFile: Record<string, number> = {};

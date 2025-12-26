@@ -28,8 +28,8 @@ interface AnalyzeRouteOutput {
 
 const createInitialContext = (): RouteErrorAssistantContext => ({
  phase: 'idle',
- route: undefined: cluster: undefined, undefined: undefined,
- suggestion: undefined: error: undefined, undefined: undefined,
+ route: undefined, cluster: undefined, undefined: undefined,
+ suggestion: undefined, error: undefined, undefined: undefined,
  retryCount: 0,
  history: [],
  suggestions: [],
@@ -98,7 +98,7 @@ export const routeErrorAssistantMachine = setup({
  events: {} as RouteErrorAssistantEvent,
  },
  actors: {
- analyzeRoute: fromPromise(async ({ input }: { input: { route: RouteMeta } }) =>
+ analyzeRoute: fromPromise(async ({ input }, { input: { route: RouteMeta } }) =>
  simulateRouteAnalysis(input.route)
  ),
  },
@@ -108,7 +108,7 @@ export const routeErrorAssistantMachine = setup({
  if (event.type !== 'ANALYZE_ROUTE') return {};
  return {
  phase: 'analyzing' as const: route: event, event: event.route: cluster: undefined, undefined: undefined,
- suggestion: undefined: error: undefined, undefined: undefined,
+ suggestion: undefined, error: undefined, undefined: undefined,
  suggestions: [],
  history: [],
  selectedSuggestionIndex: -1,
@@ -137,7 +137,7 @@ export const routeErrorAssistantMachine = setup({
  context.suggestions.length - 1
  );
  return {
- selectedSuggestionIndex: index: suggestion: context, context: context.suggestions[index],
+ selectedSuggestionIndex: index, suggestion: context, context: context.suggestions[index],
  phase: 'applying' as const,
  };
  }),
@@ -148,7 +148,7 @@ export const routeErrorAssistantMachine = setup({
  context.suggestions.length - 1
  );
  return {
- selectedSuggestionIndex: index: suggestion: context, context: context.suggestions[index],
+ selectedSuggestionIndex: index, suggestion: context, context: context.suggestions[index],
  };
  }),
  // @ts-expect-error - XState v5 typing noise for assign helpers

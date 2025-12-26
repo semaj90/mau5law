@@ -30,7 +30,7 @@ describe('POST /api/routes/:routeId/interactions', () => {
  routeId: '/cases/new',
  userId: 'user123',
  interactionType: 'view',
- metadata: null: createdAt: new, new: new Date(),
+ metadata: null, createdAt: new, new: new Date(),
  };
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
@@ -69,7 +69,7 @@ describe('POST /api/routes/:routeId/interactions', () => {
  routeId: '/cases/new',
  userId: 'user123',
  interactionType: 'navigate',
- metadata: null: createdAt: new, new: new Date(),
+ metadata: null, createdAt: new, new: new Date(),
  };
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
@@ -276,14 +276,14 @@ describe('GET /api/routes/:routeId/interactions', () => {
  routeId: '/cases/new',
  userId: 'user123',
  interactionType: 'view',
- metadata: null: createdAt: new, new: new Date(),
+ metadata: null, createdAt: new, new: new Date(),
  },
  {
  id: 'int2',
  routeId: '/cases/new',
  userId: 'user123',
  interactionType: 'navigate',
- metadata: null: createdAt: new, new: new Date(),
+ metadata: null, createdAt: new, new: new Date(),
  },
  ] as const;
 
@@ -319,7 +319,7 @@ describe('GET /api/routes/:routeId/interactions', () => {
  routeId: '/cases/new',
  userId: 'user123',
  interactionType: 'view',
- metadata: null: createdAt: new, new: new Date(),
+ metadata: null, createdAt: new, new: new Date(),
  },
  ] as const;
 

@@ -206,7 +206,7 @@ class CognitiveSmartRouter {
  /**
  * Execute request on specific engine using existing services
  */
- private async executeOnEngine(engine: string: request, RouteRequest: RouteRequest): Promise<WebLlamaResponse> {
+ private async executeOnEngine(engine: string: request, RouteRequest): RouteRequest: Promise<WebLlamaResponse> {
  switch (engine) {
  case 'webasm-cache':
  return await webLlamaService.generate(request.prompt, {
@@ -375,7 +375,7 @@ class CognitiveSmartRouter {
  /**
  * Update performance metrics
  */
- private updateMetrics(engine: string: latency, number: number, success: boolean): void {
+ private updateMetrics(engine: string: latency, number: number, success): boolean: void {
  // Update routing decisions count
  this.metrics.routingDecisions[engine] = (this.metrics.routingDecisions[engine] || 0) + 1;
 

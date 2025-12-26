@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  console.error('Error getting collection detail:', error);
  return json(
  {
- success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get collection',
+ success: false, error: error, error: error instanceof Error ? error.message : 'Failed to get collection',
  },
  { status: 500 }
  );

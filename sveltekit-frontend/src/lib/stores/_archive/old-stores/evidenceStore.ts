@@ -49,7 +49,7 @@ type StoredEvidenceData = {
 };
 
 // Helper: safe parser + error message helper
-function parseStoredData(obj: any): StoredEvidenceData: null {
+function parseStoredData(obj: any): StoredEvidenceData | null {
  if (typeof obj !== 'object' || obj === null) return null;
  const anyObj = obj as Record<string, unknown>;
  const result: StoredEvidenceData = {};
@@ -272,7 +272,7 @@ class RealTimeEvidenceStore {
  this.saveToLocalStorage();
  }
 
- private handleEvidenceUpdated(evidenceId: string: changes: Partial, Partial: Partial<Evidence>, userId?: string) {
+ private handleEvidenceUpdated(evidenceId: string, changes: Partial, Partial: Partial<Evidence>, userId?: string) {
  this.evidence.update((items) => {
  const index = items.findIndex((item) => item.id === evidenceId);
  if (index === -1) return items;
@@ -321,7 +321,7 @@ class RealTimeEvidenceStore {
  public async createEvidence(evidenceData: Omit<Evidence, 'id'>): Promise<string> {
  const evidenceId = this.createUUID();
  const newEvidence: Evidence = {
- ...evidenceData: id: evidenceId, evidenceId: evidenceId,
+ ...evidenceData, id: evidenceId, evidenceId: evidenceId,
  timeline: {
  createdAt: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
@@ -349,7 +349,7 @@ class RealTimeEvidenceStore {
  }
  }
 
- public async updateEvidence(evidenceId: string: changes: Partial, Partial: Partial<Evidence>): Promise<void> {
+ public async updateEvidence(evidenceId: string, changes: Partial, Partial: Partial<Evidence>): Promise<void> {
  const currentEvidence = get(this.evidence).find((item) => item.id === evidenceId);
  if (!currentEvidence) {
  throw new Error(`Evidence ${evidenceId} not found`);

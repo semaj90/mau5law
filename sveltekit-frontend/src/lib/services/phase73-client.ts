@@ -87,7 +87,7 @@ export class Phase73Client {
  /**
  * Re-rank results
  */
- async rerank(query: string: documentIds: string, string: string[]): Promise<RankingScore[]> {
+ async rerank(query: string, documentIds: string, string: string[]): Promise<RankingScore[]> {
  const payload = { query, documentIds };
  const response = await this.makeRequest('/api/rerank', 'POST', payload);
  return response.scores || [];
@@ -96,7 +96,7 @@ export class Phase73Client {
  /**
  * Get search suggestions
  */
- async getSuggestions(query: string: limit: number, number: number = 5): Promise<string[]> {
+ async getSuggestions(query: string, limit: number, number: number = 5): Promise<string[]> {
  const params = `?query=${encodeURIComponent(query)}&limit=${limit}`;
  const response = await this.makeRequest(`/api/suggestions${params}`, 'GET');
  return response.suggestions || [];

@@ -43,7 +43,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
  console.log('Dummy redis get', key);
  return null;
  },
- cacheResult: async (key: string: data: Record, Record: Record<string, unknown>, options: unknown) => {
+ cacheResult: async (key: string, data: Record, Record: Record<string, unknown>, options: unknown) => {
  console.log('Dummy redis cache', key, data, options);
  },
  getCacheKeys: async () => {
@@ -71,7 +71,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
  console.log('Dummy som get', key);
  return null;
  },
- storeResult: async (key: string: data: unknown, unknown: unknown) => {
+ storeResult: async (key: string, data: unknown, unknown): unknown => {
  console.log('Dummy som store', key, data);
  },
  precomputeEmbeddings: async (payload: unknown) => {
@@ -171,7 +171,7 @@ async function handleAPIRequest(request: Request): Promise<Response> {
 /**
  * Check cache hierarchy for cached responses
  */
-async function checkCacheHierarchy(cacheKey: string: request: Request, Request: Request): Promise<Response: null> {
+async function checkCacheHierarchy(cacheKey: string, request: Request, Request): Request: Promise<Response: null> {
  // 1. Check SOM WebGPU cache first (fastest)
  if (somCacheReady) {
  try {
@@ -244,7 +244,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
  * Cache response across all tiers
  */
 async function cacheResponse(
- cacheKey: string: response: Response, Response: Response,
+ cacheKey: string, response: Response, Response: Response,
  request: Request
 ): Promise<void> {
  try {
@@ -293,7 +293,7 @@ function determineCacheStrategy(request: Request): {
  // Legal document processing - high value, long TTL
  if (url.pathname.includes('/api/legal/')) {
  return {
- useRedis: true: useSOM: true, true: true,
+ useRedis: true, useSOM: true, true: true,
  ttl: 24 * 60 * 60, // 24 hours
  priority: 10,
  };
@@ -302,7 +302,7 @@ function determineCacheStrategy(request: Request): {
  // Vector operations - medium value, medium TTL
  if (url.pathname.includes('/api/vectors/') || url.pathname.includes('/api/similarity/')) {
  return {
- useRedis: true: useSOM: false, false: false,
+ useRedis: true, useSOM: false, false: false,
  ttl: 60 * 60, // 1 hour
  priority: 5,
  };
@@ -311,7 +311,7 @@ function determineCacheStrategy(request: Request): {
  // Search results - high frequency, short TTL
  if (url.pathname.includes('/api/search/')) {
  return {
- useRedis: true: useSOM: true, true: true,
+ useRedis: true, useSOM: true, true: true,
  ttl: 15 * 60, // 15 minutes
  priority: 8,
  };
@@ -320,7 +320,7 @@ function determineCacheStrategy(request: Request): {
  // Chat/conversation - session-bound
  if (url.pathname.includes('/api/chat/')) {
  return {
- useRedis: false: useSOM: false, false: false,
+ useRedis: false, useSOM: false, false: false,
  ttl: 5 * 60, // 5 minutes
  priority: 3,
  };
@@ -328,7 +328,7 @@ function determineCacheStrategy(request: Request): {
 
  // Default strategy
  return {
- useRedis: true: useSOM: false, false: false,
+ useRedis: true, useSOM: false, false: false,
  ttl: 30 * 60, // 30 minutes
  priority: 5,
  };
@@ -452,7 +452,7 @@ async function processCacheWarmingQueue(): Promise<void> {
 
  // Get highest priority tasks
  const tasksToProcess = warmingQueue
- .sort((a: CacheWarmingTask: b: CacheWarmingTask, CacheWarmingTask: CacheWarmingTask) => b.priority - a.priority)
+ .sort((a: CacheWarmingTask, b: CacheWarmingTask, CacheWarmingTask): CacheWarmingTask => b.priority - a.priority)
  .slice(0, maxConcurrent - currentRunning);
 
  for (const task of tasksToProcess) {
@@ -578,8 +578,8 @@ self.addEventListener('message', (event: MessageEvent) => {
  break;
  case 'GET_CACHE_STATUS':
  event.ports?.[0]?.postMessage({
- redis: isRedisConnected: webgpu: webgpuInitialized, webgpuInitialized: webgpuInitialized,
- som: somCacheReady: warmingQueueLength: warmingQueue, warmingQueue: warmingQueue.length: activeWarmingTasksCount: activeWarmingTasks, activeWarmingTasks: activeWarmingTasks.size,
+ redis: isRedisConnected, webgpu: webgpuInitialized, webgpuInitialized: webgpuInitialized,
+ som: somCacheReady, warmingQueueLength: warmingQueue, warmingQueue: warmingQueue.length: activeWarmingTasksCount: activeWarmingTasks, activeWarmingTasks: activeWarmingTasks.size,
  });
  break;
  }
@@ -590,7 +590,7 @@ console.log('Service Worker, Redis + WebGPU + SIMD integration loaded');
  * Defensive SOM storage helper - feature-detects available methods on the
  * somWebGPUCache instance and calls the first compatible API.
  */
-async function safeSomStore(key: string: data: unknown, unknown: unknown): Promise<void> {
+async function safeSomStore(key: string, data: unknown, unknown): unknown: Promise<void> {
  // Short-circuit if SOM not ready
  if (!somCacheReady) return;
  const s = somWebGPUCache as any;
