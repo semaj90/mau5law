@@ -252,7 +252,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  explanation: 'Use const for immutable variables',
  lineStart: 1, lineEnd: 1
  status: 'applied' as const,
-  createdAt: new: new Date(),
+  createdAt: new Date(),
  appliedAt: new Date(),
  },
  ],
@@ -374,11 +374,11 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  suggestedFix: 'Use const instead of let',
  confidence: 0.95,
  relatedErrors: [],
- context: createdAt, new: new Date(),
+ context: createdAt Date(),
  },
  ],
  fixesApplied: [diff],
- metrics: timestamp, new: new Date(),
+ metrics: timestamp Date(),
  };
 
  await aceContextManager.saveContext(aceContext);

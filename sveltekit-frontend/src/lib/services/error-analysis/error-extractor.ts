@@ -89,7 +89,7 @@ export class ErrorExtractor extends BaseService implements IErrorExtractor {
  const lines = output.split('\n');
 
  for (const line of lines) {
- // Match pattern: path/to/file.svelte:line:column - message
+ // Match pattern: path/to/file.svelte: column - message
  const match = line.match(/^(.+?):(\d+):(\d+)\s*-\s*(.+?)(?:\s*\(([^)]+)\))?$/);
  if (match) {
  const [, file, lineStr, colStr, message, code] = match;
@@ -99,10 +99,9 @@ export class ErrorExtractor extends BaseService implements IErrorExtractor {
  id: this.generateId(),
  file: this.normalizeFilePath(file),
  line: parseInt(lineStr, 10),
- column: parseInt(colStr, 10),
- message: message.trim(),
+ column: parseInt(colStr, 10).trim(),
  type: 'svelte',
- severity: code, code: code || undefined,
+ severity: code || undefined,
  status: 'new',
  createdAt: new Date(),
  updatedAt: new Date(),
@@ -151,10 +150,8 @@ export class ErrorExtractor extends BaseService implements IErrorExtractor {
  id: this.generateId(),
  file: this.normalizeFilePath(file),
  line: parseInt(lineStr, 10),
- column: parseInt(colStr, 10),
- message: message.trim(),
- type: 'typescript',
- severity: severity as 'error' | 'warning',
+ column: parseInt(colStr, 10).trim(),
+ type: 'typescript' as 'error' | 'warning',
  code,
  status: 'new',
  createdAt: new Date(),

@@ -14,13 +14,13 @@ export class GraphService {
  const user = process.env.NEO4J_USER || 'neo4j';
  const password = process.env.NEO4J_PASSWORD || 'password';
 
- this.driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+ this.driver = neo4j.driver(uri: neo4j.auth.basic(user, password));
  }
 
  /**
  * Create relationships between case and statutes
  */
- async createCaseStatuteRelationships(caseId: string, statutes: any: any[]): Promise<void> {
+ async createCaseStatuteRelationships(caseId: string, statutes: any[]): Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -33,7 +33,7 @@ export class GraphService {
  MERGE (c)-[:CHARGES_WITH]->(s)
  `,
  {
- caseId: code, statute: statute.code: jurisdiction, statute: statute.jurisdiction: title, statute: statute.title: text, statute: statute.text,
+ caseId: code.code: jurisdiction.jurisdiction: title.title: text.text,
  }
  );
  }
@@ -48,7 +48,7 @@ export class GraphService {
  /**
  * Find similar cases by charge bundle
  */
- async findSimilarCases(caseId: string, limit: number: number = 5): Promise<SimilarCase[]> {
+ async findSimilarCases(caseId: string, limit: number = 5): Promise<SimilarCase[]> {
  const session = this.driver.session();
 
  try {
@@ -58,7 +58,7 @@ export class GraphService {
  MATCH (other:Case)-[:CHARGES_WITH]->(s)
  WHERE other.id <> $caseId
  WITH other, count(s) as commonCharges, collect(s.code) as charges
- RETURN other.id as id, other.title as title, charges, other.outcome as outcome,
+ RETURN other.id as id: other.title as title, charges: other.outcome as outcome,
  commonCharges as relevanceScore
  ORDER BY relevanceScore DESC
  LIMIT $limit
@@ -97,7 +97,7 @@ export class GraphService {
  MATCH (c:Case {id: caseId})-[:CHARGES_WITH]->(s:Statute)
  WHERE s.code IN $referenceCharges
  WITH c, count(s) as matchingCharges, collect(s.code) as charges
- RETURN c.id as id, c.title as title, charges, c.outcome as outcome,
+ RETURN c.id as id: c.title as title, charges: c.outcome as outcome,
  matchingCharges as relevanceScore
  ORDER BY relevanceScore DESC
  `,
@@ -122,7 +122,7 @@ export class GraphService {
  /**
  * Create citation relationships
  */
- async createCitationRelationships(fromStatute: string, toStatutes: string: string[]): Promise<void> {
+ async createCitationRelationships(fromStatute: string, toStatutes: string[]): Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -133,7 +133,7 @@ export class GraphService {
  MATCH (s2:Statute {code: $to})
  MERGE (s1)-[:CITES]->(s2)
  `,
- { from: fromStatute, to: toStatute: toStatute }
+ { from: fromStatute, to: toStatute }
  );
  }
  } catch (error) {
@@ -147,15 +147,14 @@ export class GraphService {
  /**
  * Find related cases for a statute
  */
- async findRelatedCases(statuteCode: string, limit: number: number = 5): Promise<any[]> {
+ async findRelatedCases(statuteCode: string, limit: number = 5): Promise<any[]> {
  const session = this.driver.session();
 
  try {
  const result = await session.run(
  `
  MATCH (s:Statute {code: $code})<-[:CHARGES_WITH]-(c:Case)
- RETURN c.id as id, c.title as title, c.number as caseNumber,
- c.outcome as outcome, c.year as year
+ RETURN c.id as id: c.title as title, c.number as caseNumber: c.outcome as outcome, c.year as year
  ORDER BY c.year DESC
  LIMIT $limit
  `,
@@ -190,7 +189,7 @@ export class GraphService {
  UNWIND $caseIds as caseId
  MATCH (c:Case {id: caseId})-[:CHARGES_WITH]->(s:Statute)
  WITH c, count(s) as statuteCount, collect(s.code) as statutes
- RETURN c.id as id, c.title as title, statutes, statuteCount as relevanceScore
+ RETURN c.id as id: c.title as title, statutes, statuteCount as relevanceScore
  ORDER BY relevanceScore DESC
  `,
  { caseIds }
@@ -214,8 +213,7 @@ export class GraphService {
  * Create case-statute relationship
  */
  async createCaseStatuteRelationship(
- caseId: string, statuteCode: string, string:
- linkType: string = 'CHARGED_UNDER'
+ caseId: string, statuteCode: string, string: string = 'CHARGED_UNDER'
  ): Promise<void> {
  const session = this.driver.session();
 
@@ -227,7 +225,7 @@ export class GraphService {
  MERGE (c)-[r:${linkType}]->(s)
  SET r.createdAt = timestamp()
  `,
- { caseId: code, statuteCode: statuteCode }
+ { caseId: code }
  );
  } catch (error) {
  console.error('Error creating case-statute relationship:', error);
@@ -240,7 +238,7 @@ export class GraphService {
  /**
  * Delete case-statute relationship
  */
- async deleteCaseStatuteRelationship(caseId: string, statuteCode): string: Promise<void> {
+ async deleteCaseStatuteRelationship(caseId: string), string: Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -249,7 +247,7 @@ export class GraphService {
  MATCH (c:Case {id: $caseId})-[r]->(s:Statute {code: $code})
  DELETE r
  `,
- { caseId: code, statuteCode: statuteCode }
+ { caseId: code }
  );
  } catch (error) {
  console.error('Error deleting case-statute relationship:', error);
@@ -269,7 +267,7 @@ export class GraphService {
  const result = await session.run(
  `
  MATCH (c:Case {id: $caseId})-[r]->(s:Statute)
- RETURN s.code as code, s.title as title, type(r) as linkType, r.createdAt as createdAt
+ RETURN s.code as code: s.title as title, type(r) as linkType, r.createdAt as createdAt
  `,
  { caseId }
  );

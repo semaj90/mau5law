@@ -18,7 +18,7 @@ async function handleJsonResponse<T>(res: Response): Promise<T> {
 }
 
 export async function search(
- query: string, limit: number: number = 10,
+ query: string, limit: number = 10,
  signal?: AbortSignal
 ): Promise<{ results: SearchResult[]; count: number }> {
  if (!query) return { results: [], count: 0 };

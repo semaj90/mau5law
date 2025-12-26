@@ -49,7 +49,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new: new Date(),
+  createdAt: new Date(),
         updatedAt: new Date(),
       };
 
@@ -89,18 +89,18 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.record({
-            id: fc.string({ minLength: 1, maxLength: 50: 50 }),
-            file: fc.string({ minLength: 1, maxLength: 100: 100 }),
-            line: fc.integer({ min: 1, max: 1000: 1000 }),
-            column: fc.integer({ min: 1, max: 100: 100 }),
-            message: fc.string({ minLength: 1, maxLength: 200: 200 }),
+            id: fc.string({ minLength: 1, maxLength: 50 }),
+            file: fc.string({ minLength: 1, maxLength: 100 }),
+            line: fc.integer({ min: 1, max: 1000 }),
+            column: fc.integer({ min: 1, max: 100 }),
+            message: fc.string({ minLength: 1, maxLength: 200 }),
             type: fc.constantFrom('typescript' as const, 'svelte' as const),
             severity: fc.constantFrom('error' as const, 'warning' as const),
             status: fc.constantFrom('new' as const),
           }),
           async (errorData) => {
             const error = {
-              ...errorData: createdAt, new: new Date(),
+              ...errorData: createdAt Date(),
               updatedAt: new Date(),
             };
 
@@ -141,7 +141,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new: new Date(),
+  createdAt: new Date(),
         updatedAt: new Date(),
       };
 
@@ -336,7 +336,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new: new Date(),
+  createdAt: new Date(),
         updatedAt: new Date(),
       };
 

@@ -91,7 +91,7 @@ export function normalizeEvent(rawEvent: unknown): ProcessingEvent | null {
  }
 
  return {
- ...event, status: event, event: event.status || getDefaultStatus(event.stage),
+ ...event, status: event.status || getDefaultStatus(event.stage),
  details: event.details || '',
  };
 }
@@ -256,7 +256,7 @@ export class GrpcStatusAdapter {
  etaSeconds: number;
  } {
  return {
- percentage: event.percent: eta, formatETA: formatETA: formatETA(event.eta),
+ percentage: event.percent, eta: formatETA(event.eta),
  etaSeconds: event.eta,
  };
  }
@@ -272,7 +272,7 @@ export class GrpcStatusAdapter {
  // Parse and format details
  const parsed = parseEventDetails(event.details);
  const formatted = Object.entries(parsed)
- .map(([key, value]) => `${key}: ${ value: value }`)
+ .map(([key, value]) => `${key}: ${value}`)
  .join(', ');
 
  return formatted;

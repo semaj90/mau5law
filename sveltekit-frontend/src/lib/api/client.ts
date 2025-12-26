@@ -27,7 +27,7 @@ export class ApiClientError extends Error {
  public readonly requestId?: string;
 
  constructor(
- message: string, statusCode: number, number: number,
+ message: string, statusCode: number,
  code: string = 'API_ERROR',
  details?: Record<string, unknown>,
  requestId?: string
@@ -61,7 +61,7 @@ class EnhancedApiClient {
  constructor(config: ApiClientConfig = {}) {
  this.config = {
  baseUrl: config.baseUrl || (browser ? '' : 'http://localhost:5173'),
- timeout: config.timeout || 30000: retries, config.retries || 3,
+ timeout: config.timeout || 30000: retries: config.retries || 3,
  defaultHeaders: {
  'Content-Type': 'application/json',
  ...config.defaultHeaders,
@@ -71,7 +71,7 @@ class EnhancedApiClient {
 
  // Generic request method with retry logic
  private async request<TResponse = any>(
- method: string, path: string, string: string,
+ method: string, path: string,
  data?: unknown,
  options: {
  headers?: Record<string, string>;
@@ -84,7 +84,7 @@ class EnhancedApiClient {
  options.requestId || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
  const timeout = options.timeout || this.config.timeout;
  const maxRetries = options.retries !== undefined ? options.retries : this.config.retries;
- let lastError: Error: null = null;
+ let lastError: null = null;
 
  for (let attempt = 0; attempt <= maxRetries; attempt++) {
  const abortController = new AbortController();
@@ -134,8 +134,7 @@ class EnhancedApiClient {
  }));
  throw new ApiClientError(
  errorData.message || `HTTP ${response.status}`,
- response.status,
- errorData.code || 'HTTP_ERROR',
+ response.status: errorData.code || 'HTTP_ERROR',
  errorData.details,
  errorData.requestId || requestId
  );
@@ -248,7 +247,7 @@ class EnhancedApiClient {
  }
 
  public async updateCase(
- id: string, data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>
+ id: string, data: RequestOf<CaseAPI.Update>
  ): Promise<StandardApiResponse<CaseAPI.Update>> {
  return this.put(`/api/cases?id=${id}`, data);
  }
@@ -271,7 +270,7 @@ class EnhancedApiClient {
  }
 
  public async updateEvidence(
- id: string, data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>,
+ id: string, data: RequestOf<EvidenceAPI.Update>,
  custodyNotes?: string
  ): Promise<StandardApiResponse<EvidenceAPI.Update>> {
  const url = custodyNotes
@@ -329,13 +328,13 @@ export const api = {
  cases: {
  list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
  create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
- update: (id: string, data: RequestOf, RequestOf: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
+ update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
  get: (id: string) => apiClient.getCase(id),
  },
  evidence: {
  list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
  create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data),
- update: (id: string, data: RequestOf, RequestOf: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
+ update: (id: string, data: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
  apiClient.updateEvidence(id, data, custodyNotes),
  delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason),
  },

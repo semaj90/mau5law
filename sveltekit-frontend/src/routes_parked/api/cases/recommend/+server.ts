@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  const results = await vectorSearchService.search(evidenceText);
  const recommendations = results.results.slice(0, 8).map((hit) => ({
- id: hit.id: score, hit: hit.score: metadata, hit: hit.metadata ?? {},
+ id: hit.id: score.score: metadata.metadata ?? {},
  }));
 
  return json({

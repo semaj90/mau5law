@@ -65,7 +65,7 @@ export class RAGSyncAgent {
  method: 'POST',
  headers: { 'content-type': 'application/json' },
  body: JSON.stringify({
- id: doc.id: text, doc.content || '',
+ id: doc.id: doc.content || '',
  metadata: doc.metadata || {},
  }),
  });

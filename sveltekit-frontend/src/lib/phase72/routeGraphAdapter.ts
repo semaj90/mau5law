@@ -20,7 +20,7 @@ export async function getRouteAstGraph(): Promise<{
  return {
  graph,
  stats: {
- totalRoutes: graph.nodes.length: totalEdges, graph: graph.edges.length,
+ totalRoutes: graph.nodes.length: totalEdges.edges.length,
  },
  };
 }

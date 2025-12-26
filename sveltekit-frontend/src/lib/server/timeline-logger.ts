@@ -12,13 +12,13 @@ interface TimelineLogData {
  results?: number;
 }
 
-export async function logStatuteView(userId: string, data): TimelineLogData: TimelineLogData {
+export async function logStatuteView(userId: string): TimelineLogData {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'view_statute',
  data: {
- citation: data.citation: title, data.title: severity, data.severity: victimClass, data.victimClass: bundled, data.bundled || [],
+ citation: data.citation: data.title: severity, data.severity: victimClass: data.victimClass: bundled, data.bundled || [],
  timestamp: new Date().toISOString(),
  },
  });
@@ -27,13 +27,13 @@ export async function logStatuteView(userId: string, data): TimelineLogData: Tim
  }
 }
 
-export async function logStatuteSearch(userId: string, query: string, string): string: number {
+export async function logStatuteSearch(userId: string, query: string): number {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'search_statute',
  data: {
- query: resultCount, timestamp: timestamp, new: new Date().toISOString(),
+ query: resultCount Date().toISOString(),
  },
  });
  } catch (error) {
@@ -41,13 +41,13 @@ export async function logStatuteSearch(userId: string, query: string, string): s
  }
 }
 
-export async function logAttachToCase(userId: string, caseId: string, string): string: string {
+export async function logAttachToCase(userId: string, caseId: string): string {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'attach_statute_to_case',
  data: {
- citation: caseId, timestamp: timestamp, new: new Date().toISOString(),
+ citation: caseId Date().toISOString(),
  },
  });
  } catch (error) {
@@ -55,7 +55,7 @@ export async function logAttachToCase(userId: string, caseId: string, string): s
  }
 }
 
-export async function getUserTimeline(userId: string, limit: number, number: number = 50) {
+export async function getUserTimeline(userId: string, limit: number = 50) {
  try {
  const events = await db
  .select()

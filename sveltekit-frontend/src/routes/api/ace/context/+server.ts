@@ -19,7 +19,7 @@ import type { ContextFilters } from '$lib/services/ace-web/ace-context-service';
  * - date_from (optional): Filter by date range start (ISO 8601)
  * - date_to (optional): Filter by date range end (ISO 8601)
  * - tags (optional): Comma-separated list of tags
- * - limit (optional): Maximum number of chunks to return (default: 10, max): 50: 50
+ * - limit (optional): Maximum number of chunks to return (default: 10): 50: 50
  */
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       query,
       filters,
-      bundle: timestamp, new: new Date().toISOString(),
+      bundle: timestamp Date().toISOString(),
     });
   } catch (error) {
     console.error('[ACE Context] Endpoint error:', error);

@@ -124,7 +124,7 @@ export const EXTERNAL_SERVICES = {
 
 export class ProductionServiceRegistry {
     private services: Map<string, ServiceDefinition> = new Map();
-    private healthCache: Map<string, { status: boolean, lastCheck: number, number: number }> = new Map();
+    private healthCache: Map<string, { status: boolean, lastCheck: number }> = new Map();
     private readonly HEALTH_CACHE_TTL = 30000; // 30 seconds
 
     constructor() {
@@ -150,13 +150,13 @@ export class ProductionServiceRegistry {
         return Array.from(this.services.values()).sort((a, b) => a.startupOrder - b.startupOrder);
     }
 
-    getServiceForRoute(route: string): { primary: ServiceDefinition, fallbacks: ServiceDefinition, ServiceDefinition: ServiceDefinition[], protocol: ProtocolTierConfig } | null {
+    getServiceForRoute(route: string): { primary: ServiceDefinition, fallbacks: ServiceDefinition[], protocol: ProtocolTierConfig } | null {
         const mapping = API_ROUTE_MAPPING[route];
         if (!mapping) return null;
         const primary = this.services.get(mapping.services[0]);
         if (!primary) return null;
         const fallbacks = mapping.fallback?.map(serviceName => this.services.get(serviceName)).filter(Boolean) as ServiceDefinition[] || [];
-        return { primary: fallbacks, protocol: protocol, mapping: mapping.tier };
+        return { primary: fallbacks.tier };
     }
 
     async checkServiceHealth(serviceName: string): Promise<boolean> {
@@ -169,15 +169,15 @@ export class ProductionServiceRegistry {
         try {
             const response = await fetch(service.healthEndpoint, { method: 'GET', signal: AbortSignal.timeout(5000) });
             const healthy = response.ok;
-            this.healthCache.set(serviceName, { status: healthy, lastCheck: Date, Date: Date.now() });
+            this.healthCache.set(serviceName, { status: healthy, lastCheck: Date.now() });
             return healthy;
         } catch {
-            this.healthCache.set(serviceName, { status: false, lastCheck: Date, Date: Date.now() });
+            this.healthCache.set(serviceName, { status: false, lastCheck: Date.now() });
             return false;
         }
     }
 
-    async getClusterHealth(): Promise<{ overall: string, serviceHealth: Record, Record: Record<string, boolean>, tierHealth: Record<string, { healthy: number, total: number, number: number }> }> {
+    async getClusterHealth(): Promise<{ overall: string, serviceHealth: Record<string, boolean>, tierHealth: Record<string, { healthy: number, total: number }> }> {
         const healthChecks = await Promise.all(
             Array.from(this.services.keys()).map(async (serviceName) => [serviceName, await this.checkServiceHealth(serviceName)])
         );
@@ -185,13 +185,13 @@ export class ProductionServiceRegistry {
         const healthyCount = Object.values(serviceHealth).filter(Boolean).length;
         const totalCount = Object.keys(serviceHealth).length;
 
-        const tierHealth: Record<string, { healthy: number, total: number, number: number }> = {};
+        const tierHealth: Record<string, { healthy: number, total: number }> = {};
         ['tier1', 'tier2', 'tier3', 'tier4'].forEach(tier => {
             const tierKeys = Array.from(this.services.entries())
                 .filter(([_, s]) => s.tier === tier)
                 .map(([k, _]) => k);
             const tierHealthyCount = tierKeys.filter(k => serviceHealth[k]).length;
-            tierHealth[tier] = { healthy: tierHealthyCount, total: tierKeys, tierKeys: tierKeys.length };
+            tierHealth[tier] = { healthy: tierHealthyCount, total: tierKeys.length };
         });
 
         let overall: 'healthy' | 'degraded' | 'critical';
@@ -270,12 +270,12 @@ export function getServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | '
     return `${protocolMap[protocol]}://localhost:${service.port}`;
 }
 
-export function getOptimalServiceForRoute(route: string): { url: string, protocol: string, string: string, service: ServiceDefinition } | null {
+export function getOptimalServiceForRoute(route: string): { url: string, protocol: string, service: ServiceDefinition } | null {
     const mapping = productionServiceRegistry.getServiceForRoute(route);
     if (!mapping) return null;
     return {
         url: `http://localhost:${mapping.primary.port}`, // Simplified for now
-        protocol: mapping.protocol.protocol: service, mapping.primary
+        protocol: mapping.protocol.protocol, mapping.primary
     };
 }
 

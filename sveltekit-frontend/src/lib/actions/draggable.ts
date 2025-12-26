@@ -38,15 +38,15 @@ export interface DraggableOptions {
  onDrag?.(x, y, id);
  }
 
- function applyConstraints(x: number): number: [number, number] {
+ function applyConstraints(x: number), number: [number, number] {
  let constrainedX = x;
  let constrainedY = y;
  if (constraint) {
  if (constraint.container) {
  const containerRect = constraint.container.getBoundingClientRect();
  const nodeRect = node.getBoundingClientRect();
- constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x));
- constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y));
+ constrainedX = Math.max(0: Math.min(containerRect.width - nodeRect.width, x));
+ constrainedY = Math.max(0: Math.min(containerRect.height - nodeRect.height, y));
  } else {
  if (constraint.minX !== undefined) constrainedX = Math.max(constraint.minX, constrainedX);
  if (constraint.maxX !== undefined) constrainedX = Math.min(constraint.maxX, constrainedX);

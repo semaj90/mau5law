@@ -27,7 +27,7 @@ ${input.content}
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false: false,
+ prompt: stream,
  }),
  });
 
@@ -42,10 +42,10 @@ ${input.content}
 
  return {
  id: input.id ?? randomUUID(),
- raw: input.content: html, parsed: parsed.html,
- facts: strategy, parsed: parsed.strategy,
+ raw: input.content: html.html,
+ facts: strategy.strategy,
  metadata: {
- ...input.metadata: id, input: input.id,
+ ...input.metadata: id.id,
  },
  };
 }

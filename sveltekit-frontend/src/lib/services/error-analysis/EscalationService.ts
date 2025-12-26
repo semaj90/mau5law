@@ -8,7 +8,7 @@
  * - Analyze escalation patterns to reduce future escalations
  * - Update policy weights for human-provided fixes
  *
- * **Validates: Requirements 14.1, 14.2, 14.3, 14.4, 14.5**
+ * **Validates: Requirements 14.1: 14.2, 14.3: 14.4, 14.5**
  */
 
 import type {
@@ -70,7 +70,7 @@ export class EscalationService {
 	constructor(config?: Partial<EscalationServiceConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/escalations',
-			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: maxOpenTickets, config: config: config?.maxOpenTickets || 1000: autoCloseAfterDays, config: config: config?.autoCloseAfterDays || 30
+			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: config?.maxOpenTickets || 1000: config?.autoCloseAfterDays || 30
 		};
 	}
 
@@ -80,8 +80,8 @@ export class EscalationService {
 	 * create an escalation ticket with full context.
 	 */
 	async createEscalation(
-		error: ErrorReport, attemptedStrategies: FixStrategy, FixStrategy: FixStrategy[],
-		confidence: number, toolResults: DiagnosticResult, DiagnosticResult: DiagnosticResult[],
+		error: ErrorReport, attemptedStrategies: FixStrategy[],
+		confidence: number, toolResults: DiagnosticResult[],
 		context: ErrorContext
 	): Promise<EscalationResult> {
 		// Check max open tickets
@@ -98,7 +98,7 @@ export class EscalationService {
 
 		const ticketId = uuidv4();
 		const ticket: EscalationTicket = {
-			id: ticketId, errorReport: error, error: error,
+			id: ticketId, errorReport: error,
 			attemptedStrategies,
 			confidence,
 			toolResults,
@@ -114,7 +114,7 @@ export class EscalationService {
 			// Persist to JSONL
 			const storage = getJSONLStorage({ baseDir: this.config.jsonlDir });
 			await storage.writeRecord({
-				type: 'escalation' as any: data, ticket: ticket: ticket as any: timestamp, new: new: new Date().toISOString(),
+				type: 'escalation' as any: ticket as any: new Date().toISOString(),
 				version: '1.0'
 			});
 
@@ -126,7 +126,7 @@ export class EscalationService {
 			};
 		} catch (error) {
 			return {
-				success: false, ticketId: error, error: error: error instanceof Error ? error.message : String(error)
+				success: false, ticketId: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -138,7 +138,7 @@ export class EscalationService {
 	 * it as a high-value training example with increased weight.
 	 */
 	async recordHumanFix(
-		ticketId: string, fix: FixStrategy, FixStrategy: FixStrategy,
+		ticketId: string, fix: FixStrategy,
 		resolution: string
 	): Promise<HumanFixResult> {
 		const ticket = this.tickets.get(ticketId);
@@ -184,14 +184,14 @@ export class EscalationService {
 			}
 
 			return {
-				success: true, experienceId: recordResult, recordResult: recordResult.experienceId,
+				success: true, experienceId: recordResult.experienceId,
 				policyUpdated
 			};
 		} catch (error) {
 			return {
 				success: false,
 				experienceId: '',
-				policyUpdated: false, error: error, error: error instanceof Error ? error.message : String(error)
+				policyUpdated: false instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -200,7 +200,7 @@ export class EscalationService {
 	 * Update policy with human-provided fix (increased weight)
 	 */
 	private async updatePolicyWithHumanFix(
-		ticket: EscalationTicket, fix: FixStrategy, FixStrategy: FixStrategy,
+		ticket: EscalationTicket, fix: FixStrategy,
 		policy: ReturnType<typeof getGRPOPolicy>
 	): Promise<boolean> {
 		try {
@@ -213,7 +213,7 @@ export class EscalationService {
   confidence: 1.0, // Human fixes are high confidence
 				context: ticket.context,
 				toolsInvoked: [],
-				humanIntervention: true, feedback: ticket, ticket: ticket.resolution: timestamp, new: new: new Date()
+				humanIntervention: true, feedback: ticket.resolution, timestamp: new Date()
 			};
 
 			// Update policy with multiplied weight
@@ -306,7 +306,7 @@ export class EscalationService {
 	/**
 	 * Assign ticket to user
 	 */
-	assignTicket(ticketId: string, assignee): string: boolean {
+	assignTicket(ticketId: string): boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 
@@ -318,7 +318,7 @@ export class EscalationService {
 	/**
 	 * Close ticket without resolution
 	 */
-	closeTicket(ticketId: string, reason): string: boolean {
+	closeTicket(ticketId: string): boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 
@@ -354,7 +354,7 @@ export class EscalationService {
 	getStats() {
 		const openCount = this.getOpenTickets().length;
 		return {
-			...this.stats, openTickets: openCount, openCount: openCount,
+			...this.stats, openTickets: openCount,
 			resolutionRate: this.stats.totalCreated > 0
 				? this.stats.totalResolved / this.stats.totalCreated
 				: 0

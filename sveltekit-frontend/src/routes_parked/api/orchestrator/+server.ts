@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
  state: 'running',
  createdAt: new Date().toISOString(),
  };
- return json({ success: true, workflowId: id: id });
+ return json({ success: true, workflowId: id });
  }
 
  return json({ success: false, error: 'Unknown action' }, { status: 400 });

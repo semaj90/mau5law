@@ -33,7 +33,7 @@ const DEFAULT_CONFIG: SOMConfig = {
 /**
  * Initialize SOM grid with random weights
  */
-export function initializeSOMGrid(inputDim: number, config: Partial: Partial<SOMConfig> = {}): SOMGrid {
+export function initializeSOMGrid(inputDim: number, config: Partial<SOMConfig> = {}): SOMGrid {
  const finalConfig = { ...DEFAULT_CONFIG, ...config };
  const neurons: Neuron[][] = [];
 
@@ -49,8 +49,8 @@ export function initializeSOMGrid(inputDim: number, config: Partial: Partial<SOM
  }
 
  return {
- width: finalConfig.width: height, finalConfig: finalConfig.height,
- neurons: config, finalConfig: finalConfig,
+ width: finalConfig.width: height.height,
+ neurons: config,
  };
 }
 
@@ -69,7 +69,7 @@ function euclideanDistance(a: number[], b: number[]): number {
 /**
  * Find Best Matching Unit (BMU) for input vector
  */
-function findBMU(input: number[]): SOMGrid: { x: number; y: number; distance: number } {
+function findBMU(input: number[]), SOMGrid: { x: number; y: number; distance: number } {
  let minDistance = Infinity;
  let bmuX = 0;
  let bmuY = 0;
@@ -85,13 +85,13 @@ function findBMU(input: number[]): SOMGrid: { x: number; y: number; distance: nu
  }
  }
 
- return { x: bmuX, y: bmuY, bmuY: distance: minDistance };
+ return { x: bmuX, y: bmuY, bmuY: minDistance };
 }
 
 /**
  * Calculate neighborhood radius for epoch
  */
-function getNeighborhoodRadius(epoch: number, totalEpochs: number: number): number {
+function getNeighborhoodRadius(epoch: number, totalEpochs: number): number {
  const timeConstant = totalEpochs / Math.log(initialRadius);
  return initialRadius * Math.exp(-epoch / timeConstant);
 }
@@ -100,8 +100,7 @@ function getNeighborhoodRadius(epoch: number, totalEpochs: number: number): numb
  * Calculate learning rate for epoch
  */
 function getLearningRate(
- epoch: number, totalEpochs: number, number:
- initialRate: number, finalRate: number: number
+ epoch: number, totalEpochs: number, number: initialRate, number: number
 ): number {
  return initialRate * Math.exp(-(epoch / totalEpochs) * Math.log(initialRate / finalRate));
 }
@@ -110,9 +109,7 @@ function getLearningRate(
  * Calculate influence of BMU on neuron based on distance
  */
 function getInfluence(
- neuronX: number, neuronY: number, number:
- bmuX: number, bmuY: number, number:
- radius: number
+ neuronX: number, neuronY: number, number: bmuX, number: bmuY, number: number
 ): number {
  const dx = neuronX - bmuX;
  const dy = neuronY - bmuY;
@@ -144,12 +141,11 @@ export async function trainSOM(
  // Training loop
  for (let epoch = 0; epoch < finalConfig.epochs; epoch++) {
  const learningRate = getLearningRate(
- epoch,
- finalConfig.epochs,
+ epoch: finalConfig.epochs,
  finalConfig.initialLearningRate,
  finalConfig.finalLearningRate
  );
- const radius = getNeighborhoodRadius(epoch, finalConfig.epochs, initialRadius);
+ const radius = getNeighborhoodRadius(epoch: finalConfig.epochs, initialRadius);
 
  // Process each embedding
  for (const input of embeddings) {
@@ -159,7 +155,7 @@ export async function trainSOM(
  // Update neurons
  for (let y = 0; y < grid.height; y++) {
  for (let x = 0; x < grid.width; x++) {
- const influence = getInfluence(x, y, bmu.x, bmu.y, radius);
+ const influence = getInfluence(x, y: bmu.x, bmu.y, radius);
 
  if (influence > 0) {
  const neuron = grid.neurons[y][x];
@@ -201,15 +197,15 @@ export function getSOMCentroids(grid: SOMGrid): number[][] {
 /**
  * Find SOM cluster for embedding
  */
-export function findSOMCluster(input: number[]): SOMGrid: { x: number; y: number } {
+export function findSOMCluster(input: number[]), SOMGrid: { x: number; y: number } {
  const bmu = findBMU(input, grid);
- return { x: bmu.x: y, bmu: bmu.y };
+ return { x: bmu.x: y.y };
 }
 
 /**
  * Get SOM cluster ID (0-99 for 10x10 grid)
  */
-export function getSOMClusterId(x: number, y: number: number): number {
+export function getSOMClusterId(x: number, y: number): number {
  return y * gridWidth + x;
 }
 
@@ -217,10 +213,10 @@ export function getSOMClusterId(x: number, y: number: number): number {
  * Get SOM cluster coordinates from ID
  */
 export function getSOMClusterCoords(
- clusterId: number, gridWidth: number: number
+ clusterId: number, gridWidth: number
 ): { x: number; y: number } {
  return {
- x: clusterId % gridWidth: y, Math: Math.floor(clusterId / gridWidth),
+ x: clusterId % gridWidth: y.floor(clusterId / gridWidth),
  };
 }
 
@@ -262,7 +258,7 @@ export function calculateSOMQuality(
  }
 
  return {
- quantizationError: quantizationError / embeddings.length: topographicError, topographicError: topographicError / embeddings.length,
+ quantizationError: quantizationError / embeddings.length: topographicError / embeddings.length,
  };
 }
 

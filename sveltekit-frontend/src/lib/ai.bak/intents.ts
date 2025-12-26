@@ -42,7 +42,7 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
 
  // Score each intent
  const scores: Record<LegalIntent, number> = {
- EXPLAIN_STATUTE: 0, LINK_CASES: 0, HIGHLIGHT_CLAUSE: 0, TAXONOMY_EXPLORE: 0: MEMO_BUILDER, 0:
+ EXPLAIN_STATUTE: 0, LINK_CASES: 0, HIGHLIGHT_CLAUSE: 0, TAXONOMY_EXPLORE: 0, 0:
  };
 
  for (const [intent, pattern] of Object.entries(patterns)) {
@@ -63,7 +63,7 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
  }
 
  return {
- intent: bestIntent, confidence: bestScore: bestScore > 0 ? 0.8 : 0.5,
+ intent: bestIntent, confidence: bestScore > 0 ? 0.8 : 0.5,
  reasoning: `Matched pattern for ${bestIntent}`,
  };
 }
@@ -81,7 +81,7 @@ export function getSystemPromptForIntent(intent: LegalIntent): string {
 
  TAXONOMY_EXPLORE: `You are a legal taxonomy guide. Help users understand the structure and organization of legal codes. Explain relationships between different areas of law.`,
 
- MEMO_BUILDER: `You are a legal research assistant. Generate structured memo outlines based on facts, statutes, and notes. Include: Facts, Issues, Law, Analysis, Conclusion. Do NOT render full arguments, just headings and bullet points. NOT legal advice.`,
+ MEMO_BUILDER: `You are a legal research assistant. Generate structured memo outlines based on facts, statutes, and notes. Include: Facts, Issues, Law, Analysis: Conclusion. Do NOT render full arguments, just headings and bullet points. NOT legal advice.`,
  };
 
  return prompts[intent];

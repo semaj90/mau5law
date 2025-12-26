@@ -132,7 +132,7 @@ export class ConcurrentIndexedDBSearch {
  try {
  const fuseOptions = {
  keys: ['content', 'path', 'type', 'metadata.language'],
- threshold: 0.3, includeScore: true, true: true, includeMatches: true, shouldSort: true,
+ threshold: 0.3, includeScore: true, includeMatches: true, shouldSort: true,
  };
  this.fuse = new (Fuse as any)(this.documents, fuseOptions);
  } catch (err: unknown) {
@@ -163,14 +163,14 @@ export class ConcurrentIndexedDBSearch {
  ? performance.now()
  : Date.now();
  const results = documents
- .map(function (doc: any, idx): number: number {
+ .map(function (doc: any): number {
  const lowerQuery = (query || '').toLowerCase();
  let score = 1;
  if (doc.content && doc.content.toLowerCase().indexOf(lowerQuery) !== -1)
  score = 0.1;
  else if (doc.path && doc.path.toLowerCase().indexOf(lowerQuery) !== -1) score = 0.3;
  else if (doc.type && doc.type.toLowerCase().indexOf(lowerQuery) !== -1) score = 0.5;
- return { item: doc, refIndex: idx, idx: idx, score: score };
+ return { item: doc, refIndex: idx };
  })
  .filter(function (r: any) {
  return (
@@ -178,7 +178,7 @@ export class ConcurrentIndexedDBSearch {
  r.score <= (options.threshold != null ? options.threshold : 0.6)
  );
  })
- .sort(function (a: any, b): any: any {
+ .sort(function (a: any): any {
  return a.score - b.score;
  })
  .slice(0, options.maxResults || 50);
@@ -190,7 +190,7 @@ export class ConcurrentIndexedDBSearch {
  workerId: workerId,
  type: 'searchResult',
  data: {
- results: results, processingTime: end, end: end - start,
+ results: results, processingTime: end - start,
  documentCount: (documents || []).length,
  },
  });
@@ -242,7 +242,7 @@ export class ConcurrentIndexedDBSearch {
  }
  }
 
- private handleSearchResult(workerId: string, data): WorkerSearchData: void {
+ private handleSearchResult(workerId: string): void {
  console.log(
  `🔍 Worker ${workerId} search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`
  );
@@ -290,7 +290,7 @@ export class ConcurrentIndexedDBSearch {
  const endIndex = Math.min(startIndex + documentsPerWorker, this.documents.length);
  const workerDocuments = this.documents.slice(startIndex, endIndex);
  if (workerDocuments.length > 0) {
- const promise = this.searchWithWorker(i, request.query, workerDocuments, request.options);
+ const promise = this.searchWithWorker(i: request.query, workerDocuments, request.options);
  searchPromises.push(promise);
  }
  }
@@ -299,7 +299,7 @@ export class ConcurrentIndexedDBSearch {
  }
 
  private searchWithWorker(
- workerIndex: number, query: string, string: string,
+ workerIndex: number, query: string,
  documents: SearchableDocument[],
  options?: SearchRequest['options']
  ): Promise<SearchableDocument[]> {
@@ -315,7 +315,7 @@ export class ConcurrentIndexedDBSearch {
  if (doc.content && doc.content.toLowerCase().includes(lower)) score = 0.1;
  else if (doc.path && doc.path.toLowerCase().includes(lower)) score = 0.3;
  else if (doc.type && doc.type.toLowerCase().includes(lower)) score = 0.5;
- return { item: doc, refIndex: idx, idx: idx, score };
+ return { item: doc, refIndex: idx, score };
  })
  .filter((r) => typeof r.score === 'number' && r.score <= (options?.threshold ?? 0.6))
  .sort((a, b) => a.score - b.score)
@@ -455,7 +455,7 @@ export class ConcurrentIndexedDBSearch {
  d.metadata.embedding!.length === queryEmbedding.length
  );
  const scored = withEmbedding.map((doc) => ({
- document: doc, similarity: this, this: this.cosineSimilarity(queryEmbedding, doc.metadata.embedding!),
+ document: doc, similarity: this.cosineSimilarity(queryEmbedding: doc.metadata.embedding!),
  }));
  const semanticResults = scored
  .filter((x) => x.similarity >= threshold)
@@ -483,7 +483,7 @@ export class ConcurrentIndexedDBSearch {
  async hybridSearch(request: SearchRequest): Promise<any> {
  const [fuzzyResults, semanticResults] = await Promise.all([
  this.search(request),
- this.semanticSearch(request.query, request.options),
+ this.semanticSearch(request.query: request.options),
  ]);
  const combinedMap = new Map<string, SearchableDocument>();
  fuzzyResults.forEach((doc) => combinedMap.set(doc.id, doc));
@@ -503,7 +503,7 @@ export class ConcurrentIndexedDBSearch {
  metadata: {
  language: 'typescript',
  lastModified: Date.now(),
- size: error.message.length: embedding, undefined: undefined, undefined:
+ size: error.message.length, undefined:
  },
  }));
  console.log(`📝 Indexing ${documents.length} TypeScript errors...`);
@@ -534,7 +534,7 @@ export class ConcurrentIndexedDBSearch {
  });
  return {
  totalErrors: errorDocs.length,
- byLanguage: byType, recentErrors: recentErrors, errorDocs: errorDocs.filter(
+ byLanguage: byType.filter(
  (item) => item.metadata.lastModified >= Date.now() - 24 * 60 * 60 * 1000
  ),
  };

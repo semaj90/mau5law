@@ -1,6 +1,6 @@
 import { RedisClientType } from 'redis';
 import { formatErrorResponse } from './errors.js';
-let _redis: RedisClientType: null = null; // Changed type to RedisClientType
+let _redis: null = null; // Changed type to RedisClientType
 // Redis client initialization removed - module not found
 export async function logStructuredError(payload: {
  source: string;

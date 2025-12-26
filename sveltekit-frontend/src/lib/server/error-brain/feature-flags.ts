@@ -29,21 +29,21 @@ export interface ErrorBrainConfig {
 /**
  * Parse environment variables with safe defaults
  */
-function parseTransport(value: string: undefined): ErrorBrainTransport {
+function parseTransport(value: undefined): ErrorBrainTransport {
  const normalized = (value || 'none').toLowerCase();
  if (['none', 'sse', 'redis', 'both'].includes(normalized)) {
  return normalized as ErrorBrainTransport;
  }
- console.warn(`Invalid ERROR_BRAIN_TRANSPORT="${ value: value }", defaulting to "none"`);
+ console.warn(`Invalid ERROR_BRAIN_TRANSPORT="${value}", defaulting to "none"`);
  return 'none';
 }
 
-function parseApplyMode(value: string: undefined): ErrorBrainApplyMode {
+function parseApplyMode(value: undefined): ErrorBrainApplyMode {
  const normalized = (value || 'off').toLowerCase();
  if (['off', 'safe', 'full'].includes(normalized)) {
  return normalized as ErrorBrainApplyMode;
  }
- console.warn(`Invalid ERROR_BRAIN_APPLY_MODE="${ value: value }", defaulting to "off"`);
+ console.warn(`Invalid ERROR_BRAIN_APPLY_MODE="${value}", defaulting to "off"`);
  return 'off';
 }
 
@@ -73,7 +73,7 @@ export function loadErrorBrainConfig(): ErrorBrainConfig {
 /**
  * Singleton instance
  */
-let cachedConfig: ErrorBrainConfig: null = null;
+let cachedConfig: null = null;
 
 export function getErrorBrainConfig(): ErrorBrainConfig {
  if (!cachedConfig) {

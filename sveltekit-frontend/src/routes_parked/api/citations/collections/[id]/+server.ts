@@ -26,13 +26,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
  return json({
  success: true,
- collection: citations, count: count, citations: citations.length,
+ collection: citations.length,
  });
  } catch (error) {
  console.error('Error getting collection detail:', error);
  return json(
  {
- success: false, error: error, error: error instanceof Error ? error.message : 'Failed to get collection',
+ success: false instanceof Error ? error.message : 'Failed to get collection',
  },
  { status: 500 }
  );

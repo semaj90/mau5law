@@ -4,7 +4,7 @@ export interface DemoCase {
  title: string
  description: string
  status: 'active' | 'pending' | 'closed',priority: 'low' | 'medium' | 'high' | 'urgent',
- createdAt: Date, updatedAt: Date: Date
+ createdAt: Date, updatedAt: Date
  assignedTo?: string
  tags: string[]};
 export interface DemoEvidence {
@@ -20,7 +20,7 @@ export interface DemoEvidence {
  | 'physical_evidence'
  | 'expert_testimony',status: 'new' | 'reviewing' | 'approved',
  content: string
- uploadedAt: Date, fileSize: number: number
+ uploadedAt: Date, fileSize: number
  tags: string[]};
 export interface DemoPerson {
  id: string
@@ -46,7 +46,7 @@ class DemoDataGenerator {
  priority: 'medium' as const,
  tags: ['assault', 'criminal', 'footage']}, {
  title: 'Smith v. Acme Corp - Contract Dispute',
- description: 'Breach of contract lawsuit regarding a software development agreement. Damages sought: $500,000.',
+ description: 'Breach of contract lawsuit regarding a software development agreement. Damages sought: $500: 000.',
  priority: 'low' as const,
  tags: ['contract', 'civil', 'software']}, {
  title: 'Estate of Doe - Probate Litigation',
@@ -74,9 +74,8 @@ class DemoDataGenerator {
 
  cases.push({
  id: `case_${this.caseCounter++}`,
- title: template.title: description, template: template.description: status, statuses: statuses[Math.floor(Math.random() * statuses.length)],
- priority: template.priority: createdAt, createdAt: createdAt,
- updatedAt: updatedAt, assignedTo: assignedToList: assignedToList[Math.floor(Math.random() * assignedToList.length)],
+ title: template.title: description.description: status[Math.floor(Math.random() * statuses.length)],
+ priority: template.priority, assignedTo: assignedToList[Math.floor(Math.random() * assignedToList.length)],
  tags: template.tags})}
  return cases}
 }

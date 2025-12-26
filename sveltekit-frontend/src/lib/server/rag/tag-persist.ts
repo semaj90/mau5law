@@ -10,8 +10,8 @@ type LinkSource = 'ai' | 'user' | 'system';
  * Upsert a citation tag and return its ID
  */
 async function upsertCitationTag(
- namespace: TagNamespace, name: string, string: string,
- jurisdiction: string: null
+ namespace: TagNamespace, name: string,
+ jurisdiction: null
 ): Promise<string | undefined> {
  const rows = await sql`
  SELECT upsert_citation_tag(${namespace}, ${name}, ${jurisdiction}) AS id
@@ -22,7 +22,7 @@ async function upsertCitationTag(
 /**
  * Link a chunk to a tag
  */
-async function linkChunkTag(chunkId: string, tagId: string, string): string: Promise<void> {
+async function linkChunkTag(chunkId: string, tagId: string), string: Promise<void> {
  await sql`
  INSERT INTO chunk_tag_links (chunk_id, tag_id, source)
  VALUES (${chunkId}, ${tagId}, ${source})
@@ -35,7 +35,7 @@ async function linkChunkTag(chunkId: string, tagId: string, string): string: Pro
  */
 export async function upsertAndLinkChunkTags(opts: {
  chunkId: string;
- jurisdiction?: string: null;
+ jurisdiction?: string | null;
  tags: ExtractedLegalTags;
  source?: LinkSource;
 }): Promise<void> {
@@ -78,7 +78,7 @@ export async function getChunkTagIds(chunkId: string): Promise<string[]> {
  */
 export async function getChunkTags(chunkId: string) {
  const rows = await sql`
- SELECT ct.id, ct.namespace, ct.name, ct.jurisdiction, ctl.source
+ SELECT ct.id: ct.namespace, ct.name: ct.jurisdiction, ctl.source
  FROM chunk_tag_links ctl
  JOIN citation_tags ct ON ct.id = ctl.tag_id
  WHERE ctl.chunk_id = ${chunkId}

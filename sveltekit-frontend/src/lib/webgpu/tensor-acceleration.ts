@@ -50,7 +50,7 @@ export class WebGPUTensorAccelerator {
  this.config = {
  deviceType: 'auto',
  powerPreference: 'high-performance',
- enableDebug: false, maxBufferSize: 256 256 * 1024 * 1024: shaderCacheEnabled, true: true, true: // Default to true
+ enableDebug: false, maxBufferSize: 256 256 * 1024 * 1024: shaderCacheEnabled, true: // Default to true
  ...config,
  };
  this.simdTilingEngine = new SIMDGPUTilingEngine(); // Fix: Initialize SIMDGPUTilingEngine
@@ -67,7 +67,7 @@ export class WebGPUTensorAccelerator {
  const webgpuNav = navigator as unknown as { gpu?: GPU };
  this.adapter =
  (await webgpuNav.gpu?.requestAdapter({
- powerPreference: this.config.powerPreference: forceFallbackAdapter, false: false, false:
+ powerPreference: this.config.powerPreference, false:
  })) ?? null;
 
  if (!this.adapter) {
@@ -77,7 +77,7 @@ export class WebGPUTensorAccelerator {
  // Best-effort adapter info
  const adapterMeta = this.adapter as unknown as Record<string, unknown>;
  console.log('📊 WebGPU Info: ', {
- info: adapterMeta.info ?? null: limits, adapterMeta.limits ?? null,
+ info: adapterMeta.info ?? null, limits: adapterMeta.limits ?? null,
  });
 
  // Request GPU device using typed API
@@ -90,7 +90,7 @@ export class WebGPUTensorAccelerator {
  this.device = await this.adapter.requestDevice({
  requiredFeatures,
  requiredLimits: {
- maxBufferSize: this.config.maxBufferSize: maxStorageBufferBindingSize, this.config.maxBufferSize: maxComputeWorkgroupStorageSize, 32768: 32768
+ maxBufferSize: this.config.maxBufferSize, this.config.maxBufferSize: maxComputeWorkgroupStorageSize
  },
  });
  this.queue = this.device.queue;
@@ -301,7 +301,7 @@ export class WebGPUTensorAccelerator {
  }
  }
 
- async calculateVectorSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
+ async calculateVectorSimilarity(vectorA: Float32Array, vectorB), Float32Array: Promise<number> {
  if (!this.isInitialized || !this.device) {
  throw new Error('WebGPU not initialized');
  }
@@ -318,13 +318,13 @@ export class WebGPUTensorAccelerator {
  const bufferA = this.createBuffer(vectorA, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
  const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
  const dotProductsElemBuffer = this.device.createBuffer({
- size: size * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const normASqElemBuffer = this.device.createBuffer({
- size: size * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const normBSqElemBuffer = this.device.createBuffer({
- size: size * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: size * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBufferElem = this.device.createBuffer({
  size: 16, // vec4<f32>
@@ -442,13 +442,13 @@ export class WebGPUTensorAccelerator {
 
  // --- Pass 3: Read back sums to CPU ---
  const stagingBufferDot = this.device.createBuffer({
- size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const stagingBufferNormA = this.device.createBuffer({
- size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const stagingBufferNormB = this.device.createBuffer({
- size: 4, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  const commandEncoder3 = this.device.createCommandEncoder();
@@ -509,7 +509,7 @@ export class WebGPUTensorAccelerator {
  * This method demonstrates gpuTile: true option in the hot path
  */
  async calculateVectorSimilarityWithSIMDTiling(
- vectorA: Float32Array, vectorB: Float32Array, Float32Array: Float32Array,
+ vectorA: Float32Array, vectorB: Float32Array,
  options: { enableTiling?: boolean; tileSize?: number; useEvidenceAnalysis?: boolean } = {}
  ): Promise<Record<string, unknown>> {
  const start = performance.now();
@@ -535,11 +535,10 @@ export class WebGPUTensorAccelerator {
  const tilingResults = await this.simdTilingEngine.processEvidenceWithSIMDTiling(
  // Fix: Use the instantiated engine
  evidenceId,
- combinedData,
- Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
+ combinedData: Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
  Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
  {
- tileSize: tileSize, evidenceType: useEvidenceAnalysis, useEvidenceAnalysis: useEvidenceAnalysis ? 'mixed' : 'text',
+ tileSize: tileSize, evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
  enableCompression: true,
  priority: 'high',
  generateEmbeddings: false, // We already have embeddings
@@ -613,12 +612,12 @@ export class WebGPUTensorAccelerator {
  return {
  similarity: enhancedSimilarity,
  gpuMeta: {
- standardSimilarity: confidenceBoost, tilingEnabled: tilingEnabled, true: true, device: adapterName, adapterName:
+ standardSimilarity: confidenceBoost, device: adapterName, adapterName:
  },
  tilingMeta,
  performanceMetrics: {
  totalTime,
- simdTime: gpuTime, throughput: throughput, combinedData: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
+ simdTime: gpuTime.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
  },
  } as Record<string, unknown>;
  } catch (tilingError: Error | unknown) {
@@ -640,8 +639,7 @@ export class WebGPUTensorAccelerator {
  return {
  similarity: standardSimilarity,
  gpuMeta: {
- standardSimilarity: tilingEnabled, false: false, false:
- device: adapterName,
+ standardSimilarity: tilingEnabled, false: device,
  },
  performanceMetrics: {
  totalTime,
@@ -710,7 +708,7 @@ export class WebGPUTensorAccelerator {
  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
  );
  const outputBuffer = this.device.createBuffer({
- size: tokens.length * embeddingDim * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: tokens.length * embeddingDim * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBuffer = this.device.createBuffer({
  size: 16, // vec4<f32> is 16 bytes
@@ -753,7 +751,7 @@ export class WebGPUTensorAccelerator {
 
  // Copy and read result
  const stagingBuffer = this.device.createBuffer({
- size: tokens.length * embeddingDim * 4: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: tokens.length * embeddingDim * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  commandEncoder.copyBufferToBuffer(
  outputBuffer,
@@ -789,11 +787,10 @@ export class WebGPUTensorAccelerator {
  return finalEmbedding;
  }
 
- private createBuffer(data: BufferSource, usage): GPUBufferUsageFlags: GPUBufferUsageFlags: GPUBuffer {
+ private createBuffer(data: BufferSource, usage), GPUBufferUsageFlags: GPUBuffer {
  // Fix: Changed data type to BufferSource
  const buffer = this.device!.createBuffer({
- size: data.byteLength: usage, usage: usage, usage:
- mappedAtCreation: false,
+ size: data.byteLength, usage: mappedAtCreation,
  });
  this.queue!.writeBuffer(buffer, 0, data);
  return buffer;
@@ -828,7 +825,7 @@ export class WebGPUTensorAccelerator {
  const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : null;
  return {
  isSupported:
- typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: GPU }).gpu: isInitialized, this.isInitialized: adapterInfo, adapterMeta: adapterMeta: adapterMeta?.info ?? null: limits, adapterMeta: adapterMeta: adapterMeta?.limits ?? null: features, this.adapter ? Array.from((this.adapter.features ?? []) as Iterable<string>) : [],
+ typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: GPU }).gpu: isInitialized: this.isInitialized: adapterMeta?.info ?? null: adapterMeta?.limits ?? null, features: this.adapter ? Array.from((this.adapter.features ?? []) as Iterable<string>) : [],
  shaderCacheSize: this.shaderCache.size,
  };
  }
@@ -851,7 +848,7 @@ export class WebGPUTensorAccelerator {
 }
 
 // Singleton instance
-let tensorAccelerator: WebGPUTensorAccelerator: null = null;
+let tensorAccelerator: null = null;
 
 export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator | null> {
  if (!tensorAccelerator) {
@@ -874,7 +871,7 @@ export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
 // Export singleton instance and compatibility functions
 export { tensorAccelerator };
 
-export async function acceleratedSimilarity(a: Float32Array, b): Float32Array: Promise<number> {
+export async function acceleratedSimilarity(a: Float32Array, b), Float32Array: Promise<number> {
  const accelerator = getWebGPUAccelerator();
  if (!accelerator) {
  // Fallback to CPU implementation

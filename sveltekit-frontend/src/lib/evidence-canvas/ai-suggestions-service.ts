@@ -35,15 +35,14 @@ export class AISuggestionsService {
  const possibleEndpoints = [
  'http://localhost:11434',
  'http://127.0.0.1:11434',
- process.env.OLLAMA_ENDPOINT,
- process.env.PUBLIC_OLLAMA_URL,
+ process.env.OLLAMA_ENDPOINT: process.env.PUBLIC_OLLAMA_URL,
  ].filter(Boolean);
 
  return possibleEndpoints[0] || 'http://localhost:11434';
  }
 
  async generateSuggestions(
- context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const cacheKey = this.generateCacheKey(context);
  if (this.suggestionCache.has(cacheKey)) {
@@ -71,7 +70,7 @@ export class AISuggestionsService {
 
  // Sort by confidence and priority
  suggestions.sort((a, b) => {
- const priorityOrder = { critical: 4, high: 3 medium: 2, low: 1: 1 };
+ const priorityOrder = { critical: 4, high: 3 medium: 2, low: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return b.confidence - a.confidence;
@@ -88,7 +87,7 @@ export class AISuggestionsService {
  }
 
  private async generateEvidenceSuggestions(
- context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const suggestions: AISuggestion[] = [];
 
@@ -102,7 +101,7 @@ export class AISuggestionsService {
  type: 'evidence',
  title: `Consider adding ${missingType} evidence`,
  description: `Your case appears to lack ${missingType} evidence, which could strengthen your position. Consider gathering ${this.getEvidenceExamples(missingType)}.`,
- confidence: 0.8, relatedNodes: context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.8, relatedNodes: context.selectedNodes.map((n) => n.id),
  priority: 'high',
  actionItems: [
  `Identify potential ${missingType} sources`,
@@ -122,7 +121,7 @@ export class AISuggestionsService {
  title: 'Strong evidence correlations detected',
  description: `Found ${strongSimilarities.length} highly correlated evidence pieces. This suggests a strong evidentiary foundation.`,
  confidence: 0.9,
- relatedNodes: [...new Set(strongSimilarities.flatMap((s) => [s.sourceId, s.targetId]))],
+ relatedNodes: [...new Set(strongSimilarities.flatMap((s) => [s.sourceId: s.targetId]))],
  priority: 'medium',
  });
  }
@@ -150,7 +149,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false: false,
+ prompt: stream,
  options: {
  temperature: 0.3, num_predict: 200
  },
@@ -165,8 +164,8 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  suggestions.push({
  id: `strategy_${index}_${Date.now()}`,
  type: 'strategy',
- title: strategy.title: description, strategy: strategy.description: confidence, strategy: strategy.confidence: relatedNodes, context: context.selectedNodes.map((n) => n.id),
- priority: strategy.priority: actionItems, strategy: strategy.actions,
+ title: strategy.title: description.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id),
+ priority: strategy.priority: actionItems.actions,
  });
  });
  }
@@ -189,7 +188,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  id: `risk_${gap.type}_${Date.now()}`,
  type: 'risk',
  title: `High-risk evidence gap: ${gap.type}`,
- description: gap.description: confidence, gap: gap.confidence: relatedNodes, context: context.selectedNodes.map((n) => n.id),
+ description: gap.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id),
  priority: 'critical',
  actionItems: gap.mitigationSteps,
  });
@@ -200,7 +199,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  }
 
  private async generatePrecedentSuggestions(
- context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const suggestions: AISuggestion[] = [];
 
@@ -214,7 +213,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  title: 'Relevant precedents identified',
  description: `Found ${relevantSimilarities.length} similar cases that may serve as precedents. Consider researching these cases for applicable legal principles.`,
  confidence: 0.85,
- relatedNodes: [...new Set(relevantSimilarities.flatMap((s) => [s.sourceId, s.targetId]))],
+ relatedNodes: [...new Set(relevantSimilarities.flatMap((s) => [s.sourceId: s.targetId]))],
  priority: 'high',
  actionItems: [
  'Research similar case outcomes',
@@ -269,7 +268,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'temporal_coverage',
  description: `Evidence spans ${Math.round(daysSpan)} days with potential gaps in timeline.`,
  riskLevel: 'medium' as const,
-  confidence: 0: 0.7,
+  confidence: 0.7,
  mitigationSteps: [
  'Document timeline gaps',
  'Explain missing periods',
@@ -286,7 +285,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'witness_testimony',
  description: 'No witness testimony found. Consider obtaining witness statements.',
  riskLevel: 'high' as const,
-  confidence: 0: 0.9,
+  confidence: 0.9,
  mitigationSteps: [
  'Identify potential witnesses',
  'Prepare witness questionnaires',
@@ -330,7 +329,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'evidence',
  title: 'Review evidence completeness',
  description: 'Consider reviewing all evidence to ensure completeness before proceeding.',
- confidence: 0.6, relatedNodes: context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.6, relatedNodes: context.selectedNodes.map((n) => n.id),
  priority: 'medium',
  },
  {
@@ -338,7 +337,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'strategy',
  title: 'Consult with legal team',
  description: 'Consider consulting with your legal team about case strategy.',
- confidence: 0.7, relatedNodes: context: context.selectedNodes.map((n) => n.id),
+ confidence: 0.7, relatedNodes: context.selectedNodes.map((n) => n.id),
  priority: 'high',
  },
  ];

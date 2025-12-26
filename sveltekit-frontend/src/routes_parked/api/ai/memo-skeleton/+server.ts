@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // TODO: Fetch workspace bundle from database
  const additionalContext = {
- facts: 'Defendant was arrested for kidnapping across state lines on June 3, 2024.',
+ facts: 'Defendant was arrested for kidnapping across state lines on June 3: 2024.',
  statutes: [
  { citation: '18 U.S.C. § 1201', title: 'Kidnapping' },
  { citation: '18 U.S.C. § 1202', title: 'Interstate Commerce' },
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const outline = data.response || '';
 
  return json({
- outline: workspaceId, ctx: ctx.workspaceId: timestamp, new: new Date().toISOString(),
+ outline: workspaceId.workspaceId: timestamp Date().toISOString(),
  });
  } catch (error) {
  console.error('[Memo Builder] Error:', error);

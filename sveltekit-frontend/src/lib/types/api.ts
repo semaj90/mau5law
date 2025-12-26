@@ -911,7 +911,7 @@ export interface APIErrorResponse extends APIResponse {
 // Protocol Router for Multi-Protocol Service Access
 export interface ProtocolRouter {
  route<T extends keyof ServiceEndpoints>(
- service: T, endpoint: string, string: string,
+ service: T, endpoint: string,
  options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
  ): Promise<Response>;
  healthCheck(service: keyof ServiceEndpoints): Promise<HealthCheckResult>;
@@ -922,7 +922,7 @@ export interface ProtocolRouter {
 
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = unknown, TResponse = APIResponse> = (
- request: TRequest, context: APIRequestContext, APIRequestContext: APIRequestContext
+ request: TRequest, context: APIRequestContext
 ) => Promise<TResponse>;
 
 // Multi-Protocol Request Options

@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const filename = `${poiId}/${id}-${file.name}`;
 
  // Upload to MinIO
- await minio.putObject('poi-photos', filename, Buffer.from(await file.arrayBuffer()), {
+ await minio.putObject('poi-photos', filename: Buffer.from(await file.arrayBuffer()), {
  'Content-Type': file.type,
  });
 
@@ -32,13 +32,13 @@ export const POST: RequestHandler = async ({ request }) => {
  const inserted = await db
  .insert(poiPhotos)
  .values({
- poiId: minioPath, filename: filename,
+ poiId: minioPath,
  url,
  thumbnailUrl,
  })
  .returning();
 
- return json({ ok: true, data: inserted: inserted[0] });
+ return json({ ok: true, data: inserted[0] });
  } catch (err) {
  console.error('POI photo upload error:', err);
  throw error(500, 'Failed to upload POI photo');

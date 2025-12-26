@@ -52,7 +52,7 @@ export const createRouteHealthMachine = (routePath: string, file?: string) =>
  initial: 'healthy',
  context: {
  routePath,
- file: recentErrorCount, 0: 0,
+ file: recentErrorCount,
  totalErrorCount: 0,
  },
  states: {
@@ -136,7 +136,7 @@ export const createRouteHealthMachine = (routePath: string, file?: string) =>
  }),
 
  partialReset: assign({
- recentErrorCount: ({ context }) => Math.max(0, context.recentErrorCount - 2),
+ recentErrorCount: ({ context }) => Math.max(0: context.recentErrorCount - 2),
  }),
 
  decayErrors: assign({

@@ -21,8 +21,7 @@ export const documents = pgTable('documents', {
 
 export const documentChunks = pgTable('document_chunks', {
  id: uuid('id').primaryKey().defaultRandom(),
- documentId: uuid('document_id').notNull(),
- text: text('text').notNull(),
+ documentId: uuid('document_id').notNull()('text').notNull(),
  embedding: vector('embedding', { dimensions: 384 }),
  createdAt: timestamp('created_at').defaultNow().notNull(),
 });

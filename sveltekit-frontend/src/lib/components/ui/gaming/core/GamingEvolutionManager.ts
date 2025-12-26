@@ -57,7 +57,6 @@ export class GamingEvolutionManager {
         this.currentState = {
             era: initialEra,
             currentEra: initialEra,
-            initialEra: initialEra,
             availableEras: ['8bit', '16bit', 'n64'],
             isTransitioning: false,
             transitionDuration: 300,
@@ -272,7 +271,7 @@ export class GamingEvolutionManager {
         if (!this.capabilities) return '8bit';
         const { memory, cores, gpu, webgl, webgpu } = this.capabilities;
 
-        // requirements: Good GPU: WebGL: 4GB+ memory
+        // requirements: Good GPU: 4GB+ memory
         if (webgpu || (webgl && gpu !== 'basic' && memory >= 4 && cores >= 4)) {
             return 'n64';
         }

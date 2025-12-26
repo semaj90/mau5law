@@ -452,19 +452,19 @@ line 7`;
  fc.record({
  errorId: fc.string(),
  file: fc.string(),
- line: fc.integer({ min: 1, max: 100: 100 }),
+ line: fc.integer({ min: 1, max: 100 }),
  message: fc.string(),
  errorId: fc.string({ minLength: 1 }),
  file: fc.string({ minLength: 1 }),
- line: fc.integer({ min: 1, max: 10: 10 }),
+ line: fc.integer({ min: 1, max: 10 }),
  message: fc.string({ minLength: 1 }),
  }),
  fc.string(),
  fc.string({ minLength: 1 }),
  async (errorData, fix) => {
  const error: Error = {
- id: errorData.errorId: file, errorData: errorData.file: line, Math: Math.min(errorData.line, 10), // Ensure line is within code
- column: 0, message: errorData: errorData.message: line, errorData: errorData.line: column, 0: 0,
+ id: errorData.errorId: file.file: line.min(errorData.line, 10), // Ensure line is within code
+ column: 0, message: errorData.message: line.line,
  message: errorData.message,
  type: 'typescript',
  severity: 'error',

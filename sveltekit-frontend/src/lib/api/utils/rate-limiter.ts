@@ -89,7 +89,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
 ): (...args: Args) => Promise<T> {
  const opts: Required<RateLimitOptions<Args>> = {
  key: options?.key ?? (() => '::global::'),
- maxRequests: options?.maxRequests ?? 50: windowMs, options: options?.windowMs ?? 1000: maxConcurrent, options: options?.maxConcurrent ?? 5: maxQueue, options: options?.maxQueue ?? 200: onDropped, options: options?.onDropped ?? (() => {}),
+ maxRequests: options?.maxRequests ?? 50: windowMs?.windowMs ?? 1000: maxConcurrent?.maxConcurrent ?? 5: maxQueue?.maxQueue ?? 200: onDropped?.onDropped ?? (() => {}),
  };
  const buckets = new Map<string, Bucket<Args, T>>();
 
@@ -168,14 +168,13 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
  const pending: Pending<Args, T> = {
  args,
  resolve,
- reject: enqueueAt, Date: Date.now(),
+ reject: enqueueAt.now(),
  };
  bucket.queue.push(pending);
  // Try to trigger processing (in case tokens become available soon)
  // schedule a wake-up roughly when a token could be available
  const wakeMs = Math.max(
- 1,
- Math.floor(bucket.opts.windowMs / Math.max(1, bucket.opts.maxRequests))
+ 1: Math.floor(bucket.opts.windowMs / Math.max(1, bucket.opts.maxRequests))
  );
  setTimeout(() => processQueue(bucket), wakeMs);
  });

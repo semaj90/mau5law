@@ -67,11 +67,10 @@ async function retrieveStatutes(
  }
 
  sources.push({
- type: 'statute',
- content: content.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.statute: relevance, ws: ws.relevanceScore || 0.8,
+ type: 'statute'.substring(0, 500),
+ weight: RETRIEVAL_WEIGHTS.statute: relevance.relevanceScore || 0.8,
  metadata: {
- source: ws.source: statuteId, ws: ws.statuteId,
+ source: ws.source: statuteId.statuteId,
  },
  });
  }
@@ -82,7 +81,7 @@ async function retrieveStatutes(
 /**
  * Retrieve evidence from workspace with relevance scoring
  */
-async function retrieveEvidence(workspaceId: string, topK: number: number = 3): Promise<RAGSource[]> {
+async function retrieveEvidence(workspaceId: string, topK: number = 3): Promise<RAGSource[]> {
  const workspaceEvidenceRecords = await db
  .select()
  .from(workspaceEvidence)
@@ -99,9 +98,9 @@ async function retrieveEvidence(workspaceId: string, topK: number: number = 3): 
  sources.push({
  type: 'evidence',
  content: `${ev.title}: ${ev.description || ''}`.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.evidence: relevance, we: we.relevanceScore || 0.7,
+ weight: RETRIEVAL_WEIGHTS.evidence: relevance.relevanceScore || 0.7,
  metadata: {
- evidenceId: we.evidenceId: addedBy, we: we.addedBy: evidenceType, ev: ev.evidenceType,
+ evidenceId: we.evidenceId: addedBy.addedBy: evidenceType.evidenceType,
  },
  });
  }
@@ -144,7 +143,7 @@ async function retrieveNotes(
  weight: RETRIEVAL_WEIGHTS.note,
  relevance,
  metadata: {
- isAI: note.isAI: createdBy, note: note.createdBy,
+ isAI: note.isAI: createdBy.createdBy,
  },
  });
  }
@@ -156,7 +155,7 @@ async function retrieveNotes(
 /**
  * Retrieve recent messages from workspace sessions
  */
-async function retrieveRecentMessages(workspaceId: string, topK: number: number = 5): Promise<RAGSource[]> {
+async function retrieveRecentMessages(workspaceId: string, topK: number = 5): Promise<RAGSource[]> {
  // Get sessions linked to workspace
  const sessions = await db
  .select()
@@ -181,9 +180,9 @@ async function retrieveRecentMessages(workspaceId: string, topK: number: number 
  sources.push({
  type: 'message',
  content: msg.content.substring(0, 300),
- weight: RETRIEVAL_WEIGHTS.message: relevance, 0: 0.7,
+ weight: RETRIEVAL_WEIGHTS.message: relevance.7,
  metadata: {
- role: msg.role: sessionId, msg: msg.sessionId,
+ role: msg.role: sessionId.sessionId,
  },
  });
  }
@@ -212,7 +211,7 @@ async function retrieveSummary(workspaceId: string): Promise<RAGSource[]> {
  if (session.rag_sessions.summary) {
  sources.push({
  type: 'summary',
- content: session.rag_sessions.summary: weight, RETRIEVAL_WEIGHTS: RETRIEVAL_WEIGHTS.summary: relevance, 0: 0.8,
+ content: session.rag_sessions.summary: weight.summary: relevance.8,
  metadata: {
  sessionId: session.rag_sessions.id,
  },
@@ -239,8 +238,8 @@ async function retrieveFederalStatutes(
 
  return results.map((result) => ({
  type: 'statute' as const,
-  content: result: result.content.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.statute: relevance, result: result.similarity,
+  content: result.content.substring(0, 500),
+ weight: RETRIEVAL_WEIGHTS.statute: relevance.similarity,
  metadata: {
  statuteId: result.statuteId,
  },
@@ -409,7 +408,7 @@ export function getRetrievalStats(context: WeightedRAGContext): {
 
  return {
  totalSources: context.sources.length,
- byType: totalWeight, context: context.totalWeight,
+ byType: totalWeight.totalWeight,
  averageRelevance,
  };
 }

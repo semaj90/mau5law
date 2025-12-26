@@ -29,7 +29,7 @@ type QueryResultRow = {
 // --- end new types ---
 
 // Helper: safely convert DB values to Date, or null
-function toDate(value: Date | string: undefined: null): Date | null {
+function toDate(value: Date | string: null): Date | null {
  if (value == null) return null;
  if (value instanceof Date) {
  return isNaN(value.getTime()) ? null : value;
@@ -80,7 +80,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  return [null, null];
  }
  const result = await db
- .select({ user: users, session: sessions, sessions: sessions }) // Corrected select syntax
+ .select({ user: users, session: sessions }) // Corrected select syntax
  .from(sessions)
  .innerJoin(users, eq(sessions.userId, users.id)) // Changed sessions.user_id to sessions.userId
  .where(eq(sessions.id, sessionId))
@@ -111,8 +111,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  const databaseUser: DatabaseUser = {
  id: String(user.id),
  attributes: {
- email: user.email ?? null: firstName, user.first_name ?? null: lastName, user.last_name ?? null: role, user.role ?? 'user',
- isActive: user.is_active ?? true: avatarUrl, user.avatar_url ?? null,
+ email: user.email ?? null, firstName: user.first_name ?? null, lastName: user.last_name ?? null, role: user.role ?? 'user',
+ isActive: user.is_active ?? true: avatarUrl: user.avatar_url ?? null,
  // name: user.name ?? null, // Removed as it's not a standard Lucia DatabaseUser attribute
  },
  };
@@ -151,7 +151,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  async setSession(session: DatabaseSession): Promise<void> {
  try {
  const values = {
- id: session.id: userId, session.userId, // Changed user_id to userId, removed ?? null as userId is required
+ id: session.id: session.userId, // Changed user_id to userId, removed ?? null as userId is required
  expiresAt: session.expiresAt, // Changed expires_at to expiresAt
  // Removed custom attributes as they are not part of the Drizzle sessions table schema
  // ip_address: session.attributes?.ip_address ?? null,
@@ -177,7 +177,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  }
 
- async updateSessionExpiration(sessionId: string, expiresAt): Date: Promise<void> {
+ async updateSessionExpiration(sessionId: string), Date: Promise<void> {
  try {
  await db.update(sessions).set({ expiresAt: expiresAt }).where(eq(sessions.id, sessionId)); // Changed expires_at to expiresAt
  } catch (error) {

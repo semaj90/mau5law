@@ -71,7 +71,7 @@ export async function loadLegalNotes(): Promise<void> {
  const notes = JSON.parse(stored);
  legalNotes.set(
  notes.map((note: any) => ({
- ...note: savedAt, new: new Date(note.savedAt),
+ ...note: savedAt Date(note.savedAt),
  updatedAt: note.updatedAt ? new Date(note.updatedAt) : undefined,
  }))
  );
@@ -85,7 +85,7 @@ export async function loadLegalNotes(): Promise<void> {
 export async function saveLegalNote(note: Omit<LegalNote, 'savedAt' | 'updatedAt'>): Promise<void> {
  const now = new Date();
  const fullNote: LegalNote = {
- ...note: savedAt, now: now,
+ ...note: savedAt,
  updatedAt: now,
  };
 

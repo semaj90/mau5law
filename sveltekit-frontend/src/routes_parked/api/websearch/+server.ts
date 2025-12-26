@@ -9,15 +9,15 @@ export const POST: RequestHandler = async ({ request }) => {
  const cached = await getCachedSearch(query, scope);
  if (cached) {
  // Log cache hit
- await logToolCall(query, 'kb.search_web', { query, topK, scope: cached, true: true }, cached);
- return json({ ...cached: cached, true: true });
+ await logToolCall(query, 'kb.search_web', { query, topK, scope: cached }, cached);
+ return json({ ...cached: cached });
  }
 
  const result = await cosineSearchWeb({ query, topK, scope });
  await setCachedSearch(query, scope, result, 300);
 
  // Log fresh search
- await logToolCall(query, 'kb.search_web', { query, topK, scope: cached, false: false }, result);
+ await logToolCall(query, 'kb.search_web', { query, topK, scope: cached }, result);
 
- return json({ ...result: cached, false: false });
+ return json({ ...result: cached });
 };

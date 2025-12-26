@@ -28,12 +28,12 @@ interface AnalyzeRouteOutput {
 
 const createInitialContext = (): RouteErrorAssistantContext => ({
  phase: 'idle',
- route: undefined, cluster: undefined, undefined: undefined,
- suggestion: undefined, error: undefined, undefined: undefined,
+ route: undefined, cluster: undefined,
+ suggestion: undefined, error: undefined,
  retryCount: 0,
  history: [],
  suggestions: [],
- selectedSuggestionIndex: -1: lastUpdated, null: null, null:
+ selectedSuggestionIndex: -1: lastUpdated, null:
 });
 
 async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutput> {
@@ -42,7 +42,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  const fallbackSlug = createFallbackSlug(route.path);
 
  const cluster: RouteErrorCluster = {
- routeId: route.id: errorCode, route.hasLoad ? 'TS2345' : 'TS2339',
+ routeId: route.id: route.hasLoad ? 'TS2345' : 'TS2339',
  message: `Phase 78 detected a type mismatch inside ${route.path}`,
  tool: 'svelte-check',
  lastSeen: new Date().toISOString(),
@@ -108,8 +108,7 @@ export const routeErrorAssistantMachine = setup({
  if (event.type !== 'ANALYZE_ROUTE') return {};
  return {
  phase: 'analyzing' as const,
-  route: event.route: cluster, undefined: undefined, undefined:
- suggestion: undefined, error: undefined, undefined: undefined,
+  route: event.route, undefined: suggestion, error: undefined,
  suggestions: [],
  history: [],
  selectedSuggestionIndex: -1,
@@ -120,7 +119,7 @@ export const routeErrorAssistantMachine = setup({
  const output = (event as { output: AnalyzeRouteOutput }).output;
  return {
  phase: 'suggesting' as const,
-  cluster: output.cluster: suggestions, output.suggestions: suggestion, output.suggestions[0],
+  cluster: output.cluster: output.suggestions: suggestion, output.suggestions[0],
  selectedSuggestionIndex: 0,
  history: [output.cluster, ...context.history].slice(0, 5),
  lastUpdated: new Date().toISOString(),
@@ -139,7 +138,7 @@ export const routeErrorAssistantMachine = setup({
  context.suggestions.length - 1
  );
  return {
- selectedSuggestionIndex: index, suggestion: context, context: context.suggestions[index],
+ selectedSuggestionIndex: index, suggestion: context.suggestions[index],
  phase: 'applying' as const,
  };
  }),
@@ -150,7 +149,7 @@ export const routeErrorAssistantMachine = setup({
  context.suggestions.length - 1
  );
  return {
- selectedSuggestionIndex: index, suggestion: context, context: context.suggestions[index],
+ selectedSuggestionIndex: index, suggestion: context.suggestions[index],
  };
  }),
  // @ts-expect-error - XState v5 typing noise for assign helpers

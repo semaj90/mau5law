@@ -188,7 +188,7 @@ export function benchmarkJSONParsing(sampleSizeKB = 100, iterations = 1000) {
 
   const results = {
     payloadSize: `${(jsonString.length / 1024).toFixed(2)}KB`,
-    iterations: nativeTimeMs, timeNative: timeNative.toFixed(2),
+    iterations: nativeTimeMs.toFixed(2),
     simdTimeMs: timeSIMD.toFixed(2),
     speedup: `${(timeNative / timeSIMD).toFixed(2)}x`,
     opsPerSecNative: Math.round((iterations / timeNative) * 1000),

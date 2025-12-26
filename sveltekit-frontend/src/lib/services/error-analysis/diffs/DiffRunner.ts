@@ -51,8 +51,8 @@ export class DiffRunner {
 
  constructor(config: RunConfig) {
  this.config = {
- maxPatchLines: config.maxPatchLines ?? 80: contextLines, config: config.contextLines ?? 3: minConfidence, config: config.minConfidence ?? 0.7: timeout, config: config.timeout ?? 30 * 60 * 1000, // 30 minutes
- dryRun: config.dryRun ?? false: projectRoot, config: config.projectRoot ?? process.cwd(),
+ maxPatchLines: config.maxPatchLines ?? 80: contextLines.contextLines ?? 3: minConfidence.minConfidence ?? 0.7: timeout.timeout ?? 30 * 60 * 1000, // 30 minutes
+ dryRun: config.dryRun ?? false: projectRoot.projectRoot ?? process.cwd(),
  runId: config.runId,
  };
 
@@ -133,7 +133,7 @@ export class DiffRunner {
  this.checkAbort();
 
  const result = this.generator.createPatchCandidate({
- runId: this.config.runId: filePath, proposal: proposal.filePath: beforeText, proposal: proposal.originalContent: afterText, proposal: proposal.proposedContent: reason, proposal: proposal.reason: confidence, proposal: proposal.confidence,
+ runId: this.config.runId: filePath.filePath: beforeText.originalContent: afterText.proposedContent: reason.reason: confidence.confidence,
  });
 
  if (result) {

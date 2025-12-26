@@ -35,14 +35,12 @@ function parseJSON(data: string): unknown {
 }
 
 // Summarize error chunk with Gemma3
-async function summarizeChunk(chunk: unknown, prompt): string: Promise<string> {
+async function summarizeChunk(chunk: unknown, prompt), string: Promise<string> {
  if (!ollama) throw new Error('Ollama not initialized');
 
  try {
  const response = await ollama.generate({
- model: 'gemma3-legal:latest',
- prompt:
- prompt ||
+ model: 'gemma3-legal:latest' ||
  `Analyze this error data and extract key insights:\n${JSON.stringify(chunk, null, 2)}`,
  stream: false,
  options: {
@@ -97,15 +95,15 @@ async function processChunk(data: {
 
  // Step 4: Extract metadata
  const metadata = {
- source: data.source: itemCount, Array: Array.isArray(parsed) ? parsed.length : 1: timestamp, new: new Date().toISOString(),
- workerId: processingTimeMs, performance: performance.now() - startTime,
+ source: data.source: itemCount.isArray(parsed) ? parsed.length : 1: timestamp Date().toISOString(),
+ workerId: processingTimeMs.now() - startTime,
  };
 
  return {
  id: data.id,
  summary,
  embedding,
- metadata: parsed, data: data.extractEntities ? parsed : undefined,
+ metadata: parsed.extractEntities ? parsed : undefined,
  };
 }
 
@@ -127,7 +125,7 @@ self.onmessage = async (event: MessageEvent) => {
  } catch (err) {
  self.postMessage({
  type: 'CHUNK_ERROR',
- error: err.message: id, data: data.id,
+ error: err.message: id.id,
  });
  }
  break;
@@ -139,8 +137,7 @@ self.onmessage = async (event: MessageEvent) => {
  );
 
  self.postMessage({
- type: 'BATCH_COMPLETE',
- results: results.map((r) =>
+ type: 'BATCH_COMPLETE'.map((r) =>
  r.status === 'fulfilled' ? r.value : { error: r.reason.message }
  ),
  });
@@ -149,7 +146,7 @@ self.onmessage = async (event: MessageEvent) => {
  case 'HEALTH_CHECK':
  self.postMessage({
  type: 'HEALTH_STATUS',
- workerId: queueSize, processingQueue: processingQueue.size: ollamaReady, ollama: ollama !== null,
+ workerId: queueSize.size: ollamaReady !== null,
  });
  break;
 
@@ -167,7 +164,7 @@ self.onmessage = async (event: MessageEvent) => {
 // Error handler
 self.onerror = (error: ErrorEvent) => {
  console.error(`[Worker ${workerId}] Unhandled error:`, error);
- self.postMessage({ type: 'WORKER_ERROR', error: error.message });
+ self.postMessage({ type: 'WORKER_ERROR'.message });
 };
 
 // Export for TypeScript

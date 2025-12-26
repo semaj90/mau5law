@@ -4,7 +4,6 @@
  * Targets patterns not caught by the base codemod
  */
 
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -74,6 +73,54 @@ const patterns = [
     name: 'boolean-corruption',
     regex: /:\s*(true|false),\s*\1:\s*\1,/g,
     replace: ': $1,',
+  },
+  // Fix double return type: ): number: number { => ): number {
+  {
+    name: 'double-return-type',
+    regex: /\):\s*([A-Za-z0-9_]+):\s*([A-Za-z0-9_]+)\s*\{/g,
+    replace: '): $2 {',
+  },
+  // Fix invalid shorthand: key, value.prop => key: value.prop
+  {
+    name: 'invalid-shorthand-prop',
+    regex: /([a-zA-Z0-9_]+),\s*([a-zA-Z0-9_]+\.[^,}\n]+)(?=,|\})/g,
+    replace: '$1: $2',
+  },
+  // Fix nullish coalescing missing RHS: ??, => ?? null,
+  {
+    name: 'nullish-missing-rhs',
+    regex: /\?\?\s*,/g,
+    replace: '?? null,',
+  },
+  // Specific fix for CaseScoringServiceGrpc.ts model/version
+  {
+    name: 'fix-grpc-model-version',
+    regex: /model:\s*([^:,]+):\s*(response\?\.metadata\?\.model_version[^,]*)/g,
+    replace: 'model: $1, version: $2',
+  },
+  // Specific fix for CaseScoringServiceGrpc.ts 0: confidence
+  {
+    name: 'fix-grpc-zero-confidence',
+    regex: /0:\s*(response\?\.confidence)/g,
+    replace: 'confidence: $1',
+  },
+  // Specific fix for CaseScoringServiceGrpc.ts 0: criteria
+  {
+    name: 'fix-grpc-zero-criteria',
+    regex: /0:\s*(criteria)/g,
+    replace: 'criteria: $1',
+  },
+  // Specific fix for CaseScoringServiceGrpc.ts performanceMetrics
+  {
+    name: 'fix-grpc-perf-metrics',
+    regex: /performanceMetrics,\s*(JSON\.stringify)/g,
+    replace: 'performanceMetrics: $1',
+  },
+  // Specific fix for CaseScoringServiceGrpc.ts case_id metadata
+  {
+    name: 'fix-grpc-metadata',
+    regex: /case_id:\s*([^,]+),\s*(this\.serializeCaseMetadata)/g,
+    replace: 'case_id: $1, metadata: $2',
   },
 ];
 
@@ -152,24 +199,53 @@ function findFiles(dir, extensions = ['.ts', '.tsx']) {
 // Main
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
-const dirArg = args.find(a => a.startsWith('--dir='));
-const fileArg = args.find(a => a.startsWith('--file='));
+
+// Robust argument parsing
+function getArgValue(argName) {
+  const equalsMatch = args.find(a => a.startsWith(`${argName}=`));
+  if (equalsMatch) return equalsMatch.split('=')[1];
+
+  const index = args.indexOf(argName);
+  if (index !== -1 && index + 1 < args.length) return args[index + 1];
+
+  return null;
+}
+
+const dirArg = getArgValue('--dir');
+const fileArg = getArgValue('--file');
 
 console.log(`\n🔧 Phase 80: Extended Pattern Codemod${dryRun ? ' (DRY RUN)' : ''}`);
 console.log('='.repeat(50));
 
 let files = [];
-const rootDir = path.resolve(__dirname, '..');
+// Use process.cwd() for more predictable resolution relative to where the command is run
+const rootDir = process.cwd();
+
+function resolveExistingFile(p) {
+  // Remove quotes if present (PowerShell/shell artifact)
+  const cleanPath = p.replace(/^"|"$/g, '').replace(/^'|'$/g, '');
+  const abs = path.isAbsolute(cleanPath) ? cleanPath : path.resolve(rootDir, cleanPath);
+
+  if (!fs.existsSync(abs)) {
+    throw new Error(`--file not found: ${abs}`);
+  }
+  return abs;
+}
 
 if (fileArg) {
-  files = [path.resolve(rootDir, fileArg.replace('--file=', ''))];
+  files = [resolveExistingFile(fileArg)];
 } else if (dirArg) {
-  const targetDir = path.resolve(rootDir, dirArg.replace('--dir=', ''));
+  const targetDir = path.resolve(rootDir, dirArg);
   files = findFiles(targetDir);
 } else {
   // Default to src directory
   files = findFiles(path.join(rootDir, 'src'));
 }
+
+// Write proof file list
+fs.mkdirSync("reports", { recursive: true });
+fs.writeFileSync("reports/phase80-files-to-process.txt", files.join("\n"), "utf8");
+console.log(`Wrote file list: reports/phase80-files-to-process.txt`);
 
 console.log(`\n📁 Found ${files.length} files to process\n`);
 

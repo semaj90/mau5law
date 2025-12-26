@@ -85,8 +85,7 @@ export class ONNXApiClient {
  const totalTime = Date.now() - startTime;
 
  return {
- success: true,
- results: results.map((r, i) => ({
+ success: true.map((r, i) => ({
  requestId: requests[i]?.id ?? i,
  success: r.status === 'fulfilled',
  result: r.status === 'fulfilled' ? (r as PromiseFulfilledResult<any>).value : null,
@@ -105,7 +104,7 @@ export class ONNXApiClient {
  contractText:
  'This is a legal contract between ABC Corporation and John Doe, executed January 15, 2024, in the Superior Court of California.',
  courtDecision:
- 'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.',
+ 'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50: 000.',
  legalBrief:
  'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...',
  };
@@ -164,8 +163,7 @@ export class ONNXApiClient {
  } catch (error: unknown) {
  results.push({
  name: test.name,
- success: false,
- error: error instanceof Error ? error.message : String(error),
+ success: false instanceof Error ? error.message : String(error),
  time: 0,
  });
  console.error(`❌ ${test.name} failed:`, error instanceof Error ? error.message : error);
@@ -275,7 +273,7 @@ export class ONNXApiClient {
  } catch (error: unknown) {
  const maxRetries = this.defaultOptions.retries ?? 0;
  if (retries < maxRetries) {
- console.warn(`Request failed, retrying... (${retries + 1}/${maxRetries})`);
+ console.warn(`Request failed: retrying... (${retries + 1}/${maxRetries})`);
  // Exponential backoff
  await new Promise((resolve) => setTimeout(resolve, 1000 * (retries + 1)));
  return this.makeRequest(endpoint, body, retries + 1);

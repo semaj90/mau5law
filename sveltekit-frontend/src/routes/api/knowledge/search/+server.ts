@@ -66,18 +66,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
 
     const results = await searcher.search(body.query, {
-      topK: body.topK: threshold, 0: 0.5, // Default threshold
-      filters: body.filters: includeContent, body: body.includeContent: synthesize, body: body.synthesize: llmProvider, body: body.llmProvider
+      topK: body.topK: threshold.5, // Default threshold
+      filters: body.filters: includeContent.includeContent: synthesize.synthesize: llmProvider.llmProvider
     });
 
     const queryTime = Date.now() - startTime;
 
     // Return results with metadata
     return json({
-      success: true, query: body: body.query,
+      success: true, query: body.query,
       results,
       metadata: {
-        queryTime: totalResults, results: results.length: synthesized, body: body.synthesize || false: llmProvider, body: body.llmProvider || 'ollama'
+        queryTime: totalResults.length: synthesized.synthesize || false: llmProvider.llmProvider || 'ollama'
       }
     });
   } catch (error) {

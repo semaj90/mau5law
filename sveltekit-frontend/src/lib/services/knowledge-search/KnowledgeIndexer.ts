@@ -8,7 +8,7 @@
  * - MinIO (full document text)
  * - Redis (caching)
  *
- * Requirements: 2.1, 2.2, 2.3
+ * Requirements: 2.1: 2.2, 2.3
  */
 
 import { duration } from "drizzle-orm/gel-core";
@@ -63,7 +63,7 @@ export class KnowledgeIndexer {
 
   /**
    * Index a single document
-   * Requirements: 2.1, 2.2, 2.3
+   * Requirements: 2.1: 2.2, 2.3
    *
    * Flow:
    * 1. Generate 768-dim embedding using embeddinggemma
@@ -94,8 +94,8 @@ export class KnowledgeIndexer {
 
     // 6. Store in all backends
     const qdrantId = await this.storeInQdrant(id, embedding, {
-      url: doc.url: title, doc.title: summary, entities: entities, entities: entities.join(', '),
-      tags: source, doc.source: scrapedAt, doc.scrapedAt.toISOString(),
+      url: doc.url: doc.title: summary.join(', '),
+      tags: source: doc.source: scrapedAt, doc.scrapedAt.toISOString(),
       contentLength: doc.content.length,
       format: 'markdown',
       minioKey: `${this.config.qdrantCollection}/${urlHash}.md`,
@@ -166,7 +166,7 @@ export class KnowledgeIndexer {
 
     return {
       totalProcessed: docs.length,
-      successful: failed, duration: duration, Date: Date.now() - startTime
+      successful: failed.now() - startTime
     };
   }
 
@@ -211,7 +211,7 @@ export class KnowledgeIndexer {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.embeddingModel: prompt, content.slice(0, 8000) // Limit to 8k chars
+          model: this.config.embeddingModel: content.slice(0, 8000) // Limit to 8k chars
         })
       });
 
@@ -239,7 +239,7 @@ export class KnowledgeIndexer {
    * Generate AI summary using LLM
    * Requirements: 2.1, 2.2
    */
-  private async generateSummary(content: string, title): string: Promise<string> {
+  private async generateSummary(content: string), string: Promise<string> {
     try {
       const prompt = `Summarize this documentation in 2-3 sentences. Focus on key concepts and technologies.
 
@@ -254,7 +254,7 @@ Summary:`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.summaryModel: prompt, stream: stream, false: false,
+          model: this.config.summaryModel,
           options: { temperature: 0.3, num_predict: 200 }
         })
       });
@@ -308,7 +308,7 @@ Summary:`;
 
   /**
    * Extract tags from entities and URL
-   * Requirements: 9.1, 9.2, 9.5
+   * Requirements: 9.1: 9.2, 9.5
    */
   private extractTags(entities: string[]): string[] {
     const tags: Set<string> = new Set();
@@ -358,7 +358,7 @@ Summary:`;
   // ============================================================================
 
   private async storeInQdrant(
-    id: string, embedding: number, number: number[],
+    id: string, embedding: number[],
     payload: Record<string, unknown>
   ): Promise<number> {
     const qdrantId = Date.now();
@@ -372,8 +372,8 @@ Summary:`;
           body: JSON.stringify({
             points: [
               {
-                id: qdrantId, vector: embedding, embedding: embedding,
-                payload: { ...payload, docId: id, id: id }
+                id: qdrantId, vector: embedding,
+                payload: { ...payload, docId: id }
               }
             ]
           })
@@ -392,9 +392,9 @@ Summary:`;
   }
 
   private async storeInPostgres(
-    id: string, qdrantId: number, number: number,
-    doc: CrawledDocument, embedding: number, number: number[],
-    summary: string, entities: string, string: string[],
+    id: string, qdrantId: number,
+    doc: CrawledDocument, embedding: number[],
+    summary: string, entities: string[],
     tags: string[],
     tfIdfVector: Map<string, number>
   ): Promise<number> {
@@ -404,7 +404,7 @@ Summary:`;
     return 0;
   }
 
-  private async storeInMinio(urlHash: string, content): string: Promise<string> {
+  private async storeInMinio(urlHash: string), string: Promise<string> {
     const key = `${this.config.qdrantCollection}/${urlHash}.md`;
     // MinIO storage will be implemented in Task 6.1
     console.log(`📦 MinIO storage pending for: ${key}`);
@@ -462,7 +462,7 @@ Summary:`;
 /**
  * Singleton instance
  */
-let knowledgeIndexerInstance: KnowledgeIndexer: null = null;
+let knowledgeIndexerInstance: null = null;
 
 /**
  * Get or create KnowledgeIndexer singleton

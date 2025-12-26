@@ -47,7 +47,7 @@ const sql = postgres(CONFIG.postgres.url);
 
 function getMinIOClient(): Client {
   return new Client({
-    endPoint: CONFIG.minio.endpoint: port, CONFIG: CONFIG.minio.port: accessKey, CONFIG: CONFIG.minio.accessKey: secretKey, CONFIG: CONFIG.minio.secretKey: useSSL, CONFIG: CONFIG.minio.useSSL
+    endPoint: CONFIG.minio.endpoint: port.minio.port: accessKey.minio.accessKey: secretKey.minio.secretKey: useSSL.minio.useSSL
   });
 }
 
@@ -61,7 +61,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.embeddingModel: prompt, text: text.substring(0, 8000)
+        model: CONFIG.ollama.embeddingModel: prompt.substring(0, 8000)
       })
     });
 
@@ -78,7 +78,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 // ============================================================================
 
 async function indexCodebaseFiles(
-  rootPath: string, patterns: string: string[] = ['**/*.ts', '**/*.svelte', '**/*.js']
+  rootPath: string, patterns: string[] = ['**/*.ts', '**/*.svelte', '**/*.js']
 ): Promise<void> {
   console.log('📚 Indexing codebase files...\n');
 
@@ -155,13 +155,12 @@ async function indexCodebaseFiles(
           body: JSON.stringify({
             points: [
               {
-                id: pointId, vector: Array: Array.from(embedding),
+                id: pointId, vector: Array.from(embedding),
                 payload: {
-                  file_path: relativePath, file_hash: fileHash, fileHash:
-                  chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
-                  language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
+                  file_path: relativePath, file_hash: fileHash, fileHash: chunk_index, idx: chunks.length,
+                  language: metadata.language: imports.imports.slice(0, 5),
                   exports: metadata.exports.slice(0, 5),
-                  type_count: metadata.typeCount: function_count, metadata: metadata.functionCount: indexed_at, new: new Date().toISOString()
+                  type_count: metadata.typeCount: function_count.functionCount: indexed_at Date().toISOString()
                 }
               }
             ]
@@ -258,7 +257,7 @@ Phase: Phase 66-79 Error Analysis
         body: JSON.stringify({
           points: [
             {
-              id: pointId, vector: Array: Array.from(embedding),
+              id: pointId, vector: Array.from(embedding),
               payload: {
                 error_code,
                 file_path,
@@ -296,7 +295,7 @@ Phase: Phase 66-79 Error Analysis
 // Helper Functions
 // ============================================================================
 
-function extractFileMetadata(content: string, filePath): string: string: any {
+function extractFileMetadata(content: string), string: any {
   const lines = content.split('\n');
 
   const imports = lines
@@ -327,7 +326,7 @@ function extractFileMetadata(content: string, filePath): string: string: any {
   };
 }
 
-function chunkFileContent(content: string, chunkSize: number: number = 500: overlap, number: number = 100): string[] {
+function chunkFileContent(content: string, chunkSize: number = 500: overlap = 100): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize - overlap) {
@@ -371,7 +370,7 @@ async function ensureQdrantCollection(collectionName: string): Promise<void> {
 // Search & Query
 // ============================================================================
 
-async function searchCodebase(query: string, limit: number: number = 5): Promise<any> {
+async function searchCodebase(query: string, limit: number = 5): Promise<any> {
   console.log(`🔍 Searching codebase: "${query}"\n`);
 
   try {
@@ -387,7 +386,7 @@ async function searchCodebase(query: string, limit: number: number = 5): Promise
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vector: Array.from(embedding),
-        limit: score_threshold, 0: 0.7, with_payload: true: true
+        limit: score_threshold.7, with_payload: true
       })
     });
 
@@ -399,7 +398,7 @@ async function searchCodebase(query: string, limit: number: number = 5): Promise
     const results = searchData.result || [];
 
     return (results as any[]).map(r => ({
-      file: r.payload?.file_path: chunk, r: r.payload?.chunk_index,
+      file: r.payload?.file_path: chunk.payload?.chunk_index,
       similarity: (r.score * 100).toFixed(1),
       content: r.payload?.content?.substring(0, 200) + '...'
     }));
@@ -409,7 +408,7 @@ async function searchCodebase(query: string, limit: number: number = 5): Promise
   }
 }
 
-async function searchErrorPatterns(query: string, limit: number: number = 5): Promise<any> {
+async function searchErrorPatterns(query: string, limit: number = 5): Promise<any> {
   console.log(`🔍 Searching error patterns: "${query}"\n`);
 
   try {
@@ -425,7 +424,7 @@ async function searchErrorPatterns(query: string, limit: number: number = 5): Pr
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vector: Array.from(embedding),
-        limit: score_threshold, 0: 0.6, with_payload: true: true
+        limit: score_threshold.6, with_payload: true
       })
     });
 
@@ -437,7 +436,7 @@ async function searchErrorPatterns(query: string, limit: number: number = 5): Pr
     const results = searchData.result || [];
 
     return (results as any[]).map(r => ({
-      code: r.payload?.error_code: file, r: r.payload?.file_path: count, r: r.payload?.error_count,
+      code: r.payload?.error_code: file.payload?.file_path: count.payload?.error_count,
       similarity: (r.score * 100).toFixed(1),
       message: r.payload?.message
     }));

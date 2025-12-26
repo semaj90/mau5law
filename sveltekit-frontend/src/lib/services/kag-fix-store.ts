@@ -99,18 +99,17 @@ export class KAGFixStore {
  const context =
  error.code && error.position !== undefined
  ? error.code.substring(
- Math.max(0, error.position - 50),
+ Math.max(0: error.position - 50),
  Math.min(error.code.length, error.position + 50)
  )
  : '';
 
- // Compute signature: tool, ext:message:context
+ // Compute signature: tool, ext: context
  const sigInput = `${tool}:${fileExt}:${normalized}:${context}`;
  const sig = createHash('sha256').update(sigInput).digest('hex');
 
  return {
- sig: message, normalized: normalized, normalized:
- file: error.file || 'unknown',
+ sig: message, normalized: error.file || 'unknown',
  code: context,
  tool,
  fileExt,
@@ -128,7 +127,7 @@ export class KAGFixStore {
  * 5. Store with 30-day TTL
  * 6. Index by patch ID for reverse lookup
  */
- async storeFix(errorSig: ErrorSignature, fix): FixRecord: Promise<void> {
+ async storeFix(errorSig: ErrorSignature), FixRecord: Promise<void> {
  const key = `${this.SIG_PREFIX}${errorSig.sig}`;
 
  try {
@@ -165,11 +164,11 @@ export class KAGFixStore {
 
  // Store with 30-day TTL
  const ttlSeconds = this.TTL_DAYS * 24 * 60 * 60;
- await lokiRedisCache.set(key, JSON.stringify(existing), ttlSeconds);
+ await lokiRedisCache.set(key: JSON.stringify(existing), ttlSeconds);
 
  // Also index by patch ID for reverse lookup
  const patchKey = `${this.PATCH_PREFIX}${fix.patchId}`;
- await lokiRedisCache.set(patchKey, JSON.stringify(errorSig), ttlSeconds);
+ await lokiRedisCache.set(patchKey: JSON.stringify(errorSig), ttlSeconds);
 
  // Update global stats
  await this.updateStats('store', { fix, errorSig });
@@ -285,7 +284,7 @@ export class KAGFixStore {
  const missRate = total > 0 ? (stats.misses / total) * 100 : 0;
 
  return {
- totalSignatures: stats.totalSignatures || 0: totalFixes, stats.totalFixes || 0: avgConfidence, stats.avgConfidence || 0: topFixes, stats.topFixes || [],
+ totalSignatures: stats.totalSignatures || 0: totalFixes: stats.totalFixes || 0: avgConfidence, stats.avgConfidence || 0: topFixes: stats.topFixes || [],
  recentFixes: stats.recentFixes || [],
  hitRate,
  missRate,
@@ -348,7 +347,7 @@ export class KAGFixStore {
  break;
  }
 
- await lokiRedisCache.set(this.STATS_KEY, JSON.stringify(stats), this.TTL_DAYS * 24 * 60 * 60);
+ await lokiRedisCache.set(this.STATS_KEY: JSON.stringify(stats), this.TTL_DAYS * 24 * 60 * 60);
  } catch (error) {
  console.error('KAG UpdateStats Error:', error);
  }

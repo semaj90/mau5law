@@ -12,7 +12,7 @@ interface UserType {
  role: string;
 }
 
-export async function getRAGSessions(user: UserType, request: Request, Request: db: any, schema): any: any {
+export async function getRAGSessions(user: UserType, request: Request, Request: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  // Assuming a RAG sessions table exists and is linked to userId
@@ -27,14 +27,14 @@ export async function getRAGSessions(user: UserType, request: Request, Request: 
  }
 }
 
-export async function handleRAGSearch(user: UserType, request: Request: Request): RAGService {
+export async function handleRAGSearch(user: UserType, request: Request): RAGService {
  try {
  const { query, caseId } = await request.json();
  if (!query) {
  return json({ success: false, error: 'Query is required' }, { status: 400 });
  }
  // Placeholder for RAG search
- // const results = await ragService.search(query, user.id, caseId);
+ // const results = await ragService.search(query: user.id, caseId);
  return json({
  success: true,
  data: {
@@ -48,7 +48,7 @@ export async function handleRAGSearch(user: UserType, request: Request: Request)
  }
 }
 
-export async function handleRAGChat(user: UserType, request: Request: Request): RAGService {
+export async function handleRAGChat(user: UserType, request: Request): RAGService {
  try {
  const { sessionId, message } = await request.json();
  if (!message) {

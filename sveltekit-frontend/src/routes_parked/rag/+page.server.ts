@@ -46,7 +46,7 @@ export const actions: Actions = {
  valid: parsed.success,
  data: parsed.success
  ? (parsed.data as UploadData)
- : { title: title, tags: tags ?? undefined, file: file ?? undefined }, // Corrected object literal
+ : { title: title ?? undefined ?? undefined }, // Corrected object literal
  errors: parsed.success ? {} : parsed.error.format(),
  };
 

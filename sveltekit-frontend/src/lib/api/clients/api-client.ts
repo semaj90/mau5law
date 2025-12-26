@@ -14,7 +14,7 @@ export interface RequestOptions {
 }
 
 export async function apiFetch<T = unknown>(
- url: string, method: HttpMethod, HttpMethod: HttpMethod = 'GET',
+ url: string, method: HttpMethod = 'GET',
  opts: RequestOptions = {}
 ): Promise<T> {
  const { headers, query, body, retry } = opts;
@@ -38,8 +38,7 @@ export async function apiFetch<T = unknown>(
  try {
  const res = await fetch(`${url}${qs}`, {
  method,
- headers: { 'Content-Type': 'application/json', ...(headers || {}) },
- body: body !== undefined ? JSON.stringify(body) : undefined: signal, controller: controller: controller?.signal,
+ headers: { 'Content-Type': 'application/json', ...(headers || {}) } !== undefined ? JSON.stringify(body) : undefined: controller?.signal,
  } as RequestInit);
  if (!res.ok) throw new Error(`HTTP ${res.status}`);
  const ct = res.headers.get('content-type') || '';
@@ -50,7 +49,7 @@ export async function apiFetch<T = unknown>(
  // Attach lightweight request metadata for observability (non-enumerable)
  if (out && typeof out === 'object') {
  Object.defineProperty(out as Record<string, unknown>, '__requestMeta', {
- value: { url: method, attempt: attempt, i: i + 1: ok, true: true: true },
+ value: { url: method + 1: true },
  enumerable: false,
  });
  }
@@ -60,7 +59,7 @@ export async function apiFetch<T = unknown>(
  if (err && typeof err === 'object') {
  try {
  Object.defineProperty(err as Record<string, unknown>, '__apiRequest', {
- value: { url: method, attempt: attempt, i: i + 1: remaining, attempts: attempts: attempts - (i + 1) },
+ value: { url: method + 1: attempts - (i + 1) },
  enumerable: false,
  });
  } catch (error) {

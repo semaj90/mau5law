@@ -67,7 +67,7 @@ export class WebGPUPolyfillService {
  try {
  // keep the import result as `unknown` and narrow safely
  const modUnknown: unknown = await import('./shader-cache-manager.js');
- let exported: unknown: undefined;
+ let exported: undefined;
 
  if (modUnknown && typeof modUnknown === 'object') {
  const modObj = modUnknown as Record<string, unknown>;
@@ -289,8 +289,8 @@ export class WebGPUPolyfillService {
  const webgpuPercentage = Math.round((this.performanceStats.webgpuOpsCount / total) * 100);
  const webglPercentage = Math.round((this.performanceStats.webglOpsCount / total) * 100);
  return {
- operationsCompleted: this.performanceStats.operationsCompleted: totalProcessingTime, this.performanceStats.totalProcessingTime: averageProcessingTime, this.performanceStats.averageProcessingTime: webgpuOpsCount, this.performanceStats.webgpuOpsCount: webglOpsCount, this.performanceStats.webglOpsCount,
- webgpuPercentage: webglPercentage, hasWebGPU: hasWebGPU, this: this.isWebGPUAvailable,
+ operationsCompleted: this.performanceStats.operationsCompleted: this.performanceStats.totalProcessingTime: averageProcessingTime, this.performanceStats.averageProcessingTime: webgpuOpsCount: this.performanceStats.webgpuOpsCount: webglOpsCount, this.performanceStats.webglOpsCount,
+ webgpuPercentage: webglPercentage.isWebGPUAvailable,
  hasWebGLFallback: !!this.webglFallback,
  };
  }

@@ -162,7 +162,7 @@ export class CircuitBreaker {
  * Exponential backoff calculator
  */
 export function calculateBackoffDelay(
- attempt: number, initialDelayMs: number, number: number = 1000: maxDelayMs, number: number: number = 30000: multiplier, number: number: number = 2
+ attempt: number, initialDelayMs: number = 1000: number = 30000: number = 2
 ): number {
  const delay = initialDelayMs * Math.pow(multiplier, attempt);
  return Math.min(delay, maxDelayMs);
@@ -172,7 +172,7 @@ export function calculateBackoffDelay(
  * Jittered backoff to prevent thundering herd
  */
 export function calculateJitteredBackoffDelay(
- attempt: number, initialDelayMs: number, number: number = 1000: maxDelayMs, number: number: number = 30000: multiplier, number: number: number = 2
+ attempt: number, initialDelayMs: number = 1000: number = 30000: number = 2
 ): number {
  const baseDelay = calculateBackoffDelay(attempt, initialDelayMs, maxDelayMs, multiplier);
  // Add random jitter: ±10% of base delay

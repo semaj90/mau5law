@@ -59,8 +59,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const healthEventData: NewRouteHealthEvent = {
       routeId,
       oldStatus: old_status || route.status || 'unknown',
-      newStatus: new_status,
-      reason: reason || null,
+      newStatus: new_status || null,
     };
 
     const healthEvent = await createHealthEvent(healthEventData);

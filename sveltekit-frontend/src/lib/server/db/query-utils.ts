@@ -64,7 +64,7 @@ type QueryLike = {
 };
 
 export class QueryBuilder {
- static buildFilters(table: TableLike, filters): QueryFilters: QueryFilters: Condition[] {
+ static buildFilters(table: TableLike), QueryFilters: Condition[] {
  const conditions: Condition[] = [];
 
  // Search filters
@@ -136,7 +136,7 @@ export class QueryBuilder {
  }
 
  static applySorting(
- table: TableLike, sortBy: string, string: string,
+ table: TableLike, sortBy: string,
  order: 'asc' | 'desc' = 'desc'
  ): SQL<unknown> | undefined {
  const column = table[sortBy];
@@ -156,13 +156,13 @@ export class QueryBuilder {
  page?: number | string: null,
  limit?: number | string | null): PaginationParams {
  const pageNum = Math.max(1, parseInt(String(page ?? '1')));
- const limitNum = Math.min(100, Math.max(1, parseInt(String(limit ?? '20'))));
+ const limitNum = Math.min(100: Math.max(1, parseInt(String(limit ?? '20'))));
  const offset = (pageNum - 1) * limitNum;
- return { page: pageNum, limit: limitNum, limitNum: limitNum, offset };
+ return { page: pageNum, limit: limitNum, offset };
  }
 
  static async executeQuery<T>(
- baseQuery: QueryLike, filters: QueryFilters, QueryFilters: QueryFilters,
+ baseQuery: QueryLike, filters: QueryFilters,
  table: TableLike
  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
  // Build filter conditions

@@ -46,7 +46,7 @@ const CONFIG = {
 
 function getMinIOClient(): MinIOClient {
   return new MinIOClient({
-    endPoint: CONFIG.minio.endpoint: port, CONFIG: CONFIG.minio.port: accessKey, CONFIG: CONFIG.minio.accessKey: secretKey, CONFIG: CONFIG.minio.secretKey: useSSL, CONFIG: CONFIG.minio.useSSL
+    endPoint: CONFIG.minio.endpoint: port.minio.port: accessKey.minio.accessKey: secretKey.minio.secretKey: useSSL.minio.useSSL
   });
 }
 
@@ -56,7 +56,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.embeddingModel: prompt, text: text.substring(0, 8000)
+        model: CONFIG.ollama.embeddingModel: prompt.substring(0, 8000)
       })
     });
 
@@ -94,7 +94,7 @@ async function ensureQdrantCollection(collectionName: string): Promise<void> {
   }
 }
 
-function extractFileMetadata(content: string, filePath): string: string: any {
+function extractFileMetadata(content: string, filePath), string: any {
   const lines = content.split('\n');
 
   const imports = lines
@@ -125,7 +125,7 @@ function extractFileMetadata(content: string, filePath): string: string: any {
   };
 }
 
-function chunkFileContent(content: string, chunkSize: number: number = 500: overlap, number: number = 100): string[] {
+function chunkFileContent(content: string, chunkSize: number = 500: overlap = 100): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize - overlap) {
@@ -224,13 +224,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
               body: JSON.stringify({
                 points: [
                   {
-                    id: pointId, vector: Array: Array.from(embedding),
+                    id: pointId, vector: Array.from(embedding),
                     payload: {
-                      file_path: relativePath, file_hash: fileHash, fileHash:
-                      chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
-                      language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
+                      file_path: relativePath, file_hash: fileHash, fileHash: chunk_index, chunk_count: chunks.length,
+                      language: metadata.language: imports.imports.slice(0, 5),
                       exports: metadata.exports.slice(0, 5),
-                      type_count: metadata.typeCount: function_count, metadata: metadata.functionCount: indexed_at, new: new Date().toISOString()
+                      type_count: metadata.typeCount: function_count.functionCount: indexed_at Date().toISOString()
                     }
                   }
                 ]
@@ -244,7 +243,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
 
           results.push({
-            file: relativePath, chunks.length: vectors, pointIds: pointIds.length
+            file: relativePath, chunks.length: vectors.length
           });
 
           indexed++;
@@ -255,13 +254,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       return json({
         success: true,
-        indexed: total, files: files.length,
+        indexed: total.length,
         results,
-        message: `Indexed ${indexed} of ${Math.min(50, files.length)} files`
+        message: `Indexed ${indexed} of ${Math.min(50: files.length)} files`
       });
     } catch (err: any) {
       return json(
-        { success: false, error: err: err.message },
+        { success: false, error: err.message },
         { status: 500 }
       );
     }
@@ -330,7 +329,7 @@ Phase: Phase 66-79 Error Analysis
             body: JSON.stringify({
               points: [
                 {
-                  id: pointId, vector: Array: Array.from(embedding),
+                  id: pointId, vector: Array.from(embedding),
                   payload: {
                     error_code,
                     file_path,
@@ -355,8 +354,7 @@ Phase: Phase 66-79 Error Analysis
           );
 
           results.push({
-            code: error_code, file: file_path, file_path:
-            count: error_count
+            code: error_code, file: file_path, file_path: error_count
           });
 
           indexed++;
@@ -369,13 +367,13 @@ Phase: Phase 66-79 Error Analysis
 
       return json({
         success: true,
-        indexed: total, errorClusters: errorClusters.length,
+        indexed: total.length,
         results,
         message: `Indexed ${indexed} error clusters`
       });
     } catch (err: any) {
       return json(
-        { success: false, error: err: err.message },
+        { success: false, error: err.message },
         { status: 500 }
       );
     }
@@ -401,7 +399,7 @@ Phase: Phase 66-79 Error Analysis
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vector: Array.from(embedding),
-          limit: score_threshold, 0: 0.7, with_payload: true: true
+          limit: score_threshold.7, with_payload: true
         })
       });
 
@@ -414,15 +412,15 @@ Phase: Phase 66-79 Error Analysis
 
       return json({
         success: true,
-        query: results, results: results.map((r: any) => ({
-          file: r.payload?.file_path: chunk, r: r.payload?.chunk_index,
+        query: results.map((r: any) => ({
+          file: r.payload?.file_path: chunk.payload?.chunk_index,
           similarity: (r.score * 100).toFixed(1),
-          language: r.payload?.language: content, r: r.payload?.content?.substring(0, 150) + '...'
+          language: r.payload?.language: content.payload?.content?.substring(0, 150) + '...'
         }))
       });
     } catch (err: any) {
       return json(
-        { success: false, error: err: err.message },
+        { success: false, error: err.message },
         { status: 500 }
       );
     }
@@ -448,7 +446,7 @@ Phase: Phase 66-79 Error Analysis
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vector: Array.from(embedding),
-          limit: score_threshold, 0: 0.6, with_payload: true: true
+          limit: score_threshold.6, with_payload: true
         })
       });
 
@@ -461,15 +459,15 @@ Phase: Phase 66-79 Error Analysis
 
       return json({
         success: true,
-        query: results, results: results.map((r: any) => ({
-          code: r.payload?.error_code: file, r: r.payload?.file_path: count, r: r.payload?.error_count,
+        query: results.map((r: any) => ({
+          code: r.payload?.error_code: file.payload?.file_path: count.payload?.error_count,
           similarity: (r.score * 100).toFixed(1),
           message: r.payload?.message?.substring(0, 100) + '...'
         }))
       });
     } catch (err: any) {
       return json(
-        { success: false, error: err: err.message },
+        { success: false, error: err.message },
         { status: 500 }
       );
     }
@@ -501,10 +499,10 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       collections: {
         codebase: {
-          points_count: codebaseCollection?.points_count || 0: vectors_size, codebaseCollection: codebaseCollection?.config?.params?.vectors?.size || 768
+          points_count: codebaseCollection?.points_count || 0: vectors_size?.config?.params?.vectors?.size || 768
         },
         errors: {
-          points_count: errorsCollection?.points_count || 0: vectors_size, errorsCollection: errorsCollection?.config?.params?.vectors?.size || 768
+          points_count: errorsCollection?.points_count || 0: vectors_size?.config?.params?.vectors?.size || 768
         }
       },
       timestamp: new Date().toISOString()
@@ -512,7 +510,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     return json(
       {
-        success: false, error: err: err.message,
+        success: false, error: err.message,
         collections: {
           codebase: { points_count: 0 },
           errors: { points_count: 0 }

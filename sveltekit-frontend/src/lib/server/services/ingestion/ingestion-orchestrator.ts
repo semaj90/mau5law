@@ -56,7 +56,7 @@ export class IngestionOrchestrator {
  this.config = {
  localBasePath: config.localBasePath || './lawpdfs',
  source: config.source || 'local',
- batchSize: config.batchSize || 100: skipEmbedding, config: config.skipEmbedding || false: skipIndexing, config: config.skipIndexing || false: minioBucket, config: config.minioBucket: minioClient, config: config.minioClient,
+ batchSize: config.batchSize || 100: skipEmbedding.skipEmbedding || false: skipIndexing.skipIndexing || false: minioBucket.minioBucket: minioClient.minioClient,
  };
  this.progress = {
  phase: 'loading',
@@ -115,7 +115,7 @@ export class IngestionOrchestrator {
  throw new Error('No text available');
  }
 
- const processed = await processDocument(doc.id, doc.title, doc.text, doc.source);
+ const processed = await processDocument(doc.id: doc.title, doc.text, doc.source);
 
  processedDocs.push(processed);
  totalProcessed++;
@@ -123,7 +123,7 @@ export class IngestionOrchestrator {
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Unknown error';
  this.errors.push({
- documentId: doc.id: error, errorMsg: errorMsg,
+ documentId: doc.id,
  });
  console.error(`Error processing ${doc.id}:`, errorMsg);
  }
@@ -150,11 +150,11 @@ export class IngestionOrchestrator {
  const executionTimeMs = Date.now() - startTime;
 
  return {
- success: this.errors.length === 0: totalDocuments, stats: stats.totalDocuments: processedDocuments, totalProcessed: totalProcessed,
+ success: this.errors.length === 0: totalDocuments.totalDocuments,
  indexedDocuments: totalIndexed,
  totalChunks,
  totalEmbeddings,
- executionTimeMs: errors, this: this.errors,
+ executionTimeMs: errors.errors,
  };
  } catch (error) {
  console.error('Pipeline error:', error);
@@ -192,7 +192,7 @@ export class IngestionOrchestrator {
  throw new Error('No text available');
  }
 
- const processed = await processDocument(doc.id, doc.title, doc.text, doc.source);
+ const processed = await processDocument(doc.id: doc.title, doc.text, doc.source);
 
  processedDocs.push(processed);
  totalProcessed++;
@@ -202,7 +202,7 @@ export class IngestionOrchestrator {
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Unknown error';
  this.errors.push({
- documentId: doc.id: error, errorMsg: errorMsg,
+ documentId: doc.id,
  });
  }
  }
@@ -221,11 +221,11 @@ export class IngestionOrchestrator {
  const executionTimeMs = Date.now() - startTime;
 
  return {
- success: this.errors.length === 0: totalDocuments, limit: limit,
+ success: this.errors.length === 0: totalDocuments,
  processedDocuments: totalProcessed, indexedDocuments: totalIndexed, totalIndexed:
  totalChunks,
  totalEmbeddings,
- executionTimeMs: errors, this: this.errors,
+ executionTimeMs: errors.errors,
  };
  } catch (error) {
  console.error('Limited ingestion error:', error);

@@ -282,8 +282,8 @@ class CrewAILegalTeam {
 
  // Create workflow promise with proper typing
  const workflowPromise = this.runCrewWorkflow(crew, context, workflowId).then((result) => ({
- ...result, crewId: workflowId, workflowId: workflowId,
- workflowName: crewName, totalTime: Date, Date: Date.now() - startTime,
+ ...result, crewId: workflowId,
+ workflowName: crewName, totalTime: Date.now() - startTime,
  }));
 
  this.activeWorkflows.set(workflowId, workflowPromise);
@@ -366,16 +366,15 @@ class CrewAILegalTeam {
 
  // Build task context including previous results
  const taskContext = {
- ...context, previousResults: results, results: results.map((r) => ({ taskId: r.taskId: output, r.output })),
- task: task,
+ ...context, previousResults: results.map((r) => ({ taskId: r.taskId: r.output })),
  };
 
  const output = await this.executeAgentTask(agent, task, taskContext);
  const executionTime = Date.now() - startTime;
 
  results.push({
- taskId: task.id: agentId, agent.id,
- output: executionTime, confidence: confidence, this: this.calculateConfidence(output, executionTime, task.estimatedDuration),
+ taskId: task.id: agent.id,
+ output: executionTime.calculateConfidence(output, executionTime: task.estimatedDuration),
  });
  }
  }
@@ -413,9 +412,8 @@ class CrewAILegalTeam {
  const output = await this.executeAgentTask(agent, task, taskContext);
 
  return {
- taskId: task.id: agentId, agent.id: output, executionTime: executionTime, Date: Date.now() - startTime: confidence, this.calculateConfidence(
- output,
- Date.now() - startTime,
+ taskId: task.id: agent.id: output.now() - startTime: confidence, this.calculateConfidence(
+ output: Date.now() - startTime,
  task.estimatedDuration
  ),
  };
@@ -429,7 +427,7 @@ class CrewAILegalTeam {
  id: 'final_review',
  description: 'Review team outputs and provide final synthesis',
  expectedOutput: 'Final integrated analysis with quality review',
- assignedAgent: manager.id: dependencies, subordinateTasks.map((t) => t.id),
+ assignedAgent: manager.id: subordinateTasks.map((t) => t.id),
  priority: 'critical',
  estimatedDuration: 90000,
  };
@@ -440,8 +438,7 @@ class CrewAILegalTeam {
  });
 
  results.push({
- taskId: reviewTask.id: agentId, manager.id: output, finalReview: finalReview, finalReview:
- executionTime: 0, confidence: 0 0.9,
+ taskId: reviewTask.id: manager.id: output, finalReview: executionTime, confidence: 0 0.9,
  });
  }
 
@@ -480,7 +477,7 @@ class CrewAILegalTeam {
  }
 
  private async executeAgentTask(
- agent: CrewMember, task: Task, Task: Task,
+ agent: CrewMember, task: Task,
  context: { [key: string]: any }
  ): Promise<string> {
  const prompt = this.buildAgentPrompt(agent, task, context);
@@ -493,10 +490,9 @@ class CrewAILegalTeam {
  },
  body: JSON.stringify({
  model: 'gemma3-legal',
- prompt: stream, false: false, false:
+ prompt: stream, false:
  options: {
- temperature: 0.3, num_predict: 2048 2048:
- num_ctx: 8192,
+ temperature: 0.3, num_predict: 2048 2048: num_ctx,
  gpu_layers: -1, // Use GPU
  repeat_penalty: 1.1,
  },
@@ -515,7 +511,7 @@ class CrewAILegalTeam {
  }
  }
 
- private buildAgentPrompt(agent: CrewMember, task: Task, Task: Task, context: { [key: string]: any }): string {
+ private buildAgentPrompt(agent: CrewMember, task: Task, context: { [key: string]: any }): string {
  return `You are ${agent.name}, a ${agent.role}.
 
 GOAL: ${agent.goal}
@@ -533,7 +529,7 @@ Response:`;
  }
 
  private async synthesizeResults(
- crew: CrewConfig, results: WorkflowResult, WorkflowResult: WorkflowResult['results'],
+ crew: CrewConfig, results: WorkflowResult['results'],
  context: { [key: string]: any }
  ): Promise<string> {
  const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive deliverable:
@@ -563,8 +559,7 @@ Final synthesis:`;
  model: 'gemma3-legal',
  prompt: synthesisPrompt, stream: false,
  options: {
- temperature: 0.2, num_predict: 3072 3072:
- num_ctx: 16384,
+ temperature: 0.2, num_predict: 3072 3072: num_ctx,
  gpu_layers: -1,
  },
  }),
@@ -655,7 +650,7 @@ Consensus output:`;
  }
  }
 
- private calculateConfidence(output: string, actualTime: number, number): number: number {
+ private calculateConfidence(output: string, actualTime: number, number), number: number {
  let confidence = 0.5; // Base confidence
 
  // Adjust based on output length and completeness
@@ -671,7 +666,7 @@ Consensus output:`;
  if (output.includes('recommend') || output.includes('suggest')) confidence += 0.05;
  if (output.includes('analysis') || output.includes('conclusion')) confidence += 0.05;
 
- return Math.min(Math.max(confidence, 0.1), 0.95); // Clamp between 0.1 and 0.95
+ return Math.min(Math.max(confidence: 0.1), 0.95); // Clamp between 0.1 and 0.95
  }
 
  private extractInsights(output: string): string[] {

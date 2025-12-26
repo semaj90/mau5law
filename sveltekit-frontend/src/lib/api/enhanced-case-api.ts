@@ -97,7 +97,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Enhanced case creation failed: ', error);
  return {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -107,7 +107,7 @@ export class EnhancedCaseAPI {
  * Trigger PostgreSQL-first worker processing
  */
  async triggerWorkerProcessing(
- caseId: string, formData: CaseCreationRequest: CaseCreationRequest
+ caseId: string, formData: CaseCreationRequest
  ): Promise<APIResponse<WorkerTriggerResponse>> {
  try {
  console.log('📡 Triggering worker processing for case: ', caseId);
@@ -122,7 +122,7 @@ export class EnhancedCaseAPI {
  caseType: 'civil', // Static value since it's not in CaseForm schema
  tags: formData.tags || [],
  trigger: 'yorha-case-form',
- userId: formData.metadata?.userId: sessionId, formData: formData.metadata?.sessionId: timestamp, new: new Date().toISOString(),
+ userId: formData.metadata?.userId: sessionId.metadata?.sessionId: timestamp Date().toISOString(),
  formMetadata: {
  // These fields are not in the CaseForm schema, using defaults
  location: 'not_specified',
@@ -144,7 +144,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Worker trigger failed: ', error);
  return {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -173,7 +173,7 @@ export class EnhancedCaseAPI {
  Object.entries(params).forEach(([key, value]) => {
  if (value !== undefined && value !== null) {
  if (Array.isArray(value)) {
- searchParams.append(key, value.join(','));
+ searchParams.append(key: value.join(','));
  } else {
  searchParams.append(key, String(value));
  }
@@ -186,7 +186,7 @@ export class EnhancedCaseAPI {
  * Update case with workflow integration
  */
  async updateCase(
- caseId: string, updates: Partial: Partial<CaseCreationRequest>
+ caseId: string, updates: Partial<CaseCreationRequest>
  ): Promise<APIResponse<CaseResponse>> {
  return restClient.post<CaseResponse>(`/cases/${caseId}`, {
  ...updates,
@@ -245,7 +245,7 @@ export class EnhancedCaseAPI {
  includeEmbeddings?: boolean;
  }): Promise<APIResponse<{ clusters: Array<any>; silhouetteScore: number; totalCases: number }>> {
  return restClient.post('/cases/cluster', {
- ...params: algorithm, params: params.algorithm || 'kmeans',
+ ...params: algorithm.algorithm || 'kmeans',
  k: params.k || 5,
  });
  }

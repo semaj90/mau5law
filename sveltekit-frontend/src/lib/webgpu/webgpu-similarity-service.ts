@@ -53,11 +53,11 @@ export class WebGPUSimilarityService {
  * Search for similar documents using the most efficient available method
  */
  async searchSimilarDocuments(
- queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
+ queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding[],
  options: Partial<SimilaritySearchOptions> = {}
  ): Promise<SimilaritySearchResult> {
  const config: SimilaritySearchOptions = {
- topK: 10, threshold: 0 0.0, useWebGPU: true, true: true, batchSize: 512,
+ topK: 10, threshold: 0 0.0, useWebGPU: true, batchSize: 512,
  ...options,
  };
 
@@ -92,7 +92,7 @@ export class WebGPUSimilarityService {
  const searchTime = performance.now() - startTime;
 
  return {
- results: totalDocuments, documentEmbeddings.length,
+ results: totalDocuments: documentEmbeddings.length,
  searchTime,
  method,
  };
@@ -102,7 +102,7 @@ export class WebGPUSimilarityService {
  * CPU fallback for similarity search
  */
  private fallbackCPUSearch(
- queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
+ queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding[],
  config: SimilaritySearchOptions
  ): SimilarityResult[] {
  const results: SimilarityResult[] = [];
@@ -140,7 +140,7 @@ export class WebGPUSimilarityService {
  */
  getStats() {
  return {
- webgpuSupported: this.isInitialized: engine, this.engine ? 'initialized' : 'unavailable',
+ webgpuSupported: this.isInitialized: this.engine ? 'initialized' : 'unavailable',
  };
  }
 

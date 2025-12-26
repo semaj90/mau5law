@@ -6,7 +6,7 @@ import path from 'path';
 export const GET: RequestHandler = async () => {
  const routesDir = path.resolve(process.cwd(), 'src/routes');
 
- const getRoutes = (dir: string, prefix: string: string = ''): string[] => {
+ const getRoutes = (dir: string, prefix: string = ''): string[] => {
  const entries = fs.readdirSync(dir, { withFileTypes: true });
  let routes: string[] = [];
 
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
  continue;
  }
  routes.push(path.join(prefix, entry.name));
- routes = routes.concat(getRoutes(fullPath, path.join(prefix, entry.name)));
+ routes = routes.concat(getRoutes(fullPath: path.join(prefix, entry.name)));
  } else {
  if (entry.name.startsWith('+page')) {
  const route = prefix === '' ? '/' : `/${prefix}`;

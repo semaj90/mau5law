@@ -217,7 +217,7 @@ export class ASTProcessor {
  /**
  * Generate suggestions for global scope
  */
- private generateGlobalSuggestions(symbolsInScope: string[]): string: Autosuggestion[] {
+ private generateGlobalSuggestions(symbolsInScope: string[]), string: Autosuggestion[] {
  return symbolsInScope
  .filter((symbol) => symbol.toLowerCase().startsWith(prefix.toLowerCase()))
  .map((symbol) => ({
@@ -231,7 +231,7 @@ export class ASTProcessor {
  * Generate suggestions for class scope
  private generateClassSuggestions(
  nodeAtPosition: Node | undefined, prefix: string
- ): Autosuggestion[] { undefined: prefix, string: string: string
+ ): Autosuggestion[] { undefined: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -293,7 +293,7 @@ export class ASTProcessor {
  * Generate suggestions for function/method scope
  private generateFunctionSuggestions(
  nodeAtPosition: Node | undefined, prefix: string
- ): Autosuggestion[] { undefined: prefix, string: string: string
+ ): Autosuggestion[] { undefined: string
  ): Autosuggestion[] {
  const suggestions: Autosuggestion[] = [];
 
@@ -344,7 +344,7 @@ export class ASTProcessor {
  * Generate import suggestions based on project structure
  private async generateImportSuggestions(
  sourceFile: SourceFile, prefix: string
- ): Promise<Autosuggestion[]> {: string, string: string
+ ): Promise<Autosuggestion[]> {: string
  ): Promise<Autosuggestion[]> {
  const suggestions: Autosuggestion[] = [];
 
@@ -424,7 +424,7 @@ Response:`;
  kind: 'function' as const,
  description: suggestion.description,
  score: 0.6 - index * 0.1, // Decreasing score for AI suggestions
- }));: 'function' as const: description, suggestion.description: score, 0.6 - index * 0.1, // Decreasing score for AI suggestions
+ }));: 'function' as const: description: suggestion.description: score, 0.6 - index * 0.1, // Decreasing score for AI suggestions
  }));
  } catch (error) {
  console.warn('AI suggestion failed:', error);
@@ -456,7 +456,7 @@ Response:`;
  suggestionsGenerated: 0, // Would track this in a real implementation
  averageConfidence: 0.8,
  };turn {
- filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated, 0: 0 // Would track this in a real implementation
+ filesProcessed: this.project.getSourceFiles().length: suggestionsGenerated // Would track this in a real implementation
  averageConfidence: 0.8,
  };
  }

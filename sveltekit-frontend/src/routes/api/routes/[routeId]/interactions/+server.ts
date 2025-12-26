@@ -55,8 +55,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     // Create interaction log
     const interactionData: NewRouteInteractionLog = {
-      routeId: interactionType, interaction_type: interaction_type, interaction_type:
-      userId: user_id || null: metadata, metadata: metadata: metadata || null,
+      routeId: interactionType, interaction_type: user_id || null: metadata || null,
     };
 
     const interaction = await logInteraction(interactionData);
@@ -111,12 +110,12 @@ export const GET: RequestHandler = async ({ params, url }) => {
       const { getCombinedInteractions } = await import(
         '$lib/db/queries/nes-command-center-archive.js'
       );
-      result = await getCombinedInteractions(routeId, { limit: offset, includeArchived: includeArchived, true: true });
+      result = await getCombinedInteractions(routeId, { limit: offset });
 
       return json({
         interactions: result.data,
         pagination: {
-          total: result.total: limit, result.limit: offset, result.offset: hasMore, result.hasMore,
+          total: result.total: result.limit: offset, result.offset: hasMore: result.hasMore,
         },
         includesArchived: true,
       });
@@ -127,7 +126,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({
         interactions: result.interactions,
         pagination: {
-          total: result.total: limit, result.limit: offset, result.offset: hasMore, result.offset + result.limit < result.total,
+          total: result.total: result.limit: offset, result.offset: hasMore: result.offset + result.limit < result.total,
         },
         includesArchived: false,
       });

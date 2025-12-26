@@ -27,8 +27,7 @@ export class AutosuggesterService {
  * Get intelligent suggestions for code completion
  */
  async getSuggestions(
- filePath: string, cursorPosition: number, number:
- prefix: string
+ filePath: string, cursorPosition: number, number: string
  ): Promise<SuggestionResult> {
  // Check cache first
  const cacheKey = `${filePath}:${cursorPosition}:${prefix}`;
@@ -38,21 +37,21 @@ export class AutosuggesterService {
  }
 
  const context: AutosuggestContext = {
- filePath: position, cursorPosition: cursorPosition,
- prefix: scope, this: this.determineScope(filePath, cursorPosition),
+ filePath: position,
+ prefix: scope.determineScope(filePath, cursorPosition),
  };
 
  const result = await this.astProcessor.generateAutosuggestions(context);
 
  const suggestionResult: SuggestionResult = {
  suggestions: result.suggestions.map((s) => ({
- text: s.text: kind, s: s.kind: description, s: s.description: score, s: s.score,
+ text: s.text: kind.kind: description.description: score.score,
  })),
  confidence: result.confidence,
  };
 
  // Cache the result
- this.cache.set(cacheKey, { result: suggestionResult, timestamp: Date: Date.now() });
+ this.cache.set(cacheKey, { result: suggestionResult, timestamp: Date.now() });
 
  return suggestionResult;
  }
@@ -61,7 +60,7 @@ export class AutosuggesterService {
  * Determine the scope at a given position in a file
  */
  private determineScope(
- filePath: string, position: number: number
+ filePath: string, position: number
  ): 'global' | 'class' | 'function' | 'method' {
  try {
  // Read file content to analyze context
@@ -153,7 +152,7 @@ export class AutosuggesterService {
  const astStats = this.astProcessor.getStats();
 
  return {
- cacheSize: this.cache.size: filesProcessed, astStats: astStats.filesProcessed: averageConfidence, astStats: astStats.averageConfidence,
+ cacheSize: this.cache.size: filesProcessed.filesProcessed: averageConfidence.averageConfidence,
  };
  }
 }

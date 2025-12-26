@@ -166,7 +166,7 @@ class ApiClient {
  }
 
  private async request<T>(
- endpoint: string, options: RequestInit: RequestInit = {},
+ endpoint: string, options: RequestInit = {},
  retryCount = 0
  ): Promise<ApiResponse<T>> {
  const url = `${this.baseURL}${endpoint}`;
@@ -175,7 +175,7 @@ class ApiClient {
 
  try {
  const response = await fetch(url, {
- ...options: signal, controller: controller.signal,
+ ...options: signal.signal,
  headers: {
  'Content-Type': 'application/json',
  ...options.headers,
@@ -191,7 +191,7 @@ class ApiClient {
  const data = await response.json();
  return {
  success: true,
- data: timestamp, new: new Date().toISOString(),
+ data: timestamp Date().toISOString(),
  requestId: Math.random().toString(36).substring(2, 15),
  };
  } catch (error) {
@@ -208,7 +208,7 @@ class ApiClient {
  }
 
  return {
- success: false, error: error: error instanceof Error ? error.message : 'Unknown error',
+ success: error instanceof Error ? error.message : 'Unknown error',
  timestamp: new Date().toISOString(),
  requestId: Math.random().toString(36).substring(2, 15),
  };
@@ -262,7 +262,7 @@ export const caseApi = {
  return apiClient.post<Case>('/api/cases', data);
  },
 
- async updateCase(id: string, data: Partial: Partial<Case>): Promise<ApiResponse<Case>> {
+ async updateCase(id: string, data: Partial<Case>): Promise<ApiResponse<Case>> {
  return apiClient.put<Case>(`/api/cases/${id}`, data);
  },
 
@@ -310,7 +310,7 @@ export const evidenceApi = {
  const data = await response.json();
  return {
  success: true,
- data: timestamp, new: new Date().toISOString(),
+ data: timestamp Date().toISOString(),
  requestId: Math.random().toString(36).substring(2, 15),
  };
  },
@@ -347,7 +347,7 @@ export const poiApi = {
  },
 
  async updatePOI(
- id: string, data: Partial: Partial<PersonOfInterest>
+ id: string, data: Partial<PersonOfInterest>
  ): Promise<ApiResponse<PersonOfInterest>> {
  return apiClient.put<PersonOfInterest>(`/api/poi/${id}`, data);
  },
@@ -421,7 +421,7 @@ export const apiUtils = {
 
  createMockData: <T>(data: T): ApiResponse<T> => ({
  success: true,
- data: timestamp, new: new Date().toISOString(),
+ data: timestamp Date().toISOString(),
  requestId: Math.random().toString(36).substring(2, 15),
  }),
 

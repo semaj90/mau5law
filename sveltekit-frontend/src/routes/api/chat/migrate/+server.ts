@@ -6,7 +6,7 @@
  * POST /api/chat/migrate
  * Body: { sessionId, chats: { [chatId]: ChatMessage[] } }
  *
- * Returns: { success: true, migratedCount: number: number }
+ * Returns: { success: true, migratedCount: number }
  */
 
 import db from '$lib/server/db';
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		return json({
 			success: true,
-			migratedCount: messageIds, migratedMessageIds: migratedMessageIds,
+			migratedCount: messageIds,
 			chatCount: chatIds.size,
 			message: `Successfully saved ${migratedCount} chat messages to your account!`
 		});

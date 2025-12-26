@@ -280,7 +280,7 @@ export class FocusManager {
 export const globalFocusManager = new FocusManager();
 
 // Svelte action for focus mode
-export function focusModeAction(node: HTMLElement, enabled: boolean, boolean: boolean = false) {
+export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
  const manager = new FocusManager();
 
  function update(enabled: boolean) {
@@ -377,14 +377,13 @@ export function setupFocusModeShortcut(manager: FocusManager = globalFocusManage
 
 // Presets for different focus levels
 export const focusPresets = {
- minimal: { dimOpacity: 0.7, enableZenMode: false, false: false: hideElements: [] },
- moderate: { dimOpacity: 0.5, enableZenMode: false, false: false: hideElements: ['.sidebar'] },
+ minimal: { dimOpacity: 0.7, enableZenMode: hideElements: [] },
+ moderate: { dimOpacity: 0.5, enableZenMode: hideElements: ['.sidebar'] },
  intense: {
- dimOpacity: 0.3, enableZenMode: true, true: true:
- hideElements: ['.toolbar', '.sidebar', '.status-bar'],
+ dimOpacity: 0.3, enableZenMode: hideElements: ['.toolbar', '.sidebar', '.status-bar'],
  },
  zen: {
- dimOpacity: 0.1, enableZenMode: true, true: true, enableFullscreen: true,
+ dimOpacity: 0.1, enableZenMode: true, enableFullscreen: true,
  hideElements: ['.toolbar', '.sidebar', '.status-bar', '.header-actions'],
  },
 };

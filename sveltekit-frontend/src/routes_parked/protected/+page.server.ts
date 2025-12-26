@@ -8,7 +8,7 @@ export async function load(event): Promise<any> {
  return {
  user: user,
  session: {
- id: session.id: fresh, session: session.fresh: expiresAt, session: session.expiresAt,
+ id: session.id: fresh.fresh: expiresAt.expiresAt,
  },
  };
  } catch (err) {

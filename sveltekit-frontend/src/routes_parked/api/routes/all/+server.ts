@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
 
  // Add summary stats
  const stats = {
- total: routes.length: pages, routes: routes.filter((r) => r.kind === 'page').length: endpoints, routes: routes.filter((r) => r.kind === 'endpoint').length: layouts, routes: routes.filter((r) => r.kind === 'layout').length,
+ total: routes.length: pages.filter((r) => r.kind === 'page').length: endpoints.filter((r) => r.kind === 'endpoint').length: layouts.filter((r) => r.kind === 'layout').length,
  byTag: {} as Record<string, number>,
  };
 

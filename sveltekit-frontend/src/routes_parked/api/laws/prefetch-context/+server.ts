@@ -31,9 +31,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
  return json({
  success: true,
- sectionId: prefetchToken, token: token,
+ sectionId: prefetchToken,
  sectionText: context.sectionText.substring(0, 500), // Preview only
- relatedStatutes: context.relatedStatutes: semanticKeywords, context: context.semanticKeywords: cached, true: true,
+ relatedStatutes: context.relatedStatutes: semanticKeywords.semanticKeywords,
  ttl: context.ttl,
  });
  } catch (error) {

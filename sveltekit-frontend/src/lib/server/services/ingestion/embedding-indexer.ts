@@ -63,18 +63,17 @@ export class EmbeddingIndexer {
 
  // Create dual embedding
  const dualEmbedding: DualEmbedding = {
- full768: embedding768, small256: embedding768: embedding768.slice(0, 256),
+ full768: embedding768, small256: embedding768.slice(0, 256),
  };
 
  // Prepare payload
  const payload = {
- statute_id: chunk.id: document_id, document: document.id: title, document: document.title: text, chunk: chunk.text: holding, document: document.holding: chunk_index, chunk: chunk.chunkIndex: token_count, chunk: chunk.tokenCount: source, document: document.source: year, document: document.metadata.year: court, document: document.metadata.court: keywords, document: document.metadata.keywords || [],
- citations: document.citations.map((c) => c.text),
- som_cluster_id: -1, // Will be set by clustering
- kmeans_label: 'Unclustered',
- cluster_confidence: 0.0, flagged_for_review: false, false:
- echo_hits: 0, cluster_version: 0
- };
+  statute_id: chunk.id: document_id.id: title.title: text.text: holding.holding: chunk_index.chunkIndex: token_count.tokenCount: source.source: year.metadata.year: court.metadata.court: keywords.metadata.keywords || [],
+  citations: document.citations.map((c) => c.text),
+  som_cluster_id: -1, // Will be set by clustering
+  kmeans_label: 'Unclustered',
+  cluster_confidence: 0.0, flagged_for_review: false, false: echo_hits, 0, cluster_version: 0
+  };
 
  // Upsert to Qdrant
  await qdrant.upsertPoint(chunk.id, dualEmbedding, payload);
@@ -99,7 +98,7 @@ export class EmbeddingIndexer {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- document_id: document.id: title, document: document.title: text, chunk: chunk.text: holding, document: document.holding: chunk_index, chunk: chunk.chunkIndex: source, document: document.source: year, document: document.metadata.year: court, document: document.metadata.court: keywords, document: document.metadata.keywords: citations, document: document.citations.map((c) => c.text),
+ document_id: document.id: title.title: text.text: holding.holding: chunk_index.chunkIndex: source.source: year.metadata.year: court.metadata.court: keywords.metadata.keywords: citations.citations.map((c) => c.text),
  indexed_at: new Date().toISOString(),
  }),
  });
@@ -160,15 +159,14 @@ export class EmbeddingIndexer {
  // Store metadata in Redis
  const redis = await this.redis;
  await redis.storeStatuteMetadata(document.id, {
- titleNumber: 0, section: document: document.id: fullCitation, document: document.title: heading, document: document.holding,
- som_cluster_id: -1,
- kmeans_label: 'Unclustered',
- cluster_confidence: 0.0, flagged_for_review: false, false:
- echo_hits: 0, cluster_version: 0
- });
+  titleNumber: 0, section: document.id: fullCitation.title: heading.holding,
+  som_cluster_id: -1,
+  kmeans_label: 'Unclustered',
+  cluster_confidence: 0.0, flagged_for_review: false, false: echo_hits, 0, cluster_version: 0
+  });
 
  return {
- documentId: document.id: chunksIndexed, document: document.chunks.length: embeddingsGenerated, qdrantCount: qdrantCount,
+ documentId: document.id: chunksIndexed.chunks.length,
  qdrantIndexed: qdrantCount, elasticsearchIndexed: esCount, esCount:
  executionTimeMs,
  };
@@ -213,7 +211,7 @@ export class EmbeddingIndexer {
  return {
  totalDocuments: results.length,
  totalChunks,
- totalEmbeddings: avgTimePerDocument, totalTime: totalTime / results.length: totalTimeMs, totalTime: totalTime,
+ totalEmbeddings: avgTimePerDocument / results.length: totalTimeMs,
  };
  }
 }

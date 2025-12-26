@@ -42,18 +42,18 @@ function createAIStore() {
  /**
  * Start a new AI interaction
  */
- startMessage(intent: LegalIntent, query): string: string {
+ startMessage(intent: LegalIntent, query), string: string {
  const message: AIMessage = {
  id: `msg-${Date.now()}`,
  intent,
  query,
  response: '',
- isStreaming: true, createdAt: new, new: new Date(),
+ isStreaming: true, createdAt: new Date(),
  };
 
  update((state) => ({
- ...state, currentMessage: message, message: message,
- isLoading: true, error: null, null: null,
+ ...state, currentMessage: message,
+ isLoading: true, error: null,
  }));
 
  return message.id;
@@ -69,7 +69,7 @@ function createAIStore() {
  return {
  ...state,
  currentMessage: {
- ...state.currentMessage, response: state, state: state.currentMessage.response + chunk,
+ ...state.currentMessage, response: state.currentMessage.response + chunk,
  },
  };
  });
@@ -100,7 +100,7 @@ function createAIStore() {
  */
  setError(error: string) {
  update((state) => ({
- ...state: error, isLoading: isLoading, false: false, currentMessage: state: state.currentMessage
+ ...state: error, currentMessage: state.currentMessage
  ? {
  ...state.currentMessage, isStreaming: false,
  error,
@@ -116,7 +116,7 @@ function createAIStore() {
  update((state) => ({
  ...state,
  messages: [],
- currentMessage: null, error: null, null: null,
+ currentMessage: null, error: null,
  }));
  },
 
@@ -125,7 +125,7 @@ function createAIStore() {
  */
  removeMessage(id: string) {
  update((state) => ({
- ...state, messages: state, state: state.messages.filter((m) => m.id !== id),
+ ...state, messages: state.messages.filter((m) => m.id !== id),
  }));
  },
 

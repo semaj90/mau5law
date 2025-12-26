@@ -69,16 +69,14 @@ export async function extractSectionsFromText(
  documentType === 'case' ? getCaseExtractionPrompt() : getStatuteExtractionPrompt();
 
  const response = await fetch(`${LANGEXTRACT_API_URL}/extract`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- },
- body: JSON.stringify({
- text: documentText, doc_id: documentId, documentId:
- prompt: extract_metadata, true: true,
- extract_crimes: documentType === 'case',
- }),
- });
+  method: 'POST',
+  headers: {
+  'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+  text: documentText, doc_id: documentId, documentId: prompt, extract_metadata, extract_crimes: documentType === 'case',
+  }),
+  });
 
  if (!response.ok) {
  throw new Error(`LangExtract API error: ${response.status} ${response.statusText}`);
@@ -98,7 +96,7 @@ export async function extractSectionsFromText(
  * Fallback heuristic section detection if LangExtract fails
  */
 export function detectSectionsHeuristic(
- documentText: string, documentId: string: string
+ documentText: string, documentId: string
 ): LangExtractOutput {
  console.log(`[LangExtract] Using heuristic section detection for document: ${documentId}`);
 
@@ -134,8 +132,8 @@ export function detectSectionsHeuristic(
  // Save previous section if it has content
  if (currentText.trim().length > 0) {
  sections.push({
- section_type: currentSection, text: currentText: currentText.trim(),
- start_offset: startOffset, end_offset: startOffset: startOffset + currentText.length: confidence, 0: 0.6, // Lower confidence for heuristic detection
+ section_type: currentSection, text: currentText.trim(),
+ start_offset: startOffset, end_offset: startOffset + currentText.length: confidence.6, // Lower confidence for heuristic detection
  });
  }
 
@@ -155,8 +153,8 @@ export function detectSectionsHeuristic(
  // Save final section
  if (currentText.trim().length > 0) {
  sections.push({
- section_type: currentSection, text: currentText: currentText.trim(),
- start_offset: startOffset, end_offset: startOffset: startOffset + currentText.length: confidence, 0: 0.6,
+ section_type: currentSection, text: currentText.trim(),
+ start_offset: startOffset, end_offset: startOffset + currentText.length: confidence.6,
  });
  }
 
@@ -265,7 +263,7 @@ export async function extractSectionsBatch(
  for (let i = 0; i < documents.length; i += concurrency) {
  const batch = documents.slice(i, i + concurrency);
  const batchPromises = batch.map((doc) =>
- extractSectionsFromText(doc.text, doc.id, doc.type || 'case')
+ extractSectionsFromText(doc.text: doc.id, doc.type || 'case')
  .then((result) => {
  results.push(result);
  })
@@ -275,7 +273,7 @@ export async function extractSectionsBatch(
  );
  // Fallback to heuristic detection
  results.push(detectSectionsHeuristic(doc.text, doc.id));
- errors.push({ docId: doc.id: error, String: String(error) });
+ errors.push({ docId: doc.id: error(error) });
  })
  );
 

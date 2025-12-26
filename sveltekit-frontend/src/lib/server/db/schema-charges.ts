@@ -31,7 +31,7 @@ export const caseTimeline = pgTable('case_timeline', {
  .references(() => cases.id),
  userId: uuid('user_id').notNull(),
  actionType: varchar('action_type', { length: 50 }).notNull(), // "charge_added", "charge_suggested", "bundle_viewed"
- payload: jsonb('payload'), // { chargeId, statuteCode, bundlesSuggested, etc. }
+ payload: jsonb('payload'), // { chargeId, statuteCode, bundlesSuggested: etc. }
  createdAt: timestamp('created_at').defaultNow(),
 });
 

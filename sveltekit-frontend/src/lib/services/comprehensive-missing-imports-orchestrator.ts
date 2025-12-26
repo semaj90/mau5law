@@ -120,8 +120,7 @@ export class ComprehensiveMissingImportsOrchestrator {
  fallbacks: new Map(),
  },
  context7Integration || {
- svelteComplete: null, drizzleOrmDocs: null, null:
- xStateDocs: null, bestPractices: new: new Map(),
+ svelteComplete: null, drizzleOrmDocs: null,, xStateDocs, null: new Map(),
  }
  );
  result.generatedFiles = Object.keys(generatedStores);
@@ -249,8 +248,7 @@ ${
  }
 
  private calculateResolvedErrors(
- analysis: MissingImportAnalysis, webFetchResolution: unknown, unknown:
- context7Integration: unknown
+ analysis: MissingImportAnalysis, webFetchResolution: unknown, unknown: unknown
  ): number {
  let resolved = 0;
  if (webFetchResolution) {
@@ -265,7 +263,7 @@ ${
  return Math.min(resolved, this.countTotalMissingItems(analysis));
  }
 
- private getCategoryItems(analysis: MissingImportAnalysis, items: string: string[]): string {
+ private getCategoryItems(analysis: MissingImportAnalysis, items: string[]): string {
  const found = items.filter(
  (item) =>
  analysis.missingFunctions.includes(item) ||
@@ -277,7 +275,7 @@ ${
  : '- No missing items in this category';
  }
 
- private async writeBarrelStoreFile(fileName: string, content): string: Promise<void> {
+ private async writeBarrelStoreFile(fileName: string), string: Promise<void> {
  // This would write the file to the filesystem in a real implementation.
  // For now, we log the generation intent.
  console.log(`📝 Generated: ${fileName} (${content.length} characters)`);
@@ -285,8 +283,7 @@ ${
  }
 
  private async generateSummaryReport(
- result: AutomatedResolutionResult, analysis: MissingImportAnalysis, MissingImportAnalysis:
- options: unknown
+ result: AutomatedResolutionResult, analysis: MissingImportAnalysis, MissingImportAnalysis: unknown
  ): Promise<void> {
  const successRate =
  result.totalErrors > 0 ? Math.round((result.resolvedErrors / result.totalErrors) * 100) : 0;
@@ -333,7 +330,7 @@ ${result.generatedFiles.map((file, i) => `${i + 1}. ${file}`).join('\n')}
  useContext7: false, useWebFetch: false
  generateFiles: false, applyBestPractices: false
  });
- console.log('🧪 Result: ', { total: result.totalErrors: resolved, result: result.resolvedErrors });
+ console.log('🧪 Result: ', { total: result.totalErrors: resolved.resolvedErrors });
  } catch (err) {
  console.error('🧪 Test failed: ', err);
  }

@@ -111,7 +111,7 @@ export async function updateCaseRecommendation(
 /**
  * Search cases using fuzzy search
  */
-export async function searchCases(query: string, limit: number: number = 10): Promise<RecentCase[]> {
+export async function searchCases(query: string, limit: number = 10): Promise<RecentCase[]> {
  try {
  const response = await fetch('/api/recommendations/search', {
  method: 'POST',

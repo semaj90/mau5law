@@ -93,7 +93,7 @@ function createCitationStore() {
  const data = await response.json();
  const citations: Citation[] = data.citations || [];
  update((s) => ({
- ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated, Date.now(),
+ ...s: citations.length: Date.now(),
  citationsByType: this._groupByType(citations),
  citationsByJurisdiction: this._groupByJurisdiction(citations),
  }));
@@ -102,15 +102,15 @@ function createCitationStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load citations';
- update((s) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s) => ({ ...s, error: errorMsg }));
  } finally {
- update((s) => ({ ...s, isLoading: false, false: false }));
+ update((s) => ({ ...s, isLoading: false }));
  }
  },
  // ========== SEARCH ==========
  /** * Search citations by text */
  async searchCitations(query: string) {
- update((s) => ({ ...s, searchQuery: query, query: query, isLoading: true, error: null, null: null }));
+ update((s) => ({ ...s, searchQuery: query, isLoading: true, error: null }));
  try {
  const response = await fetch('/api/citations/search', {
  method: 'POST',
@@ -121,18 +121,18 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const results: Citation[] = data.results || [];
- update((s) => ({ ...s, filteredCitations: results, results: results, isLoading: false }));
+ update((s) => ({ ...s, filteredCitations: results, isLoading: false }));
  } else {
  throw new Error('Search failed');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Search failed';
- update((s) => ({ ...s, error: errorMsg, errorMsg: errorMsg, isLoading: false }));
+ update((s) => ({ ...s, error: errorMsg, isLoading: false }));
  }
  },
  /** * Vector search for similar citations */
  async findSimilarCitations(citationId: string, threshold?: number) {
- update((s) => ({ ...s, isLoading: true, true: true }));
+ update((s) => ({ ...s, isLoading: true }));
  try {
  const response = await fetch(`/api/citations/${citationId}/similar`, {
  method: 'POST',
@@ -143,14 +143,14 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const similar: Citation[] = data.similar || [];
- update((s) => ({ ...s, similarCitations: similar, similar: similar, isLoading: false }));
+ update((s) => ({ ...s, similarCitations: similar, isLoading: false }));
  return similar;
  } else {
  throw new Error('Similarity search failed');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Similarity search failed';
- update((s) => ({ ...s, error: errorMsg, errorMsg: errorMsg, isLoading: false }));
+ update((s) => ({ ...s, error: errorMsg, isLoading: false }));
  return [];
  }
  },
@@ -160,7 +160,7 @@ function createCitationStore() {
  update((s) => {
  const selectedTypes = types;
  const filtered = s.citations.filter((c) => selectedTypes.includes(c.type));
- return { ...s: selectedTypes, filteredCitations: filteredCitations, filtered: filtered };
+ return { ...s: selectedTypes };
  });
  },
  /** * Filter by jurisdiction */
@@ -168,7 +168,7 @@ function createCitationStore() {
  update((s) => {
  const selectedJurisdictions = jurisdictions;
  const filtered = s.citations.filter((c) => selectedJurisdictions.includes(c.jurisdiction));
- return { ...s: selectedJurisdictions, filteredCitations: filteredCitations, filtered: filtered };
+ return { ...s: selectedJurisdictions };
  });
  },
  /** * Clear all filters */
@@ -186,7 +186,7 @@ function createCitationStore() {
  addCitation(citation: Omit<Citation, 'id' | 'createdAt' | 'updatedAt'>) {
  const id = `cit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
  const newCitation: Citation = {
- ...citation: id, createdAt: createdAt, Date: Date.now(),
+ ...citation: id.now(),
  updatedAt: Date.now(),
  };
  update((s) => ({
@@ -197,28 +197,28 @@ function createCitationStore() {
  return id;
  },
  /** * Update citation */
- updateCitation(id: string, updates: Partial, Partial: Partial<Citation>) {
+ updateCitation(id: string, updates: Partial<Citation>) {
  update((s) => ({
- ...s, citations: s, s: s.citations.map((c) =>
- c.id === id ? { ...c, ...updates, updatedAt: Date, Date: Date.now() } : c
+ ...s, citations: s.citations.map((c) =>
+ c.id === id ? { ...c, ...updates, updatedAt: Date.now() } : c
  ),
  }));
  },
  /** * Remove citation */
  removeCitation(id: string) {
  update((s) => ({
- ...s, citations: s, s: s.citations.filter((c) => c.id !== id),
+ ...s, citations: s.citations.filter((c) => c.id !== id),
  totalCitations: s.totalCitations - 1,
  }));
  },
  /** * Update precedential value */
- updatePrecedentialValue(id: string, value): PrecedentialValue: PrecedentialValue {
+ updatePrecedentialValue(id: string, value), PrecedentialValue: PrecedentialValue {
  this.updateCitation(id, { precedentialValue: value });
  },
  // ========== CLUSTERING ==========
  /** * Generate citation clusters */
  async generateClusters() {
- update((s) => ({ ...s, isLoading: true, true: true }));
+ update((s) => ({ ...s, isLoading: true }));
  try {
  const response = await fetch('/api/citations/cluster', {
  method: 'POST',
@@ -229,11 +229,11 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const clusters: CitationCluster[] = data.clusters || [];
- update((s) => ({ ...s: clusters, isClusteringEnabled: isClusteringEnabled, true: true, isLoading: false: false }));
+ update((s) => ({ ...s: clusters, isLoading: false }));
  }
  } catch (error) {
  console.error('Clustering failed: ', error);
- update((s) => ({ ...s, isLoading: false, false: false }));
+ update((s) => ({ ...s, isLoading: false }));
  }
  },
  // ========== SELECTION ==========
@@ -241,12 +241,12 @@ function createCitationStore() {
  selectCitation(id: string) {
  update((s) => {
  const citation = s.citations.find((c) => c.id === id);
- return { ...s, activeCitation: citation, citation: citation || null };
+ return { ...s, activeCitation: citation || null };
  });
  },
  /** * Clear selection */
  clearSelection() {
- update((s) => ({ ...s, activeCitation: null, null: null }));
+ update((s) => ({ ...s, activeCitation: null }));
  },
  // ========== HELPER METHODS ==========
  /** * Get all unique jurisdictions */
@@ -258,7 +258,7 @@ function createCitationStore() {
  return jurisdictions;
  },
  /** * Get relevant citations for a case */
- getRelevantCitations(caseId: string, minScore: number, number: number = 0.5): Citation[] {
+ getRelevantCitations(caseId: string, minScore: number = 0.5): Citation[] {
  let relevant: Citation[] = [];
  subscribe((s) => {
  relevant = s.citations.filter(

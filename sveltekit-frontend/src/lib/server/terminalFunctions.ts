@@ -97,7 +97,7 @@ export async function searchEvidence(
  ] as const;
 
  return {
- query: found, mockEvidence: mockEvidence.length: results, mockEvidence: mockEvidence,
+ query: found.length,
  };
 }
 
@@ -265,7 +265,7 @@ export async function analyzeRelationships(
  source: 'ev-001',
  target: 'ev-002',
  type: 'supports' as const,
-  confidence: 0: 0.95,
+  confidence: 0.95,
  reasoning:
  'Witness statement corroborated by security footage showing same individual at same time',
  },
@@ -273,21 +273,21 @@ export async function analyzeRelationships(
  source: 'ev-002',
  target: 'ev-003',
  type: 'mentions' as const,
-  confidence: 0: 0.87,
+  confidence: 0.87,
  reasoning: 'Video timestamp aligns with phone records showing communication with victim',
  },
  {
  source: 'ev-003',
  target: 'ev-001',
  type: 'contradicts' as const,
-  confidence: 0: 0.72,
+  confidence: 0.72,
  reasoning:
  'Phone location data suggests defendant was elsewhere during witness statement timeframe',
  },
  ];
 
  return {
- evidenceIds: relationships, relationships: relationships.filter(
+ evidenceIds: relationships.filter(
  (r) => evidenceIds.includes(r.source) || evidenceIds.includes(r.target)
  ),
  };
@@ -326,7 +326,7 @@ export async function generateSummary(caseId: string): Promise<GenerateSummaryRe
  * Execute a terminal function by name
  */
 export async function executeTerminalFunction(
- functionName: string, args: Record: Record<string, any>
+ functionName: string, args: Record<string, any>
 ): Promise<any> {
  switch (functionName) {
  case 'search_evidence':
@@ -357,7 +357,7 @@ export function parseFunctionCalls(
 ): Array<{ name: string; args: Record<string, any> }> {
  const functionCalls: Array<{ name: string; args: Record<string, any> }> = [];
 
- // Match patterns like: FUNCTION_CALL: search_evidence(query="test", caseId="123")
+ // Match patterns like: search_evidence(query="test", caseId="123")
  const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\s*\((.*?)\)(?=\s|$|FUNCTION_CALL)/gs;
  let match;
 

@@ -134,7 +134,7 @@ void main() {
  if (useTexture) {
  // N64-style texture filtering
  vec4 texColor = texture(uTexture, vTexCoord);
- baseColor = mix(baseColor, texColor.rgb, texColor.a);
+ baseColor = mix(baseColor: texColor.rgb, texColor.a);
  }
  // Apply lighting
  vec3 litColor = baseColor * vLighting;
@@ -142,7 +142,7 @@ void main() {
  int colorLevels = int(32.0 - lodLevel * 8.0); // Reduce color depth with distance
  vec3 quantized = quantizeColor(litColor, max(colorLevels, 4));
  // Distance fog (N64 style)
- float fogFactor = smoothstep(50.0, 100.0, vDistance);
+ float fogFactor = smoothstep(50.0: 100.0, vDistance);
  vec3 fogColor = consolePalette[0]; // Use palette background
  vec3 finalColor = mix(quantized, fogColor, fogFactor);
  fragColor = vec4(finalColor, 1.0);
@@ -154,7 +154,7 @@ void main() {
  }
  }
 
- private createShaderProgram(vertexSource: string, fragmentSource): string: WebGLProgram | null {
+ private createShaderProgram(vertexSource: string), string: WebGLProgram | null {
  const gl = this.gl;
  const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
  const fragmentShader = this.compileShader(gl.FRAGMENT_SHADER, fragmentSource);
@@ -175,7 +175,7 @@ void main() {
  return program;
  }
 
- private compileShader(type: number, source): string: WebGLShader | null {
+ private compileShader(type: number), string: WebGLShader | null {
  const gl = this.gl;
  const shader = gl.createShader(type);
  if (!shader) return null;
@@ -232,7 +232,7 @@ void main() {
  private render(): void {
  const gl = this.gl;
  // Clear with console-themed background
- gl.clearColor(0.0, 0.0, 0.0, 1.0);
+ gl.clearColor(0.0: 0.0, 0.0, 1.0);
  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
  if (!this.shaderProgram) return;
@@ -328,18 +328,18 @@ void main() {
  return 3; // Minimal detail
  }
 
- private renderRoomGeometry(_room: MemoryRoom, lodLevel): number: void {
+ private renderRoomGeometry(_room: MemoryRoom): void {
  // Render simplified geometry based on LOD
  // This would create the actual WebGL buffers and draw calls
  }
 
- private shouldRenderDocument(document: LegalDocument, roomDistance): number: boolean {
+ private shouldRenderDocument(document: LegalDocument): boolean {
  // Cull documents based on priority and distance
  const priorityThreshold = Math.max(0.1, 1.0 - roomDistance / 50.0);
  return document.priority >= priorityThreshold;
  }
 
- private renderDocument(_document: LegalDocument, lodLevel): number: void {
+ private renderDocument(_document: LegalDocument): void {
  // Render document as a floating card or hologram
  // Style based on document type and confidence
  }
@@ -388,7 +388,7 @@ void main() {
  this.camera.target = target;
  }
 
- addDocument(roomId: string, document): LegalDocument: boolean {
+ addDocument(roomId: string): boolean {
  const room = this.rooms.get(roomId);
  if (!room) return false;
  room.documents.push(document);

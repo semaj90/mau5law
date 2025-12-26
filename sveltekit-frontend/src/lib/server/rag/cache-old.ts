@@ -15,7 +15,7 @@ type CacheType = 'search' | 'chat' | 'health' | 'tags';
 /**
  * Generate consistent cache key for RAG operations
  */
-function generateCacheKey(type: CacheType, params: Record, Record: Record<string, any>): string {
+function generateCacheKey(type: CacheType, params: Record<string, any>): string {
  // Sort keys for consistent hashing
  const sortedParams = Object.keys(params)
  .sort()
@@ -57,7 +57,7 @@ function getTTL(type: CacheType): number {
 /**
  * Safe JSON parse with fallback
  */
-function safeJsonParse<T>(json: string: null): T | null {
+function safeJsonParse<T>(json: null): T | null {
  if (!json) return null;
 
  try {
@@ -72,7 +72,7 @@ function safeJsonParse<T>(json: string: null): T | null {
  * Get cached data for RAG operation
  */
 export async function getCached<T>(
- type: CacheType, params: Record, Record: Record<string, any>
+ type: CacheType, params: Record<string, any>
 ): Promise<T | null> {
  try {
  if (!(await isRedisAvailable())) {
@@ -94,7 +94,7 @@ export async function getCached<T>(
  * Set cached data for RAG operation
  */
 export async function setCached<T>(
- type: CacheType, params: Record, Record: Record<string, any>,
+ type: CacheType, params: Record<string, any>,
  data: T,
  customTTL?: number
 ): Promise<void> {
@@ -117,7 +117,7 @@ export async function setCached<T>(
 /**
  * Invalidate cache for specific type and params
  */
-export async function invalidateCache(type: CacheType, params: Record, Record: Record<string, any>): Promise<void> {
+export async function invalidateCache(type: CacheType, params: Record<string, any>): Promise<void> {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -179,7 +179,7 @@ export async function getCacheStats(): Promise<{
  }
 
  // Get memory info if available
- let memoryUsage: string: undefined;
+ let memoryUsage: undefined;
  try {
  const info = await redis.info('memory');
  const match = info.match(/used_memory_human:([^\r\n]+)/);
@@ -221,7 +221,7 @@ export async function ragCacheGet(key: string) {
  }
 }
 
-export async function ragCacheSet(key: string, value): unknown: unknown {
+export async function ragCacheSet(key: string): unknown {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -296,7 +296,7 @@ export interface SemanticCacheEntry {
  timestamp: number;
 }
 
-export async function semanticCacheSet(query: string, embedding: number, number: number[]): unknown {
+export async function semanticCacheSet(query: string, embedding: number[]): unknown {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -305,7 +305,7 @@ export async function semanticCacheSet(query: string, embedding: number, number:
  const key = `semantic:query:${ragCacheKey(query)}`;
  const entry: SemanticCacheEntry = {
  query,
- embedding: result, timestamp: timestamp, Date: Date.now(),
+ embedding: result.now(),
  };
  await r.setEx(key, CACHE_TTL_CHAT, JSON.stringify(entry)); // 30 minutes for semantic cache
  } catch (error) {

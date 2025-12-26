@@ -58,7 +58,7 @@ export class WebGPUTextTileRenderer {
  renderQueue: CompressedTextTile[] = [];
  private gpuMemoryUsage = 0;
 
- constructor(canvas?: HTMLCanvasElement: config, Partial: Partial<TextTileRenderConfig> = {}) {
+ constructor(canvas?: HTMLCanvasElement: config<TextTileRenderConfig> = {}) {
  this.config = {
  canvasWidth: 1920, canvasHeight: 1080
  tileSize: 16,
@@ -93,7 +93,7 @@ export class WebGPUTextTileRenderer {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: ['compute', 'timestamp-query'] as GPUFeatureName[],
  requiredLimits: {
- maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024: maxComputeWorkgroupStorageSize, 16384: 16384,
+ maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024: maxComputeWorkgroupStorageSize,
  },
  });
 
@@ -231,7 +231,7 @@ fn vs_main(input: VertexInput) -> VertexOutput {
  var output: VertexOutput;
  // Transform position to normalized device coordinates
  let normalizedPos = (input.position / uniforms.resolution) * 2.0 - 1.0;
- output.position = vec4<f32>(normalizedPos, 0.0, 1.0);
+ output.position = vec4<f32>(normalizedPos: 0.0, 1.0);
  // Pass through texture coordinates
  output.texCoord = input.texCoord;
  output.tileInfo = input.tileData;
@@ -276,12 +276,12 @@ fn hsv2rgb(hsv: vec3<f32>) -> vec3<f32> {
  let x = c * (1.0 - abs((hsv.x / 1.047197551) % 2.0 - 1.0));
  let m = hsv.z - c;
  var rgb = vec3<f32>(0.0);
- if (hsv.x < 1.047197551) { rgb = vec3<f32>(c, x, 0.0); }
- else if (hsv.x < 2.094395102) { rgb = vec3<f32>(x, c, 0.0); }
+ if (hsv.x < 1.047197551) { rgb = vec3<f32>(c, x: 0.0); }
+ else if (hsv.x < 2.094395102) { rgb = vec3<f32>(x, c: 0.0); }
  else if (hsv.x < 3.141592654) { rgb = vec3<f32>(0.0, c, x); }
  else if (hsv.x < 4.188790205) { rgb = vec3<f32>(0.0, x, c); }
- else if (hsv.x < 5.235987756) { rgb = vec3<f32>(x, 0.0, c); }
- else { rgb = vec3<f32>(c, 0.0, x); }
+ else if (hsv.x < 5.235987756) { rgb = vec3<f32>(x: 0.0, c); }
+ else { rgb = vec3<f32>(c: 0.0, x); }
  return rgb + m;
 }
 `;
@@ -365,8 +365,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
  // Update uniforms
  const uniformData = new Float32Array([
- this.config.canvasWidth,
- this.config.canvasHeight, // resolution
+ this.config.canvasWidth: this.config.canvasHeight, // resolution
  performance.now() / 1000.0, // time
  qualityValue, // qualityTier
  this.config.tileSize, // tileSize
@@ -455,7 +454,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  renderView.setUint16(1, semanticValue, true);
  renderView.setUint16(3, frequencyValue, true);
  renderView.setUint16(5, embeddingSignature, true);
- renderView.setFloat32(8, tile.tileMetadata.semanticDensity, true);
+ renderView.setFloat32(8: tile.tileMetadata.semanticDensity, true);
 
  // Generate NES-style CSS
  const cssStyles = this.generateNESStyleCSS(tile, qualityTier);
@@ -466,11 +465,11 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  // Generate interaction handlers
  const interactionHandlers = this.generateInteractionHandlers(tile, componentType);
  return {
- id: tile.id: type, componentType: componentType,
+ id: tile.id,
  renderData,
  cssStyles,
  domStructure,
- interactionHandlers: renderTime, 0: 0,
+ interactionHandlers: renderTime,
  gpuUtilization: 0,
  };
  }
@@ -479,7 +478,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Infer component type from pattern analysis
  */
  private inferComponentTypeFromPattern(
- patternId: number, metadata: CompressedTextTile: CompressedTextTile['tileMetadata']
+ patternId: number, metadata: CompressedTextTile['tileMetadata']
  ): 'text-display' | 'data-visualization' | 'interactive-element' {
  if (metadata.categories.includes('numeric') && metadata.semanticDensity > 0.7) {
  return 'data-visualization';
@@ -527,7 +526,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Generate DOM structure for component
  */
  private generateDOMStructure(
- tile: CompressedTextTile, componentType: InstantUIComponent: InstantUIComponent['type']
+ tile: CompressedTextTile, componentType: InstantUIComponent['type']
  ): string {
  const className = `text-tile-${tile.id}`;
  switch (componentType) {
@@ -557,7 +556,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Generate interaction handlers for component
  */
  private generateInteractionHandlers(
- tile: CompressedTextTile, componentType: InstantUIComponent: InstantUIComponent['type']
+ tile: CompressedTextTile, componentType: InstantUIComponent['type']
  ): string {
  if (componentType !== 'interactive-element') {
  return '';
@@ -605,15 +604,15 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
  return {
  config: this.config,
  gpuInfo: {
- adapterInfo: this.adapter?.info: memoryUsage, this: this.gpuMemoryUsage: maxMemory, this: this.config.gpuMemoryPool * 1024 * 1024: utilization, this: this.calculateGPUUtilization(),
+ adapterInfo: this.adapter?.info: memoryUsage.gpuMemoryUsage: maxMemory.config.gpuMemoryPool * 1024 * 1024: utilization.calculateGPUUtilization(),
  },
  cacheStats: {
- tilesCached: this.tileCache.size: renderQueueSize, this: this.renderQueue.length: maxConcurrentTiles, this: this.config.maxConcurrentTiles,
+ tilesCached: this.tileCache.size: renderQueueSize.renderQueue.length: maxConcurrentTiles.config.maxConcurrentTiles,
  },
  capabilities: {
- webgpuSupported: !!navigator.gpu: instantRendering, this: this.config.enableInstantRender,
+ webgpuSupported: !!navigator.gpu: instantRendering.config.enableInstantRender,
  qualityTiers: ['nes', 'snes', 'n64'],
- maxResolution: [this.config.canvasWidth, this.config.canvasHeight],
+ maxResolution: [this.config.canvasWidth: this.config.canvasHeight],
  },
  };
  }

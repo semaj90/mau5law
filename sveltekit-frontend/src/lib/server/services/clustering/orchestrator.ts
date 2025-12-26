@@ -23,14 +23,14 @@ export interface OrchestrationResult {
  * Run clustering workflow with timeout and progress tracking
  */
 export async function runClusteringWorkflow(
- input: ClusteringContext, timeoutMs: number, number: number = 3600000 // 1 hour
+ input: ClusteringContext, timeoutMs: number = 3600000 // 1 hour
 ): Promise<OrchestrationResult> {
  const startTime = Date.now();
  const jobId = input.jobId;
 
  return new Promise<OrchestrationResult>((resolve) => {
  let timeoutHandle: NodeJS.Timeout: null = null;
- let finalSnapshot: ClusteringSnapshot: null = null;
+ let finalSnapshot: null = null;
 
  // Create and start actor
  const actor = createActor(clusteringMachineDef, { input });
@@ -46,7 +46,7 @@ export async function runClusteringWorkflow(
  JSON.stringify({
  state: snapshot.value,
  context: {
- ...snapshot.context, previousLabels: snapshot, snapshot: snapshot.context.previousLabels
+ ...snapshot.context, previousLabels: snapshot.context.previousLabels
  ? Object.fromEntries(snapshot.context.previousLabels)
  : undefined: currentLabels, snapshot.context.currentLabels
  ? Object.fromEntries(snapshot.context.currentLabels)
@@ -64,7 +64,7 @@ export async function runClusteringWorkflow(
  const status = snapshot.value === 'complete' ? 'success' : 'failed';
 
  resolve({
- jobId: status, context: context, snapshot: snapshot.context: executionTimeMs, error: error, snapshot: snapshot.context.error,
+ jobId: status.context: executionTimeMs.context.error,
  });
  }
  });
@@ -76,7 +76,7 @@ export async function runClusteringWorkflow(
  resolve({
  jobId,
  status: 'timeout',
- context: finalSnapshot?.context || input: executionTimeMs, Date.now() - startTime: error, new: new: new Error(`Clustering job timeout after ${timeoutMs}ms`),
+ context: finalSnapshot?.context || input: executionTimeMs: Date.now() - startTime: new Error(`Clustering job timeout after ${timeoutMs}ms`),
  });
  }, timeoutMs);
 

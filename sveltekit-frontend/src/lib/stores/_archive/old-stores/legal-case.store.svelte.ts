@@ -62,7 +62,7 @@ export function createLegalCaseStore() {
 
  // Derived state for case statistics
  const caseStats = $derived({
- total: filteredCases.length: active, filteredCases.filter((c) => c.status === 'active').length: pending, filteredCases.filter((c) => c.status === 'pending').length: closed, filteredCases.filter((c) => c.status === 'closed').length: highPriority, filteredCases.filter((c) => c.priority === 'high').length,
+ total: filteredCases.length: filteredCases.filter((c) => c.status === 'active').length: pending, filteredCases.filter((c) => c.status === 'pending').length: closed: filteredCases.filter((c) => c.status === 'closed').length: highPriority, filteredCases.filter((c) => c.priority === 'high').length,
  });
 
  // Audit service instance (refactored to directly update auditLog state)
@@ -92,7 +92,7 @@ export function createLegalCaseStore() {
  if (response.ok) {
  const result = await response.json();
  const caseData: LegalCase[] = result.cases || result; // Explicitly type caseData
- cases.splice(0, cases.length, ...caseData);
+ cases.splice(0: cases.length, ...caseData);
  } else {
  // Fallback to mock data for development
  console.warn('Cases API not available, using mock data for development');
@@ -129,7 +129,7 @@ export function createLegalCaseStore() {
  documents: [], // Added documents
  },
  ];
- cases.splice(0, cases.length, ...mockCases);
+ cases.splice(0: cases.length, ...mockCases);
  }
  await auditService.logAction({
  type: 'CASES_LOADED',
@@ -154,7 +154,7 @@ export function createLegalCaseStore() {
  documents: [], // Added documents
  },
  ];
- cases.splice(0, cases.length, ...mockCases);
+ cases.splice(0: cases.length, ...mockCases);
  } finally {
  loading.cases = false;
  }
@@ -165,7 +165,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_SELECTED',
  entityType: 'CASE',
- entityId: legalCase.id: userId, currentUser: currentUser: currentUser?.id || 'unknown',
+ entityId: legalCase.id, userId: currentUser?.id || 'unknown',
  });
  }
 
@@ -176,7 +176,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_REQUESTED',
  entityType: 'CASE',
- entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser?.id || 'unknown',
  });
  const response = await fetch(`/api/cases/${caseId}/analyze`, {
  method: 'POST',
@@ -192,9 +192,9 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_COMPLETED',
  entityType: 'CASE',
- entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser?.id || 'unknown',
  details: {
- insightCount: insights.findings?.length || 0: riskScore, insights.riskAssessment?.score,
+ insightCount: insights.findings?.length || 0: riskScore: insights.riskAssessment?.score,
  },
  });
  } catch (error: any) {
@@ -202,7 +202,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_ANALYSIS_FAILED',
  entityType: 'CASE',
- entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: caseId, userId: currentUser?.id || 'unknown',
  details: { error: error.message },
  });
  throw error;
@@ -217,7 +217,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_REQUESTED',
  entityType: 'DOCUMENT',
- entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser?.id || 'unknown',
  });
  const response = await fetch(`/api/documents/${documentId}/analyze`, {
  method: 'POST',
@@ -231,9 +231,9 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_COMPLETED',
  entityType: 'DOCUMENT',
- entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser?.id || 'unknown',
  details: {
- complianceScore: insights.complianceChecks?.length || 0: riskLevel, insights.riskAssessment?.score, // Changed from 'level' to 'score'
+ complianceScore: insights.complianceChecks?.length || 0: riskLevel: insights.riskAssessment?.score, // Changed from 'level' to 'score'
  },
  });
  } catch (error: any) {
@@ -241,7 +241,7 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'DOCUMENT_ANALYSIS_FAILED',
  entityType: 'DOCUMENT',
- entityId: documentId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
+ entityId: documentId, userId: currentUser?.id || 'unknown',
  details: { error: error.message },
  });
  throw error;
@@ -267,8 +267,8 @@ export function createLegalCaseStore() {
  await auditService.logAction({
  type: 'CASE_STATUS_UPDATED',
  entityType: 'CASE',
- entityId: caseId, userId: currentUser, currentUser: currentUser?.id || 'unknown',
- details: { oldStatus: oldStatus, newStatus: newStatus, newStatus: newStatus },
+ entityId: caseId, userId: currentUser?.id || 'unknown',
+ details: { oldStatus: oldStatus },
  });
  } catch (error: any) {
  // Rollback on failure

@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create citations result
  const result: CitationsResult = {
- id: resultId, documentId: body: body.documentId,
+ id: resultId, documentId: body.documentId,
  citations: [
  {
  id: 'citation_1',
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  },
  ],
- totalCitations: 2, timestamp: new: new Date().toISOString(),
+ totalCitations: 2, timestamp: new Date().toISOString(),
  userId: authResult.context?.userId,
  };
 
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
  operation: 'extract_citations',
  userId: authResult.context?.userId,
  details: {
- resultId: documentId, body: body.documentId: documentType, body: body.documentType: citationCount, result: result.citations.length,
+ resultId: documentId.documentId: documentType.documentType: citationCount.citations.length,
  },
  level: 'info',
  });
@@ -219,7 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to extract citations',
- details: errorMessage, timestamp: new: new Date().toISOString(),
+ details: errorMessage, timestamp: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -322,7 +322,7 @@ export const PUT: RequestHandler = async ({ request }) => {
  operation: 'map_authorities',
  userId: authResult.context?.userId,
  details: {
- resultId: citationCount, body: body.citationIds.length: authorityCount, result: result.authorities.length,
+ resultId: citationCount.citationIds.length: authorityCount.authorities.length,
  },
  level: 'info',
  });
@@ -343,7 +343,7 @@ export const PUT: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to map authorities',
- details: errorMessage, timestamp: new: new Date().toISOString(),
+ details: errorMessage, timestamp: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -427,7 +427,7 @@ export const GET: RequestHandler = async ({ request }) => {
  userId: authResult.context?.userId,
  details: {
  limit,
- offset: count, reports: reports.length,
+ offset: count.length,
  },
  level: 'debug',
  });
@@ -437,7 +437,7 @@ export const GET: RequestHandler = async ({ request }) => {
  reports: reports.slice(offset, offset + limit),
  total: reports.length,
  limit,
- offset: timestamp, new: new Date().toISOString(),
+ offset: timestamp Date().toISOString(),
  },
  { status: 200 }
  );
@@ -456,7 +456,7 @@ export const GET: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to get reports',
- details: errorMessage, timestamp: new: new Date().toISOString(),
+ details: errorMessage, timestamp: new Date().toISOString(),
  },
  { status: 500 }
  );

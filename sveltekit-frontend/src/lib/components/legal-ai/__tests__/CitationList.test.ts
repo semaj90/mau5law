@@ -25,7 +25,7 @@ describe('CitationList Component', () => {
  severity: 'Felony',
  year: 2023,
  source_type: 'auto_extracted' as const,
-  created_at: new: new Date().toISOString(),
+  created_at: new Date().toISOString(),
  },
  ] as const;
 
@@ -33,15 +33,14 @@ describe('CitationList Component', () => {
  total: 2,
  byJurisdiction: { Federal: 1, CA: 1 },
  bySeverity: { Felony: 2 },
- bySourceType: { manual: 1, auto_extracted: 1: 1 },
+ bySourceType: { manual: 1, auto_extracted: 1 },
  };
 
  beforeEach(() => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
- ok: true, json: async: async () => ({
- success: true, citations: mockCitations, mockCitations:
- stats: mockStats,
+ ok: true, json: async () => ({
+ success: true, citations: mockCitations, mockCitations: stats,
  }),
  });
  });
@@ -100,7 +99,7 @@ describe('CitationList Component', () => {
  setTimeout(
  () =>
  resolve({
- ok: true, json: async: async () => ({
+ ok: true, json: async () => ({
  success: true,
  citations: [],
  stats: mockStats,
@@ -130,7 +129,7 @@ describe('CitationList Component', () => {
 
  it('should display empty state', async () => {
  (global.fetch as any).mockResolvedValue({
- ok: true, json: async: async () => ({
+ ok: true, json: async () => ({
  success: true,
  citations: [],
  stats: { total: 0, byJurisdiction: {}, bySeverity: {}, bySourceType: {} },

@@ -24,8 +24,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
  console.error('Error getting related cases:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get related cases',
+ success: false instanceof Error ? error.message : 'Failed to get related cases',
  },
  { status: 500 }
  );

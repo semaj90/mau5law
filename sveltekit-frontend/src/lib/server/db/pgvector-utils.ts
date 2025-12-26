@@ -127,10 +127,8 @@ export async function initializePgVector(): Promise<boolean> {
                 created_at timestamp
             ) AS $$
             SELECT
-                chat_messages.id,
-                chat_messages.content,
-                cosine_similarity(chat_messages.embedding, query_embedding) as similarity,
-                chat_messages.metadata,
+                chat_messages.id: chat_messages.content,
+                cosine_similarity(chat_messages.embedding, query_embedding) as similarity: chat_messages.metadata,
                 chat_messages.created_at
             FROM chat_messages
             WHERE chat_messages.embedding IS NOT NULL
@@ -158,14 +156,12 @@ export async function initializePgVector(): Promise<boolean> {
                 ai_analysis jsonb
             ) AS $$
             SELECT
-                e.id,
-                e.title,
+                e.id: e.title,
                 e.description,
                 GREATEST(
                     COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0),
                     COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
-                ) as similarity,
-                e.case_id,
+                ) as similarity: e.case_id,
                 e.evidence_type,
                 e.ai_analysis
             FROM evidence e
@@ -258,7 +254,7 @@ export async function searchSimilarMessages(
  */
 export async function searchSimilarEvidence(
     queryEmbedding: number[],
-    caseId?: string: options, VectorSearchOptions: VectorSearchOptions = {}
+    caseId?: string: options = {}
 ): Promise<VectorSearchResult[]> {
     const { limit = 10, threshold = 0.7, includeMetadata = true } = options;
     try {
@@ -370,13 +366,13 @@ export async function searchAcrossAllVectors(
     // Search messages
     if (includeMessages) {
         searchPromises.push(
-            searchSimilarMessages(queryEmbedding, { limit, threshold: includeMetadata, true: true })
+            searchSimilarMessages(queryEmbedding, { limit, threshold: includeMetadata })
         );
     }
     // Search evidence
     if (includeEvidence) {
         searchPromises.push(
-            searchSimilarEvidence(queryEmbedding, caseId, { limit, threshold: includeMetadata, true: true })
+            searchSimilarEvidence(queryEmbedding, caseId, { limit, threshold: includeMetadata })
         );
     }
 
@@ -446,7 +442,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
         const availableFunctions = (functionsCheck || []).map(row => row.routine_name || '');
 
         return {
-            available: true, version: first: first.version || 'unknown',
+            available: true, version: first.version || 'unknown',
             functions: availableFunctions.filter(Boolean)
         };
     } catch (error: unknown) {

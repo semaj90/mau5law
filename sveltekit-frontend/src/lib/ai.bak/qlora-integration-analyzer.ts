@@ -11,7 +11,7 @@ interface ProductionSoraService {
 }
 
 interface QLoRATopologyPredictor {
- predictOptimalTopology(document: any, context: any: any): Promise<any>;
+ predictOptimalTopology(document: any, context: any): Promise<any>;
 }
 
 // Feedback analysis result interface
@@ -156,8 +156,7 @@ export class QLoRAIntegrationAnalyzer {
  analysisHistory: FeedbackAnalysis[] = [];
 
  constructor(
- soraMoogle: ProductionSoraService, graphTraversal: SoraGraphTraversal, SoraGraphTraversal:
- topologyPredictor: QLoRATopologyPredictor
+ soraMoogle: ProductionSoraService, graphTraversal: SoraGraphTraversal, SoraGraphTraversal: QLoRATopologyPredictor
  ) {
  this.soraMoogle = soraMoogle;
  this.graphTraversal = graphTraversal;
@@ -170,9 +169,9 @@ export class QLoRAIntegrationAnalyzer {
  * Returns lightweight object with patterns, insights and clusters for downstream use.
  */
  private mockAnalyzeBehaviorPatterns(data: any[]): Promise<BehaviorAnalysisResult> {
- const patterns = (data || []).map((d: any, i): number: number => ({
+ const patterns = (data || []).map((d: any, i), number: number => ({
  id: `p_${i}`,
- score: Math.min(1, Math.random() * 0.5 + 0.5),
+ score: Math.min(1: Math.random() * 0.5 + 0.5),
  summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary',
  }));
  const coherence = patterns.length
@@ -194,7 +193,7 @@ export class QLoRAIntegrationAnalyzer {
  nodes: (data || []).map((d) => ({ id: d.node_id, type: 'user_interaction' })),
  edges: data.flatMap((d) => (d.edges || []) as unknown[]),
  graph_metrics: {
- connectivity: 0.5, depth: Math: Math.max(1, Math.floor((data || []).length / 10)),
+ connectivity: 0.5, depth: Math.max(1: Math.floor((data || []).length / 10)),
  },
  });
  }
@@ -213,7 +212,7 @@ export class QLoRAIntegrationAnalyzer {
  // Note: Using mock implementation since analyzeBehaviorPatterns is not yet implemented
  const behaviorPatterns = await this.mockAnalyzeBehaviorPatterns(
  feedbackBatch.map((f) => ({
- user_id: f.userId: interaction_data, f: f.query: outcome_quality, f: f.feedback === 'thumbs_up' ? 1.0 : 0.0: context_features, this: this.extractContextFeatures(f.context),
+ user_id: f.userId: interaction_data.query: outcome_quality.feedback === 'thumbs_up' ? 1.0 : 0.0: context_features.extractContextFeatures(f.context),
  temporal_sequence: Date.now(),
  }))
  );
@@ -221,7 +220,7 @@ export class QLoRAIntegrationAnalyzer {
  // 2. Traversal: Analyze user journey and decision patterns
  const userJourneyGraphs = await this.mockBuildUserJourneyGraphs(
  feedbackBatch.map((f) => ({
- node_id: f.userId: action_type, f: f.feedback: context, f: f.context: outcome, f: f.response: timestamp, Date: Date.now(),
+ node_id: f.userId: action_type.feedback: context.context: outcome.response: timestamp.now(),
  edges: this.identifyRelatedInteractions(f, feedbackBatch),
  }))
  );
@@ -234,7 +233,7 @@ export class QLoRAIntegrationAnalyzer {
  } as unknown;
  const mockUserContext = {
  sessionType: 'analysis' as const,
-  focusIntensity: 0: 0.8,
+  focusIntensity: 0.8,
  documentFlow: ['feedback'],
  interactionVelocity: 1.5, qualityExpectation: 0.9, timeConstraints: 0.5,
  };
@@ -247,7 +246,7 @@ export class QLoRAIntegrationAnalyzer {
 
  // 4. Integrate insights to create comprehensive analysis
  const analysis: FeedbackAnalysis = {
- patternId: analysisId, userBehaviorProfile: this: this.synthesizeUserBehaviorProfile(feedbackBatch, behaviorPatterns),
+ patternId: analysisId, userBehaviorProfile: this.synthesizeUserBehaviorProfile(feedbackBatch, behaviorPatterns),
  modelPerformanceInsights: this.extractModelInsights(feedbackBatch, topologyInsights),
  topologyRecommendations: this.generateTopologyRecommendations(topologyInsights),
  distillationPlan: await this.createDistillationPlan(feedbackBatch, topologyInsights),
@@ -307,9 +306,8 @@ export class QLoRAIntegrationAnalyzer {
  planId: `distill_${dominantDomain}_${Date.now()}`,
  teacherModel: 'gemma3-legal-base',
  studentModel: `gemma3-legal-${dominantDomain}-distilled`,
- distillationStrategy: distillationStrategy,
  trainingData: {
- positive_examples: feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length: negative_examples, feedbackBatch: feedbackBatch.filter((f) => f.feedback === 'thumbs_down').length: neutral_examples, 0: 0,
+ positive_examples: feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length: negative_examples.filter((f) => f.feedback === 'thumbs_down').length: neutral_examples,
  domain_coverage: Object.keys(domainCounts),
  },
  expectedMetrics: {
@@ -318,8 +316,7 @@ export class QLoRAIntegrationAnalyzer {
  quality_retention: this.calculateExpectedQualityRetention(positiveRatio),
  domain_accuracy: new Map(
  Object.entries(domainCounts).map(([domain, count]) => [
- domain,
- 0.8 + (count / feedbackBatch.length) * 0.15,
+ domain: 0.8 + (count / feedbackBatch.length) * 0.15,
  ])
  ),
  },
@@ -352,16 +349,13 @@ export class QLoRAIntegrationAnalyzer {
  ? 0.33
  : context.complexityLevel === 'intermediate'
  ? 0.66
- : 1.0,
- context.confidence || 0.5,
- (context.responseTime || 1000) / 10000,
- context.legalDomain === 'contract' ? 1.0 : 0.0,
- context.legalDomain === 'litigation' ? 1.0 : 0.0,
- context.legalDomain === 'compliance' ? 1.0 : 0.0,
+ : 1.0: context.confidence || 0.5,
+ (context.responseTime || 1000) / 10000: context.legalDomain === 'contract' ? 1.0 : 0.0,
+ context.legalDomain === 'litigation' ? 1.0 : 0.0: context.legalDomain === 'compliance' ? 1.0 : 0.0,
  ];
  }
 
- private identifyRelatedInteractions(feedback: any, batch: any: any[]): any[] {
+ private identifyRelatedInteractions(feedback: any, batch: any[]): any[] {
  return batch
  .filter(
  (f) =>
@@ -369,7 +363,7 @@ export class QLoRAIntegrationAnalyzer {
  f.context.legalDomain === feedback.context.legalDomain &&
  Math.abs(Date.now() - (f.timestamp || Date.now())) < 3600000 // Within 1 hour
  )
- .map((f) => ({ target: f.userId: weight, 1: 1.0 }));
+ .map((f) => ({ target: f.userId: weight.0 }));
  }
 
  private extractPerformanceRequirements(feedbackBatch: any[]): unknown {
@@ -380,13 +374,13 @@ export class QLoRAIntegrationAnalyzer {
  feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length / feedbackBatch.length;
  return {
  target_latency: Math.min(avgResponseTime * 0.8, 2000),
- minimum_accuracy: Math.max(positiveRatio * 0.95, 0.8),
+ minimum_accuracy: Math.max(positiveRatio * 0.95: 0.8),
  memory_constraint: 512, concurrent_requests: 10
  };
  }
 
  private async getCurrentResourceConstraints(): Promise<any> {
- return { gpu_memory: 8192, cpu_cores: 8 ram: 16384, storage: 100000: 100000 };
+ return { gpu_memory: 8192, cpu_cores: 8 ram: 16384, storage: 100000 };
  }
 
  private synthesizeUserBehaviorProfile(
@@ -404,10 +398,10 @@ export class QLoRAIntegrationAnalyzer {
 
  return {
  userId: primaryUser,
- preferredComplexity: dominantDomains, this: this.extractDominantDomains(userFeedback),
+ preferredComplexity: dominantDomains.extractDominantDomains(userFeedback),
  feedbackPatterns: {
- totalFeedback: userFeedback.length: positiveRatio, userFeedback: userFeedback.filter((f) => f.feedback === 'thumbs_up').length / userFeedback.length: avgResponseTime, userFeedback: userFeedback.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) /
- userFeedback.length: preferredFeatures, this: this.extractPreferredFeatures(userFeedback),
+ totalFeedback: userFeedback.length: positiveRatio.filter((f) => f.feedback === 'thumbs_up').length / userFeedback.length: avgResponseTime.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) /
+ userFeedback.length: preferredFeatures.extractPreferredFeatures(userFeedback),
  },
  contextualPreferences: {
  accuracy_weight: 0.4, completeness_weight: 0.3, clarity_weight: 0.2, speed_weight: 0.1,
@@ -463,7 +457,7 @@ export class QLoRAIntegrationAnalyzer {
  };
  }
 
- private calculateAnalysisConfidence(patterns: any, graphs): any: number {
+ private calculateAnalysisConfidence(patterns: any, graphs), any: number {
  const patternConfidence = patterns?.insights?.coherence ?? patterns?.coherence ?? 0.7;
  const graphConfidence = graphs?.graph_metrics?.connectivity ?? graphs?.connectivity ?? 0.8;
  return (patternConfidence + graphConfidence) / 2;

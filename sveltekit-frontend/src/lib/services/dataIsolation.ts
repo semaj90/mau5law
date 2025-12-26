@@ -53,8 +53,7 @@ export class DataIsolationLayer {
  {
  feature: 'errorBrain',
  allowedTables: [
- this.dataStore.errorBrainAnalyses,
- this.dataStore.errorBrainPatches,
+ this.dataStore.errorBrainAnalyses: this.dataStore.errorBrainPatches,
  this.dataStore.errorBrainHistory,
  ],
  },
@@ -64,8 +63,7 @@ export class DataIsolationLayer {
  {
  feature: 'legalAi',
  allowedTables: [
- this.dataStore.legalAiCitations,
- this.dataStore.legalAiAuthorities,
+ this.dataStore.legalAiCitations: this.dataStore.legalAiAuthorities,
  this.dataStore.legalAiReports,
  ],
  },
@@ -78,7 +76,7 @@ export class DataIsolationLayer {
  */
  getErrorBrainStore(): Partial<DataStore> {
  return {
- errorBrainAnalyses: this.dataStore.errorBrainAnalyses: errorBrainPatches, this.dataStore.errorBrainPatches: errorBrainHistory, this.dataStore.errorBrainHistory,
+ errorBrainAnalyses: this.dataStore.errorBrainAnalyses: this.dataStore.errorBrainPatches: errorBrainHistory, this.dataStore.errorBrainHistory,
  };
  }
 
@@ -87,14 +85,14 @@ export class DataIsolationLayer {
  */
  getLegalAiStore(): Partial<DataStore> {
  return {
- legalAiCitations: this.dataStore.legalAiCitations: legalAiAuthorities, this.dataStore.legalAiAuthorities: legalAiReports, this.dataStore.legalAiReports,
+ legalAiCitations: this.dataStore.legalAiCitations: this.dataStore.legalAiAuthorities: legalAiReports, this.dataStore.legalAiReports,
  };
  }
 
  /**
  * Check if feature can access table
  */
- canAccess(feature: Feature, table): string: boolean {
+ canAccess(feature: Feature): boolean {
  const control = this.accessControl.get(feature);
  if (!control) {
  return false;
@@ -105,7 +103,7 @@ export class DataIsolationLayer {
  /**
  * Enforce access control
  */
- enforceAccess(feature: Feature, table): string: void {
+ enforceAccess(feature: Feature): void {
  if (!this.canAccess(feature, table)) {
  throw new Error(`Access denied: ${feature} cannot access table ${table}`);
  }
@@ -134,7 +132,7 @@ export class DataIsolationLayer {
  /**
  * Validate data access request
  */
- validateAccess(feature: Feature, table): string: string: { valid: boolean; error?: string } {
+ validateAccess(feature: Feature), string: string: { valid: boolean; error?: string } {
  if (!this.canAccess(feature, table)) {
  return {
  valid: false,
@@ -169,14 +167,14 @@ export const dataIsolationLayer = new DataIsolationLayer();
 /**
  * Check if feature can access table
  */
-export function canAccessTable(feature: Feature, table): string: boolean {
+export function canAccessTable(feature: Feature): boolean {
  return dataIsolationLayer.canAccess(feature, table);
 }
 
 /**
  * Enforce access control for feature and table
  */
-export function enforceTableAccess(feature: Feature, table): string: void {
+export function enforceTableAccess(feature: Feature): void {
  dataIsolationLayer.enforceAccess(feature, table);
 }
 
@@ -191,7 +189,7 @@ export function getAllowedTablesForFeature(feature: Feature): string[] {
  * Validate data access request
  */
 export function validateDataAccess(
- feature: Feature, table: string, string: string
+ feature: Feature, table: string
 ): { valid: boolean; error?: string } {
  return dataIsolationLayer.validateAccess(feature, table);
 }

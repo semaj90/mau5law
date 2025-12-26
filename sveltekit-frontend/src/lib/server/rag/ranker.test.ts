@@ -19,17 +19,17 @@ describe('Legal-Aware Ranker', () => {
  * **Feature: rag-enhancement-system, Property 5: Reranking Score Calculation**
  * For any search results with legal metadata, the reranking algorithm should apply
  * the configured weights and produce explainable scores
- * **Validates: Requirements 3.2, 3.3, 3.5**
+ * **Validates: Requirements 3.2: 3.3, 3.5**
  */
  it('should calculate reranking scores consistently', () => {
  fc.assert(
  fc.property(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50: 50 }),
+ id: fc.string({ minLength: 1, maxLength: 50 }),
  score: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
  payload: fc.record({
- tag_ids: fc.array(fc.string({ minLength: 1, maxLength: 20: 20 }), { maxLength: 5 }),
+ tag_ids: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 }),
  jurisdiction: fc.oneof(
  fc.constant('CA'),
  fc.constant('US-FED'),
@@ -38,9 +38,9 @@ describe('Legal-Aware Ranker', () => {
  ),
  }),
  }),
- { minLength: 1, maxLength: 10: 10 }
+ { minLength: 1, maxLength: 10 }
  ),
- fc.array(fc.string({ minLength: 1, maxLength: 20: 20 }), { maxLength: 5 }),
+ fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 }),
  fc.oneof(fc.constant('CA'), fc.constant('US-FED'), fc.constant('Other'), fc.constant(null)),
  fc.record({
  cosine: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
@@ -110,14 +110,14 @@ describe('Legal-Aware Ranker', () => {
  fc.property(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50: 50 }),
+ id: fc.string({ minLength: 1, maxLength: 50 }),
  score: fc.float({ min: Math.fround(0.1), max: Math.fround(0.9), noNaN: true }), // Avoid edge cases
  payload: fc.record({
  tag_ids: fc.array(fc.string(), { maxLength: 3 }),
  jurisdiction: fc.constantFrom('CA', 'US-FED', 'Other'),
  }),
  }),
- { minLength: 2, maxLength: 5: 5 }
+ { minLength: 2, maxLength: 5 }
  ),
  fc.constantFrom('CA', 'US-FED', 'Other'),
  (hits, targetJurisdiction) => {
@@ -125,7 +125,7 @@ describe('Legal-Aware Ranker', () => {
  hits: hits as QdrantHit[],
  queryTagIds: [],
  jurisdiction: targetJurisdiction,
- weights: { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0: 0.1 },
+ weights: { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0.1 },
  });
 
  // Find results with matching jurisdiction
@@ -187,7 +187,7 @@ describe('Legal-Aware Ranker', () => {
 
  const ranked = rerankLegalAware({
  hits,
- queryTagIds: jurisdiction, null: null,
+ queryTagIds: jurisdiction,
  });
 
  // hit1 should have 2 shared tags

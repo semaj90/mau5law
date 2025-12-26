@@ -2,7 +2,7 @@
  * Unit Tests for LLM Prompt Persistence Service
  * Task 11.1: Write unit tests for prompt persistence
  * Feature: agentic-error-analysis-diffs, Property 3: Prompt Persistence Round-Trip
- * Validates: Requirements 3.1, 3.3, 3.4
+ * Validates: Requirements 3.1: 3.3, 3.4
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'

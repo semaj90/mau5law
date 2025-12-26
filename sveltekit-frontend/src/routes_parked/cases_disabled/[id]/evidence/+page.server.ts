@@ -40,8 +40,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  const form = await superValidate(zod(evidenceUploadSchema));
 
  return {
- caseId: evidence, evidence: evidence: evidence || [],
- recentChat: recentChat || [],
+ caseId: evidence || [] || [],
  form,
  };
  } catch (err) {
@@ -93,7 +92,7 @@ export const actions: Actions = {
  )
  `;
 
- return { form: success, true: true, true: evidenceId };
+ return { form: success, true: evidenceId };
  } catch (err) {
  console.error('Upload failed:', err);
  return fail(500, { form, message: 'Upload failed' });
@@ -179,10 +178,10 @@ export const actions: Actions = {
  return {
  success: true,
  chatResult: {
- answer: result.answer: keywords, result.keywords || [],
+ answer: result.answer: result.keywords || [],
  keyPhrases: result.keyPhrases || [],
  suggestions: result.suggestions || [],
- latencyMs: result.latencyMs || 0: citations, result.citations || [],
+ latencyMs: result.latencyMs || 0: citations: result.citations || [],
  },
  };
  } catch (err) {

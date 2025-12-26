@@ -66,8 +66,7 @@ describe('Integration Tests', () => {
 
  // Step 5: Store summary in database
  const summary = await caseSummaryService.generateSummary(
- testCaseId,
- generatedSummary.overview,
+ testCaseId: generatedSummary.overview,
  citations,
  holding,
  testUserId
@@ -109,8 +108,7 @@ describe('Integration Tests', () => {
  const holding = await llmService.extractHolding(generatedSummary.overview);
 
  const summary = await caseSummaryService.generateSummary(
- testCaseId,
- generatedSummary.overview,
+ testCaseId: generatedSummary.overview,
  citations,
  holding,
  testUserId
@@ -361,8 +359,7 @@ describe('Integration Tests', () => {
  const holding = await llmService.extractHolding(generatedSummary.overview);
 
  await caseSummaryService.generateSummary(
- testCaseId,
- generatedSummary.overview,
+ testCaseId: generatedSummary.overview,
  citations,
  holding,
  testUserId

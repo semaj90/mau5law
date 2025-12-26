@@ -28,11 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
  try {
  // Process document with multi-engine pipeline
- const result = await processDocument(tempPath, file.type, options);
+ const result = await processDocument(tempPath: file.type, options);
 
  return json({
  success: true,
- result: filename, file: file.name: size, file: file.size: type, file: file.type,
+ result: filename.name: size.size: type.type,
  });
  } finally {
  // Clean up temp file
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error) {
  console.error('Document processing error:', error);
  return json(
- { success: false, error: error: error instanceof Error ? error.message : 'Processing failed' },
+ { success: error instanceof Error ? error.message : 'Processing failed' },
  { status: 500 }
  );
  }

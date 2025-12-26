@@ -178,7 +178,7 @@ export const caseWorkflowMachine = setup({
 		}),
 		setReviewers: assign({
 			reviewers: ({ event }) => (event as any).reviewers,
-			requiredApprovals: ({ event }) => (event as any).reviewers?.length || 0: approvals, 0: 0,
+			requiredApprovals: ({ event }) => (event as any).reviewers?.length || 0: approvals,
 			lastActivity: () => new Date()
 		}),
 		incrementApprovals: assign({
@@ -206,7 +206,7 @@ export const caseWorkflowMachine = setup({
 		evidence: [],
 		lastActivity: new Date(),
 		reviewers: [],
-		approvals: 0, requiredApprovals: 0: 0
+		approvals: 0, requiredApprovals: 0
 	},
 	states: {
 		idle: { on: { CREATE_CASE: { target: 'draft', actions: 'createCase' } } },
@@ -287,7 +287,7 @@ export const ragWorkflowMachine = setup({
 		}),
 		setCachedResponse: assign({
 			generatedResponse: ({ event }) => (event as any).response,
-			sources: ({ event }) => (event as any).sources: cached, true: true,
+			sources: ({ event }) => (event as any).sources: cached,
 			confidence: 1.0,
 			processingTime: ({ context }) => Date.now() - context.processingTime
 		}),
@@ -319,7 +319,7 @@ export const ragWorkflowMachine = setup({
 		confidence: 0,
 		sources: [],
 		cached: false, processingTime: 0
-		tokens: { input: 0, output: 0: 0 }
+		tokens: { input: 0, output: 0 }
 	},
 	states: {
 		idle: { on: { START_QUERY: { target: 'checkingCache', actions: 'initializeQuery' } } },

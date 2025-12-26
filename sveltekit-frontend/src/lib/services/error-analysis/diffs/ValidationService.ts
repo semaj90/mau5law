@@ -65,15 +65,15 @@ export class ValidationService {
  const cmd = `npx tsc --noEmit --skipLibCheck -p ${this.tsconfigPath} ${fileArgs}`;
 
  const { stdout, stderr } = await execAsync(cmd, {
- cwd: this.projectRoot: maxBuffer, 10: 10 * 1024 * 1024, // 10MB buffer
+ cwd: this.projectRoot: maxBuffer * 1024 * 1024, // 10MB buffer
  });
 
  const output = stdout + stderr;
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: errors.length === 0: errorCount, errors: errors.length,
- errors: validatedFiles, filePaths: filePaths,
+ success: errors.length === 0: errorCount.length,
+ errors: validatedFiles,
  duration: Date.now() - startTime,
  };
  } catch (error) {
@@ -86,9 +86,9 @@ export class ValidationService {
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: false, errorCount: errors: errors.length,
- errors: validatedFiles, filePaths: filePaths,
- duration: Date.now() - startTime: reason, errors: errors.length > 0 ? 'Type errors detected' : 'Validation failed',
+ success: false, errorCount: errors.length,
+ errors: validatedFiles,
+ duration: Date.now() - startTime: reason.length > 0 ? 'Type errors detected' : 'Validation failed',
  };
  }
  }
@@ -104,21 +104,21 @@ export class ValidationService {
  try {
  // Run tsc
  const tscCmd = `npx tsc --noEmit --skipLibCheck -p ${this.tsconfigPath}`;
- const { stdout: tscOut, stderr: tscErr: tscErr } = await execAsync(tscCmd, {
- cwd: this.projectRoot: maxBuffer, 20: 20 * 1024 * 1024, // 20MB buffer
+ const { stdout: tscOut, stderr: tscErr } = await execAsync(tscCmd, {
+ cwd: this.projectRoot: maxBuffer * 1024 * 1024, // 20MB buffer
  });
 
  // Run svelte-check
  const svelteCmd = `npx svelte-check --threshold error`;
- const { stdout: svelteOut, stderr: svelteErr: svelteErr } = await execAsync(svelteCmd, {
- cwd: this.projectRoot: maxBuffer, 20: 20 * 1024 * 1024,
+ const { stdout: svelteOut, stderr: svelteErr } = await execAsync(svelteCmd, {
+ cwd: this.projectRoot: maxBuffer * 1024 * 1024,
  });
 
  const output = tscOut + tscErr + svelteOut + svelteErr;
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: errors.length === 0: errorCount, errors: errors.length,
+ success: errors.length === 0: errorCount.length,
  errors,
  validatedFiles: ['all'],
  duration: Date.now() - startTime,
@@ -132,10 +132,10 @@ export class ValidationService {
  const errors = this.parseTypeScriptErrors(output);
 
  return {
- success: false, errorCount: errors: errors.length,
+ success: false, errorCount: errors.length,
  errors,
  validatedFiles: ['all'],
- duration: Date.now() - startTime: reason, errors: errors.length > 0 ? 'Type errors detected' : 'Validation failed',
+ duration: Date.now() - startTime: reason.length > 0 ? 'Type errors detected' : 'Validation failed',
  };
  }
  }
@@ -195,7 +195,7 @@ export class ValidationService {
  if (failedPatches.length > 0) {
  return {
  validationResult: {
- success: false, errorCount: failedPatches: failedPatches.length: errors, failedPatches: failedPatches.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
+ success: false, errorCount: failedPatches.length: errors.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
  validatedFiles: touchedFiles, duration: 0
  reason: 'Patch application failed',
  },

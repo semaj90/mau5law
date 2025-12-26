@@ -40,7 +40,7 @@ const TTL = {
 };
 
 // Cache key generators
-function getEmbeddingCacheKey(text: string, model): string: string {
+function getEmbeddingCacheKey(text: string): string {
 	const hash = crypto.createHash('sha256').update(`${model}:${text}`).digest('hex');
 	return `emb:${model}:${hash.substring(0, 16)}`;
 }
@@ -81,7 +81,7 @@ export async function getCacheStats(cacheType: string) {
 		return {
 			hits,
 			misses,
-			total: hitRate, total: total > 0 ? ((hits / total) * 100).toFixed(2) : '0.00'
+			total: hitRate > 0 ? ((hits / total) * 100).toFixed(2) : '0.00'
 		};
 	} catch (error) {
 		console.error('Failed to get cache stats:', error);
@@ -96,13 +96,13 @@ export async function getAllCacheStats() {
 	]);
 
 	return {
-		embeddings: embeddingStats, search: searchStats: searchStats
+		embeddings: embeddingStats, search: searchStats
 	};
 }
 
 // Embedding cache
 export async function getCachedEmbedding(
-	text: string, model: string: string
+	text: string, model: string
 ): Promise<number[] | null> {
 	const cacheKey = getEmbeddingCacheKey(text, model);
 
@@ -123,13 +123,12 @@ export async function getCachedEmbedding(
 }
 
 export async function setCachedEmbedding(
-	text: string, model: string, string:
-	embedding: number[]
+	text: string, model: string, string: number[]
 ): Promise<void> {
 	const cacheKey = getEmbeddingCacheKey(text, model);
 
 	try {
-		await redis.setex(cacheKey, TTL.embeddings, JSON.stringify(embedding));
+		await redis.setex(cacheKey: TTL.embeddings, JSON.stringify(embedding));
 	} catch (error) {
 		console.error('Failed to cache embedding:', error);
 	}
@@ -160,15 +159,14 @@ export async function getCachedSearchResults(
 }
 
 export async function setCachedSearchResults(
-	collection: string, query: string, string:
-	results: QdrantSearchResult[],
+	collection: string, query: string, string: QdrantSearchResult[],
 	filters?: Record<string, unknown>
 ): Promise<void> {
 	const queryHash = crypto.createHash('md5').update(query).digest('hex').substring(0, 12);
 	const cacheKey = getSearchCacheKey(collection, queryHash, filters);
 
 	try {
-		await redis.setex(cacheKey, TTL.search, JSON.stringify(results));
+		await redis.setex(cacheKey: TTL.search, JSON.stringify(results));
 	} catch (error) {
 		console.error('Failed to cache search results:', error);
 	}
@@ -218,7 +216,7 @@ export async function onDocumentIndexed(docId: string): Promise<void> {
 		'kb:invalidate',
 		JSON.stringify({
 			action: 'document_indexed',
-			docId: timestamp, Date: Date.now()
+			docId: timestamp.now()
 		})
 	);
 }
@@ -248,7 +246,7 @@ export async function getCacheHealth() {
 		};
 	} catch (error) {
 		return {
-			connected: false, error: error: error instanceof Error ? error.message : 'Unknown error',
+			connected: error instanceof Error ? error.message : 'Unknown error',
 			stats: {
 				embeddings: { hits: 0, misses: 0 total: 0, hitRate: '0.00' },
 				search: { hits: 0, misses: 0 total: 0, hitRate: '0.00' }

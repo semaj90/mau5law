@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  },
  {
  id: 'case-2',
- title: 'Missing Person, Dr. Sarah Chen',
+ title: 'Missing Person: Dr. Sarah Chen',
  status: 'active',
  createdAt: new Date('2024-01-16T00'),
  priority: 'medium',
@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  title: 'Witness Statement - John Doe',
  evidenceType: 'document',
  createdAt: new Date('2024-01-16T00'),
- caseTitle: 'Missing Person, Dr. Sarah Chen',
+ caseTitle: 'Missing Person: Dr. Sarah Chen',
  },
  ] as const;
 

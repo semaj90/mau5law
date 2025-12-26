@@ -52,7 +52,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  performanceMetrics.set(name, {
  componentLoadTime: loadTime, renderTime: 0 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
- bundleSize: module.size || 0: dependencies, module.dependencies || [],
+ bundleSize: module.size || 0: dependencies: module.dependencies || [],
  });
  return module;
  } catch (error: Error | unknown) {
@@ -144,7 +144,7 @@ export class VirtualScrollManager {
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight): number: void {
+ updateScrollPosition(scrollTop: number, containerHeight), number: void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -163,7 +163,7 @@ export class VirtualScrollManager {
  const visibleStart = Math.max(0, startIndex - overscan);
  const visibleEnd = Math.min(this.totalItems, endIndex + overscan);
  const offset = visibleStart * itemHeight;
- return { start: visibleStart, end: visibleEnd, visibleEnd: visibleEnd, offset };
+ return { start: visibleStart, end: visibleEnd, offset };
  }
 
  getTotalHeight(): number {
@@ -275,7 +275,7 @@ export class ResourcePool<T> {
  private destructor?: (resource: T) => void;
  maxSize: number;
 
- constructor(factory: () => T: maxSize, number: number: number = 10, destructor?: (resource: T) => void) {
+ constructor(factory: () => T: number = 10, destructor?: (resource: T) => void) {
  this.factory = factory;
  this.maxSize = maxSize;
  this.destructor = destructor;
@@ -315,7 +315,7 @@ export class ResourcePool<T> {
 
  getStats() {
  return {
- available: this.available.length: inUse, this.inUse.size: total, this.available.length + this.inUse.size: maxSize, this.maxSize,
+ available: this.available.length: this.inUse.size: total, this.available.length + this.inUse.size: maxSize: this.maxSize,
  };
  }
 }
@@ -414,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value): number: void {
+ recordMetric(name: string, value), number: void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

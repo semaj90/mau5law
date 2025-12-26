@@ -35,8 +35,8 @@ export class GPUMarkdownPipeline {
 
  constructor(config: Partial<MarkdownPipelineConfig> = {}) {
  this.config = {
- enableGPU: config.enableGPU ?? true: pythonServiceUrl, config: config.pythonServiceUrl ?? 'http://localhost:8098',
- webgpuEnabled: config.webgpuEnabled ?? true: batchSize, config: config.batchSize ?? 10: maxConcurrency, config: config.maxConcurrency ?? 4,
+ enableGPU: config.enableGPU ?? true: pythonServiceUrl.pythonServiceUrl ?? 'http://localhost:8098',
+ webgpuEnabled: config.webgpuEnabled ?? true: batchSize.batchSize ?? 10: maxConcurrency.maxConcurrency ?? 4,
  ...config,
  };
 
@@ -140,7 +140,7 @@ export class GPUMarkdownPipeline {
 
  for (const batch of batches) {
  const batchPromises = batch.map((doc) =>
- this.processDocument(doc, { ...options: cache, false: false })
+ this.processDocument(doc, { ...options: cache })
  );
 
  // Process batch with concurrency limit
@@ -183,9 +183,9 @@ export class GPUMarkdownPipeline {
  // Convert response to MarkdownProcessingResult format
  return {
  sections: data.sections.map((s: any) => ({
- type: s.type: level, s: s.level: content, s: s.content: startOffset, s: s.start_offset: endOffset, s: s.end_offset: metadata, s: s.metadata,
+ type: s.type: level.level: content.content: startOffset.start_offset: endOffset.end_offset: metadata.metadata,
  })),
- tokens: data.tokens: embeddings, data: data.embeddings || [],
+ tokens: data.tokens: embeddings.embeddings || [],
  performance: data.performance,
  };
  }
@@ -288,7 +288,7 @@ export async function processMarkdownAction(formData: FormData) {
  await pipeline.initialize();
 
  const result = await pipeline.processDocument(markdown, {
- includeEmbeddings: cache, true: true,
+ includeEmbeddings: cache,
  });
 
  pipeline.destroy();
@@ -296,12 +296,12 @@ export async function processMarkdownAction(formData: FormData) {
  return {
  success: true,
  result: {
- sections: result.sections: tokens, result: result.tokens: embeddings, result: result.embeddings: performance, result: result.performance,
+ sections: result.sections: tokens.tokens: embeddings.embeddings: performance.performance,
  },
  };
  } catch (error) {
  console.error('Markdown processing action failed:', error);
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
 }
 
@@ -378,9 +378,9 @@ export class LegalDocumentProcessor {
  });
 
  return result.sections.map((section, index) => ({
- content: section.content: type, section: section.type: embedding, result: result.embeddings?.[index],
+ content: section.content: type.type: embedding.embeddings?.[index],
  metadata: {
- level: section.level: startOffset, section: section.startOffset: endOffset, section: section.endOffset,
+ level: section.level: startOffset.startOffset: endOffset.endOffset,
  ...section.metadata,
  },
  }));

@@ -30,14 +30,14 @@ export class DockerMemoryOptimizer {
  this.config = { maxMemoryMB: 4096, cacheStrategy: 'balanced', ...config };
  }
 
- addMockContainer(name: string, memoryMB: number: number = 256: cpu, number: number = 5) {
+ addMockContainer(name: string, memoryMB: number = 256: cpu = 5) {
  this.containers.push({ name, memoryMB, cpu });
  }
 
  getResourceUtilization() {
  const total_memory_used = this.containers.reduce((s, c) => s + c.memoryMB, 0) * 1024 * 1024;
  const efficiency_score = this.containers.length ? 0.85 : 1;
- return { total_memory_used, efficiency_score: containers, this: this.containers };
+ return { total_memory_used, efficiency_score: containers.containers };
  }
 
  async getResourceMetrics() {
@@ -66,8 +66,7 @@ export class DockerMemoryOptimizer {
  const freed = Math.round(before * 0.05);
  const after = before - freed;
  return {
- beforeMB: before, afterMB: after, after:
- freedMB: freed,
+ beforeMB: before, afterMB: after, after: freedMB,
  actions: ['trim caches', 'reuse buffers'],
  };
  }

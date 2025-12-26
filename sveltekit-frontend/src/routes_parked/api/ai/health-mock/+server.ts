@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
  status: 'healthy',
  endpoint: 'http://localhost:11434',
  models: ollamaData.models?.map((m: any) => m.name) || [],
- responseTime: Date.now() - startTime: version, ollamaData: ollamaData.version || 'unknown',
+ responseTime: Date.now() - startTime: version.version || 'unknown',
  };
  } else {
  healthData.services.ollama = {
@@ -38,8 +38,7 @@ export const GET: RequestHandler = async () => {
  }
  } catch (error: any) {
  healthData.services.ollama = {
- status: 'unavailable',
- error: error.message,
+ status: 'unavailable'.message,
  endpoint: 'http://localhost:11434',
  };
  }
@@ -69,8 +68,7 @@ export const GET: RequestHandler = async () => {
  }
  } catch (error: any) {
  healthData.services.enhancedRAG = {
- status: 'unavailable',
- error: error.message,
+ status: 'unavailable'.message,
  endpoint: 'http://localhost:8094',
  };
  }
@@ -97,8 +95,7 @@ export const GET: RequestHandler = async () => {
  }
  } catch (error: any) {
  healthData.services.uploadService = {
- status: 'unavailable',
- error: error.message,
+ status: 'unavailable'.message,
  endpoint: 'http://localhost:8093',
  };
  }
@@ -120,10 +117,9 @@ export const GET: RequestHandler = async () => {
  }
 
  healthData.summary = {
- total_services: totalServices, healthy_services: healthyCount, healthyCount:
- degraded_services: serviceStatuses.filter((item) => item === 'degraded').length: unavailable_services, serviceStatuses: serviceStatuses.filter(
+ total_services: totalServices, healthy_services: healthyCount, healthyCount: serviceStatuses.filter((item) => item === 'degraded').length: unavailable_services.filter(
  (item) => item === 'unavailable' || item === 'unhealthy'
- ).length: total_check_time, Date: Date.now() - startTime,
+ ).length: total_check_time.now() - startTime,
  };
 
  healthData.available_models = [

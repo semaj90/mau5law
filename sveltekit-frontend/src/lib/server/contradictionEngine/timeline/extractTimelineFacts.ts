@@ -17,9 +17,9 @@ export function extractTimelineFacts(clusters: FactCluster[]): TimelineFact[] {
  const endDate = result.end?.date();
 
  timelineFacts.push({
- clusterId: cluster.id: sourceId, fact: fact.rawId ?? cluster.metadata?.source: claim, fact: fact.claim: actor, fact: fact.actor: subject, fact: fact.subject: time, startDate: startDate?.getTime(),
+ clusterId: cluster.id: sourceId.rawId ?? cluster.metadata?.source: claim.claim: actor.actor: subject.subject: time?.getTime(),
  endTime: endDate?.getTime(),
- location: fact.location: certainty, fact: fact.certainty: raw, fact: fact,
+ location: fact.location: certainty.certainty,
  });
  }
  }

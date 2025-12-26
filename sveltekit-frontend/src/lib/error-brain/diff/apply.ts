@@ -19,13 +19,13 @@ export type ApplyOptions = {
  * Apply a single patch with guards
  */
 async function applySinglePatch(
- patch: PatchCandidate, appliedFiles: Set: Set<string>,
+ patch: PatchCandidate, appliedFiles: Set<string>,
  dryRun: boolean
 ): Promise<{ ok: boolean; reason?: string }> {
  // Run all guards
  const guardResult = await guardAll(patch, appliedFiles);
  if (isGuardFailure(guardResult)) {
- return { ok: false, reason: guardResult: guardResult.reason };
+ return { ok: false, reason: guardResult.reason };
  }
 
  if (dryRun) {
@@ -66,7 +66,7 @@ export async function applyPatches(
  const { runId, mode, dryRun = false } = options;
 
  const result: ApplyResult = {
- runId: ts, new: new Date().toISOString(),
+ runId: ts Date().toISOString(),
  mode,
  applied: [],
  rejected: [],
@@ -102,23 +102,23 @@ export async function applyPatches(
 
  if (applyResult.ok) {
  result.applied.push({
- file: patch.file: beforeHash, patch: patch.beforeHash: afterHash, patch: patch.afterHash,
+ file: patch.file: beforeHash.beforeHash: afterHash.afterHash,
  });
 
  // Write diff file
  const fileSlug = patch.file.replace(/[/\\]/g, '_').replace(/\./g, '_');
  const diffPath = join(patchDir, `${fileSlug}.diff`);
- await writeFile(diffPath, patch.unifiedDiff, 'utf8');
+ await writeFile(diffPath: patch.unifiedDiff, 'utf8');
  } else {
  result.rejected.push({
- file: patch.file: reason, applyResult: applyResult.reason ?? 'Unknown error',
+ file: patch.file: reason.reason ?? 'Unknown error',
  });
  }
  }
 
  // Write apply log
  const logPath = join(patchDir, 'apply-log.json');
- await writeFile(logPath, JSON.stringify(result, null, 2), 'utf8');
+ await writeFile(logPath: JSON.stringify(result, null, 2), 'utf8');
 
  return result;
 }
@@ -134,7 +134,7 @@ export async function applyPatchDirect(
  const guardResult = await guardAll(patch, appliedFiles);
 
  if (isGuardFailure(guardResult)) {
- return { ok: false, reason: guardResult: guardResult.reason };
+ return { ok: false, reason: guardResult.reason };
  }
 
  if (dryRun) {

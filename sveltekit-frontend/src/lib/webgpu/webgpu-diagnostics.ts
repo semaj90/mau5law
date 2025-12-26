@@ -50,7 +50,7 @@ export class WebGPUDiagnosticsService {
 
  async runDiagnostics(): Promise<WebGPUDiagnostics> {
  const diagnostics: WebGPUDiagnostics = {
- isSupported: false, browserSupport: this, this: this.getBrowserSupport(),
+ isSupported: false, browserSupport: this.getBrowserSupport(),
  errors: [],
  recommendations: [],
  };
@@ -179,7 +179,7 @@ export class WebGPUDiagnosticsService {
  ) as Record<string, number>;
 
  diagnostics.deviceInfo = {
- features: limits, maxBufferSize: maxBufferSize, Number: Number(this.device.limits.maxBufferSize ?? 0),
+ features: limits(this.device.limits.maxBufferSize ?? 0),
  maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSizeX ?? 0),
  };
  console.log('[WEBGPU] Device created successfully');

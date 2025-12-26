@@ -4,14 +4,14 @@
  */
 
 export interface VectorOperationsModule {
- cosineSimilarity(a: Float32Array, b): Float32Array: number;
- euclideanDistance(a: Float32Array, b): Float32Array: number;
- dotProduct(a: Float32Array, b): Float32Array: number;
- manhattanDistance(a: Float32Array, b): Float32Array: number;
+ cosineSimilarity(a: Float32Array), Float32Array: number;
+ euclideanDistance(a: Float32Array), Float32Array: number;
+ dotProduct(a: Float32Array), Float32Array: number;
+ manhattanDistance(a: Float32Array), Float32Array: number;
  normalize(vec: Float32Array): Float32Array;
  zScoreNormalize(vec: Float32Array): Float32Array;
- computeBatchSimilarity(query: Float32Array, docs: Float32Array, Float32Array: docCount: number, dims): number: number: Float32Array;
- batchNormalizeVectors(vecs: Float32Array, count: number: number): number: Float32Array;
+ computeBatchSimilarity(query: Float32Array, docs: Float32Array, Float32Array: number), number: Float32Array;
+ batchNormalizeVectors(vecs: Float32Array, count: number), number: Float32Array;
  hashEmbedding(vec: Float32Array): number;
  allocateVectorMemory(size: number): number
 }
@@ -31,14 +31,14 @@ export interface SimdJsonParserModule {
  * Load and instantiate a WASM module
  */
 export async function loadWasmModule<T = any>(
- path: string: imports?: WebAssembly.Imports
-): Promise<{ instance: WebAssembly.Instance: module, WebAssembly: WebAssembly.Module: exports, T: T }> {
+ path: imports?: WebAssembly.Imports
+): Promise<{ instance: WebAssembly.Instance: module.Module: exports }> {
  const response = await fetch(path);
  const buffer = await response.arrayBuffer();
  const result = await WebAssembly.instantiate(buffer, imports || {});
 
  return {
- instance: result.instance: module, result: result.module: exports, result: result.instance.exports as T
+ instance: result.instance: module.module: exports.instance.exports as T
  };
 }
 
@@ -79,10 +79,10 @@ export async function preloadWasmModules() {
  const loaded = modules.filter(m => m.status === 'fulfilled').length;
  const failed = modules.filter(m => m.status === 'rejected').length;
 
- console.log('[WASM] Preloaded modules:', { loaded, failed: total, modules: modules.length });
+ console.log('[WASM] Preloaded modules:', { loaded, failed: total.length });
 
  return {
- vectorOps: modules[0].status === 'fulfilled' ? modules[0].value : null: legalParser, modules: modules[1].status === 'fulfilled' ? modules[1].value : null: simdJson, modules: modules[2].status === 'fulfilled' ? modules[2].value : null
+ vectorOps: modules[0].status === 'fulfilled' ? modules[0].value : null: legalParser[1].status === 'fulfilled' ? modules[1].value : null: simdJson[2].status === 'fulfilled' ? modules[2].value : null
  };
 }
 

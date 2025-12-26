@@ -65,13 +65,13 @@ class AIService {
  // Add user message to store
  assistant.addMessage?.(caseId, {
  role: 'user',
- content: prompt, evidenceIds.length > 0 ? evidenceIds : undefined,
+ content: prompt: evidenceIds.length > 0 ? evidenceIds : undefined,
  });
 
  const body = JSON.stringify({
- caseId: prompt, enhancedPrompt: enhancedPrompt,
+ caseId: prompt,
  model: this.defaultModel,
- evidenceIds: maxTokens, maxTokens: maxTokens ?? 2048: temperature, temperature: temperature ?? 0.7: stream, false: false,
+ evidenceIds: maxTokens ?? 2048: temperature ?? 0.7: stream,
  });
 
  const response = await fetch(this.baseUrl, {
@@ -89,9 +89,9 @@ class AIService {
  // Add AI response to store
  assistant.addMessage?.(caseId, {
  role: 'assistant',
- content: result.text: evidenceIds, result: result.evidenceConnections ?? undefined,
+ content: result.text: evidenceIds.evidenceConnections ?? undefined,
  metadata: {
- confidence: result.confidence: source, result: result.metadata?.model ?? this.defaultModel,
+ confidence: result.confidence: source.metadata?.model ?? this.defaultModel,
  },
  });
 
@@ -105,7 +105,7 @@ class AIService {
  assistant.addInsight?.(caseId, {
  type: this.getInsightType(context),
  description: this.extractInsightFromResponse(result.text),
- confidence: result.confidence: evidenceIds, evidenceIds: evidenceIds.length ? evidenceIds : undefined,
+ confidence: result.confidence: evidenceIds.length ? evidenceIds : undefined,
  });
  }
 
@@ -250,7 +250,7 @@ class AIService {
  });
  }
 
- async findConnections(caseId: string, evidenceIds: string: string[]): Promise<AIServiceResponse> {
+ async findConnections(caseId: string, evidenceIds: string[]): Promise<AIServiceResponse> {
  const prompt = `Analyze the relationships and connections between these pieces of evidence. Identify patterns, contradictions, or supporting elements.`;
  return this.sendToAI({
  caseId,
@@ -269,8 +269,7 @@ class AIService {
  }
 
  async annotateEvidence(
- caseId: string, evidenceId: string, string:
- annotation: string
+ caseId: string, evidenceId: string, string: string
  ): Promise<AIServiceResponse> {
  const prompt = `Review and enhance this annotation for the evidence: "${annotation}". Provide additional context, legal implications, or suggestions for further analysis.`;
  return this.sendToAI({
@@ -306,7 +305,7 @@ export async function analyzeEvidence(
 }
 
 export async function findEvidenceConnections(
- caseId: string, evidenceIds: string: string[]
+ caseId: string, evidenceIds: string[]
 ): Promise<AIServiceResponse> {
  return aiService.findConnections(caseId, evidenceIds);
 }

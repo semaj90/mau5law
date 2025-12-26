@@ -24,20 +24,20 @@ export interface EvidenceItem {
  metadata?: Record<string, unknown>;
 }
 
-export async function getEvidence(user: UserType, request: Request, Request: db: any, schema): any: any {
+export async function getEvidence(user: UserType, request: Request, Request: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItems = await drizzleDb.query.evidenceTable.findMany({
- where: eq(schema.evidenceTable.uploadedBy, user.id), // Assuming uploadedBy is userId
+ where: eq(schema.evidenceTable.uploadedBy: user.id), // Assuming uploadedBy is userId
  });
- return json({ success: true, data: evidenceItems: evidenceItems });
+ return json({ success: true, data: evidenceItems });
  } catch (error) {
  console.error('Error fetching evidence:', error);
  return json({ success: false, error: 'Failed to fetch evidence' }, { status: 500 });
  }
 }
 
-export async function getEvidenceItem(user: UserType, evidenceId: string, string: db: any, schema): any: any {
+export async function getEvidenceItem(user: UserType, evidenceId: string, string: any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItem = await drizzleDb.query.evidenceTable.findFirst({
@@ -52,14 +52,14 @@ export async function getEvidenceItem(user: UserType, evidenceId: string, string
  { status: 404 }
  );
  }
- return json({ success: true, data: evidenceItem: evidenceItem });
+ return json({ success: true, data: evidenceItem });
  } catch (error) {
  console.error('Error fetching evidence item:', error);
  return json({ success: false, error: 'Failed to fetch evidence item' }, { status: 500 });
  }
 }
 
-export async function handleCreateEvidence(user: UserType, request: Request, Request: db: any, schema): any: any {
+export async function handleCreateEvidence(user: UserType, request: Request, Request: any): any {
  try {
  const { title, description, fileName, mimeType, fileSize, caseId } = await request.json();
  if (!title || !fileName) {
@@ -74,7 +74,7 @@ export async function handleCreateEvidence(user: UserType, request: Request, Req
  fileName,
  mimeType,
  fileSize,
- caseId: uploadedBy, user: user.id,
+ caseId: uploadedBy.id,
  hash: 'placeholder-hash',
  tags: [],
  chainOfCustody: [],
@@ -83,7 +83,7 @@ export async function handleCreateEvidence(user: UserType, request: Request, Req
  aiTags: [],
  })
  .returning();
- return json({ success: true, data: newEvidence: newEvidence }, { status: 201 });
+ return json({ success: true, data: newEvidence }, { status: 201 });
  } catch (error) {
  console.error('Error creating evidence:', error);
  return json({ success: false, error: 'Failed to create evidence' }, { status: 500 });
@@ -91,8 +91,7 @@ export async function handleCreateEvidence(user: UserType, request: Request, Req
 }
 
 export async function handleEvidenceDetective(
- user: UserType, request: Request, Request:
- evidenceDetectiveService: EvidenceDetectiveService
+ user: UserType, request: Request, Request: EvidenceDetectiveService
 ) {
  try {
  const { evidenceId, query } = await request.json();
@@ -158,7 +157,7 @@ REQUIRED: Provide your analysis as a structured JSON object with keys: 'summary'
  // Store in database (assuming evidence_analysis table exists)
  try {
  await db.insert(db.schema.evidence_analysis).values({
- id: item.id: data, analysis: analysis,
+ id: item.id,
  created_at: new Date(),
  });
  } catch (dbError) {

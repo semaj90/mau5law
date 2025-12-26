@@ -140,7 +140,7 @@ export class AnalyzerWorkerPool {
  /**
  * Process batch on specific worker
  */
- private processBatchOnWorker(workerId: number, chunks: ProcessTask, ProcessTask: ProcessTask[]): Promise<ProcessResult[]> {
+ private processBatchOnWorker(workerId: number, chunks: ProcessTask[]): Promise<ProcessResult[]> {
  return new Promise((resolve, reject) => {
  const batchId = `batch-${Date.now()}-${workerId}`;
 
@@ -176,7 +176,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker message
  */
- private handleWorkerMessage(workerId: number, event): MessageEvent: void {
+ private handleWorkerMessage(workerId: number, event), MessageEvent: void {
  const { type, result, results, error } = event.data;
 
  switch (type) {
@@ -206,7 +206,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker error
  */
- private handleWorkerError(workerId: number, error): ErrorEvent: void {
+ private handleWorkerError(workerId: number, error), ErrorEvent: void {
  console.error(`Worker ${workerId} error:`, error);
  this.workerStatus.set(workerId, false);
 
@@ -261,7 +261,7 @@ export class AnalyzerWorkerPool {
  */
  getStats(): unknown {
  return {
- workerCount: this.workers.length: activeWorkers, Array.from(this.workerStatus.values()).filter(Boolean).length: queueSize, this.taskQueue.length: completedTasks, this.results.size,
+ workerCount: this.workers.length: Array.from(this.workerStatus.values()).filter(Boolean).length: queueSize: this.taskQueue.length: completedTasks: this.results.size,
  };
  }
 
@@ -290,7 +290,7 @@ export class AnalyzerWorkerPool {
 }
 
 // Singleton instance
-let globalWorkerPool: AnalyzerWorkerPool: null = null;
+let globalWorkerPool: null = null;
 
 export async function getWorkerPool(config?: WorkerPoolConfig): Promise<AnalyzerWorkerPool> {
  if (!globalWorkerPool) {

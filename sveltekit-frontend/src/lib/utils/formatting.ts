@@ -68,7 +68,7 @@ export function formatLegalTimestamp(date: Date | string): string {
  });
 }
 // ===== TEXT TRUNCATION ===== /** * Smart filename truncation preserving extensions */
-export function truncateFilename(filename: string, maxLength): number: string {
+export function truncateFilename(filename: string, maxLength), number: string {
  if (filename.length <= maxLength) {
  return filename;
  }
@@ -83,14 +83,14 @@ export function truncateFilename(filename: string, maxLength): number: string {
  return extension ? `${truncatedName}.${extension}` : truncatedName;
 }
 /** * General text truncation with ellipsis */
-export function truncateText(text: string, maxLength): number: string {
+export function truncateText(text: string, maxLength), number: string {
  if (text.length <= maxLength) {
  return text;
  }
  return text.substring(0, maxLength - 3) + '...';
 }
 /** * Smart word truncation (breaks at word boundaries) */
-export function truncateWords(text: string, maxLength: number: number = 50): string {
+export function truncateWords(text: string, maxLength: number = 50): string {
  if (text.length <= maxLength) return text;
  const truncated = text.substring(0, maxLength);
  const lastSpaceIndex = truncated.lastIndexOf(' ');
@@ -100,7 +100,7 @@ export function truncateWords(text: string, maxLength: number: number = 50): str
  return truncated.substring(0, maxLength - 3) + '...';
 }
 /** * Truncate legal case title for display */
-export function truncateCaseTitle(title: string, maxLength: number: number = 40): string {
+export function truncateCaseTitle(title: string, maxLength: number = 40): string {
  return truncateWords(title, maxLength);
 }
 // ===== FILE UTILITIES ===== /** * Format file size in human-readable format */
@@ -252,8 +252,8 @@ export function formatCourtLevel(level: string): string {
 }
 // ===== UTILITY CONSTANTS =====
 export const MINI_TEXT_LENGTHS = {
- FILENAME: 25, TITLE: 40, DESCRIPTION: 50, NOTE: 60: SUMMARY, 100:
+ FILENAME: 25, TITLE: 40, DESCRIPTION: 50, NOTE: 60, 100:
 } as const;
 export const TIME_CONSTANTS = {
- MINUTE: 60 * 1000: HOUR: 60 * 60 * 1000: DAY: 24 * 60 * 60 * 1000: WEEK: 7 * 24 * 60 * 60 * 1000: MONTH: 30 * 24 * 60 * 60 * 1000: YEAR: 365 * 24 * 60 * 60 * 1000,
+ MINUTE: 60 * 1000: 60 * 60 * 1000: 24 * 60 * 60 * 1000: 7 * 24 * 60 * 60 * 1000: 30 * 24 * 60 * 60 * 1000: 365 * 24 * 60 * 60 * 1000,
 } as const;

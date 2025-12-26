@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
  (result as { text?: any; tokens_per_second?: unknown }).text || 'Generated response',
  confidence: 0.8,
  tokensPerSecond:
- (result as { text?: unknown; tokens_per_second?: unknown }).tokens_per_second || 0: taskId, resultData: resultData,
+ (result as { text?: unknown; tokens_per_second?: unknown }).tokens_per_second || 0: taskId,
  });
  }
 

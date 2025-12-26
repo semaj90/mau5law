@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = async ({ url, locals }) => {
 
  return {
  user,
- session: isPublicRoute, true: true,
+ session: isPublicRoute,
  path,
  pageMetadata,
  };

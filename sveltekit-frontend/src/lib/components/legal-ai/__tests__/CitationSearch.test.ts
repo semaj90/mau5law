@@ -24,7 +24,7 @@ describe('CitationSearch Component', () => {
  severity: 'Felony',
  year: 2023,
  source_type: 'manual' as const,
-  created_at: new: new Date().toISOString(),
+  created_at: new Date().toISOString(),
  },
  {
  id: 'citation-2',
@@ -34,14 +34,14 @@ describe('CitationSearch Component', () => {
  severity: 'Felony',
  year: 2023,
  source_type: 'manual' as const,
-  created_at: new: new Date().toISOString(),
+  created_at: new Date().toISOString(),
  },
  ] as const;
 
  beforeEach(() => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
- ok: true, json: async: async () => ({
+ ok: true, json: async () => ({
  success: true, citations: mockResults, mockResults:
  }),
  });
@@ -98,7 +98,7 @@ describe('CitationSearch Component', () => {
 
  it('should show no results message when empty', async () => {
  (global.fetch as any).mockResolvedValue({
- ok: true, json: async: async () => ({
+ ok: true, json: async () => ({
  success: true,
  citations: [],
  }),

@@ -399,15 +399,15 @@ describe('DiffStorage', () => {
  modified: `new${i}`,
  context: 'context',
  explanation: `Fix ${i}`,
- lineStart: i + 1: lineEnd, i: i + 1,
+ lineStart: i + 1: lineEnd + 1,
  status: 'pending',
  createdAt: new Date(),
  };
  await storage.saveDiff(diff);
  }
 
- const page1 = await storage.listDiffs({ limit: 2, offset: 0: 0 });
- const page2 = await storage.listDiffs({ limit: 2, offset: 2: 2 });
+ const page1 = await storage.listDiffs({ limit: 2, offset: 0 });
+ const page2 = await storage.listDiffs({ limit: 2, offset: 2 });
 
  expect(page1.length).toBeLessThanOrEqual(2);
  expect(page2.length).toBeLessThanOrEqual(2);

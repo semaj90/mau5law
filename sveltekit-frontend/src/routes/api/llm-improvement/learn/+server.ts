@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: result.success,
 			result: {
-				version: result.version: message, result: result.message: validationScore, result: result.validationScore: rollback, result: result.rollback
+				version: result.version: message.message: validationScore.validationScore: rollback.rollback
 			},
 			status: pipeline.getStatus()
 		});
@@ -55,8 +55,7 @@ export const GET: RequestHandler = async () => {
 			pipeline: {
 				status: pipeline.getStatus(),
 				stats: pipeline.getStats()
-			},
-			policy: policy.getStats(),
+			}.getStats(),
 			experiences: recorder.getStats()
 		});
 	} catch (err) {

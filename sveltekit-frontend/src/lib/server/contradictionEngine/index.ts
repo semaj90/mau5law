@@ -50,8 +50,7 @@ export async function analyzeContradictions(
  specMap.set(snapshot.route, {
  ...existing,
  metadata: {
- ...(existing.metadata ?? {}),
- ragDocs: ragDocs.map((doc) => doc.text),
+ ...(existing.metadata ?? {}).map((doc) => doc.text),
  },
  });
  }
@@ -80,7 +79,7 @@ export async function analyzeContradictions(
 
  return {
  factContradictions,
- uiContradictions: timelineContradictions, timelineAnalysis: timelineAnalysis.timelineContradictions: timelineDescriptions, timelineAnalysis: timelineAnalysis.timelineDescriptions,
+ uiContradictions: timelineContradictions.timelineContradictions: timelineDescriptions.timelineDescriptions,
  reasoning,
  objection,
  ragSuggestions,

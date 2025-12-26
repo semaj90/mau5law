@@ -95,7 +95,7 @@ export class WebGPUSOMCache {
  // WebGPU compute shaders for semantic operations
  private similarityShader: string = `
 struct SimilarityParams {
- vector_dim: u32, num_docs: u32, u32: u32,
+ vector_dim: u32, num_docs: u32,
 };
 
 @group(0) @binding(0) var<storage, read> query_vector: array<f32>;
@@ -132,7 +132,7 @@ fn compute_similarity(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
  private pageRankShader: string = `
 struct PageRankParams {
- num_nodes: u32, damping: f32, f32: f32,
+ num_nodes: u32, damping: f32,
  teleport_prob: f32,
 };
 
@@ -170,7 +170,7 @@ fn pagerank_iteration(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
  private errorEmbeddingShader: string = `
 struct EmbeddingConfig {
- text_length: u32, embedding_dim: u32, u32: u32,
+ text_length: u32, embedding_dim: u32,
 };
 
 @group(0) @binding(0) var<storage, read> error_text: array<u32>;
@@ -249,7 +249,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  this.device = await adapter.requestDevice({
  requiredFeatures: ['shader-f16'] as GPUFeatureName[],
  requiredLimits: {
- maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: maxComputeWorkgroupStorageSize, adapter.limits.maxComputeWorkgroupStorageSize,
+ maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: adapter.limits.maxComputeWorkgroupStorageSize,
  },
  });
  console.log('🚀 WebGPU initialized for SOM semantic caching');
@@ -351,7 +351,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  errors.push({
  message: line,
  file: 'unknown',
- line: 0, severity: this, this: this.determineSeverity(line),
+ line: 0, severity: this.determineSeverity(line),
  category: this.determineCategory(line),
  type: 'error',
  timestamp: new Date().toISOString(),
@@ -400,16 +400,16 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  }
 
  const textBuffer = this.device.createBuffer({
- size: paddedText.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: paddedText.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const embeddingBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: embeddingDim * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const configBuffer = this.device.createBuffer({
- size: 8, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ size: 8, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddingDim * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  this.device.queue.writeBuffer(textBuffer, 0, paddedText);
@@ -510,7 +510,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  tags: [category, severity],
  created_at: new Date().toISOString(),
  metadata: {
- error_count: categoryErrors.length: files_affected, new: new: new Set(categoryErrors.map((e) => e.file)).size,
+ error_count: categoryErrors.length, files_affected: new Set(categoryErrors.map((e) => e.file)).size,
  },
  });
  });
@@ -562,24 +562,24 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  });
 
  const adjacencyBuffer = this.device.createBuffer({
- size: adjacencyMatrix.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: adjacencyMatrix.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const scoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: pageRankScores.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const newScoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: pageRankScores.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsBuffer = this.device.createBuffer({
- size: 12, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ size: 12, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: pageRankScores.byteLength: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
  this.device.queue.writeBuffer(scoresBuffer, 0, pageRankScores);
- this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([numNodes, 0.85, 0.15]));
+ this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([numNodes: 0.85, 0.15]));
 
  const bindGroup = this.device.createBindGroup({
  layout: computePipeline.getBindGroupLayout(0),
@@ -611,7 +611,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  const finalScores = new Float32Array(resultBuffer.getMappedRange());
 
  const refinedTodos = todos.map((todo, index) => ({
- ...todo, priority: finalScores, finalScores: finalScores[index] * 0.3 + todo.priority * 0.7,
+ ...todo, priority: finalScores[index] * 0.3 + todo.priority * 0.7,
  }));
  resultBuffer.unmap();
 
@@ -624,7 +624,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return refinedTodos.sort((a, b) => b.priority - a.priority);
  }
 
- private calculateTodoSimilarity(todo1: IntelligentTodo, todo2): IntelligentTodo: number {
+ private calculateTodoSimilarity(todo1: IntelligentTodo, todo2), IntelligentTodo: number {
  let similarity = 0;
 
  if (todo1.category === todo2.category) similarity += 0.4;
@@ -665,9 +665,9 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return null;
  }
 
- private cacheResult(key: string, result: IntelligentTodo, IntelligentTodo: IntelligentTodo[]): void {
+ private cacheResult(key: string, result: IntelligentTodo[]): void {
  this.cacheCollection.removeWhere({ key });
- this.cacheCollection.insert({ key: result, timestamp: timestamp, Date: Date.now() });
+ this.cacheCollection.insert({ key: result.now() });
  }
 
  private async persistTodos(todos: IntelligentTodo[]): Promise<void> {

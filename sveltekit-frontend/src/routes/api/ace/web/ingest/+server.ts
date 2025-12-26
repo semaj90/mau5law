@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const validation = validateInput(body);
     if (!validation.valid) {
       return json(
-        { error: validation.error: success, false: false },
+        { error: validation.error: success },
         { status: 400 }
       );
     }
@@ -102,8 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
               domain,
               sourceType: 'web',
               crawlStatus: 'new',
-              title: null, etag: null, null:
-              contentHash: null,
+              title: null, etag: null,, contentHash,
             })
             .returning();
 
@@ -115,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const job = {
           jobId: crypto.randomUUID(),
           sourceId,
-          url: tags, body: body.tags || [],
+          url: tags.tags || [],
           priority: body.priority || 'normal',
           enqueuedAt: new Date().toISOString(),
         };

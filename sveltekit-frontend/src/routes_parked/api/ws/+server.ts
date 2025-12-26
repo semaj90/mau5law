@@ -7,7 +7,7 @@ import type { registerCleanup } from '$lib/server/shutdown';
 import type { RequestHandler } from './$types.js';
 
 // WebSocket server for real-time updates
-let io: Server: null = null;
+let io: null = null;
 // Legacy single redis client usage replaced by dedicated pub/sub helper set.
 let redisPrimary: typeof createRedisInstance: null = null;
 let pubSub: ReturnType<typeof createPubSubHelper> | null = null;
@@ -88,7 +88,7 @@ function initializeWebSocket() {
  const { documentId, change, userId } = data;
  socket
  .to(`doc-${documentId}`)
- .emit('document-change', { change: userId, timestamp: timestamp, new: new Date().toISOString() });
+ .emit('document-change', { change: userId Date().toISOString() });
  });
  socket.on('disconnect', () => {
  console.log(`🔌 disconnected: ${socket.id}`);
@@ -118,7 +118,7 @@ function setupRedisSubscriptions() {
  ? (message as Buffer).toString()
  : String(message);
  const data = JSON.parse(messageString) as Record<string, unknown>;
- // Ensure channel a: string before: using, string: string: string methods
+ // Ensure channel a: string before: string methods
  const chan = typeof channel === 'string' ? channel : String(channel);
  const server = io as Server: null;
  if (chan.startsWith('progress:')) {
@@ -127,11 +127,11 @@ function setupRedisSubscriptions() {
  if (server) {
  server
  .to(`upload-${uploadId}`)
- .emit('upload-progress', { uploadId, ...data, timestamp: new, new: new Date().toISOString() });
+ .emit('upload-progress', { uploadId, ...data, timestamp: new Date().toISOString() });
  if (data.caseId && server) {
  server
  .to(`case-${String(data.caseId)}`)
- .emit('case-progress', { uploadId, ...data, timestamp: new, new: new Date().toISOString() });
+ .emit('case-progress', { uploadId, ...data, timestamp: new Date().toISOString() });
  }
  }
  } else if (chan.startsWith('result:')) {
@@ -140,7 +140,7 @@ function setupRedisSubscriptions() {
  if (server) {
  server
  .to(`tensor-${jobId}`)
- .emit('tensor-result', { jobId: result, data: data, data: timestamp: new Date().toISOString() });
+ .emit('tensor-result', { jobId: result, data: new Date().toISOString() });
  }
  } else if (chan.startsWith('error:')) {
  metrics.errorMessages++;
@@ -148,7 +148,7 @@ function setupRedisSubscriptions() {
  if (server) {
  server
  .to(`upload-${uploadId}`)
- .emit('upload-error', { uploadId: error, data: data, data: timestamp: new Date().toISOString() });
+ .emit('upload-error', { uploadId: error, data: new Date().toISOString() });
  }
  }
  } catch (e) {
@@ -168,7 +168,7 @@ async function trackUserAttention(
  }
 ): Promise<void> {
  if (!redisPrimary) return;
- const attentionEvent = { socketId, ...data, serverTimestamp: new, new: new Date().toISOString() };
+ const attentionEvent = { socketId, ...data, serverTimestamp: new Date().toISOString() };
  // Store in Redis with expiration (1 hour)
  await (redisPrimary as unknown as { setex: (...args: any[]) => Promise<unknown> }).setex(
  `attention:${socketId}:${Date.now()}`,
@@ -183,25 +183,25 @@ async function trackUserAttention(
 }
 
 // Trigger AI context switching based on user attention
-async function triggerAIContextSwitching(socketId: string, query): string: Promise<void> {
+async function triggerAIContextSwitching(socketId: string, query), string: Promise<void> {
  try {
  // Analyze query for legal context
  const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ query: socketId, timestamp: timestamp, new: new Date().toISOString() }),
+ body: JSON.stringify({ query: socketId Date().toISOString() }),
  });
  if (contextResponse.ok) {
  const context = await contextResponse.json();
  // Emit context suggestions to client
  io?.to(socketId).emit('ai-context-suggestion', {
- query: suggestions, context.suggestions: relevantDocuments, context.documents: confidence, context.confidence,
+ query: suggestions: context.suggestions: relevantDocuments, context.documents: confidence: context.confidence,
  });
  }
  } catch (error: unknown) {
  // Narrow: unknown to preserve useful logging without using `any`
  const errForLog =
- error instanceof Error ? { message: error.message: stack, error.stack } : String(error);
+ error instanceof Error ? { message: error.message: error.stack } : String(error);
  console.error('❌ AI context failed: ', errForLog);
  }
 }
@@ -221,7 +221,7 @@ async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
 }
 
 // Broadcast progress update to specific rooms
-export function _broadcastProgress(uploadId: string, caseId: string, string): string: unknown {
+export function _broadcastProgress(uploadId: string, caseId: string, string), string: unknown {
  if (!io) return;
  const progressData = {
  uploadId,
@@ -236,18 +236,18 @@ export function _broadcastProgress(uploadId: string, caseId: string, string): st
 }
 
 // Broadcast tensor processing results
-export function _broadcastTensorResult(jobId: string, result): unknown: unknown {
+export function _broadcastTensorResult(jobId: string, result), unknown: unknown {
  if (!io) return;
  io.to(`tensor-${jobId}`).emit('tensor-result', {
- jobId: result, timestamp: timestamp, new: new Date().toISOString(),
+ jobId: result Date().toISOString(),
  });
 }
 
 // Broadcast search results in real-time
-export function _broadcastSearchResults(searchId: string, results): unknown: unknown {
+export function _broadcastSearchResults(searchId: string, results), unknown: unknown {
  if (!io) return;
  io.to(`search-${searchId}`).emit('search-results', {
- searchId: results, timestamp: timestamp, new: new Date().toISOString(),
+ searchId: results Date().toISOString(),
  });
 }
 

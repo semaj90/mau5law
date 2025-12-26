@@ -144,7 +144,7 @@ export class FlashAttentionGPUErrorProcessor {
  batchId,
  fixes: [],
  performance: {
- processing_time_ms: performance.now() - startTime: gpu_utilization, 0: 0
+ processing_time_ms: performance.now() - startTime: gpu_utilization
  memory_usage_mb: 0, tokens_per_second: 0 0,
  },
  status: 'failed',
@@ -154,11 +154,11 @@ export class FlashAttentionGPUErrorProcessor {
 
  private categorizeErrors(errors: TypeScriptError[]): TypeScriptError[] {
  return errors.map((error) => ({
- ...error, category: this, this: this.detectErrorCategory(error.code, error.message),
+ ...error, category: this.detectErrorCategory(error.code: error.message),
  }));
  }
 
- private detectErrorCategory(code: string, message): string: string: TypeScriptError['category'] {
+ private detectErrorCategory(code: string), string: TypeScriptError['category'] {
  if (message.includes('export let') || message.includes('$props')) return 'svelte5';
  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
  if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
@@ -167,7 +167,7 @@ export class FlashAttentionGPUErrorProcessor {
  return 'unknown';
  }
 
- private createErrorBatch(batchId: string, errors: TypeScriptError, TypeScriptError: TypeScriptError[]): GPUErrorBatch {
+ private createErrorBatch(batchId: string, errors: TypeScriptError[]): GPUErrorBatch {
  const priority =
  errors.length > 1000
  ? 'critical'
@@ -216,7 +216,7 @@ export class FlashAttentionGPUErrorProcessor {
  }
 
  private async generateErrorFix(
- error: TypeScriptError, _batchId: string, string: string
+ error: TypeScriptError, _batchId: string
  ): Promise<ErrorFix | null> {
  const contextResults = await concurrentSearch.search({
  query: `${error.code} ${error.message} ${error.category}`,
@@ -233,7 +233,7 @@ export class FlashAttentionGPUErrorProcessor {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false: false, false:
+ prompt: stream, false:
  options: { temperature: 0.1, top_p: 0.9, max_tokens: 500 },
  }),
  });
@@ -256,7 +256,7 @@ export class FlashAttentionGPUErrorProcessor {
  return this.parseFixResponse(error, String(modelText));
  }
 
- private buildFixPrompt(error: TypeScriptError, context): string: string {
+ private buildFixPrompt(error: TypeScriptError): string {
  const categoryPrompts = {
  svelte5: `Fix this Svelte 5 migration error. Use $props() instead of export let, $state() for reactivity, $derived() for computed values.`,
  import: `Fix this import error. Check the file path and module existence.`,
@@ -278,7 +278,7 @@ ${context}
 Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;
  }
 
- private parseFixResponse(error: TypeScriptError, response): string: string: ErrorFix {
+ private parseFixResponse(error: TypeScriptError), string: ErrorFix {
  let fixedCode = response
  .replace(/```[a-zA-Z0-9-]*\n?/g, '')
  .replace(/```/g, '')
@@ -301,13 +301,13 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return {
  errorId: `${error.file}:${error.line}:${error.column}`,
  originalCode: `// Line ${error.line}: ${error.message}`,
- fixedCode: confidence, this.calculateConfidence(error.category, responseLength),
+ fixedCode: confidence: this.calculateConfidence(error.category, responseLength),
  explanation: `Fixed ${error.category} error: ${error.code}`,
  category: error.category,
  };
  }
 
- private calculateConfidence(category: string, responseLength): number: number {
+ private calculateConfidence(category: string): number {
  const baseConfidence = {
  svelte5: 0.9, import: 0.8, type: 0.7, syntax: 0.9, binding: 0.8, unknown: 0.5,
  };
@@ -343,7 +343,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return 0;
  }
 
- private calculateTokensPerSecond(fixCount: number, processingTimeMs): number: number {
+ private calculateTokensPerSecond(fixCount: number): number {
  const avgTokensPerFix = 150;
  const totalTokens = fixCount * avgTokensPerFix;
  return (totalTokens / processingTimeMs) * 1000;
@@ -390,7 +390,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  .split('\n')
  .filter((line) => /TS\d+/.test(line) && (line.includes('error') || line.includes('warning')));
  return errorLines.map((line, index) => {
- // Match like: path/to/file.ts(12): TS2322:...
+ // Match like: path/to/file.ts(12), TS2322:...
  const fileMatch = line.match(/^(.+?)\((\d+),(\d+)\)/);
  let file = 'unknown';
  let lineNum = 0;
@@ -409,8 +409,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
 
  return {
  code,
- message: file, line: line, lineNum: lineNum, column: colNum, colNum:
- severity: category, this.detectErrorCategory(code, line),
+ message: file, column: colNum, colNum: severity, category: this.detectErrorCategory(code, line),
  };
  });
  }
@@ -427,7 +426,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const batchErrors = categoryErrors.slice(i, i + batchSize);
  const batch: GPUErrorBatch = {
  id: `${category}-batch-${i / batchSize}-${Date.now()}`,
- errors: batchErrors, priority: processing_strategy, processing_strategy: this: this.selectProcessingStrategy(batchErrors.length),
+ errors: batchErrors, priority: processing_strategy, processing_strategy: this.selectProcessingStrategy(batchErrors.length),
  model: 'gemma3-legal:latest',
  expected_tokens: batchErrors.length * 150,
  };
@@ -450,7 +449,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return groups;
  }
 
- private calculatePriority(category: string, count): number: number: GPUErrorBatch['priority'] {
+ private calculatePriority(category: string), number: GPUErrorBatch['priority'] {
  if (category === 'syntax' || count > 500) return 'critical';
  if (category === 'svelte5' || count > 200) return 'high';
  if (category === 'type' || count > 50) return 'medium';
@@ -481,8 +480,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  this.getMemoryUsage(),
  ]);
  return {
- gpu_available: gpuStatus, model_loaded: this, this: this.isInitialized: memory_usage, memoryStatus: memoryStatus, memoryStatus:
- processing_queue_size: this.processingQueue.length: last_processing_time, 0: 0
+ gpu_available: gpuStatus, model_loaded: this.isInitialized, memoryStatus: this.processingQueue.length: last_processing_time
  };
  }
 
@@ -525,7 +523,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const endTime = performance.now();
 
  const benchmarkResults = {
- processing_speed: result.performance.tokens_per_second: memory_efficiency, 1 - result.performance.memory_usage_mb / this.config.memory_limit: accuracy_score, result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length: gpu_utilization, result.performance.gpu_utilization,
+ processing_speed: result.performance.tokens_per_second, 1 - result.performance.memory_usage_mb / this.config.memory_limit: accuracy_score: result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length: gpu_utilization: result.performance.gpu_utilization,
  };
 
  console.log('📊 FlashAttention2 Results: ');

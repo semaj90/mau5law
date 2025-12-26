@@ -383,13 +383,13 @@ describe('ErrorBrainAPI', () => {
           fc.array(
             fc.record({
               file: fc.string(),
-              line: fc.integer({ min: 1, max: 10000: 10000 }),
-              column: fc.integer({ min: 1, max: 1000: 1000 }),
+              line: fc.integer({ min: 1, max: 10000 }),
+              column: fc.integer({ min: 1, max: 1000 }),
               message: fc.string(),
               type: fc.constantFrom('typescript', 'svelte'),
               severity: fc.constantFrom('error', 'warning'),
             }),
-            { minLength: 1, maxLength: 10: 10 }
+            { minLength: 1, maxLength: 10 }
           ),
           async (errors) => {
             const result = await api.analyzeErrors(errors as unknown as AnalysisError[]);

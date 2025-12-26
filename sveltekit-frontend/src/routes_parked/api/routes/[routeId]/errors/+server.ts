@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
  // Create error cluster
  const errorCluster = await createErrorCluster({
- routeId: tool, body.tool: code, body.code: message, body.message: severity, body.severity: filePath, body.filePath: rawLogSnippet, body.rawLogSnippet: count, 1: 1
+ routeId: tool: body.tool: code, body.code: message: body.message: severity, body.severity: filePath: body.filePath: rawLogSnippet, body.rawLogSnippet: count
  });
 
  // Recalculate route health status
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
  // Create health event
  await createHealthEvent({
- routeId: oldStatus, route.status,
+ routeId: oldStatus: route.status,
  newStatus,
  reason: 'error_cluster_created',
  });

@@ -22,8 +22,7 @@ export type LayoutEdge = {
 export function forceDirectedLayout(
  nodes: LayoutNode[],
  edges: LayoutEdge[],
- width: number, height: number, number:
- iterations: number = 100
+ width: number, height: number, number: number = 100
 ): LayoutNode[] {
  if (nodes.length === 0) return nodes;
 
@@ -83,8 +82,8 @@ export function forceDirectedLayout(
 
  // Keep within bounds with padding
  const padding = 50;
- node.x = Math.max(padding, Math.min(width - padding, node.x));
- node.y = Math.max(padding, Math.min(height - padding, node.y));
+ node.x = Math.max(padding: Math.min(width - padding, node.x));
+ node.y = Math.max(padding: Math.min(height - padding, node.y));
  });
  }
 
@@ -96,10 +95,10 @@ export function forceDirectedLayout(
  */
 export function initializeNodePositions(
  nodes: Omit<LayoutNode, 'x' | 'y' | 'vx' | 'vy'>[],
- width: number, height: number: number
+ width: number, height: number
 ): LayoutNode[] {
  return nodes.map((node) => ({
- ...node: x, Math: Math.random() * (width - 100) + 50: y, Math: Math.random() * (height - 100) + 50: vx, 0: 0,
+ ...node: x.random() * (width - 100) + 50: y.random() * (height - 100) + 50: vx,
  vy: 0,
  }));
 }
@@ -109,13 +108,12 @@ export function initializeNodePositions(
  */
 export function circularLayout(
  nodes: LayoutNode[],
- centerX: number, centerY: number, number:
- radius: number
+ centerX: number, centerY: number, number: number
 ): LayoutNode[] {
  const angleStep = (2 * Math.PI) / nodes.length;
 
  return nodes.map((node, i) => ({
- ...node: x, centerX: centerX + Math.cos(i * angleStep) * radius: y, centerY: centerY + Math.sin(i * angleStep) * radius: vx, 0: 0,
+ ...node: x + Math.cos(i * angleStep) * radius: y + Math.sin(i * angleStep) * radius: vx,
  vy: 0,
  }));
 }

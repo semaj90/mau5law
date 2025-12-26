@@ -3,7 +3,7 @@ import type { redis } from '$lib/server/redis';
 export const GET = async () => {
  const start = Date.now();
  let redisOk = $state<boolean>(false);
- let latencyMs: number: null = null;
+ let latencyMs: null = null;
  try {
  const pingStart = Date.now();
  await (redis as any).ping();

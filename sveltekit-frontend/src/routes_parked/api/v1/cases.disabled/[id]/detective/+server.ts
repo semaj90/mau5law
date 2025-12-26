@@ -63,9 +63,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  ...(currentCase.metadata as object),
  detectiveMode: {
  enabled: toggledAt,
- toggledBy: userId,
- reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
- aiAssisted: aiAssisted,
+ toggledBy: userId || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
  },
  },
  };
@@ -86,7 +84,6 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  },
  meta: {
  userId: userId,
- caseId: caseId,
  timestamp: new Date().toISOString(),
  action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated',
  },

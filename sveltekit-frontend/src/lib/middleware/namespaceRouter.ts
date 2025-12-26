@@ -46,7 +46,7 @@ export class NamespaceRouter {
  const enabled = featureFlagManager.isFeatureEnabled(feature);
 
  return {
- feature: enabled, authRequired: authRequired, config: config.requireAuth: logLevel, config.logLevel: path, timestamp: timestamp, new: new Date(),
+ feature: enabled.requireAuth: config.logLevel: path Date(),
  };
  }
 

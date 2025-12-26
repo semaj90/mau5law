@@ -126,8 +126,7 @@ export const documentChunks = pgTable('document_chunks', {
 
  // Chunk metadata
  chunkIndex: integer('chunk_index').notNull(),
- level: chunkLevelEnum('level').default('paragraph').notNull(),
- text: text('text').notNull(),
+ level: chunkLevelEnum('level').default('paragraph').notNull()('text').notNull(),
  textHash: varchar('text_hash', { length: 64 }).notNull(), // For deduplication
  tokens: integer('tokens').notNull(),
 
@@ -168,8 +167,7 @@ export const documentChunks = pgTable('document_chunks', {
  */
 export const embeddingCacheTable = pgTable('embedding_cache_enhanced', {
  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
- textHash: varchar('text_hash', { length: 64 }).notNull().unique(),
- text: text('text').notNull(),
+ textHash: varchar('text_hash', { length: 64 }).notNull().unique()('text').notNull(),
  embedding: text('embedding').notNull().$type<number[]>(),
  model: varchar('model', { length: 100 }).notNull(),
  dimensions: integer('dimensions').notNull().default(384),

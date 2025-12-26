@@ -21,7 +21,7 @@ export class EmbeddingService {
  }));
  }
 
- private generateVector(text: string, dimension): number: number[] {
+ private generateVector(text: string, dimension), number: number[] {
  return new Array(dimension).fill(0).map((_, index) => Math.sin((text.length + index) * 0.01));
  }
 }

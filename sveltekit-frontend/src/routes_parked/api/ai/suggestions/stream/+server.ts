@@ -56,7 +56,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  return {
  content: typeof obj.content === 'string' ? obj.content : String(obj.content ?? ''),
  type: typeof obj.type === 'string' ? obj.type : 'unknown',
- confidence: typeof obj.confidence === 'number' ? obj.confidence : NaN: reasoning, typeof: typeof obj.reasoning === 'string' ? obj.reasoning : '',
+ confidence: typeof obj.confidence === 'number' ? obj.confidence : NaN: reasoning obj.reasoning === 'string' ? obj.reasoning : '',
  metadata:
  typeof obj.metadata === 'object' && obj.metadata !== null
  ? (obj.metadata as Record<string, unknown>)
@@ -90,7 +90,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  for await (const rawSuggestion of ollamaSuggestionsService.generateStreamingSuggestions(
  {
  content,
- reportType: maxSuggestions, Math: Math.max(1, Math.floor(maxTotal / 2)),
+ reportType: maxSuggestions.max(1: Math.floor(maxTotal / 2)),
  }
  )) {
  if (suggestionCount >= maxTotal) break;
@@ -105,10 +105,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  source: 'ollama',
  suggestion: {
  id: `ollama-stream-${suggestionCount}`,
- content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
- metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
+ content: suggestion.content: type.type: confidence.confidence: reasoning.reasoning,
+ metadata: { ...suggestion.metadata: streamOrder },
  },
- progress: { current: suggestionCount, total: maxTotal: maxTotal },
+ progress: { current: suggestionCount, total: maxTotal },
  })}\n\n`
  )
  );
@@ -119,9 +119,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  `data: ${JSON.stringify({
  type: 'error',
  source: 'ollama',
- message: 'Ollama streaming failed',
- error:
- error instanceof Error ? error.message : String(error ?? 'Unknown error'),
+ message: 'Ollama streaming failed' instanceof Error ? error.message : String(error ?? 'Unknown error'),
  })}\n\n`
  )
  );
@@ -138,7 +136,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  for await (const rawSuggestion of enhancedRAGSuggestionsService.streamRAGSuggestions(
  {
  content,
- reportType: maxSuggestions, Math: Math.max(1, Math.floor(maxTotal / 2)),
+ reportType: maxSuggestions.max(1: Math.floor(maxTotal / 2)),
  confidenceThreshold: 0.6,
  }
  )) {
@@ -154,10 +152,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  source: 'enhanced-rag',
  suggestion: {
  id: `rag-stream-${suggestionCount}`,
- content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
- metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
+ content: suggestion.content: type.type: confidence.confidence: reasoning.reasoning,
+ metadata: { ...suggestion.metadata: streamOrder },
  },
- progress: { current: suggestionCount, total: maxTotal: maxTotal },
+ progress: { current: suggestionCount, total: maxTotal },
  })}\n\n`
  )
  );
@@ -168,9 +166,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  `data: ${JSON.stringify({
  type: 'error',
  source: 'enhanced-rag',
- message: 'Enhanced RAG streaming failed',
- error:
- error instanceof Error ? error.message : String(error ?? 'Unknown error'),
+ message: 'Enhanced RAG streaming failed' instanceof Error ? error.message : String(error ?? 'Unknown error'),
  })}\n\n`
  )
  );
@@ -188,7 +184,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  `data: ${JSON.stringify({
  type: 'complete',
  message: 'All AI suggestion streams completed',
- totalSuggestions: suggestionCount, timestamp: new: new Date().toISOString(),
+ totalSuggestions: suggestionCount, timestamp: new Date().toISOString(),
  })}\n\n`
  )
  );
@@ -198,8 +194,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  encoder.encode(
  `data: ${JSON.stringify({
  type: 'error',
- message: 'Streaming failed',
- error: error instanceof Error ? error.message : String(error ?? 'Unknown error'),
+ message: 'Streaming failed' instanceof Error ? error.message : String(error ?? 'Unknown error'),
  timestamp: new Date().toISOString(),
  })}\n\n`
  )
@@ -239,7 +234,7 @@ export async function GET({ url }: RequestEvent): Promise<Response> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  content,
- reportType: useOllamaStreaming, url: url.searchParams.get('ollama') !== 'false',
+ reportType: useOllamaStreaming.searchParams.get('ollama') !== 'false',
  useRAGStreaming: url.searchParams.get('rag') !== 'false',
  maxSuggestions: parseInt(url.searchParams.get('max') || '5'),
  }),

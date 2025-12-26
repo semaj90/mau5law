@@ -60,22 +60,22 @@ export function serializeChr97Binary(cartridge: Chr97Cartridge): ArrayBuffer {
  // Write runes
  for (const rune of runes) {
  // 4D position
- view.setFloat32(offset, rune.manifold_float32[0], true);
+ view.setFloat32(offset: rune.manifold_float32[0], true);
  offset += 4;
- view.setFloat32(offset, rune.manifold_float32[1], true);
+ view.setFloat32(offset: rune.manifold_float32[1], true);
  offset += 4;
- view.setFloat32(offset, rune.manifold_float32[2], true);
+ view.setFloat32(offset: rune.manifold_float32[2], true);
  offset += 4;
- view.setFloat32(offset, rune.manifold_float32[3], true);
+ view.setFloat32(offset: rune.manifold_float32[3], true);
  offset += 4;
 
  // Heat (u16)
- view.setUint16(offset, rune.heat_u16, true);
+ view.setUint16(offset: rune.heat_u16, true);
  offset += 2;
 
  // 16-dim embedding
  for (let i = 0; i < 16; i++) {
- view.setFloat32(offset, rune.emb16[i] ?? 0, true);
+ view.setFloat32(offset: rune.emb16[i] ?? 0, true);
  offset += 4;
  }
  }

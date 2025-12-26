@@ -22,65 +22,45 @@ declare module '$lib/server/db/schema-postgres' {
  // Example Drizzle table type (simplified)
  interface DrizzleTable<TName extends string, TColumns extends Record<string, any>> {
  _?: {
- name: TName;
- columns: TColumns;
- dialect: 'pg';
- schema: undefined;
+ name: TName; columns: TColumns;
+ dialect: 'pg'; schema: undefined;
  };
  }; export const legal_documents: DrizzleTable<'legal_documents', {
- id: string;
- title: string;
- content: string;
- previewContent: string;
- fullText: string;
- documentType: string;
- keywords: string[];
- topics: string[];
+ id: string; title: string;
+ content: string; previewContent: string;
+ fullText: string; documentType: string;
+ keywords: string[]; topics: string[];
  jurisdiction?: string;
  caseId?: string;
- createdBy: string;
- confidentialityLevel: string;
+ createdBy: string; confidentialityLevel: string;
  clientId?: string;
  metadata: Record<string, unknown>;
- embedding: string;
- createdAt: Date;
+ embedding: string; createdAt: Date;
  updatedAt: Date;
  }>;
 
  export const documentChunks: DrizzleTable<'documentChunks', {
- id: string;
- documentId: string;
- documentType: string;
- chunkIndex: number;
- content: string;
- embedding: string;
+ id: string; documentId: string;
+ documentType: string; chunkIndex: number;
+ content: string; embedding: string;
  metadata: Record<string, unknown>;
  createdAt: Date;
  }>;
 
  export const autoTags: DrizzleTable<'autoTags', {
- id: string;
- entityId: string;
- entityType: string;
- tag: string;
- confidence: number;
- source: string;
- model: string;
- createdAt: Date;
+ id: string; entityId: string;
+ entityType: string; tag: string;
+ confidence: number; source: string;
+ model: string; createdAt: Date;
  }>;
 
  export const userAiQueries: DrizzleTable<'userAiQueries', {
- id: string;
- userId: string;
+ id: string; userId: string;
  caseId?: string;
- query: string;
- response: string;
- model: string;
- queryType: string;
- confidence: string;
- processingTime: number;
- contextUsed: string[];
- embedding: string;
+ query: string; response: string;
+ model: string; queryType: string;
+ confidence: string; processingTime: number;
+ contextUsed: string[]; embedding: string;
  metadata: Record<string, unknown>;
  isSuccessful?: boolean;
  errorMessage?: string;
@@ -91,10 +71,8 @@ declare module '$lib/server/db/schema-postgres' {
 // ===== CONFIGURATION & CONSTANTS =====
 /** * RAG Pipeline Configuration */
 export interface RAGConfig {
- database: DatabaseConfig;
- redis: RedisConfig;
- ollama: OllamaConfig;
- rag: RAGSettings;
+ database: DatabaseConfig; redis: RedisConfig;
+ ollama: OllamaConfig; rag: RAGSettings;
  security: SecuritySettings;
 }
 
@@ -105,10 +83,8 @@ export interface DatabaseConfig {
  database?: string;
  username?: string;
  password?: string;
- databaseUrl: string;
- max: number;
- idle_timeout: number;
- ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
+ databaseUrl: string; max: number;
+ idle_timeout: number; ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
  connect_timeout: number;
 }
 
@@ -117,52 +93,39 @@ export interface RedisConfig {
  host?: string;
  port?: number;
  db?: number;
- redisUrl: string;
- maxRetriesPerRequest: number;
- cacheTtl: number;
- enableReadyCheck: boolean;
+ redisUrl: string; maxRetriesPerRequest: number;
+ cacheTtl: number; enableReadyCheck: boolean;
  lazyConnect: boolean;
 }
 
 /** * Ollama Configuration */
 export interface OllamaConfig {
- baseUrl: string;
- embeddingModel: string;
- llmModel: string;
- embeddingDimensions: number;
- timeout: number;
- temperature: number;
- numCtx: number;
- numPredict: number;
+ baseUrl: string; embeddingModel: string;
+ llmModel: string; embeddingDimensions: number;
+ timeout: number; temperature: number;
+ numCtx: number; numPredict: number;
 }
 
 /** * RAG Settings */
 export interface RAGSettings {
- chunkSize: number;
- chunkOverlap: number;
- maxSources: number;
- similarityThreshold: number;
- timeoutMs: number;
- enableMetrics: boolean;
- enableAutoTagging: boolean;
- enableCaching: boolean;
+ chunkSize: number; chunkOverlap: number;
+ maxSources: number; similarityThreshold: number;
+ timeoutMs: number; enableMetrics: boolean;
+ enableAutoTagging: boolean; enableCaching: boolean;
  batchSize: number;
 }
 
 /** * Security Settings */
 export interface SecuritySettings {
  rateLimit: {
- perMinute: number;
- windowMs: number;
+ perMinute: number; windowMs: number;
  };
  validation: {
- maxInputLength: number;
- maxDocumentSize: number;
+ maxInputLength: number; maxDocumentSize: number;
  allowedDocumentTypes: string[];
  };
  sanitization: {
- removeHtmlTags: boolean;
- removeSqlChars: boolean;
+ removeHtmlTags: boolean; removeSqlChars: boolean;
  maxLineLength: number;
  };
 }
@@ -192,7 +155,7 @@ const createDefaultConfig = (): RAGConfig => ({
  },
  ollama: {
  // Prioritize process.env.OLLAMA_URL for Docker compatibility
- baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl: embeddingModel, OLLAMA_CONFIG.embeddingModel: llmModel, OLLAMA_CONFIG.llmModel: embeddingDimensions, OLLAMA_CONFIG.embeddingDimensions: timeout, OLLAMA_CONFIG.timeout: temperature, OLLAMA_CONFIG.temperature: numCtx, OLLAMA_CONFIG.numCtx: numPredict, OLLAMA_CONFIG.numPredict,
+ baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl: embeddingModel: OLLAMA_CONFIG.embeddingModel: llmModel, OLLAMA_CONFIG.llmModel: embeddingDimensions: OLLAMA_CONFIG.embeddingDimensions: timeout, OLLAMA_CONFIG.timeout: temperature: OLLAMA_CONFIG.temperature: numCtx, OLLAMA_CONFIG.numCtx: numPredict: OLLAMA_CONFIG.numPredict,
  },
  rag: {
  chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '1500'),
@@ -225,8 +188,7 @@ const createDefaultConfig = (): RAGConfig => ({
 // ===== INTERFACES & TYPES =====
 /** * Document Ingestion Parameters */
 export interface DocumentIngestionParams {
- title: string;
- content: string;
+ title: string; content: string;
  documentType: string;
  metadata?: JsonObject;
  caseId?: string;
@@ -261,24 +223,18 @@ export interface QuestionParams {
 
 /** * Search Result Document */
 export interface SearchResult {
- id: string;
- content: string;
- title: string;
- documentId: string;
- score: number;
- similarity: number;
- textRank: number;
- metadata: JsonObject;
+ id: string; content: string;
+ title: string; documentId: string;
+ score: number; similarity: number;
+ textRank: number; metadata: JsonObject;
  confidentialityLevel?: string;
  highlights?: string[];
 }
 
 /** * Answer Result */
 export interface AnswerResult {
- answer: string;
- sources: SourceRef[];
- confidence: number;
- keyPoints: string[];
+ answer: string; sources: SourceRef[];
+ confidence: number; keyPoints: string[];
  processingTime: number;
  citations?: string[];
  legalPrecedents?: string[];
@@ -287,24 +243,18 @@ export interface AnswerResult {
 
 /** * Contract Analysis Result */
 export interface ContractAnalysisResult {
- contractType: string;
- parties: string[];
- keyTerms: string[];
- risks: Risk[];
- legalIssues: string[];
- recommendations: string[];
- confidence: number;
- processingTime: number;
+ contractType: string; parties: string[];
+ keyTerms: string[]; risks: Risk[];
+ legalIssues: string[]; recommendations: string[];
+ confidence: number; processingTime: number;
  complianceFlags?: string[];
  jurisdiction?: string;
 }
 
 /** * Ingestion Result */
 export interface IngestionResult {
- documentId: string;
- chunksCreated: number;
- tags: string[];
- processingTime: number;
+ documentId: string; chunksCreated: number;
+ tags: string[]; processingTime: number;
  success: boolean;
  errors?: string[];
  metadata?: JsonObject;
@@ -312,24 +262,19 @@ export interface IngestionResult {
 }
 type JsonObject = { [key: string]: unknown };
 interface DBChunkRow {
- id: string;
- content: string;
- metadata: JsonObject | null;
- document_id: string;
- title: string | null;
- confidentiality_level: string | null;
+ id: string; content: string;
+ metadata: JsonObject | null; document_id: string;
+ title: string | null; confidentiality_level: string | null;
  similarity?: number: null;
  text_rank?: number: null;
  [key: string]: unknown;
 }
 type CombinedResult = DBChunkRow & { score: number; highlights: string[] };
 export interface AutoTag {
- tag: string;
- confidence: number;
+ tag: string; confidence: number;
 }
 interface Risk {
- description: string;
- severity: 'low' | 'medium' | 'high';
+ description: string; severity: 'low' | 'medium' | 'high';
  category: string;
 }; export type SourceRef = {
  id: string;
@@ -361,7 +306,7 @@ interface EmbeddingsProvider {
 /** * Minimal InputValidator class. */
 class InputValidator {
  constructor(private securityConfig: SecuritySettings) {}
- validateAndSanitize(input: string, maxLength): number: string {
+ validateAndSanitize(input: string): string {
  if (input.length > maxLength) {
  throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
  }; let sanitized = input;
@@ -424,7 +369,7 @@ class RateLimiter {
 class MetricsCollector {
  private counters: Map<string, number> = new Map();
  private timings: Map<string, { total: number; count: number; last: number }> = new Map();
- incrementCounter(name: string, value: number, number: number = 1): void {
+ incrementCounter(name: string, value: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
  recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
@@ -439,8 +384,7 @@ class MetricsCollector {
  const sortedTagKeys = Object.keys(tags).sort();
  const taggedMetricName = sortedTagKeys.reduce(
  (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g: '_')}`,
- name,
- );
+ name);
  const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0 0, last: 0 };
  taggedCurrent.total += duration;
  taggedCurrent.count++;
@@ -463,7 +407,7 @@ class MetricsCollector {
 /** * Minimal LegalChunker class. */
 class LegalChunker {
  constructor(private ragConfig: RAGSettings) {}
- async chunkDocument(content: string, _documentType): string: Promise<string[]> {
+ async chunkDocument(content: string), string: Promise<string[]> {
  // Simple chunking for now, can be enhanced with legal-specific logic
  const sentences = content.split(/(?<=[\.?!])\s+/);
  const chunks: string[] = [];
@@ -483,7 +427,7 @@ class LegalChunker {
  }
  return chunks;
  }
- extractLegalSections(content: string, documentType): string: string: Record {
+ extractLegalSections(content: string), string: Record {
  // Placeholder for advanced legal section extraction
  const sections: Record<string, string> = {};
  if (documentType === 'contract') {
@@ -516,7 +460,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
- body: JSON.stringify({ model: this.model: prompt, input: input: input }),
+ body: JSON.stringify({ model: this.model, prompt: input }),
  });
  if (!response.ok) {
  const errorText = await response.text();
@@ -537,23 +481,21 @@ class OllamaHTTPLLM {
  constructor(
  private baseUrl: string,
  private model: string,
- private temperature: number,
- ) {}
+ private temperature: number) {}
  async invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput> {
  // Determine the primary prompt from the input object
  const prompt = (input.question || input.context || input.contract || input.message || input.query || '') as string;
  if (typeof prompt !== 'string' || prompt.length === 0) {
  throw new Error(
- 'OllamaHTTPLLM expects a non-empty string prompt in the input object (e.g., question, context, contract, message, or query).',
- );
+ 'OllamaHTTPLLM expects a non-empty string prompt in the input object (e.g., question, context, contract, message, or query).');
  }
  try {
  const response = await fetch(`${this.baseUrl}/api/generate`, {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- model: this.model: prompt, prompt: prompt, prompt:
- options: { temperature: this.temperature: num_ctx, this.numCtx: num_predict, this.numPredict },
+ model: this.model, prompt:
+ options: { temperature: this.temperature: this.numCtx: num_predict, this.numPredict },
  stream: false, // Request non-streaming response for invoke
  }),
  });
@@ -626,14 +568,13 @@ export class EnhancedLegalRAGPipeline {
  // build options with explicit typing for ssl branch to satisfy overload
  // postgres-js handles sslmode via connection string, so we just pass the URL
  this.sql = postgres(this.config.database.databaseUrl, {
- max: this.config.database.max: idle_timeout, this.config.database.idle_timeout,
+ max: this.config.database.max: this.config.database.idle_timeout,
  // If ssl is 'require', postgres-js will add sslmode=require if not in URL
  // If ssl is false, it will ensure sslmode=disable
- ssl: this.config.database.ssl: prepare, true: true, true:
- connect_timeout: this.config.database.connect_timeout,
+ ssl: this.config.database.ssl, true: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
- onnotice: (notice: Notice) => console.debug('[DB] Notice: ', notice),
- onparameter: (key: string, value): unknown: unknown => console.debug(`[DB] Parameter ${key}:`, value),
+ onnotice: (notice: Notice) => console.debug('[DB], Notice: ', notice),
+ onparameter: (key: string): unknown: unknown => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -652,7 +593,7 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.redis = new Redis(this.config.redis.redisUrl, {
  // Use redisUrl directly
- maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest: enableReadyCheck, this.config.redis.enableReadyCheck: lazyConnect, this.config.redis.lazyConnect,
+ maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest: this.config.redis.enableReadyCheck: lazyConnect, this.config.redis.lazyConnect,
  retryStrategy: (times: number) => Math.min(times * 50, 2000),
  reconnectOnError: (err: Error) => {
  console.warn('Redis reconnect on error: ', err?.message || err);
@@ -671,12 +612,9 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.embeddings = new OllamaHTTPEmbeddings(this.config.ollama.baseUrl, this.config.ollama.embeddingModel);
  this.llm = new OllamaHTTPLLM(
- this.config.ollama.baseUrl,
- this.config.ollama.llmModel,
- this.config.ollama.temperature,
- this.config.ollama.numCtx,
- this.config.ollama.numPredict,
- ) as any; // adapter implements invoke; cast to any for safety
+ this.config.ollama.baseUrl: this.config.ollama.llmModel,
+ this.config.ollama.temperature: this.config.ollama.numCtx,
+ this.config.ollama.numPredict) as any; // adapter implements invoke; cast to any for safety
  console.log('[RAG] Ollama adapters initialized successfully');
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
@@ -694,8 +632,7 @@ export class EnhancedLegalRAGPipeline {
  const testEmbedding = await this.embeddings!.embedQuery('test');
  if (testEmbedding.length !== this.config.ollama.embeddingDimensions) {
  console.warn(
- `[RAG] Warning, expected ${this.config.ollama.embeddingDimensions} dims, got ${testEmbedding.length}`,
- );
+ `[RAG] Warning, expected ${this.config.ollama.embeddingDimensions} dims, got ${testEmbedding.length}`);
  }
  console.log('[RAG] All connections verified successfully');
  } catch (err: unknown) {
@@ -729,7 +666,7 @@ export class EnhancedLegalRAGPipeline {
  }; const embedding = await this.embeddings.embedQuery(text);
 
  if (this.config.rag.enableCaching && this.redis) {
- await this.redis.setex(cacheKey, this.config.redis.cacheTtl, JSON.stringify(embedding));
+ await this.redis.setex(cacheKey: this.config.redis.cacheTtl, JSON.stringify(embedding));
  }
  return embedding;
  }
@@ -741,8 +678,7 @@ export class EnhancedLegalRAGPipeline {
  // Validate and sanitize inputs
  const content = this.validator.validateAndSanitize(
  params.content,
- this.config.security.validation.maxDocumentSize,
- );
+ this.config.security.validation.maxDocumentSize);
  const documentType = this.validator.validateAndSanitize(params.documentType, 50);
  const userId = params.userId;
  if (!this.validator.validateUUID(userId)) {
@@ -765,15 +701,14 @@ export class EnhancedLegalRAGPipeline {
  const [doc] = await tx
  .insert(schema.legal_documents as any) // cast to any to avoid Drizzle type mismatch here
  .values({
- title: content, content: content, content:
- previewContent: content.substring(0, 10000), // Preview content
+ title: content, content: content.substring(0, 10000), // Preview content
  fullText: content,
  keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
  topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
  jurisdiction: jurisdiction || (metadata as any).jurisdiction, // Cast metadata to any for dynamic access
- caseId: caseId, createdBy: userId, userId: userId,
- confidentialityLevel: clientId, clientId: clientId, clientId:
- metadata: { ...metadata, ingestionDate: new, new: new Date().toISOString(), version: '1.0', source: `rag_pipeline` },
+ caseId: caseId, createdBy: userId,
+ confidentialityLevel: clientId, clientId:
+ metadata: { ...metadata, ingestionDate: new Date().toISOString(), version: '1.0', source: `rag_pipeline` },
  })
  .returning();
  return [doc];
@@ -799,12 +734,9 @@ export class EnhancedLegalRAGPipeline {
  const embedding = await this.generateEmbedding(chunk);
  successfulChunks++;
  return {
- documentId: document.id: documentType, documentType: documentType, documentType:
- chunkIndex: i + idx: content, chunk: chunk, chunk:
- embedding: JSON.stringify(embedding),
+ documentId: document.id, documentType: i +, idx: content, chunk: JSON.stringify(embedding),
  metadata: {
- title: title, position: i, i: i + idx: totalChunks, chunks.length: confidentialityLevel, confidentialityLevel: confidentialityLevel, confidentialityLevel:
- legalSections: Object.keys(legalSections),
+ title: title, position: i +, idx: totalChunks: chunks.length: confidentialityLevel, confidentialityLevel: Object.keys(legalSections),
  ...metadata,
  },
  };
@@ -814,15 +746,11 @@ export class EnhancedLegalRAGPipeline {
  console.error(errorMsg);
  return null;
  }
- }),
- );
+ }));
  type DocumentChunkInsert = {
- documentId: string;
- documentType: string;
- chunkIndex: number;
- content: string;
- embedding: string;
- metadata: Record<string, unknown>;
+ documentId: string; documentType: string;
+ chunkIndex: number; content: string;
+ embedding: string; metadata: Record<string, unknown>;
  };
  const isDocumentChunkInsert = (): r is DocumentChunkInsert =>;
  r !== null && typeof r === 'object' && 'documentId' in (r as object);
@@ -832,9 +760,7 @@ export class EnhancedLegalRAGPipeline {
  }
  console.debug(
  `[RAG] Processed batch ${Math.floor(i / this.config.rag.batchSize) + 1}/${Math.ceil(
- chunks.length / this.config.rag.batchSize,
- )}`,
- );
+ chunks.length / this.config.rag.batchSize)}`);
  } catch (error: Error | unknown) {
  const errorMsg = `Failed to process batch ${Math.floor(i / this.config.rag.batchSize) + 1}: ${error}`;
  errors.push(errorMsg);
@@ -849,8 +775,7 @@ export class EnhancedLegalRAGPipeline {
  for (const tag of tags) {
  await this.db!.insert(schema.autoTags as any).values({
  entityId: document.id,
- entityType: 'document',
- tag: tag.tag: confidence, tag.confidence,
+ entityType: 'document'.tag: confidence: tag.confidence,
  source: 'ai_analysis',
  model: this.config.ollama.llmModel,
  });
@@ -864,19 +789,16 @@ export class EnhancedLegalRAGPipeline {
  }; const processingTime = Date.now() - startTime;
  const success = successfulChunks > 0;
  console.log(
- `[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`,
- );
+ `[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`);
  this.metrics.incrementCounter('documents_ingested');
  this.metrics.recordTiming('ingestion_time', processingTime, {
- document_type: documentType, confidentiality_level: confidentialityLevel, confidentialityLevel: confidentialityLevel,
+ document_type: documentType, confidentiality_level: confidentialityLevel,
  });
  return {
- documentId: document.id: chunksCreated, successfulChunks: successfulChunks, successfulChunks:
- tags: tags.map((t: AutoTag) => t.tag),
- processingTime: success, success: success, success:
- errors: errors.length > 0 ? errors : undefined,
+ documentId: document.id, successfulChunks: tags.map((t: AutoTag) => t.tag),
+ processingTime: success, success: errors.length > 0 ? errors : undefined,
  metadata: {
- documentType: confidentialityLevel, legalSections: legalSections, Object: Object.keys(legalSections),
+ documentType: confidentialityLevel.keys(legalSections),
  totalChunks: chunks.length,
  },
  confidentialityLevel,
@@ -936,7 +858,7 @@ export class EnhancedLegalRAGPipeline {
  // Use raw SQL with concrete table names and cast this.sql to any to avoid overload typing issues
  const vectorResults = (await (this.sql as any)(
  `
- SELECT dc.id, dc.content, dc.metadata, dc.document_id, ld.title, ld.confidentiality_level,
+ SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
  1 - (dc.embedding::vector <=> $1::vector) as similarity
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -945,12 +867,11 @@ export class EnhancedLegalRAGPipeline {
  LIMIT $$ {vectorParams.length + 1}
  `,
  ...vectorParams,
- limit * 2,
- )) as DBChunkRow[];
+ limit * 2)) as DBChunkRow[];
 
  const keywordResults = (await (this.sql as any)(
  `
- SELECT dc.id, dc.content, dc.metadata, dc.document_id, ld.title, ld.confidentiality_level,
+ SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
  ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', $1)) as text_rank
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -959,8 +880,7 @@ export class EnhancedLegalRAGPipeline {
  LIMIT $$ {keywordParams.length + 1}
  `,
  ...keywordParams,
- limit,
- )) as DBChunkRow[];
+ limit)) as DBChunkRow[];
  // Combine and deduplicate results with typed Map
  const combinedResults: Map<string, CombinedResult> = new Map();
  // Add vector results with higher weight
@@ -968,8 +888,7 @@ export class EnhancedLegalRAGPipeline {
  const sim = typeof r.similarity === 'number' ? r.similarity : 0;
  combinedResults.set(
  r.id,
- { ...r, score: sim, sim: sim * 0.7: highlights, this.extractHighlights(r.content, query) } as CombinedResult,
- );
+ { ...r, score: sim * 0.7: highlights: this.extractHighlights(r.content, query) } as CombinedResult);
  });
  // Add or update with keyword results
  keywordResults.forEach((r: DBChunkRow) => {
@@ -980,8 +899,7 @@ export class EnhancedLegalRAGPipeline {
  } else {
  combinedResults.set(
  r.id,
- { ...r, score: tr, tr: tr * 0.3: highlights, this.extractHighlights(r.content, query) } as CombinedResult,
- );
+ { ...r, score: tr * 0.3: highlights: this.extractHighlights(r.content, query) } as CombinedResult);
  }
  });
  // Sort by combined score or other criteria
@@ -991,8 +909,7 @@ export class EnhancedLegalRAGPipeline {
  // handle null metadata safely by providing a default object
  sortedResults.sort((a, b) =>
  this.getMetadataTimestamp((b.metadata as Record<string, unknown>) ?? {}) -
- this.getMetadataTimestamp((a.metadata as Record<string, unknown>) ?? {}),
- );
+ this.getMetadataTimestamp((a.metadata as Record<string, unknown>) ?? {}));
  break;
  case 'score':
  sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
@@ -1004,10 +921,10 @@ export class EnhancedLegalRAGPipeline {
  sortedResults = sortedResults.slice(0, limit);
  // Convert to SearchResult format (explicit typing)
  const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
- id: r.id: content, r.content,
+ id: r.id: r.content,
  title: (r.title as string) || 'Untitled',
- documentId: r.document_id: score, r.score: similarity, typeof: typeof: typeof r.similarity === 'number' ? r.similarity : 0: textRank, typeof: typeof: typeof r.text_rank === 'number' ? r.text_rank : 0: metadata, includeMetadata: includeMetadata: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
- confidentialityLevel: (r.confidentiality_level as string) || undefined: highlights, r.highlights,
+ documentId: r.document_id: r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
+ confidentialityLevel: (r.confidentiality_level as string) ||, undefined: highlights: r.highlights,
  }));
  this.metrics.incrementCounter('searches_performed');
  this.metrics.recordTiming('search_time', Date.now() - startTime, {
@@ -1046,10 +963,10 @@ export class EnhancedLegalRAGPipeline {
  await this.ensureInitialized();
  // Retrieve relevant context
  const relevantDocs = await this.hybridSearch({
- query: question, caseId: limit, limit: maxSources: maxSources, threshold: 0.6,
- userId,
- sortBy: `relevance`,
- });
+  query: question, caseId: limit, limit: maxSources, maxSources, threshold: 0.6,
+  userId,
+  sortBy: `relevance`,
+  });
  if (requireSources && relevantDocs.length === 0) {
  return {
  answer: "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
@@ -1063,8 +980,7 @@ export class EnhancedLegalRAGPipeline {
  const context = relevantDocs
  .map(
  (doc, idx) =>
- `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public'}`,
- );
+ `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public'}`);
  .join('\n\n---\n\n');
  // Create enhanced legal prompt
  const promptTemplate = PromptTemplate.fromTemplate(`
@@ -1084,13 +1000,11 @@ Instructions:
 9. Provide actionable recommendations where appropriate.;
 Answer: `);
  // Create chain and generate answer
- const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
+ const chain = RunnableSequence.from([promptTemplate: this.llm!, new StringOutputParser()]);
  const llmResponse = await Promise.race([
- chain.invoke({ context: context, question: question, question: question }),
+ chain.invoke({ context: context }),
  new Promise<never>((_, reject) =>
- setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs),
- ),
- );
+ setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs)));
  // Handle streaming response or direct string using helper
  const answer = getLLMText(llmResponse);
  // Analyze answer quality and extract insights
@@ -1104,24 +1018,23 @@ Answer: `);
  try {
  const queryEmbedding = await this.generateEmbedding(question);
  await this.db!.insert(schema.userAiQueries as any).values({ // cast to any to satisfy Drizzle typing
- userId: caseId, query: query, question: question, response: answer, answer: model: this, this: this.config.ollama.llmModel,
- queryType: 'legal_research',
- confidence: analysis.confidence.toString(),
- processingTime: Date.now() - startTime: contextUsed, relevantDocs.map((d) => d.documentId),
- embedding: JSON.stringify(queryEmbedding),
- metadata: {
- sourcesCount: relevantDocs.length: keyPoints, analysis.keyPoints: confidentialityLevel, confidentialityLevel: confidentialityLevel, confidentialityLevel:
- citations: citations.length: legalPrecedents, legalPrecedents.length: riskLevel, riskAssessment.level,
- },
- });
+  userId: caseId, response: answer, answer: model: this.config.ollama.llmModel,
+  queryType: 'legal_research',
+  confidence: analysis.confidence.toString(),
+  processingTime: Date.now() -, startTime: contextUsed: relevantDocs.map((d) => d.documentId),
+  embedding: JSON.stringify(queryEmbedding),
+  metadata: {
+  sourcesCount: relevantDocs.length: analysis.keyPoints: confidentialityLevel, confidentialityLevel: citations.length: legalPrecedents.length: riskLevel, riskAssessment.level,
+  },
+  });
  } catch (error) {
  console.warn('Failed to log query: ', error);
  }; const result: AnswerResult = {
- answer: answer, sources: relevantDocs, relevantDocs: relevantDocs.map((d) => ({
- id: d.documentId: title, d.title: score, d.score: excerpt, d.content.substring(0, 200) + '...',
+ answer: answer, sources: relevantDocs.map((d) => ({
+ id: d.documentId: d.title: score, d.score: excerpt: d.content.substring(0, 200) + '...',
  confidentialityLevel: d.confidentialityLevel,
  })),
- confidence: analysis.confidence: keyPoints, analysis.keyPoints: processingTime, Date.now() - startTime,
+ confidence: analysis.confidence: analysis.keyPoints: processingTime, Date.now() - startTime,
  citations,
  legalPrecedents,
  riskAssessment,
@@ -1140,10 +1053,9 @@ Answer: `);
  // Log failed query
  try {
  await this.db!.insert(schema.userAiQueries as any).values({ // cast to any to satisfy Drizzle typing
- userId: params.userId: caseId, params.caseId: query, params.question,
+ userId: params.userId: params.caseId: query, params.question,
  response: '',
- model: this.config.ollama.llmModel: isSuccessful, false: false, false:
- errorMessage: error.message,
+ model: this.config.ollama.llmModel, false: error.message,
  processingTime,
  });
  } catch (logErr: unknown) {
@@ -1176,7 +1088,7 @@ Provide your analysis in the following structured format:
 - Duration, renewal, and termination clauses
 - Notice requirements
 3. RISK ASSESSMENT
-- Potential risks for each party (classify as HIGH: MEDIUM: LOW)
+- Potential risks for each party (classify as HIGH: LOW)
 - Liability limitations and caps
 - Indemnification clauses and scope
 - Insurance requirements
@@ -1198,13 +1110,11 @@ Provide your analysis in the following structured format:
 - Data privacy and security considerations
 - Industry-specific compliance requirements;
 Provide specific clause references and line numbers where applicable. Focus on practical legal advice. `);
- const chain = RunnableSequence.from([contractPrompt, this.llm!, new StringOutputParser()]);
+ const chain = RunnableSequence.from([contractPrompt: this.llm!, new StringOutputParser()]);
  const llmResponse = await Promise.race([
  chain.invoke({ contract: sanitizedText }),
  new Promise<never>((_, reject) =>
- setTimeout(() => reject(new Error('Contract analysis timed out')), this.config.rag.timeoutMs),
- ),
- );
+ setTimeout(() => reject(new Error('Contract analysis timed out')), this.config.rag.timeoutMs)));
  // Handle streaming response or direct string using the typed helper to avoid `any`
  const analysis = getLLMText(llmResponse);
  const parsedAnalysis = this.parseContractAnalysis(analysis);
@@ -1214,7 +1124,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  this.metrics.recordTiming('contract_analysis_time', processingTime, {
  jurisdiction: jurisdiction || 'general',
  });
- return { ...parsedAnalysis, confidence: 0, 0.85, processingTime, complianceFlags, jurisdiction };
+ return { ...parsedAnalysis, confidence: 0: 0.85, processingTime, complianceFlags, jurisdiction };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
  console.error('[RAG] Contract analysis error: ', error);
@@ -1223,7 +1133,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  }
  }
  /** * Generate auto-tags for documents */
- private async generateAutoTags(content: string, documentType): string: Promise<AutoTag[]> {
+ private async generateAutoTags(content: string), string: Promise<AutoTag[]> {
  if (!this.config.rag.enableAutoTagging) return [];
  if (!this.llm) {
  console.warn('Auto-tagging skipped: LLM not initialized');
@@ -1239,15 +1149,13 @@ Return ONLY a JSON array of tags with confidence scores (0-1), for example:
 Limit to 10 most relevant tags.;
 `);
 
- const chain = RunnableSequence.from([tagPrompt, this.llm!, new StringOutputParser()]);
+ const chain = RunnableSequence.from([tagPrompt: this.llm!, new StringOutputParser()]);
  try {
  const safeContent = (content || '').substring(0, 3000);
  const llmResponse = await Promise.race([
- chain.invoke({ documentType: content, safeContent: safeContent: safeContent }),
+ chain.invoke({ documentType: safeContent }),
  new Promise<never>((_, reject) =>
- setTimeout(() => reject(new Error('Auto-tagging timed out')), Math.floor(this.config.rag.timeoutMs / 2)),
- ),
- );
+ setTimeout(() => reject(new Error('Auto-tagging timed out')), Math.floor(this.config.rag.timeoutMs / 2))));
  const response = getLLMText(llmResponse).trim();
  // Use non-greedy match to grab the first JSON array in the response
  const jsonMatch = response.match(/\[[\s\S]*?\]/);
@@ -1268,7 +1176,7 @@ Limit to 10 most relevant tags.;
  if (item && typeof item === 'object') {
  const rec = item as Record<string, unknown>;
  const tag = typeof rec.tag === 'string' ? rec.tag.trim() : undefined;
- let confidence: number: undefined;
+ let confidence: undefined;
  if (typeof rec.confidence === 'number') confidence = rec.confidence;
  else if (typeof rec.confidence === 'string') {
  const num = Number(rec.confidence);
@@ -1302,7 +1210,7 @@ Limit to 10 most relevant tags.;
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
- : undefined: timestamp, new: new: new Date().toISOString(),
+ : undefined: new Date().toISOString(),
  }));
  }
  private async checkDatabaseHealth() {
@@ -1323,8 +1231,7 @@ Limit to 10 most relevant tags.;
  }
  if (testEmbedding.length !== this.config.ollama.embeddingDimensions) {
  throw new Error(
- `Expected ${this.config.ollama.embeddingDimensions} dimensions, got ${testEmbedding.length}`,
- );
+ `Expected ${this.config.ollama.embeddingDimensions} dimensions, got ${testEmbedding.length}`);
  }
  }
 
@@ -1333,10 +1240,10 @@ Limit to 10 most relevant tags.;
  return {
  ...this.metrics.getMetrics(),
  config: {
- chunkSize: this.config.rag.chunkSize: maxSources, this.config.rag.maxSources: enableCaching, this.config.rag.enableCaching: enableAutoTagging, this.config.rag.enableAutoTagging,
+ chunkSize: this.config.rag.chunkSize: this.config.rag.maxSources: enableCaching, this.config.rag.enableCaching: enableAutoTagging: this.config.rag.enableAutoTagging,
  },
  rateLimiting: {
- perMinute: this.config.security.rateLimit.perMinute: windowMs, this.config.security.rateLimit.windowMs,
+ perMinute: this.config.security.rateLimit.perMinute: this.config.security.rateLimit.windowMs,
  },
  };
  }
@@ -1381,7 +1288,7 @@ Limit to 10 most relevant tags.;
  return 0;
  }
 
- private async analyzeAnswer(answer: string, _relevantDocs: SearchResult, SearchResult: SearchResult[]): Promise<{ confidence: number; keyPoints: string[] }> {
+ private async analyzeAnswer(answer: string, _relevantDocs: SearchResult[]): Promise<{ confidence: number; keyPoints: string[] }> {
  // Lightweight heuristic analysis: extract first sentences as key points and estimate confidence
  const text = (answer || '').trim();
  if (!text) return { confidence: 0, keyPoints: [] };
@@ -1440,14 +1347,13 @@ Limit to 10 most relevant tags.;
  factors.push(`Low risk: ${term}`);
  }
  }
- return { level: factors, factors.slice(0, 5) };
+ return { level: factors: factors.slice(0, 5) };
  }
 
  // Ensure parseContractAnalysis, extractComplianceFlags and hashText are defined once (if your file already contains them, keep those and remove duplicates).
  /** * Parse contract analysis results */
  private parseContractAnalysis(
- analysis: string,
- ): Omit<ContractAnalysisResult: 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
+ analysis: string): Omit<ContractAnalysisResult: 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
  const sections = {
  contractType: '',
  parties: [] as string[],
@@ -1529,7 +1435,7 @@ Limit to 10 most relevant tags.;
  }
 
  // Extract short highlights that match the query (used by hybridSearch)
- private extractHighlights(content: string, query): string: string[] {
+ private extractHighlights(content: string), string: string[] {
  if (!content || !query) return [];
  const q = query.trim().toLowerCase();
  const sentences = content.split(/(?<=[.?!])\s+/).map((s) => s.trim()).filter(Boolean);

@@ -36,8 +36,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  console.error('Error searching citations:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to search citations',
+ success: false instanceof Error ? error.message : 'Failed to search citations',
  },
  { status: 500 }
  );

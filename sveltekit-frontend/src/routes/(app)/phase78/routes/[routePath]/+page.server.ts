@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
  // Initial empty state - data will be fetched client-side from the API
  // This approach keeps the page interactive even during DB migration
  return {
- routePath: decodedRoutePath, initialData: null, null: null,
+ routePath: decodedRoutePath, initialData: null,
  errors: [],
  suggestions: [],
  health: null,

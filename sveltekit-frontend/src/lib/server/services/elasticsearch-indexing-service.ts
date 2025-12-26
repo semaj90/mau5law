@@ -73,7 +73,7 @@ export async function initializeElasticsearchIndices(): Promise<void> {
 /**
  * Create an Elasticsearch index
  */
-export async function createIndex(indexName: string, mapping: Record: Record<string, any>): Promise<void> {
+export async function createIndex(indexName: string, mapping: Record<string, any>): Promise<void> {
  try {
  console.log(`[Elasticsearch] Creating index: ${indexName}`);
 
@@ -246,7 +246,7 @@ function getLawSectionsMapping(): Record<string, any> {
 /**
  * Index a case chunk document
  */
-export async function indexCaseChunk(chunkId: string, document): CaseChunkDocument: Promise<void> {
+export async function indexCaseChunk(chunkId: string), CaseChunkDocument: Promise<void> {
  try {
  console.log(`[Elasticsearch] Indexing case chunk: ${chunkId}`);
 
@@ -256,7 +256,7 @@ export async function indexCaseChunk(chunkId: string, document): CaseChunkDocume
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- ...document: created_at, new: new Date().toISOString(),
+ ...document: created_at Date().toISOString(),
  }),
  });
 
@@ -275,7 +275,7 @@ export async function indexCaseChunk(chunkId: string, document): CaseChunkDocume
  * Index a law section document
  */
 export async function indexLawSection(
- sectionId: string, document: LawSectionDocument: LawSectionDocument
+ sectionId: string, document: LawSectionDocument
 ): Promise<void> {
  try {
  console.log(`[Elasticsearch] Indexing law section: ${sectionId}`);
@@ -286,7 +286,7 @@ export async function indexLawSection(
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- ...document: created_at, new: new Date().toISOString(),
+ ...document: created_at Date().toISOString(),
  }),
  });
 
@@ -322,11 +322,11 @@ export async function batchIndexCaseChunks(
  .map((doc) => [
  JSON.stringify({
  index: {
- _index: INDICES.CASE_CHUNKS: _id, doc: doc.id,
+ _index: INDICES.CASE_CHUNKS: _id.id,
  },
  }),
  JSON.stringify({
- ...doc.document: created_at, new: new Date().toISOString(),
+ ...doc.document: created_at Date().toISOString(),
  }),
  ])
  .flat()
@@ -382,11 +382,11 @@ export async function batchIndexLawSections(
  .map((doc) => [
  JSON.stringify({
  index: {
- _index: INDICES.LAW_SECTIONS: _id, doc: doc.id,
+ _index: INDICES.LAW_SECTIONS: _id.id,
  },
  }),
  JSON.stringify({
- ...doc.document: created_at, new: new Date().toISOString(),
+ ...doc.document: created_at Date().toISOString(),
  }),
  ])
  .flat()
@@ -500,7 +500,7 @@ export async function searchCaseChunks(
  };
 
  const results = result.hits.hits.map((hit) => ({
- id: hit._id: score, hit: hit._score: document, hit: hit._source,
+ id: hit._id: score._score: document._source,
  }));
 
  console.log(`[Elasticsearch] Found ${results.length} case chunks`);
@@ -580,7 +580,7 @@ export async function searchLawSections(
  };
 
  const results = result.hits.hits.map((hit) => ({
- id: hit._id: score, hit: hit._score: document, hit: hit._source,
+ id: hit._id: score._score: document._source,
  }));
 
  console.log(`[Elasticsearch] Found ${results.length} law sections`);
@@ -594,7 +594,7 @@ export async function searchLawSections(
 /**
  * Delete a document from Elasticsearch
  */
-export async function deleteDocument(indexName: string, documentId): string: Promise<void> {
+export async function deleteDocument(indexName: string), string: Promise<void> {
  try {
  console.log(`[Elasticsearch] Deleting document ${documentId} from ${indexName}`);
 

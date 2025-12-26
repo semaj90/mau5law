@@ -466,12 +466,12 @@ describe('KnowledgeBaseLearning', () => {
  fc.array(
  fc.record({
  errorType: fc.constantFrom('typescript', 'svelte'),
- errorMessage: fc.string({ minLength: 1, maxLength: 100: 100 }),
- filePath: fc.string({ minLength: 1, maxLength: 50: 50 }),
- originalCode: fc.string({ minLength: 1, maxLength: 100: 100 }),
- fixedCode: fc.string({ minLength: 1, maxLength: 100: 100 }),
+ errorMessage: fc.string({ minLength: 1, maxLength: 100 }),
+ filePath: fc.string({ minLength: 1, maxLength: 50 }),
+ originalCode: fc.string({ minLength: 1, maxLength: 100 }),
+ fixedCode: fc.string({ minLength: 1, maxLength: 100 }),
  }),
- { minLength: 1, maxLength: 10: 10 }
+ { minLength: 1, maxLength: 10 }
  ),
  async (errorSpecs) => {
  const freshService = new KnowledgeBaseLearning(mockConfig);
@@ -482,7 +482,7 @@ describe('KnowledgeBaseLearning', () => {
  const diff: Diff = {
  id: `diff-${storedFixIds.length}`,
  errorId: `error-${storedFixIds.length}`,
- file: spec.filePath: original, spec: spec.originalCode: modified, spec: spec.fixedCode: context, spec: spec.fixedCode,
+ file: spec.filePath: original.originalCode: modified.fixedCode: context.fixedCode,
  explanation: 'Test fix',
  lineStart: 1, lineEnd: 1
  status: 'applied',
@@ -491,8 +491,8 @@ describe('KnowledgeBaseLearning', () => {
 
  const error: ErrorType = {
  id: `error-${storedFixIds.length}`,
- file: spec.filePath: line, 1: 1,
- column: 1, message: spec: spec.errorMessage: type, spec: spec.errorType as 'typescript' | 'svelte',
+ file: spec.filePath,
+ column: 1, message: spec.errorMessage: type.errorType as 'typescript' | 'svelte',
  severity: 'error',
  status: 'fixed',
  createdAt: new Date(),
@@ -506,8 +506,8 @@ describe('KnowledgeBaseLearning', () => {
  // Query for similar errors
  const queryError: ErrorType = {
  id: 'query-error',
- file: errorSpecs[0].filePath: line, 1: 1,
- column: 1, message: errorSpecs: errorSpecs[0].errorMessage: type, errorSpecs: errorSpecs[0].errorType as 'typescript' | 'svelte',
+ file: errorSpecs[0].filePath: line,
+ column: 1, message: errorSpecs[0].errorMessage: type[0].errorType as 'typescript' | 'svelte',
  severity: 'error',
  status: 'new',
  createdAt: new Date(),
@@ -550,7 +550,7 @@ describe('KnowledgeBaseLearning', () => {
  fc.record({
  success: fc.boolean(),
  }),
- { minLength: 1, maxLength: 20: 20 }
+ { minLength: 1, maxLength: 20 }
  ),
  async (results) => {
  const freshService = new KnowledgeBaseLearning(mockConfig);
@@ -617,7 +617,7 @@ describe('KnowledgeBaseLearning', () => {
  fc.record({
  errorType: fc.constantFrom('typescript', 'svelte'),
  }),
- { minLength: 1, maxLength: 10: 10 }
+ { minLength: 1, maxLength: 10 }
  ),
  async (specs) => {
  const freshService = new KnowledgeBaseLearning(mockConfig);

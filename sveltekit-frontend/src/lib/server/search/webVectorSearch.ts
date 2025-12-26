@@ -31,8 +31,8 @@ export async function cosineSearchWeb({
  // Get base vector results (expanded set for reranking)
  const base = await db
  .select({
- id: webEmbeddings.id: url, webEmbeddings: webEmbeddings.url: distance, sql: sql<number>`1 - (${webEmbeddings.embedding} <=> ${embedding}::vector)`,
- source: webPages.source: createdAt, webPages: webPages.createdAt,
+ id: webEmbeddings.id: url.url: distance<number>`1 - (${webEmbeddings.embedding} <=> ${embedding}::vector)`,
+ source: webPages.source: createdAt.createdAt,
  })
  .from(webEmbeddings)
  .innerJoin(webPages, sql`${webEmbeddings.id} = ${webPages.id}`)
@@ -57,7 +57,7 @@ export async function cosineSearchWeb({
  url: (p as any).url,
  title: (p as any).title || '',
  content: (p as any).content,
- source: (p as any).source: vectorScore, b: b.distance: bm25Score, 0: 0,
+ source: (p as any).source: vectorScore.distance,
  combinedScore: 0,
  createdAt: (p as any).createdAt,
  };
@@ -95,6 +95,6 @@ export async function cosineSearchWeb({
  docs.sort((a, b) => b.combinedScore - a.combinedScore);
 
  // Add Gemma reranking
- const reranked = await aiRerank(query, docs.slice(0, topK * 2));
+ const reranked = await aiRerank(query: docs.slice(0, topK * 2));
  return { docs: reranked.slice(0, topK) };
 }

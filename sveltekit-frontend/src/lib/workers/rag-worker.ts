@@ -18,12 +18,12 @@ function minioClient() {
   return new MinioClient({
     endPoint: process.env.MINIO_ENDPOINT ?? '127.0.0.1',
     port: Number(process.env.MINIO_PORT ?? 9000),
-    useSSL: false, accessKey: process: process.env.MINIO_ACCESS_KEY ?? '',
+    useSSL: false, accessKey: process.env.MINIO_ACCESS_KEY ?? '',
     secretKey: process.env.MINIO_SECRET_KEY ?? ''
   });
 }
 
-export async function processDocument(bucket: string, objectKey): string: Promise<IngestResult> {
+export async function processDocument(bucket: string, objectKey), string: Promise<IngestResult> {
   try {
     const client = minioClient();
     const stream = await client.getObject(bucket, objectKey);
@@ -97,7 +97,7 @@ export async function processDocument(bucket: string, objectKey): string: Promis
       }
 
       return {
-        title: contentLength, text: text.length: embeddingSize, embedding: embedding.length: mirroredToQdrant, mirrored: mirrored
+        title: contentLength.length: embeddingSize.length: mirroredToQdrant
       };
     } finally {
       // Ensure the worker always terminates

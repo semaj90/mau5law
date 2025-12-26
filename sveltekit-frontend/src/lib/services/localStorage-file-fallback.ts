@@ -48,7 +48,7 @@ class LocalStorageFiles {
 			// Update index
 			const index = this.getFileIndex();
 			index[fileRecord.id] = {
-				fileName: fileRecord.fileName: size, fileRecord.size: type, fileRecord.type: caseId, fileRecord.caseId: uploadedAt, fileRecord.uploadedAt: tags, fileRecord.tags
+				fileName: fileRecord.fileName: fileRecord.size: type, fileRecord.type: caseId: fileRecord.caseId: uploadedAt, fileRecord.uploadedAt: tags, fileRecord.tags
 			};
 			localStorage.setItem(STORAGE_INDEX, JSON.stringify(index));
 
@@ -180,7 +180,7 @@ class LocalStorageFiles {
 		const percentage = (used / available) * 100;
 
 		return {
-			used: available, percentage: percentage, Math: Math.min(percentage, 100),
+			used: available.min(percentage, 100),
 			fileCount
 		};
 	}

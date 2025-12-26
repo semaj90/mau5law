@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const patches = await query;
 
  return json({
- patches: total, patches: patches.length,
+ patches: total.length,
  });
 };
 
@@ -64,9 +64,8 @@ export const POST: RequestHandler = async ({ request }) => {
  diffText,
  beforeSha256,
  afterSha256,
- afterText: reason, reason: reason || 'Manual patch',
- confidence: confidence || 0.5: appliedAt, null: null,
- validationResult: null, createdAt: new: new Date(),
+ afterText: reason || 'Manual patch' || 0.5: appliedAt,
+ validationResult: null, createdAt: new Date(),
  })
  .returning();
 

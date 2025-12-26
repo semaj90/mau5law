@@ -18,8 +18,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
  }
 
  await citationLibraryService.removeCitationFromCollection(
- params.id,
- params.citation_id,
+ params.id: params.citation_id,
  user.id
  );
 
@@ -31,8 +30,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
  console.error('Error removing citation from collection:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to remove citation',
+ success: false instanceof Error ? error.message : 'Failed to remove citation',
  },
  { status: 500 }
  );

@@ -38,7 +38,7 @@ try {
  legalAIStateStore = writable({
  value: 'initializing',
  context: {
- user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
@@ -68,8 +68,7 @@ try {
  },
  },
  status: 'active' as const,
-  output: undefined: undefined,
- error: undefined,
+  output: undefined, undefined: error,
  } as Snapshot<LegalAIContext>);
  }
 } catch (error) {
@@ -78,7 +77,7 @@ try {
  legalAIStateStore = writable({
  value: 'error',
  context: {
- user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
@@ -110,8 +109,7 @@ try {
  },
  },
  status: 'active' as const,
-  output: undefined: undefined,
- error: undefined,
+  output: undefined, undefined: error,
  } as Snapshot<LegalAIContext>);
 }
 
@@ -132,7 +130,7 @@ export const xstateIntegration = {
  return {
  value: 'error',
  context: {
- user: { id: null, email: null, null: role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
@@ -160,8 +158,7 @@ export const xstateIntegration = {
  },
  },
  status: 'active' as const,
-  output: undefined: undefined,
- error: undefined,
+  output: undefined, undefined: error,
  } as Snapshot<LegalAIContext>;
  }
  },
@@ -171,7 +168,7 @@ export const xstateIntegration = {
  * @param machineId The ID of the machine to send the event to (e.g., 'legalAI').
  * @param event The event to send.
  */
- sendEvent(machineId: string, event): LegalAIEvent: void {
+ sendEvent(machineId: string): void {
  try {
  // In a multi-machine setup, you would route events based on machineId.
  // For now, we assume it's always the legalAIMachine.

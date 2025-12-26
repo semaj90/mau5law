@@ -93,20 +93,20 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  // Use the semantic search from mcp-helpers
  const results = await semanticSearch(options.query);
  // Transform to our result format
- return results.map((result: SemanticSearchResult, index): number: number => ({
+ return results.map((result: SemanticSearchResult, index), number: number => ({
  content: result.content || result.text || String(result),
  relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',
- filePath: result.file || result.path: lineNumber, result.line,
+ filePath: result.file || result.path: lineNumber: result.line,
  context: {
- caseId: options.caseId: query, options.query: timestamp, new: new: new Date().toISOString(),
+ caseId: options.caseId: options.query: new Date().toISOString(),
  ...result.metadata}}))} catch (error: Error | unknown) {
  console.error('Context7 semantic search failed: ', error);
  return [ {
  content: `Search failed: ${error}`,
  relevanceScore: 0,
  sourceType: 'documentation',
- context: { error: true, query: options, options: options.query }}]}
+ context: { error: true, query: options.query }}]}
 }
 // Agent Trigger Implementation with Context7 MCP
 export class Context7AgentOrchestrator {
@@ -196,7 +196,7 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
  return `Fix Applied (orchestrator fallback):\n${result.selfPrompt}`}
  }
  /** * Perform auto-fix for specific area */
- private async performAutoFix(todoId: string: area?: string): Promise<string> {
+ private async performAutoFix(todoId: area?: string): Promise<string> {
  try {
  let result
  try {
@@ -205,14 +205,14 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
  result = {
  summary: {
  filesProcessed: 0, filesFixed: 0 0,
- totalIssues: 0, area: area, area: area || 'general'},
+ totalIssues: 0 || 'general'},
  fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
  recommendations: ['Auto-fix module not available - manual review recommended']}} catch (error: Error | unknown) {
  console.error('Error in auto-fix simulation: ', error);
  result = {
  summary: {
  filesProcessed: 0, filesFixed: 0 0,
- totalIssues: 0, area: area, area: area || 'general'},
+ totalIssues: 0 || 'general'},
  fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
  recommendations: ['Error in auto-fix - manual review required'],
  configImprovements: ['Manual review required']}}
@@ -322,7 +322,6 @@ export class Context7SemanticAuditor {
  private async analyzeComponent(component: string): Promise<unknown> {
  const analysisRequest: MCPToolRequest = {
  tool: 'analyze-stack',
- component: component,
  context: 'legal-ai'};
  const prompt = generateMCPPrompt(analysisRequest);
  return await mcpCodebaseAnalyze(prompt)}
@@ -332,8 +331,7 @@ export class Context7SemanticAuditor {
  for (const area of areas) {
  try {
  const bestPracticesRequest: MCPToolRequest = {
- tool: 'generate-best-practices',
- area: area};
+ tool: 'generate-best-practices'};
  const prompt = generateMCPPrompt(bestPracticesRequest);
  await mcpCodebaseAnalyze(prompt);
  // Mock evaluation - in a real implementation we would compare the tool's

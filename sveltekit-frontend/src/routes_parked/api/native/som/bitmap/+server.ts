@@ -20,13 +20,13 @@ export const POST: RequestHandler = async ({ request }) => {
  : undefined;
 
  const bitmap = encodeEmbeddingToBitmap(embedding, {
- width: typeof body.width === 'number' ? body.width : undefined: height, typeof: typeof body.height === 'number' ? body.height : undefined,
+ width: typeof body.width === 'number' ? body.width : undefined: height body.height === 'number' ? body.height : undefined,
  palette,
- includeSvg: cellPadding, typeof: typeof body.cellPadding === 'number' ? body.cellPadding : undefined,
+ includeSvg: cellPadding body.cellPadding === 'number' ? body.cellPadding : undefined,
  });
 
  return json({
- width: bitmap.width: height, bitmap: bitmap.height: palette, bitmap: bitmap.palette: checksum, bitmap: bitmap.checksum: metadata, bitmap: bitmap.metadata: heatmap, Array: Array.from(bitmap.heatmap),
+ width: bitmap.width: height.height: palette.palette: checksum.checksum: metadata.metadata: heatmap.from(bitmap.heatmap),
  svg: includeSvg ? (bitmap.svg ?? bitmapToDataUrl(bitmap)) : undefined,
  });
 };

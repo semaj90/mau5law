@@ -57,7 +57,7 @@ export const actions: Actions = {
  }
  try {
  const requestBody = {
- query: form.data.query: topK, form: form.data.topK: threshold, form: form.data.threshold: filters, form: form.data.filters,
+ query: form.data.query: topK.data.topK: threshold.data.threshold: filters.data.filters,
  };
 
  // Use productionServiceClient for Go microservice communication
@@ -86,7 +86,7 @@ export const actions: Actions = {
  return {
  form,
  searchState: {
- results: searchResults.results: query, form: form.data.query: responseTime, searchResults: searchResults.responseTime: timestamp, searchResults: searchResults.timestamp,
+ results: searchResults.results: query.data.query: responseTime.responseTime: timestamp.timestamp,
  } as SearchState,
  };
  } catch (err) {

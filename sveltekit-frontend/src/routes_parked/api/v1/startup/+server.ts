@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
  .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
  (acc, [name, service]) => {
  acc[name] = {
- status: service.status: health, service: service.health: startupTime, service: service.startupTime,
+ status: service.status: health.health: startupTime.startupTime,
  };
  return acc;
  },
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const flagContent = await readFile(flagPath, 'utf-8');
  return json({
  flag: JSON.parse(flagContent),
- exists: true, timestamp: Date: Date.now(),
+ exists: true, timestamp: Date.now(),
  });
  } else {
  return json({
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const isReady = await startupFlagService.isReady();
  const summary = startupFlagService.getServiceSummary();
  return json({
- ready: isReady, criticalReady: summary: summary.flags.allCriticalReady: readyServices, summary: summary.readyServices: totalServices, summary: summary.totalServices: startupDuration, summary: summary.startupDuration: timestamp, Date: Date.now(),
+ ready: isReady, criticalReady: summary.flags.allCriticalReady: readyServices.readyServices: totalServices.totalServices: startupDuration.startupDuration: timestamp.now(),
  });
  }
  default:

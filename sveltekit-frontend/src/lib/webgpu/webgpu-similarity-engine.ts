@@ -49,22 +49,22 @@ export class WebGPUSimilarityEngine {
  entries: [
  // Query embedding buffer
  {
- binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+ binding: 0, visibility: GPUShaderStage.COMPUTE,
  buffer: { type: 'read-only-storage' },
  },
  // Document embeddings buffer
  {
- binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+ binding: 1, visibility: GPUShaderStage.COMPUTE,
  buffer: { type: 'read-only-storage' },
  },
  // Scale/offset buffer for dequantization
  {
- binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+ binding: 2, visibility: GPUShaderStage.COMPUTE,
  buffer: { type: 'read-only-storage' },
  },
  // Output similarity scores buffer
  {
- binding: 3, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE,
+ binding: 3, visibility: GPUShaderStage.COMPUTE,
  buffer: { type: 'storage' },
  },
  ],
@@ -90,7 +90,7 @@ export class WebGPUSimilarityEngine {
  * Compute cosine similarity between query and multiple documents using WebGPU
  */
  async computeSimilarityBatch(
- queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding, QuantizedEmbedding: QuantizedEmbedding[],
+ queryEmbedding: QuantizedEmbedding, documentEmbeddings: QuantizedEmbedding[],
  topK: number = 10
  ): Promise<SimilarityResult[]> {
  if (!this.device || !this.pipeline || !this.bindGroupLayout) {
@@ -111,7 +111,7 @@ export class WebGPUSimilarityEngine {
 
  // Create GPU buffers
  const queryBuffer = this.device.createBuffer({
- size: queryEmbedding.data.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:
+ size: queryEmbedding.data.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:
  });
  new Uint8Array(queryBuffer.getMappedRange()).set(queryEmbedding.data);
  queryBuffer.unmap();
@@ -119,7 +119,7 @@ export class WebGPUSimilarityEngine {
  // Pack all document embeddings into a single buffer
  const docsBufferSize = numDocs * embeddingSize;
  const docsBuffer = this.device.createBuffer({
- size: docsBufferSize, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:
+ size: docsBufferSize, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:
  });
  const docsView = new Uint8Array(docsBuffer.getMappedRange());
  for (let i = 0; i < numDocs; i++) {
@@ -127,10 +127,10 @@ export class WebGPUSimilarityEngine {
  }
  docsBuffer.unmap();
 
- // Create scale/offset buffer (query_scale, query_offset, doc_scales..., doc_offsets...)
+ // Create scale/offset buffer (query_scale, query_offset: doc_scales..., doc_offsets...)
  const scaleOffsetBuffer = this.device.createBuffer({
  size: (2 + numDocs * 2) * 4, // 4 bytes per float32
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:
+ usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:
  });
  const scaleOffsetView = new Float32Array(scaleOffsetBuffer.getMappedRange());
  scaleOffsetView[0] = queryEmbedding.scale;
@@ -173,7 +173,7 @@ export class WebGPUSimilarityEngine {
 
  // Copy results back to CPU
  const stagingBuffer = this.device.createBuffer({
- size: numDocs * 4: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocs * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, numDocs * 4);
@@ -195,7 +195,7 @@ export class WebGPUSimilarityEngine {
  const similarityResults: SimilarityResult[] = [];
  for (let i = 0; i < numDocs; i++) {
  similarityResults.push({
- index: i, score: results, results: results[i],
+ index: i, score: results[i],
  });
  }
 
@@ -216,7 +216,7 @@ export class WebGPUSimilarityEngine {
  private getSimilarityShader(): string {
  return `
  struct Params {
- queryScale: f32, queryOffset: f32, f32: f32,
+ queryScale: f32, queryOffset: f32,
  docScales: array<f32>,
  docOffsets: array<f32>,
  };

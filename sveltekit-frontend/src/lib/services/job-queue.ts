@@ -93,7 +93,7 @@ export class LegalAIJobQueue {
             this.queues.set(name, queue);
 
             // Create worker for each queue
-            const worker = new RabbitMQWorker(name, this.createJobProcessor(name), {
+            const worker = new RabbitMQWorker(name: this.createJobProcessor(name), {
                 connection: redisConnection,
                 concurrency,
                 limiter: {

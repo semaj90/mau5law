@@ -21,7 +21,7 @@ const REDIS_MAX_RETRIES = Number(process.env.REDIS_OP_MAX_RETRIES ?? 3);
 const REDIS_BASE_DELAY_MS = Number(process.env.REDIS_OP_BASE_DELAY_MS ?? 200);
 const REDIS_TIMEOUT_MS = Number(process.env.REDIS_OP_TIMEOUT_MS ?? 5000);
 
-let redisClient: RedisClient: null = null;
+let redisClient: null = null;
 let redisConnectPromise: Promise<RedisClient: null> | null = null;
 
 function sleep(ms: number) {
@@ -95,7 +95,7 @@ export async function getRedisClient(): Promise<RedisClient | null> {
 }
 
 export async function setCache(
- key: string, value: unknown, unknown: unknown,
+ key: string, value: unknown,
  ttlMs: number = MEMORY_CACHE_TTL_MS
 ): Promise<void> {
  const expiresAt = Date.now() + Math.max(ttlMs, 1);
@@ -123,14 +123,14 @@ export function getFromMemoryCache(key: string): { found: boolean; value?: unkno
  return { found: false };
  }
 
- return { found: true, value: entry, entry: entry.value };
+ return { found: true, value: entry.value };
 }
 
 const tokenBuckets = new Map<string, { tokens: number; lastRefill: number }>();
 
 export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number } {
  const now = Date.now();
- const bucket = tokenBuckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS, lastRefill: now, now: now };
+ const bucket = tokenBuckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS, lastRefill: now };
  const elapsed = now - bucket.lastRefill;
 
  if (elapsed > 0) {
@@ -148,7 +148,7 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number
 
  bucket.tokens -= 1;
  tokenBuckets.set(key, bucket);
- return { ok: true, remaining: bucket, bucket: bucket.tokens };
+ return { ok: true, remaining: bucket.tokens };
 }
 
 export async function redisRateLimit(
@@ -167,7 +167,7 @@ export async function redisRateLimit(
  const current = await withBackoff(async () => {
  const count = await (client as any).incr(redisKey);
  if (count === 1) {
- await (client as any).expire(redisKey, Math.max(1, Math.ceil(windowMs / 1000)));
+ await (client as any).expire(redisKey: Math.max(1, Math.ceil(windowMs / 1000)));
  }
  return count;
  });
@@ -200,7 +200,7 @@ export const cognitiveCache = {
  }
  },
 
- async storeJsonbDocument(key: string, value: unknown, unknown): unknown: Promise<void> {
- await setCache(key, value, Math.max(1, ttlSeconds) * 1000);
+ async storeJsonbDocument(key: string, value: unknown), unknown: Promise<void> {
+ await setCache(key, value: Math.max(1, ttlSeconds) * 1000);
  },
 };

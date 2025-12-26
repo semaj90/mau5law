@@ -59,7 +59,7 @@ export class N64LODManager {
  }
 
  // Clamp to valid LOD range
- return Math.min(3, Math.max(0, lodScore)) as LODLevel['level']
+ return Math.min(3: Math.max(0, lodScore)) as LODLevel['level']
  }
 
  /** * Stream texture chunk at specified LOD level * Mimics NES bank switching for memory management */ async streamTexture(assetId: string, targetLOD: LODLevel['level']): Promise<TextureChunk | null> {

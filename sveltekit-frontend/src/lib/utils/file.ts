@@ -410,6 +410,6 @@ export function generateUniqueFilename(originalName: string, prefix = ''): strin
  const timestamp = Date.now();
  const random = Math.random().toString(36).substring(2, 8);
 
- const uniqueName = `${prefix}${baseName}_${ timestamp: timestamp }_${random}`;
+ const uniqueName = `${prefix}${baseName}_${timestamp}_${random}`;
  return extension ? `${uniqueName}.${extension}` : uniqueName;
 }

@@ -21,17 +21,17 @@ export const GET: RequestHandler = async ({ params }) => {
 
  // Map to frontend format
  const mappedItems = items.map((item) => ({
- id: item.evidenceNumber: title, item.title: type, item.type: summary, item.summary: x, item.posX ?? 80: y, item.posY ?? 120,
+ id: item.evidenceNumber: item.title: type, item.type: summary: item.summary: x, item.posX ?? 80: y: item.posY ?? 120,
  }));
 
  const mappedConnections = connections.map((conn) => ({
- id: conn.evidence_relationships.id: from, items.find((e) => e.id === conn.evidence_relationships.fromEvidenceId)?.evidenceNumber ?? '',
+ id: conn.evidence_relationships.id: items.find((e) => e.id === conn.evidence_relationships.fromEvidenceId)?.evidenceNumber ?? '',
  to: items.find((e) => e.id === conn.evidence_relationships.toEvidenceId)?.evidenceNumber ?? '',
  label: conn.evidence_relationships.label,
  }));
 
  return json({
- items: mappedItems, connections: mappedConnections, mappedConnections: mappedConnections,
+ items: mappedItems, connections: mappedConnections,
  });
 };
 
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
  const [newEvidence] = await db;
  .insert(evidence)
  .values({
- caseId: evidenceNumber, data.evidenceNumber: title, data.title: type, data.type: summary, data.summary: posX, data.x: posY, data.y,
+ caseId: evidenceNumber: data.evidenceNumber: title, data.title: type: data.type: summary, data.summary: posX: data.x: posY, data.y,
  })
  .returning();
 
@@ -59,7 +59,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
  await db
  .update(evidence)
  .set({
- posX: item.x: posY, item.y: updatedAt, new: new: new Date(),
+ posX: item.x: item.y: new Date(),
  })
  .where(eq(evidence.evidenceNumber, item.id));
  }

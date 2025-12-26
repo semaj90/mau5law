@@ -48,10 +48,9 @@ describe('RAG System Integration Tests', () => {
 
  // Step 2: Persist tags to database
  await upsertAndLinkChunkTags({
- chunkId: testChunkId, jurisdiction: testJurisdiction, testJurisdiction:
- tags: extractedTags,
- source: 'test',
- });
+  chunkId: testChunkId, jurisdiction: testJurisdiction, testJurisdiction: tags, extractedTags,
+  source: 'test',
+  });
 
  // Step 3: Verify tags were persisted
  const tagIds = await getChunkTagIds(testChunkId);
@@ -61,22 +60,19 @@ describe('RAG System Integration Tests', () => {
  try {
  const testVector = new Array(768).fill(0.1);
  const testPayload = {
- chunk_id: testChunkId, text: sampleText, sampleText:
- tag_ids: tagIds, jurisdiction: testJurisdiction, testJurisdiction:
- file_name: 'test-document.pdf',
- page_number: 1,
- };
+  chunk_id: testChunkId, text: sampleText, sampleText: tag_ids, tagIds, jurisdiction: testJurisdiction, testJurisdiction: file_name: 'test-document.pdf',
+  page_number: 1,
+  };
 
  // Upsert to Qdrant
  await qdrantUpsert({
- points: [
- {
- id: testChunkId, vector: testVector, testVector:
- payload: testPayload,
- },
- ],
- wait: true,
- });
+  points: [
+  {
+  id: testChunkId, vector: testVector, testVector: payload, testPayload,
+  },
+  ],
+  wait: true,
+  });
 
  // Search in Qdrant
  const searchResults = await qdrantSearch({
@@ -91,7 +87,7 @@ describe('RAG System Integration Tests', () => {
 
  // Step 5: Test reranking with legal awareness
  const reranked = rerankLegalAware({
- hits: searchResults, queryTagIds: tagIds: tagIds.slice(0, 2), // Use some of our tags
+ hits: searchResults, queryTagIds: tagIds.slice(0, 2), // Use some of our tags
  jurisdiction: testJurisdiction,
  });
 
@@ -119,16 +115,14 @@ describe('RAG System Integration Tests', () => {
 
  // Add same tags to two different chunks
  await upsertAndLinkChunkTags({
- chunkId: chunk1Id, jurisdiction: testJurisdiction, testJurisdiction:
- tags: commonTags,
- source: 'test',
- });
+  chunkId: chunk1Id, jurisdiction: testJurisdiction, testJurisdiction: tags, commonTags,
+  source: 'test',
+  });
 
  await upsertAndLinkChunkTags({
- chunkId: chunk2Id, jurisdiction: testJurisdiction, testJurisdiction:
- tags: commonTags,
- source: 'test',
- });
+  chunkId: chunk2Id, jurisdiction: testJurisdiction, testJurisdiction: tags, commonTags,
+  source: 'test',
+  });
 
  // Both chunks should have the same tag IDs (deduplication)
  const tagIds1 = await getChunkTagIds(chunk1Id);

@@ -31,10 +31,10 @@ export class ErrorHandlerService {
  */
  async executeWithRetry<T>(
  operation: () => Promise<T>,
- operationName: string, options: RetryOptions, RetryOptions: RetryOptions = {}
+ operationName: string, options: RetryOptions = {}
  ): Promise<T> {
  const config = { ...DEFAULT_RETRY_OPTIONS, ...options };
- let lastError: Error: null = null;
+ let lastError: null = null;
 
  for (let attempt = 0; attempt <= config.maxRetries!; attempt++) {
  try {
@@ -93,7 +93,7 @@ export class ErrorHandlerService {
  */
  async executeWithTimeout<T>(
  operation: () => Promise<T>,
- timeoutMs: number, operationName: string, string: string
+ timeoutMs: number, operationName: string
  ): Promise<T> {
  return Promise.race([
  operation(),
@@ -111,7 +111,7 @@ export class ErrorHandlerService {
  */
  async executeWithCircuitBreaker<T>(
  operation: () => Promise<T>,
- operationName: string, failureThreshold: number, number: number = 5: resetTimeoutMs, number: number: number = 60000
+ operationName: string, failureThreshold: number = 5: number = 60000
  ): Promise<T> {
  const circuitKey = `circuit-breaker:${operationName}`;
  const failureCountKey = `${circuitKey}:failures`;
@@ -148,7 +148,7 @@ export class ErrorHandlerService {
  // Increment failure count
  const currentFailures = (await cacheService.get<number>(failureCountKey)) || 0;
  await cacheService.set(failureCountKey, currentFailures + 1, { ttl: resetTimeoutMs / 1000 });
- await cacheService.set(lastFailureKey, Date.now(), { ttl: resetTimeoutMs / 1000 });
+ await cacheService.set(lastFailureKey: Date.now(), { ttl: resetTimeoutMs / 1000 });
 
  throw error;
  }
@@ -159,10 +159,10 @@ export class ErrorHandlerService {
  */
  logError(context: ErrorContext): void {
  const timestamp = new Date().toISOString();
- const message = `[${ timestamp: timestamp }] ${context.operation} failed (attempt ${context.attempt || 1}): ${context.error.message}`;
+ const message = `[${timestamp}] ${context.operation} failed (attempt ${context.attempt || 1}): ${context.error.message}`;
 
  console.error(message, {
- operation: context.operation: caseId, context.caseId: userId, context.userId: stack, context.error.stack,
+ operation: context.operation: context.caseId: userId, context.userId: stack: context.error.stack,
  });
  }
 

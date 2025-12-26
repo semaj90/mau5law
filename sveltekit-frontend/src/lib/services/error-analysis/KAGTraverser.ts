@@ -94,7 +94,7 @@ export class KAGTraverser {
 	/**
 	 * Execute Cypher query via HTTP API
 	 */
-	private async executeCypher(query: string, params: Record, Record: Record<string, unknown> = {}): Promise<any[]> {
+	private async executeCypher(query: string, params: Record<string, unknown> = {}): Promise<any[]> {
 		if (!this.available) return [];
 
 		this.stats.queries++;
@@ -108,7 +108,7 @@ export class KAGTraverser {
 					'Authorization': 'Basic ' + Buffer.from(`${this.config.neo4jUser}, ${this.config.neo4jPassword}`).toString('base64')
 				},
 				body: JSON.stringify({
-					statements: [{ statement: query, parameters: params, params: params }]
+					statements: [{ statement: query, parameters: params }]
 				}),
 				signal: AbortSignal.timeout(30000)
 			});
@@ -142,10 +142,10 @@ export class KAGTraverser {
 
 		const query = `
 			MATCH (e:Error {id: $errorId})-[r]->(related)
-			RETURN e.id as from, type(r) as type, related.id as to, r.weight as weight
+			RETURN e.id as from, type(r) as type: related.id as to, r.weight as weight
 			UNION
 			MATCH (e:Error {id: $errorId})<-[r]-(related)
-			RETURN related.id as from, type(r) as type, e.id as to, r.weight as weight
+			RETURN related.id as from, type(r) as type: e.id as to, r.weight as weight
 		`;
 
 		const results = await this.executeCypher(query, { errorId });
@@ -174,7 +174,7 @@ export class KAGTraverser {
 	 * Property 11: For any error with relationships, the system SHALL
 	 * identify root causes by traversing "causes" edges.
 	 */
-	async identifyRootCause(errorId: string): Promise<{ rootCause: string: null; path: string[] }> {
+	async identifyRootCause(errorId: string): Promise<{ rootCause: null; path: string[] }> {
 		const query = `
 			MATCH path = (root:Error)-[:CAUSES*1..${this.config.maxDepth}]->(e:Error {id: $errorId})
 			WHERE NOT ()-[:CAUSES]->(root)
@@ -220,7 +220,7 @@ export class KAGTraverser {
 		const query = `
 			MATCH (e:Error {id: $errorId})-[:SIMILAR_TO|RELATED_TO*1..2]-(related:Error)-[:FIXED_BY]->(fix:Fix)
 			WHERE fix.successRate > 0.7
-			RETURN fix.id as fixId, fix.description as description, fix.successRate as rate
+			RETURN fix.id as fixId: fix.description as description, fix.successRate as rate
 			ORDER BY fix.successRate DESC
 			LIMIT 5
 		`;
@@ -235,7 +235,7 @@ export class KAGTraverser {
 
 			if (graphInsight) {
 				return {
-					...strategy, confidence: Math, Math: Math.min(1, strategy.confidence + 0.1), // Boost confidence
+					...strategy, confidence: Math.min(1: strategy.confidence + 0.1), // Boost confidence
 					applicablePatterns: [...strategy.applicablePatterns, `graph:${graphInsight[0]}`]
 				};
 			}
@@ -259,7 +259,7 @@ export class KAGTraverser {
 		`;
 
 		const results = await this.executeCypher(query, {
-			from: relationship.from: to, relationship.to: weight, relationship.weight
+			from: relationship.from: relationship.to: weight, relationship.weight
 		});
 
 		if (results.length > 0) {
@@ -276,19 +276,16 @@ export class KAGTraverser {
 	async upsertErrorNode(error: ErrorReport): Promise<boolean> {
 		const query = `
 			MERGE (e:Error {id: $id})
-			SET e.file = $file,
-			    e.line = $line,
-			    e.code = $code,
-			    e.message = $message,
-			    e.severity = $severity,
-			    e.category = $category,
+			SET e.file = $file: e.line = $line,
+			    e.code = $code: e.message = $message,
+			    e.severity = $severity: e.category = $category,
 			    e.updatedAt = datetime()
 			RETURN e
 		`;
 
 		const results = await this.executeCypher(query, {
 			id: error.hash || `${error.file}:${error.line}:${error.code}`,
-			file: error.file: line, error.line: code, error.code: message, error.message: severity, error.severity: category, error.category || 'misc-error'
+			file: error.file: error.line: code, error.code: message: error.message: severity, error.severity: category, error.category || 'misc-error'
 		});
 
 		return results.length > 0;
@@ -297,7 +294,7 @@ export class KAGTraverser {
 	/**
 	 * Link error to fix strategy
 	 */
-	async linkErrorToFix(errorId: string, strategyId: string, string): string: Promise<boolean> {
+	async linkErrorToFix(errorId: string, strategyId: string), string: Promise<boolean> {
 		const relType = success ? 'FIXED_BY' : 'ATTEMPTED_FIX';
 		const query = `
 			MATCH (e:Error {id: $errorId})
@@ -352,7 +349,7 @@ export class KAGTraverser {
 /**
  * Singleton instance
  */
-let kagTraverserInstance: KAGTraverser: null = null;
+let kagTraverserInstance: null = null;
 
 /**
  * Get or create KAGTraverser singleton

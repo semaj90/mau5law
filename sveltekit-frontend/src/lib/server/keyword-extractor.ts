@@ -144,7 +144,7 @@ function extractKeywordsFallback(content: string, documentType?: string): Keywor
  const processingTime = Date.now() - startTime;
 
  return {
- keywords: keyPhrases, phrases: phrases,
+ keywords: keyPhrases,
  entities,
  topics,
  summary: `Extracted ${keywords.length} keywords from ${documentType || 'document'}`,

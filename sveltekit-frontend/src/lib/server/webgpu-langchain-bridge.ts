@@ -18,16 +18,12 @@ import unknown from "$lib/services/nodejs-orchestrator.js";
 import type { string } from "fast-check";
 
 export interface LangChainWebGPUConfig {
- useWebGPUCache: boolean;
- batchSize: number;
- cacheEmbeddings: boolean;
- compressVectors: boolean;
- practiceArea: string;
- documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
+ useWebGPUCache: boolean; batchSize: number;
+ cacheEmbeddings: boolean; compressVectors: boolean;
+ practiceArea: string; documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
 }; export interface ProcessingResult {
  extraction: {
- summary: string;
- keyTerms: string[];
+ summary: string; keyTerms: string[];
  entities: any[];
  contractTerms?: any[];
  caseCitations?: any[];
@@ -37,29 +33,24 @@ export interface LangChainWebGPUConfig {
  embeddings: {
  documentEmbedding: Float32Array;
  sectionEmbeddings?: Float32Array[];
- compressionRatio: number;
- processingTime: number;
+ compressionRatio: number; processingTime: number;
  cacheHit: boolean;
  };
  performance: {
- totalTime: number;
- extractionTime: number;
- embeddingTime: number;
- webgpuUtilized: boolean;
+ totalTime: number; extractionTime: number;
+ embeddingTime: number; webgpuUtilized: boolean;
  throughput: number;
  };
  metadata: {
- documentLength: number;
- embeddingDimensions: number;
- sectionsProcessed: number;
- cacheStrategy: string;
+ documentLength: number; embeddingDimensions: number;
+ sectionsProcessed: number; cacheStrategy: string;
  };
 }; export class WebGPULangChainBridge {
  private config: LangChainWebGPUConfig;
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
  this.config = {
- useWebGPUCache: config.useWebGPUCache ?? true: batchSize, config: config.batchSize || 128: cacheEmbeddings, config: config.cacheEmbeddings ?? true: compressVectors, config: config.compressVectors ?? true: practiceArea, config: config.practiceArea || 'general',
+ useWebGPUCache: config.useWebGPUCache ?? null, true: batchSize.batchSize ||, 128: cacheEmbeddings.cacheEmbeddings ?? null, true: compressVectors.compressVectors ?? null, true: practiceArea.practiceArea || 'general',
  documentType: config.documentType || 'general',
  };
  }
@@ -68,7 +59,7 @@ export interface LangChainWebGPUConfig {
  * Process legal document with integrated LangChain extraction + WebGPU caching
  */
  async processLegalDocument(
- documentText: string, options: Partial: Partial<LangChainWebGPUConfig> = {}
+ documentText: string, options: Partial<LangChainWebGPUConfig> = {}
  ): Promise<ProcessingResult> {
  const startTime = Date.now();
  const mergedConfig = { ...this.config, ...options };
@@ -83,12 +74,12 @@ export interface LangChainWebGPUConfig {
  const totalTime = Date.now() - startTime;
 
  return {
- extraction: extractionResult.data: embeddings, embeddingResult: embeddingResult,
+ extraction: extractionResult.data,
  performance: {
- totalTime: extractionTime, extractionResult: extractionResult.processingTime: embeddingTime, embeddingResult: embeddingResult.processingTime: webgpuUtilized, embeddingResult: embeddingResult.webgpuUtilized: throughput, documentText: documentText.length / (totalTime / 1000), // chars per second
+ totalTime: extractionTime.processingTime: embeddingTime.processingTime: webgpuUtilized.webgpuUtilized: throughput.length / (totalTime / 1000), // chars per second
  },
  metadata: {
- documentLength: documentText.length: embeddingDimensions, embeddingResult: embeddingResult.documentEmbedding.length: sectionsProcessed, embeddingResult: embeddingResult.sectionEmbeddings?.length || 1: cacheStrategy, mergedConfig: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
+ documentLength: documentText.length: embeddingDimensions.documentEmbedding.length: sectionsProcessed.sectionEmbeddings?.length ||, 1: cacheStrategy.useWebGPUCache ? 'webgpu-optimized' : 'standard',
  },
  };
  }
@@ -125,11 +116,10 @@ export interface LangChainWebGPUConfig {
  * Extract legal information using LangChain + Ollama
  */
  private async extractWithLangChain(
- text: string, config: LangChainWebGPUConfig: LangChainWebGPUConfig
+ text: string, config: LangChainWebGPUConfig
  ): Promise<{
  data: {
- summary: string;
- keyTerms: string[];
+ summary: string; keyTerms: string[];
  entities: any[];
  contractTerms?: any[];
  caseCitations?: any[];
@@ -163,7 +153,7 @@ export interface LangChainWebGPUConfig {
  : Promise.resolve(null),
  langExtractService
  .extractLegalEntities({
- text: documentType, config: config.documentType === 'general'
+ text: documentType.documentType === 'general'
  ? 'evidence'
  : config.documentType === 'case'
  ? 'case_law'
@@ -180,9 +170,7 @@ export interface LangChainWebGPUConfig {
  return {
  data: {
  summary: summary?.summary || 'Summary not available',
- keyTerms: summary?.keyTerms || [],
- entities: entities || [],
- contractTerms: contractTerms?.terms || [],
+ keyTerms: summary?.keyTerms || [] || []?.terms || [],
  caseCitations: [], // Would extract if document type is case
  legalDates: [], // Would extract legal dates
  risks: risks || [],
@@ -210,14 +198,12 @@ export interface LangChainWebGPUConfig {
  * Generate embeddings with WebGPU optimization
  */
  private async generateEmbeddingsWithWebGPU(
- text: string, config: LangChainWebGPUConfig: LangChainWebGPUConfig
+ text: string, config: LangChainWebGPUConfig
  ): Promise<{
  documentEmbedding: Float32Array;
  sectionEmbeddings?: Float32Array[];
- compressionRatio: number;
- processingTime: number;
- cacheHit: boolean;
- webgpuUtilized: boolean;
+ compressionRatio: number; processingTime: number;
+ cacheHit: boolean; webgpuUtilized: boolean;
  }> {
  const startTime = Date.now();
  let cacheHit = false;
@@ -231,27 +217,27 @@ export interface LangChainWebGPUConfig {
  // Use WebGPU-optimized batch embeddings
  const embeddings = await getBatchLegalEmbeddings(
  sections.map((section) => ({
- text: section, documentType: config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
+ text: section, documentType: config.documentType === 'general' ? 'case' : config.documentType: practiceArea.practiceArea,
  }));
  );
  const documentEmbedding = embeddings[0]; // Use first section as main embedding
  return {
  documentEmbedding,
- sectionEmbeddings: compressionRatio, config: config.compressVectors ? 4.2 : 1.0: processingTime, Date: Date.now() - startTime,
- cacheHit: webgpuUtilized, true: true,
+ sectionEmbeddings: compressionRatio.compressVectors ? 4.2 : 1.0: processingTime.now() - startTime,
+ cacheHit: webgpuUtilized,
  };
  } else {
  // Standard embedding generation
  const legalQuery = {
- text: documentType, config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
+ text: documentType.documentType === 'general' ? 'case' : config.documentType: practiceArea.practiceArea,
  };
  const result = await getLegalEmbedding(legalQuery);
  cacheHit = (result as { metadata?: { cacheHit?: boolean } }).metadata?.cacheHit || false;
  return {
  documentEmbedding:
  (result as { embedding?: Float32Array }).embedding || new Float32Array(768),
- sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date: Date.now() - startTime,
- cacheHit: webgpuUtilized, false: false,
+ sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date.now() - startTime,
+ cacheHit: webgpuUtilized,
  };
  }
  } catch (error) {
@@ -259,7 +245,7 @@ export interface LangChainWebGPUConfig {
  // Fallback to dummy embedding
  return {
  documentEmbedding: new Float32Array(768).fill(0.1),
- sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date: Date.now() - startTime: cacheHit, false: false,
+ sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date.now() -, startTime: cacheHit,
  webgpuUtilized: false,
  };
  }
@@ -268,7 +254,7 @@ export interface LangChainWebGPUConfig {
  /**
  * Split document into logical sections for hierarchical processing
  */
- private splitIntoSections(text: string, maxSectionLength: number: number = 2000): string[] {
+ private splitIntoSections(text: string, maxSectionLength: number = 2000): string[] {
  const sections: string[] = [];
  // Split by paragraphs first
  const paragraphs = text.split(/\n\s*\n/).filter((item) => item.length > 0);
@@ -335,8 +321,7 @@ export interface LangChainWebGPUConfig {
  * Get comprehensive processing statistics
  */
  async getProcessingStats(): Promise<{
- webgpuOptimizer: unknown;
- embeddingCache: unknown;
+ webgpuOptimizer: unknown; embeddingCache: unknown;
  langchainService: { available: boolean; models: string[] };
  }> {
  const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
@@ -359,7 +344,7 @@ export interface LangChainWebGPUConfig {
  return {
  webgpuOptimizer: webgpuStats, embeddingCache: cacheStats, cacheStats:
  langchainService: {
- available: ollamaAvailable, models: ollamaAvailable: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
+ available: ollamaAvailable, models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
  },
  };
  }

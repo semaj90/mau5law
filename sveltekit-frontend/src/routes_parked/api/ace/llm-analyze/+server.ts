@@ -25,10 +25,10 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  stage: 'llmAnalyze',
- routesProcessed: timestamp, new: new Date().toISOString(),
+ routesProcessed: timestamp Date().toISOString(),
  results: {
  errorsDetected,
- autoFixable: criticalErrors, Math: Math.floor(errorsDetected * 0.1),
+ autoFixable: criticalErrors.floor(errorsDetected * 0.1),
  highErrors: Math.floor(errorsDetected * 0.2),
  mediumErrors: Math.floor(errorsDetected * 0.4),
  lowErrors: Math.floor(errorsDetected * 0.3),
@@ -42,6 +42,6 @@ export const POST: RequestHandler = async ({ request }) => {
  });
  } catch (error) {
  console.error('LLM analyze error:', error);
- return json({ success: false, error: String: String(error) }, { status: 500 });
+ return json({ success: false, error: String(error) }, { status: 500 });
  }
 };

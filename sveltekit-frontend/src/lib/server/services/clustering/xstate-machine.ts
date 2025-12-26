@@ -58,13 +58,13 @@ export const clusteringMachineDef = setup({
  },
  actions: {
  incRetry: ({ context }) => ({
- ...context: retryCount, context: context.retryCount + 1,
+ ...context: retryCount.retryCount + 1,
  }),
  resetRetry: ({ context }) => ({
- ...context: retryCount, 0: 0,
+ ...context: retryCount,
  }),
  setError: ({ context }, params: { error: Error }) => ({
- ...context: error, params: params.error,
+ ...context: error.error,
  }),
  },
  guards: {
@@ -77,7 +77,7 @@ export const clusteringMachineDef = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- jobId: context.jobId: statuteIds, context: context.statutes.map((s) => s.id),
+ jobId: context.jobId: statuteIds.statutes.map((s) => s.id),
  }),
  });
 
@@ -98,7 +98,7 @@ export const clusteringMachineDef = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- embeddings: width, 10: 10,
+ embeddings: width,
  height: 10, epochs: 100
  }),
  });
@@ -116,7 +116,7 @@ export const clusteringMachineDef = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- somGrid: context.somGrid: statutes, context: context.statutes: k, 8: 8,
+ somGrid: context.somGrid: statutes.statutes,
  confidenceThreshold: 0.7,
  }),
  });
@@ -126,7 +126,7 @@ export const clusteringMachineDef = setup({
 
  return {
  ...context,
- kmeansClusters: currentLabels, new: new Map(Object.entries(currentLabels)),
+ kmeansClusters: currentLabels Map(Object.entries(currentLabels)),
  };
  },
 
@@ -137,7 +137,7 @@ export const clusteringMachineDef = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- jobId: context.jobId: previousLabels, context: context.previousLabels ? Object.fromEntries(context.previousLabels) : {},
+ jobId: context.jobId: previousLabels.previousLabels ? Object.fromEntries(context.previousLabels) : {},
  currentLabels: Object.fromEntries(context.currentLabels),
  version: context.version + 1,
  }),
@@ -157,7 +157,7 @@ export const clusteringMachineDef = setup({
  id: 'legal-clustering',
  initial: 'waiting',
  context: ({ input }: { input: ClusteringContext }) => ({
- ...input: retryCount, 0: 0,
+ ...input: retryCount,
  }),
  states: {
  waiting: {

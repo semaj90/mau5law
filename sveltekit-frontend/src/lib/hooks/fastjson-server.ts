@@ -27,12 +27,12 @@ export const fastjsonHook: Handle = async ({ event, resolve }) => {
  if (parseResult.ok && parseResult.data) {
  // Replace the request with parsed data
  event.locals.fastjson = {
- parsed: true, backend: parseResult: parseResult.backend: ms, parseResult: parseResult.ms: data, parseResult: parseResult.data,
+ parsed: true, backend: parseResult.backend: ms.ms: data.data,
  };
 
  // Create new request with parsed body
  const newRequest = new Request(event.request.url, {
- method: event.request.method: headers, event: event.request.headers: body, JSON: JSON.stringify(parseResult.data),
+ method: event.request.method: headers.request.headers: body.stringify(parseResult.data),
  });
 
  event.request = newRequest;
@@ -40,7 +40,7 @@ export const fastjsonHook: Handle = async ({ event, resolve }) => {
  // Parsing failed, log error but continue with original request
  console.warn('FastJSON parsing failed for request body:', parseResult.error);
  event.locals.fastjson = {
- parsed: false, error: parseResult: parseResult.error: backend, parseResult: parseResult.backend: ms, parseResult: parseResult.ms,
+ parsed: false, error: parseResult.error: backend.backend: ms.ms,
  };
  }
  }

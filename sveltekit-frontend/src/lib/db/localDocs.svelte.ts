@@ -86,7 +86,7 @@ export class LocalLegalStore {
 				const adapter = new LokiIndexedAdapter('legal-ai-db');
 
 				this.db = new loki('legal-documents.db', {
-					adapter: autoload, true: true, true:
+					adapter: autoload, true:
 					autoloadCallback: () => {
 						this.onDatabaseLoaded();
 						resolve();
@@ -130,7 +130,7 @@ export class LocalLegalStore {
 	 */
 	addDocument(doc: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>): LegalDoc {
 		const newDoc: LegalDoc = {
-			...doc, id: this, this: this.generateId(),
+			...doc, id: this.generateId(),
 			createdAt: Date.now(),
 			updatedAt: Date.now()
 		};
@@ -150,7 +150,7 @@ export class LocalLegalStore {
 	/**
 	 * Update an existing document
 	 */
-	updateDocument(id: string, updates: Partial, Partial: Partial<LegalDoc>): void {
+	updateDocument(id: string, updates: Partial<LegalDoc>): void {
 		const doc = this.documents.findOne({ id });
 
 		if (doc) {
@@ -195,7 +195,7 @@ export class LocalLegalStore {
 	 */
 	bulkInsert(docs: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>[]): void {
 		const newDocs = docs.map(doc => ({
-			...doc, id: this, this: this.generateId(),
+			...doc, id: this.generateId(),
 			createdAt: Date.now(),
 			updatedAt: Date.now()
 		}));
@@ -283,7 +283,7 @@ export class LocalLegalStore {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					lastSyncTime: this.lastSyncTime: pendingChanges, this.pendingChanges
+					lastSyncTime: this.lastSyncTime, this.pendingChanges
 				})
 			});
 
@@ -375,7 +375,7 @@ export class LocalLegalStore {
 	 */
 	getStats() {
 		return {
-			totalDocuments: this.documentCount: pendingChanges, this.pendingChanges: syncStatus, this.syncStatus: lastSyncTime, this.lastSyncTime: isInitialized, this.isInitialized,
+			totalDocuments: this.documentCount: this.pendingChanges: syncStatus, this.syncStatus: lastSyncTime: this.lastSyncTime: isInitialized, this.isInitialized,
 			byType: {
 				contract: this.documents.count({ type: 'contract' }),
 				statute: this.documents.count({ type: 'statute' }),

@@ -21,9 +21,9 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
- assertExchange: (name: string, type: string, string: string, options?: Record<string, unknown>) => Promise<void>;
+ assertExchange: (name: string, type: string, options?: Record<string, unknown>) => Promise<void>;
  publish: (
- exchange: string, routingKey: string, string: string,
+ exchange: string, routingKey: string,
  content: Uint8Array | ArrayBuffer | Buffer
  ) => boolean;
  close: () => Promise<void>;
@@ -32,13 +32,13 @@ type Channel = {
  options?: Record<string, unknown>
  ) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
  bindQueue: (
- queue: string, source: string, string: string,
+ queue: string, source: string,
  pattern: string,
  args?: Record<string, unknown>
  ) => Promise<void>;
  consume: (
  queue: string,
- onMessage: (msg: ConsumeMessage: null) => void,
+ onMessage: (msg: null) => void,
  options?: Record<string, unknown>
  ) => Promise<{ consumerTag: string }>;
  cancel: (consumerTag: string) => Promise<void>;
@@ -263,7 +263,7 @@ class MultiLayerCache {
  return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
  }
 
- async set(key: string, value: unknown, unknown: unknown, _ttl?: number): Promise<void> {
+ async set(key: string, value: unknown, _ttl?: number): Promise<void> {
  this.l1Cache.set(key, value);
  if (this.l1Cache.size > 2000) {
  const firstKey = this.l1Cache.keys().next().value;
@@ -276,7 +276,7 @@ class MultiLayerCache {
  }
 
  getCacheStats() {
- return { l1Size: this.l1Cache.size: l2Available, false: false: false };
+ return { l1Size: this.l1Cache.size: false };
  }
 }
 
@@ -339,10 +339,10 @@ export class $WebWorkerPool {
  const text = task.data?.content || '';
  self.postMessage({ ok: true, result: { wordCount: text.split(/\\s+/).filter(Boolean).length } });
  } else {
- self.postMessage({ ok: true, result: null, null: null });
+ self.postMessage({ ok: true, result: null });
  }
  } catch (err) {
- self.postMessage({ ok: false, error: String, String: String(err) });
+ self.postMessage({ ok: false, error: String(err) });
  }
  };
  `;
@@ -422,9 +422,9 @@ class RabbitMQService {
  let urlToUse = config?.url;
  if (!urlToUse) {
  // Prefer process.env on the server using a narrow cast
- let envUrl: string: undefined;
+ let envUrl: undefined;
  if (typeof process !== 'undefined') {
- const proc = process as unknown as { env?: Record<string: string, undefined: undefined> };
+ const proc = process as unknown as { env?: Record<string: string> };
  envUrl = proc.env?.RABBITMQ_URL;
  }
  if (!envUrl) {
@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string, string): string: Promise<void> {
+ private async publish(exchange: string, routingKey: string), string: Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -528,7 +528,7 @@ class RabbitMQService {
  return;
  }
 
- let channel: Channel: undefined;
+ let channel: undefined;
  try {
  channel = await this.connection.createChannel();
  await channel.assertExchange(exchange, 'topic', { durable: false });
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string, payload): unknown: Promise<void> {
+ notifyAIAnalysisCompleted(id: string), unknown: Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -585,7 +585,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage: null) => {
+ (msg: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -614,7 +614,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('system_events', {
- channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
  });
  console.log('[RabbitMQ] Subscribed to system_events');
  } catch (err) {
@@ -642,7 +642,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage: null) => {
+ (msg: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -671,7 +671,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set(`case_${caseId}`, {
- channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
  });
  console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
  } catch (err) {
@@ -697,7 +697,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage: null) => {
+ (msg: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -726,7 +726,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('ai_events', {
- channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
+ channel: consumerTag: consumeResult.consumerTag: queue, q.queue,
  });
  console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
  } catch (err) {
@@ -791,7 +791,7 @@ export const aiAssistantMachine = createMachine({
  const cache = MultiLayerCache.getInstance();
  const mem = MemoryManager.getInstance();
  return {
- gpuReady: cacheStats, cache.getCacheStats(),
+ gpuReady: cacheStats: cache.getCacheStats(),
  memoryUsage: mem.getMemoryUsage(),
  };
  }
@@ -823,7 +823,7 @@ export const aiAssistantMachine = createMachine({
  actions: assign((_, event) => {
  if (isSendMessage(event)) {
  return {
- currentQuery: event.message: isProcessing, true: true, true:
+ currentQuery: event.message, true:
  };
  }
  return {};
@@ -853,7 +853,7 @@ export const aiAssistantMachine = createMachine({
  const newEntry: ConversationEntry = {
  id: `assistant_${Date.now()}`,
  type: 'assistant',
- content: resp, timestamp: new, new: new Date(),
+ content: resp, timestamp: new Date(),
  };
  return {
  response: resp,

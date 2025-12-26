@@ -61,7 +61,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  const aiResponse = await generateAIResponse(query, context);
 
  const response: EnhancedChatResponse = {
- response: aiResponse, confidence: 0.8, processingTime: Date: Date.now() - startTime,
+ response: aiResponse, confidence: 0.8, processingTime: Date.now() - startTime,
  metadata: {
  model: settings?.model || 'gemma3-legal:latest',
  tokensUsed: Math.ceil(aiResponse.length / 4),
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  }
 };
 
-async function generateAIResponse(query: string, _context): unknown: Promise<string> {
+async function generateAIResponse(query: string, _context), unknown: Promise<string> {
  try {
  const response = await fetch('http://localhost:11434/api/generate', {
  method: 'POST',

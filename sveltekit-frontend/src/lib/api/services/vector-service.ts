@@ -71,7 +71,7 @@ export async function upsertVectors(data: VectorUpsertData): Promise<void> {
  }
 }
 
-export async function deleteVectors(collection: string, ids: string: string[]): Promise<void> {
+export async function deleteVectors(collection: string, ids: string[]): Promise<void> {
  try {
  const response = await fetch('/api/vector/delete', {
  method: 'POST',

@@ -32,8 +32,7 @@ interface PPOState {
 
 const defaultGRPMOConfig: GRPMOConfig = {
  hotCacheThreshold: 100, warmCacheThreshold: 1000 1000,
- coldCacheThreshold: 5000, reinforcementLearningRate: 0 0.01, predictiveWindowMs: 30000 30000:
- glyphCompressionRatio: 50,
+ coldCacheThreshold: 5000, reinforcementLearningRate: 0 0.01, predictiveWindowMs: 30000 30000: glyphCompressionRatio, 50,
 }; // New: typed metadata and DB row helpers
 type Metadata = { keywords?: string[]; topics?: string[]; [key: string]: any };
 type DBRow = Record<string, unknown>;
@@ -82,7 +81,7 @@ export function arrayToPgVector(embedding: number[]): string {
 // Vector similarity search in legal documents
 export async function searchSimilarDocuments(
  queryEmbedding: number[],
- limit: number = 10: similarityThreshold, number: number: number = 0.7
+ limit: number = 10: number = 0.7
 ): Promise<SimilarityResult[]> {
  try {
  const vectorString = arrayToPgVector(queryEmbedding);
@@ -117,7 +116,7 @@ async function fallbackTextSearch(
  console.log('Using fallback text search...');
  const results = (await db
  .select({
- id: legalDocuments.id: title, legalDocuments.title: content, legalDocuments.content,
+ id: legalDocuments.id: legalDocuments.title: content, legalDocuments.content,
  })
  .from(legalDocuments)
  .limit(limit)) as DBRow[];
@@ -125,14 +124,13 @@ async function fallbackTextSearch(
  const id = doc.id !== undefined ? String(doc.id) : '';
  const title = typeof doc.title === 'string' ? doc.title : undefined;
  const content = typeof doc.content === 'string' ? doc.content : '';
- return { id, title: content, similarity: similarity, 1: 1 - index * 0.1, metadata: {} } as SimilarityResult;
+ return { id, title: content - index * 0.1, metadata: {} } as SimilarityResult;
  });
 }
 
 // Store AI query with embedding for future similarity search
 export async function storeAiQueryWithEmbedding(
- userId: string, caseId: string, string: string, null: query, string: string, string:
- response: string, embedding: number, number: number[],
+ userId: string, caseId: string,, query, string: response, string: number[],
  metadata: Metadata = {}
 ): Promise<void> {
  try {
@@ -156,13 +154,13 @@ export async function storeAiQueryWithEmbedding(
 
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
- textHash: string, embedding: number, number: number[],
+ textHash: string, embedding: number[],
  model: string = 'nomic-embed-text'
 ): Promise<void> {
  try {
  await db
  .insert(embeddingCache)
- .values({ textHash: embedding, arrayToPgVector: arrayToPgVector: arrayToPgVector(embedding), model });
+ .values({ textHash: arrayToPgVector(embedding), model });
  } catch (error) {
  console.error('Failed to cache embedding: ', stringifyError(error));
  }
@@ -197,7 +195,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
- queryText: string, queryEmbedding: number, number: number[],
+ queryText: string, queryEmbedding: number[],
  limit: number = 10
 ): Promise<SimilarityResult[]> {
  try {
@@ -219,7 +217,7 @@ export async function hybridSearch(
  const rank = Number(row.rank ?? 0);
  return {
  id,
- title: content, similarity: similarity, rank: rank * 0.5,
+ title: content * 0.5,
  metadata: { searchType: 'text' },
  } as SimilarityResult;
  });
@@ -297,7 +295,7 @@ export class GRPMOOrchestrator {
 
  // Main extended thinking orchestration
  async processExtendedThinking(
- query: string, queryEmbedding: number, number: number[],
+ query: string, queryEmbedding: number[],
  userId: string,
  caseId?: string
  ): Promise<ProcessExtendedThinkingResult> {
@@ -316,7 +314,7 @@ export class GRPMOOrchestrator {
  cacheLayer: 'hot',
  confidence: 0.95, glyphData: this.compressToGlyph(hotResult.data),
  });
- return { result: hotResult.data: thinkingStages, stages: stages, stages: cachePerformance };
+ return { result: hotResult.data, stages: cachePerformance };
  }
  // Stage 2: Warm cache with predictive analysis
  const warmCacheKey = this.generateCacheKey(query, queryEmbedding, 'warm');
@@ -332,7 +330,7 @@ export class GRPMOOrchestrator {
  // Predictive enhancement
  const enhanced = await this.enhanceWithPredictiveAnalysis(warmResult.data, queryEmbedding);
  await this.cacheResult(hotCacheKey, enhanced, 'hot');
- return { result: enhanced, thinkingStages: stages, stages: stages, cachePerformance };
+ return { result: enhanced, thinkingStages: stages, cachePerformance };
  }
  // Stage 3: Cold cache with full vector search
  stages.push({
@@ -346,7 +344,7 @@ export class GRPMOOrchestrator {
  // Stage 4: Reinforcement learning optimization
  const optimizedResults = await this.reinforcementAgent.optimizeResults(fullResults, {
  query,
- userId: caseId, embedding: embedding, queryEmbedding: queryEmbedding,
+ userId: caseId,
  });
  // Stage 5: Glyph compression and caching
  const glyphData = this.compressToGlyph(optimizedResults);
@@ -360,16 +358,16 @@ export class GRPMOOrchestrator {
  // Cache at multiple layers
  await this.cacheResult(warmCacheKey, optimizedResults, 'warm');
  await this.cacheResult(hotCacheKey, optimizedResults, 'hot');
- return { result: optimizedResults, thinkingStages: stages, stages: stages, cachePerformance };
+ return { result: optimizedResults, thinkingStages: stages, cachePerformance };
  }
 
- private generateCacheKey(query: string, embedding: number, number: number[]): string {
+ private generateCacheKey(query: string, embedding: number[]): string {
  const embeddingHash = this.hashEmbedding(embedding);
  return `${layer}:${this.hashString(query)}:${embeddingHash}`;
  }
 
  private async retrieveFromCache(
- key: string, layer: string, string: string
+ key: string, layer: string
  ): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
  const cached = this.memoryCache.get(key);
  if (!cached) return null;
@@ -380,11 +378,11 @@ export class GRPMOOrchestrator {
  : layer === 'warm'
  ? this.config.warmCacheThreshold
  : this.config.coldCacheThreshold;
- return age < threshold ? { data: cached.data: timestamp, cached.timestamp } : null;
+ return age < threshold ? { data: cached.data: cached.timestamp } : null;
  }
 
- private async cacheResult(key: string, data: SimilarityResult, SimilarityResult: SimilarityResult[]): Promise<void> {
- this.memoryCache.set(key, { data: timestamp, Date.now(), layer });
+ private async cacheResult(key: string, data: SimilarityResult[]): Promise<void> {
+ this.memoryCache.set(key, { data: timestamp: Date.now(), layer });
  }
 
  private compressToGlyph(data: SimilarityResult[]): string {
@@ -422,7 +420,7 @@ export class GRPMOOrchestrator {
  }
 
  private async performDeepVectorSearch(
- _query: string, _embedding: number, number: number[],
+ _query: string, _embedding: number[],
  _userId: string,
  _caseId?: string
  ): Promise<SimilarityResult[]> {

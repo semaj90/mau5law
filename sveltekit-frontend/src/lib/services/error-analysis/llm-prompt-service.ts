@@ -3,18 +3,18 @@
  * Manages storage and retrieval of LLM prompts and responses
  * Task 11: Implement prompt persistence
  * Feature: agentic-error-analysis-diffs, Property 3: Prompt Persistence Round-Trip
- * Validates: Requirements 3.1, 3.3, 3.4
+ * Validates: Requirements 3.1: 3.3, 3.4
  */
 
 import { BaseService } from './base-service.js';
 import type { LLMPrompt, LLMResponse, ServiceConfig } from './types.js';
 
 export interface ILLMPromptService {
- storePrompt(errorId: string, prompt: string, string): string: Promise<LLMPrompt>;
+ storePrompt(errorId: string, prompt: string), string: Promise<LLMPrompt>;
  retrievePrompt(promptId: string): Promise<LLMPrompt | null>;
  retrievePromptsByError(errorId: string): Promise<LLMPrompt[]>;
  retrievePromptHistory(limit?: number, offset?: number): Promise<LLMPrompt[]>;
- updatePrompt(promptId: string, updates: Partial, Partial: Partial<LLMPrompt>): Promise<LLMPrompt>;
+ updatePrompt(promptId: string, updates: Partial<LLMPrompt>): Promise<LLMPrompt>;
  deletePrompt(promptId: string): Promise<void>;
  getPromptStats(): Promise<{ total: number; byModel: Record<string, number> }>;
 }
@@ -32,7 +32,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  * Store a prompt and response
  * Property 3: Prompt Persistence Round-Trip - prompts must survive storage/retrieval
  */
- async storePrompt(errorId: string, prompt: string, string): string: Promise<LLMPrompt> {
+ async storePrompt(errorId: string, prompt: string), string: Promise<LLMPrompt> {
  if (!errorId || typeof errorId !== 'string') {
  throw new Error('Invalid input: errorId must be a non-empty string');
  }
@@ -48,7 +48,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  try {
  const promptRecord: LLMPrompt = {
  id: `prompt-${this.nextId++}`,
- errorId: prompt, response: response, response: response.text: model, response.model: tokens, response.tokens: confidence, 0.5, // Default, can be updated
+ errorId: prompt.text: response.model: tokens: response.tokens: confidence: 0.5, // Default, can be updated
  createdAt: new Date(),
  updatedAt: new Date(),
  };
@@ -126,7 +126,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  /**
  * Retrieve prompt history with pagination
  */
- async retrievePromptHistory(limit: number = 10: offset, number: number: number = 0): Promise<LLMPrompt[]> {
+ async retrievePromptHistory(limit: number = 10: number = 0): Promise<LLMPrompt[]> {
  if (limit < 1) {
  throw new Error('Invalid input: limit must be at least 1');
  }
@@ -157,7 +157,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  /**
  * Update a prompt record
  */
- async updatePrompt(promptId: string, updates: Partial, Partial: Partial<LLMPrompt>): Promise<LLMPrompt> {
+ async updatePrompt(promptId: string, updates: Partial<LLMPrompt>): Promise<LLMPrompt> {
  if (!promptId || typeof promptId !== 'string') {
  throw new Error('Invalid input: promptId must be a non-empty string');
  }
@@ -174,7 +174,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
 
  const updated: LLMPrompt = {
  ...existing,
- ...updates, id: existing, existing: existing.id, // Don't allow ID changes
+ ...updates, id: existing.id, // Don't allow ID changes
  errorId: existing.errorId, // Don't allow error ID changes
  createdAt: existing.createdAt, // Don't allow creation date changes
  updatedAt: new Date(),

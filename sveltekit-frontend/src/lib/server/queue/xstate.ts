@@ -84,7 +84,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  const job: QueueState = {
  ...event.job,
  status: 'idle',
- retryCount: 0, createdAt: new: new Date(),
+ retryCount: 0, createdAt: new Date(),
  updatedAt: new Date(),
  };
 
@@ -163,7 +163,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  .filter((job) => job.status === 'idle')
  .sort((a, b) => {
  // Sort by priority first, then by creation time
- const priorityOrder = { urgent: 4, high: 3 normal: 2, low: 1: 1 };
+ const priorityOrder = { urgent: 4, high: 3 normal: 2, low: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return a.createdAt.getTime() - b.createdAt.getTime();
@@ -209,7 +209,7 @@ export class XStateQueueManager {
  this.interpreter.send({ type: 'COMPLETE_JOB', jobId, result });
  }
 
- failJob(jobId: string, error): string: string {
+ failJob(jobId: string): string {
  this.interpreter.send({ type: 'FAIL_JOB', jobId, error });
  }
 

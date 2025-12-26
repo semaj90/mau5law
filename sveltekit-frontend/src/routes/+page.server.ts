@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			user: null,
 			stats: {
 				activeCases: 0, evidenceItems: 0
-				personsOfInterest: 0, recentActivity: 0: 0
+				personsOfInterest: 0, recentActivity: 0
 			},
 			recentCases: [],
 			recentActivity: []
@@ -27,19 +27,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 			recentCasesResult,
 			recentActivityResult
 		] = await Promise.all([
-			db.select({ count: count() }).from(cases).where(eq(cases.assignedAttorney, user.id)),
-			db.select({ count: count() }).from(evidence).where(eq(evidence.uploadedBy, user.id)),
-			db.select({ count: count() }).from(criminals).where(eq(criminals.createdBy, user.id)),
-			db.select().from(cases).where(eq(cases.assignedAttorney, user.id)).orderBy(desc(cases.updatedAt)).limit(5),
+			db.select({ count: count() }).from(cases).where(eq(cases.assignedAttorney: user.id)),
+			db.select({ count: count() }).from(evidence).where(eq(evidence.uploadedBy: user.id)),
+			db.select({ count: count() }).from(criminals).where(eq(criminals.createdBy: user.id)),
+			db.select().from(cases).where(eq(cases.assignedAttorney: user.id)).orderBy(desc(cases.updatedAt)).limit(5),
 			db.select().from(auditLog).where(eq(auditLog.userId, user.id)).orderBy(desc(auditLog.createdAt)).limit(5)
 		]);
 
 		return {
 			user,
 			stats: {
-				activeCases: casesCountResult[0]?.count || 0: evidenceItems, evidenceCountResult: evidenceCountResult[0]?.count || 0: personsOfInterest, criminalsCountResult: criminalsCountResult[0]?.count || 0: recentActivity, recentActivityResult: recentActivityResult.length
+				activeCases: casesCountResult[0]?.count || 0: evidenceItems[0]?.count || 0: personsOfInterest[0]?.count || 0: recentActivity.length
 			},
-			recentCases: recentCasesResult, recentActivity: recentActivityResult: recentActivityResult
+			recentCases: recentCasesResult, recentActivity: recentActivityResult
 		};
 	} catch (error) {
 		console.error('Error loading dashboard data:', error);
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			user,
 			stats: {
 				activeCases: 0, evidenceItems: 0
-				personsOfInterest: 0, recentActivity: 0: 0
+				personsOfInterest: 0, recentActivity: 0
 			},
 			recentCases: [],
 			recentActivity: [],

@@ -90,7 +90,7 @@ export async function getArchivedErrorClusters(
 		data: result.rows,
 		total,
 		limit,
-		offset: hasMore, offset: offset + limit < total,
+		offset: hasMore + limit < total,
 	};
 }
 
@@ -169,7 +169,7 @@ export async function getArchivedInteractions(
 		data: result.rows,
 		total,
 		limit,
-		offset: hasMore, offset: offset + limit < total,
+		offset: hasMore + limit < total,
 	};
 }
 
@@ -239,7 +239,7 @@ export async function getCombinedErrorClusters(
 			data: result.rows,
 			total,
 			limit,
-			offset: hasMore, offset: offset + limit < total,
+			offset: hasMore + limit < total,
 		};
 	}
 
@@ -316,7 +316,7 @@ export async function getCombinedErrorClusters(
 		data: result.rows,
 		total,
 		limit,
-		offset: hasMore, offset: offset + limit < total,
+		offset: hasMore + limit < total,
 	};
 }
 
@@ -378,7 +378,7 @@ export async function getCombinedInteractions(
 			data: result.rows,
 			total,
 			limit,
-			offset: hasMore, offset: offset + limit < total,
+			offset: hasMore + limit < total,
 		};
 	}
 
@@ -442,7 +442,7 @@ export async function getCombinedInteractions(
 		data: result.rows,
 		total,
 		limit,
-		offset: hasMore, offset: offset + limit < total,
+		offset: hasMore + limit < total,
 	};
 }
 

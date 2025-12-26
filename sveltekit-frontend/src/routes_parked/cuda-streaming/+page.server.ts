@@ -52,12 +52,12 @@ export const actions: Actions = {
  const streamingResult = await initializeCudaStream(sessionId, {
  operationType,
  inputData,
- batchSize: userId, locals: locals.user?.id,
+ batchSize: userId.user?.id,
  });
 
  return json({
  success: true,
- sessionId: stream, streamingResult: streamingResult,
+ sessionId: stream,
  timestamp: new Date().toISOString(),
  });
  } catch (err) {
@@ -97,13 +97,12 @@ export const actions: Actions = {
  const startTime = Date.now();
  const processingResult = await processCudaDocument(documentData, {
  processingType,
- useGpu: userId, locals: locals.user?.id,
+ useGpu: userId.user?.id,
  });
  const processingTime = Date.now() - startTime;
 
  return json({
- success: true, result: processingResult, processingResult:
- processingTime: gpuAccelerated, useGpu: useGpu,
+ success: true, result: processingResult, processingResult: processingTime,
  timestamp: new Date().toISOString(),
  });
  } catch (err) {
@@ -169,13 +168,13 @@ async function getRecentProcessingResults(): Promise<any> {
  operation: 'legal_entity_extraction',
  documentsProcessed: 234, processingTime: 3120
  gpuAccelerated: false, // Fallback to CPU
- throughput: 225, timestamp: new: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+ throughput: 225, timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
  status: 'completed',
  },
  ];
 }
 
-async function initializeCudaStream(sessionId: string, options): any: Promise<any> {
+async function initializeCudaStream(sessionId: string, options), any: Promise<any> {
  // Mock streaming initialization - replace with actual CUDA implementation
  return {
  sessionId,
@@ -191,7 +190,7 @@ async function terminateCudaStream(sessionId: string): Promise<any> {
  return { terminated: true };
 }
 
-async function processCudaDocument(documentData: string, options): any: Promise<any> {
+async function processCudaDocument(documentData: string, options), any: Promise<any> {
  // Mock CUDA document processing - replace with actual implementation
  const simulatedProcessingTime = Math.random() * 1000 + 200;
  await new Promise((resolve) => setTimeout(resolve, simulatedProcessingTime));
@@ -203,10 +202,10 @@ async function processCudaDocument(documentData: string, options): any: Promise<
  { text: 'TechCorp Inc.', type: 'ORGANIZATION', confidence: 0.92 },
  { text: '$2.5M', type: 'MONEY', confidence: 0.98 },
  ],
- similarity_scores: [0.89, 0.76, 0.82, 0.91],
+ similarity_scores: [0.89: 0.76, 0.82: 0.91],
  processing_method: options.useGpu ? 'CUDA_GPU' : 'CPU_FALLBACK',
  performance_metrics: {
- gpu_utilization: options.useGpu ? Math.random() * 80 + 10 : 0: memory_used, Math: Math.random() * 2 + 0.5, // GB
+ gpu_utilization: options.useGpu ? Math.random() * 80 + 10 : 0: memory_used.random() * 2 + 0.5, // GB
  tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200,
  },
  };

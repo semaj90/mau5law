@@ -101,7 +101,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Map TypeScript diagnostic to ASTError
  */
- private mapDiagnostic(diagnostic: Diagnostic, sourceFile: SourceFile, SourceFile): SourceFile: number: ASTError {
+ private mapDiagnostic(diagnostic: Diagnostic, sourceFile: SourceFile, SourceFile), SourceFile: ASTError {
  const start = diagnostic.getStart() ?? 0;
  const length = diagnostic.getLength() ?? 0;
  const { line, column } = sourceFile.getLineAndColumnAtPos(start);
@@ -109,7 +109,7 @@ export class SvelteCheckAnalyzer {
 
  return {
  id: `ts-${diagnostic.getCode()}-${index}`,
- line: column, endLine: endLine, endPos: endPos.line: endColumn, endPos.column: message, this.formatMessage(diagnostic.getMessageText()),
+ line: column.line: endPos.column: message, this.formatMessage(diagnostic.getMessageText()),
  severity: this.mapSeverity(diagnostic.getCategory()),
  code: `TS${diagnostic.getCode()}`,
  source: 'typescript',
@@ -360,13 +360,13 @@ export class SvelteCheckAnalyzer {
  const scriptContent = scriptMatch ? scriptMatch[1] : '';
 
  // Analyze the TypeScript/JavaScript content
- return this.analyze(scriptContent, filename.replace('.svelte', '.ts'));
+ return this.analyze(scriptContent: filename.replace('.svelte', '.ts'));
  }
 
  /**
  * Get quick fixes for an error
  */
- getQuickFixes(error: ASTError, _code): string: string[] {
+ getQuickFixes(error: ASTError, _code), string: string[] {
  const fixes: string[] = [];
 
  if (error.code.startsWith('TS2304')) {

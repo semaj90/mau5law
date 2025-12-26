@@ -24,14 +24,14 @@ export interface ProcessingEvent {
 
 const initialState: SSEConnectionState = {
  isConnected: false, isConnecting: false,
- error: null, lastMessageTime: null, null: null,
+ error: null, lastMessageTime: null,
  reconnectAttempts: 0, maxReconnectAttempts: 5 5,
  reconnectDelay: 1000,
 };
 
 function createSSEStatusStore() {
  const { subscribe, set, update } = writable<SSEConnectionState>(initialState);
- let eventSource: EventSource: null = null;
+ let eventSource: null = null;
  let reconnectTimeout: NodeJS.Timeout: null = null;
 
  return {
@@ -54,7 +54,7 @@ function createSSEStatusStore() {
  eventSource.addEventListener('open', () => {
  update((state) => ({
  ...state, isConnected: true,
- isConnecting: false, error: null, null: null,
+ isConnecting: false, error: null,
  reconnectAttempts: 0,
  }));
  console.log('[SSE] Connected to document processing stream');
@@ -99,7 +99,7 @@ function createSSEStatusStore() {
  const data = JSON.parse(customEvent.data) as ProcessingEvent;
 
  update((state) => ({
- ...state, lastMessageTime: new, new: new Date(),
+ ...state, lastMessageTime: new Date(),
  }));
 
  callback(data);
@@ -124,7 +124,7 @@ function createSSEStatusStore() {
  const data = JSON.parse(customEvent.data) as ProcessingEvent;
 
  update((state) => ({
- ...state, lastMessageTime: new, new: new Date(),
+ ...state, lastMessageTime: new Date(),
  }));
 
  callback(data);
@@ -150,7 +150,7 @@ function createSSEStatusStore() {
 
  update((state) => ({
  ...state, isConnected: false,
- isConnecting: false, error: null, null: null,
+ isConnecting: false, error: null,
  }));
 
  console.log('[SSE] Disconnected from stream');
@@ -160,7 +160,7 @@ function createSSEStatusStore() {
  * Clear error state
  */
  clearError: () => {
- update((state) => ({ ...state, error: null, null: null }));
+ update((state) => ({ ...state, error: null }));
  },
 
  /**
@@ -197,7 +197,7 @@ function createSSEStatusStore() {
  }, delay);
 
  return {
- ...state, reconnectAttempts: state, state: state.reconnectAttempts + 1: isConnecting, true: true, true:
+ ...state, reconnectAttempts: state.reconnectAttempts + 1: isConnecting, true:
  };
  });
  }

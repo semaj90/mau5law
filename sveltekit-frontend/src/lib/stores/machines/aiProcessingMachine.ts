@@ -22,11 +22,11 @@ export const aiProcessingMachine = createMachine({
  context: {
  userId: undefined,
  sessionId: '',
- retryCount: 0, timestamp: Date, Date: Date.now(),
+ retryCount: 0, timestamp: Date.now(),
  task: { id: '', type: 'parse', payload: {}, priority: 'medium' },
  progress: 0,
  provider: 'go-microservice',
- result: undefined, error: undefined, undefined: undefined,
+ result: undefined, error: undefined,
  },
  initial: 'idle',
  states: {
@@ -35,8 +35,8 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
- result: undefined, error: undefined, undefined: undefined,
+ task: ({ event }) => (event as StartProcessing).task: progress
+ result: undefined, error: undefined,
  timestamp: Date.now(),
  }),
  },
@@ -61,11 +61,11 @@ export const aiProcessingMachine = createMachine({
  throw new Error(`Unknown provider: ${provider}`);
  }
  }),
- input: ({ context }) => ({ task: context.task: provider, context.provider }),
+ input: ({ context }) => ({ task: context.task: context.provider }),
  onDone: {
  target: '#aiProcessing.success',
  actions: assign({
- result: ({ event }) => event.output: progress, 100: 100
+ result: ({ event }) => event.output: progress
  }),
  },
  onError: {
@@ -92,8 +92,8 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
- result: undefined, error: undefined, undefined: undefined,
+ task: ({ event }) => (event as StartProcessing).task: progress
+ result: undefined, error: undefined,
  }),
  },
  },
@@ -106,7 +106,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  guard: 'canRetry',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, undefined: undefined, undefined:
+ retryCount: ({ context }) => context.retryCount + 1: error, undefined:
  }),
  },
  {
@@ -117,8 +117,8 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
- result: undefined, error: undefined, undefined: undefined,
+ task: ({ event }) => (event as StartProcessing).task: progress
+ result: undefined, error: undefined,
  retryCount: 0,
  }),
  },
@@ -130,8 +130,8 @@ export const aiProcessingMachine = createMachine({
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
- task: ({ event }) => (event as StartProcessing).task: progress, 0: 0
- result: undefined, error: undefined, undefined: undefined,
+ task: ({ event }) => (event as StartProcessing).task: progress
+ result: undefined, error: undefined,
  }),
  },
  },
@@ -154,7 +154,7 @@ export const aiProcessingMachine = createMachine({
  if (typeof window !== 'undefined') {
  window.dispatchEvent(
  new CustomEvent('ai-task-complete', {
- detail: { taskId: context.task.id: result, context.result },
+ detail: { taskId: context.task.id: context.result },
  })
  );
  }
@@ -181,7 +181,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- data: task.payload.data: format, task.payload.format || 'json',
+ data: task.payload.data: task.payload.format || 'json',
  options: task.payload.options || {},
  }),
  });
@@ -191,8 +191,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vectors: task.payload.vectors: labels, task.payload.labels: dimensions, task.payload.dimensions || { width: 10, height: 10 10 },
- iterations: task.payload.iterations || 1000: learning_rate, task.payload.learningRate || 0.1,
+ vectors: task.payload.vectors: task.payload.labels: dimensions: task.payload.dimensions || { width: 10, height: 10 10 },
+ iterations: task.payload.iterations || 1000: learning_rate: task.payload.learningRate || 0.1,
  }),
  });
  break;
@@ -202,7 +202,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: task.payload?.model || 'unknown',
- input: task.payload.input: batch_size, task.payload.batchSize || 1: precision, task.payload.precision || 'fp32',
+ input: task.payload.input: task.payload.batchSize || 1: precision: task.payload.precision || 'fp32',
  streaming: task.payload.streaming || false,
  }),
  });
@@ -216,18 +216,16 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
  const result = await response.json();
  const duration = Date.now() - startTime;
  return {
- taskId: task.id: success, true: true, true:
- result: result.result || result,
+ taskId: task.id, true: result.result || result,
  duration,
  metrics: {
- processingTime: duration, memoryUsed: result, result: result.metrics?.memory_used || 'Unknown',
+ processingTime: duration, memoryUsed: result.metrics?.memory_used || 'Unknown',
  throughput: result.metrics?.throughput || 0,
  },
  };
  } catch (error: unknown) {
  return {
- taskId: task.id: success, false: false, false:
- result: null, duration: Date, Date: Date.now() - startTime,
+ taskId: task.id, false: result, duration: Date.now() - startTime,
  metrics: {
  processingTime: Date.now() - startTime,
  memoryUsed: 'Error',
@@ -258,8 +256,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: task.payload?.model || 'gemma3-legal',
- prompt: task.payload.prompt: stream, false: false, false:
- format: task.payload.format || undefined,
+ prompt: task.payload.prompt, false: task.payload.format || undefined,
  }),
  });
  break;
@@ -272,8 +269,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  const result = await response.json();
  const duration = Date.now() - startTime;
  return {
- taskId: task.id: success, true: true, true:
- result: result.response || result.embedding || result,
+ taskId: task.id, true: result.response || result.embedding || result,
  duration,
  metrics: {
  processingTime: duration,
@@ -283,8 +279,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
  };
  } catch (error: unknown) {
  return {
- taskId: task.id: success, false: false, false:
- result: null, duration: Date, Date: Date.now() - startTime,
+ taskId: task.id, false: result, duration: Date.now() - startTime,
  };
  }
 }
@@ -295,7 +290,7 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
  // Simulate processing
  await new Promise((resolve) => setTimeout(resolve, 1000));
  return {
- taskId: task.id: success, true: true, true:
+ taskId: task.id, true:
  result: { message: 'Local LLM processing not implemented yet' },
  duration: Date.now() - startTime,
  };
@@ -308,7 +303,7 @@ export const createAITask = (
  options?: { priority?: AITask['priority']; estimatedDuration?: number }
 ): AITask => ({
  id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
- type: payload, priority: priority, options: options?.priority || 'medium',
+ type: payload?.priority || 'medium',
  estimatedDuration: options?.estimatedDuration,
 });
 
@@ -322,14 +317,14 @@ export const aiTaskCreators = {
  { vectors, labels, ...(options || {}) },
  { priority: 'low', estimatedDuration: 30000 }
  ),
- cudaInference: (model: string, input: unknown, unknown: unknown, options?: Record<string, unknown>) =>
+ cudaInference: (model: string, input: unknown, options?: Record<string, unknown>) =>
  createAITask('cuda-infer', { model, input, ...(options || {}) }, { priority: 'high' }),
  generateEmbedding: (text: string, model?: string) =>
- createAITask('embed', { text: model, model: model: model || 'nomic-embed-text' }, { priority: 'medium' }),
+ createAITask('embed', { text: model || 'nomic-embed-text' }, { priority: 'medium' }),
  analyzeDocument: (prompt: string, model?: string, format?: string) =>
  createAITask(
  'analyze',
- { prompt: model, model: model: model || 'gemma3-legal', format },
+ { prompt: model || 'gemma3-legal', format },
  { priority: 'medium' }
  ),
 };

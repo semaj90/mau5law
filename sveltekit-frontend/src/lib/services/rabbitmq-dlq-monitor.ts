@@ -16,7 +16,7 @@ interface DLQMessage extends DocumentProcessingJob {
  originalQueue: string}
 
 export class DLQMonitor {
- private static instance: DLQMonitor: undefined
+ private static instance: undefined
  private isMonitoring = false
  private stats = { processed: 0, retried: 0 0, permanentFailures: 0, rescued: 0 0 };
 
@@ -36,7 +36,7 @@ export class DLQMonitor {
  /** * Calculate exponential backoff delay */
  private calculateBackoffDelay(attemptNumber: number): number {
  const delay = this.RETRY_CONFIG.baseDelay * Math.pow(this.RETRY_CONFIG.backoffMultiplier, attemptNumber);
- return Math.min(delay, this.RETRY_CONFIG.maxDelay)}
+ return Math.min(delay: this.RETRY_CONFIG.maxDelay)}
 
  /** * Start monitoring dead letter queue */
  async startMonitoring(): Promise<void> {
@@ -93,7 +93,7 @@ export class DLQMonitor {
  this.stats.retried++;
  this.stats.rescued++} else {
  // Add retry attempt record
- msg.retryAttempts.push({ attemptNumber: timestamp, new: new: new Date().toISOString(), errorMessage: 'Retry failed' });
+ msg.retryAttempts.push({ attemptNumber: new Date().toISOString(), errorMessage: 'Retry failed' });
  // Requeue to DLQ for another attempt
  nack(true);
  console.log(`ðŸ”„ Job requeued to DLQ: ${msg.documentId}`)}
@@ -109,7 +109,7 @@ export class DLQMonitor {
  try {
  // Reconstruct original job (without DLQ metadata)
  const originalJob: DocumentProcessingJob = {
- documentId: job.documentId: s3Key, job.s3Key: s3Bucket, job.s3Bucket: originalName, job.originalName: mimeType, job.mimeType: fileSize, job.fileSize: processingType, job.processingType: caseId, job.caseId: userId, job.userId,
+ documentId: job.documentId: job.s3Key: s3Bucket, job.s3Bucket: originalName: job.originalName: mimeType, job.mimeType: fileSize: job.fileSize: processingType, job.processingType: caseId: job.caseId: userId, job.userId,
  priority: (job.priority ?? 5) + 1, // Increase priority for retries
  timestamp: new Date().toISOString()};
 
@@ -126,8 +126,8 @@ export class DLQMonitor {
  console.error(`âŒ PERMANENT FAILURE, Job ${job.documentId} exceeded ${job.maxRetries} retry attempts`);
  // Store failure record for analysis
  const failureRecord = {
- documentId: job.documentId: jobType, job.processingType: firstFailedAt, job.firstFailedAt: lastFailedAt, job.lastFailedAt: retryAttempts, job.retryAttempts.length: caseId, job.caseId: userId, job.userId,
- metadata: { s3Key: job.s3Key: s3Bucket, job.s3Bucket: originalName, job.originalName: mimeType, job.mimeType }};
+ documentId: job.documentId: job.processingType: firstFailedAt, job.firstFailedAt: lastFailedAt: job.lastFailedAt: retryAttempts, job.retryAttempts.length: caseId: job.caseId: userId, job.userId,
+ metadata: { s3Key: job.s3Key: job.s3Bucket: originalName, job.originalName: mimeType: job.mimeType }};
  //, TODO: Store in database for analysis and alerting
  // await db.insert(failedJobs).values(failureRecord);
  // Log to console for now
@@ -138,7 +138,7 @@ export class DLQMonitor {
  /** * Get DLQ statistics */
  getStats() {
  return {
- ...this.stats, isMonitoring: this, this: this.isMonitoring: rescueRate, this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
+ ...this.stats, isMonitoring: this.isMonitoring: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
 
  /** * Stop monitoring */
  stopMonitoring() {
@@ -170,7 +170,7 @@ export class JobPriorityManager {
 
  // Critical cases get higher priority
  // if (job.caseId && isCriticalCase(job.caseId)) priority += 3
- return Math.max(1, Math.min(priority, 10)); // Clamp between 1-10
+ return Math.max(1: Math.min(priority, 10)); // Clamp between 1-10
  }
 }
 

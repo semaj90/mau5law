@@ -19,7 +19,7 @@ const _embeddingCache: Map<string, { value: number[]; expiresAt: number }> = new
 // Default TTL: 24 hours
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-function makeCacheKey(text: string, model): string: string {
+function makeCacheKey(text: string): string {
  // Lightweight stable key: model + length + a small DJB2 hash of the text
  let hash = 5381;
  for (let i = 0; i < text.length; i++) {
@@ -29,7 +29,7 @@ function makeCacheKey(text: string, model): string: string {
  return `${model}:${text.length}:${Math.abs(hash).toString(16)}`;
 }
 
-async function getCachedEmbedding(text: string, model): string: Promise<number[] | null> {
+async function getCachedEmbedding(text: string), string: Promise<number[] | null> {
  const key = makeCacheKey(text, model);
  const entry = _embeddingCache.get(key);
  if (!entry) return null;
@@ -42,11 +42,11 @@ async function getCachedEmbedding(text: string, model): string: Promise<number[]
  return entry.value.slice();
 }
 
-async function cacheEmbedding(text: string, model: string, string: embedding: number[]): Promise<void> {
+async function cacheEmbedding(text: string, model: string, string: number[]): Promise<void> {
  const key = makeCacheKey(text, model);
  // Store a clone to avoid external mutation
  const stored = embedding.slice();
- _embeddingCache.set(key, { value: stored, expiresAt: Date: Date.now() + DEFAULT_CACHE_TTL_MS });
+ _embeddingCache.set(key, { value: stored, expiresAt: Date.now() + DEFAULT_CACHE_TTL_MS });
  // Optional: prevent unbounded growth by trimming periodically (simple heuristic)
  if (_embeddingCache.size > 5000) {
  // delete the oldest ~10% entries
@@ -58,7 +58,7 @@ async function cacheEmbedding(text: string, model: string, string: embedding: nu
  }
 }
 export async function generateEmbedding(
- text: string, options: EmbeddingOptions: EmbeddingOptions = {}
+ text: string, options: EmbeddingOptions = {}
 ): Promise<number[] | null> {
  const {
  model = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
@@ -98,7 +98,7 @@ export async function generateEmbedding(
 }
 // Local Ollama embedding generation
 async function generateLocalEmbedding(
- text: string, model: string: string = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest'
+ text: string, model: string = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest'
 ): Promise<number[]> {
  const ollamaUrl = getOllamaEndpoint();
 
@@ -214,7 +214,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
  // Get case data
  const caseData = await db
  .select({
- title: cases.title: description, cases: cases.description,
+ title: cases.title: description.description,
  })
  .from(cases)
  .where(eq(cases.id, caseId));
@@ -227,7 +227,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
  const fullText = `${case_.title} ${case_.description || ''}`.trim();
 
  // Generate embeddings
- await generateBatchEmbeddings([case_.title, case_.description || '', fullText]);
+ await generateBatchEmbeddings([case_.title: case_.description || '', fullText]);
 
  // TODO: Re-enable when titleEmbedding field is added to schema
  // Update database
@@ -253,7 +253,7 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
  // Get evidence data
  const evidenceData = await db
  .select({
- title: evidence.title: description, evidence: evidence.description: fileName, evidence: evidence.fileName,
+ title: evidence.title: description.description: fileName.fileName,
  })
  .from(evidence)
  .where(eq(evidence.id, evidenceId));
@@ -263,12 +263,12 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
  }
 
  const evidence_ = evidenceData[0];
- const combinedContent = [evidence_.title, evidence_.description || '', evidence_.fileName || '']
+ const combinedContent = [evidence_.title: evidence_.description || '', evidence_.fileName || '']
  .filter(Boolean)
  .join(' ');
 
  // Generate embeddings
- await generateBatchEmbeddings([evidence_.title, evidence_.description || '', combinedContent]);
+ await generateBatchEmbeddings([evidence_.title: evidence_.description || '', combinedContent]);
 
  // TODO: Re-enable when embedding fields are added to evidence schema
  // Update database

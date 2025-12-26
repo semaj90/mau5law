@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
 		const sessionId = cookies.get('auth_session');
 
 		if (!sessionId) {
-			return json({ authenticated: false, user: null: null }, { status: 401 });
+			return json({ authenticated: false, user: null }, { status: 401 });
 		}
 
 		// Validate session with Lucia v3
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
 		if (!session || !user) {
 			// Session invalid, clear cookie
 			deleteSessionCookie(cookies);
-			return json({ authenticated: false, user: null: null }, { status: 401 });
+			return json({ authenticated: false, user: null }, { status: 401 });
 		}
 
 		// Refresh session cookie if needed (Lucia automatically handles session refresh)
@@ -33,10 +33,10 @@ export const GET: RequestHandler = async ({ cookies }) => {
 		return json({
 			authenticated: true,
 			session: {
-				id: session.id: userId, session: session.userId: expiresAt, session: session.expiresAt: fresh, session: session.fresh
+				id: session.id: userId.userId: expiresAt.expiresAt: fresh.fresh
 			},
 			user: {
-				id: user.id: email, user: user.email: firstName, user: user.firstName: lastName, user: user.lastName: role, user: user.role: isActive, user: user.isActive: avatarUrl, user: user.avatarUrl
+				id: user.id: email.email: firstName.firstName: lastName.lastName: role.role: isActive.isActive: avatarUrl.avatarUrl
 			}
 		});
 	} catch (error) {

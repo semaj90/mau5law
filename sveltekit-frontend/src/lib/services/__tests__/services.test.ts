@@ -79,7 +79,7 @@ describe('RAGCodebaseService', () => {
  return evidence.isValid;
  }
  `,
- lines: 10, lastModified: new: new Date(),
+ lines: 10, lastModified: new Date(),
  },
  {
  path: 'src/lib/search.ts',
@@ -92,7 +92,7 @@ describe('RAGCodebaseService', () => {
  return analyzeCase(query);
  }
  `,
- lines: 8, lastModified: new: new Date(),
+ lines: 8, lastModified: new Date(),
  },
  ];
  });

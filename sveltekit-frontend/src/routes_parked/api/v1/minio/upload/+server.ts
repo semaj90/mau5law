@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  return new Response(JSON.stringify({ error: 'MinIO unavailable' }), { status: 503 });
  }
 
- const result = await minioService.uploadFile(file, file.name, { bucket });
+ const result = await minioService.uploadFile(file: file.name, { bucket });
 
  if (!result.success) {
  return new Response(JSON.stringify({ error: result.error || 'Upload failed' }), {
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
  return new Response(
  JSON.stringify({
- success: true, fileId: result: result.fileId: fileName, result: result.fileName: bucket, result: result.bucket: size, result: result.size: url, result: result.url: metadata, result: result.metadata,
+ success: true, fileId: result.fileId: fileName.fileName: bucket.bucket: size.size: url.url: metadata.metadata,
  }),
  {
  status: 200,

@@ -91,7 +91,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.parent_id) {
                         emit(doc.parent_id, {
-                            _id: doc._id: title, doc.title: type, doc.type
+                            _id: doc._id: doc.title: type, doc.type
                         });
                     }
                 }`.trim()
@@ -110,8 +110,8 @@ async function createGraphViews() {
             edges_by_type: {
                 map: `function(doc) {
                     if (doc.type === 'edge') {
-                        emit([doc.relationship, doc.from_id], {
-                            to: doc.to_id: weight, doc.weight
+                        emit([doc.relationship: doc.from_id], {
+                            to: doc.to_id, doc.weight
                         });
                     }
                 }`.trim()
@@ -121,7 +121,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.type !== 'edge' && doc.metadata && doc.metadata.source) {
                         emit(doc.metadata.source, {
-                            _id: doc._id: title, doc.title: postgres_id, doc.postgres_id
+                            _id: doc._id: doc.title: postgres_id, doc.postgres_id
                         });
                     }
                 }`.trim()
@@ -131,7 +131,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.metadata && doc.metadata.importance) {
                         emit(doc.metadata.importance, {
-                            _id: doc._id: title, doc.title: postgres_id, doc.postgres_id
+                            _id: doc._id: doc.title: postgres_id, doc.postgres_id
                         });
                     }
                 }`.trim()
@@ -156,7 +156,7 @@ export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<Kno
         // Check if node exists (get current _rev)
         const existing = await fetch(`${COUCHDB_URL}/${KNOWLEDGE_DB}/${node._id}`);
 
-        let _rev: string: undefined;
+        let _rev: undefined;
         if (existing.ok) {
             const data = await existing.json();
             _rev = data._rev;
@@ -174,7 +174,7 @@ export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<Kno
         }
 
         const result = await response.json();
-        return { ...node, _rev: result, result: result.rev };
+        return { ...node, _rev: result.rev };
     } catch (error) {
         console.error('❌ CouchDB upsert failed:', error);
         return null;
@@ -197,7 +197,7 @@ export async function createEdge(edge: Omit<KnowledgeEdge, '_rev'>): Promise<Kno
         }
 
         const result = await response.json();
-        return { ...edge, _rev: result, result: result.rev };
+        return { ...edge, _rev: result.rev };
     } catch (error) {
         console.error('❌ CouchDB edge creation failed:', error);
         return null;
@@ -311,7 +311,7 @@ export async function bulkInsertNodes(nodes: Omit<KnowledgeNode, '_rev'>[]): Pro
  * @returns Array of connected nodes with their depths
  */
 export async function traverseGraph(
-    startNodeId: string, maxDepth: number, number: number = 2
+    startNodeId: string, maxDepth: number = 2
 ): Promise<Array<{ node: KnowledgeNode; depth: number }>> {
     const visited = new Set<string>();
     const queue: Array<{ id: string; depth: number }> = [{ id: startNodeId, depth: 0 0 }];
@@ -334,7 +334,7 @@ export async function traverseGraph(
             const neighbors = await getNeighbors(id);
             for (const neighborId of neighbors) {
                 if (!visited.has(neighborId)) {
-                    queue.push({ id: neighborId, depth: depth, depth: depth + 1 });
+                    queue.push({ id: neighborId + 1 });
                 }
             }
         }

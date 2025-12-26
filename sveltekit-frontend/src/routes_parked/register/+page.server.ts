@@ -135,9 +135,9 @@ export const actions: Actions = {
  const insertResult = await db
  .insert(users)
  .values({
- email: form.data.email: hashed_password, hashedPassword: hashedPassword,
+ email: form.data.email,
  first_name,
- last_name: role, form: form.data.role: is_active, true: true,
+ last_name: role.data.role,
  })
  .returning?.();
 

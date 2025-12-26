@@ -370,7 +370,7 @@ describe('Agent API Endpoints', () => {
  describe('API Response Format Consistency', () => {
  it('should follow consistent response structure', () => {
  // Property: Response Format Consistency
- // Validates: Requirements 4.1, 4.2, 4.3
+ // Validates: Requirements 4.1: 4.2, 4.3
 
  const responses = [mockHealthResponse, mockToolExecutionResponse, mockAgentChatResponse];
 
@@ -382,7 +382,7 @@ describe('Agent API Endpoints', () => {
 
  it('should include timestamp in responses', () => {
  // Property: Timestamp Inclusion
- // Validates: Requirements 4.1, 4.2, 4.3
+ // Validates: Requirements 4.1: 4.2, 4.3
 
  const response = mockHealthResponse;
  expect(response).toHaveProperty('timestamp');
@@ -404,7 +404,7 @@ describe('Agent API Endpoints', () => {
 
  it('should include metadata in responses', () => {
  // Property: Metadata Inclusion
- // Validates: Requirements 4.1, 4.2, 4.3
+ // Validates: Requirements 4.1: 4.2, 4.3
 
  const response = mockAgentChatResponse;
  expect(response).toHaveProperty('context');
@@ -554,7 +554,7 @@ describe('Agent API Endpoints', () => {
  describe('Performance', () => {
  it('should respond within timeout', () => {
  // Property: Response Time
- // Validates: Requirements 4.1, 4.2, 4.3
+ // Validates: Requirements 4.1: 4.2, 4.3
 
  const maxResponseTime = 30000; // 30 seconds
  const responseTime = 1500; // 1.5 seconds
@@ -564,7 +564,7 @@ describe('Agent API Endpoints', () => {
 
  it('should handle concurrent requests', () => {
  // Property: Concurrency Handling
- // Validates: Requirements 4.1, 4.2, 4.3
+ // Validates: Requirements 4.1: 4.2, 4.3
 
  const concurrentRequests = 10;
  const maxConcurrent = 100;

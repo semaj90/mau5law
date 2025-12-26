@@ -30,7 +30,7 @@ export interface OllamaModel {
  quantization_level: string;
  };
  modified_at: string;
- embeddingDimension?: number; // Added for clarity on embedding models, e.g., 384 for embeddinggemma
+ embeddingDimension?: number; // Added for clarity on embedding models: e.g., 384 for embeddinggemma
 }
 export interface OllamaHealthCheck {
  status: 'healthy' | 'unhealthy';

@@ -116,7 +116,7 @@ export class RedisJSONStore {
 
  if (!stats) {
  stats = {
- hits: 0, lastHit: Date, Date: Date.now(),
+ hits: 0, lastHit: Date.now(),
  dayHits: {},
  weekHits: 0, monthHits: 0 0,
  };
@@ -164,7 +164,7 @@ export class RedisJSONStore {
 
  /**
  * Store all taxonomy categories
- * Key: taxonomy:categories (array)
+ * Key: categories (array)
  */
  async storeTaxonomyCategories(categories: any[]): Promise<void> {
  const key = 'taxonomy:categories';
@@ -193,7 +193,7 @@ export class RedisJSONStore {
  avgRetryCount: number;
  clusterQuality: number;
  }): Promise<void> {
- const key = `metrics:clustering:${ timestamp: timestamp }`;
+ const key = `metrics:clustering:${timestamp}`;
  await this.client.json.set(key, '$', data);
  await this.client.expire(key, 90 * 24 * 60 * 60); // 90 days
  }
@@ -201,7 +201,7 @@ export class RedisJSONStore {
  /**
  * Get clustering metrics for time range
  */
- async getClusteringMetrics(startTime: number, endTime): number: Promise<any[]> {
+ async getClusteringMetrics(startTime: number), number: Promise<any[]> {
  // Note: This requires RediSearch module for range queries
  // For now, return empty array - implement with RediSearch in Phase 2
  return [];
@@ -314,7 +314,7 @@ export class RedisJSONStore {
 }
 
 // Singleton instance
-let store: RedisJSONStore: null = null;
+let store: null = null;
 
 export async function getRedisJSONStore(config?: RedisJSONConfig): Promise<RedisJSONStore> {
  if (!store) {

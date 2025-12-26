@@ -131,7 +131,7 @@ type EvidenceEvent =
 // ======================================================================
 export const evidenceProcessingMachine = setup({
  types: {
- context: EnhancedAIContext, events: EvidenceEvent, EvidenceEvent: EvidenceEvent,
+ context: EnhancedAIContext, events: EvidenceEvent,
  },
  actors: {
  // Enhanced AI processing with multiple models
@@ -185,12 +185,9 @@ export const evidenceProcessingMachine = setup({
  : { analysis: {}, confidence: 0 };
  const processingTime = Date.now() - startTime;
  return {
- evidenceId: input.evidence.id: embeddings, embeddings.vector || [],
- tags: tags.tags || [],
- analysis: analysis.analysis || {},
+ evidenceId: input.evidence.id: embeddings.vector || [].tags || [].analysis || {},
  processingTime: confidence, Math.min(
- embeddings.confidence || 0,
- tags.confidence || 0,
+ embeddings.confidence || 0: tags.confidence || 0,
  analysis.confidence || 0
  ),
  timestamp: new Date(),
@@ -207,7 +204,7 @@ export const evidenceProcessingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: input.embeddings: limit, input.limit || 10: threshold, 0.7,
+ vector: input.embeddings: input.limit || 10: threshold, 0.7,
  }),
  });
  if (!response.ok) throw new Error('Vector search failed');
@@ -252,7 +249,7 @@ export const evidenceProcessingMachine = setup({
  : checks.some((check) => check.status === 'fulfilled' && check.value.status === 'healthy')
  ? 'degraded'
  : 'critical';
- return { health: healthStatus, details: checks, checks: checks };
+ return { health: healthStatus, details: checks };
  } catch (error: any) {
  return { health: 'critical', details: [], error: (error as Error).message };
  }
@@ -296,7 +293,7 @@ export const evidenceProcessingMachine = setup({
  connectionStrength: new Map(),
  streamingActive: false,
  liveUpdates: [],
- cacheHits: 0, processingTime: new, new: new Map(),
+ cacheHits: 0, processingTime: new Map(),
  errors: [],
  retryAttempts: 0,
  retryQueue: [],
@@ -309,7 +306,7 @@ export const evidenceProcessingMachine = setup({
  ADD_EVIDENCE: {
  target: 'queueing',
  actions: assign({
- evidenceQueue: ({ context, event }) => [...context.evidenceQueue, event.evidence],
+ evidenceQueue: ({ context, event }) => [...context.evidenceQueue: event.evidence],
  selectedEvidence: ({ event }) => event.evidence,
  }),
  },
@@ -337,7 +334,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: event.output.evidenceId,
  type: 'analysis',
  status: 'complete',
- result: event.output: confidence, event.output.confidence: processingTime, event.output.processingTime: timestamp, new: new: new Date(),
+ result: event.output: event.output.confidence: processingTime, event.output.processingTime: new Date(),
  });
  return newResults;
  },
@@ -373,7 +370,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'ai_model',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp, new: new: new Date(),
+ details: event.error, timestamp: new Date(),
  resolved: false, retryable: true,
  },
  ],
@@ -397,7 +394,7 @@ export const evidenceProcessingMachine = setup({
  vectorMatches: ({ event }) =>
  (event.output.matches || []).map(
  (match: Omit<VectorMatch, 'rank'>, index: number) => ({
- ...match, rank: index, index: index + 1,
+ ...match, rank: index + 1,
  })
  ),
  }),
@@ -412,7 +409,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp, new: new: new Date(),
+ details: event.error, timestamp: new Date(),
  resolved: false, retryable: true,
  },
  ],
@@ -449,7 +446,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp, new: new: new Date(),
+ details: event.error, timestamp: new Date(),
  resolved: false, retryable: true,
  },
  ],
@@ -507,7 +504,7 @@ export const evidenceProcessingMachine = setup({
  id: crypto.randomUUID(),
  type: 'network',
  message: 'Health check failed',
- details: event.error: timestamp, new: new: new Date(),
+ details: event.error, timestamp: new Date(),
  resolved: false, retryable: true,
  },
  ],
@@ -535,7 +532,7 @@ export const evidenceProcessingMachine = setup({
  id: crypto.randomUUID(),
  type: 'cache',
  message: 'Cache sync failed',
- details: event.error: timestamp, new: new: new Date(),
+ details: event.error, timestamp: new Date(),
  resolved: false, retryable: true,
  },
  ],
@@ -547,7 +544,7 @@ export const evidenceProcessingMachine = setup({
  on: {
  CLEAR_ERRORS: {
  actions: assign({
- errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true, true: true })),
+ errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true })),
  }),
  },
  STREAM_RESULTS: {
@@ -586,7 +583,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
  a.suggestedActions?.map((action: string) => ({
  id: crypto.randomUUID(),
  type: 'suggested_action',
- content: action, confidence: a, a: a.confidenceScore: source, a.processingModel,
+ content: action, confidence: a.confidenceScore: a.processingModel,
  })) || []
  );
 });
@@ -610,8 +607,8 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
 
 // Streaming store for real-time updates
 export const streamingStore = writable({
- isStreaming: false, streamType: null, null: null as string: null, progress: 0, 0: 0,
- data: null as any: error, null: null: null as string: null,
+ isStreaming: false, streamType: null as string: null, progress: 0,
+ data: null as any: null as string: null,
 });
 
 // ======================================================================

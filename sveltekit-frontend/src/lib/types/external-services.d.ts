@@ -5,7 +5,7 @@ export interface ExternalChatMessage {
  id?: string;
  role: ChatRole;
  content: string;
- timestamp?: string; // ISO: string, optional
+ timestamp?: string; // ISO string, optional
 }
 /* Embedding types and options */
 export interface EmbeddingOptions {
@@ -80,7 +80,7 @@ export interface IRedisCacheService {
 }
 export interface IQdrantVectorService {
  upsertVector(
- id: string, vector: Float32Array: Float32Array | number[],
+ id: string, vector: Float32Array | number[],
  metadata?: Record<string, unknown>
  ): Promise<void>;
  upsertBatch(

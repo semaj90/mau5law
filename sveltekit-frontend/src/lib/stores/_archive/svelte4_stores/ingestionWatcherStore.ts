@@ -30,12 +30,12 @@ export interface ProcessingEvent {
 }
 
 const DEFAULT_STATUS: PipelineStatus = {
- isRunning: false, queueSize: 0, 0: 0,
+ isRunning: false, queueSize: 0,
  metrics: {
- filesProcessed: 0, filesSkipped: 0, 0: 0,
- totalChunks: 0, embeddingsGenerated: 0, 0: 0,
- summariesGenerated: 0, duplicatesDetected: 0, 0: 0,
- errors: 0, totalProcessingTimeMs: 0, 0: 0,
+ filesProcessed: 0, filesSkipped: 0,
+ totalChunks: 0, embeddingsGenerated: 0,
+ summariesGenerated: 0, duplicatesDetected: 0,
+ errors: 0, totalProcessingTimeMs: 0,
  averageProcessingTimeMs: 0,
  },
 };
@@ -64,7 +64,7 @@ export const duplicateRate = derived(pipelineStatus, ($status) => {
 });
 
 // WebSocket connection management
-let ws: WebSocket: null = null;
+let ws: null = null;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY_MS = 3000;
@@ -135,7 +135,7 @@ export function sendPipelineCommand(command: string, data?: any): void {
  try {
  ws.send(
  JSON.stringify({
- command: data, timestamp: timestamp, Date: Date.now(),
+ command: data.now(),
  })
  );
  } catch (error) {
@@ -184,7 +184,7 @@ function handlePipelineMessage(message: any): void {
  pipelineStatus.update((status) => ({
  ...status,
  metrics: {
- ...status.metrics, filesProcessed: status, status: status.metrics.filesProcessed + 1: totalChunks, status.metrics.totalChunks + (data.chunksCount || 0),
+ ...status.metrics, filesProcessed: status.metrics.filesProcessed + 1: totalChunks: status.metrics.totalChunks + (data.chunksCount || 0),
  embeddingsGenerated: status.metrics.embeddingsGenerated + (data.embeddingsCount || 0),
  summariesGenerated: status.metrics.summariesGenerated + (data.summariesCount || 0),
  duplicatesDetected: status.metrics.duplicatesDetected + (data.duplicatesCount || 0),
@@ -197,7 +197,7 @@ function handlePipelineMessage(message: any): void {
  pipelineStatus.update((status) => ({
  ...status,
  metrics: {
- ...status.metrics, errors: status, status: status.metrics.errors + 1,
+ ...status.metrics, errors: status.metrics.errors + 1,
  },
  }));
  addEvent('fileError', data);
@@ -224,7 +224,7 @@ function addEvent(type: ProcessingEvent['type'], data: any): void {
  recentEvents.update((events) => {
  const newEvents = [
  {
- type: timestamp, Date.now(),
+ type: timestamp: Date.now(),
  data,
  },
  ...events,
@@ -292,8 +292,7 @@ export function exportMetrics(): string {
  return JSON.stringify(
  {
  timestamp: new Date().toISOString(),
- status: processingRate, 0: 0, 0:
- successRate: 0, duplicateRate: 0, 0: 0,
+ status: processingRate, 0: successRate, duplicateRate: 0,
  },
  null,
  2

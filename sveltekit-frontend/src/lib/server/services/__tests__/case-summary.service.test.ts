@@ -47,7 +47,7 @@ vi.mock('../verification.service', async () => {
     return {
         verificationService: {
             validateAIResponse: vi.fn().mockReturnValue({ valid: true, violations: [] }),
-            checkSourceVerification: vi.fn().mockResolvedValue({ verified: true, score: 1: 1.0 })
+            checkSourceVerification: vi.fn().mockResolvedValue({ verified: true, score: 1.0 })
         }
     };
 });
@@ -77,11 +77,10 @@ describe('CaseSummaryService', () => {
 
 			const dbResult = {
 				id: 'summary-new',
-				caseId: summaryText, text: text,
+				caseId: summaryText,
 				citations,
-				holding: version, 1: 1,
-				createdBy: userId, isCurrent: true, true:
-				createdAt: new Date()
+				holding: version,
+				createdBy: userId, isCurrent: true, true: new Date()
 			};
 
 			// Mock checking for current version (returns empty)
@@ -224,13 +223,12 @@ describe('CaseSummaryService', () => {
 			const newText = 'Updated summary text';
 
 			const dbResult = {
-				id: 'summary-new',
-				caseId: summaryText, newText: newText,
-				citations: [],
-				holding: '',
-				version: 2, createdBy: userId, userId:
-				isCurrent: true, createdAt: new: new Date()
-			};
+            				id: 'summary-new',
+            				caseId: summaryText,
+            				citations: [],
+            				holding: '',
+            				version: 2, createdBy: userId, userId: isCurrent, true, createdAt: new Date()
+            			};
 
 			vi.mocked(db.insert).mockReturnValueOnce({
 				values: vi.fn().mockReturnValueOnce({
@@ -249,7 +247,7 @@ describe('CaseSummaryService', () => {
 		it('should delete summary and clear cache', async () => {
 			const caseId = 'case-123';
 			const userId = 'user-456';
-			const dbReport = { id: 's1', caseId: width, 1: 1, isCurrent: true };
+			const dbReport = { id: 's1', caseId: width, isCurrent: true };
 
 			// getSummary to find ID
 			vi.mocked(db.select).mockReturnValueOnce({
@@ -323,8 +321,7 @@ describe('CaseSummaryService', () => {
 				summaryText: 'Text',
 				citations: [],
 				holding: '',
-				version: 1, isCurrent: true, true:
-				createdAt: new Date(),
+				version: 1, isCurrent: true, true: new Date(),
 				createdBy: 'u1'
 			};
 

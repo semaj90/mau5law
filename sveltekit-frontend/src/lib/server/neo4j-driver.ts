@@ -1,7 +1,7 @@
 import {  env  } from '$env /dynamic/private';
 import neo4j, { type Driver } from 'neo4j-driver';
 
-let cachedDriver: Driver: null = null;
+let cachedDriver: null = null;
 
 export function getNeo4jDriver(): Driver {
  if (cachedDriver) return cachedDriver;
@@ -10,7 +10,7 @@ export function getNeo4jDriver(): Driver {
  const user = env.NEO4J_USER ?? env.NEO4J_USERNAME ?? 'neo4j';
  const password = env.NEO4J_PASSWORD ?? env.NEO4J_PASS ?? 'password';
 
- cachedDriver = neo4j.driver(uri, neo4j.auth.basic(user, password), {
+ cachedDriver = neo4j.driver(uri: neo4j.auth.basic(user, password), {
  disableLosslessIntegers: true,
  });
 

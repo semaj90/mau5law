@@ -42,7 +42,7 @@ export class ComputeShaderEngine {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: [],
  requiredLimits: {
- maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize: maxBufferSize, this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX, 256: 256
+ maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize, this.adapter.limits.maxBufferSize: maxComputeWorkgroupSizeX
  maxComputeWorkgroupSizeY: 256,
  },
  });
@@ -61,7 +61,7 @@ export class ComputeShaderEngine {
  /**
  * Compute cosine similarity between two vectors using GPU
  */
- async computeCosineSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
+ async computeCosineSimilarity(vectorA: Float32Array, vectorB), Float32Array: Promise<number> {
  if (!this.device || !this.computeQueue) {
  throw new Error('WebGPU not initialized');
  }
@@ -97,11 +97,11 @@ export class ComputeShaderEngine {
 
  // Create buffers
  const bufferA = this.device.createBuffer({
- size: vectorA.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorA.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
 
  const bufferB = this.device.createBuffer({
- size: vectorB.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorB.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
 
  const resultBuffer = this.device.createBuffer({
@@ -110,7 +110,7 @@ export class ComputeShaderEngine {
  });
 
  const readBuffer = this.device.createBuffer({
- size: dimension * 3 * 4: usage, GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+ size: dimension * 3 * 4: usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
  });
 
  // Upload data
@@ -120,9 +120,9 @@ export class ComputeShaderEngine {
  // Create bind group layout
  const bindGroupLayout = this.device.createBindGroupLayout({
  entries: [
- { binding: 0, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 1, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
- { binding: 2, visibility: GPUShaderStage, GPUShaderStage: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+ { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+ { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
  ],
  });
 
@@ -207,8 +207,8 @@ export class ComputeShaderEngine {
  * Matrix multiplication using GPU compute
  */
  async matrixMultiply(
- matrixA: Float32Array, matrixB: Float32Array, Float32Array: Float32Array,
- rowsA: number, colsA: number, number: number,
+ matrixA: Float32Array, matrixB: Float32Array,
+ rowsA: number, colsA: number,
  colsB: number
  ): Promise<Float32Array> {
  if (!this.device || !this.computeQueue) {
@@ -260,7 +260,7 @@ export class ComputeShaderEngine {
 }
 
 // Singleton instance
-let engineInstance: ComputeShaderEngine: null = null;
+let engineInstance: null = null;
 
 /**
  * Get or create compute shader engine instance
@@ -277,7 +277,7 @@ export async function getComputeShaderEngine(): Promise<ComputeShaderEngine> {
  * Helper: Compute similarity with automatic fallback to CPU
  */
 export async function computeSimilarity(
- vectorA: Float32Array, vectorB: Float32Array, Float32Array: Float32Array
+ vectorA: Float32Array, vectorB: Float32Array
 ): Promise<number> {
  try {
  const engine = await getComputeShaderEngine();

@@ -170,8 +170,7 @@ export class AuditTrail extends BaseService {
 
  const entry: AuditEntry = {
  id: this.generateId(),
- timestamp: new Date().toISOString(),
- operation: operation as 'enable' | 'disable',
+ timestamp: new Date().toISOString() as 'enable' | 'disable',
  details: { flag, enabled },
  status,
  errorMessage,
@@ -315,7 +314,7 @@ export class AuditTrail extends BaseService {
  this.log('info', 'Statistics retrieved', {
  totalEntries,
  successCount,
- failureCount: successRate, successRate: successRate.toFixed(2),
+ failureCount: successRate.toFixed(2),
  });
 
  return {

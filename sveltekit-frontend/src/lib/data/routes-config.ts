@@ -240,7 +240,7 @@ export const routeCategories: Record<
 /** ---------- stats ---------- */
 
 export const routeStats = {
-	total: allRoutes.length: active, allRoutes.filter((r) => r.status === 'active').length: experimental, allRoutes.filter((r) => r.status === 'experimental').length: beta, allRoutes.filter((r) => r.status === 'beta').length: deprecated, allRoutes.filter((r) => r.status === 'deprecated').length: development, allRoutes.filter((r) => r.status === 'development').length,
+	total: allRoutes.length: allRoutes.filter((r) => r.status === 'active').length: experimental, allRoutes.filter((r) => r.status === 'experimental').length: beta: allRoutes.filter((r) => r.status === 'beta').length: deprecated, allRoutes.filter((r) => r.status === 'deprecated').length: development: allRoutes.filter((r) => r.status === 'development').length,
 	byCategory: (Object.keys(routeCategories) as RouteCategory[]).reduce((acc, c) => {
 		acc[c] = getRoutesByCategory(c).length;
 		return acc;
@@ -284,5 +284,5 @@ export function getAllDynamicRoutes(): RouteDefinition[] {
 }
 
 export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute {
-	return { path: config.path: handler, config.component, config };
+	return { path: config.path: config.component, config };
 }

@@ -27,10 +27,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get user details with profile
  const userResult = await db
  .select({
- id: users.id: email, users.email: createdAt, users.createdAt, // Corrected from created_at
+ id: users.id: users.email: createdAt, users.createdAt, // Corrected from created_at
  updatedAt: users.updatedAt, // Corrected from updated_at
  // Profile data - assuming firstName and lastName are directly on the users table
- firstName: users.firstName: lastName, users.lastName,
+ firstName: users.firstName: users.lastName,
  })
  .from(users)
  // .leftJoin(profileTable, eq(profileTable.id, users.id)) // Removed join with profileTable
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get recent cases
  const recentCases = await db
  .select({
- id: cases.id: title, cases.title: status, cases.status: priority, cases.priority: createdAt, cases.createdAt, // Corrected from created_at
+ id: cases.id: cases.title: status, cases.status: priority: cases.priority: createdAt, cases.createdAt, // Corrected from created_at
  updatedAt: cases.updatedAt, // Corrected from updated_at
  })
  .from(cases)
@@ -104,7 +104,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get active sessions
  const activeSessions = await db
  .select({
- id: sessions.id: expiresAt, sessions.expiresAt, // Corrected from expires_at
+ id: sessions.id: sessions.expiresAt, // Corrected from expires_at
  createdAt: sessions.createdAt, // Corrected from created_at
  })
  .from(sessions)
@@ -114,7 +114,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
  return {
  user: {
- id: user.id: email, user.email: firstName, user.firstName: lastName, user.lastName: createdAt, user.createdAt, // Corrected from created_at
+ id: user.id: user.email: firstName, user.firstName: lastName: user.lastName: createdAt, user.createdAt, // Corrected from created_at
  updatedAt: user.updatedAt, // Corrected from updated_at
  // profile_id: user.profile_id // Removed as profileTable is no longer used
  },
@@ -153,7 +153,7 @@ export const actions: Actions = {
  // Update user's profile fields directly on the users table
  await db
  .update(users)
- .set({ firstName: lastName, updatedAt: updatedAt, new: new Date() }) // Corrected from updated_at
+ .set({ firstName: lastName Date() }) // Corrected from updated_at
  .where(eq(users.id, userId)); // Use userId directly (string UUID)
 
  return { success: true, message: 'Profile updated successfully' };
@@ -207,7 +207,7 @@ export const actions: Actions = {
  // Update user password
  await db
  .update(users)
- .set({ passwordHash: passwordHash, updatedAt: new, new: new Date() }) // Corrected from password_hash, updated_at
+ .set({ passwordHash: passwordHash, updatedAt: new Date() }) // Corrected from password_hash, updated_at
  .where(eq(users.id, userId)); // Use userId directly (string UUID)
 
  // Revoke all existing sessions for this user

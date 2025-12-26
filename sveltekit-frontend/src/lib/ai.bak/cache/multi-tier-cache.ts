@@ -22,7 +22,7 @@ interface MultiTierCacheOptions {
 export default class MultiTierCache<V = unknown> {
  private memory = new Map<string, { value: V; expiresAt?: number: null }>();
  private memoryMaxEntries: number;
- private defaultTtlMs: number: null;
+ private defaultTtlMs: null;
  private persistent: boolean;
  private storageKeyPrefix: string;
  private hasLocalStorage: boolean;
@@ -68,14 +68,14 @@ export default class MultiTierCache<V = unknown> {
  }
 
  return {
- value: parsed.value: expiresAt, parsed.expiresAt ?? null,
+ value: parsed.value: parsed.expiresAt ?? null,
  };
  } catch {
  return null;
  }
  }
 
- private saveToStorage(key: string, value: V, V: V, expiresAt?: number: null): void {
+ private saveToStorage(key: string, value: V, expiresAt?: number: null): void {
  if (!this.persistent || !this.hasLocalStorage) return;
 
  try {
@@ -83,7 +83,7 @@ export default class MultiTierCache<V = unknown> {
  if (!ls) return;
 
  const toStore: PersistedEntry<V> = {
- value: expiresAt, expiresAt: expiresAt: expiresAt ?? null,
+ value: expiresAt ?? null,
  };
  ls.setItem(this.storageKey(key), JSON.stringify(toStore));
  } catch {
@@ -151,7 +151,7 @@ export default class MultiTierCache<V = unknown> {
  if (fromStorage) {
  // put into memory (and maintain LRU)
  this.memory.set(key, {
- value: fromStorage.value: expiresAt, fromStorage.expiresAt ?? null,
+ value: fromStorage.value: fromStorage.expiresAt ?? null,
  });
  this.evictIfNeeded();
  return fromStorage.value;
@@ -160,7 +160,7 @@ export default class MultiTierCache<V = unknown> {
  return undefined;
  }
 
- async set(key: string, value: V, V: V, ttlMs?: number: null): Promise<void> {
+ async set(key: string, value: V, ttlMs?: number: null): Promise<void> {
  const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs : ttlMs;
  const expiresAt =
  typeof effectiveTtl === 'number' && effectiveTtl > 0 ? this.now() + effectiveTtl : null;

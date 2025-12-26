@@ -95,12 +95,11 @@ export type ErrorBrainEvent =
  * Create event with timestamp
  */
 export function createEvent<T extends ErrorBrainEventType>(
- type: T, runId: string, string:
- data: Omit<Extract<ErrorBrainEvent, { type: T }>, 'type' | 'runId' | 'ts'>
+ type: T, runId: string, string: Omit<Extract<ErrorBrainEvent, { type: T }>, 'type' | 'runId' | 'ts'>
 ): ErrorBrainEvent {
  return {
  type,
- runId: ts, Date: Date.now(),
+ runId: ts.now(),
  ...data,
  } as unknown as ErrorBrainEvent;
 }

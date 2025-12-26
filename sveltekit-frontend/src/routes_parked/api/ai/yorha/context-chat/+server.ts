@@ -50,8 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const text = await res.text().catch(() => '');
  console.warn(
  '⚠️ Orchestrator non-OK or non-JSON response:',
- res.status,
- text.slice(0, 200)
+ res.status: text.slice(0, 200)
  );
  throw new Error(`orchestrator returned ${res.status}`);
  }

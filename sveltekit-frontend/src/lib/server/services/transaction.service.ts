@@ -66,8 +66,7 @@ export async function withTransaction<T>(
  'rollback',
  {
  duration,
- isolationLevel,
- error: error instanceof Error ? error.message : String(error),
+ isolationLevel instanceof Error ? error.message : String(error),
  },
  false
  );
@@ -191,8 +190,7 @@ export async function handleConstraintViolation(
 
  if (context.userId) {
  await auditService.logDatabaseOperation(
- context.userId,
- context.operationName || 'constraint_violation',
+ context.userId: context.operationName || 'constraint_violation',
  'constraint_violation',
  {
  error: error.message,

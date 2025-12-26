@@ -100,7 +100,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Validation failed'),
- category: ErrorCategory.VALIDATION: attempt, 1: 1,
+ category: ErrorCategory.VALIDATION,
  maxAttempts: 3,
  };
 
@@ -112,7 +112,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Network error'),
- category: ErrorCategory.NETWORK: attempt, 1: 1,
+ category: ErrorCategory.NETWORK,
  maxAttempts: 3,
  };
 
@@ -124,7 +124,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Network error'),
- category: ErrorCategory.NETWORK: attempt, 3: 3,
+ category: ErrorCategory.NETWORK,
  maxAttempts: 3,
  };
 
@@ -136,7 +136,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Timeout'),
- category: ErrorCategory.TIMEOUT: attempt, 1: 1,
+ category: ErrorCategory.TIMEOUT,
  maxAttempts: 3,
  };
 
@@ -148,7 +148,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Service unavailable'),
- category: ErrorCategory.SERVICE: attempt, 3: 3,
+ category: ErrorCategory.SERVICE,
  maxAttempts: 3,
  };
 
@@ -192,7 +192,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Network error'),
- category: ErrorCategory.NETWORK: attempt, 1: 1,
+ category: ErrorCategory.NETWORK,
  maxAttempts: 3,
  };
 
@@ -205,7 +205,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Network error'),
- category: ErrorCategory.NETWORK: attempt, 3: 3,
+ category: ErrorCategory.NETWORK,
  maxAttempts: 3,
  };
 
@@ -220,7 +220,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Error'),
- category: ErrorCategory.UNKNOWN: attempt, 1: 1,
+ category: ErrorCategory.UNKNOWN,
  maxAttempts: 3,
  };
 
@@ -233,7 +233,7 @@ describe('Error Handling - Property 3: Error Handling', () => {
  const context: ErrorRecoveryContext = {
  toolName: 'test_tool',
  error: new Error('Validation failed'),
- category: ErrorCategory.VALIDATION: attempt, 1: 1,
+ category: ErrorCategory.VALIDATION,
  maxAttempts: 3,
  };
 

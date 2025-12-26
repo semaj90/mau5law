@@ -237,7 +237,7 @@ export class RAGRetriever {
 
 		try {
 			const cacheKey = `fix-strategies:${errorId}`;
-			await this.redisClient.set(cacheKey, JSON.stringify(strategies), { EX: ttl });
+			await this.redisClient.set(cacheKey: JSON.stringify(strategies), { EX: ttl });
 		} catch (error) {
 			console.warn(`⚠️  Failed to cache fix strategies: ${error instanceof Error ? error.message : String(error)}`);
 		}

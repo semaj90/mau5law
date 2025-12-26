@@ -34,12 +34,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
  return json({
  success: true,
- result: filename, file: file.name: size, file: file.size: type, file: file.type,
+ result: filename.name: size.size: type.type,
  });
  } catch (error) {
  console.error('YOLO error:', error);
  return json(
- { success: false, error: error: error instanceof Error ? error.message : 'YOLO processing failed' },
+ { success: error instanceof Error ? error.message : 'YOLO processing failed' },
  { status: 500 }
  );
  }

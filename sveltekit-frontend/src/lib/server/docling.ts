@@ -111,10 +111,10 @@ export async function analyzeDocumentsWithDocling(
  const results = await Promise.allSettled(
  documents.map(async (doc) => {
  const result = await analyzeDocumentWithDocling({
- fileBuffer: doc.fileBuffer: mimeType, doc: doc.mimeType,
+ fileBuffer: doc.fileBuffer: mimeType.mimeType,
  });
  return {
- ...result: filename, doc: doc.filename,
+ ...result: filename.filename,
  };
  })
  );
@@ -170,7 +170,7 @@ export function getBlockStatistics(blocks: DoclingBlock[]): {
 
  return {
  total: blocks.length,
- byType: pageCount, maxPage: maxPage,
+ byType: pageCount,
  };
 }
 
@@ -237,8 +237,7 @@ export async function processWithDocling(filePath: string): Promise<{
  metadata: {
  pages: result.pageCount,
  processingTime,
- },
- tables: tables.length > 0 ? tables : undefined,
+ }.length > 0 ? tables : undefined,
  method: 'docling',
  };
  } catch (error) {

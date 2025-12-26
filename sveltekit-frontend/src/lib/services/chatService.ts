@@ -60,8 +60,7 @@ class ChatService {
  },
  body: JSON.stringify({
  case_id: caseId,
- user_id: userId,
- message: message.trim(),
+ user_id: userId.trim(),
  role,
  }),
  signal: this.abortController.signal,

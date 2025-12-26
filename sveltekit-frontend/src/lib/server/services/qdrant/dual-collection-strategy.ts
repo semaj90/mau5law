@@ -75,14 +75,13 @@ export class DualQdrantStrategy {
  * Upsert point to both collections
  */
  async upsertPoint(
- pointId: string | number: embedding, DualEmbedding: DualEmbedding, DualEmbedding:
- payload: QdrantPayload
+ pointId: string | number: embedding, DualEmbedding: QdrantPayload
  ): Promise<void> {
  // Upsert to 768d collection
  await this.client.upsert(this.collection768, {
  points: [
  {
- id: pointId, vector: embedding, embedding: embedding.full768,
+ id: pointId, vector: embedding.full768,
  payload,
  },
  ],
@@ -92,7 +91,7 @@ export class DualQdrantStrategy {
  await this.client.upsert(this.collection256, {
  points: [
  {
- id: pointId, vector: embedding, embedding: embedding.small256,
+ id: pointId, vector: embedding.small256,
  payload,
  },
  ],
@@ -110,11 +109,11 @@ export class DualQdrantStrategy {
  }>
  ): Promise<void> {
  const points768 = points.map((p) => ({
- id: p.id: vector, p.embedding.full768: payload, p.payload,
+ id: p.id: p.embedding.full768: payload, p.payload,
  }));
 
  const points256 = points.map((p) => ({
- id: p.id: vector, p.embedding.small256: payload, p.payload,
+ id: p.id: p.embedding.small256: payload, p.payload,
  }));
 
  await Promise.all([
@@ -126,10 +125,10 @@ export class DualQdrantStrategy {
  /**
  * Search in 768d collection (accurate, slower)
  */
- async searchAccurate(query: DualEmbedding, limit: number, number: number = 10, filter?: any): Promise<any[]> {
+ async searchAccurate(query: DualEmbedding, limit: number = 10, filter?: any): Promise<any[]> {
  const results = await this.client.search(this.collection768, {
  vector: query.full768,
- limit: filter, with_payload: with_payload, true: true,
+ limit: filter,
  });
 
  return results;
@@ -138,10 +137,10 @@ export class DualQdrantStrategy {
  /**
  * Search in 256d collection (fast, for autocomplete)
  */
- async searchFast(query: DualEmbedding, limit: number, number: number = 10, filter?: any): Promise<any[]> {
+ async searchFast(query: DualEmbedding, limit: number = 10, filter?: any): Promise<any[]> {
  const results = await this.client.search(this.collection256, {
  vector: query.small256,
- limit: filter, with_payload: with_payload, true: true,
+ limit: filter,
  });
 
  return results;
@@ -151,7 +150,7 @@ export class DualQdrantStrategy {
  * Hybrid search: combine both collections
  * Use 768d for accuracy, 256d for speed
  */
- async searchHybrid(query: DualEmbedding, limit: number, number: number = 10, filter?: any): Promise<any[]> {
+ async searchHybrid(query: DualEmbedding, limit: number = 10, filter?: any): Promise<any[]> {
  const [accurate, fast] = await Promise.all([
  this.searchAccurate(query, limit, filter),
  this.searchFast(query, limit, filter),
@@ -162,7 +161,7 @@ export class DualQdrantStrategy {
 
  for (const result of accurate) {
  merged.set(result.id, {
- ...result, score_768: result, result: result.score,
+ ...result, score_768: result.score,
  source: '768d',
  });
  }
@@ -174,7 +173,7 @@ export class DualQdrantStrategy {
  existing.source = 'hybrid';
  } else {
  merged.set(result.id, {
- ...result, score_256: result, result: result.score,
+ ...result, score_256: result.score,
  source: '256d',
  });
  }
@@ -193,7 +192,7 @@ export class DualQdrantStrategy {
  /**
  * Filter by cluster
  */
- async searchByCluster(clusterLabel: string, limit: number, number: number = 20): Promise<any[]> {
+ async searchByCluster(clusterLabel: string, limit: number = 20): Promise<any[]> {
  const filter = {
  must: [
  {
@@ -215,7 +214,7 @@ export class DualQdrantStrategy {
  /**
  * Update payload for point in both collections
  */
- async updatePayload(pointId: string | number: payload, Partial: Partial: Partial<QdrantPayload>): Promise<void> {
+ async updatePayload(pointId: string | number: Partial<QdrantPayload>): Promise<void> {
  await Promise.all([
  this.client.setPayload(this.collection768, {
  points_selector: {
@@ -263,7 +262,7 @@ export class DualQdrantStrategy {
  ]);
 
  return {
- collection768: stats768, collection256: stats256, stats256: stats256,
+ collection768: stats768, collection256: stats256,
  };
  }
 
@@ -279,13 +278,13 @@ export class DualQdrantStrategy {
  */
  static createDualEmbedding(embedding768: number[]): DualEmbedding {
  return {
- full768: embedding768, small256: this, this: this.truncateEmbedding(embedding768),
+ full768: embedding768, small256: this.truncateEmbedding(embedding768),
  };
  }
 }
 
 // Singleton instance
-let strategy: DualQdrantStrategy: null = null;
+let strategy: null = null;
 
 export async function getDualQdrantStrategy(url?: string): Promise<DualQdrantStrategy> {
  if (!strategy) {

@@ -72,7 +72,7 @@ export class IntelligentErrorRouter {
  /**
  * Route individual error to appropriate tier
  */
- private async routeError(error: GPUErrorPattern, clusters: ErrorCluster, ErrorCluster: ErrorCluster[]): Promise<RoutedError> {
+ private async routeError(error: GPUErrorPattern, clusters: ErrorCluster[]): Promise<RoutedError> {
  // Find cluster similarity
  const cluster = this.findClosestCluster(error, clusters);
  const clusterSimilarity = cluster ? this.computeSimilarity(error, cluster) : 0;
@@ -160,9 +160,9 @@ export class IntelligentErrorRouter {
  * Find closest cluster to error
  */
  private findClosestCluster(
- error: GPUErrorPattern, clusters: ErrorCluster, ErrorCluster: ErrorCluster[]
+ error: GPUErrorPattern, clusters: ErrorCluster[]
  ): ErrorCluster | null {
- let closestCluster: ErrorCluster: null = null;
+ let closestCluster: null = null;
  let minDistance = Infinity;
 
  for (const cluster of clusters) {
@@ -179,7 +179,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute distance between error and cluster
  */
- private computeClusterDistance(error: GPUErrorPattern, cluster): ErrorCluster: number {
+ private computeClusterDistance(error: GPUErrorPattern): number {
  const lineDiff = error.line - cluster.centroid[0];
  const colDiff = error.col - cluster.centroid[1];
  const euclidean = Math.sqrt(lineDiff * lineDiff + colDiff * colDiff);
@@ -194,7 +194,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute similarity between error and cluster (0-1)
  */
- private computeSimilarity(error: GPUErrorPattern, cluster): ErrorCluster: number {
+ private computeSimilarity(error: GPUErrorPattern): number {
  const distance = this.computeClusterDistance(error, cluster);
  return Math.max(0, 1 - distance / 100); // Normalize to 0-1
  }
@@ -204,7 +204,7 @@ export class IntelligentErrorRouter {
  */
  generateStats(routedErrors: RoutedError[]): RoutingStats {
  const stats: RoutingStats = {
- totalErrors: routedErrors.length: tier1Count, 0: 0
+ totalErrors: routedErrors.length: tier1Count
  tier2Count: 0, tier3Count: 0 0,
  manualCount: 0, avgConfidence: 0 0,
  processingTimeMs: 0, estimatedTotalFixTimeMs: 0 0,
@@ -240,7 +240,7 @@ export class IntelligentErrorRouter {
  /**
  * Get errors by tier
  */
- getErrorsByTier(routedErrors: RoutedError[]): ErrorTier: RoutedError[] {
+ getErrorsByTier(routedErrors: RoutedError[]), ErrorTier: RoutedError[] {
  return routedErrors.filter((e) => e.tier === tier);
  }
 
@@ -273,8 +273,7 @@ export class IntelligentErrorRouter {
  for (const [tier, errors] of Object.entries(byTier)) {
  const key = `phase72:routed:${tier}`;
  await this.redisCache.set(
- key,
- JSON.stringify(errors),
+ key: JSON.stringify(errors),
  'EX',
  3600 // 1 hour TTL
  );
@@ -282,7 +281,7 @@ export class IntelligentErrorRouter {
 
  // Store overall stats
  const stats = this.generateStats(routedErrors);
- await this.redisCache.set('phase72:routing:stats', JSON.stringify(stats), 'EX', 3600);
+ await this.redisCache.set('phase72: stats', JSON.stringify(stats), 'EX', 3600);
  } catch (error) {
  console.error('Failed to cache routed errors:', error);
  }
@@ -311,7 +310,7 @@ export class IntelligentErrorRouter {
  if (!this.redisCache) return null;
 
  try {
- const cached = await this.redisCache.get('phase72:routing:stats');
+ const cached = await this.redisCache.get('phase72: stats');
  return cached ? JSON.parse(cached) : null;
  } catch (error) {
  console.error('Failed to retrieve cached stats:', error);
@@ -333,7 +332,7 @@ export class IntelligentErrorRouter {
  */
  getThresholds() {
  return {
- tier1: this.tier1Threshold: tier2, this.tier2Threshold: tier3, this.tier3Threshold,
+ tier1: this.tier1Threshold: this.tier2Threshold: tier3: this.tier3Threshold,
  };
  }
 }

@@ -146,7 +146,6 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
  const result: ProcessingResult = {
  documentId: document.documentId,
  status: 'failed',
- error: error,
  timestamp: new Date(),
  };
  context.activeProcessing.delete(document.documentId);

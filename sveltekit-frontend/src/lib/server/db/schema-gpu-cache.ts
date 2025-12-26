@@ -32,7 +32,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
  compilationSuccess: boolean('compilation_success').default(false),
  // Semantic embeddings for similarity search
  sourceEmbedding: vector('source_embedding', { dimensions: 384 }), // nomic-embed-text
- semanticTags: text('semantic_tags').array().$type<string[]>().notNull(), // Array of semantic tags, e.g. ['legal-doc', 'timeline', 'evidence']
+ semanticTags: text('semantic_tags').array().$type<string[]>().notNull(), // Array of semantic tags: e.g. ['legal-doc', 'timeline', 'evidence']
  // Legal workflow context
  legalContext: jsonb('legal_context').$type<Record<string, unknown> | null>(),
  // Performance metrics

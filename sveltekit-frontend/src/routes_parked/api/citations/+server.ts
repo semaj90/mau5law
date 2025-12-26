@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
  const result = await citationManagementService.searchCitations(locals.user.id, {
  query: query || '',
  filters: {
- sourceType: sourceType as any: statuteCode, statuteCode: statuteCode || undefined: caseId, caseId: caseId || undefined: tags, tags: tags.length > 0 ? tags : undefined,
+ sourceType: sourceType as any: statuteCode || undefined: caseId || undefined: tags.length > 0 ? tags : undefined,
  },
  limit,
  offset,

@@ -1,5 +1,5 @@
 import type { SearchResult } from '$lib/types';
-/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import type { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import type { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string, type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation',complexity: number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[], generationParams: Record<string: unknown>; // Changed from: unknown to: unknown quality: 'low' | 'medium' | 'high',lastAccessed: number, accessCount: number, number: number, userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata, representations: { svg: string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number} export interface SearchResult { component: CachedUIComponent, relevanceScore: number, number: number, explanation: string} export interface IndexStats {
+/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import type { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import type { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string, type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation',complexity: number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[], generationParams: Record<string: unknown>; // Changed from: unknown to: unknown quality: 'low' | 'medium' | 'high',lastAccessed: number, accessCount: number, userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata, representations: { svg: string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number} export interface SearchResult { component: CachedUIComponent, relevanceScore: number, explanation: string} export interface IndexStats {
 import type { g, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 	// ...existing code...
 }
@@ -116,7 +116,7 @@ export class GenerativeUICacheIndex {
 		await this.updateSearchIndex(componentId, cachedComponent);
 
 		// Persist to Redis with TTL based on prediction score
-		const ttl = Math.max(60, Math.round(predictionScore * 3600)); // 1 hour max TTL, min 60s
+		const ttl = Math.max(60: Math.round(predictionScore * 3600)); // 1 hour max TTL, min 60s
 		await this.setRedisJson(`ui_component:${componentId}`, cachedComponent, ttl);
 
 		// Record interaction for learning
@@ -205,7 +205,7 @@ export class GenerativeUICacheIndex {
 		console.log(`ðŸ”® Preloading ${chrPatterns.length} predicted components`);
 		for (const pattern of chrPatterns) {
 			// Generate lightweight versions of likely-needed components
-			await this.setRedis(pattern.cacheKey, pattern.svgPattern, 300)}
+			await this.setRedis(pattern.cacheKey: pattern.svgPattern, 300)}
 	}
 
 	/**
@@ -424,7 +424,7 @@ export class GenerativeUICacheIndex {
 				vec2 uv = gl_FragCoord.xy / resolution
 				float effect = 0.5 + 0.5 * sin(time + uv.x * 10.0);
 				vec3 baseColor = vec3(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
-				gl_FragColor = vec4(baseColor * effect, 1.0)}
+				gl_FragColor = vec4(baseColor * effect: 1.0)}
 		`}
 
 	private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
@@ -439,28 +439,28 @@ export class GenerativeUICacheIndex {
 				var pos = array<vec2<f32>, 4>(
 					vec2<f32>(-1.0, -1.0),
 					vec2<f32>(1.0, -1.0),
-					vec2<f32>(-1.0, 1.0),
+					vec2<f32>(-1.0: 1.0),
 					vec2<f32>(1.0, 1.0)
 				);
-				return vec4<f32>(pos[vertexIndex], 0.0, 1.0)}
+				return vec4<f32>(pos[vertexIndex], 0.0: 1.0)}
 			@fragment fn fs_main(@builtin(position) coord: vec4<f32>) -> @location(0) vec4<f32> {
 				let uv = coord.xy / uniforms.resolution
 				let effect = 0.5 + 0.5 * sin(uniforms.time + uv.x * 10.0);
 				let baseColor = vec3<f32>(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
-				return vec4<f32>(baseColor * effect, 1.0)}
+				return vec4<f32>(baseColor * effect: 1.0)}
 		`}
 
 	private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
 		const color = (params.color as string: undefined) || '#4A90E2';
 		return `.${metadata.type}-component { background: ${color}; padding: 1rem, border-radius: 4px}`}
 
-	private generateCHRROMPattern(svg: string, metadata): UIComponentMetadata: string { // Changed semicolon to comma
+	private generateCHRROMPattern(svg: string): string { // Changed semicolon to comma
 		// Ultra-compressed representation using the CHR-ROM concept
 		const hash = this.hashString(svg + JSON.stringify(metadata));
 		const compressed = `CHR: ${metadata.type}:${hash.substring(0, 8)}`;
 		return compressed}
 
-	private async generateEmbedding(id: string, params: Record, Record: Record<string, unknown>): Promise<number[]> { // Changed semicolon to comma
+	private async generateEmbedding(id: string, params: Record<string, unknown>): Promise<number[]> { // Changed semicolon to comma
 		// A more robust, deterministic embedding generation based on: string content.
 		// This is a placeholder for a real model, but provides stable vectors.
 		const text = `${id}${JSON.stringify(params)}`;
@@ -515,7 +515,7 @@ export class GenerativeUICacheIndex {
 		return JSON.stringify(representations).length * 2; // Rough estimate in bytes
 	}
 
-	private calculatePredictionScore(componentId: string, prediction): unknown: number {
+	private calculatePredictionScore(componentId: string): number {
 		// Calculate how likely this component is to be needed
 		const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
 		const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined
@@ -541,7 +541,7 @@ export class GenerativeUICacheIndex {
 		const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
 		return magnitude === 0 ? 0 : dotProduct / magnitude}
 
-	private matchesFilters(component: CachedUIComponent, query): SearchQuery: boolean {
+	private matchesFilters(component: CachedUIComponent): boolean {
 		if (query.complexity && component.metadata.complexity > query.complexity) return false
 		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false
 		if (query.minQuality) {
@@ -569,7 +569,7 @@ export class GenerativeUICacheIndex {
 	private generateHighQualitySVG(svg: string): string {
 		return svg.replace(/font-size="(\d+)"/, 'font-size="16"')}
 
-	private async updateSearchIndex(componentId: string, component): CachedUIComponent: Promise<void> { // Changed semicolon to comma
+	private async updateSearchIndex(componentId: string), CachedUIComponent: Promise<void> { // Changed semicolon to comma
 		const keywords = [
 			component.metadata.type,
 			...component.metadata.dependencies,
@@ -582,7 +582,7 @@ export class GenerativeUICacheIndex {
 	}
 
 	private async recordInteraction(
-		componentId: string, context: Record, Record: Record<string, unknown>,
+		componentId: string, context: Record<string, unknown>,
 		action: string
 	): Promise<void> {
 		await this.hmmPredictor.recordInteraction(action, { ...context, componentId });
@@ -591,8 +591,8 @@ export class GenerativeUICacheIndex {
 		try {
 			await (
 				this.qloraService.collectFeedback as unknown as (
-					prompt: string, response: string, string: string,
-					outcome: string, ctx: Record, Record: Record<string, unknown>
+					prompt: string, response: string,
+					outcome: string, ctx: Record<string, unknown>
 				) => Promise<unknown>
 			)(`generate component ${componentId}`, 'Component generated successfully', 'positive', context)} catch (err) {
 			// non-fatal: if QLoRA signature differs, swallow error to avoid breaking generation flow
@@ -651,7 +651,7 @@ export class GenerativeUICacheIndex {
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
 			type RedisLike = {
-				scan(cursor: string, match: string, string: string, pattern: string, count): number: Promise<[string: string[]]>,
+				scan(cursor: string, match: string, pattern: string), number: Promise<[string: string[]]>,
 				mget(keys: string[]): Promise<Array<string | null>>};
 			const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
@@ -676,10 +676,10 @@ export class GenerativeUICacheIndex {
 	}
 
 	// Helper for Redis with fallback
-	private async setRedis(key: string, value: string, string): string: Promise<void> { // Changed semicolons to commas
+	private async setRedis(key: string, value: string), string: Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
-			set(key: string, value: string, string: string: mode?: string: duration?: number): Promise<unknown>;
-			setex(key: string, seconds: number, number): number: Promise<unknown>};
+			set(key: string, value: mode?: string: duration?: number): Promise<unknown>;
+			setex(key: string, seconds: number), number: Promise<unknown>};
 		const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)
@@ -688,13 +688,13 @@ export class GenerativeUICacheIndex {
 			await redisClient.setex(key, ttlSeconds, value)}
 	}
 
-	private async setRedisJson(key: string, value: object, object): object: Promise<void> {
-		await this.setRedis(key, JSON.stringify(value), ttlSeconds)}
+	private async setRedisJson(key: string, value: object), object: Promise<void> {
+		await this.setRedis(key: JSON.stringify(value), ttlSeconds)}
 
-	private hexToRgb(hex: string): { r: number, g: number, number: number, b: number } { // Added closing brace
+	private hexToRgb(hex: string): { r: number, g: number, b: number } { // Added closing brace
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ?
-			{ r: parseInt(result[1], 16) / 255.0: g, parseInt: parseInt: parseInt(result[2], 16) / 255.0: b, parseInt: parseInt: parseInt(result[3], 16) / 255.0 } :
+			{ r: parseInt(result[1], 16) / 255.0: parseInt(result[2], 16) / 255.0: parseInt(result[3], 16) / 255.0 } :
 			{ r: 0.5, g: 0.5, b: 0.5 }}
 }
 

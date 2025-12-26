@@ -238,7 +238,7 @@ export const aiStore = (() => {
 		startMessage(role: 'user' | 'assistant', content: string) {
 			const message: AIMessage = {
 				id: `msg-${Date.now()}`,
-				role: content, timestamp: timestamp, new: new Date().toISOString()
+				role: content Date().toISOString()
 			};
 
 			messages.push(message);
@@ -340,7 +340,7 @@ export const chatStore = (() => {
 			throw new Error('Failed to create chat');
 		},
 
-		updateChatMetadata(chatId: string, updates: Partial, Partial: Partial<ChatMetadata>) {
+		updateChatMetadata(chatId: string, updates: Partial<ChatMetadata>) {
 			const chat = chats.find((c) => c.id === chatId);
 			if (chat) {
 				Object.assign(chat, updates);
@@ -386,7 +386,7 @@ export const themeStore = (() => {
 // Export All Stores
 // ========================================
 export const stores = {
-	auth: authStore, case: caseStore, caseStore: caseStore,
-	ai: aiStore, chat: chatStore, chatStore: chatStore,
+	auth: authStore, case: caseStore,
+	ai: aiStore, chat: chatStore,
 	theme: themeStore
 };

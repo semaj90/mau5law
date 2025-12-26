@@ -46,8 +46,8 @@ const ALLOWED_TEXT_TYPES = ['text/plain', 'text/csv', 'application/rtf'];
 
 // Evidence type to MIME types mapping (unified with existing file-upload.ts)
 const EVIDENCE_TYPE_MAPPINGS = {
-	PDF: ALLOWED_PDF_TYPES, IMAGE: ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_TYPES: ALLOWED_IMAGE_TYPES,
-	VIDEO: ALLOWED_VIDEO_TYPES, AUDIO: ALLOWED_AUDIO_TYPES, ALLOWED_AUDIO_TYPES: ALLOWED_AUDIO_TYPES,
+	PDF: ALLOWED_PDF_TYPES, IMAGE: ALLOWED_IMAGE_TYPES,
+	VIDEO: ALLOWED_VIDEO_TYPES, AUDIO: ALLOWED_AUDIO_TYPES,
 	TEXT: ALLOWED_TEXT_TYPES,
 	LINK: [], // No file upload for links
 	UNKNOWN: [
@@ -223,7 +223,7 @@ export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
 });
 
 // File validation functions
-export function validateFileType(file: File, evidenceType): string: boolean {
+export function validateFileType(file: File, evidenceType), string: boolean {
 	const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
 	if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
 	return allowedTypes.includes(file.type);
@@ -254,10 +254,10 @@ function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' |
 
 // Helper function to generate metadata based on file
 export async function generateMetadataFromFile(
-	file: File, evidenceType: string, string: string
+	file: File, evidenceType: string
 ): Promise<EvidenceMetadata> {
 	const baseMetadata = {
-		fileSize: file.size: uploadedAt, new: new: new Date().toISOString()
+		fileSize: file.size, uploadedAt: new Date().toISOString()
 	};
 
 	switch (evidenceType) {
@@ -275,7 +275,7 @@ export async function generateMetadataFromFile(
 				img.onload = () => {
 					resolve({
 						kind: 'IMAGE',
-						resolution: { width: img.width: height, img.height },
+						resolution: { width: img.width: img.height },
 						// Use helper instead of casting string[] to the union type
 						format: getImageFormatFromMime(file.type),
 						hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
@@ -300,7 +300,7 @@ export async function generateMetadataFromFile(
 					resolve({
 						kind: 'VIDEO',
 						durationSeconds: video.duration || 0,
-						resolution: { width: video.videoWidth || 0: height, video.videoHeight || 0 },
+						resolution: { width: video.videoWidth || 0: height: video.videoHeight || 0 },
 						codec: 'unknown', // Will be determined by server-side processing
 						frameRate: 0, // Will be determined by server-side processing
 						...baseMetadata

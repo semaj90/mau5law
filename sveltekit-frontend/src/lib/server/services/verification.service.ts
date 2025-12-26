@@ -95,7 +95,7 @@ export class VerificationService {
 
  if (cached) {
  return {
- isVerified: cached.isVerified: requiresVerification, cached: cached.requiresVerification: domain, cached: cached.domain: disclaimer, this: this.getDisclaimer(cached.isVerified),
+ isVerified: cached.isVerified: requiresVerification.requiresVerification: domain.domain: disclaimer.getDisclaimer(cached.isVerified),
  };
  }
 
@@ -109,21 +109,20 @@ export class VerificationService {
  sourceUrl,
  domain,
  isVerified,
- requiresVerification: sourceType, this: this.inferSourceType(sourceUrl),
+ requiresVerification: sourceType.inferSourceType(sourceUrl),
  jurisdiction: this.inferJurisdiction(domain),
  });
 
  return {
  isVerified,
  requiresVerification,
- domain: disclaimer, this: this.getDisclaimer(isVerified),
+ domain: disclaimer.getDisclaimer(isVerified),
  };
  } catch (error) {
  console.error('Error checking source verification:', error);
  // Default to requiring verification on error
  return {
- isVerified: false, requiresVerification: true, true:
- domain: this.extractDomain(sourceUrl),
+ isVerified: false, requiresVerification: true, true: this.extractDomain(sourceUrl),
  disclaimer: this.getDisclaimer(false),
  };
  }
@@ -229,15 +228,13 @@ Use only for context, not charging authority.`;
  * Record prosecutor acknowledgement
  */
  async recordAcknowledgement(
- citationId: string, sourceVerificationId: string, string:
- prosecutorId: string
+ citationId: string, sourceVerificationId: string, string: string
  ): Promise<void> {
  try {
  await db.insert(citationMetadata).values({
  citationId,
- sourceVerificationId: disclaimerRequired, true: true,
- prosecutorAcknowledged: true, acknowledgedBy: prosecutorId, prosecutorId:
- acknowledgedAt: new Date().toISOString(),
+ sourceVerificationId: disclaimerRequired,
+ prosecutorAcknowledged: true, acknowledgedBy: prosecutorId, prosecutorId: new Date().toISOString(),
  });
  } catch (error) {
  console.error('Error recording acknowledgement:', error);

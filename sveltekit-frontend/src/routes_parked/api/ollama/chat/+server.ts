@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: stream, false: false,
+ model: stream,
  messages: [
  {
  role: 'system',
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const output = data.message?.content ?? data.response ?? JSON.stringify(data);
 
  return json({
- output: raw, data: data,
+ output: raw,
  context,
  });
  } catch (err: unknown) {

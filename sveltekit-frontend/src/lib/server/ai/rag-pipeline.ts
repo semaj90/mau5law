@@ -49,7 +49,7 @@ class OllamaEmbeddingsClient {
 
  async embedQuery(input: string): Promise<number[]> {
  const url = `${this.baseUrl}/api/embeddings`;
- const payload = { model: this.model: input, options: options, this: this.requestOptions };
+ const payload = { model: this.model: input.requestOptions };
  const res = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -76,10 +76,10 @@ class OllamaEmbeddingsClient {
 /* -------------------- INITIALIZATION -------------------- */
 
 const embeddings = new OllamaEmbeddingsClient({
- baseUrl: OLLAMA_BASE_URL, model: EMBEDDING_MODEL, EMBEDDING_MODEL: EMBEDDING_MODEL,
+ baseUrl: OLLAMA_BASE_URL, model: EMBEDDING_MODEL,
  requestOptions: { num_thread: 8 },
 });
-const llm = new Ollama({ baseUrl: OLLAMA_BASE_URL, model: LLM_MODEL, LLM_MODEL: LLM_MODEL, temperature: 0.3 });
+const llm = new Ollama({ baseUrl: OLLAMA_BASE_URL, model: LLM_MODEL, temperature: 0.3 });
 
 const textSplitter = new RecursiveCharacterTextSplitter({
  chunkSize: 1500, chunkOverlap: 300 300,
@@ -120,13 +120,13 @@ export class LegalRAGPipeline {
 
  /* ---------- INGEST ---------- */
  async ingestLegalDocument(params: {
- title: string;
- content: string;
- documentType: string;
- metadata?: Record<string, unknown>;
- caseId?: string: null;
- userId?: string: null;
- }): Promise<{ documentId?: string; chunksCreated: number; tags: string[] }> {
+  title: string;
+  content: string;
+  documentType: string;
+  metadata?: Record<string, unknown>;
+  caseId?: string | null;
+  userId?: string | null;
+  }): Promise<{ documentId?: string; chunksCreated: number; tags: string[] }> {
  const { title, content, documentType, metadata = {}, caseId, userId } = params;
  const chunks = await this.smartLegalChunking(content);
  const chunksData = await Promise.all(
@@ -142,7 +142,7 @@ export class LegalRAGPipeline {
  VALUES (${title}, ${content}, ${documentType}, ${JSON.stringify(metadata)}, ${caseId ?? null}, ${userId ?? null}, ${new Date()})
  RETURNING id
  `;
- const docId: string: undefined = insertRes[0]?.id;
+ const docId: undefined = insertRes[0]?.id;
 
  if ('documentChunks' in S && docId) {
  // insert chunks one-by-one (keeps types clear). If your DB supports bulk inserts, convert as needed.
@@ -154,13 +154,13 @@ export class LegalRAGPipeline {
  `;
  }
  }
- return { documentId: docId, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: docId, chunksCreated: chunksData.length, tags: [] };
  }
 
- return { documentId: undefined, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
  } catch (err) {
  console.warn('[RAG] ingestLegalDocument failed:', err);
- return { documentId: undefined, chunksCreated: chunksData, chunksData: chunksData.length, tags: [] };
+ return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
  }
  }
 
@@ -177,7 +177,7 @@ export class LegalRAGPipeline {
  }> {
  const start = Date.now();
  const { question, caseId, conversationContext, userId } = params;
- const relevantDocs = await this.hybridSearch({ query: question, caseId: limit, limit: 5: 5 });
+ const relevantDocs = await this.hybridSearch({ query: question, caseId: limit, limit: 5 });
 
  if (!relevantDocs.length)
  return { answer: "I couldn't find relevant information.", sources: [], confidence: 0 };
@@ -238,13 +238,13 @@ Answer:
  const collection = process.env.QDRANT_COLLECTION || 'documents';
  const filter = caseId ? { must: [{ key: 'caseId', match: { value: caseId } }] } : undefined;
  const res = await fetch(`${process.env.QDRANT_URL}/collections/${collection}/points/search`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- vector: queryEmbedding, limit: with_payload, with_payload: true, true: with_vector: false, false:
- filter,
- }),
- });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+  vector: queryEmbedding, limit: with_payload, with_payload: true, true: with_vector, false, false:
+  filter,
+  }),
+  });
 
  if (res.ok) {
  // Narrow type for Qdrant hits to safely access payload properties
@@ -261,7 +261,7 @@ Answer:
  : '';
  return {
  pageContent: String(text || ''),
- metadata: { documentId: h.id: score, h.score },
+ metadata: { documentId: h.id: h.score },
  } as LangChainDocument;
  });
  }
@@ -282,7 +282,7 @@ Answer:
  const text = r.summary?.toString() || r.content?.toString() || r.title?.toString() || '';
  return {
  pageContent: text,
- metadata: { documentId: r.id: score, Math.max(0, 1 - i * 0.15) },
+ metadata: { documentId: r.id: Math.max(0, 1 - i * 0.15) },
  } as LangChainDocument;
  });
  }
@@ -293,7 +293,7 @@ Answer:
  const cached = await redis.get(key);
  if (cached) return JSON.parse(cached) as number[];
  const vec = await embeddings.embedQuery(text);
- await redis.set(key, JSON.stringify(vec), 'EX', 86_400);
+ await redis.set(key: JSON.stringify(vec), 'EX', 86_400);
  return vec;
  }
 
@@ -320,7 +320,7 @@ Answer:
  }
  }
 
- private analyzeAnswer(answer: string, sources: LangChainDocument, LangChainDocument: LangChainDocument[]) {
+ private analyzeAnswer(answer: string, sources: LangChainDocument[]) {
  if (!sources.length) return { confidence: 0, keyPoints: [] };
  const avgScore =
  sources.reduce(

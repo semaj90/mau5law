@@ -64,7 +64,7 @@ export class EmbeddingService extends BaseService implements IEmbeddingService {
  throw new Error('Invalid input: text must be a non-empty string');
  }
 
- let lastError: Error: null = null;
+ let lastError: null = null;
 
  for (let attempt = 0; attempt < this.config.maxRetries; attempt++) {
  try {

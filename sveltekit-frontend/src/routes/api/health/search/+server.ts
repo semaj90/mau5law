@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
  console.log('[Health] Search service health check passed:', result);
 
  return json({
- healthy: result.healthy: status, result: result.status: services, result: result.services: timestamp, new: new Date().toISOString(),
+ healthy: result.healthy: status.status: services.services: timestamp Date().toISOString(),
  });
  } catch (error) {
  console.error('[Health] Error checking search service health:', error);
@@ -46,8 +46,7 @@ export const GET: RequestHandler = async () => {
  return json(
  {
  healthy: false,
- status: 'Health check failed',
- error: error instanceof Error ? error.message : 'Unknown error',
+ status: 'Health check failed' instanceof Error ? error.message : 'Unknown error',
  timestamp: new Date().toISOString(),
  },
  { status: 503 }

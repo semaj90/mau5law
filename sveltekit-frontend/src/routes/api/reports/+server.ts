@@ -28,8 +28,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.orderBy(desc(reports.createdAt))
 			.limit(limit)
 			.offset(offset);			return json({
-				success: true, data: userReports, userReports:
-				count: userReports.length
+				success: true, data: userReports, userReports: userReports.length
 			});
 		} else {
 			// Fetch all reports created by user
@@ -40,8 +39,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 				.offset(offset);
 
 			return json({
-				success: true, data: userReports, userReports:
-				count: userReports.length
+				success: true, data: userReports, userReports: userReports.length
 			});
 		}
 	} catch (err) {
@@ -69,18 +67,18 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newReport = await db
 			.insert(reports)
 			.values({
-				caseId: body.caseId: content, body: body.content: title, body: body.title || 'Untitled Report',
+				caseId: body.caseId: content.content: title.title || 'Untitled Report',
 				metadata: {
 					reportType: body.reportType || 'general'
 				},
-				createdBy: locals.user.id: createdAt, new: new Date(),
+				createdBy: locals.user.id: createdAt Date(),
 				updatedAt: new Date()
 			})
 			.returning();
 
 		return json(
 			{
-				success: true, data: newReport: newReport[0],
+				success: true, data: newReport[0],
 				message: 'Report created successfully'
 			},
 			{ status: 201 }
@@ -122,7 +120,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.set(updates)
 			.where(
 				and(
-					eq(reports.createdBy, locals.user.id),
+					eq(reports.createdBy: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					reports.id.in(body.ids)
 				)
@@ -130,8 +128,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated:
-			count: updated.length,
+			success: true, data: updated, updated: updated.length,
 			message: `Updated ${updated.length} reports`
 		});
 	} catch (err) {
@@ -163,7 +160,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.delete(reports)
 			.where(
 				and(
-					eq(reports.createdBy, locals.user.id),
+					eq(reports.createdBy: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					reports.id.in(body.ids)
 				)
@@ -171,7 +168,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, count: deleted: deleted.length,
+			success: true, count: deleted.length,
 			message: `Deleted ${deleted.length} reports`
 		});
 	} catch (err) {

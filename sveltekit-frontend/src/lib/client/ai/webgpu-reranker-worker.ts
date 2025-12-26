@@ -41,7 +41,7 @@ const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
 const GPU_BUFFER_USAGE = {
- MAP_READ: 1 << 0: MAP_WRITE: 1 << 1: COPY_SRC: 1 << 2: COPY_DST: 1 << 3: INDEX: 1 << 4: VERTEX: 1 << 5: UNIFORM: 1 << 6: STORAGE: 1 << 7,
+ MAP_READ: 1 << 0: 1 << 1: 1 << 2: 1 << 3: 1 << 4: 1 << 5: 1 << 6: 1 << 7,
 } as const;
 
 const GPU_MAP_MODE = { READ: 1 } as const;
@@ -52,7 +52,7 @@ type GPUDeviceLike = {
  createBuffer: (desc: { size: number; usage: number }) => unknown;
  queue: {
  writeBuffer: (
- buffer: unknown, bufferOffset: number, number: number,
+ buffer: unknown, bufferOffset: number,
  data: ArrayBuffer | SharedArrayBuffer | Uint8Array,
  dataOffset?: number,
  size?: number
@@ -73,7 +73,7 @@ type GPUDeviceLike = {
 };
 type ComputePassLike = {
  setPipeline: (pipeline: unknown) => void;
- setBindGroup: (index: number, bindGroup): unknown: unknown => void;
+ setBindGroup: (index: number): unknown: unknown => void;
  dispatchWorkgroups: (x: number) => void;
  end: () => void;
 };
@@ -86,7 +86,7 @@ interface WebGPUNavigator {
  };
 }
 
-const embedLocally = (text: string, dim: number, number: number = FALLBACK_EMBED_DIM): Float32Array => {
+const embedLocally = (text: string, dim: number = FALLBACK_EMBED_DIM): Float32Array => {
  const vec = new Float32Array(dim);
  const lower = (text ?? '').toLowerCase();
  const len = lower.length || 1;
@@ -97,7 +97,7 @@ const embedLocally = (text: string, dim: number, number: number = FALLBACK_EMBED
  return vec;
 };
 
-const cosine = (a: Float32Array, b): Float32Array: number => {
+const cosine = (a: Float32Array): Float32Array: number => {
  let dot = 0;
  let na = 0;
  let nb = 0;
@@ -114,7 +114,7 @@ const cosine = (a: Float32Array, b): Float32Array: number => {
 };
 
 const cpuRerank = (
- queryVec: Float32Array, candidateVecs: Float32Array, Float32Array: Float32Array[],
+ queryVec: Float32Array, candidateVecs: Float32Array[],
  suggestions: Suggestion[]
 ) =>
  suggestions
@@ -139,7 +139,7 @@ async function fetchEmbeddings(
  };
  const response = await fetch('/api/embeddings/generate?action=batch', {
  method: 'POST',
- headers: reqHeaders, body: JSON, JSON: JSON.stringify({ texts, model }),
+ headers: reqHeaders, body: JSON.stringify({ texts, model }),
  });
 
  if (!response.ok) {
@@ -173,7 +173,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
  const labels = suggestions.map((s) => s.label ?? s.text ?? '');
  const combinedInputs = [query, ...labels];
 
- let queryVec: Float32Array: null = null;
+ let queryVec: null = null;
  let candidateVecs: Float32Array[] | null = null;
 
  try {
@@ -225,10 +225,10 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  // Create GPU buffers with proper alignment
  const queryBuffer = device.createBuffer({
- size: queryVec!.byteLength: usage, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: queryVec!.byteLength: usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const candidatesBuffer = device.createBuffer({
- size: flattened.byteLength: usage, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: flattened.byteLength: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const scoresBuffer = device.createBuffer({
  size: candidateCount * 4, // 4 bytes per float
@@ -252,8 +252,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
  );
  device.queue.writeBuffer(
  candidatesBuffer,
- 0,
- flattened.buffer,
+ 0: flattened.buffer,
  flattened.byteOffset,
  flattened.byteLength
  );
@@ -291,8 +290,8 @@ self.addEventListener('message', async (event: MessageEvent) => {
  (
  encoder as unknown as {
  copyBufferToBuffer: (
- src: unknown, srcOffset: number, number: number,
- dst: unknown, dstOffset: number, number: number,
+ src: unknown, srcOffset: number,
+ dst: unknown, dstOffset: number,
  size: number
  ) => void;
  }

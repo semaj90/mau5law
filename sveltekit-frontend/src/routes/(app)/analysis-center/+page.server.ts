@@ -42,8 +42,7 @@ export const actions: Actions = {
  success: true,
  analysis: {
  id: `A${Date.now()}`,
- query,
- result: result.response,
+ query.response,
  mode,
  timestamp: new Date().toISOString(),
  confidence: 0.85,
@@ -52,8 +51,7 @@ export const actions: Actions = {
  } catch (error) {
  console.error('Server-side analysis error:', error);
  return {
- success: false,
- error: error instanceof Error ? error.message : 'Analysis failed',
+ success: false instanceof Error ? error.message : 'Analysis failed',
  };
  }
  },

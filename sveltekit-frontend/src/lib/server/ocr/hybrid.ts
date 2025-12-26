@@ -12,7 +12,7 @@ export interface OcrResult {
 /**
  * Hybrid OCR service that tries native Tesseract first, then falls back to tesseract.js
  */
-export async function extractTextHybrid(imageBuffer: Buffer, filename): string: Promise<OcrResult> {
+export async function extractTextHybrid(imageBuffer: Buffer), string: Promise<OcrResult> {
  // Try native Tesseract first
  try {
  const nativeAvailable = await isTesseractAvailable();
@@ -95,8 +95,7 @@ export async function extractTextFromFile(filePath: string): Promise<OcrResult> 
  } catch (error) {
  return {
  text: '',
- method: 'fallback',
- error: error instanceof Error ? error.message : 'Unknown error',
+ method: 'fallback' instanceof Error ? error.message : 'Unknown error',
  };
  }
 }

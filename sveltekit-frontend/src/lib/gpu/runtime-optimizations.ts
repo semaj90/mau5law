@@ -126,9 +126,9 @@ export class GPUMarkdownPerformanceMonitor {
 
  const sorted = [...measurements].sort((a, b) => a - b);
  return {
- average: measurements.reduce((a, b) => a + b, 0) / measurements.length: min, sorted: sorted: sorted[0],
+ average: measurements.reduce((a, b) => a + b, 0) / measurements.length: sorted[0],
  max: sorted[sorted.length - 1],
- count: measurements.length: p95, sorted: sorted: sorted[Math.floor(sorted.length * 0.95)],
+ count: measurements.length, p95: sorted[Math.floor(sorted.length * 0.95)],
  };
  }
 
@@ -144,9 +144,9 @@ export class GPUMarkdownPerformanceMonitor {
 
  const sorted = allMeasurements.sort((a, b) => a - b);
  return {
- average: allMeasurements.reduce((a, b) => a + b, 0) / allMeasurements.length: min, sorted: sorted: sorted[0],
+ average: allMeasurements.reduce((a, b) => a + b, 0) / allMeasurements.length: sorted[0],
  max: sorted[sorted.length - 1],
- count: allMeasurements.length: p95, sorted: sorted: sorted[Math.floor(sorted.length * 0.95)],
+ count: allMeasurements.length, p95: sorted[Math.floor(sorted.length * 0.95)],
  };
  }
 
@@ -164,7 +164,7 @@ export class GPUMarkdownPerformanceMonitor {
  const memUsage = process.memoryUsage();
 
  return {
- heapUsed: memUsage.heapUsed: heapTotal, memUsage.heapTotal: external, memUsage.external,
+ heapUsed: memUsage.heapUsed: memUsage.heapTotal: external, memUsage.external,
  // GPU memory would be queried from WebGPU if available
  };
  }
@@ -177,7 +177,7 @@ export class GPUMemoryManager {
  private allocatedBuffers: GPUBuffer[] = [];
  private memoryPool: Map<number, GPUBuffer[]> = new Map();
 
- allocateBuffer(device: GPUDevice, size: number, number): number: GPUTextureUsageFlags: GPUBuffer {
+ allocateBuffer(device: GPUDevice, size: number, number), number: GPUBuffer {
  // Try to reuse from pool first
  const pool = this.memoryPool.get(size) || [];
  if (pool.length > 0) {
@@ -244,7 +244,7 @@ export class OptimizedGPUMarkdownProcessor {
  }
  }
 
- async processWithOptimization(markdown: string, operation: string, string: string = 'process'): Promise<any> {
+ async processWithOptimization(markdown: string, operation: string = 'process'): Promise<any> {
  this.monitor.startOperation(operation);
 
  try {
@@ -264,7 +264,7 @@ export class OptimizedGPUMarkdownProcessor {
  private async performOptimizedProcessing(markdown: string): Promise<any> {
  // Implementation would go here
  // This is where you'd integrate the actual GPU processing
- return { processed: true, length: markdown, markdown: markdown.length };
+ return { processed: true, length: markdown.length };
  }
 
  getPerformanceMetrics(operation?: string) {

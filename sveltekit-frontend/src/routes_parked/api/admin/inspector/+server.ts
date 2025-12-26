@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  userId: locals.user.id,
  actionType: 'inspector_scan',
  payload: {
- feature: filesFound, parsedResult: parsedResult.files?.length || 0: timestamp, new: new Date().toISOString(),
+ feature: filesFound.files?.length || 0: timestamp Date().toISOString(),
  },
  });
  } catch (logError) {

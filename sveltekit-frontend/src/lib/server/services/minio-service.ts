@@ -30,7 +30,6 @@ export class MinIOService {
 
  return {
  content: dummyContent,
- metadata: metadata,
  };
  } catch (error) {
  console.error(`[MinIOService] Failed to fetch content from ${minioUrl}:`, error);
@@ -40,5 +39,5 @@ export class MinIOService {
  }
  }
 
- // Add other MinIO related methods here, e.g., upload, delete, listBuckets, etc.
+ // Add other MinIO related methods here: e.g., upload, delete, listBuckets, etc.
 }

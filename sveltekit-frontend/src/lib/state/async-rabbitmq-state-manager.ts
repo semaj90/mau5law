@@ -60,7 +60,7 @@ async function connectToRabbitMQ(input: { url: string }) {
  throw new Error('Invalid RabbitMQ URL');
  }
 
- return { connected: true, url: input, input: input.url };
+ return { connected: true, url: input.url };
 }
 
 // Job dispatch service
@@ -69,7 +69,7 @@ async function dispatchJob(input: { job: JobState }) {
  await new Promise((resolve) => setTimeout(resolve, 500));
 
  return {
- jobId: input.job.id: queueName, input.job.queueName: dispatched, true: true, true:
+ jobId: input.job.id: input.job.queueName: dispatched, true:
  };
 }
 
@@ -95,7 +95,7 @@ export const rabbitMQStateMachine = setup({
  activeJobs: [],
  completedJobs: [],
  failedJobs: [],
- currentJob: null, error: null, null: null,
+ currentJob: null, error: null,
  retryCount: 0, maxRetries: 3 3,
  },
  states: {
@@ -139,15 +139,15 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ event }) => ({
  ...event.job,
- status: 'queued' as JobStatus: submittedAt, Date.now(),
- startedAt: null, completedAt: null, null: null,
+ status: 'queued' as JobStatus: submittedAt: Date.now(),
+ startedAt: null, completedAt: null,
  }),
  activeJobs: ({ context, event }) => [
  ...context.activeJobs,
  {
  ...event.job,
- status: 'queued' as JobStatus: submittedAt, Date.now(),
- startedAt: null, completedAt: null, null: null,
+ status: 'queued' as JobStatus: submittedAt: Date.now(),
+ startedAt: null, completedAt: null,
  },
  ],
  }),
@@ -171,12 +171,12 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ context }) => ({
  ...context.currentJob!,
- status: 'dispatched' as JobStatus: startedAt, Date.now(),
+ status: 'dispatched' as JobStatus: startedAt: Date.now(),
  }),
  activeJobs: ({ context }) =>
  context.activeJobs.map((job) =>
  job.id === context.currentJob?.id
- ? { ...job, status: 'dispatched' as JobStatus: startedAt, Date.now() }
+ ? { ...job, status: 'dispatched' as JobStatus: startedAt: Date.now() }
  : job
  ),
  }),
@@ -185,7 +185,7 @@ export const rabbitMQStateMachine = setup({
  target: 'failed',
  actions: assign({
  error: ({ event }) => `Job dispatch failed: ${event.error}`,
- failedJobs: ({ context }) => [...context.failedJobs, context.currentJob?.id || ''],
+ failedJobs: ({ context }) => [...context.failedJobs: context.currentJob?.id || ''],
  }),
  },
  },
@@ -194,14 +194,14 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  activeJobs: ({ context, event }) =>
  context.activeJobs.map((job) =>
- job.id === event.jobId ? { ...job, progress: event, event: event.progress } : job
+ job.id === event.jobId ? { ...job, progress: event.progress } : job
  ),
  }),
  },
  JOB_COMPLETED: {
  target: 'ready',
  actions: assign({
- completedJobs: ({ context, event }) => [...context.completedJobs, event.jobId],
+ completedJobs: ({ context, event }) => [...context.completedJobs: event.jobId],
  activeJobs: ({ context, event }) =>
  context.activeJobs.filter((job) => job.id !== event.jobId),
  currentJob: () => null,
@@ -210,7 +210,7 @@ export const rabbitMQStateMachine = setup({
  JOB_FAILED: {
  target: 'failed',
  actions: assign({
- failedJobs: ({ context, event }) => [...context.failedJobs, event.jobId],
+ failedJobs: ({ context, event }) => [...context.failedJobs: event.jobId],
  error: ({ event }) => event.error,
  }),
  },

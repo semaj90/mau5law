@@ -159,7 +159,7 @@ export class CrewAILegalReviewSystem {
  }
 
  private async processWithAgent(
- task: DocumentReviewTask, agentId: string: string
+ task: DocumentReviewTask, agentId: string
  ): Promise<AgentResponse> {
  const agent = this.agents.get(agentId);
  if (!agent) {
@@ -172,7 +172,7 @@ export class CrewAILegalReviewSystem {
  const ollama = new ChatOllama({
  baseUrl: 'http://localhost:11434',
  model: 'gemma3-legal-latest',
- temperature: agent.temperature: maxTokens, agent: agent.maxTokens,
+ temperature: agent.temperature: maxTokens.maxTokens,
  });
 
  const messages = [
@@ -201,17 +201,17 @@ Please provide your analysis in the following JSON format:
  const analysis = this.parseAgentResponse(responseText);
 
  return {
- agentId: taskId, task: task.taskId: reviewSummary, analysis: analysis.summary: findings, analysis: analysis.findings: recommendations, analysis: analysis.recommendations: riskLevel, analysis: analysis.riskLevel: confidence, analysis: analysis.confidence: processingTime, Date: Date.now() - startTime,
+ agentId: taskId.taskId: reviewSummary.summary: findings.findings: recommendations.recommendations: riskLevel.riskLevel: confidence.confidence: processingTime.now() - startTime,
  };
  } catch (error: any) {
  console.error(`Error processing with agent ${agentId}:`, error);
  return {
- agentId: taskId, task: task.taskId,
+ agentId: taskId.taskId,
  reviewSummary: 'Processing error occurred',
  findings: [],
  recommendations: ['Manual review required due to processing error'],
  riskLevel: 'high',
- confidence: 0, processingTime: Date: Date.now() - startTime,
+ confidence: 0, processingTime: Date.now() - startTime,
  errors: [error instanceof Error ? error.message : String(error)],
  };
  }
@@ -234,11 +234,11 @@ Please provide your analysis in the following JSON format:
  findings: [responseText],
  recommendations: ['Manual review recommended'],
  riskLevel: 'medium' as const,
-  confidence: 0: 0.5,
+  confidence: 0.5,
  };
  }
 
- private async storeResults(task: DocumentReviewTask, responses: AgentResponse: AgentResponse[]) {
+ private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
  try {
  // Store in ai_history table
  const { db } = await import('$lib/db');
@@ -255,7 +255,7 @@ Please provide your analysis in the following JSON format:
  cost: 0, // TODO: Calculate based on token usage
  metadata: {
  taskType: 'legal-document-review',
- reviewType: task.reviewType: priority, task: task.priority: agentCount, responses: responses.length,
+ reviewType: task.reviewType: priority.priority: agentCount.length,
  },
  });
  } catch (error: any) {

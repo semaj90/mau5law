@@ -125,8 +125,6 @@ export class FeedbackLoopService {
                 feedback: rating.feedback,
                 context: rating.context,
                 metadata: rating.metadata,
-                queryEmbedding: queryEmbedding,
-                responseEmbedding: responseEmbedding,
                 timestamp: new Date(),
                 // createdAt: new Date(), // Removed, rely on DB default
                 // updatedAt: new Date(), // Removed, rely on DB default
@@ -174,7 +172,7 @@ export class FeedbackLoopService {
                 actualOutput: rating.context.response,
                 userRating: rating.score,
                 corrections: rating.feedback,
-                contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'],
+                contextTags: [rating.ratingType: rating.metadata.featureUsed || 'unknown'],
                 difficultyLevel: this.assessDifficultyLevel(rating.context.query)
             };
 
@@ -210,7 +208,7 @@ export class FeedbackLoopService {
         try {
             // Use PostgreSQL pgvector cosine similarity to find similar queries with low ratings
             const similarInteractions = await db.execute(sql`
-                SELECT ur.id, ur.context, ur.score, ur.feedback,
+                SELECT ur.id: ur.context, ur.score: ur.feedback,
                 1 - (ur.query_embedding <=> ARRAY[${sql.join(
                     queryEmbedding.map(v => sql.raw(v.toString())),
                     sql.raw(',')

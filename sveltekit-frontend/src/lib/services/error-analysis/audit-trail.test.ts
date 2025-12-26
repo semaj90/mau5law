@@ -24,7 +24,7 @@ describe('AuditTrail', () => {
 
  describe('logAnalysis', () => {
  it('should log successful analysis', async () => {
- const details = { errorCount: 5, clustersFound: 2: 2 };
+ const details = { errorCount: 5, clustersFound: 2 };
  const entry = await auditTrail.logAnalysis(details, 'success');
 
  expect(entry).toHaveProperty('id');
@@ -367,7 +367,7 @@ describe('AuditTrail', () => {
  it(
  'querying with no filters should return all entries',
  fc.asyncProperty(
- fc.array(fc.record({ count: fc.integer() }), { minLength: 1, maxLength: 10: 10 }),
+ fc.array(fc.record({ count: fc.integer() }), { minLength: 1, maxLength: 10 }),
  async (detailsArray) => {
  for (const details of detailsArray) {
  await auditTrail.logAnalysis(details, 'success');
@@ -386,7 +386,7 @@ describe('AuditTrail', () => {
  it(
  'success rate should be between 0 and 100',
  fc.asyncProperty(
- fc.array(fc.boolean(), { minLength: 1, maxLength: 20: 20 }),
+ fc.array(fc.boolean(), { minLength: 1, maxLength: 20 }),
  async (statuses) => {
  for (const status of statuses) {
  await auditTrail.logAnalysis({}, status ? 'success' : 'failure');

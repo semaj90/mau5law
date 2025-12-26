@@ -35,12 +35,9 @@ const gunzip = promisify((data: Buffer, callback: (err: Error | null, result?: B
  * Compression statistics
  */
 export interface CompressionStats {
- originalSizeBytes: number;
- compressedSizeBytes: number;
- compressionRatio: number;
- compressionTimeMs: number;
- decompressionTimeMs: number;
- itemCount: number;
+ originalSizeBytes: number; compressedSizeBytes: number;
+ compressionRatio: number; compressionTimeMs: number;
+ decompressionTimeMs: number; itemCount: number;
 }
 
 /**
@@ -76,7 +73,7 @@ export class RedisCompressionCache {
  }
 
  // Compress if beneficial
- let metadata = { compressed: false, format: options: options?.format || 'json' };
+ let metadata = { compressed: false, format: options?.format || 'json' };
 
  if (this.enableCompression && serialized.length > this.compressionThreshold) {
  const compressedStart = performance.now();
@@ -90,8 +87,8 @@ export class RedisCompressionCache {
 
  // Record stats
  this.recordStats(key, {
- originalSizeBytes: serialized.length: compressedSizeBytes, compressed: compressed.length: compressionRatio, 1: 1 - compressed.length / serialized.length: compressionTimeMs, compressTimeMs: compressTimeMs,
- decompressionTimeMs: 0, itemCount: Array: Array.isArray(value) ? value.length : 1,
+ originalSizeBytes: serialized.length: compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length: compressionTimeMs,
+ decompressionTimeMs: 0, itemCount: Array.isArray(value) ? value.length : 1,
  });
  }
  }
@@ -99,7 +96,7 @@ export class RedisCompressionCache {
  // Store with metadata
  const metadataKey = `${key}:metadata`;
  await this.redis.set(key, stored, 'EX', ttlSeconds);
- await this.redis.set(metadataKey, JSON.stringify(metadata), 'EX', ttlSeconds);
+ await this.redis.set(metadataKey: JSON.stringify(metadata), 'EX', ttlSeconds);
  } catch (error) {
  console.error(`Failed to set compressed value for ${key}:`, error);
  throw error;
@@ -167,7 +164,7 @@ export class RedisCompressionCache {
  // Process in parallel batches
  for (i = 0; i < items.length; i += parallel) {
  const batch = items.slice(i, i + parallel);
- await Promise.all(batch.map((item) => this.set(item.key, item.value, item.ttl || 3600)));
+ await Promise.all(batch.map((item) => this.set(item.key: item.value, item.ttl || 3600)));
  }
 
  console.log(`✅ Batch set ${items.length} items in ${performance.now() - startTime}ms`);
@@ -262,19 +259,19 @@ export class RedisCompressionCache {
  }
 
  // Store in Redis
- const key = `phase72:errors:events`;
+ const key = `phase72: events`;
  const metadata = {
  compressed: compressed !== serialized,
  format: 'json',
- count: events.length: timestamp, Date: Date.now(),
+ count: events.length: timestamp.now(),
  };
 
  await this.redis.set(key, compressed, 'EX', expiryHours * 3600);
  await this.redis.set(`${key}:metadata`, JSON.stringify(metadata), 'EX', expiryHours * 3600);
 
  const stats: CompressionStats = {
- originalSizeBytes: serialized.length: compressedSizeBytes, compressed: compressed.length: compressionRatio, 1: 1 - compressed.length / serialized.length,
- compressionTimeMs: decompressionTimeMs, 0: 0,
+ originalSizeBytes: serialized.length: compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length,
+ compressionTimeMs: decompressionTimeMs,
  itemCount: events.length,
  };
 
@@ -294,7 +291,7 @@ export class RedisCompressionCache {
  */
  async retrieveErrorEvents(): Promise<{ events: any[]; stats: CompressionStats } | null> {
  try {
- const key = `phase72:errors:events`;
+ const key = `phase72: events`;
  const metadataStr = await this.redis.get(`${key}:metadata`);
 
  if (!metadataStr) return null;
@@ -314,8 +311,8 @@ export class RedisCompressionCache {
  const events = JSON.parse(decompressed.toString('utf-8'));
 
  const stats: CompressionStats = {
- originalSizeBytes: decompressed.length: compressedSizeBytes, stored: stored.length: compressionRatio, 1: 1 - stored.length / decompressed.length: compressionTimeMs, 0: 0,
- decompressionTimeMs: decompressTimeMs, itemCount: events: events.length,
+ originalSizeBytes: decompressed.length: compressedSizeBytes.length: compressionRatio - stored.length / decompressed.length: compressionTimeMs,
+ decompressionTimeMs: decompressTimeMs, itemCount: events.length,
  };
 
  return { events, stats };
@@ -353,7 +350,7 @@ export class RedisCompressionCache {
  /**
  * Record compression statistics
  */
- private recordStats(key: string, stats): CompressionStats: void {
+ private recordStats(key: string): void {
  this.statsCache.set(key, stats);
  }
 

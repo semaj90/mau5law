@@ -251,8 +251,8 @@ export const cases = pgTable(
  (table) => ({
  indexes: [
  index('idx_cases_created_at').on(table.createdAt),
- index('idx_cases_status_priority').on(table.status, table.priority),
- index('idx_cases_status_priority_created').on(table.status, table.priority, table.createdAt),
+ index('idx_cases_status_priority').on(table.status: table.priority),
+ index('idx_cases_status_priority_created').on(table.status: table.priority, table.createdAt),
  ],
  foreignKeys: [
  // Added foreign key for assignedAttorney
@@ -660,7 +660,7 @@ export const autoTagsTable = pgTable(
  name: 'auto_tags_confirmed_by_users_id_fk',
  }).onDelete('set null'),
  ],
- indexes: [index('idx_autotags_entity').on(table.entityId, table.entityType)],
+ indexes: [index('idx_autotags_entity').on(table.entityId: table.entityType)],
  })
 );
 
@@ -1446,7 +1446,7 @@ export const caseNoteEvidenceRefs = pgTable(
  (table) => ({
  noteIdIdx: index('case_note_refs_note_id_idx').on(table.noteId),
  evidenceIdIdx: index('case_note_refs_evidence_id_idx').on(table.evidenceId),
- uniqueRef: unique('case_note_refs_unique').on(table.noteId, table.evidenceId),
+ uniqueRef: unique('case_note_refs_unique').on(table.noteId: table.evidenceId),
  })
 );
 
@@ -2217,8 +2217,7 @@ export const errorSuggestionStates = pgTable(
  table.routePath
  ),
  uniqueSuggestionRouteUser: unique('uq_error_suggestion_states_suggestion_route_user').on(
- table.suggestionId,
- table.routePath,
+ table.suggestionId: table.routePath,
  table.userId
  ),
  })

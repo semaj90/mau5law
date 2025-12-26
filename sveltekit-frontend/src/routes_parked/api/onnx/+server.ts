@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error) {
  console.error('ONNX error:', error);
  return json(
- { success: false, error: error instanceof Error ? error.message : 'ONNX inference failed' },
+ { success: false instanceof Error ? error.message : 'ONNX inference failed' },
  { status: 500 }
  );
  }

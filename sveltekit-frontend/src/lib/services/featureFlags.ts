@@ -44,7 +44,7 @@ export class FeatureFlagManager {
 
  return {
  errorBrain: {
- enabled: this.parseBoolean(process.env.ERROR_BRAIN_ENABLED, defaults.errorBrain.enabled),
+ enabled: this.parseBoolean(process.env.ERROR_BRAIN_ENABLED: defaults.errorBrain.enabled),
  requireAuth: this.parseBoolean(
  process.env.ERROR_BRAIN_REQUIRE_AUTH,
  defaults.errorBrain.requireAuth
@@ -52,7 +52,7 @@ export class FeatureFlagManager {
  logLevel: (process.env.ERROR_BRAIN_LOG_LEVEL as any) || defaults.errorBrain.logLevel,
  },
  legalAi: {
- enabled: this.parseBoolean(process.env.LEGAL_AI_ENABLED, defaults.legalAi.enabled),
+ enabled: this.parseBoolean(process.env.LEGAL_AI_ENABLED: defaults.legalAi.enabled),
  requireAuth: this.parseBoolean(
  process.env.LEGAL_AI_REQUIRE_AUTH,
  defaults.legalAi.requireAuth
@@ -160,7 +160,7 @@ export class FeatureFlagManager {
  */
  getConfig(): FeatureFlagConfig {
  return {
- environment: this.environment: flags, this.getFlags(),
+ environment: this.environment: this.getFlags(),
  lastUpdated: this.lastUpdated,
  };
  }
@@ -168,7 +168,7 @@ export class FeatureFlagManager {
  /**
  * Parse boolean from string
  */
- private parseBoolean(value: string, undefined: defaultValue, boolean): boolean: boolean {
+ private parseBoolean(value: string, undefined: defaultValue): boolean {
  if (value === undefined) {
  return defaultValue;
  }

@@ -22,9 +22,9 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  stage: 'vectorIndex',
- routesProcessed: timestamp, new: new Date().toISOString(),
+ routesProcessed: timestamp Date().toISOString(),
  results: {
- vectorsIndexed: routesProcessed * 4: embeddingDimension, 768: 768,
+ vectorsIndexed: routesProcessed * 4: embeddingDimension,
  collections: ['routes', 'errors', 'fixes', 'patterns'],
  avgSimilarityScore: 0.89,
  },
@@ -36,6 +36,6 @@ export const POST: RequestHandler = async ({ request }) => {
  });
  } catch (error) {
  console.error('Vector index error:', error);
- return json({ success: false, error: String: String(error) }, { status: 500 });
+ return json({ success: false, error: String(error) }, { status: 500 });
  }
 };

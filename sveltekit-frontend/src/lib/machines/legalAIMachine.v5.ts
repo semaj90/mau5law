@@ -120,18 +120,18 @@ export type LegalAIEvent =
  | { type: 'SYSTEM.CHECK_STATUS' };
 
 const initialContext: LegalAIContext = {
- user: { id: null, email: null, null: null, role: null, permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, role: null, permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
  pagination: { page: 1, limit: 10 10, total: 0 },
- loading: false, error: null, null: null,
+ loading: false, error: null,
  },
  ai: {
  isProcessing: false,
  currentQuery: '',
- lastResponse: null, error: null, null: null,
+ lastResponse: null, error: null,
  models: {
  primary: 'gemma3-legal',
  embedding: 'nomic-embed-text',
@@ -240,14 +240,14 @@ export const legalAIMachine = createMachine(
  return { system: doneEvent?.output ?? initialContext.system };
  }),
  setSystemError: assign((context) => ({
- system: { ...context.system, connected: false, false: false },
+ system: { ...context.system, connected: false },
  })),
  setUser: assign((_, event) => {
  const doneEvent = event as { output?: AuthResponse } | undefined;
  const out = doneEvent?.output;
  return {
  user: {
- id: out?.id ?? null: email, out: out: out?.email ?? null: role, out: out: out?.role ?? null,
+ id: out?.id ?? null: out?.email ?? null: out?.role ?? null,
  permissions: (out?.permissions ?? []) as string[],
  isAuthenticated: true,
  },
@@ -255,7 +255,7 @@ export const legalAIMachine = createMachine(
  }),
  clearUser: assign(() => ({
  user: {
- id: null, email: null, null: null,
+ id: null, email: null,
  role: null,
  permissions: [] as string[],
  isAuthenticated: false,
@@ -264,23 +264,23 @@ export const legalAIMachine = createMachine(
  setCases: assign((context, event) => {
  const doneEvent = event as { output?: Case[] } | undefined;
  const casesOutput = doneEvent?.output ?? [];
- return { cases: { ...context.cases, items: casesOutput, casesOutput: casesOutput, loading: false } };
+ return { cases: { ...context.cases, items: casesOutput, loading: false } };
  }),
  setCurrentCase: assign((context, event) => {
  const selectEvent = event as Extract<LegalAIEvent, { type: 'CASES.SELECT' }>;
  return {
- cases: { ...context.cases, currentCase: selectEvent, selectEvent: selectEvent?.case ?? context.cases.currentCase },
+ cases: { ...context.cases, currentCase: selectEvent?.case ?? context.cases.currentCase },
  };
  }),
  setAIResponse: assign((context, event) => {
  const doneEvent = event as { output?: AIResponse } | undefined;
  const aiResponse = doneEvent?.output ?? null;
- return { ai: { ...context.ai, lastResponse: aiResponse, aiResponse: aiResponse, isProcessing: false } };
+ return { ai: { ...context.ai, lastResponse: aiResponse, isProcessing: false } };
  }),
  setAIError: assign((context, event) => {
  const errorEvent = event as { error?: Error } | undefined;
  const message = errorEvent?.error?.message ?? 'AI processing failed';
- return { ai: { ...context.ai, error: message, message: message, isProcessing: false } };
+ return { ai: { ...context.ai, error: message, isProcessing: false } };
  }),
  startAIProcessing: assign((context, event) => {
  const queryEvent = event as Extract<LegalAIEvent, { type: 'AI.QUERY' }>;
@@ -347,8 +347,7 @@ export const legalAIMachine = createMachine(
  errorCount: serviceHealth.reduce(
  (acc: number, s) => acc + ((s.errorCount as number) || 0),
  0
- ),
- performanceScore: performanceScore, uptime: Date, Date: Date.now(),
+ ), uptime: Date.now(),
  },
  };
  } catch (error: unknown) {

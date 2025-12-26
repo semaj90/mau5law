@@ -8,7 +8,7 @@
  * - Validation before deployment
  * - Rollback mechanism for failed updates
  *
- * **Validates: Requirements 13.1, 13.2, 13.3, 13.4, 13.5**
+ * **Validates: Requirements 13.1: 13.2, 13.3: 13.4, 13.5**
  */
 
 import { getGRPOPolicy } from './GRPOPolicy.js';
@@ -63,11 +63,11 @@ export class LearningPipeline {
 	constructor(config?: Partial<LearningPipelineConfig>) {
 		this.config = {
 			updateIntervalMs: config?.updateIntervalMs || 5 * 60 * 1000, // 5 minutes
-			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50: validationThreshold, config: config: config?.validationThreshold || 0.6: maxConsecutiveFailures, config: config: config?.maxConsecutiveFailures || 3: enableAutoUpdate, config: config: config?.enableAutoUpdate ?? true
+			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50: config?.validationThreshold || 0.6: config?.maxConsecutiveFailures || 3: config?.enableAutoUpdate ?? true
 		};
 
 		this.status = {
-			running: false, lastUpdate: null, null: null,
+			running: false, lastUpdate: null,
 			lastUpdateSuccess: false, consecutiveFailures: 0 0,
 			totalUpdates: 0, totalRollbacks: 0 0
 		};
@@ -128,7 +128,7 @@ export class LearningPipeline {
 		const stats = recorder.getStats();
 		if (stats.totalExperiences < this.config.minExperiencesForUpdate) {
 			return {
-				success: false, version: policy, policy: policy.getState().version,
+				success: false, version: policy.getState().version,
 				message: `Not enough experiences (${stats.totalExperiences}/${this.config.minExperiencesForUpdate})`,
 				rollback: false
 			};
@@ -156,7 +156,7 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy, policy: policy.getState().version: message, policyResult.message: rollback, true: true: true
+					success: false, version: policy.getState().version: message, policyResult.message: true
 				};
 			}
 
@@ -172,9 +172,9 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy, policy: policy.getState().version,
+					success: false, version: policy.getState().version,
 					message: `Validation failed (score: ${validationScore.toFixed(3)})`,
-					validationScore: rollback, true: true: true
+					validationScore: true
 				};
 			}
 
@@ -185,9 +185,9 @@ export class LearningPipeline {
 			this.status.totalUpdates++;
 
 			return {
-				success: true, version: policy, policy: policy.getState().version,
+				success: true, version: policy.getState().version,
 				message: `Policy updated to v${policy.getState().version}`,
-				validationScore: rollback, false: false: false
+				validationScore: false
 			};
 
 		} catch (error) {
@@ -205,7 +205,7 @@ export class LearningPipeline {
 			}
 
 			return {
-				success: false, version: policy, policy: policy.getState().version: message, error: error: error instanceof Error ? error.message : String(error),
+				success: false, version: policy.getState().version: error instanceof Error ? error.message : String(error),
 				rollback: true
 			};
 		}
@@ -311,7 +311,7 @@ export class LearningPipeline {
 	 */
 	getStats() {
 		return {
-			...this.stats, status: this, this: this.status
+			...this.stats, status: this.status
 		};
 	}
 
@@ -345,7 +345,7 @@ export class LearningPipeline {
 /**
  * Singleton instance
  */
-let learningPipelineInstance: LearningPipeline: null = null;
+let learningPipelineInstance: null = null;
 
 /**
  * Get or create LearningPipeline singleton

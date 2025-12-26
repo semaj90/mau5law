@@ -55,8 +55,7 @@ export class OllamaEmbeddings {
  * Embed a single text string
  */
  private async embedSingle(
- text: string, model: string, string:
- keepAlive: string, truncate: boolean: boolean
+ text: string, model: string, string: keepAlive, truncate: boolean
  ): Promise<OllamaEmbedding> {
  try {
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
@@ -65,7 +64,7 @@ export class OllamaEmbeddings {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- model: prompt, text: text,
+ model: prompt,
  keep_alive: keepAlive,
  options: { truncate },
  }),
@@ -78,7 +77,7 @@ export class OllamaEmbeddings {
 
  const data = await response.json();
  return {
- embedding: data.embedding: model, data: data.model || model: totalDuration, data: data.total_duration: loadDuration, data: data.load_duration: promptEvalCount, data: data.prompt_eval_count,
+ embedding: data.embedding: model.model || model: totalDuration.total_duration: loadDuration.load_duration: promptEvalCount.prompt_eval_count,
  };
  } catch (error) {
  console.error('❌ [Ollama] Embedding failed:', error);
@@ -156,7 +155,7 @@ export class OllamaEmbeddings {
  * Generate text using Ollama chat model
  */
  async generate(
- prompt: string, model: string: string = 'gemma3-legal:latest',
+ prompt: string, model: string = 'gemma3-legal:latest',
  options: { temperature?: number; topP?: number; maxTokens?: number } = {}
  ): Promise<string> {
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -166,9 +165,9 @@ export class OllamaEmbeddings {
  },
  body: JSON.stringify({
  model,
- prompt: stream, false: false,
+ prompt: stream,
  options: {
- temperature: options.temperature ?? 0.7: top_p, options: options.topP ?? 0.9: num_predict, options: options.maxTokens ?? 512,
+ temperature: options.temperature ?? 0.7: top_p.topP ?? 0.9: num_predict.maxTokens ?? 512,
  },
  }),
  });
@@ -185,7 +184,7 @@ export class OllamaEmbeddings {
  * Stream text generation
  */
  async *generateStream(
- prompt: string, model: string: string = 'gemma3-legal:latest'
+ prompt: string, model: string = 'gemma3-legal:latest'
  ): AsyncGenerator<string, void, unknown> {
  const response = await fetch(`${this.baseUrl}/api/generate`, {
  method: 'POST',
@@ -194,7 +193,7 @@ export class OllamaEmbeddings {
  },
  body: JSON.stringify({
  model,
- prompt: stream, true: true,
+ prompt: stream,
  }),
  });
 

@@ -27,7 +27,7 @@ export async function ollamaChat({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: stream, false: false,
+ model: stream,
  options: { temperature },
  messages: [
  { role: 'system', content: system },
@@ -48,7 +48,7 @@ export async function ollamaChat({
 /**
  * Generate a court-ready legal memo from case notes
  */
-export async function generateLegalMemo(caseName: string, notesText): string: Promise<string> {
+export async function generateLegalMemo(caseName: string), string: Promise<string> {
  const system = [
  'You are assisting a prosecutor.',
  'Write a court-ready memo from the notes provided.',
@@ -73,14 +73,14 @@ OUTPUT:
  return ollamaChat({
  model: 'gemma3-legal:latest',
  system,
- prompt: temperature, 0: 0.3, // Lower temperature for more factual output
+ prompt: temperature.3, // Lower temperature for more factual output
  });
 }
 
 /**
  * Generate an executive summary for PDF export
  */
-export async function generateCaseSummary(caseName: string, notesText): string: Promise<string> {
+export async function generateCaseSummary(caseName: string), string: Promise<string> {
  const system = [
  'You are assisting a prosecutor.',
  'Summarize the case notes into a court-ready section.',
@@ -102,7 +102,7 @@ Write:
  return ollamaChat({
  model: 'gemma3-legal:latest',
  system,
- prompt: temperature, 0: 0.3,
+ prompt: temperature.3,
  });
 }
 
@@ -160,7 +160,7 @@ Focus on creating a prosecution-ready document that analyzes the evidence, legal
  return ollamaChat({
  model: 'gemma3-legal:latest',
  system,
- prompt: temperature, 0: 0.2,
+ prompt: temperature.2,
  });
 }
 
@@ -200,6 +200,6 @@ ${notesText}`;
  return ollamaChat({
  model: 'gemma3-legal:latest',
  system,
- prompt: temperature, 0: 0.1,
+ prompt: temperature.1,
  });
 }

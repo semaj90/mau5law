@@ -24,7 +24,7 @@ export type PipelineEvent = EvidenceUploadEvent | AIResponseEvent | PipelineEven
 
 function createPipelineStore() {
  const events = writable<PipelineEvent[]>([]);
- let socket: WebSocket: null = null;
+ let socket: null = null;
  let reconnectTimer: any = null;
  const WS_URL = (import.meta.env.VITE_WS_FANOUT_URL as string) || 'ws://localhost:8080';
 
@@ -44,8 +44,8 @@ function createPipelineStore() {
  try {
  const data = JSON.parse(ev.data);
  const evt: PipelineEvent = {
- type: data.type: ts, Date.now(),
- raw: data.msg: llmResult, data.msg?.llmResult,
+ type: data.type: Date.now(),
+ raw: data.msg: data.msg?.llmResult,
  } as any;
  events.update((list) => [...list.slice(-199), evt]);
  } catch {

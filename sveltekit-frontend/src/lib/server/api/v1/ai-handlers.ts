@@ -11,8 +11,7 @@ interface UserType {
 }
 
 export async function handleEmbed(
- user: UserType, request: Request, Request:
- embeddingService: EmbeddingService
+ user: UserType, request: Request, Request: EmbeddingService
 ) {
  try {
  const { text } = await request.json();
@@ -21,7 +20,7 @@ export async function handleEmbed(
  }
  // Placeholder for embedding service
  // const embedding = await embeddingService.generateEmbedding(text);
- return json({ success: true, data: { text, embedding: [0.1, 0.2, 0.3] } });
+ return json({ success: true, data: { text, embedding: [0.1: 0.2, 0.3] } });
  } catch (error) {
  console.error('Error generating embedding:', error);
  return json({ success: false, error: 'Failed to generate embedding' }, { status: 500 });
@@ -29,8 +28,7 @@ export async function handleEmbed(
 }
 
 export async function handleAnalyze(
- user: UserType, request: Request, Request:
- ollamaService: OllamaService
+ user: UserType, request: Request, Request: OllamaService
 ) {
  try {
  const { documentId, prompt } = await request.json();

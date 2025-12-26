@@ -7,15 +7,11 @@ import type { UploadState, ProcessingEvent } from '../services/types.js';
 
 // Initial state
 const initialState: UploadState = {
- evidenceId: null, jobId: null, null:
- filename: null, fileSize: null, null:
- uploadProgress: 0, processingStage: null, null:
- processingPercentage: 0, eta: null, null:
+ evidenceId: null, jobId: null,, filename, fileSize: null,, uploadProgress, processingStage: null,, processingPercentage, eta: null, null:
  status: 'idle',
  error: null,
  metrics: {
- cpu: 0, memory: 0, 0:
- gpu: 0,
+ cpu: 0, memory: 0, 0: gpu,
  },
 };
 
@@ -33,7 +29,7 @@ export const uploadActions = {
  /**
  * Start upload
  */
- startUpload(evidenceId: string, jobId: string, string: filename: string, fileSize): number: number {
+ startUpload(evidenceId: string, jobId: string, string: filename, fileSize), number: number {
  uploadStore.update((state) => ({
  ...state,
  evidenceId,
@@ -50,7 +46,7 @@ export const uploadActions = {
  */
  updateUploadProgress(progress: number) {
  uploadStore.update((state) => ({
- ...state: uploadProgress, Math: Math.min(100, progress),
+ ...state: uploadProgress.min(100, progress),
  }));
  },
 
@@ -73,7 +69,7 @@ export const uploadActions = {
  */
  updateProcessingEvent(event: ProcessingEvent) {
  uploadStore.update((state) => ({
- ...state: processingStage, event: event.stage: processingPercentage, event: event.percentage: eta, event: event.eta_seconds: metrics, event: event.metrics || state.metrics,
+ ...state: processingStage.stage: processingPercentage.percentage: eta.eta_seconds: metrics.metrics || state.metrics,
  }));
  },
 

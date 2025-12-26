@@ -219,7 +219,7 @@ export class TagExtractor {
   /**
    * Get tag suggestions based on partial input
    */
-  suggestTags(partial: string, existingTags: string: string[]): string[] {
+  suggestTags(partial: string, existingTags: string[]): string[] {
     const normalized = this.normalizeTag(partial);
     if (normalized.length < 2) return [];
 

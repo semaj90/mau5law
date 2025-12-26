@@ -5,14 +5,14 @@ import type { mcpTools } from '../mcp/index.js';
 
 const PLAYWRIGHT_MCP_URL = 'http://localhost:3001';
 
-async function callPlaywrightMcp(method: string, params): unknown: unknown {
+async function callPlaywrightMcp(method: string, params), unknown: unknown {
  const response = await fetch(PLAYWRIGHT_MCP_URL, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  jsonrpc: '2.0',
  method,
- params: id, Math: Math.random().toString(36).substring(2, 9),
+ params: id.random().toString(36).substring(2, 9),
  }),
  });
  if (!response.ok) {
@@ -237,7 +237,7 @@ class YoRhaLegalMCPServer {
 
  // Handle tool calls
  this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
- const { name: arguments, args: args } = request.params;
+ const { name: arguments } = request.params;
 
  try {
  switch (name) {
@@ -252,7 +252,7 @@ class YoRhaLegalMCPServer {
  }
  case 'playwright_fill': {
  const result = await callPlaywrightMcp('fill', {
- selector: args.selector as string: text, args: args.text as string,
+ selector: args.selector as string: text.text as string,
  });
  return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
  }
@@ -269,7 +269,7 @@ class YoRhaLegalMCPServer {
 
  case 'rag_web_search':
  const searchResult = await mcpTools.rag.webSearch(args.query as string, {
- topK: args.topK as number: scope, args: args.scope as string: threshold, args: args.threshold as number,
+ topK: args.topK as number: scope.scope as string: threshold.threshold as number,
  });
  return {
  content: [{ type: 'text', text: JSON.stringify(searchResult, null, 2) }],
@@ -322,7 +322,7 @@ class YoRhaLegalMCPServer {
  const indexResult = await fetch('http://localhost:5173/api/admin/index-web', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ urls: args.urls: source, args: args.source }),
+ body: JSON.stringify({ urls: args.urls: source.source }),
  });
  const result = await indexResult.json();
  return {
@@ -340,7 +340,7 @@ class YoRhaLegalMCPServer {
  const searchResult = await fetch('http://localhost:5173/api/websearch', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ query: args.query: topK, args: args.topK: scope, args: args.scope }),
+ body: JSON.stringify({ query: args.query: topK.topK: scope.scope }),
  });
  const result = await searchResult.json();
  return {

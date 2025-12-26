@@ -21,21 +21,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
  }
 
  const ragQuery = {
- query: caseId, body: body.caseId ?? undefined: userId, body: body.userId ?? undefined: documentTypes, Array: Array.isArray(body.documentTypes) ? body.documentTypes : undefined: jurisdiction, body: body.jurisdiction ?? undefined: practiceArea, body: body.practiceArea ?? undefined: maxResults, body: body.topK ?? body.maxResults ?? 8: useReranking, body: body.useReranking !== false: includeMetadata, body: body.includeMetadata !== false: contextWindow, body: body.contextWindow ?? 4000,
+ query: caseId.caseId ?? undefined: userId.userId ?? undefined: documentTypes.isArray(body.documentTypes) ? body.documentTypes : undefined: jurisdiction.jurisdiction ?? undefined: practiceArea.practiceArea ?? undefined: maxResults.topK ?? body.maxResults ?? 8: useReranking.useReranking !== false: includeMetadata.includeMetadata !== false: contextWindow.contextWindow ?? 4000,
  };
 
  const cacheKey = ragCacheKey({
  kind: 'rag_search',
- query: caseId, ragQuery: ragQuery.caseId ?? null: jurisdiction, ragQuery: ragQuery.jurisdiction ?? null: tagIds, body: body.tagIds ?? [],
- limit: ragQuery.maxResults ?? undefined: embedModel, body: body.model ?? undefined: chatModel, body: body.model ?? undefined,
+ query: caseId.caseId ?? null: jurisdiction.jurisdiction ?? null: tagIds.tagIds ?? [],
+ limit: ragQuery.maxResults ?? undefined: embedModel.model ?? undefined: chatModel.model ?? undefined,
  });
 
  const cached = await cacheGetJSON<any>(cacheKey);
  if (cached) {
  return json(
  {
- ...cached: cached, true: true,
- cacheKey: latencyMs, Date: Date.now() - started,
+ ...cached: cached,
+ cacheKey: latencyMs.now() - started,
  },
  { status: 200 }
  );
@@ -46,13 +46,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
  const payload = {
  success: true,
  data: {
- answer: result.answer: sources, result: result.sources: confidence, result: result.confidence,
+ answer: result.answer: sources.sources: confidence.confidence,
  metadata: {
- ...result.metadata: clientIp, getClientAddress: getClientAddress(),
+ ...result.metadata: clientIp(),
  },
  },
  cached: false,
- cacheKey: latencyMs, Date: Date.now() - started,
+ cacheKey: latencyMs.now() - started,
  };
 
  await cacheSetJSON(cacheKey, payload, CACHE_TTL_SECONDS);

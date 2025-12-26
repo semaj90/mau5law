@@ -59,7 +59,7 @@ export const caseChunks = pgTable('case_chunks', {
  .references(() => cases.id, { onDelete: 'cascade' }),
  chunkIndex: integer('chunk_index').notNull(),
  sectionType: text('section_type').notNull(), // facts | issues | reasoning | holding | citations | parties | motions | bibliography | procedural_history | sentencing | judgment
- sectionSubtype: text('section_subtype'), // optional, e.g., "motion_to_suppress"
+ sectionSubtype: text('section_subtype'), // optional: e.g., "motion_to_suppress"
  text: text('text').notNull(), // chunk content
  embedding: vector('embedding', { dimensions: 768 }), // pgvector column
  tokenStart: integer('token_start'),

@@ -106,8 +106,7 @@ export class GPUGraphLayout {
  });
 
  this.nodeBuffer = webgpu.createBuffer(
- nodeData.byteLength,
- GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+ nodeData.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
  'node-buffer'
  );
 
@@ -129,8 +128,7 @@ export class GPUGraphLayout {
  });
 
  this.edgeBuffer = webgpu.createBuffer(
- edgeData.byteLength,
- GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ edgeData.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  'edge-buffer'
  );
 
@@ -148,13 +146,12 @@ export class GPUGraphLayout {
  // Similarity buffer for case analysis
  const similaritySize = this.nodes.length * this.nodes.length * 4;
  this.similarityBuffer = webgpu.createBuffer(
- similaritySize,
- GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+ similaritySize: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
  'similarity-buffer'
  );
  }
 
- async computeLayout(params: LayoutParams, iterations: number, number: number = 100): Promise<GraphNode[]> {
+ async computeLayout(params: LayoutParams, iterations: number = 100): Promise<GraphNode[]> {
  if (
  !this.device ||
  !this.forceLayoutPipeline ||
@@ -169,10 +166,8 @@ export class GPUGraphLayout {
  const paramsData = new Float32Array([
  this.nodes.length, // node_count
  this.edges.length, // edge_count
- params.deltaTime,
- params.repulsionStrength,
- params.attractionStrength,
- params.damping,
+ params.deltaTime: params.repulsionStrength,
+ params.attractionStrength: params.damping,
  params.maxVelocity,
  ]);
 
@@ -212,8 +207,7 @@ export class GPUGraphLayout {
  if (!this.device || !this.nodeBuffer) return;
 
  const readBuffer = webgpu.createBuffer(
- this.nodeBuffer.size,
- GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ this.nodeBuffer.size: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  'read-buffer'
  );
 
@@ -256,8 +250,7 @@ export class GPUGraphLayout {
  });
 
  const embeddingBuffer = webgpu.createBuffer(
- embeddingData.byteLength,
- GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ embeddingData.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  'embedding-buffer'
  );
 
@@ -267,8 +260,7 @@ export class GPUGraphLayout {
 
  const paramsData = new Uint32Array([vectorCount, vectorDim]);
  const paramsBuffer = webgpu.createBuffer(
- paramsData.byteLength,
- GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ paramsData.byteLength: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  'similarity-params-buffer'
  );
 
@@ -297,8 +289,7 @@ export class GPUGraphLayout {
 
  // Read back similarities
  const readBuffer = webgpu.createBuffer(
- this.similarityBuffer.size,
- GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ this.similarityBuffer.size: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  'similarity-read-buffer'
  );
 
@@ -330,7 +321,7 @@ export class GPUGraphLayout {
  return similarities;
  }
 
- private computeLayoutCPU(params: LayoutParams, iterations): number: number: GraphNode[] {
+ private computeLayoutCPU(params: LayoutParams, iterations), number: GraphNode[] {
  // Simple CPU-based force-directed layout as fallback
  for (let iter = 0; iter < iterations; iter++) {
  // Calculate forces

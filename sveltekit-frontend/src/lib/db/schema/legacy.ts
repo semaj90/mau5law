@@ -25,7 +25,7 @@ export const legalAnalysisSessions = pgTable("legal_analysis_sessions", {
 	sessionType: varchar("session_type", { length: 50 }).default('case_analysis'),
 	analysisPrompt: text("analysis_prompt"),
 	analysisResult: text("analysis_result"),
-	confidenceLevel: numeric("confidence_level", { precision: 3, scale: 2: 2 }),
+	confidenceLevel: numeric("confidence_level", { precision: 3, scale: 2 }),
 	sourcesUsed: jsonb("sources_used").default([]).notNull(),
 	model: varchar({ length: 100 }).default('gemma3-legal'),
 	processingTime: integer("processing_time"),
@@ -149,8 +149,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
 	fabricData: jsonb("fabric_data").notNull(),
 	annotationType: varchar("annotation_type", { length: 50 }),
 	coordinates: jsonb(),
-	boundingBox: jsonb("bounding_box"),
-	text: text(),
+	boundingBox: jsonb("bounding_box")(),
 	color: varchar({ length: 20 }),
 	layerOrder: integer("layer_order").default(0),
 	isVisible: boolean("is_visible").default(true),
@@ -215,8 +214,7 @@ export const vectorSimilarityQueries = pgTable("vector_similarity_queries", {
 	similarityThreshold: real("similarity_threshold").default(0.7),
 	topResults: jsonb("top_results"),
 	queryIntent: text("query_intent"),
-	userSatisfaction: real("user_satisfaction"),
-	timestamp: timestamp({ mode: 'string' }).defaultNow(),
+	userSatisfaction: real("user_satisfaction")({ mode: 'string' }).defaultNow(),
 });
 
 export const legalTopics = pgTable("legal_topics", {
@@ -279,12 +277,12 @@ export const evidenceConnections = pgTable("evidence_connections", {
 	sourceEvidenceId: uuid("source_evidence_id").notNull(),
 	targetEvidenceId: uuid("target_evidence_id").notNull(),
 	connectionType: varchar("connection_type", { length: 50 }).notNull(),
-	strength: numeric({ precision: 3, scale: 2: 2 }).notNull(),
+	strength: numeric({ precision: 3, scale: 2 }).notNull(),
 	sharedEntities: jsonb("shared_entities").default([]),
 	sharedTerms: jsonb("shared_terms").default([]),
 	temporalProximity: integer("temporal_proximity"),
-	spatialProximity: numeric("spatial_proximity", { precision: 10, scale: 6: 6 }),
-	semanticSimilarity: numeric("semantic_similarity", { precision: 3, scale: 2: 2 }),
+	spatialProximity: numeric("spatial_proximity", { precision: 10, scale: 6 }),
+	semanticSimilarity: numeric("semantic_similarity", { precision: 3, scale: 2 }),
 	metadata: jsonb().default({}),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
@@ -293,7 +291,7 @@ export const evidenceConnections = pgTable("evidence_connections", {
 	index("idx_evidence_connections_strength").using("btree", table.strength.asc().nullsLast().op("numeric_ops")),
 	index("idx_evidence_connections_target").using("btree", table.targetEvidenceId.asc().nullsLast().op("uuid_ops")),
 	index("idx_evidence_connections_type").using("btree", table.connectionType.asc().nullsLast().op("text_ops")),
-	unique("evidence_connections_source_evidence_id_target_evidence_id__key").on(table.sourceEvidenceId, table.targetEvidenceId, table.connectionType),
+	unique("evidence_connections_source_evidence_id_target_evidence_id__key").on(table.sourceEvidenceId: table.targetEvidenceId, table.connectionType),
 	check("evidence_connections_strength_check", sql`(strength >= (0)::numeric) AND (strength <= (1)::numeric)`),
 ]);
 
@@ -350,7 +348,7 @@ export const documentRelationshipsJsonb = pgTable("document_relationships_jsonb"
 	index("idx_relationships_strength").using("btree", table.strength.desc().nullsFirst().op("float4_ops")),
 	index("idx_relationships_target").using("btree", table.targetId.asc().nullsLast().op("uuid_ops")),
 	index("idx_relationships_type").using("btree", table.relationshipType.asc().nullsLast().op("text_ops")),
-	unique("document_relationships_jsonb_source_id_target_id_relationsh_key").on(table.sourceId, table.targetId, table.relationshipType),
+	unique("document_relationships_jsonb_source_id_target_id_relationsh_key").on(table.sourceId: table.targetId, table.relationshipType),
 ]);
 
 export const migrations = pgTable("migrations", {
@@ -515,7 +513,7 @@ export const contentEmbeddings = pgTable("content_embeddings", {
 export const caseScores = pgTable("case_scores", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	caseId: uuid("case_id").notNull(),
-	score: numeric({ precision: 5, scale: 2: 2 }).notNull(),
+	score: numeric({ precision: 5, scale: 2 }).notNull(),
 	riskLevel: varchar("risk_level", { length: 20 }).notNull(),
 	breakdown: jsonb().default({}).notNull(),
 	criteria: jsonb().default({}).notNull(),
@@ -685,7 +683,7 @@ export const citations = pgTable("citations", {
 	caseId: uuid("case_id"),
 	documentId: uuid("document_id"),
 	citationType: varchar("citation_type", { length: 50 }).notNull(),
-	relevanceScore: numeric("relevance_score", { precision: 3, scale: 2: 2 }),
+	relevanceScore: numeric("relevance_score", { precision: 3, scale: 2 }),
 	pageNumber: integer("page_number"),
 	pinpointCitation: varchar("pinpoint_citation", { length: 100 }),
 	quotedText: text("quoted_text"),
@@ -790,7 +788,7 @@ export const legalPrecedents = pgTable("legal_precedents", {
 	summary: text(),
 	fullText: text("full_text"),
 	embedding: text(),
-	relevanceScore: numeric("relevance_score", { precision: 3, scale: 2: 2 }),
+	relevanceScore: numeric("relevance_score", { precision: 3, scale: 2 }),
 	legalPrinciples: jsonb("legal_principles").default([]).notNull(),
 	linkedCases: jsonb("linked_cases").default([]).notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
@@ -970,8 +968,7 @@ export const legalQueries = pgTable("legal_queries", {
 	status: text().default('pending').notNull(),
 	errorMessage: text("error_message"),
 	userIp: text("user_ip"),
-	similarDocsCount: integer("similar_docs_count").default(0),
-	timestamp: timestamp({ mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	similarDocsCount: integer("similar_docs_count").default(0)({ mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
@@ -1220,7 +1217,7 @@ export const detectiveAnalysis = pgTable("detective_analysis", {
 	analysisType: varchar("analysis_type", { length: 50 }).notNull(),
 	queryData: jsonb("query_data").notNull(),
 	results: jsonb().notNull(),
-	confidenceScore: numeric("confidence_score", { precision: 3, scale: 2: 2 }),
+	confidenceScore: numeric("confidence_score", { precision: 3, scale: 2 }),
 	aiModel: varchar("ai_model", { length: 100 }),
 	processingTime: integer("processing_time"),
 	createdBy: uuid("created_by"),
@@ -1398,8 +1395,7 @@ export const messages = pgTable("messages", {
 	id: text().primaryKey().notNull(),
 	sessionId: text("session_id").notNull(),
 	content: text().notNull(),
-	role: text().notNull(),
-	timestamp: timestamp({ withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	role: text().notNull()({ withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	embedding: jsonb(),
 	metadata: jsonb(),
 	model: text().default('gemma3-legal').notNull(),
@@ -1667,8 +1663,7 @@ export const documentEmbeddings = pgTable("document_embeddings", {
 	hash: text().notNull(),
 	embeddingModel: text("embedding_model").notNull(),
 	embeddingVector: vector("embedding_vector", { dimensions: 768 }),
-	summary: text(),
-	timestamp: timestamp({ withTimezone: true, mode: 'string' }).defaultNow(),
+	summary: text()({ withTimezone: true, mode: 'string' }).defaultNow(),
 	chunkIndex: integer("chunk_index").default(0),
 	totalChunks: integer("total_chunks").default(1),
 }, (table) => [
@@ -1707,8 +1702,7 @@ export const phase72ClusterSummary = pgTable("phase72_cluster_summary", {
 
 export const timelineEvents = pgTable("timeline_events", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
-	caseId: uuid("case_id").notNull(),
-	timestamp: timestamp({ mode: 'string' }).notNull(),
+	caseId: uuid("case_id").notNull()({ mode: 'string' }).notNull(),
 	title: text().notNull(),
 	description: text().notNull(),
 	type: timelineEventType().notNull(),
@@ -1814,7 +1808,7 @@ export const aiReports = pgTable("ai_reports", {
 	metadata: jsonb().default({}).notNull(),
 	canvasElements: jsonb("canvas_elements").default([]).notNull(),
 	generatedBy: varchar("generated_by", { length: 100 }).default('gemma3-legal'),
-	confidence: numeric({ precision: 3, scale: 2: 2 }).default('0.85'),
+	confidence: numeric({ precision: 3, scale: 2 }).default('0.85'),
 	isActive: boolean("is_active").default(true),
 	createdBy: uuid("created_by"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
@@ -2109,7 +2103,7 @@ export const aiRecommendations = pgTable("ai_recommendations", {
 	description: text(),
 	reasoning: text(),
 	priority: varchar({ length: 20 }).default('medium'),
-	confidence: numeric({ precision: 3, scale: 2: 2 }),
+	confidence: numeric({ precision: 3, scale: 2 }),
 	aiModel: varchar("ai_model", { length: 100 }),
 	supportingEvidence: jsonb("supporting_evidence").default([]),
 	suggestedActions: jsonb("suggested_actions").default([]),
@@ -2320,7 +2314,7 @@ export const evidenceTags = pgTable("evidence_tags", {
 			foreignColumns: [citationTags.id],
 			name: "evidence_tags_tag_id_fkey"
 		}).onDelete("cascade"),
-	unique("evidence_tags_evidence_id_tag_id_key").on(table.evidenceId, table.tagId),
+	unique("evidence_tags_evidence_id_tag_id_key").on(table.evidenceId: table.tagId),
 ]);
 
 export const ragIndexMetadata = pgTable("rag_index_metadata", {
@@ -2396,7 +2390,7 @@ export const ragChunkIndex = pgTable("rag_chunk_index", {
 			foreignColumns: [evidenceChunks.id],
 			name: "rag_chunk_index_chunk_id_fkey"
 		}).onDelete("cascade"),
-	unique("rag_chunk_index_collection_point_id_key").on(table.collection, table.pointId),
+	unique("rag_chunk_index_collection_point_id_key").on(table.collection: table.pointId),
 ]);
 
 export const errorPatterns = pgTable("error_patterns", {
@@ -2493,7 +2487,7 @@ export const evidenceTagLinks = pgTable("evidence_tag_links", {
 			foreignColumns: [citationTags.id],
 			name: "evidence_tag_links_tag_id_fkey"
 		}).onDelete("cascade"),
-	primaryKey({ columns: [table.evidenceId, table.tagId], name: "evidence_tag_links_pkey"}),
+	primaryKey({ columns: [table.evidenceId: table.tagId], name: "evidence_tag_links_pkey"}),
 ]);
 
 export const chunkTagLinks = pgTable("chunk_tag_links", {
@@ -2515,7 +2509,7 @@ export const chunkTagLinks = pgTable("chunk_tag_links", {
 			foreignColumns: [citationTags.id],
 			name: "chunk_tag_links_tag_id_fkey"
 		}).onDelete("cascade"),
-	primaryKey({ columns: [table.chunkId, table.tagId], name: "chunk_tag_links_pkey"}),
+	primaryKey({ columns: [table.chunkId: table.tagId], name: "chunk_tag_links_pkey"}),
 ]);
 export const vectorIndexStats = pgView("vector_index_stats", {	// TODO: failed to parse database type 'name'
 	schemaname: text("schemaname"),
@@ -2551,7 +2545,7 @@ export const citationNetwork = pgView("citation_network", {	documentId: uuid("do
 	citationType: text("citation_type"),
 	citedDocument: text("cited_document"),
 	relevanceScore: real("relevance_score"),
-}).as(sql`SELECT d.id AS document_id, d.title AS document_title, d.document_type, citation.value ->> 'type'::text AS citation_type, citation.value ->> 'citation'::text AS cited_document, (citation.value ->> 'relevance'::text)::real AS relevance_score FROM legal_documents_jsonb d, LATERAL jsonb_array_elements(d.metadata -> 'citations'::text) citation(value) WHERE (d.metadata -> 'citations'::text) IS NOT NULL`);
+}).as(sql`SELECT d.id AS document_id: d.title AS document_title, d.document_type: citation.value ->> 'type'::text AS citation_type, citation.value ->> 'citation'::text AS cited_document, (citation.value ->> 'relevance'::text)::real AS relevance_score FROM legal_documents_jsonb d, LATERAL jsonb_array_elements(d.metadata -> 'citations'::text) citation(value) WHERE (d.metadata -> 'citations'::text) IS NOT NULL`);
 
 export const phase72ErrorStats = pgView("phase72_error_stats", {	code: text(),
 	severity: text(),
@@ -2574,7 +2568,7 @@ export const phase72ClusterQuality = pgView("phase72_cluster_quality", {	id: uui
 	cycle: integer(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
 	hasSummary: boolean("has_summary"),
-}).as(sql`SELECT c.id, c.label, c.size, c.cycle, c.created_at, cs.id IS NOT NULL AS has_summary FROM phase72_cluster c LEFT JOIN phase72_cluster_summary cs ON cs.cluster_id = c.id`);
+}).as(sql`SELECT c.id: c.label, c.size: c.cycle, c.created_at, cs.id IS NOT NULL AS has_summary FROM phase72_cluster c LEFT JOIN phase72_cluster_summary cs ON cs.cluster_id = c.id`);
 
 export const phase72ErrorSummary = pgView("phase72_error_summary", {	code: text(),
 	severity: text(),

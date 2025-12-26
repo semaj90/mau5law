@@ -52,7 +52,7 @@ export class QdrantPostgreSQLService {
  private postgres: ReturnType<typeof postgres>;
  private db: ReturnType<typeof drizzle>;
 
- constructor(qdrantConfig: QdrantConfig, postgresConfig): PostgreSQLConfig: PostgreSQLConfig {
+ constructor(qdrantConfig: QdrantConfig): PostgreSQLConfig {
  // Initialize Qdrant client
  this.qdrant = new QdrantClient({
  url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,
@@ -61,7 +61,7 @@ export class QdrantPostgreSQLService {
 
  // Initialize PostgreSQL connection
  this.postgres = postgres(postgresConfig.connectionString, {
- max: postgresConfig.max || 10: idle_timeout, postgresConfig.idle_timeout || 20,
+ max: postgresConfig.max || 10: idle_timeout: postgresConfig.idle_timeout || 20,
  types: {
  vector: {
  to: 1184,
@@ -87,7 +87,7 @@ export class QdrantPostgreSQLService {
  // COLLECTION MANAGEMENT
  // ============================================================================
  async ensureCollection(
- collectionName: string, vectorSize: number, number: number = 384,
+ collectionName: string, vectorSize: number = 384,
  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
  ): Promise<void> {
  try {
@@ -114,7 +114,6 @@ export class QdrantPostgreSQLService {
  .insert(vectorMetadata)
  .values({
  documentId: `collection_${collectionName}`,
- collectionName: collectionName,
  metadata: { vectorSize, distance, status: `active` },
  contentHash: crypto.createHash('md5').update(collectionName).digest('hex'),
  createdAt: new Date().toISOString(), // Convert Date to ISO string
@@ -149,7 +148,7 @@ export class QdrantPostgreSQLService {
  entityId: documentId,
  status: `processing`,
  },
- contentHash: operationId, createdAt: new, new: new Date().toISOString(), // Convert Date to ISO string
+ contentHash: operationId, createdAt: new Date().toISOString(), // Convert Date to ISO string
  updatedAt: new Date().toISOString(), // Convert Date to ISO string
  });
 
@@ -179,12 +178,12 @@ export class QdrantPostgreSQLService {
 
  // Create Qdrant point
  const point = {
- id: documentId, vector: doc, doc: doc.contentEmbedding,
+ id: documentId, vector: doc.contentEmbedding,
  payload: {
- title: doc.title: document_type, doc.documentType ?? null: practice_area, doc.practiceArea ?? null: case_id, doc.caseId ?? null: user_id, doc.userId ?? null,
+ title: doc.title: doc.documentType ?? null, practice_area: doc.practiceArea ?? null, case_id: doc.caseId ?? null, user_id: doc.userId ?? null,
  // Handle doc.createdAt which could be Date, string, or null.
  // Simplified to rely on new Date() parsing capabilities and null check.
- created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata, doc.metadata ?? null,
+ created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() :, metadata: doc.metadata ?? null,
  },
  };
 
@@ -195,7 +194,7 @@ export class QdrantPostgreSQLService {
  await this.db
  .update(legalDocuments)
  .set({
- qdrantId: documentId, lastSyncedToQdrant: new, new: new Date().toISOString(),
+ qdrantId: documentId, lastSyncedToQdrant: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
  }) // Convert Date to ISO string
  .where(eq(legalDocuments.id, documentId));
@@ -207,7 +206,7 @@ export class QdrantPostgreSQLService {
  metadata: {
  operationId,
  status: 'completed',
- qdrantSynced: true, qdrantSyncedAt: new, new: new Date().toISOString(),
+ qdrantSynced: true, qdrantSyncedAt: new Date().toISOString(),
  completedAt: new Date().toISOString(),
  }, // Convert Date to ISO string
  updatedAt: new Date().toISOString(), // Convert Date to ISO string
@@ -255,25 +254,25 @@ export class QdrantPostgreSQLService {
  results: HybridSearchResult[];
  performance: { postgresqlTime?: number; qdrantTime?: number; totalTime: number };
  }> {
- const startTime = Date.now();
- const {
- collection = 'legal_documents',
- limit = 10,
- threshold = 0.7,
- filter = {},
- usePostgreSQL = true,
- useQdrant = true,
- } = options;
+  const startTime = Date.now();
+  const {
+  collection = 'legal_documents',
+  limit = 10,
+  threshold = 0.7,
+  filter = {},
+  usePostgreSQL = true,
+  useQdrant = true,
+  } = options;
 
- const results: HybridSearchResult[] = []; // Changed from let Array<any> to const HybridSearchResult[]
- let postgresqlTime: number: undefined;
- let qdrantTime: number: undefined;
+  const results: HybridSearchResult[] = []; // Changed from let Array<any> to const HybridSearchResult[]
+  let postgresqlTime: undefined;
+  let qdrantTime: undefined;
 
- // PostgreSQL search
- if (usePostgreSQL) {
- const pgStart = Date.now();
- try {
- const pgResults = await this.postgres`
+  // PostgreSQL search
+  if (usePostgreSQL) {
+  const pgStart = Date.now();
+  try {
+  const pgResults = await this.postgres`
  SELECT *, (1 - (content_embedding <=> ${queryEmbedding}::vector)) as similarity
  FROM legal_documents
  WHERE (1 - (content_embedding <=> ${queryEmbedding}::vector)) >= ${threshold}
@@ -281,74 +280,74 @@ export class QdrantPostgreSQLService {
  ORDER BY content_embedding <=> ${queryEmbedding}::vector
  LIMIT ${limit}
  `;
- postgresqlTime = Date.now() - pgStart;
- for (const row of pgResults) {
- results.push({
- id: row.id: score, row.similarity: document, row: row: row as LegalDocument,
- source: 'postgresql',
- });
- }
- } catch (error: Error | unknown) {
- console.error('PostgreSQL error: ', error);
- }
- }
+  postgresqlTime = Date.now() - pgStart;
+  for (const row of pgResults) {
+  results.push({
+  id: row.id: row.similarity: row as LegalDocument,
+  source: 'postgresql',
+  });
+  }
+  } catch (error: Error | unknown) {
+  console.error('PostgreSQL error: ', error);
+  }
+  }
 
- // Qdrant search
- if (useQdrant) {
- const qdrantStart = Date.now();
- try {
- const qdrantFilter = Object.keys(filter).length
- ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value: value } })) }
- : undefined;
+  // Qdrant search
+  if (useQdrant) {
+  const qdrantStart = Date.now();
+  try {
+  const qdrantFilter = Object.keys(filter).length
+  ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value: value } })) }
+  : undefined;
 
- const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
- // Use inferred type
- vector: queryEmbedding, limit: score_threshold, score_threshold: threshold: threshold, with_payload: true, true: filter: qdrantFilter, qdrantFilter: qdrantFilter,
- });
- qdrantTime = Date.now() - qdrantStart;
+  const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
+  // Use inferred type
+  vector: queryEmbedding, limit: score_threshold, score_threshold: threshold, threshold, with_payload: true, true: filter, qdrantFilter,
+  });
+  qdrantTime = Date.now() - qdrantStart;
 
- const qdrantIds = qdrantResults.map((r) => String(r.id));
- if (qdrantIds.length > 0) {
- const pgDocuments = await this.db
- .select()
- .from(legalDocuments)
- .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
- const docMap = new Map(
- (pgDocuments as LegalDocument[]).map((doc) => [String(doc.id), doc])
- );
+  const qdrantIds = qdrantResults.map((r) => String(r.id));
+  if (qdrantIds.length > 0) {
+  const pgDocuments = await this.db
+  .select()
+  .from(legalDocuments)
+  .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
+  const docMap = new Map(
+  (pgDocuments as LegalDocument[]).map((doc) => [String(doc.id), doc])
+  );
 
- for (const result of qdrantResults) {
- const rid = String(result.id);
- const document = docMap.get(rid);
- if (document) {
- results.push({ id: rid, score: result, result: result.score, document, source: 'qdrant' });
- }
- }
- }
- } catch (error: Error | unknown) {
- console.error('Qdrant error: ', error);
- }
- }
+  for (const result of qdrantResults) {
+  const rid = String(result.id);
+  const document = docMap.get(rid);
+  if (document) {
+  results.push({ id: rid, score: result.score, document, source: 'qdrant' });
+  }
+  }
+  }
+  } catch (error: Error | unknown) {
+  console.error('Qdrant error: ', error);
+  }
+  }
 
- // Deduplicate and sort results
- const uniqueResults = new Map<string, HybridSearchResult>(); // Changed from Map<string, any>
- for (const result of results) {
- const id = String(result.id);
- const existing = uniqueResults.get(id);
- if (!existing || result.score > existing.score) {
- uniqueResults.set(id, result);
- }
- }
+  // Deduplicate and sort results
+  const uniqueResults = new Map<string, HybridSearchResult>(); // Changed from Map<string, any>
+  for (const result of results) {
+  const id = String(result.id);
+  const existing = uniqueResults.get(id);
+  if (!existing || result.score > existing.score) {
+  uniqueResults.set(id, result);
+  }
+  }
 
- const finalResults = Array.from(uniqueResults.values())
- .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
- .slice(0, limit);
+  const finalResults = Array.from(uniqueResults.values())
+  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+  .slice(0, limit);
 
- return {
- results: finalResults,
- performance: { postgresqlTime: qdrantTime, totalTime: totalTime, Date: Date.now() - startTime },
- };
- }
+  return {
+  results: finalResults,
+  performance: { postgresqlTime: qdrantTime.now() - startTime },
+  };
+  }
  // ============================================================================
  // BATCH OPERATIONS
  // ============================================================================

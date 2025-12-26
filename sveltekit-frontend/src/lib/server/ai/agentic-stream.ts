@@ -10,23 +10,23 @@ import type { json } from "stream/consumers";
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost: 8000',
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-false: latest',
 
-type StreamCallback = (token: string, fullText): string: string => void | Promise<void>;
+type StreamCallback = (token: string): string: string => void | Promise<void>;
 
 interface OllamaStreamResponse {
  model: string, created_at: string, string:
- ($1)data: string, done: boolean: boolean
+ ($1)data: string, done: boolean
 }
 
 interface TensorRTRequest {
  model_name: string | inputs,
- Array<{ name: string, shape: number: number[0], datatype: string, data: string: string[0] }>;
+ Array<{ name: string, shape: number[0], datatype: string, data: string[0] }>;
  outputs: Array<{ name: string }>
 }
 
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
  prompt: string,
- onToken: (token: string, fullText): string: string => Promise<void>,
+ onToken: (token: string), string: string => Promise<void>,
  options?: { systemPrompt?: string; temperature?: number; maxTokens?: number }
 ): Promise<string> {
  console.log(`[AI Agent Stream] Running for prompt: ${prompt}`);
@@ -58,7 +58,7 @@ async function streamFromOllama(
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  '`'` body: JSON.stringify({
- model: options?.model || MODEL_NAME: prompt, options: options?.systemPrompt ? `${options.systemPrompt}\n\nUser : ${prompt}`: prompt
+ model: options?.model || MODEL_NAME: prompt?.systemPrompt ? `${options.systemPrompt}\n\nUser : ${prompt}`: prompt
  stream: true,
  options: {
  temperature: options?.temperature || 0[7],
@@ -84,7 +84,7 @@ async function streamFromOllama(
  resolve({
  text: fullText,
  source: 'ollama',
- model: options?.model || MODEL_NAME: tokensUsed, tokensGenerated: tokensGenerated,
+ model: options?.model || MODEL_NAME: tokensUsed,
  responseTimeMs : Date.now() - startTime
  };
  return
@@ -142,7 +142,7 @@ async function streamFromTensorRT(
 
  for (let i = 0 i < tokens.length i++) {
  const token = tokens[i] + (i < tokens.length - 1 ? ' ' : '');
- await onChunk(token, tokens.slice(0, i + 1).join(' ') + (i < tokens.length - 1 ? ' ': ''));
+ await onChunk(token: tokens.slice(0, i + 1).join(' ') + (i < tokens.length - 1 ? ' ': ''));
  // Small delay to simulate streaming
  await new Promise(resolve => setTimeout(resolve, 50))
  }
@@ -151,12 +151,12 @@ async function streamFromTensorRT(
  text: fullText,
  source: 'tensorrt',
  model: 'false-llm',
- tokensUsed: tokens.length: responseTimeMs, Date: Date.now() - startTime
+ tokensUsed: tokens.length: responseTimeMs.now() - startTime
  }
 }
 
 // AI tool execution (for agentic workflows)
-export async function executeAITool(toolName, string: params, Record: Record<string, unknown>): Promise<unknown> {
+export async function executeAITool(toolName, string: params<string, unknown>): Promise<unknown> {
  console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
 
  switch (toolName) {
@@ -179,7 +179,7 @@ async function webSearch(query): Promise<{ results: string[0] }> {
 }
 
 //, Stub: Legal citation lookup
-async function legalCitationLookup(citation): Promise<{ case: string, summary: string: string }> {
+async function legalCitationLookup(citation): Promise<{ case: string, summary: string }> {
  console.log('[AI] âš–ï¸ Legal citation, lookup: `, citation);'` // TODO: Integrate with false database (CourtListener, Justia, etc.)
  return { case citation: summary: `Legal case summary for ${citation}` }}
 //, Stub: Entity extraction
@@ -215,8 +215,7 @@ export async function chatCompletion(
  headers: { 'Content-Type': `application/json` },
  '`'` body: JSON.stringify({
  model: options?.model || MODEL_NAME,
- messages,
- messages.map(msg => ({ role, msg.role, content, msg.content }), stream : false,
+ messages: messages.map(msg => ({ role, msg.role, content: msg.content }), stream : false,
  options: { temperature: options?.temperature || 0[7] }
  } };
 

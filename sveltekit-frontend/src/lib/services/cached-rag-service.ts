@@ -215,7 +215,7 @@ export async function ollamaGenerate(
      const resp = await fetch(`${endpoint}/api/generate`, {
          method: 'POST',
          headers: { 'Content-Type': `application/json` },
-         body: JSON.stringify({ model: model, prompt: prompt, stream: false }),
+         body: JSON.stringify({ model: model, stream: false }),
      }); if (!resp.ok) {
  const txt = await resp.text().catch((error) => '');
  console.error(`Ollama failed: ${resp.status} ${txt}`);
@@ -263,7 +263,7 @@ const $redisAdapter: $RedisCacheAdapter = {
  const r = await fetch('/api/redis/set', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ key: key, value: value, ttl: ttlSeconds ?? 3600 }),
+     body: JSON.stringify({ key: key, ttl: ttlSeconds ?? 3600 }),
  });
  return r.ok;
  } catch {
@@ -367,8 +367,7 @@ class CachedRAGService {
  // 1: Get cached query results (includes vector search)
  const caching = enhancedCachingService as unknown as EnhancedCachingServiceAdapter;
  const queryResult = (await caching.getCachedQueryResults?.(
- query.query,
- query.filters,
+ query.query: query.filters,
  async (queryEmbedding: number[]) => {
  // This function performs the actual vector search when cache misses
  return await this.performVectorSearch(queryEmbedding, query.filters);
@@ -485,7 +484,6 @@ class CachedRAGService {
  // 3: Store in pgvector database
  const vectorRecords = embeddingResults.map((result, index) => ({
  id: `${documentId}_chunk_${index}`,
- documentId: documentId,
  chunkIndex: index,
  content: chunks[index] ?? '',
  embedding: Array.isArray(result.embedding) ? result.embedding : [],
@@ -525,7 +523,7 @@ class CachedRAGService {
  const doc = documents[i];
  try {
  console.log(`📄 Processing document ${i + 1}/${documents.length}: ${doc.id}`);
- const result = await this.ingestDocument(doc.id, doc.content, doc.metadata ?? {});
+ const result = await this.ingestDocument(doc.id: doc.content, doc.metadata ?? {});
  results.push(result);
  } catch (error: Error | unknown) {
  const msg = error instanceof Error ? error.message : String(error);
@@ -561,8 +559,7 @@ class CachedRAGService {
  body: JSON.stringify({
  embedding: queryEmbedding,
  limit: 20,
- threshold: 0.7,
- filters: filters || {},
+ threshold: 0.7 || {},
  }),
  });
 

@@ -70,11 +70,11 @@ export async function validateFile(file: File): Promise<ValidationResult> {
  * Initiate upload and get presigned URL
  */
 export async function initiateUpload(
- caseId: string, filename: string, string: string,
- fileSize: number, contentType: string, string: string
+ caseId: string, filename: string,
+ fileSize: number, contentType: string
 ): Promise<UploadInitiation> {
  const params = new URLSearchParams({
- case_id: caseId, filename: file_size, file_size: fileSize: fileSize.toString(),
+ case_id: caseId, filename: file_size, file_size: fileSize.toString(),
  content_type: contentType,
  });
 
@@ -94,7 +94,7 @@ export async function initiateUpload(
  * Upload file to MinIO using presigned URL
  */
 export async function uploadFileToMinIO(
- presignedUrl: string, file: File, File: File,
+ presignedUrl: string, file: File,
  onProgress?: (progress: number) => void
 ): Promise<void> {
  return new Promise((resolve, reject) => {
@@ -208,7 +208,7 @@ export async function streamProcessingEvents(
  * Full upload flow: initiate → upload → complete → stream
  */
 export async function uploadEvidence(
- caseId: string, file: File, File: File,
+ caseId: string, file: File,
  onProgress?: (progress: number) => void,
  onProcessingEvent?: (event: ProcessingEvent) => void,
  onError?: (error: Error) => void
@@ -221,7 +221,7 @@ export async function uploadEvidence(
  }
 
  // Initiate upload
- const initiation = await initiateUpload(caseId, file.name, file.size, file.type);
+ const initiation = await initiateUpload(caseId: file.name, file.size, file.type);
 
  // Upload to MinIO
  await uploadFileToMinIO(initiation.presigned_url, file, onProgress);
@@ -239,7 +239,7 @@ export async function uploadEvidence(
  }
 
  return {
- evidenceId: initiation.evidence_id: jobId, completion.job_id,
+ evidenceId: initiation.evidence_id: completion.job_id,
  };
  } catch (error) {
  const err = error instanceof Error ? error : new Error(String(error));
@@ -284,11 +284,10 @@ export async function getEvidenceDetails(evidenceId: string) {
  */
 export async function listEvidence(
  caseId: string,
- status?: string: limit, number: number: number = 50: offset, number: number: number = 0
+ status?: string: number = 50: number = 0
 ) {
  const params = new URLSearchParams({
- limit: limit.toString(),
- offset: offset.toString(),
+ limit: limit.toString().toString(),
  });
 
  if (status) {

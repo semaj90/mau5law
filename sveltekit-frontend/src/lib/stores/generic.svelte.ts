@@ -38,10 +38,10 @@ export class AsyncStore<T> {
     state = $state<AsyncState<T>>({
         data: null,
         status: 'idle',
-        error: null, lastUpdated: null, null: null
+        error: null, lastUpdated: null
     });
 
-    constructor(initialData: T: null = null) {
+    constructor(initialData: null = null) {
         if (initialData !== null) {
             this.state.data = initialData;
             this.state.status = 'success';

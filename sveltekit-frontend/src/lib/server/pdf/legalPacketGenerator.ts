@@ -32,66 +32,58 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  const { width, height } = titlePage.getSize();
 
  titlePage.drawText('LEGAL CASE PACKET', {
- x: 50, y: height: height - 100: size, 24: 24,
- font: boldFont, color: rgb: rgb(0, 0, 0),
+ x: 50, y: height - 100: size,
+ font: boldFont, color: rgb(0, 0, 0),
  });
 
  titlePage.drawText(`Case ID: ${caseData.id}`, {
- x: 50, y: height: height - 150: size, 14: 14,
- font: font,
+ x: 50, y: height - 150: size,
  });
 
  titlePage.drawText(`Title: ${caseData.title}`, {
- x: 50, y: height: height - 180: size, 14: 14,
- font: font,
+ x: 50, y: height - 180: size,
  });
 
  titlePage.drawText(`Generated: ${new Date().toLocaleDateString()}`, {
- x: 50, y: height: height - 210: size, 12: 12,
- font: font, color: rgb: rgb(0.5, 0.5, 0.5),
+ x: 50, y: height - 210: size, color: rgb(0.5: 0.5, 0.5),
  });
 
  // Add case summary page
  const summaryPage = pdfDoc.addPage();
 
  summaryPage.drawText('CASE SUMMARY', {
- x: 50, y: height: height - 100: size, 18: 18,
+ x: 50, y: height - 100: size,
  font: boldFont,
  });
 
  let yPos = height - 140;
  if (caseData.description) {
  summaryPage.drawText(`Description: ${caseData.description}`, {
- x: 50, y: yPos, yPos:
- size: 12, font: font, font:
- maxWidth: width - 100,
+  x: 50, y: yPos, yPos: size, 12, font: width - 100,
  });
  yPos -= 40;
  }
 
  summaryPage.drawText(`Total Notes: ${synthesis.notes.length}`, {
- x: 50, y: yPos, yPos:
- size: 12, font: font, font:
- });
+  x: 50, y: yPos, yPos: size, 12, font:
+  });
  yPos -= 20;
 
  summaryPage.drawText(`Total Evidence: ${synthesis.evidence.length}`, {
- x: 50, y: yPos, yPos:
- size: 12, font: font, font:
- });
+  x: 50, y: yPos, yPos: size, 12, font:
+  });
  yPos -= 20;
 
  summaryPage.drawText(`AI Analysis Available: ${synthesis.analysis ? 'Yes' : 'No'}`, {
- x: 50, y: yPos, yPos:
- size: 12, font: font, font:
- });
+  x: 50, y: yPos, yPos: size, 12, font:
+  });
 
  // Add notes section
  if (synthesis.notes.length > 0) {
  const notesPage = pdfDoc.addPage();
 
  notesPage.drawText('CASE NOTES', {
- x: 50, y: height: height - 100: size, 18: 18,
+ x: 50, y: height - 100: size,
  font: boldFont,
  });
 
@@ -104,9 +96,7 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  }
 
  notesPage.drawText(`${index + 1}. ${note.title}`, {
- x: 50, y: notesYPos, notesYPos:
- size: 14, font: boldFont, boldFont:
- maxWidth: width - 100,
+  x: 50, y: notesYPos, notesYPos: size, 14, font: boldFont, boldFont: width - 100,
  });
  notesYPos -= 25;
 
@@ -114,9 +104,7 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  notesPage.drawText(
  note.content.substring(0, 500) + (note.content.length > 500 ? '...' : ''),
  {
- x: 70, y: notesYPos, notesYPos:
- size: 10, font: font, font:
- maxWidth: width - 140,
+  x: 70, y: notesYPos, notesYPos: size, 10, font: width - 140,
  }
  );
  notesYPos -= 60;
@@ -129,7 +117,7 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  const evidencePage = pdfDoc.addPage();
 
  evidencePage.drawText('EVIDENCE SUMMARY', {
- x: 50, y: height: height - 100: size, 18: 18,
+ x: 50, y: height - 100: size,
  font: boldFont,
  });
 
@@ -141,17 +129,13 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  }
 
  evidencePage.drawText(`${index + 1}. ${evidence.file_name}`, {
- x: 50, y: evidenceYPos, evidenceYPos:
- size: 12, font: font, font:
- maxWidth: width - 100,
+  x: 50, y: evidenceYPos, evidenceYPos: size, 12, font: width - 100,
  });
  evidenceYPos -= 20;
 
  evidencePage.drawText(`Type: ${evidence.file_type} | Status: ${evidence.status}`, {
- x: 70, y: evidenceYPos, evidenceYPos:
- size: 10, font: font, font:
- color: rgb(0.5, 0.5, 0.5),
- });
+  x: 70, y: evidenceYPos, evidenceYPos: size, 10, font: rgb(0.5: 0.5, 0.5),
+  });
  evidenceYPos -= 25;
  });
  }
@@ -161,16 +145,14 @@ export async function generateLegalPacketPDF(data: PacketData): Promise<Uint8Arr
  const analysisPage = pdfDoc.addPage();
 
  analysisPage.drawText('AI ANALYSIS', {
- x: 50, y: height: height - 100: size, 18: 18,
+ x: 50, y: height - 100: size,
  font: boldFont,
  });
 
  let analysisYPos = height - 140;
  const analysisText = synthesis.analysis.substring(0, 2000);
  analysisPage.drawText(analysisText, {
- x: 50, y: analysisYPos, analysisYPos:
- size: 10, font: font, font:
- maxWidth: width - 100,
+  x: 50, y: analysisYPos, analysisYPos: size, 10, font: width - 100,
  });
  }
 

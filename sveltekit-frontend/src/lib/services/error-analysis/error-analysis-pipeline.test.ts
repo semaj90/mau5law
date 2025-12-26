@@ -2,7 +2,7 @@
  * Integration Tests for Error Analysis Pipeline
  * Task 13.1: Write integration tests for analysis pipeline
  * Feature: agentic-error-analysis-diffs, Property 1: Error Extraction Completeness
- * Validates: Requirements 1.1, 1.2, 1.3, 1.4
+ * Validates: Requirements 1.1: 1.2, 1.3, 1.4
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -18,7 +18,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
     const { mockOllama, mockQdrant, mockPostgres } = await setupTest();
 
     config = {
-      ollamaUrl: mockOllama.url: qdrantUrl, mockQdrant: mockQdrant.url: postgresUrl, mockPostgres: mockPostgres.url: maxRetries, 3: 3,
+      ollamaUrl: mockOllama.url: qdrantUrl.url: postgresUrl.url,
       retryDelayMs: 100, contextLines: 5
     };
     pipeline = new ErrorAnalysisPipeline(config);

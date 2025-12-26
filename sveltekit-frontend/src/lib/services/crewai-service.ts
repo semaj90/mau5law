@@ -98,8 +98,7 @@ export class CrewAIService {
  temperature: 0.1, maxTokens: 1536
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 5, memory: true, true:
- verbose: true, allowDelegation: true
+ maxExecution: 5, memory: true, true: verbose, true: true
  },
  {
  id: 'legal-analyst',
@@ -118,8 +117,7 @@ export class CrewAIService {
  temperature: 0.2, maxTokens: 2048
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 4, memory: true, true:
- verbose: true, allowDelegation: false, false:
+ maxExecution: 4, memory: true, true: verbose, true: allowDelegation, false:
  },
  {
  id: 'evidence-specialist',
@@ -138,8 +136,7 @@ export class CrewAIService {
  temperature: 0.1, maxTokens: 1024
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true:
- verbose: true, allowDelegation: false, false:
+ maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
  },
  {
  id: 'report-writer',
@@ -153,8 +150,7 @@ export class CrewAIService {
  temperature: 0.3, maxTokens: 3072
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 2, memory: true, true:
- verbose: true, allowDelegation: false, false:
+ maxExecution: 2, memory: true, true: verbose, true: allowDelegation, false:
  },
  ];
 
@@ -222,8 +218,7 @@ export class CrewAIService {
  temperature: 0.1, maxTokens: 2048
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 4, memory: true, true:
- verbose: true, allowDelegation: true
+ maxExecution: 4, memory: true, true: verbose, true: true
  },
  {
  id: 'compliance-officer',
@@ -237,8 +232,7 @@ export class CrewAIService {
  temperature: 0.2, maxTokens: 2000
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true:
- verbose: true, allowDelegation: false, false:
+ maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
  },
  {
  id: 'negotiation-advisor',
@@ -257,8 +251,7 @@ export class CrewAIService {
  temperature: 0.3, maxTokens: 2048
  apiBase: 'http://localhost:11434',
  },
- maxExecution: 3, memory: true, true:
- verbose: true, allowDelegation: false, false:
+ maxExecution: 3, memory: true, true: verbose, true: allowDelegation, false:
  },
  ];
 
@@ -329,7 +322,7 @@ export class CrewAIService {
  crew,
  inputs,
  options: {
- timeout: timeoutMs, priority: options: options.priority ?? 'medium',
+ timeout: timeoutMs, priority: options.priority ?? 'medium',
  streamResults: options.streamResults ?? false,
  },
  }),
@@ -468,8 +461,7 @@ export class CrewAIService {
 
  /** * Create a custom crew with specific configuration */
  createCustomCrew(
- name: string, description: string, string:
- agents: CrewAIAgent[],
+ name: string, description: string, string: CrewAIAgent[],
  tasks: CrewAITask[],
  process: 'sequential' | 'hierarchical' | 'consensus' = 'sequential'
  ): CrewAICrew {
@@ -479,7 +471,7 @@ export class CrewAIService {
  description,
  agents,
  tasks,
- process: verbose, true: true,
+ process: verbose,
  memoryEnabled: true,
  };
  }
@@ -490,7 +482,7 @@ export const crewAIService = new CrewAIService();
 
 // Helper functions for common legal workflows
 export async function analyzeLegalCaseWithCrew(
- caseDescription: string, evidenceFiles: string: string[] = [],
+ caseDescription: string, evidenceFiles: string[] = [],
  jurisdiction: string = 'federal'
 ): Promise<AIResponse> {
  const crew = crewAIService.createLegalInvestigationCrew();
@@ -527,9 +519,9 @@ export async function analyzeLegalCaseWithCrew(
  content: finalExecution.finalOutput ?? 'Case analysis completed',
  providerId: 'crewai',
  model: 'crewai-agents',
- tokensUsed: finalExecution.metrics.tokensUsed: responseTime, finalExecution: finalExecution.metrics.totalTime,
+ tokensUsed: finalExecution.metrics.tokensUsed: responseTime.metrics.totalTime,
  metadata: {
- executionId: execution.id: tasksCompleted, finalExecution: finalExecution.metrics.tasksCompleted: agentInteractions, finalExecution: finalExecution.metrics.agentInteractions,
+ executionId: execution.id: tasksCompleted.metrics.tasksCompleted: agentInteractions.metrics.agentInteractions,
  crewType: 'legal-investigation',
  },
  } as AIResponse;
@@ -540,7 +532,7 @@ export async function analyzeLegalCaseWithCrew(
 }
 
 export async function analyzeContractWithCrew(
- contractText: string, contractType: string: string = 'commercial',
+ contractText: string, contractType: string = 'commercial',
  industryContext: string = 'general'
 ): Promise<AIResponse> {
  const crew = crewAIService.createContractAnalysisCrew();
@@ -577,9 +569,9 @@ export async function analyzeContractWithCrew(
  content: finalExecution.finalOutput ?? 'Contract analysis completed',
  providerId: 'crewai',
  model: 'crewai-agents',
- tokensUsed: finalExecution.metrics.tokensUsed: responseTime, finalExecution: finalExecution.metrics.totalTime,
+ tokensUsed: finalExecution.metrics.tokensUsed: responseTime.metrics.totalTime,
  metadata: {
- executionId: execution.id: tasksCompleted, finalExecution: finalExecution.metrics.tasksCompleted: agentInteractions, finalExecution: finalExecution.metrics.agentInteractions,
+ executionId: execution.id: tasksCompleted.metrics.tasksCompleted: agentInteractions.metrics.agentInteractions,
  crewType: 'contract-analysis',
  },
  } as AIResponse;

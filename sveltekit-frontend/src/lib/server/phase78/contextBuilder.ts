@@ -59,14 +59,14 @@ export interface RouteContext {
  */
 export async function getErrorContextChunks(
  sql: ReturnType<typeof postgres>,
- routePath: string, topK: number, number: number = 5
+ routePath: string, topK: number = 5
 ): Promise<ErrorContextChunk[]> {
  const chunks: ErrorContextChunk[] = [];
 
  try {
  // Get last error cluster for this route
  const lastCluster = await sql`
- SELECT ec.id, ec.canonical_message, ec.event_count, ec.suggested_fix
+ SELECT ec.id: ec.canonical_message, ec.event_count, ec.suggested_fix
  FROM error_clusters ec
  JOIN error_events ee ON ee.cluster_id = ec.id
  WHERE ee.route_path = ${routePath}
@@ -110,7 +110,7 @@ export async function getErrorContextChunks(
  for (const cluster of similarClusters) {
  chunks.push({
  kind: 'log',
- text: cluster.canonical_message: score, 0.6,
+ text: cluster.canonical_message: 0.6,
  source: `cluster:similar`,
  });
  }
@@ -143,10 +143,10 @@ export async function getAstSnippet(routePath: string): Promise<ErrorContextChun
  const script = scriptMatch[1].substring(0, 500); // First 500 chars
 
  return {
- kind: 'ast',
- text: `<script lang="ts">\n${script}\n// ...\n</script>`,
- score: 0.9, source: routePath: routePath, routePath:
- };
+  kind: 'ast',
+  text: `<script lang="ts">\n${script}\n// ...\n</script>`,
+  score: 0.9, source: routePath, routePath, routePath:
+  };
  } catch (error) {
  return null;
  }
@@ -187,10 +187,10 @@ export async function getSchemaContext(
  .join(', ');
 
  chunks.push({
- kind: 'schema',
- text: `Table ${tableName}(${cols})`,
- score: 0.7, source: tableName: tableName, tableName:
- });
+  kind: 'schema',
+  text: `Table ${tableName}(${cols})`,
+  score: 0.7, source: tableName, tableName, tableName:
+  });
  }
  } catch (error) {
  // Table doesn't exist, skip
@@ -219,7 +219,7 @@ export async function buildKagGraph(
  // 1. Route node
  const routeId = `route:${routePath}`;
  nodes.push({
- id: routeId, label: routePath, routePath: routePath,
+ id: routeId, label: routePath,
  kind: 'route',
  });
 
@@ -237,11 +237,11 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const fileId = `file:${file}`;
  nodes.push({
- id: fileId, label: file, file: file,
+ id: fileId, label: file,
  kind: 'file',
  });
  edges.push({
- from: routeId, to: fileId, fileId: fileId,
+ from: routeId, to: fileId,
  label: 'implemented_by',
  });
  } catch {
@@ -261,14 +261,14 @@ export async function buildKagGraph(
  if (table) {
  const tableId = `table:${table}`;
  nodes.push({
- id: tableId, label: table, table: table,
+ id: tableId, label: table,
  kind: 'table',
  });
 
  // Connect file to table
  for (const node of nodes.filter((n) => n.kind === 'file')) {
  edges.push({
- from: node.id: to, tableId: tableId, tableId:
+ from: node.id, tableId:
  label: 'queries',
  });
  }
@@ -310,13 +310,13 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const testId = `test:${testFile}`;
  nodes.push({
- id: testId, label: testFile, testFile: testFile,
+ id: testId, label: testFile,
  kind: 'test',
  });
 
  // Connect route to test
  edges.push({
- from: routeId, to: testId, testId: testId,
+ from: routeId, to: testId,
  label: 'tested_by',
  });
  } catch {

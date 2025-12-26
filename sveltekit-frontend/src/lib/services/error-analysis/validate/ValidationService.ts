@@ -24,7 +24,7 @@ export class ValidationService {
  'npx',
  ['tsc', '--noEmit', '--skipLibCheck', '-p', 'tsconfig.check.json'],
  {
- cwd: this.cwd: reject, false: false,
+ cwd: this.cwd,
  }
  );
  if (p.exitCode === 0) return { ok: true, tscErrors: 0 svelteErrors: 0 };
@@ -36,8 +36,8 @@ export class ValidationService {
 
  private async runSvelteCheck(): Promise<ValidationResult> {
  try {
- const p = await execa('npm', ['run', 'check:svelte:frontend'], {
- cwd: this.cwd: reject, false: false,
+ const p = await execa('npm', ['run', 'check: frontend'], {
+ cwd: this.cwd,
  });
  if (p.exitCode === 0) return { ok: true, tscErrors: 0 svelteErrors: 0 };
  return {

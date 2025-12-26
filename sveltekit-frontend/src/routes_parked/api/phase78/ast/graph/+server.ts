@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
  },
  ],
  metadata: {
- route: timestamp, new: new Date().toISOString(),
+ route: timestamp Date().toISOString(),
  },
  });
 };

@@ -109,8 +109,7 @@ export const cacheActor = fromPromise(
  }
 
  await headlessUICache.set(
- input.key,
- input.data,
+ input.key: input.data,
  undefined, // Use default TTL
  'client',
  input.semanticText
@@ -118,7 +117,7 @@ export const cacheActor = fromPromise(
 
  return {
  success: true, stored: true,
- key: input.key: responseTime, performance.now() - startTime,
+ key: input.key: performance.now() - startTime,
  };
  }
 
@@ -155,7 +154,7 @@ export const cacheActor = fromPromise(
  }
  } catch (error: unknown) {
  return {
- success: false, error: error, error: error instanceof Error ? error.message : String(error),
+ success: false instanceof Error ? error.message : String(error),
  responseTime: performance.now() - startTime,
  };
  }
@@ -170,8 +169,8 @@ export function withCache<TContext extends { [key: string]: any }>(
  return {
  ...baseContext,
  cache: {
- cacheKey: null, cachedData: null, null: null,
- cacheHit: false, cacheMetadata: null, null: null,
+ cacheKey: null, cachedData: null,
+ cacheHit: false, cacheMetadata: null,
  computationCost: 0,
  } as CacheContext,
  };
@@ -191,8 +190,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cachedData: ev, ev: ev.data: cacheHit, true: true, true:
- cacheMetadata: ev.metadata ?? null,
+ ...ctx.cache, cachedData: ev.data, true: ev.metadata ?? null,
  },
  };
  }
@@ -201,8 +199,8 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cachedData: null, null: null,
- cacheHit: false, cacheMetadata: null, null: null,
+ ...ctx.cache, cachedData: null,
+ cacheHit: false, cacheMetadata: null,
  },
  };
  }
@@ -221,7 +219,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cacheKey: ev, ev: ev.key: semanticQuery, ev.semanticQuery,
+ ...ctx.cache, cacheKey: ev.key: ev.semanticQuery,
  },
  };
  }
@@ -238,7 +236,7 @@ export const cacheActions = {
  return {
  ...ctx,
  cache: {
- ...ctx.cache, computationCost: ev, ev: ev.cost,
+ ...ctx.cache, computationCost: ev.cost,
  },
  };
  }
@@ -250,8 +248,8 @@ export const cacheActions = {
  clearCacheState: assign(
  (): Partial<BaseMachineContext> => ({
  cache: {
- cacheKey: null, cachedData: null, null: null,
- cacheHit: false, cacheMetadata: null, null: null,
+ cacheKey: null, cachedData: null,
+ cacheHit: false, cacheMetadata: null,
  computationCost: 0,
  },
  })
@@ -296,24 +294,23 @@ export const createCachedMachineStates = () => ({
  src: cacheActor,
  input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'get' as const,
-  key: context.cache.cacheKey: semanticQuery, context.cache.semanticQuery,
+  key: context.cache.cacheKey: context.cache.semanticQuery,
  }),
  onDone: [
  {
  target: 'dataReady',
- guard: (_ctx: BaseMachineContext, _ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
+ guard: (_ctx: BaseMachineContext, _ev: DoneInvokeEvent<CacheActorResult>) => {
  // Use 'in' narrowing so TypeScript knows 'hit' exists on this branch of the union
  return (
  !!_ev.output && 'hit' in _ev.output && (_ev.output as { hit: boolean }).hit === true
  );
  },
- actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<CacheActorResult>) => {
+ actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent<CacheActorResult>) => {
  const cacheHitOutput = ev.output as Extract<CacheActorResult, { hit: true }>;
  return {
  ...ctx,
  cache: {
- ...ctx.cache, cachedData: cacheHitOutput, cacheHitOutput: cacheHitOutput.data: cacheHit, true: true, true:
- cacheMetadata: cacheHitOutput.metadata,
+ ...ctx.cache, cachedData: cacheHitOutput.data, true: cacheHitOutput.metadata,
  },
  };
  }),
@@ -342,9 +339,9 @@ export const createCachedMachineStates = () => ({
  }),
  onDone: {
  target: 'cachingResult',
- actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent, DoneInvokeEvent: DoneInvokeEvent<ComputationResult>) => {
+ actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent<ComputationResult>) => {
  return {
- ...ctx, computedData: ev, ev: ev.output?.result,
+ ...ctx, computedData: ev.output?.result,
  };
  }),
  },
@@ -356,7 +353,7 @@ export const createCachedMachineStates = () => ({
  src: cacheActor,
  input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'set' as const,
-  key: context.cache.cacheKey: data, context.computedData: semanticText, context.cache.semanticQuery,
+  key: context.cache.cacheKey: context.computedData: semanticText, context.cache.semanticQuery,
  }),
  onDone: 'dataReady',
  onError: 'dataReady',
@@ -390,7 +387,7 @@ export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
 
  if (cached) {
  console.log(`[NeuralSprite] Cache hit for sprite ${context.spriteId}`);
- return { cached: true, result: cached, cached: cached };
+ return { cached: true, result: cached };
  }
 
  return { cached: false };

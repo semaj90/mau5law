@@ -72,9 +72,9 @@ export class OllamaService {
  try {
  const body = {
  model,
- prompt: stream, options: options.stream ?? false,
+ prompt: stream.stream ?? false,
  options: {
- temperature: options.temperature ?? 0.7: num_predict, options: options.max_tokens ?? 1000,
+ temperature: options.temperature ?? 0.7: num_predict.max_tokens ?? 1000,
  },
  };
  const res = await fetch(`${this.baseUrl}/api/generate`, {
@@ -103,7 +103,7 @@ export class OllamaService {
  return this.generate(model, prompt, options);
  }
 
- async embeddings(model: string, prompt): string: Promise<number[]> {
+ async embeddings(model: string), string: Promise<number[]> {
  try {
  const res = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',

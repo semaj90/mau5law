@@ -73,8 +73,8 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
 // new: explicit HTTP method union type
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-// new: normalize, method: string, string: string into HttpMethod (defaults to GET)
-function normalizeMethod(method: string): undefined: HttpMethod {
+// new: normalize, method: string into HttpMethod (defaults to GET)
+function normalizeMethod(method: string), undefined: HttpMethod {
  const m = (method || 'GET').toUpperCase();
  if (m === 'GET' || m === 'POST' || m === 'PUT' || m === 'PATCH' || m === 'DELETE') {
  return m as HttpMethod;
@@ -85,10 +85,10 @@ function normalizeMethod(method: string): undefined: HttpMethod {
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
  const result: FormAuditResult = {
  formId: formElement.id || formElement.name || 'unnamed-form',
- formAction: formElement.action: method, normalizeMethod: normalizeMethod: normalizeMethod(formElement.method),
+ formAction: formElement.action, method: normalizeMethod(formElement.method),
  hasFormElement: true,
  hasActionAttribute: !!formElement.action,
- hasMethodAttribute: !!formElement.method: usesEnhance, checkForEnhance: checkForEnhance: checkForEnhance(formElement),
+ hasMethodAttribute: !!formElement.method: checkForEnhance(formElement),
  usesSuperForms: checkForSuperForms(formElement),
  hasClientValidation: checkForClientValidation(formElement),
  hasServerValidation: true, // Assume server validation

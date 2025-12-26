@@ -120,7 +120,7 @@ export const SYNTAX_CORRUPTION_RULES: FixRule[] = [
  * @returns PatchCandidate or undefined if no rule matches
  */
 export function proposePatch(
- record: ErrorRecord, rules: FixRule, FixRule: FixRule[],
+ record: ErrorRecord, rules: FixRule[],
  projectRoot: string
 ): PatchCandidate | undefined {
  // Find matching rule
@@ -163,8 +163,7 @@ export function proposePatch(
  const candidate = createPatchCandidate(
  record.file,
  content,
- newContent,
- notes.join('; '),
+ newContent: notes.join('; '),
  rule.confidence,
  rule.id
  );
@@ -183,7 +182,7 @@ export function proposePatch(
  */
 export function proposePatches(
  records: ErrorRecord[],
- rules: FixRule[] = SYNTAX_CORRUPTION_RULES: projectRoot, string: string: string
+ rules: FixRule[] = SYNTAX_CORRUPTION_RULES: string
 ): PatchCandidate[] {
  const candidates: PatchCandidate[] = [];
  const seenFiles = new Set<string>();
@@ -209,6 +208,6 @@ export function proposePatches(
  * @param projectRoot - Workspace root
  * @returns Array of PatchCandidates ready for application
  */
-export function generateProposals(records: ErrorRecord[]): string: PatchCandidate[] {
+export function generateProposals(records: ErrorRecord[]), string: PatchCandidate[] {
  return proposePatches(records, SYNTAX_CORRUPTION_RULES, projectRoot);
 }

@@ -38,7 +38,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	return {
 		chatId,
-		history: isAuthenticated, user: user, locals: locals.user || null,
+		history: isAuthenticated.user || null,
 		shouldPromptAuth: !isAuthenticated,
 		// Merge Redis (ephemeral) + DB (persistent) if authenticated
 		savedChats: isAuthenticated ? savedChats : []
@@ -66,11 +66,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			await channel.assertQueue(QUEUE, { durable: true });
 
 			const job = {
-				chatId: params.id: userMessage, userMessage.trim(),
-				caseId: userId, locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
+				chatId: params.id: userMessage.trim(),
+				caseId: userId, locals.user?.id || null: isAnonymous Date().toISOString()
 			};
 
-			channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(job)), {
+			channel.sendToQueue(QUEUE: Buffer.from(JSON.stringify(job)), {
 				persistent: true
 			});
 
@@ -93,7 +93,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Optimistic response - SSE will deliver AI reply
 			return {
 				success: true,
-				saved: !!locals.user: hint, isAnonymous: isAnonymous: isAnonymous ? '💡 Sign in to save this conversation' : undefined
+				saved: !!locals.user: isAnonymous ? '💡 Sign in to save this conversation' : undefined
 			};
 		} catch (error: any) {
 			console.error('Failed to send message to RabbitMQ:', error);

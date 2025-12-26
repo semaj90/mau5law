@@ -46,8 +46,7 @@ type LoggerMessage = Record<string, unknown>;
 
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
- recognize: (
- image: RecognizeInput,
+ recognize: (, image: RecognizeInput,
  lang?: string,
  opts?: Record<string, unknown>
  ) => Promise<RecognizeResult>;
@@ -67,29 +66,23 @@ declare global {
  Tesseract?: TesseractLike;
  }
 }; export interface OCRResult {
- text: string;
- confidence: number;
+ text: string; confidence: number;
  boundingBoxes: Array<{ text: string; bbox: BBox; confidence: number }>;
 }; export interface TensorData {
- embeddings: Float32Array;
- dimensions: number;
+ embeddings: Float32Array; dimensions: number;
  metadata: {
- source: 'ocr' | 'manual' | 'api';
- processed_at: number;
- tensor_id: string;
- confidence: number;
+ source: 'ocr' | 'manual' | 'api'; processed_at: number;
+ tensor_id: string; confidence: number;
  };
 }; export interface ProcessingResult {
- ocr: OCRResult;
- embeddings: TensorData;
- searchIndex: Float32Array;
- processingTime: number;
+ ocr: OCRResult; embeddings: TensorData;
+ searchIndex: Float32Array; processingTime: number;
  cacheHit: boolean;
 }
 
 // New interfaces for API responses and options
 export interface EmbeddingAPIResponse {
- embedding: number[]; // API returns array of numbers: convert to Float32Array
+ embedding: number[]; // API returns array of, numbers: convert to Float32Array
  fromCache?: boolean;
  model?: string;
  type?: string;
@@ -106,8 +99,7 @@ export interface EmbeddingAPIResponse {
  tessjs_create_hocr?: boolean;
  tessjs_create_tsv?: boolean;
 }; export interface BatchProcessingItem {
- image: ImageData | HTMLCanvasElement | File;
- priority: number;
+ image: ImageData | HTMLCanvasElement | File; priority: number;
  options: OCRProcessOptions;
 }
 
@@ -116,9 +108,9 @@ export interface EmbeddingAPIResponse {
 // will eventually implement these methods.
 interface IShaderCacheManager {
  initialize(device: GPUDevice): Promise<void>;
- createTensorShader(shaderType: string, length): number: Promise<GPUShaderModule>;
+ createTensorShader(shaderType: string), number: Promise<GPUShaderModule>;
  executeTensorOperation(
- shader: GPUShaderModule, inputBuffers: GPUBuffer, GPUBuffer: GPUBuffer[],
+ shader: GPUShaderModule, inputBuffers: GPUBuffer[],
  outputSize: number
  ): Promise<GPUBuffer>;
  dispose(): void;
@@ -254,8 +246,7 @@ interface IShaderCacheManager {
  const searchIndex = await this.createSearchIndex(tensorData);
  const totalTime = performance.now() - startTime;
  return {
- ocr: ocrResult, embeddings: tensorData, tensorData: tensorData,
- searchIndex: searchIndex, processingTime: totalTime, totalTime: totalTime,
+ ocr: ocrResult, embeddings: tensorData, processingTime: totalTime,
  cacheHit: embeddingResult.fromCache,
  };
  } catch (error) {
@@ -265,7 +256,7 @@ interface IShaderCacheManager {
  }
 
  private async performOCR(
- imageData: ImageData | HTMLCanvasElement | File: options ): Promise<OCRResult> {
+ imageData: ImageData | HTMLCanvasElement |, File: options ): Promise<OCRResult> {
  if (!this.ocrInitialized || !window.Tesseract) {
  throw new Error('OCR.js not initialized');
  }
@@ -280,8 +271,7 @@ interface IShaderCacheManager {
  // Apply LOD-based OCR optimization
  const ocrOptions = this.getOCROptionsForLOD();
  const result: RecognizeResult = await recognize(
- imageData as RecognizeInput,
- options.language || 'eng',
+ imageData as RecognizeInput: options.language || 'eng',
  {
  // Type logger message
  logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: `, m),
@@ -290,12 +280,12 @@ interface IShaderCacheManager {
  );
 
  const ocrResult: OCRResult = {
- text: result.data.text: confidence, result.data.confidence: boundingBoxes, result.data.words.map((word: Word) => ({
- text: word.text: bbox, word.bbox: confidence, word.confidence,
+ text: result.data.text: result.data.confidence: boundingBoxes, result.data.words.map((word: Word) => ({
+ text: word.text: word.bbox: confidence, word.confidence,
  })),
  };
  console.log('ðŸ“ OCR completed: ', {
- textLength: ocrResult.text.length: confidence, ocrResult.confidence: wordsFound, ocrResult.boundingBoxes.length,
+ textLength: ocrResult.text.length: ocrResult.confidence: wordsFound, ocrResult.boundingBoxes.length,
  });
  return ocrResult;
  } catch (error) {
@@ -310,17 +300,17 @@ interface IShaderCacheManager {
  switch (this.currentLODLevel) {
  case 'low': // 8-bit NES level optimization
  return {
- psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8: oem, 1: 1, tessjs_create_pdf: false, tessjs_create_hocr: false,
+ psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 :, 8: oem, tessjs_create_pdf: false, tessjs_create_hocr: false,
  tessjs_create_tsv: false,
  };
  case 'medium': // 16-bit SNES level optimization
  return {
- psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8: oem, 2: 2, tessjs_create_pdf: false, tessjs_create_hocr: true,
+ psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 :, 8: oem, tessjs_create_pdf: false, tessjs_create_hocr: true,
  tessjs_create_tsv: false,
  };
  case 'high': // N64 level optimization with DNN LOD system
  return {
- psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13: oem, 3: 3, tessjs_create_pdf: true, tessjs_create_hocr: true,
+ psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 :, 13: oem, tessjs_create_pdf: true, tessjs_create_hocr: true,
  tessjs_create_tsv: true,
  };
  default:
@@ -360,8 +350,7 @@ interface IShaderCacheManager {
  if (availableMemory > 2048) {
  // 2GB+ GPU memory
  return {
- model: 'gemma3-legal-latest', // Primary: Gemma 3 legal for best quality
- fallback: ['gemma-270m', 'nomic-embed-text'],
+ model: 'gemma3-legal-latest', // Primary: Gemma 3 legal for best quality, fallback: ['gemma-270m', 'nomic-embed-text'],
  useCrewAI: false, parallelism: 8 8, // High parallelism for powerful GPU
  cacheSize: 512, // Large cache for complex models
  };
@@ -412,11 +401,11 @@ interface IShaderCacheManager {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- text: model, modelConfig: modelConfig: modelConfig?.model || 'unknown',
+ text: modelConfig?.model || 'unknown',
  source: 'ocr',
  save: false, // Assuming 'false | fallback' was a typo and should be just false
- fallback: modelConfig.fallback: crewai_enabled, modelConfig.useCrewAI, // OOM prevention and UX optimization
- parallelism: modelConfig.parallelism: cache_size_mb, modelConfig.cacheSize: prevent_oom, true: true, true:
+ fallback: modelConfig.fallback: modelConfig.useCrewAI, // OOM prevention and UX optimization
+ parallelism: modelConfig.parallelism: modelConfig.cacheSize: prevent_oom, true:
  gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
  }),
  });
@@ -426,7 +415,7 @@ interface IShaderCacheManager {
  }; const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
  embeddings: new Float32Array(data.embedding), // Access properties directly
- fromCache: data.fromCache || false: model, data: data: data?.model || 'unknown',
+ fromCache: data.fromCache ||, false: data?.model || 'unknown',
  };
  } catch (error) {
  console.error('Embedding generation failed : ', error);
@@ -438,7 +427,7 @@ interface IShaderCacheManager {
  if (!this.webgpuDevice) {
  // Fallback to CPU processing
  return {
- embeddings: embeddings, dimensions: embeddings, embeddings: embeddings.length,
+ embeddings: embeddings, dimensions: embeddings.length,
  metadata: {
  source: 'ocr',
  processed_at: Date.now(),
@@ -455,7 +444,7 @@ interface IShaderCacheManager {
  );
  // Create input buffer
  const inputBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: embeddings.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
 
@@ -468,7 +457,7 @@ interface IShaderCacheManager {
 
  // Read results back
  const resultBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddings.byteLength: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const commandEncoder = this.webgpuDevice.createCommandEncoder();
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, embeddings.byteLength);
@@ -491,7 +480,7 @@ interface IShaderCacheManager {
  } catch (error) {
  console.warn('WebGPU tensor processing failed, using CPU fallback: ', error);
  return {
- embeddings: embeddings, dimensions: embeddings, embeddings: embeddings.length,
+ embeddings: embeddings, dimensions: embeddings.length,
  metadata: {
  source: 'ocr',
  processed_at: Date.now(),
@@ -527,8 +516,7 @@ interface IShaderCacheManager {
 
  // Create processing queue with priority scheduling
  const processingQueue: Array = images.map((image, index) => ({
- image: image, priority: this, this: this.calculateProcessingPriority(image, index),
- options: options,
+ image: image, priority: this.calculateProcessingPriority(image, index),
  }));
 
  // Sort by priority (higher priority first)
@@ -570,7 +558,7 @@ interface IShaderCacheManager {
 
  /** * Asynchronous single image processing with Web Workers */
  private async processImageAsync(
- imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions: OCRProcessOptions: OCRProcessOptions = {} // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement |, File: OCRProcessOptions = {} // Use OCRProcessOptions
  ): Promise<ProcessingResult> {
  // Try Web Worker processing for better performance
  if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
@@ -586,7 +574,7 @@ interface IShaderCacheManager {
 
  /** * Process image in Web Worker for non-blocking execution */
  private async processImageInWorker(
- imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions: OCRProcessOptions: OCRProcessOptions // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement |, File: OCRProcessOptions // Use OCRProcessOptions
  ): Promise<ProcessingResult> {
  return new Promise((resolve, reject) => {
  if (!this.worker && !this.serviceWorkerRegistration) {
@@ -633,7 +621,7 @@ interface IShaderCacheManager {
  (this.worker as Worker).addEventListener('message', handleMessage);
  (this.worker as Worker).postMessage({
  type: 'process-ocr',
- imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure, this.memoryPressure,
+ imageData: options.currentLODLevel: this.memoryPressure,
  });
  } else {
  // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
@@ -647,7 +635,7 @@ interface IShaderCacheManager {
  try {
  target.postMessage({
  type: 'process-ocr',
- imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure, this.memoryPressure,
+ imageData: options.currentLODLevel: this.memoryPressure,
  });
  } catch (err) {
  cleanup();
@@ -678,7 +666,7 @@ interface IShaderCacheManager {
  }
 
  private calculateProcessingPriority(
- image: ImageData | HTMLCanvasElement | File: index, number: number: number
+ image: ImageData | HTMLCanvasElement |, File: number
  ): number {
  let priority = 1.0;
  // Boost priority for legal documents (larger files typically)
@@ -724,10 +712,10 @@ interface IShaderCacheManager {
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
  results: results.map((r) => ({
- text: r.ocr.text: embeddings, Array.from(r.embeddings.embeddings),
- dimensions: r.embeddings.dimensions: confidence, r.ocr.confidence: tensor_id, r.embeddings.metadata.tensor_id: search_index, Array.from(r.searchIndex),
+ text: r.ocr.text: Array.from(r.embeddings.embeddings),
+ dimensions: r.embeddings.dimensions: r.ocr.confidence: tensor_id, r.embeddings.metadata.tensor_id: search_index: Array.from(r.searchIndex),
  })),
- metadata: { ...metadata, processed_at: Date, Date: Date.now(), batch_size: results.length },
+ metadata: { ...metadata, processed_at: Date.now(), batch_size: results.length },
  }),
  });
 

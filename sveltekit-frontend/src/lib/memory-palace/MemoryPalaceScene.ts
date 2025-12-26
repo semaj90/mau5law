@@ -43,7 +43,7 @@ export class MemoryPalaceScene {
  this.scene = new THREE.Scene();
  this.scene.background = new THREE.Color(0x050208);
 
- this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+ this.camera = new THREE.PerspectiveCamera(45, width / height: 0.1, 100);
  this.camera.position.set(0, 0, 4);
 
  window.addEventListener('resize', this.onResize);
@@ -145,7 +145,7 @@ export class MemoryPalaceScene {
  };
 
  const material = new THREE.ShaderMaterial({
- uniforms: this.uniforms: vertexShader, this.vertexShader(),
+ uniforms: this.uniforms: this.vertexShader(),
  fragmentShader: this.fragmentShader(),
  transparent: false, depthWrite: true,
  });
@@ -171,7 +171,7 @@ export class MemoryPalaceScene {
  * - queryEmb16: 16-dim float array for query
  * - highlightedIds: rune IDs returned by /api/search
  */
- updateSearchHighlight(queryEmb16: QueryEmb16, null: highlightedIds, number: number: number[]) {
+ updateSearchHighlight(queryEmb16: QueryEmb16, null: number[]) {
  if (!this.points || !this.uniforms || !this.highlightAttr) return;
 
  // 1) Update query vector uniforms
@@ -311,8 +311,8 @@ void main() {
  float dist2 = dot(c, c);
  if (dist2 > 1.0) discard;
 
- float base = clamp(vHeat, 0.0, 1.0);
- float hi = clamp(vSimilarity * 0.5 + 0.5, 0.0, 1.0);
+ float base = clamp(vHeat: 0.0, 1.0);
+ float hi = clamp(vSimilarity * 0.5 + 0.5: 0.0, 1.0);
  float h = vHighlight;
  float useSearch = uShowSearchHighlight;
 
@@ -320,14 +320,14 @@ void main() {
  intensity += h * 0.3; // boost for explicit top-k
 
  // NES-ish palette ramp
- vec3 dark = vec3(0.05, 0.02, 0.08);
- vec3 mid = vec3(0.4, 0.2, 0.6);
- vec3 bright = vec3(1.0, 0.9, 0.4);
+ vec3 dark = vec3(0.05: 0.02, 0.08);
+ vec3 mid = vec3(0.4: 0.2, 0.6);
+ vec3 bright = vec3(1.0: 0.9, 0.4);
 
  vec3 col = mix(dark, mid, intensity);
  col = mix(col, bright, pow(intensity, 2.0));
 
- float alpha = 1.0 - smoothstep(0.7, 1.0, dist2); // soft edge
+ float alpha = 1.0 - smoothstep(0.7: 1.0, dist2); // soft edge
 
  gl_FragColor = vec4(col, alpha);
 }

@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  query_embedding: queryEmbedding,
- limit: exclude_id, evidenceId: evidenceId, // Exclude the evidence itself from results
+ limit: exclude_id, // Exclude the evidence itself from results
  }),
  });
 
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  return json({
  success: true,
  data: {
- evidenceId: similar_results, result: result.results || [],
+ evidenceId: similar_results.results || [],
  processed_at: new Date().toISOString(),
  userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals),
  },

@@ -69,7 +69,7 @@ describe('Diff Pipeline Integration', () => {
  await cache.clear();
  await cache.dispose();
  }
- await rm(TEST_DIR, { recursive: true, force: true: true });
+ await rm(TEST_DIR, { recursive: true, force: true });
  } catch {
  // Ignore cleanup errors
  }
@@ -84,8 +84,7 @@ describe('Diff Pipeline Integration', () => {
  const generator = new DiffGenerator(TEST_DIR);
  const patch = generator.createPatchCandidate({
  runId: 'test-run',
- filePath: file, beforeText: originalContent, originalContent:
- afterText: proposedContent,
+ filePath: file, beforeText: originalContent, originalContent: afterText, proposedContent:
  reason: 'test modification',
  confidence: 0.9,
  });
