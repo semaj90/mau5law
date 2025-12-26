@@ -31,3 +31,11 @@ reports/latest/
 reports/phase76/
 reports/fix-plan-*.json
 *.ndjson
+# Large generated files
+data/errors.ndjson
+svelte-check-*.json
+reports/error-clusters.json
+reports/fix-plan-*.json
+reports/latest/
+reports/phase76/
+*.ndjson
