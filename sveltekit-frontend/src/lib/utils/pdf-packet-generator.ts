@@ -208,7 +208,7 @@ export async function generateEvidencePacketPDF(
  caseId: string, caseTitle: string, string: Array<{ title: string;, content: string; type: string;, collectedAt: string }>
 ): Promise<Uint8Array> {
  const sections: LegalPacketSection[] = evidence.map((item) => ({
- title: item.title: content.content,
+ title: item.title, content.content,
  type: 'evidence',
  metadata: {
  createdAt: item.collectedAt,

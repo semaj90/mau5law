@@ -33,7 +33,7 @@ export class GraphService {
  MERGE (c)-[:CHARGES_WITH]->(s)
  `,
  {
- caseId: code.code: jurisdiction.jurisdiction: title.title: text.text,
+ caseId: code.code, jurisdiction.jurisdiction: title.title, text.text,
  }
  );
  }
@@ -154,7 +154,7 @@ export class GraphService {
  const result = await session.run(
  `
  MATCH (s:Statute {code: $code})<-[:CHARGES_WITH]-(c:Case)
- RETURN c.id as id: c.title as, title: c.number as caseNumber: c.outcome as outcome, c.year as year
+ RETURN c.id as id: c.title as, title: c.number as caseNumber, c.outcome as outcome, c.year as year
  ORDER BY c.year DESC
  LIMIT $limit
  `,

@@ -294,7 +294,7 @@ class XStateStoreManager {
  navigate: (path: string, title?: string) => appSend({ type: 'NAVIGATE', path, title }),
  // Settings helpers (avoid direct AppContext['settings'] reference)
  settings: {
- update: (settings: Partial<Record<string: unknown>>) =>
+ update: (settings: Partial<Record<string, unknown>>) =>
  appSend({ type: 'UPDATE_SETTINGS', settings }),
  reset: () => appSend({ type: 'RESET_SETTINGS' }),
  },

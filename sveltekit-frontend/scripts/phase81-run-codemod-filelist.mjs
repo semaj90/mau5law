@@ -16,12 +16,28 @@ import fs from "node:fs";
 
 const listPath = process.argv.find(a => a.startsWith("--list="))?.split("=")[1] ?? "reports/hot-files.txt";
 const script = process.argv.find(a => a.startsWith("--script="))?.split("=")[1] ?? "scripts/phase80-extended-codemod.mjs";
+const outParam = process.argv.find(a => a.startsWith("--out="))?.split("=")[1];
 const mode = process.argv.includes("--apply") ? "apply" : "dry-run";
+const batch = process.argv.includes("--batch");
 
 console.log(`\n📋 Phase 81: File List Codemod Runner`);
 console.log(`   List: ${listPath}`);
 console.log(`   Script: ${script}`);
-console.log(`   Mode: ${mode}\n`);
+console.log(`   Mode: ${mode}`);
+console.log(`   Batch: ${batch}\n`);
+
+if (batch) {
+  const args = [
+    script,
+    `--list=${listPath}`,
+    ...(mode === "dry-run" ? ["--dry-run"] : []),
+    ...(outParam ? [`--out=${outParam}`] : [])
+  ];
+
+  console.log(`🚀 Executing batch command: node ${args.join(" ")}`);
+  const r = spawnSync("node", args, { stdio: "inherit", shell: true });
+  process.exit(r.status ?? 1);
+}
 
 const files = fs.readFileSync(listPath, "utf8")
   .split(/\r?\n/)

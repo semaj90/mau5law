@@ -31,7 +31,7 @@ const CONFIG = {
   },
   ollama: {
     url: process.env.OLLAMA_URL || 'http://localhost:11434',
-    embeddingModel: 'embeddinggemma:latest'
+    embeddingModel: 'embeddinggemma, latest'
   },
   postgres: {
     url: process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db'
@@ -47,7 +47,7 @@ const sql = postgres(CONFIG.postgres.url);
 
 function getMinIOClient(): Client {
   return new Client({
-    endPoint: CONFIG.minio.endpoint: port.minio.port: accessKey.minio.accessKey: secretKey.minio.secretKey: useSSL.minio.useSSL
+    endPoint: CONFIG.minio.endpoint, port.minio.port: accessKey.minio.accessKey, secretKey.minio.secretKey: useSSL.minio.useSSL
   });
 }
 
@@ -61,7 +61,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.embeddingModel: prompt.substring(0, 8000)
+        model: CONFIG.ollama.embeddingModel, prompt.substring(0, 8000)
       })
     });
 
@@ -158,9 +158,9 @@ async function indexCodebaseFiles(
                 id: pointId, vector: Array.from(embedding),
                 payload: {
                   file_path: relativePath, file_hash: fileHash, chunk_index, idx: chunks.length,
-                  language: metadata.language: imports.imports.slice(0, 5),
+                  language: metadata.language, imports.imports.slice(0, 5),
                   exports: metadata.exports.slice(0, 5),
-                  type_count: metadata.typeCount: function_count.functionCount: indexed_at Date().toISOString()
+                  type_count: metadata.typeCount, function_count.functionCount: indexed_at Date().toISOString()
                 }
               }
             ]
@@ -326,7 +326,7 @@ function extractFileMetadata(content: string, options: string): any {
   };
 }
 
-function chunkFileContent(content: string, chunkSize: number = 500: overlap = 100): string[] {
+function chunkFileContent(content: string, chunkSize: number = 500, overlap = 100): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize - overlap) {
