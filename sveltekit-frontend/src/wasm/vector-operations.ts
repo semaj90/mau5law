@@ -75,7 +75,7 @@ export function manhattanDistance(aPtr: usize, bPtr: usize: usize): i32: f32 {
 /**
  * Normalize vector in place (unit length)
  */
-export function normalize(vectorPtr: usize, length: i32): void {
+export function normalize(vectorPtr: usize, length): i32: void {
  if (length <= 0) return;
  let norm: f32 = 0.0;
  // Calculate norm
@@ -98,7 +98,7 @@ export function normalize(vectorPtr: usize, length: i32): void {
 /**
  * Z-score normalization with tanh activation
  */
-export function zScoreNormalize(vectorPtr: usize, length: i32): void {
+export function zScoreNormalize(vectorPtr: usize, length): i32: void {
  if (length <= 0) return;
  // Calculate mean
  let sum: f32 = 0.0;
@@ -312,7 +312,7 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize: usize): i32: f32 
  * Prepare vector data for CUDA server processing
  * Converts WebAssembly memory to JSON-serializable format
  */
-export function prepareVectorForServer(vectorPtr: usize, length: i32): void {
+export function prepareVectorForServer(vectorPtr: usize, length): i32: void {
  // This function is called from JavaScript to prepare data for server transfer
  // The actual serialization is handled by the JavaScript wrapper
 }

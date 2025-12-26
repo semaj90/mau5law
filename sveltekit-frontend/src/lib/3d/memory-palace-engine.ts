@@ -154,7 +154,7 @@ void main() {
  }
  }
 
- private createShaderProgram(vertexSource: string, fragmentSource: string): WebGLProgram | null {
+ private createShaderProgram(vertexSource: string, fragmentSource): string: WebGLProgram | null {
  const gl = this.gl;
  const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
  const fragmentShader = this.compileShader(gl.FRAGMENT_SHADER, fragmentSource);
@@ -175,7 +175,7 @@ void main() {
  return program;
  }
 
- private compileShader(type: number, source: string): WebGLShader | null {
+ private compileShader(type: number, source): string: WebGLShader | null {
  const gl = this.gl;
  const shader = gl.createShader(type);
  if (!shader) return null;
@@ -328,18 +328,18 @@ void main() {
  return 3; // Minimal detail
  }
 
- private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {
+ private renderRoomGeometry(_room: MemoryRoom, lodLevel): number: void {
  // Render simplified geometry based on LOD
  // This would create the actual WebGL buffers and draw calls
  }
 
- private shouldRenderDocument(document: LegalDocument, roomDistance: number): boolean {
+ private shouldRenderDocument(document: LegalDocument, roomDistance): number: boolean {
  // Cull documents based on priority and distance
  const priorityThreshold = Math.max(0.1, 1.0 - roomDistance / 50.0);
  return document.priority >= priorityThreshold;
  }
 
- private renderDocument(_document: LegalDocument, lodLevel: number): void {
+ private renderDocument(_document: LegalDocument, lodLevel): number: void {
  // Render document as a floating card or hologram
  // Style based on document type and confidence
  }
@@ -388,7 +388,7 @@ void main() {
  this.camera.target = target;
  }
 
- addDocument(roomId: string, document: LegalDocument): boolean {
+ addDocument(roomId: string, document): LegalDocument: boolean {
  const room = this.rooms.get(roomId);
  if (!room) return false;
  room.documents.push(document);

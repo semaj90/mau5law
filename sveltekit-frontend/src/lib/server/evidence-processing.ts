@@ -21,7 +21,7 @@ interface VectorStore {
 }
 
 interface CacheStore {
- set(key: string, value: string, string: string): Promise<void>;
+ set(key: string, value: string, string): string: Promise<void>;
  get(key: string): Promise<string | null>;
 }
 
@@ -40,7 +40,7 @@ const qdrantStore: VectorStore = {
 };
 
 const redisCache: CacheStore = {
- async set(key: string, value: string, string: string): number {
+ async set(key: string, value: string, string): string: number {
  console.log(`[Redis] Caching ${key} with TTL ${ttl}s`);
  // TODO: Actual Redis SET with EX
  },
@@ -69,7 +69,7 @@ async function analyzeWithAI({
  // Stream AI analysis with token-level updates
  await runAIAgentStream(
  `Analyze this legal document: ${fileName}. Extract key points and suggest relevant tags.`,
- async (_token: string, fullText: string): string => {
+ async (_token: string, fullText): string: string => {
  // Marked 'token' as unused with '_token'
  summaryText = fullText;
  // Extract tags during streaming (simple regex pattern)

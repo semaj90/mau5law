@@ -32,7 +32,7 @@ export function initializeRun(runId: string): RunProgress {
 /**
  * Update run step and progress
  */
-export function updateRunStep(runId: string, step: RunStep, RunStep: RunStep): void {
+export function updateRunStep(runId: string, step: RunStep, RunStep): RunStep: void {
  const state = runStates.get(runId);
  if (!state) return;
 

@@ -177,7 +177,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  }
 
- async updateSessionExpiration(sessionId: string, expiresAt: Date): Promise<void> {
+ async updateSessionExpiration(sessionId: string, expiresAt): Date: Promise<void> {
  try {
  await db.update(sessions).set({ expiresAt: expiresAt }).where(eq(sessions.id, sessionId)); // Changed expires_at to expiresAt
  } catch (error) {

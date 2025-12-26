@@ -27,7 +27,7 @@ export class CitationManagementService {
  /**
  * Save a new citation
  */
- async saveCitation(userId: string, request: CitationSaveRequest): Promise<SavedCitation> {
+ async saveCitation(userId: string, request): CitationSaveRequest: Promise<SavedCitation> {
  try {
  const result = await db.query(
  `INSERT INTO saved_citations (
@@ -142,7 +142,7 @@ export class CitationManagementService {
  /**
  * Delete a citation
  */
- async deleteCitation(userId: string, citationId: string): Promise<void> {
+ async deleteCitation(userId: string, citationId): string: Promise<void> {
  try {
  // Verify ownership
  const ownership = await db.query('SELECT user_id FROM saved_citations WHERE id = $1', [
@@ -255,7 +255,7 @@ export class CitationManagementService {
  /**
  * Get citation by ID
  */
- async getCitationById(userId: string, citationId: string): Promise<SavedCitation | null> {
+ async getCitationById(userId: string, citationId): string: Promise<SavedCitation | null> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE id = $1 AND user_id = $2',
@@ -293,7 +293,7 @@ export class CitationManagementService {
  /**
  * Get citations for a case
  */
- async getCitationsForCase(userId: string, caseId: string): Promise<SavedCitation[]> {
+ async getCitationsForCase(userId: string, caseId): string: Promise<SavedCitation[]> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE user_id = $1 AND case_id = $2 ORDER BY created_at DESC',

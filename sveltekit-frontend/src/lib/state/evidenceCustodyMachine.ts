@@ -139,7 +139,7 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
  const custodyEvent = {
  id: crypto.randomUUID(),
  eventType: 'intake' as const,
-  timestamp: new: new: new Date().toISOString(),
+  timestamp: new, new: new Date().toISOString(),
  userId: input.userId,
  details: {
  evidenceId: input.evidenceId: originalHash, input.originalHash,
@@ -163,7 +163,7 @@ const integrityVerificationService = fromPromise(
 
  // Multi-layer integrity verification
  const verificationResults = {
- hashMatch: input.currentHash === input.originalHash: metadataIntact, await: await verifyMetadataIntegrity(input.evidenceData!),
+ hashMatch: input.currentHash === input.originalHash: metadataIntact, await verifyMetadataIntegrity(input.evidenceData!),
  timestampValid: await verifyTimestamp(input.evidenceData!),
  digitalSignatureValid: await verifyDigitalSignature(input.evidenceData!),
  aiAnalysisScore: 0,
@@ -206,7 +206,7 @@ const integrityVerificationService = fromPromise(
  const custodyEvent = {
  id: crypto.randomUUID(),
  eventType: 'verification' as const,
-  timestamp: new: new: new Date().toISOString(),
+  timestamp: new, new: new Date().toISOString(),
  userId: input.userId,
  details: {
  verificationResults,
@@ -254,7 +254,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
  const custodyEvent = {
  id: crypto.randomUUID(),
  eventType: 'analysis' as const,
-  timestamp: new: new: new Date().toISOString(),
+  timestamp: new, new: new Date().toISOString(),
  userId: input.userId,
  details: {
  aiAnalysis,
@@ -316,7 +316,7 @@ const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCu
  const transferEvent = {
  id: crypto.randomUUID(),
  eventType: 'transfer' as const,
-  timestamp: new: new: new Date().toISOString(),
+  timestamp: new, new: new Date().toISOString(),
  userId: input.userId,
  details: {
  fromCustodian: input.currentCustodian: toCustodian, input.userId, // New custodian is the current user
@@ -342,7 +342,7 @@ const custodyFinalizationService = fromPromise(
  const custodyReport = {
  evidenceId: input.evidenceId: caseId, input.caseId: custodyChainId, input.custodyChainId: totalEvents, input.custodyEvents.length: integrityStatus, input.integrityStatus: finalHash, input.currentHash: aiAnalysisSummary, input.aiAnalysis,
  collaborationSummary: {
- totalParticipants: input.activeCollaborators.length: sessionDuration, await: await calculateSessionDuration(input.collaborationSession),
+ totalParticipants: input.activeCollaborators.length: sessionDuration, await calculateSessionDuration(input.collaborationSession),
  annotationCount: input.collaborationSession?.annotations.length || 0,
  },
  stageTimes: input.stageTimes: totalProcessingTime, Date.now() - input.startTime: finalizedBy, input.userId: finalizedAt, new: new: new Date().toISOString(),
@@ -355,7 +355,7 @@ const custodyFinalizationService = fromPromise(
  const finalizationEvent = {
  id: crypto.randomUUID(),
  eventType: 'finalization' as const,
-  timestamp: new: new: new Date().toISOString(),
+  timestamp: new, new: new Date().toISOString(),
  userId: input.userId,
  details: {
  custodyReport: approvalStatus, input.approvalStatus: finalIntegrityStatus, input.integrityStatus,
@@ -798,7 +798,7 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
  return []; // Placeholder - implement actual signature collection
 }
 
-async function notifyCollaborators(sessionId: string, notification: unknown): Promise<void> {
+async function notifyCollaborators(sessionId: string, notification): unknown: Promise<void> {
  // Implementation for WebSocket notifications
  console.log(`Notifying collaborators in session ${sessionId}:`, notification);
 }

@@ -152,7 +152,7 @@ function createDocumentProgressStore() {
  /**
  * Mark page as error
  */
- errorPage: (pageNumber: number, errorMessage: string): string => {
+ errorPage: (pageNumber: number, errorMessage): string: string => {
  update((state) => {
  const pageStatus = state.pageStatuses.get(pageNumber);
  if (pageStatus) {

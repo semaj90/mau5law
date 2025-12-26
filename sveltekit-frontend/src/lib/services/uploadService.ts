@@ -35,7 +35,7 @@ class UploadService {
  /**
  * Upload file to server
  */
- async uploadFile(file: File, caseId: string): Promise<UploadResponse> {
+ async uploadFile(file: File, caseId): string: Promise<UploadResponse> {
  // Cancel previous request
  if (this.abortController) {
  this.abortController.abort();

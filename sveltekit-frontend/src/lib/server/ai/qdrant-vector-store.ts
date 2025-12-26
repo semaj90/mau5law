@@ -150,7 +150,7 @@ export class QdrantVectorStore {
  }
 
  /** Ensure collection exists, create if not */
- private async ensureCollection(collectionName: string, vectorSize: number): Promise<void> {
+ private async ensureCollection(collectionName: string, vectorSize): number: Promise<void> {
  try {
  const collections = ;
  (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;

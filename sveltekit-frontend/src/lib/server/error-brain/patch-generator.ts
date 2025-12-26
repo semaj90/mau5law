@@ -77,7 +77,7 @@ export class PatchGenerator {
  * Generate patches from LLM response
  * Returns PatchCandidate objects ready for storage/application
  */
- async generatePatchesFromLLM(runId: string, llmResponse: string): Promise<PatchCandidate[]> {
+ async generatePatchesFromLLM(runId: string, llmResponse): string: Promise<PatchCandidate[]> {
  const parsed = this.parseLLMResponse(llmResponse);
  const patches: PatchCandidate[] = [];
 
@@ -129,7 +129,7 @@ export class PatchGenerator {
  /**
  * Complete workflow: Parse LLM → Generate patches → Store in DB
  */
- async processLLMFix(runId: string, llmResponse: string): Promise<number[]> {
+ async processLLMFix(runId: string, llmResponse): string: Promise<number[]> {
  const patches = await this.generatePatchesFromLLM(runId, llmResponse);
  const patchIds: number[] = [];
 

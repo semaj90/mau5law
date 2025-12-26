@@ -255,7 +255,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.get(key);
  }
 
- async setex(key: string, seconds: number, number: number): Promise<'OK' | null> {
+ async setex(key: string, seconds: number, number): number: Promise<'OK' | null> {
  await this.ensureConnected();
  return this.client.setex(key, seconds, value);
  }
@@ -265,7 +265,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.hset(key, data);
  }
 
- async hget(key: string, field: string): Promise<string | null> {
+ async hget(key: string, field): string: Promise<string | null> {
  await this.ensureConnected();
  return this.client.hget(key, field);
  }
@@ -314,7 +314,7 @@ export class QdrantAdapter implements QdrantClient {
  });
  }
 
- async createCollection(name: string, vectorSize: number): Promise<void> {
+ async createCollection(name: string, vectorSize): number: Promise<void> {
  await this.ensureClient();
  await this.client.createCollection(name, {
  vectors: { size: vectorSize, distance: 'Cosine' },
@@ -455,12 +455,12 @@ export class MinIOAdapter implements MinIOClient {
  return { etag: result.etag };
  }
 
- async getObject(bucket: string, key: string): Promise<ReadableStream> {
+ async getObject(bucket: string, key): string: Promise<ReadableStream> {
  await this.ensureClient();
  return this.client.getObject(bucket, key);
  }
 
- async removeObject(bucket: string, key: string): Promise<void> {
+ async removeObject(bucket: string, key): string: Promise<void> {
  await this.ensureClient();
  await this.client.removeObject(bucket, key);
  }

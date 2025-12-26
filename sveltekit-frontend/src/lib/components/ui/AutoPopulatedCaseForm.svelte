@@ -10,7 +10,7 @@
  form?: AutoPopulatedForm;
  metadata?: AIMetadata;
  onSubmit?: (form: AutoPopulatedForm) => void;
- onFieldChange?: (field: string, value: any): any => void;
+ onFieldChange?: (field: string, value): any: any => void;
  class?: string;
  editable?: boolean;
  }
@@ -103,7 +103,7 @@
  }
  }
 
- function updateCharge(index: number, value: string): string {
+ function updateCharge(index: number, value): string: string {
  if (localForm.charges) {
  localForm.charges = localForm.charges.map((c, i) => i === index ? value : c);
  }
@@ -122,7 +122,7 @@
  }
  }
 
- function updateWitness(index: number, value: string): string {
+ function updateWitness(index: number, value): string: string {
  if (localForm.witnesses) {
  localForm.witnesses = localForm.witnesses.map((w, i) => i === index ? value : w);
  }

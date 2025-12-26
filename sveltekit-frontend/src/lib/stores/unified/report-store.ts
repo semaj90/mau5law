@@ -204,7 +204,7 @@ function createReportStore() {
  .map((id) => s.editorContent.find((sec: ReportSection) => sec.id === id))
  .filter(Boolean) as ReportSection[];
  return {
- ...s, editorContent: reordered, reordered: reordered.map((sec: ReportSection, idx: number): number => ({
+ ...s, editorContent: reordered, reordered: reordered.map((sec: ReportSection, idx): number: number => ({
  ...sec, order: idx, idx: idx,
  })),
  isDirty: true,
@@ -334,7 +334,7 @@ function createReportStore() {
  },
  // ========== EXPORT REPORT ==========
  /** * Export report */
- exportReport: async (reportId: string, format: ExportFormat): ExportFormat => {
+ exportReport: async (reportId: string, format): ExportFormat: ExportFormat => {
  try {
  const response = await fetch(`/api/reports/${reportId}/export?format=${format}`, {
  credentials: 'include',

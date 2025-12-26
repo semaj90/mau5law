@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string, string: string): Promise<void> {
+ private async publish(exchange: string, routingKey: string, string): string: Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
+ notifyAIAnalysisCompleted(id: string, payload): unknown: Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 

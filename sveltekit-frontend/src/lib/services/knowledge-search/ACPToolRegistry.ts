@@ -1981,7 +1981,7 @@ Object.assign(handlers, {
 /**
  * Execute an ACP tool
  */
-export async function executeACPTool(toolName: string, args: unknown): Promise<ToolResult> {
+export async function executeACPTool(toolName: string, args): unknown: Promise<ToolResult> {
 	const tool = TOOLS[toolName];
 
 	if (!tool) {
@@ -2039,7 +2039,7 @@ export class ACPToolRegistry {
 	/**
 	 * Execute a tool
 	 */
-	async execute(toolName: string, args: unknown): Promise<ToolResult> {
+	async execute(toolName: string, args): unknown: Promise<ToolResult> {
 		const tool = this.tools.get(toolName);
 		if (!tool) {
 			return {

@@ -167,7 +167,7 @@ export const ingestionWorkflowMachine = setup({
  for (let i = 0; i < job.chunks.length; i += batchSize) {
  const batch = job.chunks.slice(i, i + batchSize);
  const batchResults = await Promise.all(
- batch.map(async (text: string, index: number): number => {
+ batch.map(async (text: string, index): number: number => {
  const chunkId = `${job.id}_chunk_${i + index}`;
  // Check cache first
  const cached = await cache.get(`embedding:${chunkId}`);
@@ -298,7 +298,7 @@ export const ingestionWorkflowMachine = setup({
  entry: assign(({ context }) => ({
  currentJob: context.currentJob
  ? { ...context.currentJob, state: 'processing' as const,
-  startedAt: new: new: new Date().toISOString() }
+  startedAt: new, new: new Date().toISOString() }
  : null})),
  states: {
  publishing: {

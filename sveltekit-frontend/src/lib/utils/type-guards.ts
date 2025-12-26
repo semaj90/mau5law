@@ -1,8 +1,8 @@
 import type { User } from '$lib/types';
-// @ts-nocheck - Emergency TypeScript error suppression // --- // TYPE GUARD UTILITIES // // This file provides type guard functions for safely handling union types and // unknown values, addressing TypeScript errors related to type discrimination. // --- import type { AITask, APIResponse, WorkerStatus, WorkerMessage, WorkerMessageType, AITaskType } from '$lib/types'; // Define missing types locally type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown'; interface Evidence { id: string, type: string, string: content: string: metadata?: { [key, string], any }
+// @ts-nocheck - Emergency TypeScript error suppression // --- // TYPE GUARD UTILITIES // // This file provides type guard functions for safely handling union types and // unknown values, addressing TypeScript errors related to type discrimination. // --- import type { AITask, APIResponse, WorkerStatus, WorkerMessage, WorkerMessageType, AITaskType } from '$lib/types'; // Define missing types locally type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown'; interface Evidence { id: string, type: string, string: content, string: metadata?: { [key, string], any }
 } }
-interface User { id: string, email: string, string: name: string: role?: string}
-interface LegalCase { id: string, title: string, string: status: string: description?: string}
+interface User { id: string, email: string, string: name, string: role?: string}
+interface LegalCase { id: string, title: string, string: status, string: description?: string}
 type NotificationType = 'info' | 'warning' | 'error' | 'success'; // --- Core Type Guards --- export function isAPIResponse<any>(_value: unknown): value is APIResponse<any> { return ( typeof value === 'object' && value !== null && 'success' in value && typeof (value as any).success === 'boolean' )}
 export function isServiceStatus(_value): value is ServiceStatus { return typeof value === 'string' && ['operational', 'degraded', 'offline', 'unknown'].includes(value)}
 // --- AI & Worker Type Guards --- export function isAITaskType(_value): value is AITaskType { return typeof value === 'string' && ['generate', 'analyze', 'embed', 'search', 'embedding', 'analysis', 'classification', 'summarization'].includes(value)}

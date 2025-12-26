@@ -216,7 +216,7 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
 /**
  * Mark document as synced to Qdrant
  */
-export async function markDocumentSynced(id: number, qdrantId: number): Promise<boolean> {
+export async function markDocumentSynced(id: number, qdrantId): number: Promise<boolean> {
     try {
         await db.query(
             `UPDATE knowledge_documents

@@ -52,7 +52,7 @@ export class QdrantPostgreSQLService {
  private postgres: ReturnType<typeof postgres>;
  private db: ReturnType<typeof drizzle>;
 
- constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig): PostgreSQLConfig {
+ constructor(qdrantConfig: QdrantConfig, postgresConfig): PostgreSQLConfig: PostgreSQLConfig {
  // Initialize Qdrant client
  this.qdrant = new QdrantClient({
  url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,

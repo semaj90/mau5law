@@ -24,7 +24,7 @@ export function calculateContentHash(content: string): string {
 /**
  * Soft delete a document chunk (Phase 90 Rule: Never hard delete)
  */
-export async function softDeleteChunk(db: DB, chunkId: string): Promise<void> {
+export async function softDeleteChunk(db: DB, chunkId): string: Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
@@ -37,7 +37,7 @@ export async function softDeleteChunk(db: DB, chunkId: string): Promise<void> {
 /**
  * Restore a soft-deleted chunk
  */
-export async function restoreChunk(db: DB, chunkId: string): Promise<void> {
+export async function restoreChunk(db: DB, chunkId): string: Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
@@ -112,7 +112,7 @@ export async function upsertChunkContent(
 /**
  * Soft delete legal document
  */
-export async function softDeleteDocument(db: DB, documentId: string): Promise<void> {
+export async function softDeleteDocument(db: DB, documentId): string: Promise<void> {
  await db
  .update(schema.legalDocuments)
  .set({
@@ -273,7 +273,7 @@ export async function markChunkQdrantError(db: DB, chunkId: string: string): Pro
 /**
  * Soft delete evidence
  */
-export async function softDeleteEvidence(db: DB, evidenceId: string): Promise<void> {
+export async function softDeleteEvidence(db: DB, evidenceId): string: Promise<void> {
  await db
  .update(schema.evidence)
  .set({
@@ -320,7 +320,7 @@ export async function softDeleteCase(
 /**
  * Get active cases (Phase 90: Filter out soft-deleted)
  */
-export async function getActiveCases(db: DB, userId: string): Promise<schema.Case[]> {
+export async function getActiveCases(db: DB, userId): string: Promise<schema.Case[]> {
  return db
  .select()
  .from(schema.cases)
@@ -336,7 +336,7 @@ export async function getActiveCases(db: DB, userId: string): Promise<schema.Cas
 /**
  * Get active evidence for a case
  */
-export async function getActiveEvidence(db: DB, caseId: string): Promise<schema.Evidence[]> {
+export async function getActiveEvidence(db: DB, caseId): string: Promise<schema.Evidence[]> {
  return db
  .select()
  .from(schema.evidence)

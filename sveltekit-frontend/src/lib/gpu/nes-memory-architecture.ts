@@ -92,7 +92,7 @@ export interface MemorySlot {
  * @param name - The name of the region.
  * @param size - The size of the region.
  */
- private defineRegion(name: string, size: number): number {
+ private defineRegion(name: string, size): number: number {
  const buffer = this.createBuffer(size);
  const view = new Uint8Array(buffer);
  this.regions.set(name, { name, size, buffer, view });

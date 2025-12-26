@@ -187,7 +187,7 @@ export class RAGService {
  /**
  * Query statute context from pgvector
  */
- private async queryStatuteContext(_code: string, _limit: number): Promise<string[]> {
+ private async queryStatuteContext(_code: string, _limit): number: Promise<string[]> {
  try {
  // TODO: Implement pgvector query for statute context
  // In production, this would:

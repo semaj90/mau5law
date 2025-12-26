@@ -93,7 +93,7 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  // Use the semantic search from mcp-helpers
  const results = await semanticSearch(options.query);
  // Transform to our result format
- return results.map((result: SemanticSearchResult, index: number): number => ({
+ return results.map((result: SemanticSearchResult, index): number: number => ({
  content: result.content || result.text || String(result),
  relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',

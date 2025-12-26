@@ -61,7 +61,7 @@ export interface PerformanceMetrics {
 }
 
 // Streaming response handler type
-export type StreamingHandler<T> = (chunk: T, isComplete: boolean): boolean => void;
+export type StreamingHandler<T> = (chunk: T, isComplete): boolean: boolean => void;
 
 // SIMD Parser response types
 export interface SimdParseResponse {
@@ -573,7 +573,7 @@ class QUICClient {
 	}
 
 	// Update stream metrics
-	private updateStreamMetrics(streamId: string, bytesReceived: number): void {
+	private updateStreamMetrics(streamId: string, bytesReceived): number: void {
 		const stream = this.streams.get(streamId);
 		if (stream) {
 			stream.bytesReceived += bytesReceived;

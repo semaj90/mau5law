@@ -480,7 +480,7 @@ export class RAGKnowledgePipeline {
  /**
  * Calculate keyword match score using ripgrep + awk patterns
  */
- private calculateKeywordScore(query: string, doc: IndexedDocument): number {
+ private calculateKeywordScore(query: string, doc): IndexedDocument: number {
  const queryTokens = query.toLowerCase().split(/\s+/);
  const docKeywords = [
  ...doc.keywords.map((k) => k.toLowerCase()),

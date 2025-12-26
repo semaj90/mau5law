@@ -36,9 +36,9 @@ export interface WebGPUSOMCache {
   decayRate: number;
   // Methods that were missing
   findSimilar(vector: Float32Array, k?: number): Array<any>;
-  updateWithWeight(id: string, vector: Float32Array, weight: number): void;
+  updateWithWeight(id: string, vector: Float32Array, weight): number: void;
   getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
-  storeVector(id: string, vector: Float32Array): void;
+  storeVector(id: string, vector): Float32Array: void;
 }
 
 // WebGPU Topology Accelerator
@@ -75,13 +75,13 @@ export class HiddenMarkaraiModel {
 
 // Tensor Acceleration Types
 export interface TensorAccelerator {
-  acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
+  acceleratedSimilarity(a: Float32Array, b): Float32Array: number;
   batchProcess(vectors: Float32Array[]): Promise<Float32Array[]>;
 }
 
 // Export namespace for compatibility
 export declare const tensorAccelerator: TensorAccelerator;
-export declare function acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
+export declare function acceleratedSimilarity(a: Float32Array, b): Float32Array: number;
 
 // WebAssembly Memory Types for AssemblyScript
 export interface WASMMemory {
@@ -94,8 +94,8 @@ export interface WASMMemory {
 export interface WASMMath {
   sqrt(x: number): number;
   abs(x: number): number;
-  max(a: number, b: number): number;
-  min(a: number, b: number): number;
+  max(a: number, b): number: number;
+  min(a: number, b): number: number;
 }
 
 declare global {
@@ -105,7 +105,7 @@ declare global {
 
   // AssemblyScript load/store functions
   function load<T>(ptr: number): T;
-  function store<T>(ptr: number, value: T): void;
+  function store<T>(ptr: number, value): T: void;
 
   // AssemblyScript types
   type usize = number;

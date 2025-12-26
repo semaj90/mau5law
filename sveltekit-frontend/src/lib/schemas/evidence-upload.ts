@@ -223,7 +223,7 @@ export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
 });
 
 // File validation functions
-export function validateFileType(file: File, evidenceType: string): boolean {
+export function validateFileType(file: File, evidenceType): string: boolean {
 	const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
 	if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
 	return allowedTypes.includes(file.type);

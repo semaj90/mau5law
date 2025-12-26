@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  }
 };
 
-async function generateAIResponse(query: string, _context: unknown): Promise<string> {
+async function generateAIResponse(query: string, _context): unknown: Promise<string> {
  try {
  const response = await fetch('http://localhost:11434/api/generate', {
  method: 'POST',

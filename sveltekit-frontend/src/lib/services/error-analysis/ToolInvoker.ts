@@ -269,7 +269,7 @@ export class ToolInvoker {
 	 * Property 20: For any confidence < 0.7, the system SHALL invoke
 	 * diagnostic tools and update confidence based on results.
 	 */
-	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult): number {
+	updateConfidence(currentConfidence: number, diagnosticResult): DiagnosticResult: number {
 		this.stats.confidenceUpdates++;
 
 		const errorCount = diagnosticResult.errors.length;

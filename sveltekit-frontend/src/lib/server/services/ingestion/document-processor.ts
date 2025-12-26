@@ -215,7 +215,7 @@ export function extractHolding(text: string): string {
 /**
  * Extract metadata from case text
  */
-export function extractMetadata(text: string, title: string): string: DocumentMetadata {
+export function extractMetadata(text: string, title): string: string: DocumentMetadata {
  const metadata: DocumentMetadata = {
  processedAt: new Date(),
  };

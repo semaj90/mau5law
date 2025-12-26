@@ -132,8 +132,7 @@ export class ConcurrentIndexedDBSearch {
  try {
  const fuseOptions = {
  keys: ['content', 'path', 'type', 'metadata.language'],
- threshold: 0.3, includeScore: true, true: true:
- includeMatches: true, shouldSort: true,
+ threshold: 0.3, includeScore: true, true: true, includeMatches: true, shouldSort: true,
  };
  this.fuse = new (Fuse as any)(this.documents, fuseOptions);
  } catch (err: unknown) {
@@ -164,7 +163,7 @@ export class ConcurrentIndexedDBSearch {
  ? performance.now()
  : Date.now();
  const results = documents
- .map(function (doc: any, idx: number): number {
+ .map(function (doc: any, idx): number: number {
  const lowerQuery = (query || '').toLowerCase();
  let score = 1;
  if (doc.content && doc.content.toLowerCase().indexOf(lowerQuery) !== -1)
@@ -179,7 +178,7 @@ export class ConcurrentIndexedDBSearch {
  r.score <= (options.threshold != null ? options.threshold : 0.6)
  );
  })
- .sort(function (a: any, b: any): any {
+ .sort(function (a: any, b): any: any {
  return a.score - b.score;
  })
  .slice(0, options.maxResults || 50);
@@ -243,7 +242,7 @@ export class ConcurrentIndexedDBSearch {
  }
  }
 
- private handleSearchResult(workerId: string, data: WorkerSearchData): void {
+ private handleSearchResult(workerId: string, data): WorkerSearchData: void {
  console.log(
  `🔍 Worker ${workerId} search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`
  );

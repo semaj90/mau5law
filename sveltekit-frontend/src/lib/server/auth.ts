@@ -140,7 +140,7 @@ export class AuthService {
  }
  }
  /** * Login user with credentials and session creation */
- async login(email: string, password: string): Promise<User> {
+ async login(email: string, password): string: Promise<User> {
  try {
  const [user] = await db
  .select()
@@ -271,7 +271,7 @@ export class AuthService {
  }
  }
  /** * Change user password with session invalidation */
- async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+ async changePassword(userId: string, currentPassword: string, newPassword): string: Promise<void> {
  try {
  const [user] = await db
  .select()

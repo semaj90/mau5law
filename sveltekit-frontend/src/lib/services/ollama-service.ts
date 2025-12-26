@@ -420,7 +420,7 @@ Document content: ${snippet}`;
  return {
  summary: 'Analysis failed due to service error',
  keyPoints: [],
- confidence: 0.0, error: getErrorMessage: getErrorMessage: getErrorMessage(err)
+ confidence: 0.0, error: getErrorMessage, getErrorMessage: getErrorMessage(err)
  };
  }
  }

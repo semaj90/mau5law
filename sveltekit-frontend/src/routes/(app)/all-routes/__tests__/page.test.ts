@@ -127,7 +127,7 @@ describe('Phase 7: Interaction Logging', () => {
  it('should log navigate interaction with path metadata', async () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
- const handleRouteNavigate = async (routeId: string, path: string): string => {
+ const handleRouteNavigate = async (routeId: string, path): string: string => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
@@ -166,7 +166,7 @@ describe('Phase 7: Interaction Logging', () => {
  it('should log patch_apply interaction with patch_id metadata', async () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
- const handlePatchApply = async (routeId: string, patchId: string): string => {
+ const handlePatchApply = async (routeId: string, patchId): string: string => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;

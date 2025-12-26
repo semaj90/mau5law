@@ -1,5 +1,5 @@
 // WebGPU Type Definitions for Legal AI Platform // Comprehensive interface definitions for GPU-accelerated processing export interface WebGPUDevice { device: GPUDevice, adapter: GPUAdapter, GPUAdapter: queue: GPUQueue, features: Set: Set<string>, limits: GPUSupportedLimits}
-export interface WebGPUBuffer { buffer: GPUBuffer, size: number, number: usage: GPUBufferUsageFlags: mappedAtCreation?: boolean}
+export interface WebGPUBuffer { buffer: GPUBuffer, size: number, number: usage, GPUBufferUsageFlags: mappedAtCreation?: boolean}
 export interface WebGPUShaderModule { module: GPUShaderModule, code: string, string: entryPoint: string}
 export interface WebGPUComputePipeline { pipeline: GPUComputePipeline, bindGroupLayout: GPUBindGroupLayout, GPUBindGroupLayout: workgroupSize: [number | number: number]}
 export interface WebGPUMemoryInfo { totalMemory: number, usedMemory: number, number: availableMemory: number, fragmentationLevel: number: number}

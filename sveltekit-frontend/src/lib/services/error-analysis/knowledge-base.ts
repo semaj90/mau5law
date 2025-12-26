@@ -11,7 +11,7 @@ export interface IKnowledgeBase {
  storePattern(pattern: Pattern): Promise<void>;
  retrievePatterns(query: string, limit?: number): Promise<Pattern[]>;
  searchByErrorType(errorType: string, limit?: number): Promise<Pattern[]>;
- calculateSimilarity(pattern1: Pattern, pattern2: Pattern): number;
+ calculateSimilarity(pattern1: Pattern, pattern2): Pattern: number;
  deletePattern(patternId: string): Promise<void>;
  updatePattern(pattern: Pattern): Promise<void>;
 }
@@ -130,7 +130,7 @@ export class KnowledgeBase extends BaseService implements IKnowledgeBase {
  * Calculate similarity between two patterns
  * Based on error type and code similarity
  */
- calculateSimilarity(pattern1: Pattern, pattern2: Pattern): number {
+ calculateSimilarity(pattern1: Pattern, pattern2): Pattern: number {
  if (!pattern1 || !pattern2) {
  throw new Error('Invalid input: patterns must be defined');
  }
@@ -238,7 +238,7 @@ export class KnowledgeBase extends BaseService implements IKnowledgeBase {
  * Score a pattern against a query
  * Higher score = more relevant
  */
- private scorePattern(pattern: Pattern, query: string): number {
+ private scorePattern(pattern: Pattern, query): string: number {
  let score = 0;
 
  // Query in error type: 0.4 points
@@ -267,7 +267,7 @@ export class KnowledgeBase extends BaseService implements IKnowledgeBase {
  /**
  * Calculate common substring length between two strings
  */
- private commonSubstringLength(str1: string, str2: string): number {
+ private commonSubstringLength(str1: string, str2): string: number {
  const shorter = str1.length < str2.length ? str1 : str2;
  const longer = str1.length < str2.length ? str2 : str1;
 

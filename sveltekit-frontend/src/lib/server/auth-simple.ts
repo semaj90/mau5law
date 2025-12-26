@@ -38,7 +38,7 @@ export class SimpleAuthService {
  /**
  * Login user with email and password
  */
- async login(email: string, password: string): Promise<SimpleUser> {
+ async login(email: string, password): string: Promise<SimpleUser> {
  const client = await this.getClient();
  try {
  // Query only the columns that exist in the actual database
@@ -102,7 +102,7 @@ export const simpleAuthService = new SimpleAuthService();
  * @returns A Promise that resolves to a UserRecord if authentication is successful.
  * @throws An error if authentication fails (e.g., invalid credentials, account deactivated).
  */
-export async function authenticate(email: string, password: string): Promise<UserRecord> {
+export async function authenticate(email: string, password): string: Promise<UserRecord> {
  console.log(`[auth-simple] Attempting to authenticate user: ${email}`);
 
  // Simulate a delay for database lookup

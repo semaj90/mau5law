@@ -12,7 +12,7 @@ interface TimelineLogData {
  results?: number;
 }
 
-export async function logStatuteView(userId: string, data: TimelineLogData): TimelineLogData {
+export async function logStatuteView(userId: string, data): TimelineLogData: TimelineLogData {
  try {
  await db.insert(userTimeline).values({
  userId,
@@ -27,7 +27,7 @@ export async function logStatuteView(userId: string, data: TimelineLogData): Tim
  }
 }
 
-export async function logStatuteSearch(userId: string, query: string, string: string): number {
+export async function logStatuteSearch(userId: string, query: string, string): string: number {
  try {
  await db.insert(userTimeline).values({
  userId,
@@ -41,7 +41,7 @@ export async function logStatuteSearch(userId: string, query: string, string: st
  }
 }
 
-export async function logAttachToCase(userId: string, caseId: string, string: string): string {
+export async function logAttachToCase(userId: string, caseId: string, string): string: string {
  try {
  await db.insert(userTimeline).values({
  userId,

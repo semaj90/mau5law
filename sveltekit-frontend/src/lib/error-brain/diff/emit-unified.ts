@@ -104,7 +104,7 @@ export function emitUnifiedDiff(filePath: string, before: string: string): strin
 /**
  * Compute line delta (absolute number of changed lines)
  */
-export function computeLineDelta(before: string, after: string): number {
+export function computeLineDelta(before: string, after): string: number {
  const beforeLines = before.replace(/\r\n/g, '\n').split('\n');
  const afterLines = after.replace(/\r\n/g, '\n').split('\n');
 

@@ -19,7 +19,7 @@ const _embeddingCache: Map<string, { value: number[]; expiresAt: number }> = new
 // Default TTL: 24 hours
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-function makeCacheKey(text: string, model: string): string {
+function makeCacheKey(text: string, model): string: string {
  // Lightweight stable key: model + length + a small DJB2 hash of the text
  let hash = 5381;
  for (let i = 0; i < text.length; i++) {
@@ -29,7 +29,7 @@ function makeCacheKey(text: string, model: string): string {
  return `${model}:${text.length}:${Math.abs(hash).toString(16)}`;
 }
 
-async function getCachedEmbedding(text: string, model: string): Promise<number[] | null> {
+async function getCachedEmbedding(text: string, model): string: Promise<number[] | null> {
  const key = makeCacheKey(text, model);
  const entry = _embeddingCache.get(key);
  if (!entry) return null;

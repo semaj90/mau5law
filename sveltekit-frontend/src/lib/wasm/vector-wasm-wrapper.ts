@@ -14,14 +14,14 @@ export interface VectorWasmModule {
  dotProduct(aPtr: number, bPtr: number: number): number;
  manhattanDistance(aPtr: number, bPtr: number: number): number;
  // Vector operations
- normalize(vectorPtr: number, length: number): void;
+ normalize(vectorPtr: number, length): number: void;
  computeBatchSimilarity(
  queryPtr: number, vectorsPtr: number, number:
  resultsPtr: number, vectorDim: number, number:
  vectorCount: number, algorithm: number: number
  ): void;
  // Hash embedding generator
- hashEmbedding(textPtr: number, textLen: number, number: embeddingPtr: number, embeddingDim: number): void;
+ hashEmbedding(textPtr: number, textLen: number, number: embeddingPtr: number, embeddingDim): number: void;
  // Memory management
  __new(size: number, id?: number): number;
  __pin(ptr: number): number;
@@ -51,7 +51,7 @@ export class VectorWasmWrapper {
  /**
  * Compute cosine similarity between two vectors using WASM
  */
- async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
+ async computeCosineSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
  if (!this.module) {
  throw new Error('WASM module not initialized');
  }

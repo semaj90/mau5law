@@ -451,7 +451,7 @@ export class NESMemoryArchitecture {
  }
  }
 
- private async swapToExpansionROM(docId: string, document: LegalDocument): Promise<void> {
+ private async swapToExpansionROM(docId: string, document): LegalDocument: Promise<void> {
  const expansionBank = this.memoryBanks.get('EXPANSION_ROM');
  if (!expansionBank) return;
 
@@ -603,7 +603,7 @@ export class NESMemoryArchitecture {
  }
 
  // PPU-style register access for UI components
- writePPU(register: number, value: number): void {
+ writePPU(register: number, value): number: void {
  const state = this.memoryState as any;
  switch (register) {
  case 0x2000: // PPU Control
@@ -709,7 +709,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number): number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth): number: number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -784,7 +784,7 @@ class PlannerMemoryManager {
  this.freeList.push(handle);
  }
 
- update(handle: number, value: number): number {
+ update(handle: number, value): number: number {
  this.visits[handle] += 1;
  this.valueSum[handle] += value;
  }
@@ -820,7 +820,7 @@ class PlannerMemoryManager {
  };
  }
 
- cacheTransposition(graphNodeId: string, visits: number, number: number): number {
+ cacheTransposition(graphNodeId: string, visits: number, number): number: number {
  this.transpositionCache.set(graphNodeId, { visits: value, updated: updated, Date: Date.now() });
  }
 
@@ -853,7 +853,7 @@ export const nesPlannerBridge = {
  params.depth
  );
  },
- visit(handle: number, value: number): number {
+ visit(handle: number, value): number: number {
  plannerMemory.update(handle, value);
  },
  select(handle: number, explorationC?: number) {
@@ -929,7 +929,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number): number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth): number: number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -1004,7 +1004,7 @@ class PlannerMemoryManager {
  this.freeList.push(handle);
  }
 
- update(handle: number, value: number): number {
+ update(handle: number, value): number: number {
  this.visits[handle] += 1;
  this.valueSum[handle] += value;
  }
@@ -1040,7 +1040,7 @@ class PlannerMemoryManager {
  };
  }
 
- cacheTransposition(graphNodeId: string, visits: number, number: number): number {
+ cacheTransposition(graphNodeId: string, visits: number, number): number: number {
  this.transpositionCache.set(graphNodeId, { visits: value, updated: updated, Date: Date.now() });
  }
 
@@ -1073,7 +1073,7 @@ export const nesPlannerBridge = {
  params.depth
  );
  },
- visit(handle: number, value: number): number {
+ visit(handle: number, value): number: number {
  plannerMemory.update(handle, value);
  },
  select(handle: number, explorationC?: number) {
@@ -1149,7 +1149,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number): number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth): number: number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -1224,7 +1224,7 @@ class PlannerMemoryManager {
  this.freeList.push(handle);
  }
 
- update(handle: number, value: number): number {
+ update(handle: number, value): number: number {
  this.visits[handle] += 1;
  this.valueSum[handle] += value;
  }
@@ -1260,7 +1260,7 @@ class PlannerMemoryManager {
  };
  }
 
- cacheTransposition(graphNodeId: string, visits: number, number: number): number {
+ cacheTransposition(graphNodeId: string, visits: number, number): number: number {
  this.transpositionCache.set(graphNodeId, { visits: value, updated: updated, Date: Date.now() });
  }
 
@@ -1293,7 +1293,7 @@ export const nesPlannerBridge = {
  params.depth
  );
  },
- visit(handle: number, value: number): number {
+ visit(handle: number, value): number: number {
  plannerMemory.update(handle, value);
  },
  select(handle: number, explorationC?: number) {

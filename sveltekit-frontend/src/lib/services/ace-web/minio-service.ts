@@ -58,7 +58,7 @@ export interface MinIOConfig {
    * @param options - Optional content type and metadata
    * @returns MinIO key for stored object
    */
-  async storeRawHtml(sourceId: string, html: string): Promise<string> {
+  async storeRawHtml(sourceId: string, html): string: Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(html, 'html');
 
@@ -116,7 +116,7 @@ export interface MinIOConfig {
    * @param summary - Summary object with entities, relations, etc.
    * @returns MinIO key for stored object
    */
-  async storeSummary(docId: string, summary: object): Promise<string> {
+  async storeSummary(docId: string, summary): object: Promise<string> {
     this.validateInput(docId, 'docId');
     this.validateInput(summary, 'summary');
 
@@ -174,7 +174,7 @@ export interface MinIOConfig {
    * @param key - Object key
    * @returns Object content as string
    */
-  async getObject(bucket: string, key: string): Promise<string> {
+  async getObject(bucket: string, key): string: Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -202,7 +202,7 @@ export interface MinIOConfig {
    * @param key - Object key
    * @returns True if object exists
    */
-  async objectExists(bucket: string, key: string): Promise<boolean> {
+  async objectExists(bucket: string, key): string: Promise<boolean> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -227,7 +227,7 @@ export interface MinIOConfig {
    * @param bucket - Bucket name
    * @param key - Object key
    */
-  async deleteObject(bucket: string, key: string): Promise<void> {
+  async deleteObject(bucket: string, key): string: Promise<void> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -250,7 +250,7 @@ export interface MinIOConfig {
    * @param results - Search results object
    * @returns MinIO key for stored object
    */
-  async storeSearchResults(queryHash: string, results: object): Promise<string> {
+  async storeSearchResults(queryHash: string, results): object: Promise<string> {
     this.validateInput(queryHash, 'queryHash');
     this.validateInput(results, 'results');
 
@@ -279,7 +279,7 @@ export interface MinIOConfig {
    * @param errorData - Error data object
    * @returns MinIO key for stored object
    */
-  async storeErrorLog(sourceId: string, errorType: string, string: string): Promise<string> {
+  async storeErrorLog(sourceId: string, errorType: string, string): string: Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(errorType, 'errorType');
     this.validateInput(errorData, 'errorData');
@@ -344,7 +344,7 @@ export interface MinIOConfig {
   /**
    * Validate input parameter
    */
-  private validateInput(value: any, name: string): void {
+  private validateInput(value: any, name): string: void {
     if (value === null || value === undefined) {
       throw new Error(`${name} is required`);
     }

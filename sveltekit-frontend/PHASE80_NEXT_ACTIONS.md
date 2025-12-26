@@ -15,7 +15,7 @@
 
 - `src/routes/+layout.server.ts` (updated)
   - SSR caching headers implemented
-  - Authenticated: `Cache-Control: private, no-store` 
+  - Authenticated: `Cache-Control: private, no-store`
   - Public: `Cache-Control: public, max-age=600, s-maxage=3600`
   - `Vary: Cookie` for proper cache isolation
 
@@ -26,7 +26,7 @@
 
 **User Requirements Met**:
 - ✅ "Lucia v3 with Postgres adapter... httpOnly session cookies"
-- ✅ "localStorage only for UI state (theme, last case)"  
+- ✅ "localStorage only for UI state (theme, last case)"
 - ✅ "$state and $derived... automatically tracks dependencies"
 - ✅ "setHeaders({ 'Cache-Control': 'public, max-age=600' })"
 - ✅ "no-store for authenticated, public+max-age for static"
@@ -46,7 +46,7 @@
 
 ### Top Remaining Patterns (from last stratification)
 1. **',' expected** (~6,144 errors) - TS1005 syntax corruption
-2. **';' expected** (~3,440 errors) - TS1005 syntax corruption  
+2. **';' expected** (~3,440 errors) - TS1005 syntax corruption
 3. **barrelStore import type** (~1,992 errors) - import hygiene
 4. **Cannot find name** (various) - missing imports/symbols
 5. **Syntax corruption** - mojibake artifacts from past codemods
@@ -72,7 +72,7 @@ node scripts/error-leaderboard.mjs --run=phase80-current --top=1000
 ### [P1 - HIGH] Apply Mojibake Codemod
 **User Guidance**: "Apply the mojibake codemod to the top broken files... Run it directory-by-directory"
 
-**Target Errors**: 
+**Target Errors**:
 - ',' expected: 6,144 errors
 - ';' expected: 3,440 errors
 - **Total**: ~9,584 errors (-11.5% reduction expected)
@@ -169,7 +169,7 @@ npm run build 2>&1 | Select-String -Pattern "warning|error"
 ---
 
 ### [P5 - LOW] Unified Vector Search Backend
-**User Guidance**: 
+**User Guidance**:
 - "abstract your retrieval layer so queries hit one or the other seamlessly"
 - "Qdrant as the primary fast store, pgvector as a fallback or audit log"
 - "query both and merge results by distance or inverse ranking"

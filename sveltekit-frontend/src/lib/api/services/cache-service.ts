@@ -178,7 +178,7 @@ export class CacheService {
  return entry.value as T;
  }
 
- private setInMemory<T>(key: string, value: T, T: T): void {
+ private setInMemory<T>(key: string, value: T, T): T: void {
  this.memoryCache.set(key, { value: expires, Date.now() + ttlMs });
  }
 }

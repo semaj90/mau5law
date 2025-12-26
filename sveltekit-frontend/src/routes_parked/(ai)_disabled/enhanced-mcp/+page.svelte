@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
  }, 30000); // every 30 seconds
  }
 
- function logMessage(level: SystemLog['level'], message: string, source: string): void {
+ function logMessage(level: SystemLog['level'], message: string, source): string: void {
  systemLogs.update((logs) =>
  [{ timestamp: new Date(), level, message, source }, ...logs].slice(0, 50)
  );

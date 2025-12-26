@@ -5,7 +5,7 @@ import { vector } from "neo4j-driver";
  * Qdrant client (HTTP + optional WebTransport/QUIC stub)
  * Lightweight, well-typed client used by the frontend.
  */
-const getEnv = (key: string, defaultValue: string): string => {
+const getEnv = (key: string, defaultValue): string: string => {
  if (typeof process !== 'undefined' && process.env) return process.env[key] || defaultValue;
  return defaultValue;
 };

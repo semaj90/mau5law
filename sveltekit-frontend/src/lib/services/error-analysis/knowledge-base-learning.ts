@@ -58,7 +58,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Store a successfully applied fix
  * Property 10: Knowledge Base Learning - store fixes
  */
- async storeFix(diff: Diff, error: ErrorType, ErrorType: ErrorType): Promise<StoredFix> {
+ async storeFix(diff: Diff, error: ErrorType, ErrorType): ErrorType: Promise<StoredFix> {
  this.validateInput(diff, 'diff');
  this.validateInput(error, 'error');
 
@@ -197,7 +197,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Update fix with application result
  * Increases confidence if successful, decreases if failed
  */
- async updateFixResult(fixId: string, success: boolean): Promise<StoredFix> {
+ async updateFixResult(fixId: string, success): boolean: Promise<StoredFix> {
  if (!fixId || typeof fixId !== 'string') {
  throw new Error('Invalid input: fixId must be a non-empty string');
  }
@@ -347,7 +347,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate similarity between error and stored fix
  * Uses cosine similarity on error message and type
  */
- private calculateErrorSimilarity(error: ErrorType, fix: StoredFix): number {
+ private calculateErrorSimilarity(error: ErrorType, fix): StoredFix: number {
  let similarity = 0;
 
  // Same error type: 0.5 points
@@ -371,7 +371,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate string similarity using cosine similarity
  * Returns value between 0 and 1
  */
- private stringSimilarity(str1: string, str2: string): number {
+ private stringSimilarity(str1: string, str2): string: number {
  if (!str1 || !str2) {
  return 0;
  }

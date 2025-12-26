@@ -1,54 +1,48 @@
-# Phase 80 Auth Implementation
+# Phase 80 Auth Implementation (Svelte 5 + SSR caching baseline)
 
-## 🔒 Security & Architecture
-Implemented a production-grade authentication system using **Lucia v3**, **Svelte 5 Runes**, and **SvelteKit SSR**.
+## What exists now
+### 1) SSR caching + session-aware headers
+File: `src/routes/+layout.server.ts`
 
-### 1. Authentication (Lucia v3)
-- **Session Management**: PostgreSQL-backed sessions using `DrizzlePostgreSQLAdapter`.
-- **Cookies**: HttpOnly, Secure, SameSite=Lax (configured in `src/lib/server/auth.ts`).
-- **Validation**: Hooks-based session validation in `src/hooks.server.ts`.
-- **Dev Fallback**: `localStorage` is used **only** for non-sensitive UI state (theme, sidebar), never for tokens.
+- Uses `setHeaders()` to set caching policy.
+- Differentiates authenticated vs public:
+  - Authenticated: `Cache-Control: no-store`
+  - Public: conservative cache (example: `max-age=600`)
+- Returns `user` and `session` from the server load so the UI can hydrate safely.
 
-### 2. Client-Side Reactivity (Svelte 5 Runes)
-- File: `src/lib/auth/auth-session.svelte.ts`
-- **$state**: Manages `user`, `theme`, `sidebarOpen`.
-- **$derived**: Computes `isAuthenticated` automatically.
-- **$effect**: Automatically syncs UI preferences to local storage without manual boilerplate.
+> This is the correct place to apply SSR cache policy (not `hooks.server.ts`).
 
-```typescript
-// src/lib/auth/auth-session.svelte.ts
-class AuthState {
-    user = $state<User | null>(null);
-    isAuthenticated = $derived(this.user !== null);
-    theme = $state('dark');
+### 2) Client UI auth state (Svelte 5 runes)
+File: `src/lib/auth/auth-session.svelte.ts`
 
-    // Auto-sync effect
-    initEffect() {
-        $effect(() => {
-            localStorage.setItem('deeds_ui_state', ...);
-        });
-    }
-}
-```
+Goal: UI-friendly auth state using Svelte 5 runes.
+- `$state` for `user` and `loaded`
+- `$derived` for `isAuthenticated`
 
-### 3. SSR Caching Strategy
-- File: `src/routes/+layout.server.ts`
-- **Authenticated Routes**:
-  ```typescript
-  setHeaders({
-    'Cache-Control': 'private, no-cache, no-store, must-revalidate'
-  });
-  ```
-- **Public Routes**:
-  ```typescript
-  setHeaders({
-    'Cache-Control': 'public, max-age=600, s-maxage=3600'
-  });
-  ```
+Dev-only fallback:
+- Optional `localStorage` persistence for *UI testing only*
+- Never treat `localStorage` as real auth
 
-## ✅ User Requirements Verification
-- [x] **Lucia v3 with Postgres adapter**: Implemented in `src/lib/server/auth.ts`.
-- [x] **HttpOnly cookies**: Enabled by default in Lucia config.
-- [x] **Svelte 5 Runes**: Used `$state` and `$derived` in `auth-session.svelte.ts`.
-- [x] **SSR Caching**: `setHeaders` configured in root layout.
-- [x] **Dev Fallback**: LocalStorage restricted to UI preferences only.
+## Lucia v3 integration plan (server-truth auth)
+Target: Persist sessions in Postgres (`legal_ai_db`, Postgres 17 container)
+
+### Server responsibilities
+1) Initialize Lucia with a Postgres/Drizzle adapter
+2) Validate session cookie on each request
+3) Put `user/session` onto `event.locals`
+4) Expose an endpoint like `/api/auth/session` (optional) for client refresh/hydration
+
+### Client responsibilities
+- Use the rune store for UI state only.
+- On app boot (or route load), hydrate user state from SSR load data or `/api/auth/session`.
+
+## Security defaults for a legal app
+- Authenticated pages: `Cache-Control: no-store`
+- Public docs/static pages: explicit `Cache-Control` (short max-age + revalidate)
+- Never cache responses that include PII/session-specific case data.
+
+## Next improvements (after error count stabilizes)
+- Add Lucia tables/migrations (users + sessions)
+- Add sign-in/out endpoints
+- Add CSRF protection for state-changing actions
+- Add audit logging for auth events into `legal_ai_db`

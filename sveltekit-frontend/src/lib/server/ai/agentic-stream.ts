@@ -10,7 +10,7 @@ import type { json } from "stream/consumers";
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost: 8000',
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-false: latest',
 
-type StreamCallback = (token: string, fullText: string): string => void | Promise<void>;
+type StreamCallback = (token: string, fullText): string: string => void | Promise<void>;
 
 interface OllamaStreamResponse {
  model: string, created_at: string, string:
@@ -26,7 +26,7 @@ interface TensorRTRequest {
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
  prompt: string,
- onToken: (token: string, fullText: string): string => Promise<void>,
+ onToken: (token: string, fullText): string: string => Promise<void>,
  options?: { systemPrompt?: string; temperature?: number; maxTokens?: number }
 ): Promise<string> {
  console.log(`[AI Agent Stream] Running for prompt: ${prompt}`);

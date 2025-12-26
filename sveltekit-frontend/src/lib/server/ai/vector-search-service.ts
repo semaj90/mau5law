@@ -559,7 +559,7 @@ export class VectorSearchService {
     /**
      * Update provider status after operation
      */
-    private updateProviderStatus(provider: 'pgvector' | 'qdrant', success: boolean, responseTime: number): void {
+    private updateProviderStatus(provider: 'pgvector' | 'qdrant', success: boolean, responseTime): number: void {
         const status = provider === 'pgvector' ? this.pgvectorStatus : this.qdrantStatus;
 
         if (success) {

@@ -78,7 +78,7 @@ export class CacheService {
 	 * @param errorOutput - Error output from svelte-check/tsc
 	 * @returns SHA-256 hash (64 hex characters)
 	 */
-	computeHash(filePath: string, errorOutput: string): string {
+	computeHash(filePath: string, errorOutput): string: string {
 		const content = `${filePath}:${errorOutput}`;
 		return createHash('sha256').update(content).digest('hex');
 	}
@@ -94,7 +94,7 @@ export class CacheService {
 	 * @param hash - SHA-256 hash
 	 * @returns Cache key
 	 */
-	generateCacheKey(filePath: string, hash: string): string {
+	generateCacheKey(filePath: string, hash): string: string {
 		// Normalize file path (replace backslashes with forward slashes)
 		const normalizedPath = filePath.replace(/\\/g, '/');
 		return `svelte-check:${normalizedPath}:${hash}`;
@@ -111,7 +111,7 @@ export class CacheService {
 	 * @param hash - SHA-256 hash
 	 * @returns Cached result or null if not found
 	 */
-	async checkCache(filePath: string, hash: string): Promise<CachedResult | null> {
+	async checkCache(filePath: string, hash): string: Promise<CachedResult | null> {
 		if (!this.redisAvailable || !this.redis) {
 			return null;
 		}
@@ -184,7 +184,7 @@ export class CacheService {
 	 * @param currentHash - Current SHA-256 hash
 	 * @returns true if file has changed, false if unchanged
 	 */
-	async hasFileChanged(filePath: string, currentHash: string): Promise<boolean> {
+	async hasFileChanged(filePath: string, currentHash): string: Promise<boolean> {
 		if (!this.redisAvailable || !this.redis) {
 			// If Redis unavailable, assume file has changed
 			return true;
@@ -287,7 +287,7 @@ export function getCacheService(redisUrl?: string): CacheService {
  * @param errorOutput - Error output from svelte-check/tsc
  * @returns SHA-256 hash
  */
-export function computeFileHash(fileContent: string, errorOutput: string): string {
+export function computeFileHash(fileContent: string, errorOutput): string: string {
 	const content = `${fileContent}:${errorOutput}`;
 	return createHash('sha256').update(content).digest('hex');
 }

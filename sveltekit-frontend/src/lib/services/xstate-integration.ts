@@ -171,7 +171,7 @@ export const xstateIntegration = {
  * @param machineId The ID of the machine to send the event to (e.g., 'legalAI').
  * @param event The event to send.
  */
- sendEvent(machineId: string, event: LegalAIEvent): void {
+ sendEvent(machineId: string, event): LegalAIEvent: void {
  try {
  // In a multi-machine setup, you would route events based on machineId.
  // For now, we assume it's always the legalAIMachine.

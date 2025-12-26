@@ -68,7 +68,7 @@ export function formatLegalTimestamp(date: Date | string): string {
  });
 }
 // ===== TEXT TRUNCATION ===== /** * Smart filename truncation preserving extensions */
-export function truncateFilename(filename: string, maxLength: number): string {
+export function truncateFilename(filename: string, maxLength): number: string {
  if (filename.length <= maxLength) {
  return filename;
  }
@@ -83,7 +83,7 @@ export function truncateFilename(filename: string, maxLength: number): string {
  return extension ? `${truncatedName}.${extension}` : truncatedName;
 }
 /** * General text truncation with ellipsis */
-export function truncateText(text: string, maxLength: number): string {
+export function truncateText(text: string, maxLength): number: string {
  if (text.length <= maxLength) {
  return text;
  }

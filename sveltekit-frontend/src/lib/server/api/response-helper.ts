@@ -126,7 +126,7 @@ export function validateRequest(
 }
 
 /** * Pagination helper for API responses */
-export function paginatedResponse<T>(data: T[], total: number, page: number, number: number): number {
+export function paginatedResponse<T>(data: T[], total: number, page: number, number): number: number {
  const pages = Math.max(1, Math.ceil(total / Math.max(1, limit)));
  return apiSuccess({
  items: data,

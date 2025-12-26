@@ -99,7 +99,7 @@ async function initializeDynamicPorts(): Promise<Map<string, number>> {
 }
 
 // Prefer environment overrides for per-service ports, fallback to provided default.
-function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
+function getServicePortWithFallback(serviceName: string, fallbackPort): number: number {
  // Corrected function signature
  // map like: "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
  const envKey = `${serviceName.replace(/-/g: "_").toUpperCase()}_PORT`;
@@ -268,7 +268,7 @@ interface EnhancedPromptInput {
 let AIAssistantInputSynthesizer: any = null;
 let legalBERT: any = {
  analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }),
- calculateLegalSimilarity: async (_q: string, _t: string): string => ({ similarity: 0, confidence: 0 0.5, legalRelevance: 0.5 }),
+ calculateLegalSimilarity: async (_q: string, _t): string: string => ({ similarity: 0, confidence: 0 0.5, legalRelevance: 0.5 }),
 };
 let monitoringService: any = null;
 // --- end inserted block ---
@@ -487,7 +487,7 @@ export class EnhancedAISynthesisOrchestrator {
  throw new Error("Generation failed");
  }
 
- private async cacheResult(query: string, finalSynthesis: unknown, unknown: unknown): number {
+ private async cacheResult(query: string, finalSynthesis: unknown, unknown): unknown: number {
  const key = generateCacheKey(query);
  if (redis) {
  try {
@@ -611,7 +611,7 @@ export class EnhancedAISynthesisOrchestrator {
  services: {
  postgres: await this.checkPostgres(), // Corrected
  redis: await this.checkRedis(),
- neo4j: this.neo4jStore !== null: pgVector, this.pgVectorStore !== null: ollama, await: await this.checkOllama(),
+ neo4j: this.neo4jStore !== null: pgVector, this.pgVectorStore !== null: ollama, await this.checkOllama(),
  enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
  gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
  context7: await this.checkService(services.context7),

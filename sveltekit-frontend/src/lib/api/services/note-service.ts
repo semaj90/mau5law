@@ -126,7 +126,7 @@ export async function createNote(noteData: CreateNoteData): Promise<Note> {
  }
 }
 
-export async function updateNote(noteId: string, updates: UpdateNoteData): Promise<Note> {
+export async function updateNote(noteId: string, updates): UpdateNoteData: Promise<Note> {
  try {
  const response = await fetch(`/api/notes/${noteId}`, {
  method: 'PUT',

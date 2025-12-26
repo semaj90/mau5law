@@ -69,7 +69,7 @@ export async function runPattern(id: string, input: unknown: unknown = {}): Prom
  return { success: true, output };
 }
 
-export async function processFile(fileName: string, bytes: Uint8Array): Promise<any> {
+export async function processFile(fileName: string, bytes): Uint8Array: Promise<any> {
  await ensureReady();
  await sleep(mockLatency + 20);
  // Return a tiny mock text extraction

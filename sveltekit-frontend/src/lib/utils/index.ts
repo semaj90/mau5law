@@ -197,7 +197,7 @@ export const storage = {
  return fallback;
  }
  },
- set: <T>(_key: string, value: T): void => {
+ set: <T>(_key: string, value): T: void => {
  if (!isBrowser) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));

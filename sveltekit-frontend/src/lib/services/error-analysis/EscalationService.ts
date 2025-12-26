@@ -306,7 +306,7 @@ export class EscalationService {
 	/**
 	 * Assign ticket to user
 	 */
-	assignTicket(ticketId: string, assignee: string): boolean {
+	assignTicket(ticketId: string, assignee): string: boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 
@@ -318,7 +318,7 @@ export class EscalationService {
 	/**
 	 * Close ticket without resolution
 	 */
-	closeTicket(ticketId: string, reason: string): boolean {
+	closeTicket(ticketId: string, reason): string: boolean {
 		const ticket = this.tickets.get(ticketId);
 		if (!ticket) return false;
 

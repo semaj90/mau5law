@@ -13,7 +13,7 @@ interface UserType {
  role: string;
 }
 
-export async function getDocuments(user: UserType, request: Request, Request: db: any, schema: any): any {
+export async function getDocuments(user: UserType, request: Request, Request: db: any, schema): any: any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const documents = await drizzleDb.query.documentsTable.findMany({

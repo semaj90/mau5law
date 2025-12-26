@@ -49,7 +49,7 @@ export async function createWorkspace(
 /**
  * Link a chat session to a workspace
  */
-export async function linkSessionToWorkspace(workspaceId: string, sessionId: string): string {
+export async function linkSessionToWorkspace(workspaceId: string, sessionId): string: string {
  const result = await db
  .insert(workspaceSessions)
  .values({
@@ -273,7 +273,7 @@ Remember: This is legal analysis, not legal advice. Always recommend consulting 
 /**
  * Update workspace note with embedding (for vector search)
  */
-export async function updateNoteEmbedding(noteId: string, embedding: string): string {
+export async function updateNoteEmbedding(noteId: string, embedding): string: string {
  const result = await db
  .update(workspaceNotes)
  .set({ embedding })

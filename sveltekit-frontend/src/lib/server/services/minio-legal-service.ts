@@ -160,7 +160,7 @@ export async function uploadCaseChunk(
 /**
  * Download file from MinIO
  */
-export async function downloadFile(bucket: string, key: string): Promise<Buffer> {
+export async function downloadFile(bucket: string, key): string: Promise<Buffer> {
  try {
  const client = getMinioClient();
  const chunks: Buffer[] = [];

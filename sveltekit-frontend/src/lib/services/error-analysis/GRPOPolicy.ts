@@ -153,7 +153,7 @@ export class GRPOPolicy {
 	 * Get group-relative performance bonus
 	 * Property 4: GRPO Group-Based Weighting
 	 */
-	private getGroupRelativeBonus(strategy: FixStrategy, context: ErrorContext): number {
+	private getGroupRelativeBonus(strategy: FixStrategy, context): ErrorContext: number {
 		// Find the error group for this context
 		const groupId = this.findErrorGroup(context.embedding || []);
 		if (!groupId) return 0;

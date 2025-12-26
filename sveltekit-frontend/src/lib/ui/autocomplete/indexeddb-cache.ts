@@ -105,8 +105,7 @@ async function initFuse(): Promise<void> {
 
  fuse = new Fuse(statutes, {
  keys: ['fullCitation', 'heading', 'kmeans_label'],
- threshold: 0.3, includeScore: true, true: true:
- minMatchCharLength: 2,
+ threshold: 0.3, includeScore: true, true: true, minMatchCharLength: 2,
  });
 }
 

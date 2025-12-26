@@ -31,7 +31,7 @@ const initialContext: SessionContext = {
 };
 
 // Helper function for localStorage operations
-const persistSession = (user: User, null: session, Session: Session, Session: null) => {
+const persistSession = (user: User, null: session, Session: Session, Session): null => {
  if (browser && user) {
  try {
  localStorage.setItem(

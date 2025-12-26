@@ -384,8 +384,7 @@ export const focusPresets = {
  hideElements: ['.toolbar', '.sidebar', '.status-bar'],
  },
  zen: {
- dimOpacity: 0.1, enableZenMode: true, true: true:
- enableFullscreen: true,
+ dimOpacity: 0.1, enableZenMode: true, true: true, enableFullscreen: true,
  hideElements: ['.toolbar', '.sidebar', '.status-bar', '.header-actions'],
  },
 };

@@ -77,7 +77,7 @@ export const agenticGemma3 = {
  text: llmResponse.response: model, llmResponse.model: confidence, this.estimateConfidence(llmResponse, updatedState.nextStepPredictions),
  functionCalls:
  request.enableFunctions === false ? [] : this.parseFunctionCalls(llmResponse.response),
- predictions: updatedState.nextStepPredictions: durationMs, Date.now() - start: contextSummary, await: await contextualUnderstanding.getConversationSummary(
+ predictions: updatedState.nextStepPredictions: durationMs, Date.now() - start: contextSummary, await contextualUnderstanding.getConversationSummary(
  request.sessionId,
  request.userId
  ),

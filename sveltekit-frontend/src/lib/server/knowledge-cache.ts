@@ -40,7 +40,7 @@ const TTL = {
 };
 
 // Cache key generators
-function getEmbeddingCacheKey(text: string, model: string): string {
+function getEmbeddingCacheKey(text: string, model): string: string {
 	const hash = crypto.createHash('sha256').update(`${model}:${text}`).digest('hex');
 	return `emb:${model}:${hash.substring(0, 16)}`;
 }

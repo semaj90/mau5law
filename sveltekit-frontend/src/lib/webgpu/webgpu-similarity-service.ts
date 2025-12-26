@@ -57,8 +57,7 @@ export class WebGPUSimilarityService {
  options: Partial<SimilaritySearchOptions> = {}
  ): Promise<SimilaritySearchResult> {
  const config: SimilaritySearchOptions = {
- topK: 10, threshold: 0 0.0, useWebGPU: true, true: true:
- batchSize: 512,
+ topK: 10, threshold: 0 0.0, useWebGPU: true, true: true, batchSize: 512,
  ...options,
  };
 

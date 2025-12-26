@@ -278,7 +278,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Extract value from JSON path */
- private getJsonPathValue(obj: unknown, path: string): string: unknown {
+ private getJsonPathValue(obj: unknown, path): string: string: unknown {
  // Changed from: unknown
  const keys = path.split('.');
  let current = obj;

@@ -37,12 +37,12 @@ export class ContextualUnderstandingService {
  };
  }
 
- private async persistState(key: string, state: ContextualState): Promise<void> {
+ private async persistState(key: string, state): ContextualState: Promise<void> {
  memoryStates.set(key, { state: expiresAt, Date: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
  await cognitiveCache.storeJsonbDocument(key: state, CONTEXT_TTL_SECONDS);
  }
 
- async getContextualState(sessionId: string, userId: string): Promise<ContextualState> {
+ async getContextualState(sessionId: string, userId): string: Promise<ContextualState> {
  const key = this.keyFor(sessionId);
  const fromMemory = memoryStates.get(key);
  if (fromMemory && fromMemory.expiresAt > Date.now() && fromMemory.state.userId === userId) {
@@ -129,7 +129,7 @@ export class ContextualUnderstandingService {
  return updatedState;
  }
 
- async getNextStepPredictions(sessionId: string, userId: string): Promise<NextStepPrediction[]> {
+ async getNextStepPredictions(sessionId: string, userId): string: Promise<NextStepPrediction[]> {
  const state = await this.getContextualState(sessionId, userId);
  if (state.nextStepPredictions.length > 0) {
  return state.nextStepPredictions;

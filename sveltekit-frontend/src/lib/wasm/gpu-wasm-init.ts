@@ -223,12 +223,12 @@ export class WasmGpuInitService {
  const importObject = {
  env: {
  memory,
- abort: (msg: number, file: number, number: number, line: number, col: number): number => {
+ abort: (msg: number, file: number, number: number, line: number, col): number: number => {
  console.error('WebAssembly abort: ', { msg, file, line, col });
  },
  gpu: {
  // GPU callback functions
- log: (level: number, message: number): number => this.wasmLog(level, message),
+ log: (level: number, message): number: number => this.wasmLog(level, message),
  allocateBuffer: (size: number) => this.allocateGpuBuffer(size),
  releaseBuffer: (bufferId: number) => this.releaseGpuBuffer(bufferId),
  },
@@ -852,7 +852,7 @@ export class WasmGpuInitService {
  /**
  * WebAssembly logging callback
  */
- private wasmLog(level: number, messagePtr: number): void {
+ private wasmLog(level: number, messagePtr): number: void {
  if (!this.context.sharedBuffer) return;
  // Decode message from WASM memory
  const memory = new Uint8Array(this.context.sharedBuffer.buffer);
@@ -1078,7 +1078,7 @@ export const WasmGpuHelpers = {
  embeddingCacheSize: 1024, // 1GB for embeddings
  }),
  // Create test vectors for benchmarking
- createTestVectors: (count: number, dimensions: number): number: Float32Array => {
+ createTestVectors: (count: number, dimensions): number: number: Float32Array => {
  const vectors = new Float32Array(count * dimensions);
  for (let i = 0; i < vectors.length; i++) {
  vectors[i] = Math.random() * 2 - 1; // Range [-1, 1]

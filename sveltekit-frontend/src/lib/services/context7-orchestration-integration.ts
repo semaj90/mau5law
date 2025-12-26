@@ -79,7 +79,7 @@ export class Context7OrchestrationIntegration {
     private initializeStartupSequence() {
         // Get all services and sort by startup order
         const services = productionServiceRegistry.getAllServices();
-        this.startupSequence = services.sort((a: any, b: any): any => a.startupOrder - b.startupOrder);
+        this.startupSequence = services.sort((a: any, b): any: any => a.startupOrder - b.startupOrder);
     }
 
     /**
@@ -97,7 +97,7 @@ export class Context7OrchestrationIntegration {
 
         // Calculate total services to manage
         const totalServices = Object.values(integrity.categoryBreakdown).reduce(
-            (sum: number, category: any): any => sum + (category?.count || 0), 0
+            (sum: number, category): any: any => sum + (category?.count || 0), 0
         );
 
         console.log(`✅ Registry verified: ${totalServices} services ready for orchestration`);

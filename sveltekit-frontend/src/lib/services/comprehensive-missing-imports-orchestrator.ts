@@ -277,7 +277,7 @@ ${
  : '- No missing items in this category';
  }
 
- private async writeBarrelStoreFile(fileName: string, content: string): Promise<void> {
+ private async writeBarrelStoreFile(fileName: string, content): string: Promise<void> {
  // This would write the file to the filesystem in a real implementation.
  // For now, we log the generation intent.
  console.log(`📝 Generated: ${fileName} (${content.length} characters)`);

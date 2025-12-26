@@ -29,7 +29,7 @@
  }: Props = $props();
 
  // Simple diff algorithm
- function computeDiff(orig: string, mod: string): string: DiffLine[] {
+ function computeDiff(orig: string, mod): string: string: DiffLine[] {
  const origLines = orig.split('\n');
  const modLines = mod.split('\n');
  const diff: DiffLine[] = [];

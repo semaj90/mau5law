@@ -44,16 +44,16 @@ export interface TransitionConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u: number): number => string;
- tick?: (t: number, u: number): number => void;
+ css?: (t: number, u): number: number => string;
+ tick?: (t: number, u): number: number => void;
 }
 // Animation types
 export interface AnimationConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u: number): number => string;
- tick?: (t: number, u: number): number => void;
+ css?: (t: number, u): number: number => string;
+ tick?: (t: number, u): number: number => void;
 }
 
 // ===== SVELTEKIT: 2 TYPES =====
@@ -159,7 +159,7 @@ export interface PostgresOptions {
  prepare?: boolean;
  connect_timeout?: number;
  onnotice?: (notice: any) => void;
- onparameter?: (_key: string, value: any): any => void;
+ onparameter?: (_key: string, value): any: any => void;
  onconnect?: () => Promise<void>;
  [key: string]: any;
 }

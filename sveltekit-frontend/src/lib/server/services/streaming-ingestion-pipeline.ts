@@ -353,7 +353,7 @@ interface DocumentChunk {
 class EmbeddingService {
  constructor(private serviceUrl: string) {}
 
- async generateEmbedding(text: string, model: string): Promise<number[]> {
+ async generateEmbedding(text: string, model): string: Promise<number[]> {
  try {
  const response = await fetch(`${this.serviceUrl}/embed`, {
  method: 'POST',
@@ -382,7 +382,7 @@ class EmbeddingService {
  return embedding;
  }
 class TextExtractor {
- async extractText(stream: Readable, filename: string): Promise<string> {
+ async extractText(stream: Readable, filename): string: Promise<string> {
  const buffers: Buffer[] = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (chunk: Buffer) => buffers.push(chunk));
@@ -402,7 +402,7 @@ class TextExtractor {
 }
 
 class DocumentChunker {
-	chunkText(text: string, options: ChunkingOptions): DocumentChunk[] {
+	chunkText(text: string, options): ChunkingOptions: DocumentChunk[] {
 		const chunks: DocumentChunk[] = [];
 		const sentences = this.splitIntoSentences(text);
 		let currentChunk = '';
@@ -452,7 +452,7 @@ class DocumentChunker {
 		return Math.ceil(text.length / 4);
 	}
 
-	private getOverlapText(text: string, overlapTokens: number): string {
+	private getOverlapText(text: string, overlapTokens): number: string {
 		const words = text.split(/\s+/).filter(Boolean);
 		const overlapWords = Math.min(Math.ceil(overlapTokens / 1.5), words.length);
 		return words.slice(-overlapWords).join(' ');

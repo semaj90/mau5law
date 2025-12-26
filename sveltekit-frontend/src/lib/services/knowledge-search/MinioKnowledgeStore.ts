@@ -279,7 +279,7 @@ export class MinioKnowledgeStore {
    * Generate object key
    * Property 9: Key format is {collection}/{url_hash}.md
    */
-  private generateKey(collection: string, urlHash: string): string {
+  private generateKey(collection: string, urlHash): string: string {
     return `${collection}/${urlHash}.md`;
   }
 

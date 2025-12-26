@@ -241,7 +241,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({ type: type });
  }
 
- public getEvidenceByDateRange(startDate: string, endDate: string): string: LokiEvidence[] {
+ public getEvidenceByDateRange(startDate: string, endDate): string: string: LokiEvidence[] {
  if (!this.evidenceCollection) return [];
  return this.evidenceCollection.where((obj: LokiEvidence) => {
  const createdAt = new Date(obj.timeline?.createdAt || 0);

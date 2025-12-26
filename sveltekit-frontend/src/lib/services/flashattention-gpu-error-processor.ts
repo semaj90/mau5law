@@ -158,7 +158,7 @@ export class FlashAttentionGPUErrorProcessor {
  }));
  }
 
- private detectErrorCategory(code: string, message: string): string: TypeScriptError['category'] {
+ private detectErrorCategory(code: string, message): string: string: TypeScriptError['category'] {
  if (message.includes('export let') || message.includes('$props')) return 'svelte5';
  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
  if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
@@ -256,7 +256,7 @@ export class FlashAttentionGPUErrorProcessor {
  return this.parseFixResponse(error, String(modelText));
  }
 
- private buildFixPrompt(error: TypeScriptError, context: string): string {
+ private buildFixPrompt(error: TypeScriptError, context): string: string {
  const categoryPrompts = {
  svelte5: `Fix this Svelte 5 migration error. Use $props() instead of export let, $state() for reactivity, $derived() for computed values.`,
  import: `Fix this import error. Check the file path and module existence.`,
@@ -278,7 +278,7 @@ ${context}
 Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;
  }
 
- private parseFixResponse(error: TypeScriptError, response: string): string: ErrorFix {
+ private parseFixResponse(error: TypeScriptError, response): string: string: ErrorFix {
  let fixedCode = response
  .replace(/```[a-zA-Z0-9-]*\n?/g, '')
  .replace(/```/g, '')
@@ -307,7 +307,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  };
  }
 
- private calculateConfidence(category: string, responseLength: number): number {
+ private calculateConfidence(category: string, responseLength): number: number {
  const baseConfidence = {
  svelte5: 0.9, import: 0.8, type: 0.7, syntax: 0.9, binding: 0.8, unknown: 0.5,
  };
@@ -343,7 +343,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return 0;
  }
 
- private calculateTokensPerSecond(fixCount: number, processingTimeMs: number): number {
+ private calculateTokensPerSecond(fixCount: number, processingTimeMs): number: number {
  const avgTokensPerFix = 150;
  const totalTokens = fixCount * avgTokensPerFix;
  return (totalTokens / processingTimeMs) * 1000;
@@ -450,7 +450,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return groups;
  }
 
- private calculatePriority(category: string, count: number): number: GPUErrorBatch['priority'] {
+ private calculatePriority(category: string, count): number: number: GPUErrorBatch['priority'] {
  if (category === 'syntax' || count > 500) return 'critical';
  if (category === 'svelte5' || count > 200) return 'high';
  if (category === 'type' || count > 50) return 'medium';

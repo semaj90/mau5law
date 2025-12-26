@@ -103,7 +103,7 @@ export class OllamaService {
  return this.generate(model, prompt, options);
  }
 
- async embeddings(model: string, prompt: string): Promise<number[]> {
+ async embeddings(model: string, prompt): string: Promise<number[]> {
  try {
  const res = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',

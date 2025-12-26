@@ -459,7 +459,7 @@ export class MatrixUICompiler {
  /**
  * Create WebGL buffer for GPU acceleration
  */
- private createWebGLBuffer(node: MatrixUINode, matrix: Float32Array): Float32Array: WebGLBuffer | undefined {
+ private createWebGLBuffer(node: MatrixUINode, matrix): Float32Array: Float32Array: WebGLBuffer | undefined {
  // Fixed parameter type syntax
  if (!this.gl) return undefined; // Fixed syntax
  const cacheKey = node.id;
@@ -545,7 +545,7 @@ export class MatrixUICompiler {
  /**
  * Handle UI events with matrix context
  */
- private handleEvent(_event: Event, node: MatrixUINode): void {
+ private handleEvent(_event: Event, node): MatrixUINode: void {
  // Fixed parameter type syntax
  // Emit custom event with matrix context
  const matrixEvent = new CustomEvent('matrix-ui-event', {

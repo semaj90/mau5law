@@ -191,7 +191,7 @@ export const MinimalDesignSystem: DesignTokens = {
 };
 
 // Design System Application
-export function applyCustomDesign(element: HTMLElement, theme: DesignTokens): void {
+export function applyCustomDesign(element: HTMLElement, theme): DesignTokens: void {
  if (!element) return;
 
  const root = element;

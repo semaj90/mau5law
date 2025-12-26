@@ -78,7 +78,7 @@ export class SecureStorageClient {
  }
  }
  /** * Delete file with conditional client-side removal * Only removes from client state if server confirms deletion */
- async deleteFile(bucket: string, key: string): Promise<DeleteResponse> {
+ async deleteFile(bucket: string, key): string: Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -99,7 +99,7 @@ export class SecureStorageClient {
  }
  }
  /** * Check file deletion status */
- async getFileStatus(bucket: string, key: string): Promise<DeleteResponse> {
+ async getFileStatus(bucket: string, key): string: Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -122,7 +122,7 @@ export class SecureStorageClient {
  async uploadFiles(
  files: File[],
  bucket: string = 'legal-documents',
- onProgress?: (completed: number, total: number): number => void
+ onProgress?: (completed: number, total): number: number => void
  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string }[] }> {
  const successful: UploadResponse[] = [];
  const failed: Array<{ file: File; error: string }> = [];
@@ -183,7 +183,7 @@ export class ReactiveStorageManager {
  }
  }
  /** * Delete file and update state conditionally */
- async deleteFile(bucket: string, key: string): Promise<boolean> {
+ async deleteFile(bucket: string, key): string: Promise<boolean> {
  this.loading = true;
  this.error = null;
  try {

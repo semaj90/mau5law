@@ -211,7 +211,7 @@ export class ContextualService {
  return !!(context.caseId || context.evidenceId || context.userId);
  }
 
- private calculateRelevance(context: ContextualState, query: string): number {
+ private calculateRelevance(context: ContextualState, query): string: number {
  let score = 0;
  const queryLower = query.toLowerCase();
 

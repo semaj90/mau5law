@@ -100,7 +100,7 @@
 		return { valid: true };
 	}
 
-	async function uploadFile(file: File, index: number): number {
+	async function uploadFile(file: File, index): number: number {
 		try {
 			updates[index].status = 'uploading';
 			updates[index].progress = 0;

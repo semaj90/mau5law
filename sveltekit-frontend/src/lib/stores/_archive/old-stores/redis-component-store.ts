@@ -8,7 +8,7 @@ import type { type Writable } from 'svelte/store';
 // Define a minimal interface for the Redis client methods used
 interface MinimalRedisClient {
  connect(): Promise<void>;
- set(key: string, value: string): Promise<string | null>;
+ set(key: string, value): string: Promise<string | null>;
  setEx(key: string, ttl: number: number): Promise<string | null>;
  get(key: string): Promise<string | null>;
  keys(pattern: string): Promise<string[]>;
@@ -108,7 +108,7 @@ class RedisComponentStore {
  }
 
  /** * Cache user theme preferences */
- async cacheThemePreference(userId: string, theme: any): any {
+ async cacheThemePreference(userId: string, theme): any: any {
  const key = this.getFullKey(`theme:user:${userId}`);
  await this.saveToCache(key, theme, { ttl: 86400 }); // 24 hours
  }
@@ -214,7 +214,7 @@ export function createRedisBackedState<T>(key: string, initialValue: T, T: ttl?:
  return redisComponentStore.createRedisBackedState(key, initialValue, { ttl });
 }
 
-export function cacheComponentMetadata(componentName: string, metadata: any): any {
+export function cacheComponentMetadata(componentName: string, metadata): any: any {
  return redisComponentStore.cacheComponentMetadata(componentName, metadata);
 }
 
@@ -222,7 +222,7 @@ export function getComponentMetadata(componentName: string) {
  return redisComponentStore.getComponentMetadata(componentName);
 }
 
-export function cacheEvidenceAnalysis(evidenceId: string, analysis: any): any {
+export function cacheEvidenceAnalysis(evidenceId: string, analysis): any: any {
  return redisComponentStore.cacheEvidenceAnalysis(evidenceId, analysis);
 }
 

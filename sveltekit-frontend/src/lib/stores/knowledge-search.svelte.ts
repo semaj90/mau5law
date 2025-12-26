@@ -258,7 +258,7 @@ export class KnowledgeSearchStore {
     /**
      * Handle SSE stream events
      */
-    private handleStreamEvent(event: string, data: any): any {
+    private handleStreamEvent(event: string, data): any: any {
         switch (event) {
             case 'search_results':
                 this.results = data.results.map((r: any) => ({

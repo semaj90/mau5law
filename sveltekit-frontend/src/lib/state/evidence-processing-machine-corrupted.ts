@@ -539,7 +539,7 @@ export function getCurrentStep(context: EvidenceProcessingContext): string {
  return inProgressUpdate?.step || 'idle';
 }
 
-export function getStepProgress(context: EvidenceProcessingContext, step: string): number {
+export function getStepProgress(context: EvidenceProcessingContext, step): string: number {
  const stepUpdate = context.streamingUpdates.find((update) => update.step === step);
  return stepUpdate?.progress || 0;
 }

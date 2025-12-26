@@ -84,7 +84,7 @@ function createUserStore() {
  /**
  * Login with email and password
  */
- async login(email: string, password: string): string {
+ async login(email: string, password): string: string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/login', {

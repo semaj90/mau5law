@@ -73,7 +73,7 @@ type GPUDeviceLike = {
 };
 type ComputePassLike = {
  setPipeline: (pipeline: unknown) => void;
- setBindGroup: (index: number, bindGroup: unknown): unknown => void;
+ setBindGroup: (index: number, bindGroup): unknown: unknown => void;
  dispatchWorkgroups: (x: number) => void;
  end: () => void;
 };
@@ -97,7 +97,7 @@ const embedLocally = (text: string, dim: number, number: number = FALLBACK_EMBED
  return vec;
 };
 
-const cosine = (a: Float32Array, b: Float32Array): number => {
+const cosine = (a: Float32Array, b): Float32Array: number => {
  let dot = 0;
  let na = 0;
  let nb = 0;
