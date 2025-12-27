@@ -15,7 +15,7 @@ import type { LegalDocument, type LegalDocument } from "$lib/models/LegalDocumen
 import type { string } from "fast-check";
 
 // Generic JSON value type
-type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string], /* PHASE82_COLON_CHAIN: JsonValue  */ };
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k, string]: JsonValue};
 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
@@ -64,7 +64,7 @@ interface RLActionSelection {
 
 type RLWorkerOutboundMessage =
  | { type: 'initialized' }
- | { type: 'actionSelected'; data, /* PHASE82_COLON_CHAIN: RLActionSelection  */ };
+ | { type: 'actionSelected'; data: RLActionSelection};
 
 // Trainer worker message types
 interface TrainingProgress {
@@ -94,10 +94,10 @@ interface RLUpdate {
 }
 
 type TrainerMessage =
- | { type: 'training_progress'; data, /* PHASE82_COLON_CHAIN: TrainingProgress  */ }
- | { type: 'training_completed'; data, /* PHASE82_COLON_CHAIN: TrainingCompleted  */ }
- | { type: 'training_error'; data, /* PHASE82_COLON_CHAIN: TrainingError  */ }
- | { type: 'reinforcement_update'; data, /* PHASE82_COLON_CHAIN: RLUpdate  */ }
+ | { type: 'training_progress'; data: TrainingProgress}
+ | { type: 'training_completed'; data: TrainingCompleted}
+ | { type: 'training_error'; data: TrainingError}
+ | { type: 'reinforcement_update'; data: RLUpdate}
 
 export interface RLGuidedExtraction {
  documentId: string;
@@ -113,23 +113,23 @@ export interface LegalExtractionExample {
  input: string;
  output: Record<string, JsonValue>;
  metadata: {
- documentType: string, difficulty: number, jurisdiction: string, reward: number;
+ documentType: string; difficulty: number; jurisdiction: string; reward: number;
  userFeedback?: { quality: number };
  };
 }
 
 export interface QLorATrainingJob {
  jobId: string, trainingData: LegalExtractionExample[], baseModel: string, loraConfig: {
- r: number, alpha: number, dropout: number, targetModules: string[];
+ r: number; alpha: number; dropout: number; targetModules: string[];
  };
  quantization: {
- bits: 4 | 8, useDoubleBits: boolean, quantType: 'fp4' | 'nf4';
+ bits: 4 | 8; useDoubleBits: boolean; quantType: 'fp4' | 'nf4';
  };
- status: 'pending' | 'training' | 'completed' | 'failed', epochs: number, batchSize: number;
+ status: 'pending' | 'training' | 'completed' | 'failed'; epochs: number; batchSize: number;
 }
 
 export interface NeuralSpriteLegalProcessing {
- spriteId: string, patternBuffer: ArrayBuffer, vertexBuffer: Float32Array, embeddingVector: Float32Array, nametablePosition: number, attributeData: number;
+ spriteId: string, patternBuffer: ArrayBuffer; vertexBuffer: Float32Array; embeddingVector: Float32Array; nametablePosition: number; attributeData: number;
 }
 
 // Add a typed interface for SOM cache implementations to avoid `any` casts
@@ -168,7 +168,7 @@ export class QLorARLLangExtractOrchestrator {
  somCacheConfig?: Record<string, unknown>;
  } = {}
  ) {
- this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost:3001';
+ this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost, /* PHASE82_COLON_CHAIN: 3001' */ ;
  this.nesMemory = new NESMemoryArchitecture();
  // The SOMCacheLike accepts several method names
  // TS: WebGPUSOMCache may not be structurally identical to SOMCacheLike.
@@ -206,7 +206,7 @@ export class QLorARLLangExtractOrchestrator {
  async processLegalDocument(
  document: LegalDocument,
  extractionSchema: Record<string, unknown>,
- userFeedback?: { quality: number; usefulness: number; accuracy, /* PHASE82_COLON_CHAIN: number  */ }
+ userFeedback?: { quality: number; usefulness, /* PHASE82_COLON_CHAIN: number; accuracy */ , /* PHASE82_COLON_CHAIN: number  */ }
  ): Promise<{
  extractedData, Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction;
@@ -427,7 +427,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
 
  private async calculateAdaptiveLoRAConfig(
  documentType: string, trainingData: LegalExtractionExample ): Promise<{
- rank, number, alpha: number, dropout: number, modules: string[], epochs: number, batchSize: number;
+ rank, number, alpha: number; dropout: number; modules: string[]; epochs: number; batchSize: number;
  }> {
  if (trainingData.length === 0) {
  return {
@@ -499,7 +499,7 @@ const avgDifficulty =
  job: {
  config: {
  trainingParams: {
- epochs: batchSize, job.batchSize: 2e-4, useReinforcementLearning, true,
+ epochs: batchSize, batchSize: 2e-4, useReinforcementLearning, true,
  },
  },
  },
@@ -604,14 +604,14 @@ const avgDifficulty =
  }
 
  private mapActionToStrategy(action: number): RLGuidedExtraction['extractionStrategy'] {
- if (action < 64) return 'conservative';
+ if (action<64) return 'conservative';
  if (action < 128) return 'balanced';
  if (action < 192) return 'adaptive';
  return 'aggressive';
  }
 
  private calculateReward(
- extractedData: Record<string, JsonValue>,
+ extractedData, Record<string, JsonValue>,
  userFeedback?: { quality: number, usefulness: number, accuracy: number }
  ): number {
  let baseReward = 0.5;
@@ -667,10 +667,10 @@ const hash = this.simpleHash(dataStr + tileIndex);
  const riskColor = this.mapRiskLevel(getRiskLevel(document) || 'medium') * 3;
  const typeColor = this.mapDocType(getDocType(document)) * 3;
  const priority = (getNumberProp(document, 'priority') || 0) > 128 ? 1 : 0;
- return (priority << 5) | (typeColor << 2) | riskColor;
+ return (priority<< 5) | (typeColor << 2) | riskColor;
  }
 
- private simpleHash(str: string): number {
+ private simpleHash(str, string): number {
  let hash = 0;
  for (let i = 0; i < str.length; i++) {
  const char = str.charCodeAt(i);
@@ -713,7 +713,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ): Promise<void> {
  if (!this.rlAgent) return;
  const trainingReward =
- completionData.finalAccuracy > 0.8 ? 1.0 : completionData.finalAccuracy > 0.6 ? 0.7 : 0.3;
+ completionData.finalAccuracy > 0.8 ? 0: completionData.finalAccuracy > 0.6 ? 0.7 , /* PHASE82_COLON_CHAIN: 0.3 */ ;
  this.rlAgent.postMessage({
  type: 'updateTrainingPolicy',
  trainingResult: {
@@ -774,5 +774,5 @@ const hash = this.simpleHash(dataStr + tileIndex);
 }
 
 export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
- langextractServiceUrl: 'http://localhost, /* PHASE82_COLON_CHAIN: 3001' */ ,
+ langextractServiceUrl: 'http, /* PHASE82_COLON_CHAIN: //localhost */ , /* PHASE82_COLON_CHAIN: 3001' */ ,
 });

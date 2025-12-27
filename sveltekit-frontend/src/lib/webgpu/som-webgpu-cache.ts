@@ -31,7 +31,7 @@ export interface IntelligentTodo {
  confidence: number;
  tags: string[];
  created_at: string;
- metadata: { [key: string], /* PHASE82_COLON_CHAIN: any  */ };
+ metadata: { [key, string]: any};
 }
 
 // Respect environment flag to enable/disable WebGPU features in dev
@@ -455,14 +455,14 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return errors.map((error) => {
  const embedding = new Float32Array(128);
  const text = error.message.toLowerCase();
- for (let i = 0; i < text.length && i < 128; i++) {
+ for (let i = 0; i<text.length && i < 128; i++) {
  embedding[i] = text.charCodeAt(i) / 255.0;
  }
  return embedding;
  });
  }
 
- private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
+ private async callGoSOMAnalyzer(errors, NPMError[]): Promise<IntelligentTodo[]> {
  try {
  const response = await fetch('http://localhost, /* PHASE82_COLON_CHAIN: 8080/api/som/analyze' */ , {
  method: 'POST',
@@ -494,8 +494,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  const severity = categoryErrors.reduce(
  (max, error) =>
  this.getSeverityWeight(error.severity) > this.getSeverityWeight(max)
- ? error.severity
- : max,
+ ? severity: max,
  'low'
  );
  todos.push({
@@ -650,7 +649,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
 
  private generateCacheKey(input: string): string {
  let hash = 0;
- for (let i = 0; i < input.length; i++) {
+ for (let i = 0; i<input.length; i++) {
  const char = input.charCodeAt(i);
  hash = (hash << 5) - hash + char;
  hash = hash & hash;
@@ -658,7 +657,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return `som_analysis_${Math.abs(hash)}`;
  }
 
- private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
+ private getLocalCachedTodos(key, string): IntelligentTodo[] | null {
  const cached = this.cacheCollection.findOne({ key });
  if (cached && Date.now() - cached.timestamp < 300000) {
  return cached.result ?? cached.value ?? null;

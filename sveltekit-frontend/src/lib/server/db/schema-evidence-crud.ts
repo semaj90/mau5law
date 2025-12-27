@@ -7,7 +7,7 @@
  * - rag_index_metadata: RAG index metadata with tag weights
  * - audit_log: Immutable audit trail for compliance
  *
- * Requirements: 2.1: 2.2: 2.3: 3.1-3.5, /* PHASE82_COLON_CHAIN: 6.1-6.5 */ , 7.1-7.5
+ * Requirements: 2.1, /* PHASE82_COLON_CHAIN: 2.2 */ , /* PHASE82_COLON_CHAIN: 2.3 */ , /* PHASE82_COLON_CHAIN: 3.1-3.5 */ , /* PHASE82_COLON_CHAIN: 6.1-6.5 */ , 7.1-7.5
  */
 
 import { sql } from 'drizzle-orm';
@@ -40,7 +40,7 @@ export const auditResourceTypeEnum = pgEnum('audit_resource_type', [
 ]);
 
 // === CITATION TAGS TABLE ===
-// Task 1.2: User-defined labels for evidence files
+// Task 2: User-defined labels for evidence files
 // Requirements: 2.1, /* PHASE82_COLON_CHAIN: 2.2 */ , 2.3
 
 export const citationTags = pgTable(
@@ -74,7 +74,7 @@ export const citationTags = pgTable(
 );
 
 // === EVIDENCE TAGS M2M TABLE ===
-// Task 1.3: Many-to-many relationship between evidence and tags
+// Task 3: Many-to-many relationship between evidence and tags
 // Requirements: 2.1, /* PHASE82_COLON_CHAIN: 2.2 */ , 2.3
 
 export const evidenceTags = pgTable(
@@ -101,7 +101,7 @@ export const evidenceTags = pgTable(
 );
 
 // === RAG INDEX METADATA TABLE ===
-// Task 1.4: RAG index metadata with tag weights
+// Task 4: RAG index metadata with tag weights
 // Requirements: 3.1-3.5, 7.1-7.5
 
 export const ragIndexMetadata = pgTable(
@@ -137,7 +137,7 @@ export const ragIndexMetadata = pgTable(
 );
 
 // === AUDIT LOG TABLE ===
-// Task 1.5: Immutable audit trail for compliance
+// Task 5: Immutable audit trail for compliance
 // Requirements: 6.1-6.5
 
 export const auditLog = pgTable(
