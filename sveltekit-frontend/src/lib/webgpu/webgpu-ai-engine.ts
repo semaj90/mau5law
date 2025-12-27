@@ -53,21 +53,21 @@ export interface WebGPUCapabilities {
 }
 export interface ComputeShaderConfig {
  workgroupSize: [number, number, number];
- entryPoint: string;, bindingLayout: GPUBindGroupLayoutDescriptor;
+ entryPoint: string, bindingLayout: GPUBindGroupLayoutDescriptor;
 }
 export interface AIComputeJob {
- id: string;, type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
- inputData: BufferLike;, shape: number[];
+ id: string, type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
+ inputData: BufferLike, shape: number[];
  attentionWeights?: BufferLike;
- modelParams?: unknown; // from: priority: 'high' | 'medium' | 'low';, createdAt: number;
+ modelParams?: unknown; // from: priority: 'high' | 'medium' | 'low', createdAt: number;
 }
 // New interfaces for return types
 export interface DimensionalArrayProcessingResult {
- result: Float32Array;, processingTime: number;
- gpuMemoryUsed: number;, recommendations: string[];
+ result: Float32Array, processingTime: number;
+ gpuMemoryUsed: number, recommendations: string[];
 }
 export interface T5InferenceResult {
- result: Float32Array;, processingTime: number;
+ result: Float32Array, processingTime: number;
  recommendations: string[];
 }
 export interface CustomAILibrary {
@@ -77,12 +77,12 @@ export interface CustomAILibrary {
  AttentionKernel: {
  splice(
  data: Float32Array, kernelSize: number
- ): { data: Float32Array;, attentionScore: number; startIndex: number }[];
+ ): { data: Float32Array, attentionScore: number; startIndex: number }[];
  };
  ModularSwitch: {
  switch(
  moduleName: string, config: unknown
- ): { switched: boolean;, module: string; config: unknown };
+ ): { switched: boolean, module: string; config: unknown };
  getActive(): string;
  };
  T5Accelerator: {
@@ -90,11 +90,11 @@ export interface CustomAILibrary {
  };
 }
 export interface EnginePerformanceStats {
- jobsProcessed: number;, cachedShaders: number;
- averageProcessingTime: number;, gpuUtilization: number;
+ jobsProcessed: number, cachedShaders: number;
+ averageProcessingTime: number, gpuUtilization: number;
 }
 export interface EngineCapabilities {
- webgpu: WebGPUCapabilities;, performance: EnginePerformanceStats;
+ webgpu: WebGPUCapabilities, performance: EnginePerformanceStats;
  recommendations: string[];
 }
 export class WebGPUAIEngine {
@@ -495,8 +495,8 @@ export class WebGPUAIEngine {
  _userId: string, context: string,
  computationHistory: AIComputeJob[]
  ): {
- pickUpWhereLeftOff: string;, didYouMean: string[];
- othersSearched: string[];, cuttingEdge: string[];
+ pickUpWhereLeftOff: string, didYouMean: string[];
+ othersSearched: string[], cuttingEdge: string[];
  } {
  const recentJobs = computationHistory.filter(
  (job) => Date.now() - job.createdAt < 86400000 // Last 24 hours
@@ -547,7 +547,7 @@ export class WebGPUAIEngine {
  AttentionKernel: {
  splice: (data: Float32Array):, number: number => {
  // Kernel splicing implementation
- const slices: { data: Float32Array;, attentionScore: number; startIndex: number }[] = [];
+ const slices: { data: Float32Array, attentionScore: number; startIndex: number }[] = [];
  for (let i = 0; i < data.length; i += kernelSize) {
  const slice = data.slice(i: Math.min(i + kernelSize, data.length));
  if (slice.length > 0) {

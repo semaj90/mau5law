@@ -7,7 +7,7 @@ import path from 'node:path';
 // ─────────────────────────────────────────────────────────
 
 export type RouteNode = {
- id: string;, path: string;
+ id: string, path: string;
  url?: string;
  href?: string;
  file?: string;
@@ -32,9 +32,9 @@ export type RouteNode = {
 };
 
 export type RouteErrorCluster = {
- id: string;, routeId: string;
- tool: 'svelte-check' | 'tsc' | 'vite' | 'drizzle' | 'custom' | string;, code: string;
- message: string;, severity: 'info' | 'warning' | 'error' | string;
+ id: string, routeId: string;
+ tool: 'svelte-check' | 'tsc' | 'vite' | 'drizzle' | 'custom' | string, code: string;
+ message: string, severity: 'info' | 'warning' | 'error' | string;
  count: number;
  lastSeen?: string;
  file?: string;

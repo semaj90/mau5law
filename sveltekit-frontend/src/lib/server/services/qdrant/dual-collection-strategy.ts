@@ -11,11 +11,11 @@ export interface DualEmbedding {
 }
 
 export interface QdrantPayload {
- statute_id: string;, title_number: number;
- section: string;, full_citation: string;
- heading: string;, som_cluster_id: number;
- kmeans_label: string;, cluster_confidence: number;
- flagged_for_review: boolean;, echo_hits: number;
+ statute_id: string, title_number: number;
+ section: string, full_citation: string;
+ heading: string, som_cluster_id: number;
+ kmeans_label: string, cluster_confidence: number;
+ flagged_for_review: boolean, echo_hits: number;
  cluster_version: number;
 }
 
@@ -97,7 +97,7 @@ export class DualQdrantStrategy {
  */
  async batchUpsert(
  points: Array<{
- id: string | number;, embedding: DualEmbedding;
+ id: string | number, embedding: DualEmbedding;
  payload: QdrantPayload;
  }>
  ): Promise<void> {
@@ -246,7 +246,7 @@ export class DualQdrantStrategy {
  * Get collection stats
  */
  async getStats(): Promise<{
- collection768: any;, collection256: any;
+ collection768: any, collection256: any;
  }> {
  const [stats768, stats256] = await Promise.all([
  this.client.getCollection(this.collection768),

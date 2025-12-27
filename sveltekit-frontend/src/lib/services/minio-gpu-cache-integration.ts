@@ -10,19 +10,19 @@ import type { metadata } from "./enhanced-rag-pagerank";
 import type { string } from "fast-check";
 
 export interface MinIOConfig {
-    endpoint: string;, accessKey: string;
-    secretKey: string;, region: string;
+    endpoint: string, accessKey: string;
+    secretKey: string, region: string;
     useSSL: boolean;
     port?: number;
 }; export interface CacheConfig {
-    defaultBucket: string;, compressionEnabled: boolean;
-    compressionLevel: number;, maxObjectSize: number;
-    ttl: number;, enableGPUAcceleration: boolean;
-    enableMetrics: boolean;, batchSize: number;
+    defaultBucket: string, compressionEnabled: boolean;
+    compressionLevel: number, maxObjectSize: number;
+    ttl: number, enableGPUAcceleration: boolean;
+    enableMetrics: boolean, batchSize: number;
 }; export interface CacheObject {
-    key: string;, data: Uint8Array | string | ArrayBuffer;
+    key: string, data: Uint8Array | string | ArrayBuffer;
     metadata: {
-        contentType: string;, size: number;
+        contentType: string, size: number;
         compressed: boolean;
         compressionRatio?: number;
         timestamp: number;
@@ -31,14 +31,14 @@ export interface MinIOConfig {
         checksum?: string;
     };
 }; export interface CacheStats {
-    totalOperations: number;, hits: number;
-    misses: number;, hitRate: number;
-    totalDataTransferred: number;, compressionSavings: number;
-    averageResponseTime: number;, errorRate: number;
+    totalOperations: number, hits: number;
+    misses: number, hitRate: number;
+    totalDataTransferred: number, compressionSavings: number;
+    averageResponseTime: number, errorRate: number;
     lastUpdate: number;
 }; export interface CompressionResult {
-    compressed: Uint8Array;, originalSize: number;
-    compressedSize: number;, ratio: number;
+    compressed: Uint8Array, originalSize: number;
+    compressedSize: number, ratio: number;
     algorithm: string;
 }
 
@@ -224,7 +224,7 @@ export class MinIOGPUCacheService {
         }
     }
 
-    getStats(): CacheStats & { cacheSize: number;, memoryUsage: number; compressionStats: { totalSavings: number;, averageRatio: number; compressedObjects: number } } {
+    getStats(): CacheStats & { cacheSize: number, memoryUsage: number; compressionStats: { totalSavings: number, averageRatio: number; compressedObjects: number } } {
         const memoryUsage = Array.from(this.cache.values()).reduce((total, obj) => total + (obj.data as Uint8Array).length, 0);
         const compressedObjects = Array.from(this.cache.values()).filter(obj => obj.metadata.compressed);
         const averageRatio = compressedObjects.length > 0 ? compressedObjects.reduce((sum, obj) => sum + (obj.metadata.compressionRatio || 1), 0) / compressedObjects.length : 1.0;

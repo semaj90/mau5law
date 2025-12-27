@@ -14,7 +14,7 @@ import { embedText } from '../server/ai/embedder.ts'; // Updated import path and
 
 // New interfaces for service return types
 interface ProcessEvidenceServiceResult {
- id: string;, summary: string;
+ id: string, summary: string;
  confidence?: number;
  processingTime?: number;
 }
@@ -34,8 +34,8 @@ interface SearchServiceResult {
 }
 
 interface EmbeddingServiceResult {
- embedding: number[];, text: string;
- model: string;, dimensions: number;
+ embedding: number[], text: string;
+ model: string, dimensions: number;
 }
 
 interface RelatedEvidenceServiceResult {
@@ -45,68 +45,68 @@ interface RelatedEvidenceServiceResult {
 // Context types
 export interface LegalCaseContext {
  // Case data
- case: Case | null;, caseId: string | null;
+ case: Case | null, caseId: string | null;
  // Evidence management
- evidence: Evidence[];, selectedEvidence: Evidence | null;
+ evidence: Evidence[], selectedEvidence: Evidence | null;
  uploadQueue: File[];
  // AI processing
- aiAnalysisProgress: number;, aiSummary: string | null;
+ aiAnalysisProgress: number, aiSummary: string | null;
  similarCases: Array<any>;
  // Search and filtering
- searchQuery: string;, searchResults: unknown[];
- relatedEvidence: unknown[];, lastEmbedding: number[] | null;
+ searchQuery: string, searchResults: unknown[];
+ relatedEvidence: unknown[], lastEmbedding: number[] | null;
  filters: {
  evidenceType?: string;
- dateRange?: { start: Date;, end: Date };
+ dateRange?: { start: Date, end: Date };
  tags?: string[];
  isAdmissible?: boolean;
  };
  // UI state
- activeTab: 'overview' | 'evidence' | 'analysis' | 'search';, isLoading: boolean;
+ activeTab: 'overview' | 'evidence' | 'analysis' | 'search', isLoading: boolean;
  error: string | null;
  // Form data
  formData: {
- caseForm: Partial<NewCase>;, evidenceForm: Partial<NewEvidence>;
+ caseForm: Partial<NewCase>, evidenceForm: Partial<NewEvidence>;
  };
  // Workflow state
- workflowStage: 'investigation' | 'analysis' | 'preparation' | 'review' | 'closed';, nextActions: string[];
+ workflowStage: 'investigation' | 'analysis' | 'preparation' | 'review' | 'closed', nextActions: string[];
  // Collaboration
- collaborators: Array<any>;, notifications: Array<any>;
+ collaborators: Array<any>, notifications: Array<any>;
  // Performance tracking
  stats: {
- totalEvidence: number;, processedEvidence: number;
- averageConfidence: number;, processingTime: number;
+ totalEvidence: number, processedEvidence: number;
+ averageConfidence: number, processingTime: number;
  };
 }
 // Event types
 export type LegalCaseEvents =
- | { type: 'LOAD_CASE';, caseId: string }
- | { type: 'CREATE_CASE';, caseData: NewCase }
- | { type: 'UPDATE_CASE';, updates: Partial<Case> }
+ | { type: 'LOAD_CASE', caseId: string }
+ | { type: 'CREATE_CASE', caseData: NewCase }
+ | { type: 'UPDATE_CASE', updates: Partial<Case> }
  | { type: 'DELETE_CASE' }
  // Evidence events
- | { type: 'ADD_EVIDENCE';, files: File[] }
- | { type: 'SELECT_EVIDENCE';, evidence: Evidence }
- | { type: 'DELETE_EVIDENCE';, evidenceId: string }
- | { type: 'PROCESS_EVIDENCE';, evidenceId: string }
- | { type: 'GENERATE_EMBEDDING';, text: string }
+ | { type: 'ADD_EVIDENCE', files: File[] }
+ | { type: 'SELECT_EVIDENCE', evidence: Evidence }
+ | { type: 'DELETE_EVIDENCE', evidenceId: string }
+ | { type: 'PROCESS_EVIDENCE', evidenceId: string }
+ | { type: 'GENERATE_EMBEDDING', text: string }
  | { type: 'SEARCH_RELATED_EVIDENCE'; embedding?: number[] }
  // AI events
  | { type: 'START_AI_ANALYSIS' }
- | { type: 'AI_ANALYSIS_PROGRESS';, progress: number }
- | { type: 'AI_ANALYSIS_COMPLETE';, summary: string }
+ | { type: 'AI_ANALYSIS_PROGRESS', progress: number }
+ | { type: 'AI_ANALYSIS_COMPLETE', summary: string }
  | { type: 'FIND_SIMILAR_CASES' }
  | { type: 'GENERATE_RECOMMENDATIONS' }
  // Search events
- | { type: 'SEARCH';, query: string }
- | { type: 'APPLY_FILTERS';, filters: LegalCaseContext['filters'] }
+ | { type: 'SEARCH', query: string }
+ | { type: 'APPLY_FILTERS', filters: LegalCaseContext['filters'] }
  | { type: 'CLEAR_SEARCH' }
  // Navigation events
- | { type: 'SWITCH_TAB';, tab: LegalCaseContext['activeTab'] }
- | { type: 'SET_WORKFLOW_STAGE';, stage: LegalCaseContext['workflowStage'] }
+ | { type: 'SWITCH_TAB', tab: LegalCaseContext['activeTab'] }
+ | { type: 'SET_WORKFLOW_STAGE', stage: LegalCaseContext['workflowStage'] }
  // Form events
- | { type: 'UPDATE_CASE_FORM';, data: Partial<NewCase> }
- | { type: 'UPDATE_EVIDENCE_FORM';, data: Partial<NewEvidence> }
+ | { type: 'UPDATE_CASE_FORM', data: Partial<NewCase> }
+ | { type: 'UPDATE_EVIDENCE_FORM', data: Partial<NewEvidence> }
  | { type: 'SUBMIT_CASE_FORM' }
  | { type: 'SUBMIT_EVIDENCE_FORM' }
  | { type: 'RESET_FORMS' }
@@ -124,14 +124,14 @@ export type LegalCaseActors = {
  output: Case;
  };
  createCase: {
- input: NewCase;, output: Case;
+ input: NewCase, output: Case;
  };
  loadEvidence: {
  input: { caseId?: string };
  output: Evidence[];
  };
  uploadEvidence: {
- input: { files: File[];, caseId: string; documentType: string };
+ input: { files: File[], caseId: string; documentType: string };
  output: UploadEvidenceServiceResult;
  };
  processEvidence: {
@@ -147,7 +147,7 @@ export type LegalCaseActors = {
  output: any[];
  };
  updateCase: {
- input: { caseId: string;, updates: Partial<Case> };
+ input: { caseId: string, updates: Partial<Case> };
  output: Case;
  };
  deleteCase: {
@@ -163,7 +163,7 @@ export type LegalCaseActors = {
  output: RelatedEvidenceServiceResult['results'];
  };
  search: {
- input: { query: string;, filters: LegalCaseContext['filters'] };
+ input: { query: string, filters: LegalCaseContext['filters'] };
  output: SearchServiceResult;
  };
 };
@@ -358,7 +358,7 @@ const hasAIAnalysis = ({ context: _context }: { context: LegalCaseContext }) => 
 // === Main state machine ===
 export const legalCaseMachine = setup({
  types: {} as {
- context: LegalCaseContext;, events: LegalCaseEvents;
+ context: LegalCaseContext, events: LegalCaseEvents;
  },
  guards: { isValidCaseData, hasEvidence, hasAIAnalysis },
  actions: {

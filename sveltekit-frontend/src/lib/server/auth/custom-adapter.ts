@@ -23,7 +23,7 @@ type SessionRow = {
 };
 
 type QueryResultRow = {
- user: UserRow;, session: SessionRow;
+ user: UserRow, session: SessionRow;
 };
 // --- end new types ---
 

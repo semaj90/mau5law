@@ -16,12 +16,12 @@ import { getKAGTraverser } from './KAGTraverser.js';
 import type { ClusterResult } from './ErrorClustering.js';
 
 export interface PatternStorageConfig {
-	jsonlDir: string;, neo4jEnabled: boolean;
+	jsonlDir: string, neo4jEnabled: boolean;
 }
 
 export interface StorageResult {
-	success: boolean;, patternId: string;
-	jsonlWritten: boolean;, neo4jWritten: boolean;
+	success: boolean, patternId: string;
+	jsonlWritten: boolean, neo4jWritten: boolean;
 	error?: string;
 }
 

@@ -6,7 +6,7 @@
 import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 export interface OllamaChatOptions {
- model: string;, system: string;
+ model: string, system: string;
  prompt: string;
  temperature?: number;
 }

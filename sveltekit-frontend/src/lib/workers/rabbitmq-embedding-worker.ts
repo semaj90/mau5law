@@ -13,7 +13,7 @@ import { eq, sql } from 'drizzle-orm';
 import { redis } from '../server/redis.js';
 
 export interface EmbeddingJobPayload {
-    entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
+    entity_type: 'document' | 'case' | 'chunk', entity_id: string;
     text_content?: string;
     embedding_type?: 'content' | 'title' | 'summary';
     update_vector_store?: boolean;

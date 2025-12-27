@@ -6,7 +6,7 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 export interface LegalPacketSection {
- title: string;, content: string;
+ title: string, content: string;
  type: 'notes' | 'evidence' | 'documents' | 'summary';
  metadata?: {
  author?: string;
@@ -17,8 +17,8 @@ export interface LegalPacketSection {
 }
 
 export interface LegalPacketData {
- caseId: string;, caseTitle: string;
- sections: LegalPacketSection[];, generatedAt: string;
+ caseId: string, caseTitle: string;
+ sections: LegalPacketSection[], generatedAt: string;
  generatedBy: string;
  firmName?: string;
  attorneyName?: string;
@@ -205,7 +205,7 @@ export async function generateCaseSummaryPDF(
  * Generate evidence packet PDF
  */
 export async function generateEvidencePacketPDF(
- caseId: string, caseTitle: string, string: Array<{ title: string;, content: string; type: string;, collectedAt: string }>
+ caseId: string, caseTitle: string, string: Array<{ title: string, content: string; type: string, collectedAt: string }>
 ): Promise<Uint8Array> {
  const sections: LegalPacketSection[] = evidence.map((item) => ({
  title: item.title, content.content,

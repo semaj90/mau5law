@@ -37,7 +37,7 @@ interface InspectionEvent {
 }
 // Store persistence interface
 export interface StoreState {
- appState: unknown;, legalCaseState: unknown;
+ appState: unknown, legalCaseState: unknown;
  timestamp: number;
 }
 // Configuration for store behavior
@@ -107,8 +107,8 @@ class XStateStoreManager {
  }
  /** * Initialize the application machine and store */
  public initializeApp(): {
- appStore: Readable<unknown>;, appActor: ActorRefFrom<typeof appMachine>;
- send: (_event: AppEvents) => void;, selectors: typeof appSelectors;
+ appStore: Readable<unknown>, appActor: ActorRefFrom<typeof appMachine>;
+ send: (_event: AppEvents) => void, selectors: typeof appSelectors;
  } {
  if (this.appActor) {
  throw new Error('App machine already initialized');
@@ -151,8 +151,8 @@ class XStateStoreManager {
  }
  /** * Initialize the legal case machine and store */
  public initializeLegalCase(): {
- legalCaseStore: Readable<unknown>;, legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
- send: (_event: Event) => void;, selectors: typeof legalCaseSelectors;
+ legalCaseStore: Readable<unknown>, legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
+ send: (_event: Event) => void, selectors: typeof legalCaseSelectors;
  } {
  if (this.legalCaseActor) {
  throw new Error('Legal case machine already initialized');

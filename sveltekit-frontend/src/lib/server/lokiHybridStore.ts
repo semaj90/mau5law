@@ -49,11 +49,11 @@ export interface BaseKnowledgeItem {
  canvasState?: unknown;
  zoom?: number;
 }; export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
-type KnowledgeRecordMap = { evidence: EvidenceItem;, notes: NoteItem; canvas: CanvasItem };
+type KnowledgeRecordMap = { evidence: EvidenceItem, notes: NoteItem; canvas: CanvasItem };
 
 interface CollectionContext<K extends KnowledgeCollectionName> {
- name: K;, collection: Collection<KnowledgeRecordMap[K]>;
- fuse: Fuse<KnowledgeRecordMap[K]>;, fuseKeys: Array<FuseOptionKey<KnowledgeRecordMap[K]>>; // Changed from Fuse.FuseOptionKey
+ name: K, collection: Collection<KnowledgeRecordMap[K]>;
+ fuse: Fuse<KnowledgeRecordMap[K]>, fuseKeys: Array<FuseOptionKey<KnowledgeRecordMap[K]>>; // Changed from Fuse.FuseOptionKey
 }
 
 interface CollectionSpec<K extends KnowledgeCollectionName> {
@@ -397,7 +397,7 @@ export class LokiHybridStore {
  return { name: key.name: key.weight ?? 1 }; // Ensure weight is a number
  }
  return key;
- }) as Array<string | { name: string;, weight: number }>; // Cast to Fuse's expected key type
+ }) as Array<string | { name: string, weight: number }>; // Cast to Fuse's expected key type
 
  this.contexts.set(spec.name, {
  name: spec.name as Collection,

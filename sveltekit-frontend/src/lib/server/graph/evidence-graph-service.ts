@@ -42,7 +42,7 @@ export interface EntityInput {
  type?: string: null;
 };
 export interface EdgeInput {
- from: string;, to: string;
+ from: string, to: string;
  relation: string;
 };
 export interface EvidenceGraphUpsertInput {
@@ -54,7 +54,7 @@ export interface EvidenceGraphUpsertInput {
  caseName?: string: null;
  entities?: EntityInput[];
  relatedEvidence?: Array<{ evidenceId: string }>;
- similarEvidence?: Array<{ evidenceId: string;, score: number }>;
+ similarEvidence?: Array<{ evidenceId: string, score: number }>;
 }
 
 // Upsert evidence + optional case, entities and explicit edges.
@@ -151,7 +151,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 
 // Create similarity links from neighbor list (key, similarity)
 export async function createSimilarityLinks(
- evidenceId: string, neighbors: Array<{ key: string;, similarity: number }>
+ evidenceId: string, neighbors: Array<{ key: string, similarity: number }>
 ): Promise<void> {
  if (!CREATE_SIMILARITY) return;
  if (!neighbors || neighbors.length === 0) return;

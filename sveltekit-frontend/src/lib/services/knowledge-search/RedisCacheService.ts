@@ -15,13 +15,13 @@ import type { SearchResult } from './types.js';
 import { get } from 'svelte/store';
 
 export interface RedisCacheConfig {
-  url: string;, defaultTTL: number; // seconds
+  url: string, defaultTTL: number; // seconds
   keyPrefix: string;
 }
 
 export interface CachedSearchResult {
-  results: SearchResult[];, cachedAt: string;
-  queryHash: string;, ttl: number;
+  results: SearchResult[], cachedAt: string;
+  queryHash: string, ttl: number;
 }
 
 const DEFAULT_CONFIG: RedisCacheConfig = {
@@ -105,7 +105,7 @@ export class RedisCacheService {
    * @returns Cached results or null if not found
    */
   async getCachedResults(query: string): Promise<{
-    results: SearchResult[];, cacheHit: boolean;
+    results: SearchResult[], cacheHit: boolean;
     cachedAt?: string;
   }> {
     const queryHash = this.hashQuery(query);

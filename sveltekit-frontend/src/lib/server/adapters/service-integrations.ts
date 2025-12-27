@@ -187,7 +187,7 @@ export class OllamaAdapter implements OllamaClient {
  }
 
  async chat(
- messages: Array<{ role: string;, content: string }>,
+ messages: Array<{ role: string, content: string }>,
  opts?: { model?: string; stream?: boolean }
  ): Promise<string | AsyncIterable<string>> {
  const model = opts?.model || this.config.chatModel;
@@ -379,7 +379,7 @@ export class PgVectorAdapter implements PgVectorClient {
  async search(
  collection: string, vector: number[],
  limit?: number
- ): Promise<Array<{ id: string;, similarity: number; metadata: Record<string, unknown> }>> {
+ ): Promise<Array<{ id: string, similarity: number; metadata: Record<string, unknown> }>> {
  const vectorStr = `[${vector.join(',')}]`;
  const sql = `
  SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
@@ -392,7 +392,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async insert(
- collection: string, vectors: Array<{ id: string;, vector: number[]; metadata?: Record<string, unknown> }>
+ collection: string, vectors: Array<{ id: string, vector: number[]; metadata?: Record<string, unknown> }>
  ): Promise<void> {
  const values = vectors
  .map((v, i) => `($${i * 3 + 1}, $${i * 3 + 2}::vector, $${i * 3 + 3}::jsonb)`)
@@ -467,7 +467,7 @@ export class MinIOAdapter implements MinIOClient {
  async listObjects(
  bucket: string,
  prefix?: string
- ): Promise<Array<{ name: string;, size: number; etag: string }>> {
+ ): Promise<Array<{ name: string, size: number; etag: string }>> {
  await this.ensureClient();
  const stream = this.client.listObjects(bucket, prefix, true);
  const objects = [];

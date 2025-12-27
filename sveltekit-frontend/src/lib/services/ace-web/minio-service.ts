@@ -144,7 +144,7 @@ export interface MinIOConfig {
    * @returns MinIO key for stored object
    */
   async storeChunks(
-    docId: string, chunks: Array<{ text: string;, metadata: object }>
+    docId: string, chunks: Array<{ text: string, metadata: object }>
   ): Promise<string> {
     this.validateInput(docId, 'docId');
 
@@ -394,7 +394,7 @@ export interface MinIOConfig {
   async listObjects(
     bucket: string, prefix: string,
     maxKeys: number = 1000
-  ): Promise<Array<{ key: string;, size: number; lastModified: Date }>> {
+  ): Promise<Array<{ key: string, size: number; lastModified: Date }>> {
     this.validateInput(bucket, 'bucket');
 
     try {

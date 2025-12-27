@@ -6,9 +6,9 @@ import { FileSnapshotStore, type, FileSnapshot } from './FileSnapshotStore.js';
 import { string, boolean } from "fast-check";
 
 export type ApplyResult =
- | { ok: true;, applied: boolean; reason?: string }
+ | { ok: true, applied: boolean; reason?: string }
  | {
- ok: false;, code: 'FILE_MISSING' | 'HASH_MISMATCH' | 'PATCH_TOO_LARGE' | 'WRITE_FAILED';
+ ok: false, code: 'FILE_MISSING' | 'HASH_MISMATCH' | 'PATCH_TOO_LARGE' | 'WRITE_FAILED';
  message: string;
  };
 
@@ -21,7 +21,7 @@ export class DiffApplier {
  private readonly maxPatchLines: number
  ) {}
 
- applyPatch(opts: { patch: PatchCandidate;, dryRun: boolean; stamp: string }): ApplyResult {
+ applyPatch(opts: { patch: PatchCandidate, dryRun: boolean; stamp: string }): ApplyResult {
  const { patch } = opts;
  const abs = path.join(this.repoRoot, patch.filePath);
  if (!fs.existsSync(abs)) {

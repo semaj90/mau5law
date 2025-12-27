@@ -24,15 +24,15 @@ const cacheTimeout = 1000 * 60 * 30; // 30 minutes
 
 export interface ChatEmbedding {
 	id?: string;
-	conversationId: string;, messageId: string;
-	content: string;, embedding: number[];
+	conversationId: string, messageId: string;
+	content: string, embedding: number[];
 	role: 'user' | 'assistant' | 'system';
 	metadata?: Record<string, unknown>;
 	createdAt?: Date;
 }
 
 export interface VectorSearchResult {
-	content: string;, role: string;
+	content: string, role: string;
 	similarity: number;
 	metadata?: Record<string, unknown>;
 	conversationId: string;
@@ -40,8 +40,8 @@ export interface VectorSearchResult {
 
 // Interface for rows returned by SQL queries
 interface ChatEmbeddingRow {
-	content: string;, role: string;
-	conversation_id: string;, metadata: string | null;
+	content: string, role: string;
+	conversation_id: string, metadata: string | null;
 	similarity: string;
 }
 
@@ -267,7 +267,7 @@ setInterval(() => {
 
 // This function stores the log and its embedding in PostgreSQL
 export async function storeLogInVectorDB(data: {
-	log: unknown;, embedding: number[];
+	log: unknown, embedding: number[];
 }): Promise<unknown> {
 	// TODO: Implement error_logs table in schema
 	console.warn('storeLogInVectorDB: errorLogs table not implemented yet');
@@ -285,7 +285,7 @@ const cacheTimeout = 1000 * 60 * 30; // 30 minutes
 
 export interface ChatEmbedding {
 	id?: string;
-	conversationId: string;, messageId: string;
-	content: string;, embedding: number[];
+	conversationId: string, messageId: string;
+	content: string, embedding: number[];
 	role: 'user' | 'assistant' | 'system';
 	metadata?: Record<string, unknown>;

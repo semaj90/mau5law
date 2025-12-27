@@ -4,7 +4,7 @@ import path from 'path';
 import { createWorker } from 'tesseract.js';
 
 export interface OcrResult {
- text: string;, method: 'native' | 'tesseractjs' | 'fallback';
+ text: string, method: 'native' | 'tesseractjs' | 'fallback';
  error?: string;
 }
 

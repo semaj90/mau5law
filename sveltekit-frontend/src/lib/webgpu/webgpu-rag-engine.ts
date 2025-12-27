@@ -20,7 +20,7 @@ export enum PTXArchitecture {
 }
 export type PTXOptimizationLevel = 0 | 1 | 2 | 3;
 export interface PTXKernelConfig {
- architecture: PTXArchitecture;, optimizationLevel: PTXOptimizationLevel;
+ architecture: PTXArchitecture, optimizationLevel: PTXOptimizationLevel;
  maxRegisters?: number;
  sharedMemorySize?: number;
 }
@@ -379,7 +379,7 @@ export class WebGPURAGEngine {
  async performClustering(
  documentEmbeddings: Float32Array, numClusters: number,
  maxIterations: number = 100
- ): Promise<{ centroids: Float32Array;, assignments: Uint32Array }> {
+ ): Promise<{ centroids: Float32Array, assignments: Uint32Array }> {
  if (!this.device || !this.computePipelines.has('clustering')) {
  throw new Error('WebGPU not initialized or clustering pipeline not available');
  }

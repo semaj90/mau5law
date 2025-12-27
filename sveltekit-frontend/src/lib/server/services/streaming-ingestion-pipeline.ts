@@ -20,7 +20,7 @@ import { eq, and, lt, sql } from 'drizzle-orm';
 import Redis from 'ioredis';
 
 interface DocumentMetadata {
- documentId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
+ documentId: string, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
  caseId?: string;
  evidenceId?: string;
  practiceArea?: string[];
@@ -29,14 +29,14 @@ interface DocumentMetadata {
 }
 
 interface ChunkingOptions {
- maxTokens: number;, overlapTokens: number;
- preserveSentences: boolean;, minChunkSize: number;
+ maxTokens: number, overlapTokens: number;
+ preserveSentences: boolean, minChunkSize: number;
 }
 
 interface ProcessingResult {
- documentId: string;, totalChunks: number;
- totalTokens: number;, embeddingsGenerated: number;
- cacheHits: number;, processingTimeMs: number;
+ documentId: string, totalChunks: number;
+ totalTokens: number, embeddingsGenerated: number;
+ cacheHits: number, processingTimeMs: number;
  errors: string[];
 }
 
@@ -332,7 +332,7 @@ export class StreamingIngestionPipeline {
 
 // Supporting classes and interfaces
 interface DocumentChunk {
- index: number;, text: string;
+ index: number, text: string;
  tokenCount: number;
  pageNumber?: number;
  entities?: unknown[];
