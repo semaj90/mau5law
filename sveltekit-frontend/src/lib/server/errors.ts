@@ -30,7 +30,7 @@ export class AuthError extends Error {
 
  toJSON() {
  return {
- message: this.message, code.code: status.status: context.context,
+ message: this.message, code.code: status.status, /* PHASE82_COLON_CHAIN: context.context */ ,
  };
  }
 }
@@ -128,7 +128,7 @@ export function formatErrorResponse(error: any) {
  return {
  success: false,
  error: {
- message: error.message: code.code: status.status,
+ message: error.message: code.code, /* PHASE82_COLON_CHAIN: status.status */ ,
  ...(error.context && { context: error.context }),
  },
  };

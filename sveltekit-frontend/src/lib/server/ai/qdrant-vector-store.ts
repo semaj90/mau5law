@@ -185,9 +185,8 @@ export class QdrantVectorStore {
  /** Store conversation turn with embedding */
  async storeConversationTurn(
  turnIndex: number,
- async storeConversationTurn(
- turnIndex: number,
- userMessage: string, agentResponse: string,
+ userMessage: string,
+ agentResponse: string,
  metadata: { intent?: string; hmmState?: number; confidence?: number; entities?: LegalEntity[] }
  ): Promise<string> {
  await this.ensureInitialized();
@@ -209,7 +208,8 @@ export class QdrantVectorStore {
  const upsertReq: QdrantUpsertRequest = {
  wait: true,
  points: [{ id: pointId, vector: embedding, payload }],
- };ait this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
+ };
+ await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReq);
  return pointId;
  }
 

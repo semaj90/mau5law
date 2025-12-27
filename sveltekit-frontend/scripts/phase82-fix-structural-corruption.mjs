@@ -72,6 +72,25 @@ function fixClassPropertyCommas(s) {
   );
 }
 
+function fixDoubleValues(s) {
+  // Fix "key: val val," -> "key: val,"
+  // e.g. "autosaveInterval: 4000 4000," -> "autosaveInterval: 4000,"
+  // e.g. "y: 0 0," -> "y: 0,"
+  return s.replace(
+    /(\b\w+\s*:\s*)([^,:{}\n]+)\s+\2\s*(,|})/g,
+    "$1$2$3"
+  );
+}
+
+function fixColonChains(s) {
+  // Fix "key: val1: val2," -> "key: val1, /* PHASE82_COLON_CHAIN: val2 */"
+  // e.g. "maxStorage...: val1: val2,"
+  return s.replace(
+    /(\b\w+\s*:\s*[^,:{}\n]+)\s*:\s*([^,:{}\n]+)\s*(,|})/g,
+    "$1, /* PHASE82_COLON_CHAIN: $2 */ $3"
+  );
+}
+
 function dropImmediateDuplicateBlocks(s) {
   // Very conservative: if two adjacent blocks are *exactly* identical,
   // comment out the second one.
@@ -130,6 +149,8 @@ function applyFixes(input) {
   s = fixGenericTypeColons(s);
   s = fixBadFunctionCallColons(s);
   s = fixClassPropertyCommas(s);
+  s = fixDoubleValues(s);
+  s = fixColonChains(s);
   s = dropImmediateDuplicateBlocks(s);
 
   return { text: s, changed: s !== before };
@@ -197,8 +218,10 @@ for (const rel of files) {
   const genFixes  = (before.match(/\b(Record|Map|Promise)\s*<\s*[^,>]+?\s*:\s*[^>]+?\s*>/g) || []).length;
   const callFixes = (before.match(/(lokiRedisCache\.set|console\.log|metrics\.push)\s*\([^,():]+\s*:\s*/g) || []).length;
   const propFixes = (before.match(/^\s*(private|protected|public|readonly)\s+[a-zA-Z0-9_$]+\s*:\s*[^,;]+\s*,\s*[a-zA-Z0-9_$]+/gm) || []).length;
+  const doubleFixes = (before.match(/(\b\w+\s*:\s*)([^,:{}\n]+)\s+\2\s*(,|})/g) || []).length;
+  const chainFixes = (before.match(/(\b\w+\s*:\s*[^,:{}\n]+)\s*:\s*([^,:{}\n]+)\s*(,|})/g) || []).length;
 
-  const fixes = joinFixes + retFixes + genFixes + callFixes + propFixes;
+  const fixes = joinFixes + retFixes + genFixes + callFixes + propFixes + doubleFixes + chainFixes;
   totalFixes += fixes;  filesModified++;
   results.push({ file: rel, changed: true, fixes });
 

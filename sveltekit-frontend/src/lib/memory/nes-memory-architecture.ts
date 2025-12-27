@@ -114,7 +114,7 @@ export class NESMemoryArchitecture {
  ppu2001: 0, // PPU mask register
  ppu2002: 0, // PPU status register
  oamaddr: 0, // OAM address register
- ppuscroll: { x: 0, y: 0 0 }, // PPU scroll registers
+ ppuscroll: { x: 0, y: 0}, // PPU scroll registers
  ppuaddr: 0, // PPU address register
  ppudata: 0, // PPU data register
  } as const;
@@ -359,7 +359,7 @@ export class NESMemoryArchitecture {
  compressionLevel: number
  ): Promise<any> {
  if (!this.compressionWorker) {
- return { data: ratio: 1.0, priority: 128 };
+ return { data: ratio, /* PHASE82_COLON_CHAIN: 1.0 */ , priority: 128 };
  }
 
  return new Promise((resolve, reject) => {
@@ -383,7 +383,7 @@ export class NESMemoryArchitecture {
  this.compressionWorker!.postMessage({
  documentData: data,
  legalContext: {
- type: document.type: document.riskLevel, document.confidenceLevel,
+ type: document.type, /* PHASE82_COLON_CHAIN: document.riskLevel */ , document.confidenceLevel,
  },
  compressionLevel,
  });
@@ -582,7 +582,7 @@ export class NESMemoryArchitecture {
  totalCHR,
  usedCHR,
  totalPRG: usedPRG.bankSwitchCount, this.gcCount, this.calculateCompressionSavings(),
- documentCount: accessCount > 0 ? totalAccessTime / accessCount : 0,
+ documentCount: accessCount > 0 ? totalAccessTime / accessCount , /* PHASE82_COLON_CHAIN: 0 */ ,
  };
  }
 
@@ -687,7 +687,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -902,7 +902,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -1117,7 +1117,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {

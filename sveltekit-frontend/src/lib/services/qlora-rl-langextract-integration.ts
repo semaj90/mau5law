@@ -15,7 +15,7 @@ import type { LegalDocument, type LegalDocument } from "$lib/models/LegalDocumen
 import type { string } from "fast-check";
 
 // Generic JSON value type
-type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string], /* PHASE82_COLON_CHAIN: JsonValue  */ };
 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
@@ -64,7 +64,7 @@ interface RLActionSelection {
 
 type RLWorkerOutboundMessage =
  | { type: 'initialized' }
- | { type: 'actionSelected'; data: RLActionSelection };
+ | { type: 'actionSelected'; data, /* PHASE82_COLON_CHAIN: RLActionSelection  */ };
 
 // Trainer worker message types
 interface TrainingProgress {
@@ -94,10 +94,10 @@ interface RLUpdate {
 }
 
 type TrainerMessage =
- | { type: 'training_progress'; data: TrainingProgress }
- | { type: 'training_completed'; data: TrainingCompleted }
- | { type: 'training_error'; data: TrainingError }
- | { type: 'reinforcement_update'; data: RLUpdate }
+ | { type: 'training_progress'; data, /* PHASE82_COLON_CHAIN: TrainingProgress  */ }
+ | { type: 'training_completed'; data, /* PHASE82_COLON_CHAIN: TrainingCompleted  */ }
+ | { type: 'training_error'; data, /* PHASE82_COLON_CHAIN: TrainingError  */ }
+ | { type: 'reinforcement_update'; data, /* PHASE82_COLON_CHAIN: RLUpdate  */ }
 
 export interface RLGuidedExtraction {
  documentId: string;
@@ -204,11 +204,13 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  async processLegalDocument(
- document: LegalDocument, extractionSchema: Record,
- userFeedback?: { quality: number, usefulness: number, accuracy: number }
+ document: LegalDocument,
+ extractionSchema: Record<string, unknown>,
+ userFeedback?: { quality: number; usefulness: number; accuracy, /* PHASE82_COLON_CHAIN: number  */ }
  ): Promise<{
  extractedData, Record<string, JsonValue>;
- rlGuidance: RLGuidedExtraction, neuralSprite: NeuralSpriteLegalProcessing;
+ rlGuidance: RLGuidedExtraction;
+ neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
  }> {
  console.log(`⚡ Processing legal document ${getDocId(document)} with RL+QLoRA integration`);
@@ -219,7 +221,7 @@ export class QLorARLLangExtractOrchestrator {
  await this.storeInNESMemory(document, extractedData, neuralSprite);
  const reward = this.calculateReward(extractedData, userFeedback);
  await this.updateRLAgent(stateEmbedding, rlGuidance, reward);
- let qloraJobId: undefined;
+ let qloraJobId: string | undefined;
  const docType = getDocType(document);
  if (this.shouldTriggerQLoRATraining(docType)) {
  qloraJobId = await this.triggerQLoRAFineTuning(docType);
@@ -246,7 +248,9 @@ const contextStart = 1500;
  }
 
  private async getRLGuidedStrategy(
- stateEmbedding: Float32Array, document: LegalDocument ): Promise<RLGuidedExtraction> {
+ stateEmbedding: Float32Array,
+ document: LegalDocument
+ ): Promise<RLGuidedExtraction> {
  if (!this.rlAgent) {
  return this.getDefaultStrategy(document);
  }
@@ -255,12 +259,15 @@ const contextStart = 1500;
  this.rlAgent!.onmessage = (evt: MessageEvent<RLWorkerOutboundMessage>) => {
  const { type } = evt.data;
  if (type === 'actionSelected') {
- const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>);
- .data;
+ const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>).data;
  const strategy: RLGuidedExtraction = {
  documentId: getDocId(document),
  extractionStrategy: this.mapActionToStrategy(data.action),
- temperature: data.temperature, data.maxTokens, explorationBonus: data.explorationBonus, confidenceThreshold: 0.7 + data.probability * 0.25, qloraFineTuningEnabled: data.probability < 0.6,
+ temperature: data.temperature,
+ maxTokens: data.maxTokens,
+ explorationBonus: data.explorationBonus,
+ confidenceThreshold: 0.7 + data.probability * 0.25,
+ qloraFineTuningEnabled: data.probability < 0.6,
  };
  resolve(strategy);
  }
@@ -761,11 +768,11 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ),
  nesMemoryUsage: this.nesMemory.getMemoryStats(),
  somCacheStats:
- typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
+ typeof this.somCache.getStats === 'function' ? this.somCache.getStats() , /* PHASE82_COLON_CHAIN: undefined */ ,
  };
  }
 }
 
 export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
- langextractServiceUrl: 'http://localhost:3001',
+ langextractServiceUrl: 'http://localhost, /* PHASE82_COLON_CHAIN: 3001' */ ,
 });

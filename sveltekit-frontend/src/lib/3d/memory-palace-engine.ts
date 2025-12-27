@@ -154,7 +154,7 @@ void main() {
  }
  }
 
- private createShaderProgram(vertexSource: string), string: WebGLProgram | null {
+ private createShaderProgram(vertexSource: string, fragmentSource: string): WebGLProgram | null {
  const gl = this.gl;
  const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
  const fragmentShader = this.compileShader(gl.FRAGMENT_SHADER, fragmentSource);
@@ -175,7 +175,7 @@ void main() {
  return program;
  }
 
- private compileShader(type: number), string: WebGLShader | null {
+ private compileShader(type: number, source: string): WebGLShader | null {
  const gl = this.gl;
  const shader = gl.createShader(type);
  if (!shader) return null;
