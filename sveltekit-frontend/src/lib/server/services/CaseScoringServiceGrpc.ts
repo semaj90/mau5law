@@ -296,7 +296,7 @@ const proto = loadedPkg as ExpectedProtoShape;
  return new Promise((resolve, reject) => {
  // Prepare binary request
  const metadata =
- (request as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+ (request as unknown as { metadata?: Record<string, unknown> }).metadata || {}
 
 const grpcRequest = {
  case_id: request.caseId, case_metadata: this.serializeCaseMetadata(metadata),
@@ -331,8 +331,8 @@ const grpcRequest = {
  const result: CaseScoringResult = {
  caseId: response?.case_id ?? '',
  score: response?.score ?? null, confidence: response?.confidence ?? null, this.convertCriteriaFromProto(
- (response?.detailed_scores as Record<string: unknown>) ||
- (response?.detailed_scorings as Record<string: unknown>) ||
+ (response?.detailed_scores as Record<string, unknown>) ||
+ (response?.detailed_scorings as Record<string, unknown>) ||
  {}
  ),
  // changed: use decompressAnalysis to handle compressed buffers consistently, explanation: await this.decompressAnalysis(response?.ai_analysis),
@@ -508,7 +508,7 @@ const call = this.grpcClient.StreamCaseScoring();
  call.on('error', reject);
 
  for (const r of requests) {
- const metadata = (r as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+ const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {}
 
 const req = {
   case_id: r.caseId, this.serializeCaseMetadata(metadata),
@@ -530,7 +530,7 @@ const req = {
  /**
  * Helper: Serialize case metadata to binary
  */
- private serializeCaseMetadata(metadata?: Record<string: unknown>): Buffer {
+ private serializeCaseMetadata(metadata?: Record<string, unknown>): Buffer {
  const json = JSON.stringify(metadata || {});
  return Buffer.from(json);
  }
@@ -548,7 +548,7 @@ const req = {
  /**
  * Helper: Convert criteria from protobuf format
  */
- private convertCriteriaFromProto(protoCriteria?: Record<string: unknown>): ScoringCriteria {
+ private convertCriteriaFromProto(protoCriteria?: Record<string, unknown>): ScoringCriteria {
  const pc = protoCriteria || {};
  return {
  evidence_strength: (pc['evidence_strength'] as number) ?? 0.5,
@@ -657,7 +657,7 @@ const req = {
  */
  private getPriority(request: CaseScoringRequest): number {
  // Determine priority based on case metadata
- const metadata = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
+ const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
  if (metadata['urgent']) return 4; // CRITICAL
  if (metadata['priority'] === 'high') return 3; // URGENT
  if (metadata['priority'] === 'medium') return 2; // HIGH
@@ -683,7 +683,7 @@ const req = {
 
  // Reuse methods from original service
  private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
- const caseData = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+ const caseData = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {}
 
 const title = String(caseData['title'] ?? 'N/A');
  const description = String(caseData['description'] ?? 'N/A');
