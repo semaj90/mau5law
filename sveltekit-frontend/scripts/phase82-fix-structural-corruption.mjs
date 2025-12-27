@@ -8,18 +8,13 @@ function writeText(p, s) { fs.mkdirSync(path.dirname(p), { recursive: true }); f
 function normalizeNewlines(s) { return s.replace(/\r\n/g, "\n"); }
 
 function fixStatementJoiners(s) {
-  // Break patterns like: "}; function foo" / "};const x" / "}; export type"
-  // Only when it's clearly a "};" followed by a new declaration keyword.
   return s.replace(
     /}\s*;\s*(?=(function|const|let|var|type|interface|export|class)\b)/g,
-    "}\n\n"
+    '}\n\n'
   );
 }
 
 function fixFunctionReturnSplice(s) {
-  // function foo(a: T) | undefined { ... }
-  // -> function foo(a: T): unknown | undefined { ... }
-  // Also handles | null and | undefined | null chains.
   return s.replace(
     /(function\s+[A-Za-z_$][\w$]*\s*\([^)]*\))\s*\|\s*(undefined|null)\b/g,
     (_m, head, tail) => `${head}: unknown | ${tail}`
@@ -27,17 +22,101 @@ function fixFunctionReturnSplice(s) {
 }
 
 function fixArrowReturnSplice(s) {
-  // const f = (x: T) | undefined => ...
-  // -> const f = (x: T): unknown | undefined => ...
   return s.replace(
     /(\=\s*\([^)]*\))\s*\|\s*(undefined|null)\s*=>/g,
     (_m, head, tail) => `${head}: unknown | ${tail} =>`
   );
 }
 
+function fixGenericTypeColons(s) {
+  return s.replace(
+    /\b(\w+)\s*<\s*([^,>]+?)\s*:\s*([^>]+?)\s*>/g,
+    "$1<$2, $3>"
+  );
+}
+
+function fixMethodSignatureDamage(s) {
+  return s.replace(
+    /(\([^)]+:\s*[^,:{}\n]+)\),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(;|})/g,
+    "$1): $2$3"
+  );
+}
+
+function fixArrowFunctionDamage(s) {
+  return s.replace(
+    /(\(\w+),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(,|}|;)/g,
+    "$1: $2$3"
+  );
+}
+
+function fixDottedKeys(s) {
+  return s.replace(
+    /([a-zA-Z0-9_$]+\.)+([a-zA-Z0-9_$]+)\s*:/g,
+    "$2:"
+  );
+}
+
+function fixBadCommaOperators(s) {
+  return s.replace(
+    /(\s[-+*\/])\s*,\s*/g,
+    "$1 "
+  );
+}
+
+function fixArrayColons(s) {
+  return s.replace(
+    /\[\s*([a-zA-Z0-9_$]+)\s*:\s*([a-zA-Z0-9_$!.()]+)\s*\]/g,
+    "[$1, $2]"
+  );
+}
+
+function fixBadFunctionCallColons(s) {
+  let out = s.replace(
+    /(lokiRedisCache\.set|console\.log|metrics\.push)\s*\(([^,():]+)\s*:\s*/g,
+    "$1($2, "
+  );
+  return out;
+}
+
+function fixClassPropertyCommas(s) {
+  return s.replace(
+    /^\s*(private|protected|public|readonly)\s+([a-zA-Z0-9_$]+)\s*:\s*([^,;]+)\s*,\s*([a-zA-Z0-9_$]+)\s*:\s*([^;]+);/gm,
+    (m, mod, p1, t1, p2, t2) => `  ${mod} ${p1}: ${t1};\n  ${mod} ${p2}: ${t2};`
+  );
+}
+
+function fixDoubleValues(s) {
+  return s.replace(
+    /(\b\w+\s*:\s*)([^,:{}\n\s;]+)\s+\2\s*(,|}|;)/g,
+    "$1$2$3"
+  );
+}
+
+function fixColonChains(s) {
+  return s.replace(
+    /(\b(?<!\[)\w+\s*:\s*[^,:{}\n;]+)\s*:\s*([^,:{}\n;]+)\s*(,|}|;)/g,
+    "$1, /* PHASE82_COLON_CHAIN: $2 */ $3"
+  );
+}
+
+function fixColonChainDamage(s) {
+  return s.replace(
+    /(\b\w+\s*:\s*[^,:{}\n]+);\s*(\w+),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(}|;)/g,
+    "$1; $2: $3$4"
+  );
+}
+
+function fixIndexSignatureDamage(s) {
+  return s.replace(
+    /\[\w+:\s*\w+\]\s*,\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(}|;)/g,
+    (match, type, end) => {
+      const indexSig = match.match(/^\[\w+:\s*\w+\]/)[0];
+      return `${indexSig}: ${type}${end}`;
+    }
+  );
+}
+
 function fixNesMemoryCorruption(s) {
-  // Fix "startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, NES_MEMORY_MAP.INTERNAL_RAM.end, size: used,"
-  // -> "startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end, size: NES_MEMORY_MAP.INTERNAL_RAM.size, used: 0,"
   return s.replace(
     /startAddress:\s*([^,]+),\s*([^,]+)\.end,\s*size:\s*used,/g,
     "startAddress: $1, endAddress: $2.end, size: $2.size, used: 0,"
@@ -45,60 +124,28 @@ function fixNesMemoryCorruption(s) {
 }
 
 function dropImmediateDuplicateBlocks(s) {
-  // Very conservative: if two adjacent blocks are *exactly* identical,
-  // comment out the second one.
-  // This catches accidental duplicated helper blocks.
-  const lines = s.split("\n");
+  const lines = s.split('\n');
   const out = [];
   let i = 0;
-
   while (i < lines.length) {
-    // Detect block-ish regions by braces count (simple heuristic).
-    // We'll only attempt if we see "function " or "const " starts.
     const line = lines[i];
     if (!/^\s*(export\s+)?(function|const|let|type|interface)\b/.test(line)) {
-      out.push(line);
-      i++;
-      continue;
+      out.push(line); i++; continue;
     }
-
-    // Grab a window of up to 80 lines as a "block candidate"
-    const a = lines.slice(i, i + 80).join("\n");
-    const nextStart = i + 1;
-
-    // Find next declaration nearby
-    let j = nextStart;
+    const a40 = lines.slice(i, i + 40).join('\n');
+    let j = i + 1;
     while (j < Math.min(lines.length, i + 160) && !/^\s*(export\s+)?(function|const|let|type|interface)\b/.test(lines[j])) j++;
-
     if (j >= lines.length) { out.push(line); i++; continue; }
-
-    const b = lines.slice(j, j + 80).join("\n");
-
-    // If the first 40 lines match exactly, treat as duplicate chunk
-    const a40 = lines.slice(i, i + 40).join("\n");
-    const b40 = lines.slice(j, j + 40).join("\n");
-
+    const b40 = lines.slice(j, j + 40).join('\n');
     if (a40.trim().length > 0 && a40 === b40) {
-      // Emit first chunk unchanged (line-by-line), and comment second chunk start
-      // We only comment the next declaration line to avoid huge comment blocks.
-      out.push(lines[i]);
-      // advance one line for first chunk
-      i++;
-
-      // When we reach the duplicate declaration, comment it
+      out.push(lines[i]); i++;
       while (i < j) { out.push(lines[i]); i++; }
-      out.push("// PHASE82_DUPLICATE_BLOCK_COMMENTED: " + lines[j]);
-      j++;
-      while (j < lines.length && j < i + 1) j++; // no-op
-      i = j;
-      continue;
+      out.push('// PHASE82_DUPLICATE_BLOCK_COMMENTED: ' + lines[j]);
+      j++; i = j; continue;
     }
-
-    out.push(line);
-    i++;
+    out.push(line); i++;
   }
-
-  return out.join("\n");
+  return out.join('\n');
 }
 
 function applyFixes(input) {
@@ -108,6 +155,19 @@ function applyFixes(input) {
   s = fixStatementJoiners(s);
   s = fixFunctionReturnSplice(s);
   s = fixArrowReturnSplice(s);
+  s = fixGenericTypeColons(s);
+  s = fixMethodSignatureDamage(s);
+  s = fixArrowFunctionDamage(s);
+  s = fixDottedKeys(s);
+  s = fixBadCommaOperators(s);
+  s = fixArrayColons(s);
+  s = fixBadFunctionCallColons(s);
+  s = fixClassPropertyCommas(s);
+  s = fixDoubleValues(s);
+  s = fixColonChains(s);
+  s = fixColonChainDamage(s);
+  s = fixIndexSignatureDamage(s);
+  s = fixNesMemoryCorruption(s);
   s = dropImmediateDuplicateBlocks(s);
 
   return { text: s, changed: s !== before };
