@@ -25,7 +25,9 @@ declare module '$lib/server/db/schema-postgres' {
  name: TName, columns: TColumns;
  dialect: 'pg', schema: undefined;
  };
- }; export const legal_documents: DrizzleTable<'legal_documents', {
+ }
+
+export const legal_documents: DrizzleTable<'legal_documents', {
  id: string, title: string;
  content: string, previewContent: string;
  fullText: string, documentType: string;
@@ -260,7 +262,8 @@ export interface IngestionResult {
  metadata?: JsonObject;
  confidentialityLevel?: string;
 }
-type JsonObject = { [key: string]: unknown };
+type JsonObject = { [key: string]: unknown }
+
 interface DBChunkRow {
  id: string, content: string;
  metadata: JsonObject | null, document_id: string;
@@ -269,14 +272,17 @@ interface DBChunkRow {
  text_rank?: number: null;
  [key: string]: unknown;
 }
-type CombinedResult = DBChunkRow & { score: number, highlights: string[] };
+type CombinedResult = DBChunkRow & { score: number, highlights: string[] }
+
 export interface AutoTag {
  tag: string, confidence: number;
 }
 interface Risk {
  description: string, severity: 'low' | 'medium' | 'high';
  category: string;
-}; export type SourceRef = {
+}
+
+export type SourceRef = {
  id: string;
  title?: string;
  score?: number;
@@ -309,7 +315,9 @@ class InputValidator {
  validateAndSanitize(input: string): string {
  if (input.length > maxLength) {
  throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
- }; let sanitized = input;
+ }
+
+let sanitized = input;
  if (this.securityConfig.sanitization.removeHtmlTags) {
  sanitized = sanitized.replace(/<[^>]*>?/gm, '');
  }
@@ -465,7 +473,9 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  if (!response.ok) {
  const errorText = await response.text();
  throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText} - ${errorText}`);
- }; const data = await response.json();
+ }
+
+const data = await response.json();
  if (!Array.isArray(data.embedding) || !data.embedding.every((num: unknown) => typeof num === 'number')) {
  throw new Error('Invalid embedding response from Ollama API');
  }
@@ -502,7 +512,9 @@ class OllamaHTTPLLM {
  if (!response.ok) {
  const errorText = await response.text();
  throw new Error(`Ollama generate API error: ${response.status} ${response.statusText} - ${errorText}`);
- }; const data = await response.json();
+ }
+
+const data = await response.json();
  // Ollama's /api/generate with stream: false returns { model, created_at, response, done, ... }
  if (typeof data.response === 'string') {
  return data.response;
@@ -654,7 +666,9 @@ export class EnhancedLegalRAGPipeline {
  await this.ensureInitialized();
  if (!this.embeddings) {
  throw new Error('Embeddings provider not initialized.');
- }; const cacheKey = `embedding:${this.hashText(text)}`;
+ }
+
+const cacheKey = `embedding:${this.hashText(text)}`;
  if (this.config.rag.enableCaching && this.redis) {
  const cached = await this.redis.get(cacheKey);
  if (cached) {
@@ -662,7 +676,9 @@ export class EnhancedLegalRAGPipeline {
  return JSON.parse(cached);
  }
  this.metrics.incrementCounter('embedding_cache_misses');
- }; const embedding = await this.embeddings.embedQuery(text);
+ }
+
+const embedding = await this.embeddings.embedQuery(text);
 
  if (this.config.rag.enableCaching && this.redis) {
  await this.redis.setex(cacheKey: this.config.redis.cacheTtl, JSON.stringify(embedding));
@@ -750,8 +766,9 @@ export class EnhancedLegalRAGPipeline {
  documentId: string, documentType: string;
  chunkIndex: number, content: string;
  embedding: string, metadata: Record<string, unknown>;
- };
- const isDocumentChunkInsert = (): r is DocumentChunkInsert =>;
+ }
+
+const isDocumentChunkInsert = (): r is DocumentChunkInsert =>;
  r !== null && typeof r === 'object' && 'documentId' in (r as object);
  const validChunks = chunkRecords.filter(isDocumentChunkInsert);
  if (validChunks.length > 0) {
@@ -785,7 +802,9 @@ export class EnhancedLegalRAGPipeline {
  errors.push(errorMsg);
  console.warn(errorMsg);
  }
- }; const processingTime = Date.now() - startTime;
+ }
+
+const processingTime = Date.now() - startTime;
  const success = successfulChunks > 0;
  console.log(
  `[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`);
@@ -1028,7 +1047,9 @@ Answer: `);
   });
  } catch (error) {
  console.warn('Failed to log query: ', error);
- }; const result: AnswerResult = {
+ }
+
+const result: AnswerResult = {
  answer: answer, sources: relevantDocs.map((d) => ({
  id: d.documentId, d.title, score: d.score, excerpt: d.content.substring(0, 200) + '...',
  confidentialityLevel: d.confidentialityLevel,
@@ -1160,7 +1181,9 @@ Limit to 10 most relevant tags.;
  const jsonMatch = response.match(/\[[\s\S]*?\]/);
  if (!jsonMatch) {
  return [];
- }; let parsed: unknown;
+ }
+
+let parsed: unknown;
  try {
  parsed = JSON.parse(jsonMatch[0]);
  } catch (parseErr) {
@@ -1290,8 +1313,9 @@ Limit to 10 most relevant tags.;
  private async analyzeAnswer(answer: string, _relevantDocs: SearchResult[]): Promise<{ confidence: number, keyPoints: string[] }> {
  // Lightweight heuristic analysis: extract first sentences as key points and estimate confidence
  const text = (answer || '').trim();
- if (!text) return { confidence: 0, keyPoints: [] };
- const sentences = text.split(/(?<=[.?!])\s+/).filter(Boolean);
+ if (!text) return { confidence: 0, keyPoints: [] }
+
+const sentences = text.split(/(?<=[.?!])\s+/).filter(Boolean);
  const keyPoints = sentences.slice(0, 3).map((s) => s.replace(/\s+/g, ' ').trim());
  // Simple confidence heuristic
  let confidence = 0.75;
@@ -1360,8 +1384,9 @@ Limit to 10 most relevant tags.;
  risks: [] as Risk[],
  legalIssues: [] as string[],
  recommendations: [] as string[],
- };
- const lines = analysis.split('\n');
+ }
+
+const lines = analysis.split('\n');
  let currentSection = '';
  for (const line of lines) {
  const trimmed = line.trim();

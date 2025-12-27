@@ -26,13 +26,17 @@ export interface DecisionEngineConfig {
 	highConfidenceThreshold: number, mediumConfidenceThreshold: number;
 	lowConfidenceThreshold: number, criticalConfidenceThreshold: number;
 	maxValidationAttempts: number, autoApplyEnabled: boolean;
-}; export interface DecisionResult {
+}
+
+export interface DecisionResult {
 	action: 'auto_apply' | 'validate_then_apply' | 'invoke_tools' | 'escalate', confidence: number;
 	strategy?: FixStrategy;
 	validationPassed?: boolean;
 	toolResults?: any[];
 	escalationReason?: string;
-}; export interface ProcessResult {
+}
+
+export interface ProcessResult {
 	success: boolean, action: string;
 	confidence: number, fixApplied: boolean;
 	experienceId?: string;
@@ -163,7 +167,9 @@ export class DecisionEngine {
 				action: 'auto_apply_disabled',
 				confidence: strategy.confidence, fixApplied: false
 			};
-		}; const synthesizer = getFixSynthesizer();
+		}
+
+const synthesizer = getFixSynthesizer();
 		const applyResult = await synthesizer.applyFix(error.file, strategy);
 
 		const outcome = applyResult.success ? 'success' : 'failure';
@@ -277,7 +283,9 @@ export class DecisionEngine {
 				this.stats.successfulFixes++;
 			} else {
 				this.stats.failedFixes++;
-			}; const recorder = getExperienceRecorder();
+			}
+
+const recorder = getExperienceRecorder();
 			const recordResult = await recorder.recordExperience(
 				error,
 				updatedStrategy,

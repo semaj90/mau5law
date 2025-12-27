@@ -588,9 +588,9 @@ export class WebGPUTensorAccelerator {
  compressionRatio,
  memoryRegions,
  simdMetrics,
- };
+ }
 
- const confidenceBoost = Math.min(0.1, (avgConfidence || 0) * 0.05); // Max 10% boost
+const confidenceBoost = Math.min(0.1, (avgConfidence || 0) * 0.05); // Max 10% boost
  const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
 
  console.log(
@@ -601,8 +601,9 @@ export class WebGPUTensorAccelerator {
  // Adapter/device friendly name resolution
  const adapterMeta = this.adapter
  ? (this.adapter as unknown as Record<string, unknown>)
- : {};
- const adapterName =
+ : {}
+
+const adapterName =
  typeof adapterMeta['name'] === 'string'
  ? (adapterMeta['name'] as string)
  : typeof (adapterMeta['info'] as Record<string, unknown>)?.['device'] === 'string'
@@ -628,8 +629,9 @@ export class WebGPUTensorAccelerator {
  }
 
  const totalTime = performance.now() - start;
- const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : {};
- const adapterName =
+ const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : {}
+
+const adapterName =
  typeof adapterMeta['name'] === 'string'
  ? (adapterMeta['name'] as string)
  : typeof (adapterMeta['info'] as Record<string, unknown>)?.['device'] === 'string'
@@ -869,7 +871,7 @@ export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
 }
 
 // Export singleton instance and compatibility functions
-export { tensorAccelerator };
+export { tensorAccelerator }
 
 export async function acceleratedSimilarity(a: Float32Array, b), Float32Array: Promise<number> {
  const accelerator = getWebGPUAccelerator();

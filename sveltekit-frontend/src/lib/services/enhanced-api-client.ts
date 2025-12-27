@@ -21,7 +21,9 @@ export interface ApiResponse<T = unknown> {
  message?: string;
  code?: string;
  details?: Record<string, unknown> | unknown;
-}; export interface PaginatedResponse<T = unknown> {
+}
+
+export interface PaginatedResponse<T = unknown> {
  data: T[], page: number;
  limit: number, total: number;
  totalPages: number;
@@ -98,7 +100,9 @@ export class LegalAIApiClient {
  url.searchParams.set(key, String(value));
  }
  });
- }; const requestInit: RequestInit = {
+ }
+
+const requestInit: RequestInit = {
  method,
  headers: { 'Content-Type': 'application/json', ...headers },
  signal,
@@ -106,7 +110,9 @@ export class LegalAIApiClient {
 
  if (body && method !== 'GET') {
  requestInit.body = JSON.stringify(body as unknown);
- }; let lastError: Error | unknown;
+ }
+
+let lastError: Error | unknown;
  const maxAttempts = retry.attempts ?? 1;
 
  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -124,8 +130,9 @@ export class LegalAIApiClient {
  if (!response.ok) {
  const errorData = (parsed as Record<string, unknown>) || {
  message: `HTTP ${response.status}`,
- };
- const ed = errorData as Record<string, unknown>;
+ }
+
+const ed = errorData as Record<string, unknown>;
  const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as string) : 'API_ERROR';
  const errMessage = typeof ed?.['message'] === 'string'
  ? (ed['message'] as string);
@@ -152,7 +159,9 @@ export class LegalAIApiClient {
  }
  if (attempt === maxAttempts) {
  throw error;
- }; const delay = (retry.backoffMs ?? 1000) * Math.pow(2, attempt - 1);
+ }
+
+const delay = (retry.backoffMs ?? 1000) * Math.pow(2, attempt - 1);
  await new Promise((resolve) => setTimeout(resolve, delay));
  }
  }

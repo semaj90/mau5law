@@ -67,7 +67,9 @@ export interface EvidenceCustodyContext {
  // Error handling
  error?: string;
  warnings: string[], retryCount: number, maxRetries: number;
-}; export type EvidenceCustodyEvent =
+}
+
+export type EvidenceCustodyEvent =
  | {
  type: 'START_CUSTODY_WORKFLOW', evidenceId: string, caseId: string, userId: string, originalHash: string;
  }
@@ -94,7 +96,9 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
 
  if (!evidenceRecord.length) {
  throw new Error(`Evidence not found: ${input.evidenceId}`);
- }; const evidenceData = evidenceRecord[0];
+ }
+
+const evidenceData = evidenceRecord[0];
 
  // Verify initial integrity
  const currentHash = await generateEvidenceHash(evidenceData);
@@ -206,7 +210,9 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
 
  if (!analysisResponse.ok) {
  throw new Error(`AI analysis failed: ${analysisResponse.statusText}`);
- }; const analysisResult = await analysisResponse.json();
+ }
+
+const analysisResult = await analysisResponse.json();
 
  // Structure the AI analysis for custody workflow
  const aiAnalysis = {
@@ -795,31 +801,31 @@ export const createEvidenceCustodyActor = (context?: Partial<EvidenceCustodyCont
 // State machine utility functions
 export const isCustodyWorkflowActive = (state: unknown): boolean => {
  return !['idle', 'completed', 'failed', 'rejected', 'cancelled'].includes((state as any).value);
-};
+}
 
 export const getCustodyProgress = (state: unknown): number => {
  return (state as any).context.progress;
-};
+}
 
 export const getCustodyStage = (state: unknown): string => {
  return (state as any).context.workflowStage;
-};
+}
 
 export const getIntegrityStatus = (state: unknown): string => {
  return (state as any).context.integrityStatus;
-};
+}
 
 export const getActiveCollaborators = (state: unknown): string[] => {
  return (state as any).context.activeCollaborators;
-};
+}
 
 export const getCustodyEvents = (state: unknown): EvidenceCustodyContext['custodyEvents'] => {
  return (state as any).context.custodyEvents;
-};
+}
 
 export const requiresApproval = (state: unknown): boolean => {
  return (state as any).context.requiresApproval;
-};
+}
 
 export const getApprovalStatus = (state: unknown): string | undefined => {
  return (state as any).context.approvalStatus;

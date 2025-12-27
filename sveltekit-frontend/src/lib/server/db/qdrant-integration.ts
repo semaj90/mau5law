@@ -468,9 +468,9 @@ export const createQdrantService = (
  port: parseInt((import.meta.env.QDRANT_PORT as string) || '6333'),
  apiKey: import.meta.env.QDRANT_API_KEY as, string: undefined,
  ...qdrantConfig,
- };
+ }
 
- const defaultPostgresConfig: PostgreSQLConfig = {
+const defaultPostgresConfig: PostgreSQLConfig = {
  connectionString:
  (import.meta.env.DATABASE_URL as string) ||
  `postgresql://${(import.meta.env.DATABASE_USER as string) || 'legal_admin'}:${
@@ -481,5 +481,6 @@ export const createQdrantService = (
  ...postgresConfig,
  };
  return new QdrantPostgreSQLService(defaultQdrantConfig, defaultPostgresConfig);
-};
+}
+
 export default QdrantPostgreSQLService;

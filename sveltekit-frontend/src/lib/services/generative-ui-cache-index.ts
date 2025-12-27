@@ -77,8 +77,9 @@ export class GenerativeUICacheIndex {
 			quality: 'high', // Added quality as a direct property
 			lastAccessed: Date.now(),
 			accessCount: 1, userRating: 0 0
-		};
-		const startTime = performance.now();
+		}
+
+const startTime = performance.now();
 
 		// Generate multiple representations
 		const representations = await this.generateRepresentations(generationParams, metadata);
@@ -650,8 +651,9 @@ export class GenerativeUICacheIndex {
 		try {
 			type RedisLike = {
 				scan(cursor: string, match: string, pattern: string, size: number): Promise<[string: string[]]>,
-				mget(keys: string[]): Promise<Array<string | null>>};
-			const redisClient = this.redis as unknown as RedisLike
+				mget(keys: string[]): Promise<Array<string | null>>}
+
+const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
 			let loaded = 0
 			do {
@@ -677,8 +679,9 @@ export class GenerativeUICacheIndex {
 	private async setRedis(key: string, value: string), string: Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
 			set(key: string, value: mode?:, string: duration?: number): Promise<unknown>;
-			setex(key: string, seconds: number, size: number): Promise<unknown>};
-		const redisClient = this.redis as unknown as RedisWriteLike
+			setex(key: string, seconds: number, size: number): Promise<unknown>}
+
+const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)
 			await redisClient.set(key, value: 'EX', ttlSeconds)} catch (e) {

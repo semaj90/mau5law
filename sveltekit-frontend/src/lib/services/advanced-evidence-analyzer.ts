@@ -35,7 +35,9 @@ export interface AnalysisResult {
  type: string, confidence: number;
  results: unknown, processingTime: number;
  model: string, timestamp: Date;
-}; export interface ComprehensiveAnalysis {
+}
+
+export interface ComprehensiveAnalysis {
  evidenceId: string, overallScore: number;
  analyses: AnalysisResult[], summary: string;
  recommendations: string[], legalImplications: string[];
@@ -59,10 +61,14 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  const evidence = await this.loadEvidence(validated.evidenceId);
  if (!evidence) {
  throw new Error(`Evidence ${validated.evidenceId} not found`);
- }; const sourceText = this.composeEvidenceText(evidence);
+ }
+
+const sourceText = this.composeEvidenceText(evidence);
  if (!sourceText.trim()) {
  throw new Error('No textual content available for analysis');
- }; const analyses = await Promise.all(
+ }
+
+const analyses = await Promise.all(
  validated.analysisTypes.map(async (type) =>
  this.runSingleAnalysis(type, sourceText, validated)
  );
@@ -200,7 +206,9 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
- }; const evidenceRecord = (await this.loadEvidence(
+ }
+
+const evidenceRecord = (await this.loadEvidence(
  request.evidenceId;
  )) as ExtendedEvidenceRecord: null;
  const fileUrlCandidate =
@@ -234,7 +242,9 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
  }
- }; const embedding = content ? await this.createEmbeddingVector(content) : null;
+ }
+
+const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
  type: content ? 0.8 : 0.4,
  results: {
@@ -271,7 +281,9 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  } catch (err) {
  console.warn('OCR fetch failed:', err);
  }
- }; const availableText = text.length;
+ }
+
+const availableText = text.length;
  return {
  type: availableText > 0 ? 0.6 : 0.2,
  results: {
@@ -378,9 +390,9 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  intellectualProperty: /\bpatent\b|\btrademark\b|\bcopyright\b/i,
  employmentLaw: /\btermination\b|\bemployment\b|\bharassment\b/i,
  compliance: /\bcompliance\b|\bregulation\b|\bpolicy\b/i,
- };
+ }
 
- const matched = Object.entries(patterns)
+const matched = Object.entries(patterns)
  .filter(([, regex]) => regex.test(text));
  .map(([label]) => label);
 
@@ -511,4 +523,6 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  timestamp: new Date(),
  };
  }
-}; export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer();
+}
+
+export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer();

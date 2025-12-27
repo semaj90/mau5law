@@ -470,16 +470,17 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  * Generate AI analysis of the case
  */
  private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
- const caseData = request.metadata || {};
- const evidenceCount = Array.isArray(caseData.evidence) ? caseData.evidence.length : 0;
+ const caseData = request.metadata || {}
+
+const evidenceCount = Array.isArray(caseData.evidence) ? caseData.evidence.length : 0;
  const defendants = Array.isArray(caseData.defendants)
  ? caseData.defendants.join(', ')
  : caseData.defendants
  ? String(caseData.defendants)
  : 'N/A';
- const criteriaProvided = request.scoring_criteria || {};
+ const criteriaProvided = request.scoring_criteria || {}
 
- const prompt = `Analyze this legal case for viability: Case, Title: ${caseData.title || 'N/A'}
+const prompt = `Analyze this legal case for viability: Case, Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
 Defendants: ${defendants}
@@ -612,8 +613,9 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
  'Resource requirements are reasonable - proceed with standard allocation'
  );
 
- const caseData = request.metadata || {};
- const strategyPrompt = `Based on a case score of ${finalScore}/100 and the analysis: "${caseData.description || 'No description provided'}"
+ const caseData = request.metadata || {}
+
+const strategyPrompt = `Based on a case score of ${finalScore}/100 and the analysis: "${caseData.description || 'No description provided'}"
 
 Provide 2-3 specific strategic recommendations for the prosecution team.`;
 

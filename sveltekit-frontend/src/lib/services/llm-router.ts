@@ -18,25 +18,32 @@ export interface LLMConfig {
 	temperature?: number;
 	maxTokens?: number;
 	timeout?: number;
-}; export interface LLMResponse {
+}
+
+export interface LLMResponse {
 	provider: LLMProvider; model: string;
 	content: string;
 	confidence?: number;
 	tokensUsed?: number;
 	responseTime: number;
 	cached?: boolean;
-}; export interface LLMError {
+}
+
+export interface LLMError {
 	provider: LLMProvider; error: string;
 	retryable: boolean;
-}; class LLMRouterService {
+}
+
+class LLMRouterService {
 
 
 	/**
 	 * Main entry point - calls LLM with automatic fallback
 	 */
 	async call(<LLMConfig> = {}): Promise<LLMResponse> {
-		const finalConfig = { ...this.defaultConfig, ...config };
-		const startTime = Date.now();
+		const finalConfig = { ...this.defaultConfig, ...config }
+
+const startTime = Date.now();
 
 		// If specific provider requested, try it first
 		if (.provider !== 'auto') {
@@ -117,7 +124,9 @@ export interface LLMConfig {
 
 		if (!response.ok) {
 			throw new Error(`Ollama API error: ${response.statusText}`);
-		}; const data = await response.json();
+		}
+
+const data = await response.json();
 		const responseTime = Date.now() - startTime;
 
 		return {
@@ -156,7 +165,9 @@ export interface LLMConfig {
 		// Enable Google Search grounding for Gemini 3 models
 		if (enableSearch || model.includes('gemini-3') || model.includes('gemini-2.0')) {
 			requestBody.tools = [{ googleSearch: {} }];
-		}; const response = await fetch(url, {
+		}
+
+const response = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(requestBody),
@@ -166,7 +177,9 @@ export interface LLMConfig {
 		if (!response.ok) {
 			const errorText = await response.text();
 			throw new Error(`Gemini API error: ${response.statusText} - ${errorText}`);
-		}; const data = await response.json();
+		}
+
+const data = await response.json();
 		const responseTime = Date.now() - startTime;
 
 		// Extract content from response
@@ -205,7 +218,9 @@ export interface LLMConfig {
 		const apiKey = process.env.CLAUDE_API_KEY;
 		if (!apiKey) {
 			throw new Error('CLAUDE_API_KEY not configured');
-		}; const model = config.model || 'claude-sonnet-4.5';
+		}
+
+const model = config.model || 'claude-sonnet-4.5';
 
 		const response = await fetch('https://api.anthropic.com/v1/messages', {
 			method: 'POST',
@@ -224,7 +239,9 @@ export interface LLMConfig {
 
 		if (!response.ok) {
 			throw new Error(`Claude API error: ${response.statusText}`);
-		}; const data = await response.json();
+		}
+
+const data = await response.json();
 		const responseTime = Date.now() - startTime;
 		const content = data.content?.[0]?.text || '';
 
@@ -246,7 +263,9 @@ export interface LLMConfig {
 		const apiKey = process.env.OPENAI_API_KEY;
 		if (!apiKey) {
 			throw new Error('OPENAI_API_KEY not configured');
-		}; const model = config.model || 'gpt-4';
+		}
+
+const model = config.model || 'gpt-4';
 
 		const response = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
@@ -264,7 +283,9 @@ export interface LLMConfig {
 
 		if (!response.ok) {
 			throw new Error(`OpenAI API error: ${response.statusText}`);
-		}; const data = await response.json();
+		}
+
+const data = await response.json();
 		const responseTime = Date.now() - startTime;
 		const content = data.choices?.[0]?.message?.content || '';
 
