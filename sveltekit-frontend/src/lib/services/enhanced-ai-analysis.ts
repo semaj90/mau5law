@@ -1,8 +1,8 @@
 /** * Enhanced AI Analysis Service - 2: Advanced NLP & Semantic Analysis * *, Features: * - Semantic document analysis using Gemma embeddings * - Advanced legal entity extraction (cases, statutes, precedents) * - Multi-model AI orchestration with gRPC services * - Legal reasoning and case similarity analysis * * with: * - Existing Ollama service with Gemma models * - New gRPC protobuf services (metrics, tensors, case scoring) * - PostgreSQL with pgvector for embeddings * - CUDA acceleration via discovered workers */
-import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
-import { OllamaService } from '../server/ai/ollama-service.js';
+import { getOptimalEmbeddingModel } from '../server/ai/embedding-config.js';
+import { ollamaService } from '../server/ai/ollama-service.js';
 import type { LegalDocument } from '../server/ai/types.js';
-import { drizzleVectorConfig } from '../server/db/drizzle-vector-config.js';
+import drizzleVectorConfig from '../server/db/drizzle-vector-config.js';
 
 export interface LegalEntity {
  type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization', name: string;
@@ -41,12 +41,12 @@ export interface LegalReasoning {
 }
 // Enhanced AI Analysis Service
 export class EnhancedAIAnalysisService {
- private ollamaService: OllamaService;
+ private ollamaService: typeof ollamaService;
  private embeddingModel: string;
  private vectorConfig: typeof drizzleVectorConfig;
 
  constructor() {
-  this.ollamaService = new OllamaService();
+  this.ollamaService = ollamaService;
   this.embeddingModel = getOptimalEmbeddingModel(['legal-text', 'semantic-search']);
   this.vectorConfig = drizzleVectorConfig;
  }

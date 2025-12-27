@@ -1398,7 +1398,8 @@ const sentences = text.split(/(?<=[.?!])\s+/).filter(Boolean);
  // Ensure parseContractAnalysis, extractComplianceFlags and hashText are defined once (if your file already contains them, keep those and remove duplicates).
  /** * Parse contract analysis results */
  private parseContractAnalysis(
- analysis: string), /* PHASE82_COLON_CHAIN: Omit<ContractAnalysisResult  */ , 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
+ analysis: string
+ ): Omit<ContractAnalysisResult, 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
  const sections = {
  contractType: '',
  parties: [] as string[],

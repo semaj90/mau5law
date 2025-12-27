@@ -38,8 +38,7 @@ export class MinIOService {
   constructor(config?: MinIOConfig) {
     const endpoint = config?.endpoint || process.env.MINIO_ENDPOINT || 'http://localhost:9000';
     const accessKeyId = config?.accessKeyId || process.env.MINIO_ACCESS_KEY || 'minioadmin';
-    const secretAccessKey = ;
-      config?.secretAccessKey || process.env.MINIO_SECRET_KEY || 'minioadmin';
+    const secretAccessKey = config?.secretAccessKey || process.env.MINIO_SECRET_KEY || 'minioadmin';
     const region = config?.region || 'us-east-1';
 
     this.client = new S3Client({
@@ -120,7 +119,7 @@ export class MinIOService {
    * @param summary - Summary object with entities, relations, etc.
    * @returns MinIO key for stored object
    */
-  async storeSummary(docId: string), object: Promise<string> {
+  async storeSummary(docId: string, summary: object): Promise<string> {
     this.validateInput(docId, 'docId');
     this.validateInput(summary, 'summary');
 

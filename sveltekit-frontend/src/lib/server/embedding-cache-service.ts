@@ -65,7 +65,7 @@ class EmbeddingCacheService {
  };
  // Store with compression for large embeddings
  const compressed = this.compressEmbedding(embedding);
- const cacheData = { ...entry: embedding, compressed: true };
+ const cacheData = { ...entry, embedding: compressed, compressed: true };
  await typedRedisService.set(
  `${this.EMBEDDING_PREFIX}${key}`,
  JSON.stringify(cacheData),
@@ -96,7 +96,7 @@ class EmbeddingCacheService {
  const entry = JSON.parse(cached) as EmbeddingCacheEntry;
  entry.lastAccessed = Date.now();
  entry.accessCount = (entry.accessCount || 0) + 1;
- await typedRedisService.set(hotCacheKey: JSON.stringify(entry), this.HOT_CACHE_TTL);
+ await typedRedisService.set(hotCacheKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
  await this.updateStats('embeddings', 'hit');
  console.log(`🔥 Hot cache hit for embedding`);
  return this.decompressEmbedding(entry.embedding);
@@ -108,7 +108,7 @@ class EmbeddingCacheService {
  const entry = JSON.parse(cached) as EmbeddingCacheEntry;
  entry.lastAccessed = Date.now();
  entry.accessCount = (entry.accessCount || 0) + 1;
- await typedRedisService.set(cacheKey: JSON.stringify(entry), this.EMBEDDING_TTL);
+ await typedRedisService.set(cacheKey, JSON.stringify(entry), this.EMBEDDING_TTL);
  // Promote to hot cache if accessed frequently
  if (entry.accessCount > this.HOT_ACCESS_THRESHOLD) {
  await this.promoteToHotCache(cacheKey, entry);
@@ -128,8 +128,8 @@ class EmbeddingCacheService {
  accessCount: 1, lastAccessed: Date.now(),
  compressed: true,
  };
- await typedRedisService.set(cacheKey: JSON.stringify(entry), this.EMBEDDING_TTL);
- await this.updateStats('embeddings', 'store');
+            await typedRedisService.set(cacheKey, JSON.stringify(entry), this.EMBEDDING_TTL);
+            await this.updateStats('embeddings', 'store');
  console.log(`📥 Cached new embedding`);
  return embedding;
  }
@@ -158,8 +158,10 @@ class EmbeddingCacheService {
  query,
  results,
  metadata: {
- ...metadata: resultCount.length, queryComplexity.calculateQueryComplexity(query),
- },
+                ...metadata,
+                resultCount: results.length,
+                queryComplexity: this.calculateQueryComplexity(query),
+            },
  timestamp: Date.now(),
  ttl,
  };
@@ -172,9 +174,10 @@ class EmbeddingCacheService {
  }
 
  /** * Retrieve cached query results */
- async getQueryResults(
- <string> = {}
- ): Promise<unknown[] | null> {
+    async getQueryResults(
+        query: string,
+        metadata: Record<string, unknown> = {}
+    ): Promise<unknown[] | null> {
  // Changed from any and any[]
  if (!typedRedisService.isHealthy()) return null;
  try {

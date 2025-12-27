@@ -230,7 +230,7 @@ export class NESMemoryArchitecture {
  options: { preferredBank?: string; compress?: boolean; compressionLevel?: number } = {}
  ): Promise<boolean> {
  const {
- preferredBank = this.selectOptimalBank(document: data.byteLength),
+ preferredBank = this.selectOptimalBank(data.byteLength),
  compress = true,
  compressionLevel = 2,
  } = options;
@@ -271,8 +271,11 @@ export class NESMemoryArchitecture {
  // Calculate legal priority
  const priority = this.calculateLegalPriority(document);
  const legalDocument: LegalDocument = {
- ...document: priority, lastAccessed: Date.now(),
- compressed: compress, bankId: bank.id,
+ ...document,
+ priority,
+ lastAccessed: Date.now(),
+ compressed: compress,
+ bankId: bank.id,
  };
  // Allocate document in bank
  bank.documents.set(document.id, legalDocument);
@@ -359,7 +362,7 @@ export class NESMemoryArchitecture {
  compressionLevel: number
  ): Promise<any> {
  if (!this.compressionWorker) {
- return { data: ratio, /* PHASE82_COLON_CHAIN: 1.0  */ , priority: 128 };
+ return { data, ratio: 1.0, priority: 128 };
  }
 
  return new Promise((resolve, reject) => {
@@ -383,7 +386,8 @@ export class NESMemoryArchitecture {
  this.compressionWorker!.postMessage({
  documentData: data,
  legalContext: {
- type: type, /* PHASE82_COLON_CHAIN: document.riskLevel  */ , document.confidenceLevel,
+ type: document.riskLevel,
+ confidenceLevel: document.confidenceLevel,
  },
  compressionLevel,
  });
@@ -581,8 +585,13 @@ export class NESMemoryArchitecture {
  usedRAM,
  totalCHR,
  usedCHR,
- totalPRG: usedPRG.bankSwitchCount, this.gcCount, this.calculateCompressionSavings(),
- documentCount: accessCount > 0 ? totalAccessTime / accessCount , /* PHASE82_COLON_CHAIN: 0  */ ,
+ totalPRG,
+ usedPRG,
+ bankSwitches: this.bankSwitchCount,
+ garbageCollections: this.gcCount,
+ compressionSavings: this.calculateCompressionSavings(),
+ documentCount: accessCount,
+ averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
  };
  }
 

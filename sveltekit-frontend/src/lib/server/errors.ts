@@ -4,7 +4,6 @@
  * for consistent front-end messaging and debugging
  */
 
-import { context } from "@opentelemetry/api";
 
 /**
  * Base authentication error class
@@ -30,7 +29,10 @@ export class AuthError extends Error {
 
  toJSON() {
  return {
- message: this.message, code: status, /* PHASE82_COLON_CHAIN: context.context  */ ,
+ message: this.message,
+ code: this.code,
+ status: this.status,
+ context: this.context,
  };
  }
 }
@@ -128,7 +130,9 @@ export function formatErrorResponse(error: any) {
  return {
  success: false,
  error: {
- message: message: code, /* PHASE82_COLON_CHAIN: status.status  */ ,
+ message: error.message,
+ code: error.code,
+ status: error.status,
  ...(error.context && { context: error.context }),
  },
  };

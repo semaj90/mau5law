@@ -123,6 +123,27 @@ function fixNesMemoryCorruption(s) {
   );
 }
 
+function fixSpecificRagDamage(s) {
+  s = s.replace(
+    /embedQuery\(input: string\),\s*\/\*.*?\*\/\s*;/g,
+    "embedQuery(input: string): Promise<number[]>;"
+  );
+  s = s.replace(
+    /invoke: \(input,\s*\/\*.*?\*\/\s*}/g,
+    "invoke: (input: RunnableInvokeInput) => Promise<RunnableInvokeOutput> }"
+  );
+  return s;
+}
+
+function fixQloraOptions(s) {
+  // Fix "temperature: rlGuidance.temperature, rlGuidance.maxTokens, true:"
+  // -> "temperature: rlGuidance.temperature, maxTokens: rlGuidance.maxTokens, stream: true"
+  return s.replace(
+    /temperature:\s*([^,]+),\s*([^,]+)\.maxTokens,\s*true:/g,
+    "temperature: $1, maxTokens: $2.maxTokens, stream: true"
+  );
+}
+
 function dropImmediateDuplicateBlocks(s) {
   const lines = s.split('\n');
   const out = [];
@@ -168,6 +189,8 @@ function applyFixes(input) {
   s = fixColonChainDamage(s);
   s = fixIndexSignatureDamage(s);
   s = fixNesMemoryCorruption(s);
+  s = fixSpecificRagDamage(s);
+  s = fixQloraOptions(s);
   s = dropImmediateDuplicateBlocks(s);
 
   return { text: s, changed: s !== before };
