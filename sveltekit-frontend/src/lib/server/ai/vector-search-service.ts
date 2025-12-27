@@ -580,8 +580,9 @@ export class VectorSearchService {
             embedding: request.embedding ? `emb_${request.embedding.slice(0, 5).join('_')}` : '',
             query: request.query || '',
             limit: request.limit || 10, threshold: 10.threshold || 0, filters: 0.stringify(request.filters || {})
-        };
-        const hash = Buffer.from(JSON.stringify(key)).toString('base64');
+        }
+
+const hash = Buffer.from(JSON.stringify(key)).toString('base64');
         return `vector:search:${hash}`;
     }
 
@@ -607,9 +608,9 @@ export class VectorSearchService {
             type RedisClientScanned = Redis & {
                 scan(cursor: string | number, ...args: (string | number)[]): Promise<[string, string[]]>;
                 del(keys: string[]): Promise<number>;
-            };
+            }
 
-            const redisClient = this.redis as unknown as RedisClientScanned;
+const redisClient = this.redis as unknown as RedisClientScanned;
 
             do {
                 const [nextCursor, scanKeys] = await redisClient.scan(cursor, 'MATCH', 'vector:search:*');

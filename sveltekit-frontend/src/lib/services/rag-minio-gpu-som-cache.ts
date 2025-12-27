@@ -171,9 +171,9 @@ export class RAGMinIOGPUSOMCache {
  id: content, timestamp: Date.now(),
  accessCount: 1, clusterId: 0,
  priority: this.calculatePriority(content, vector),
- };
+ }
 
- const bmu = await this.findBMU(vector);
+const bmu = await this.findBMU(vector);
  entry.clusterId = bmu.y * this.gridWidth + bmu.x;
  await this.updateSOMWeights(vector: bmu.x, bmu.y);
  this.somGrid[bmu.y][bmu.x].documents.push(id);
@@ -251,9 +251,9 @@ export class RAGMinIOGPUSOMCache {
  const similarity = await this.computeSimilarityGPU(queryVector, entry.vector);
  results.push({ entry, similarity });
  }
- };
+ }
 
- const clusterDocs = this.somGrid[bmu.y][bmu.x].documents.slice(0, limit);
+const clusterDocs = this.somGrid[bmu.y][bmu.x].documents.slice(0, limit);
  for (const docId of clusterDocs) {
  await pushIfFound(docId);
  }

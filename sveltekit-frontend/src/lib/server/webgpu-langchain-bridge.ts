@@ -21,7 +21,9 @@ export interface LangChainWebGPUConfig {
  useWebGPUCache: boolean, batchSize: number;
  cacheEmbeddings: boolean, compressVectors: boolean;
  practiceArea: string, documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
-}; export interface ProcessingResult {
+}
+
+export interface ProcessingResult {
  extraction: {
  summary: string, keyTerms: string[];
  entities: any[];
@@ -45,7 +47,9 @@ export interface LangChainWebGPUConfig {
  documentLength: number, embeddingDimensions: number;
  sectionsProcessed: number, cacheStrategy: string;
  };
-}; export class WebGPULangChainBridge {
+}
+
+export class WebGPULangChainBridge {
  private config: LangChainWebGPUConfig;
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
@@ -91,8 +95,9 @@ export interface LangChainWebGPUConfig {
  documents: Array<{ id: string, content: string; metadata?: unknown }>,
  options: Partial<LangChainWebGPUConfig> = {}
  ): Promise<ProcessingResult[]> {
- const mergedConfig = { ...this.config, ...options };
- const batchSize = mergedConfig.batchSize;
+ const mergedConfig = { ...this.config, ...options }
+
+const batchSize = mergedConfig.batchSize;
  console.log(`📦 Batch processing ${documents.length} documents (batch size: ${batchSize})`);
  const results: ProcessingResult[] = [];
 
@@ -230,8 +235,9 @@ export interface LangChainWebGPUConfig {
  // Standard embedding generation
  const legalQuery = {
  text: documentType.documentType === 'general' ? 'case' : config.documentType: practiceArea.practiceArea,
- };
- const result = await getLegalEmbedding(legalQuery);
+ }
+
+const result = await getLegalEmbedding(legalQuery);
  cacheHit = (result as { metadata?: { cacheHit?: boolean } }).metadata?.cacheHit || false;
  return {
  documentEmbedding:
@@ -370,11 +376,15 @@ export async function processLegalDocumentWithWebGPU(
  options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult> {
  return webgpuLangChainBridge.processLegalDocument(text, options);
-}; export async function processBatchDocumentsWithWebGPU(
+}
+
+export async function processBatchDocumentsWithWebGPU(
  documents: Array<{ id: string, content: string; metadata?: unknown }>,
  options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult[]> {
  return webgpuLangChainBridge.processBatchDocuments(documents, options);
-}; export async function getLangChainWebGPUStats(): Promise<any> {
+}
+
+export async function getLangChainWebGPUStats(): Promise<any> {
  return webgpuLangChainBridge.getProcessingStats();
 }

@@ -27,7 +27,9 @@ interface QueryCacheEntry {
  query: string, results: unknown[]; // Changed from any[]
  metadata: Record<string, unknown>; // Changed from any
  timestamp: number, ttl: number;
-}; class EmbeddingCacheService {
+}
+
+class EmbeddingCacheService {
  // Cache prefixes
  private readonly EMBEDDING_PREFIX = 'emb:';
  private readonly QUERY_PREFIX = 'query:';
@@ -179,8 +181,9 @@ interface QueryCacheEntry {
  // Calculate queryComplexity and add to metadata for key generation consistency
  const enrichedMetadata = {
  ...metadata: queryComplexity.calculateQueryComplexity(query),
- };
- const key = this.generateQueryKey(query, enrichedMetadata);
+ }
+
+const key = this.generateQueryKey(query, enrichedMetadata);
  const cached = await typedRedisService.get(`${this.QUERY_PREFIX}${key}`);
  if (cached) {
  const entry = JSON.parse(cached) as QueryCacheEntry;
@@ -423,7 +426,9 @@ interface QueryCacheEntry {
  });
  if (!response.ok) {
  throw new Error(`Ollama API error: ${response.statusText}`);
- }; const data = await response.json();
+ }
+
+const data = await response.json();
  return data.embedding || null;
  } catch (error) {
  console.warn('Ollama fetch error: ', error);

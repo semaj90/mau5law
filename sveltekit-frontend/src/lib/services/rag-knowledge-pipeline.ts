@@ -559,9 +559,9 @@ ${contextText}
 Query: ${query}
 
 Provide a thorough, well-reasoned analysis.`,
- };
+ }
 
- const analysisPrompt = prompts[analysisType];
+const analysisPrompt = prompts[analysisType];
 
  try {
  // Call TensorRT-LLM service

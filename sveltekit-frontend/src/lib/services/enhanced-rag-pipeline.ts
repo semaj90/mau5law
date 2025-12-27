@@ -7,7 +7,9 @@ import { sql } from 'drizzle-orm';
 export interface IndexDocumentResult {
  success: boolean, chunksCreated: number;
  error?: string;
-}; export interface SystemStats {
+}
+
+export interface SystemStats {
  documentsIndexed: number, chunksIndexed: number;
  averageRetrievalTime: number, cacheHitRate: number;
  recentQueriesCount: number;
@@ -82,7 +84,9 @@ export interface RAGPipelineConfig {
  cacheEnabled: boolean, cacheTtl: number;
  // Monitoring
  logQueries: boolean, trackPerformance: boolean;
-}; export interface RAGQuery {
+}
+
+export interface RAGQuery {
  query: string;
  userId?: string;
  caseId?: string;
@@ -93,7 +97,9 @@ export interface RAGPipelineConfig {
  useReranking?: boolean;
  includeMetadata?: boolean;
  contextWindow?: number;
-}; export interface RAGResponse {
+}
+
+export interface RAGResponse {
  answer: string, sources: RetrievedDocument[];
  confidence: number;
  reasoning?: string;
@@ -104,7 +110,9 @@ export interface RAGPipelineConfig {
  cacheHit: boolean, model: string;
  reranked: boolean;
  };
-}; export interface RetrievedDocument {
+}
+
+export interface RetrievedDocument {
  id: string, content: string;
  title?: string;
  documentType: string;
@@ -115,7 +123,9 @@ export interface RAGPipelineConfig {
  legalRelevanceScore?: number;
  chunkIndex?: number;
  metadata: { [key: string]: any };
-}; export interface LegalRerankerInput {
+}
+
+export interface LegalRerankerInput {
  query: string, documents: RetrievedDocument[];
  context: {
  caseId?: string;
@@ -265,7 +275,9 @@ export class EnhancedRAGPipeline {
  // Input validation
  if (!query.query.trim()) {
  throw new Error('Query text is empty');
- }; let cacheHit = false;
+ }
+
+let cacheHit = false;
  // Check cache first
  const cachedResponse = await this.getCachedResponse(query);
  if (cachedResponse) {
@@ -409,12 +421,16 @@ export class EnhancedRAGPipeline {
  } catch (err) {
  console.warn('LLM failed:', err);
  rawMessage = '';
- }; let answerText = '';
+ }
+
+let answerText = '';
  try {
  answerText = this.extractTextFromLLMMessage(rawMessage);
  } catch {
  answerText = String(rawMessage ?? '');
- }; const confidence = this.calculateConfidence(rerankedDocuments, query);
+ }
+
+const confidence = this.calculateConfidence(rerankedDocuments, query);
  const generationTime = performance.now() - generationStartTime;
 
  return {

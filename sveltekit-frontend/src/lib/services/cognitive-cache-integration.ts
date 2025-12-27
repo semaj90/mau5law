@@ -85,7 +85,8 @@ const internalCache: ThreadSafeCache = {
  data: new Map(),
  jsonbIndex: new Map(),
  gpuAccelerated: browser && 'gpu' in navigator,
-};
+}
+
 interface CacheStoreState {
  totalEntries: number, gpuAccelerated: boolean;
  threadSafe: boolean, lastOperation: string;
@@ -332,9 +333,13 @@ export async function storeJsonbDocument(
  metadata?: Record<string, unknown>
 ): Promise<boolean> {
  return cognitiveCache.storeJsonbDocument(id, document, metadata);
-}; export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
+}
+
+export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
  return cognitiveCache.retrieveJsonbDocument(id);
-}; export async function queryJsonb(
+}
+
+export async function queryJsonb(
  jsonPath: string, value: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
@@ -410,7 +415,9 @@ async function sha256(str: string): Promise<string> {
  // In Node.js, use 'crypto' module
  return createHash('sha256').update(str).digest('hex');
  }
-}; class CognitiveCacheManager {
+}
+
+class CognitiveCacheManager {
  private localCache = new Map<
  string,
  { data: unknown, metadata: CacheEntryMetadata; options: CacheOptions, timestamp: number }
@@ -525,4 +532,6 @@ async function sha256(str: string): Promise<string> {
  // For other types, use a simpler key
  return `${metadata.type}:${metadata.key}`;
  }
-}; export const cognitiveCacheManager = new CognitiveCacheManager();
+}
+
+export const cognitiveCacheManager = new CognitiveCacheManager();

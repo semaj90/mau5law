@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Phase 82: Structural Corruption Fixer
- * 
+ *
  * Targets patterns missed by simple comma/colon fixers:
  * - }; function/const/type joiners → proper newlines
  * - function name(params) | undefined → function name(params): unknown | undefined

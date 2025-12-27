@@ -15,7 +15,7 @@ const ENHANCED_MEMORY_CACHING = {
  },
  },
  },
-};
+}
 
 const GAMING_ERA_SPECS = {
  n64: {
@@ -40,8 +40,10 @@ type RecognizeInput =
  | Blob
  | OffscreenCanvas;
 type BBox = { x0: number, y0: number; x1: number, y1: number } | number[];
-type Word = { text: string, bbox: BBox; confidence: number };
-type RecognizeResult = { data: { text: string, confidence: number; words: Word[] } };
+type Word = { text: string, bbox: BBox; confidence: number }
+
+type RecognizeResult = { data: { text: string, confidence: number; words: Word[] } }
+
 type LoggerMessage = Record<string, unknown>;
 
 // accept both module shapes (default export or direct export) and expose common helpers optionally
@@ -65,16 +67,22 @@ declare global {
  // use the stricter TesseractLike type instead of `any`
  Tesseract?: TesseractLike;
  }
-}; export interface OCRResult {
+}
+
+export interface OCRResult {
  text: string, confidence: number;
  boundingBoxes: Array<{ text: string, bbox: BBox; confidence: number }>;
-}; export interface TensorData {
+}
+
+export interface TensorData {
  embeddings: Float32Array, dimensions: number;
  metadata: {
  source: 'ocr' | 'manual' | 'api', processed_at: number;
  tensor_id: string, confidence: number;
  };
-}; export interface ProcessingResult {
+}
+
+export interface ProcessingResult {
  ocr: OCRResult, embeddings: TensorData;
  searchIndex: Float32Array, processingTime: number;
  cacheHit: boolean;
@@ -89,7 +97,9 @@ export interface EmbeddingAPIResponse {
  result?: unknown;
  error?: string;
  tensor_id?: string;
-}; export interface OCRProcessOptions {
+}
+
+export interface OCRProcessOptions {
  language?: string;
  oem?: number;
  psm?: number;
@@ -98,7 +108,9 @@ export interface EmbeddingAPIResponse {
  tessjs_create_pdf?: boolean;
  tessjs_create_hocr?: boolean;
  tessjs_create_tsv?: boolean;
-}; export interface BatchProcessingItem {
+}
+
+export interface BatchProcessingItem {
  image: ImageData | HTMLCanvasElement | File, priority: number;
  options: OCRProcessOptions;
 }
@@ -114,7 +126,9 @@ interface IShaderCacheManager {
  outputSize: number
  ): Promise<GPUBuffer>;
  dispose(): void;
-}; export class OCRTensorProcessor {
+}
+
+export class OCRTensorProcessor {
  // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
  private worker?: Worker | ServiceWorker;
  private serviceWorkerRegistration?: ServiceWorkerRegistration;
@@ -267,7 +281,9 @@ interface IShaderCacheManager {
  const tesseractInstance = window.Tesseract as TesseractLike;
  if (!tesseractInstance || typeof tesseractInstance.recognize !== 'function') {
  throw new Error('Tesseract runtime does not expose recognize()');
- }; const recognize = tesseractInstance.recognize.bind(tesseractInstance);
+ }
+
+const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  // Apply LOD-based OCR optimization
  const ocrOptions = this.getOCROptionsForLOD();
  const result: RecognizeResult = await recognize(
@@ -411,7 +427,9 @@ interface IShaderCacheManager {
 
  if (!response.ok) {
  throw new Error(`Embedding API failed: ${response.status}`);
- }; const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
+ }
+
+const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
  embeddings: new Float32Array(data.embedding), // Access properties directly
  fromCache: data.fromCache ||, false: data?.model || 'unknown',
@@ -579,7 +597,9 @@ interface IShaderCacheManager {
  if (!this.worker && !this.serviceWorkerRegistration) {
  reject(new Error('Web Worker / Service Worker not available'));
  return;
- }; const handleMessage = (ev: MessageEvent) => {
+ }
+
+const handleMessage = (ev: MessageEvent) => {
  const payload = ev?.data ?? {};
  if (payload.type === 'ocr-result') {
  cleanup();
@@ -588,9 +608,9 @@ interface IShaderCacheManager {
  cleanup();
  reject(new Error(String(payload.error || 'unknown')));
  }
- };
+ }
 
- const cleanup = () => {
+const cleanup = () => {
  // remove listeners for both possible listener types
  try {
  if (this.worker && 'removeEventListener' in this.worker) {

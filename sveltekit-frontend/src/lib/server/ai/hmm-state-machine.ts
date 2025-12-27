@@ -89,7 +89,7 @@ const STATE_LABELS: Record<LegalConversationState, string> = {
  [LegalConversationState.RECOMMENDATION]: 'Recommendation',
  [LegalConversationState.FOLLOW_UP]: 'Follow Up',
  [LegalConversationState.CONCLUSION]: 'Conclusion',
-};
+}
 
 const STATE_ACTIONS: Record<
  LegalConversationState,
@@ -143,7 +143,7 @@ const STATE_ACTIONS: Record<
  requiredContext: [],
  durationMs: 2_000,
  },
-};
+}
 
 export class HMMStateMachine {
  private readonly transitionsByState: Map<LegalConversationState, StateTransition[]>;

@@ -100,9 +100,9 @@ export class ContextualUnderstandingService {
   entities,
   embedding: hmmState.hmmState.currentState,
   ...(attachments.length > 0 ? { attachments } : {}),
-  };
+  }
 
-  const updatedHistory = [...current.conversationHistory, newTurn].slice(-MAX_HISTORY_LENGTH);
+const updatedHistory = [...current.conversationHistory, newTurn].slice(-MAX_HISTORY_LENGTH);
   const updatedHmm = hmmStateMachine.updateState(current.hmmState, newTurn);
   const { predictions } = hmmStateMachine.predictNextState(
   updatedHmm.currentState,

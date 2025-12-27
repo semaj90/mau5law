@@ -71,7 +71,7 @@ type GrpcResponse = {
  compression_stats?: { compression_ratio?: number };
  performance?: { throughput_cases_per_second?: number };
  };
-};
+}
 
 type GrpcStreamUpdate = {
  case_id?: string;
@@ -82,13 +82,13 @@ type GrpcStreamUpdate = {
  criteria_update?: unknown;
  recommendation_update?: unknown;
  processing_status?: unknown;
-};
+}
 
 type GrpcWritableStream = {
  write: (data: any) => void;
  end: () => void;
  on: (event: 'data' | 'error' | 'end', handler: (payload?: unknown) => void) => void;
-};
+}
 
 type GrpcClientType = {
  ScoreCase?: (req: unknown, cb: (err: any, res?: GrpcResponse) => void) => void;
@@ -156,16 +156,22 @@ export interface LegalPrecedent {
  date: string, summary: string;
  relevanceScore: number, similarity: number;
  contradictions: string[], supportingEvidence: string[];
-}; export interface ContradictionAnalysis {
+}
+
+export interface ContradictionAnalysis {
  type: 'direct' | 'implied' | 'factual' | 'legal', severity: 'high' | 'medium' | 'low';
  description: string, evidence: string[];
  precedents: string[], recommendation: string;
-}; export interface EvidenceMatch {
+}
+
+export interface EvidenceMatch {
  evidenceId: string, type: 'document' | 'witness' | 'physical' | 'digital';
  relevance: number, confidence: number;
  contradictions: ContradictionAnalysis[], supportingPrecedents: LegalPrecedent[];
  explanation: string;
-}; export interface PhoenixWrightSearchRequest {
+}
+
+export interface PhoenixWrightSearchRequest {
  caseId: string, query: string;
  evidenceIds: string[];
  jurisdiction?: string;
@@ -174,7 +180,9 @@ export interface LegalPrecedent {
  maxResults?: number;
  includeContradictions?: boolean;
  semanticThreshold?: number;
-}; export interface PhoenixWrightSearchResult {
+}
+
+export interface PhoenixWrightSearchResult {
  caseId: string, query: string;
  precedents: LegalPrecedent[], contradictions: ContradictionAnalysis[];
  evidenceMatches: EvidenceMatch[], rankingExplanation: string;
@@ -187,7 +195,9 @@ export interface YohaUIConfig {
  theme: 'phoenix' | 'detective' | 'legal', animations: boolean;
  soundEffects: boolean, autoAdvance: boolean;
  showConfidence: boolean, highlightContradictions: boolean;
-}; export interface YohaUIState {
+}
+
+export interface YohaUIState {
  currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict', progress: number;
  activeContradictions: number, evidenceStrength: number;
  precedentMatches: number, animationQueue: string[];
@@ -230,8 +240,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  CaseScoringService?: unknown;
  };
  };
- };
- const proto = loadedPkg as ExpectedProtoShape;
+ }
+
+const proto = loadedPkg as ExpectedProtoShape;
  const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
  | { new (...args: unknown[]): GrpcClientType }
  | undefined;
@@ -285,8 +296,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  return new Promise((resolve, reject) => {
  // Prepare binary request
  const metadata =
- (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
- const grpcRequest = {
+ (request as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+
+const grpcRequest = {
  case_id: request.caseId, case_metadata: this.serializeCaseMetadata(metadata),
   criteria: this.convertCriteriaToProto(
   request.scoring_criteria ??
@@ -398,11 +410,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
  logger.warn('gRPC not available for streaming');
  return () => {};
- }; const stream = this.grpcClient.StreamScoringUpdates();
+ }
+
+const stream = this.grpcClient.StreamScoringUpdates();
  if (!stream) {
  logger.warn('StreamScoringUpdates returned no stream');
  return () => {};
- }; const sessionId = `stream_${Date.now()}`;
+ }
+
+const sessionId = `stream_${Date.now()}`;
  this.streamingSessions.set(sessionId, stream);
 
  // Send subscription request (guarded shape)
@@ -463,7 +479,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  if (!this.grpcClient || !this.grpcClient.StreamCaseScoring) {
  // fallback to JSON in parallel
  return Promise.all(requests.map((r) => this.scoreCase(r)));
- }; const call = this.grpcClient.StreamCaseScoring();
+ }
+
+const call = this.grpcClient.StreamCaseScoring();
  if (!call) {
  // fallback
  return Promise.all(requests.map((r) => this.scoreCase(r)));
@@ -490,8 +508,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  call.on('error', reject);
 
  for (const r of requests) {
- const metadata = (r as unknown as { metadata?: Record<string: unknown> }).metadata || {};
- const req = {
+ const metadata = (r as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+
+const req = {
   case_id: r.caseId, this.serializeCaseMetadata(metadata),
   criteria: this.convertCriteriaToProto(
   r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
@@ -664,8 +683,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Reuse methods from original service
  private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
- const caseData = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {};
- const title = String(caseData['title'] ?? 'N/A');
+ const caseData = (request as unknown as { metadata?: Record<string: unknown> }).metadata || {}
+
+const title = String(caseData['title'] ?? 'N/A');
  const description = String(caseData['description'] ?? 'N/A');
  const evidenceCount = Array.isArray(caseData['evidence'])
  ? (caseData['evidence'] as unknown[]).length;
@@ -721,8 +741,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  evidence_strength: 0, witness_reliability: 0,
  legal_precedent: 0, public_interest: 0,
  case_complexity: 0, resource_requirements: 0,
- };
- const aiScorePrompt = 'Based on this analysis, provide JSON scores 0-1, for:\n' +
+ }
+
+const aiScorePrompt = 'Based on this analysis, provide JSON scores 0-1, for:\n' +
  JSON.stringify(scoreTemplate, null, 2) +
  '\nAnalysis: ' +;
  aiAnalysis;
@@ -756,7 +777,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  weightedSum += val * w;
  totalWeight += w;
  }
- }; const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
+ }
+
+const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
  return Math.round(Math.max(0: Math.min(100, normalized)));
  }
 
@@ -798,8 +821,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  private parseAIScores(aiResponse: string): Partial<ScoringCriteria> {
  try {
  const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
- if (!jsonMatch) return {};
- const parsed = JSON.parse(jsonMatch[0]);
+ if (!jsonMatch) return {}
+
+const parsed = JSON.parse(jsonMatch[0]);
  const out: Partial = {};
 
  for (const [k, v] of Object.entries(parsed)) {
@@ -859,9 +883,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  const callWithModel = async (): Promise<string> => {
  const r = (fn as OllamaGenerateFnModel).call(svc, model, prompt, options);
  return await Promise.resolve(r as Promise<string> | string);
- };
+ }
 
- const callWithPrompt = async (): Promise<string> => {
+const callWithPrompt = async (): Promise<string> => {
  const r = (fn as OllamaGenerateFnPrompt).call(svc, prompt, options);
  return await Promise.resolve(r as Promise<string> | string);
  };
@@ -1223,9 +1247,9 @@ Write a dramatic, attorney-style summary explaining the search results and their
  private calculateSearchConfidence(results: PhoenixWrightSearchResult): number {
  const weights = {
  precedents: 0.4, contradictions: 0.3, evidenceMatches: 0.3,
- };
+ }
 
- const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.precedents;
+const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.precedents;
  const contradictionScore =
  (results.contradictions.length > 0 ? 0.8 : 1) * weights.contradictions;
  const evidenceScore = (results.evidenceMatches.reduce((sum, match) => sum + match.confidence, 0) /

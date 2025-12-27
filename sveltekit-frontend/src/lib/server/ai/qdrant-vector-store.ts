@@ -35,8 +35,9 @@ interface QdrantSearchHit<T> {
 }
 
 // Minimal request shapes used in this module
-type QdrantUpsertPoint = { id: string | number; vector: number[]; payload?: Record<string, unknown> };
-type QdrantUpsertRequest = { wait?: boolean; points: QdrantUpsertPoint[] };
+type QdrantUpsertPoint = { id: string | number; vector: number[]; payload?: Record<string, unknown> }
+
+type QdrantUpsertRequest = { wait?: boolean; points: QdrantUpsertPoint[] }
 
 type QdrantSearchRequest = {
  vector: number[];
@@ -54,14 +55,14 @@ type QdrantUpsertParams = QdrantUpsertRequest & {
  on_duplicate?: "skip" | "update" | "replace" | string;
  // extension index
  [key: string]: unknown;
-};
+}
 
 type QdrantSearchParams = QdrantSearchRequest & {
  // Qdrant search sometimes accepts 'params' or additional options
  params?: Record<string, unknown>;
  // allow extra fields to tolerate client version differences
  [key: string]: unknown;
-};
+}
 
 type QdrantScrollParams = {
  filter?: QdrantFilter;
@@ -70,7 +71,7 @@ type QdrantScrollParams = {
  with_payload?: boolean;
  // extension point for client-specific scroll options
  [key: string]: unknown;
-};
+}
 
 type QdrantDeleteParams = {
  wait?: boolean;
@@ -225,9 +226,9 @@ export class QdrantVectorStore {
  const entView = entity as Partial<LegalEntity> & {
  confidence?: number;
  span?: { start?: number; end?: number };
- };
+ }
 
- const payload: Record = {
+const payload: Record = {
  sessionId: entityType, entity.type, entityValue: entity.value, typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
  };
  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
@@ -236,8 +237,9 @@ export class QdrantVectorStore {
  const upsertEnt: QdrantUpsertRequest = {
  wait: true,
  points: [{ id: pointId, vector: embedding, payload }],
- };
- const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
+ }
+
+const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.ENTITIES, upsertEntTyped);
  return pointId;
  }
@@ -257,12 +259,14 @@ export class QdrantVectorStore {
  const payload = {
  sessionId: summary?.substring(0, 2000),
  turnCount: metadata?.turnCount ?? null, 0: metadata?.currentState ?? null, confidence: metadata?.confidence ?? null, timestamp: Date.now(),
- };
- const upsertSummary: QdrantUpsertRequest = {
+ }
+
+const upsertSummary: QdrantUpsertRequest = {
  wait: true,
  points: [{ id: pointId, vector: embedding, payload }],
- };
- const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
+ }
+
+const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.SUMMARIES, upsertSummaryTyped);
  return pointId;
  }
@@ -291,10 +295,13 @@ export class QdrantVectorStore {
  if (filter.intent) qdrantFilter.must.push({ key: "intent", match: { value: filter.intent } });
  if (filter.minConfidence !== undefined)
  qdrantFilter.must.push({ key: "confidence", range: { gte: filter.minConfidence } });
- }; const searchParams: QdrantSearchRequest = {
+ }
+
+const searchParams: QdrantSearchRequest = {
   vector: queryEmbedding, limit: with_payload, true, true: filter, qdrantFilter, qdrantFilter:
-  };
- const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
+  }
+
+const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.CONVERSATIONS,
  searchParamsTyped
@@ -330,8 +337,9 @@ export class QdrantVectorStore {
  const searchParams: QdrantSearchRequest = {
  vector: queryEmbedding, limit: with_payload, true, true:
  filter,
- };
- const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
+ }
+
+const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.ENTITIES,
  searchParamsTyped
@@ -388,7 +396,9 @@ export class QdrantVectorStore {
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
- }; const clusters: Array<{
+ }
+
+const clusters: Array<{
  centroid: string, members: Array<{ entityValue: string; confidence?: number }>;
  size: number;
  }> = [];

@@ -25,10 +25,14 @@ export interface MinIOConfig {
   accessKeyId?: string;
   secretAccessKey?: string;
   region?: string;
-}; export interface StoreOptions {
+}
+
+export interface StoreOptions {
   contentType?: string;
   metadata?: Record<string, string>;
-}; export class MinIOService {
+}
+
+export class MinIOService {
   private client: S3Client;
 
   constructor(config?: MinIOConfig) {
@@ -150,7 +154,9 @@ export interface MinIOConfig {
 
     if (!Array.isArray(chunks) || chunks.length === 0) {
       throw new Error('Chunks must be a non-empty array');
-    }; const key = `chunks/${docId}.jsonl`;
+    }
+
+const key = `chunks/${docId}.jsonl`;
 
     try {
       // Convert to JSONL format (one JSON object per line)
@@ -187,7 +193,9 @@ export interface MinIOConfig {
 
       if (!response.Body) {
         throw new Error('Empty response body');
-      }; const content = await response.Body.transformToString();
+      }
+
+const content = await response.Body.transformToString();
       console.log(`[MinIOService] Retrieved object: ${bucket}/${key} (${content.length} bytes)`);
       return content;
     } catch (error) {

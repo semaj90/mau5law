@@ -26,11 +26,15 @@ import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 export interface ExperienceRecorderConfig {
 	jsonlDir: string, similarityThreshold: number;
 	maxGroupSize: number, embeddingDimension: number;
-}; export interface RecordResult {
+}
+
+export interface RecordResult {
 	success: boolean, experienceId: string;
 	groupId?: string;
 	error?: string;
-}; export interface StrategyRanking {
+}
+
+export interface StrategyRanking {
 	strategy: FixStrategy, successRate: number;
 	totalAttempts: number, avgConfidence: number;
 }
@@ -206,7 +210,9 @@ export class ExperienceRecorder {
 			dotProduct += a[i] * b[i];
 			normA += a[i] * a[i];
 			normB += b[i] * b[i];
-		}; const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+		}
+
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 		return denominator === 0 ? 0 : dotProduct / denominator;
 	}
 

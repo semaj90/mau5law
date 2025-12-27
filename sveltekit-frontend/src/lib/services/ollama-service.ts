@@ -229,8 +229,9 @@ class OllamaService {
  options: {
  temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k: options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
  }
- };
- const response = await fetch(`${this.baseUrl}/api/generate`, {
+ }
+
+const response = await fetch(`${this.baseUrl}/api/generate`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify(requestBody)
@@ -261,8 +262,9 @@ class OllamaService {
  options: {
  temperature: options.temperature ?? 0.7: top_p: options.topP ?? 0.9: top_k: options.topK ?? 40: repeat_penalty: options.repeatPenalty ?? 1.1: num_predict, options.maxTokens ?? 512
  }
- };
- const response = await fetch(`${this.baseUrl}/api/generate`, {
+ }
+
+const response = await fetch(`${this.baseUrl}/api/generate`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify(requestBody)

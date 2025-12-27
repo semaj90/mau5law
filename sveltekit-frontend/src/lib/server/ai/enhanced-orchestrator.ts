@@ -233,7 +233,7 @@ function generateCacheKey(input: string): string {
 // --- Small applyMMR stub (best-effort; replace with real implementation later) ---
 
 // --- Insert: runtime-safe placeholders + lightweight type stubs ---
-type MMRDocument = RankedSource & { crossEncoderScore?: number; score?: number; legalRelevance?: number };
+type MMRDocument = RankedSource & { crossEncoderScore?: number; score?: number; legalRelevance?: number }
 
 interface RankedSource {
  id?: string;
@@ -267,7 +267,8 @@ let AIAssistantInputSynthesizer: any = null;
 let legalBERT: any = {
  analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }),
  calculateLegalSimilarity: async (_q: string, options: string): string => ({ similarity: 0, confidence: 0.5, legalRelevance: 0.5 }),
-};
+}
+
 let monitoringService: any = null;
 // --- end inserted block ---
 

@@ -118,7 +118,9 @@ export class RedisCompressionCache {
  // Fallback for non-compressed values
  const raw = await this.redis.get(key);
  return raw ? JSON.parse(raw) : null;
- }; const metadata = JSON.parse(metadataStr);
+ }
+
+const metadata = JSON.parse(metadataStr);
 
  // Get value
  let stored = await this.redis.getBuffer(key);
@@ -183,7 +185,9 @@ export class RedisCompressionCache {
  for (const key of keys) {
  pipeline.getBuffer(key);
  pipeline.get(`${key}:metadata`);
- }; const pipelineResults = await pipeline.exec();
+ }
+
+const pipelineResults = await pipeline.exec();
 
  // Process results
  for (let i = 0; i < keys.length; i++) {
@@ -208,7 +212,9 @@ export class RedisCompressionCache {
  console.error(`Failed to decompress ${key}:`, error);
  }
  }
- }; const loadTimeMs = performance.now() - startTime;
+ }
+
+const loadTimeMs = performance.now() - startTime;
  console.log(`✅ Batch get ${keys.length} items in ${loadTimeMs}ms`);
 
  return results;
@@ -307,7 +313,9 @@ export class RedisCompressionCache {
  let decompressed = stored;
  if (metadata.compressed) {
  decompressed = await gunzip(stored);
- }; const decompressTimeMs = performance.now() - startTime;
+ }
+
+const decompressTimeMs = performance.now() - startTime;
  const events = JSON.parse(decompressed.toString('utf-8'));
 
  const stats: CompressionStats = {
