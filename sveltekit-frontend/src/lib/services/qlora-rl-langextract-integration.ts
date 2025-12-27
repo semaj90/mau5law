@@ -168,7 +168,7 @@ export class QLorARLLangExtractOrchestrator {
  somCacheConfig?: Record<string, unknown>;
  } = {}
  ) {
- this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost, /* PHASE82_COLON_CHAIN: 3001' */ ;
+ this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost:3001';
  this.nesMemory = new NESMemoryArchitecture();
  // The SOMCacheLike accepts several method names
  // TS: WebGPUSOMCache may not be structurally identical to SOMCacheLike.
@@ -206,9 +206,9 @@ export class QLorARLLangExtractOrchestrator {
  async processLegalDocument(
  document: LegalDocument,
  extractionSchema: Record<string, unknown>,
- userFeedback?: { quality: number; usefulness, /* PHASE82_COLON_CHAIN: number; accuracy */ , /* PHASE82_COLON_CHAIN: number  */ }
+ userFeedback?: { quality: number; usefulness: number; accuracy: number }
  ): Promise<{
- extractedData, Record<string, JsonValue>;
+ extractedData: Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction;
  neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
@@ -713,11 +713,16 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ): Promise<void> {
  if (!this.rlAgent) return;
  const trainingReward =
- completionData.finalAccuracy > 0.8 ? 0: completionData.finalAccuracy > 0.6 ? 0.7 , /* PHASE82_COLON_CHAIN: 0.3 */ ;
+ completionData.finalAccuracy > 0.8 ? 1.0 : completionData.finalAccuracy > 0.6 ? 0.7 : 0.3;
  this.rlAgent.postMessage({
  type: 'updateTrainingPolicy',
  trainingResult: {
- jobId: job.jobId, job.trainingData[0]?.metadata?.documentType, finalAccuracy: completionData.finalAccuracy, finalLoss: completionData.finalLoss, trainingReward: job.loraConfig,
+ jobId: job.jobId,
+ documentType: job.trainingData[0]?.metadata?.documentType,
+ finalAccuracy: completionData.finalAccuracy,
+ finalLoss: completionData.finalLoss,
+ trainingReward,
+ loraConfig: job.loraConfig,
  },
  });
  console.log(`🧠 RL AGENT UPDATED, Training reward ${trainingReward} for ${job.jobId}`);
@@ -760,7 +765,8 @@ const hash = this.simpleHash(dataStr + tileIndex);
 
  getStats() {
  return {
- documentsProcessed: this.extractionHistory.size, Array.from(this.qloraTrainingQueue.values()).filter(
+ documentsProcessed: this.extractionHistory.size,
+ activeQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(
  (job) => job.status === 'training' || job.status === 'pending'
  ),
  completedQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(
@@ -768,11 +774,11 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ),
  nesMemoryUsage: this.nesMemory.getMemoryStats(),
  somCacheStats:
- typeof this.somCache.getStats === 'function' ? this.somCache.getStats() , /* PHASE82_COLON_CHAIN: undefined */ ,
+ typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
  };
  }
 }
 
 export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
- langextractServiceUrl: 'http, /* PHASE82_COLON_CHAIN: //localhost */ , /* PHASE82_COLON_CHAIN: 3001' */ ,
+ langextractServiceUrl: 'http://localhost:3001',
 });
