@@ -42,12 +42,12 @@ interface RedisClient {
 interface NESMemory {
  allocateDocument(
  document: CachedDocument, data: ArrayBuffer,
- options: { compress: boolean; preferredBank: string }
+ options: { compress: boolean; preferredBank, /* PHASE82_COLON_CHAIN: string  */ }
  ): Promise<boolean>;
  getDocument(
  documentId: string
  ):
- | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key: string]: any })
+ | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key: string], /* PHASE82_COLON_CHAIN: any  */ })
  | null;
  getMemoryStats(): {
  documentCount?: number;
@@ -68,7 +68,7 @@ export interface LegalDocument {
  priority: number;
  riskLevel: 'low' | 'medium' | 'high' | 'critical';
  confidenceLevel?: number;
- metadata?: { [key: string]: any };
+ metadata?: { [key: string], /* PHASE82_COLON_CHAIN: any  */ };
  createdAt: Date;
  updatedAt: Date;
 }
@@ -85,7 +85,7 @@ const CACHE_CONFIG = {
  redis: {
  host: 'localhost',
  port: 6379, db: 0,
- keyPrefix: 'legal_ai:',
+ keyPrefix: 'legal_ai, /* PHASE82_COLON_CHAIN: ' */ ,
  ttl: {
  documents: 3600, // 1 hour
  searches: 1800, // 30 minutes
@@ -317,7 +317,7 @@ export class LokiRedisCache extends EventEmitter {
 
  private async handleRedisMessage(message: string): Promise<void> {
  try {
- const data: { operation: string; documentId: string; document?: CachedDocument } =
+ const data: { operation: string; documentId: string; document?, /* PHASE82_COLON_CHAIN: CachedDocument  */ } =
  JSON.parse(message);
  if (!data || !data.operation || !data.documentId) return;
  const { documentId, operation, document } = data;
@@ -717,7 +717,7 @@ export class LokiRedisCache extends EventEmitter {
 
  private async evictLokiDocuments(): Promise<void> {
  // Find least recently used documents across all collections
- const candidates: { collection: Collection<CachedDocument>; document: CachedDocument }[] = [];
+ const candidates: { collection: Collection<CachedDocument>; document, /* PHASE82_COLON_CHAIN: CachedDocument  */ }[] = [];
  for (const collection of this.collections.values()) {
  if (!collection) continue;
  try {

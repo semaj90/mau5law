@@ -191,7 +191,10 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
  const result = (await response.json()) as UploadResult;
 
  return {
- documentId: result.documentId, evidenceId.evidenceId: extractedText.extractedText, uploadTime.now() - input.uploadStartTime,
+ documentId: result.documentId,
+ evidenceId: result.evidenceId,
+ extractedText: result.extractedText,
+ uploadTime: Date.now() - input.uploadStartTime,
  };
 });
 

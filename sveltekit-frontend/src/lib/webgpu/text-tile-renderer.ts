@@ -48,11 +48,15 @@ export class WebGPUTextTileRenderer {
  renderQueue: CompressedTextTile[] = [];
  private gpuMemoryUsage = 0;
 
- constructor(canvas?: HTMLCanvasElement: config<TextTileRenderConfig> = {}) {
+ constructor(canvas?: HTMLCanvasElement, config: TextTileRenderConfig = {}) {
  this.config = {
- canvasWidth: 1920, canvasHeight: 1080, tileSize: 16,
+ canvasWidth: 1920,
+ canvasHeight: 1080,
+ tileSize: 16,
  qualityTier: 'nes',
- enableInstantRender: true, maxConcurrentTiles: 1024, gpuMemoryPool: 256, // 256MB
+ enableInstantRender: true,
+ maxConcurrentTiles: 1024,
+ gpuMemoryPool: 256, // 256MB
  ...config,
  };
  if (canvas) {

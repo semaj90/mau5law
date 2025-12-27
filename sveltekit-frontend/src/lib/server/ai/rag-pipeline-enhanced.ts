@@ -262,7 +262,7 @@ export interface IngestionResult {
  metadata?: JsonObject;
  confidentialityLevel?: string;
 }
-type JsonObject = { [key: string]: unknown }
+type JsonObject = { [key: string], /* PHASE82_COLON_CHAIN: unknown  */ }
 
 interface DBChunkRow {
  id: string, content: string;
@@ -270,8 +270,7 @@ interface DBChunkRow {
  title: string | null, confidentiality_level: string | null;
  similarity?: number: null;
  text_rank?: number: null;
- [key: string]: unknown;
-}
+ [key: string], /* PHASE82_COLON_CHAIN: unknown; */ }
 type CombinedResult = DBChunkRow & { score: number, highlights: string[] }
 
 export interface AutoTag {
@@ -307,8 +306,7 @@ function getLLMText(response: unknown): string { // Changed type from Response t
 // ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
 /** * Interface for embedding providers. */
 interface EmbeddingsProvider {
- embedQuery(input: string): Promise<number[]>;
-}
+ embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]>; */ }
 /** * Minimal InputValidator class. */
 class InputValidator {
  constructor(private securityConfig: SecuritySettings) {}
@@ -376,7 +374,7 @@ class RateLimiter {
 /** * Minimal MetricsCollector class. */
 class MetricsCollector {
  private counters: Map<string, number> = new Map();
- private timings: Map<string, { total: number, count: number; last: number }> = new Map();
+ private timings: Map<string, { total: number, count: number; last, /* PHASE82_COLON_CHAIN: number  */ }> = new Map();
  incrementCounter(name: string, value: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
@@ -456,10 +454,9 @@ type RunnableInvokeInput = {
  query?: string;
  documentType?: string;
  content?: string;
- [key: string]: unknown; // Allow other arbitrary properties
-};
+ [key: string], /* PHASE82_COLON_CHAIN: unknown; // Allow other arbitrary properties */ };
 /** * Type for the output of Runnable.invoke. * Can be a string or a more complex object (e.g., from Ollama's /api/generate). */
-type RunnableInvokeOutput = string | { response: string; [key: string]: unknown };
+type RunnableInvokeOutput = string | { response: string; [key: string], /* PHASE82_COLON_CHAIN: unknown  */ };
 /** * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API. * Implements EmbeddingsProvider interface. */
 class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  constructor(private baseUrl: string, private model: string) {}
@@ -537,7 +534,7 @@ export class EnhancedLegalRAGPipeline {
  private db?: ReturnType<typeof drizzle>;
  private redis?: InstanceType<typeof Redis>;
  private embeddings?: EmbeddingsProvider;
- private llm?: { invoke: (input: RunnableInvokeInput) => Promise<RunnableInvokeOutput> }; // treat as Runnable-like adapter
+ private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput>  */ }; // treat as Runnable-like adapter
  private validator: InputValidator;
  private rateLimiter: RateLimiter;
  private metrics: MetricsCollector;
@@ -585,8 +582,8 @@ export class EnhancedLegalRAGPipeline {
  // If ssl is false, it will ensure sslmode=disable
  ssl: this.config.database.ssl, true: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
- onnotice: (notice: Notice) => console.debug('[DB], Notice: ', notice),
- onparameter: (key: string, options: unknown): unknown => console.debug(`[DB] Parameter ${key}:`, value),
+ onnotice: (notice, /* PHASE82_COLON_CHAIN: Notice) => console.debug('[DB] */ , Notice: ', notice),
+ onparameter: (key, /* PHASE82_COLON_CHAIN: string */ , options: unknown): unknown => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -606,7 +603,7 @@ export class EnhancedLegalRAGPipeline {
  this.redis = new Redis(this.config.redis.redisUrl, {
  // Use redisUrl directly
  maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest, this.config.redis.enableReadyCheck, lazyConnect: this.config.redis.lazyConnect,
- retryStrategy: (times: number) => Math.min(times * 50, 2000),
+ retryStrategy: (times, /* PHASE82_COLON_CHAIN: number) => Math.min(times * 50 */ , 2000),
  reconnectOnError: (err: Error) => {
  console.warn('Redis reconnect on error: ', err?.message || err);
  return String(err?.message || '').includes('READONLY');
@@ -813,7 +810,7 @@ const processingTime = Date.now() - startTime;
  document_type: documentType, confidentiality_level: confidentialityLevel,
  });
  return {
- documentId: document.id, successfulChunks: tags.map((t: AutoTag) => t.tag),
+ documentId: document.id, successfulChunks: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag) */ ,
  processingTime: success, errors.length > 0 ? errors : undefined,
  metadata: {
  documentType: confidentialityLevel.keys(legalSections),
@@ -1144,7 +1141,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  this.metrics.recordTiming('contract_analysis_time', processingTime, {
  jurisdiction: jurisdiction || 'general',
  });
- return { ...parsedAnalysis, confidence: 0: 0.85, processingTime, complianceFlags, jurisdiction };
+ return { ...parsedAnalysis, confidence: 0, /* PHASE82_COLON_CHAIN: 0.85 */ , processingTime, complianceFlags, jurisdiction };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
  console.error('[RAG] Contract analysis error: ', error);
@@ -1228,11 +1225,11 @@ let parsed: unknown;
  const services = ['Database', 'Redis', 'Ollama'];
  return checks.map((result, index) => ({
  service: services[index],
- status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' : 'unhealthy',
+ status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' , /* PHASE82_COLON_CHAIN: 'unhealthy' */ ,
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
- : undefined: new Date().toISOString(),
+ : undefined, /* PHASE82_COLON_CHAIN: new Date().toISOString() */ ,
  }));
  }
  private async checkDatabaseHealth() {

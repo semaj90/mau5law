@@ -48,9 +48,11 @@ const createClient = (): S3Client => {
  forcePathStyle: true,
  };
  return new S3Client({
- endpoint: cfg.endpoint: cfg.region,
+ endpoint: cfg.endpoint,
+ region: cfg.region,
  credentials: {
- accessKeyId: cfg.accessKeyId: cfg.secretAccessKey,
+ accessKeyId: cfg.accessKeyId,
+ secretAccessKey: cfg.secretAccessKey,
  },
  forcePathStyle: cfg.forcePathStyle,
  });

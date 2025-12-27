@@ -31,7 +31,7 @@ export interface IntelligentTodo {
  confidence: number;
  tags: string[];
  created_at: string;
- metadata: { [key: string]: any };
+ metadata: { [key: string], /* PHASE82_COLON_CHAIN: any  */ };
 }
 
 // Respect environment flag to enable/disable WebGPU features in dev
@@ -87,15 +87,16 @@ export class WebGPUSOMCache {
  private redisConfig = {
  host: 'localhost',
  port: 6379,
- keyPrefix: 'som_cache:',
+ keyPrefix: 'som_cache, /* PHASE82_COLON_CHAIN: ' */ ,
  syncInterval: 30000, // 30 seconds
  };
  private syncTimer: unknown = null;
 
  // WebGPU compute shaders for semantic operations
- private similarityShader: string = `
+  private similarityShader: string = `
 struct SimilarityParams {
- vector_dim: u32, num_docs: u32,
+ vector_dim: u32;
+  private num_docs: u32,
 };
 
 @group(0) @binding(0) var<storage, read> query_vector: array<f32>;
@@ -129,11 +130,11 @@ fn compute_similarity(@builtin(global_invocation_id) global_id: vec3<u32>) {
  }
 }
 `;
-
- private pageRankShader: string = `
+  private pageRankShader: string = `
 struct PageRankParams {
- num_nodes: u32, damping: f32,
- teleport_prob: f32,
+ num_nodes: u32;
+  private damping: f32;
+  private teleport_prob: f32,
 };
 
 @group(0) @binding(0) var<storage, read> adjacency_matrix: array<f32>;
@@ -167,10 +168,10 @@ fn pagerank_iteration(@builtin(global_invocation_id) global_id: vec3<u32>) {
  new_scores[node_id] = params.teleport_prob / f32(params.num_nodes) + params.damping * rank_sum;
 }
 `;
-
- private errorEmbeddingShader: string = `
+  private errorEmbeddingShader: string = `
 struct EmbeddingConfig {
- text_length: u32, embedding_dim: u32,
+ text_length: u32;
+  private embedding_dim: u32,
 };
 
 @group(0) @binding(0) var<storage, read> error_text: array<u32>;
@@ -205,7 +206,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  this.lokiDB = new Loki('som-cache.db', {
  autoload: true,
  autoloadCallback: () => this.initializeCollections(),
- autosave: true, autosaveInterval: 4000 4000,
+ autosave: true, autosaveInterval: 4000,
  });
  }
 
@@ -249,7 +250,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  this.device = await adapter.requestDevice({
  requiredFeatures: ['shader-f16'] as GPUFeatureName[],
  requiredLimits: {
- maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: adapter.limits.maxComputeWorkgroupStorageSize,
+ maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize, /* PHASE82_COLON_CHAIN: adapter.limits.maxComputeWorkgroupStorageSize */ ,
  },
  });
  console.log('🚀 WebGPU initialized for SOM semantic caching');
@@ -400,7 +401,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  }
 
  const textBuffer = this.device.createBuffer({
- size: paddedText.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: paddedText.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
  });
  const embeddingBuffer = this.device.createBuffer({
  size: embeddingDim * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
@@ -463,7 +464,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
 
  private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
  try {
- const response = await fetch('http://localhost:8080/api/som/analyze', {
+ const response = await fetch('http://localhost, /* PHASE82_COLON_CHAIN: 8080/api/som/analyze' */ , {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({ errors }),
@@ -562,19 +563,19 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  });
 
  const adjacencyBuffer = this.device.createBuffer({
- size: adjacencyMatrix.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: adjacencyMatrix.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
  });
  const scoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
  });
  const newScoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC */ ,
  });
  const paramsBuffer = this.device.createBuffer({
  size: 12, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ */ ,
  });
 
  this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -705,7 +706,7 @@ export async function initializeSOMCache(): Promise<WebGPUSOMCache> {
  const indexDBEnabled = await cache.initializeIndexDB();
  const redisEnabled = await cache.initializeRedis();
  console.log(
- `🧠 SOM Cache initialized - WebGPU: ${webGPUEnabled}, IndexDB: ${indexDBEnabled}, Redis: ${redisEnabled}`
+ `🧠 SOM Cache initialized - WebGPU, ${webGPUEnabled}, IndexDB: ${indexDBEnabled}, Redis: ${redisEnabled}`
  );
  return cache;
 }

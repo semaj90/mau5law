@@ -6,8 +6,9 @@ declare global {
  }
  namespace NodeJS {
  interface ProcessEnv {
- [key: string]: string: undefined;
+ [key: string]: string | undefined;
  }
  }
 }
-export {};
+export { };
+
