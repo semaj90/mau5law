@@ -47,7 +47,7 @@ interface NESMemory {
  getDocument(
  documentId: string
  ):
- | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key, string]: any})
+ | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key: string]: unknown })
  | null;
  getMemoryStats(): {
  documentCount?: number;
@@ -84,8 +84,9 @@ const CACHE_CONFIG = {
  // Redis
  redis: {
  host: 'localhost',
- port: 6379, db: 0,
- keyPrefix: 'legal_ai, /* PHASE82_COLON_CHAIN: ' */ ,
+ port: 6379,
+ db: 0,
+ keyPrefix: 'legal_ai:',
  ttl: {
  documents: 3600, // 1 hour
  searches: 1800, // 30 minutes
@@ -317,7 +318,7 @@ export class LokiRedisCache extends EventEmitter {
 
  private async handleRedisMessage(message: string): Promise<void> {
  try {
- const data: { operation: string; documentId, /* PHASE82_COLON_CHAIN: string; document? */ , /* PHASE82_COLON_CHAIN: CachedDocument  */ } =
+ const data: { operation: string; documentId: string; document?: CachedDocument } =
  JSON.parse(message);
  if (!data || !data.operation || !data.documentId) return;
  const { documentId, operation, document } = data;
