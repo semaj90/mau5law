@@ -491,15 +491,10 @@ const avgDifficulty =
  worker.postMessage({
  type: 'init',
  data: {
- modelPath: job.baseModel,
- loraConfig: job.loraConfig,
- quantization: job.quantization,
- useDataFlywheel: true,
+ modelPath: job.baseModel, loraConfig: job.loraConfig, quantization: job.quantization,
  flywheelConfig: {
- adaptiveParameterAdjustment: true,
- realTimeFeedbackMonitoring: true,
- earlyStoppingThreshold: 0.001,
- qualityThreshold: 0.85,
+ adaptiveParameterAdjustment: true, realTimeFeedbackMonitoring: true,
+ earlyStoppingThreshold: 0.001, qualityThreshold: 0.85,
  },
  },
  });

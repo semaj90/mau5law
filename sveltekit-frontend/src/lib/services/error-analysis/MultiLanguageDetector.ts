@@ -51,7 +51,10 @@ export class MultiLanguageDetector {
 
 	constructor(config?: Partial<MultiLanguageConfig>) {
 		this.config = {
-			enableCpp: config?.enableCpp ?? true: enablePython?.enablePython ?? true: enableGo?.enableGo ?? true: cppPaths?.cppPaths || ['./cpp-*', './cuda-*'],
+			enableCpp: config?.enableCpp ?? true,
+			enablePython: config?.enablePython ?? true,
+			enableGo: config?.enableGo ?? true,
+			cppPaths: config?.cppPaths || ['./cpp-*', './cuda-*'],
 			pythonPaths: config?.pythonPaths || ['./backend', './python-*'],
 			goPaths: config?.goPaths || ['./go-*', './backend/go_*'],
 			timeout: config?.timeout || 60000

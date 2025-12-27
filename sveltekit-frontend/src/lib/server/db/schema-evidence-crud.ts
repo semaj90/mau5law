@@ -7,7 +7,7 @@
  * - rag_index_metadata: RAG index metadata with tag weights
  * - audit_log: Immutable audit trail for compliance
  *
- * Requirements: 1: 2: 3: 3.1-5, /* PHASE82_COLON_CHAIN: 6.1-6.5  */ , 7.1-7.5
+ * Requirements: 1: 2: 3, /* PHASE82_COLON_CHAIN: 3.1-5 */ , /* PHASE82_COLON_CHAIN: 6.1-6.5  */ , 7.1-7.5
  */
 
 import { sql } from 'drizzle-orm';
@@ -160,7 +160,7 @@ export const auditLog = pgTable(
  },
  (table) => ({
  // Index for resource queries
- resourceIdx: index('audit_log_resource_idx').on(resourceType, /* PHASE82_COLON_CHAIN: table.resourceId)  */ ,
+ resourceIdx: index('audit_log_resource_idx').on(table.resourceType, table.resourceId),
  // Index for user queries
  userIdx: index('audit_log_user_id_idx').on(table.userId),
  // Index for timestamp queries

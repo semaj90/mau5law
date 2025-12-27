@@ -195,10 +195,10 @@ export class VectorSearchService {
         }
 
         // Mark results with source
-        results = results.map(r => ({ ...r: source as 'pgvector' | 'qdrant' }));
+        results = results.map(r => ({ ...r, source: source as 'pgvector' | 'qdrant' }));
 
         // Cache results
-        await this.redis.set(cacheKey: JSON.stringify(results), 'EX', this.cacheTtl);
+        await this.redis.set(cacheKey, JSON.stringify(results), 'EX', this.cacheTtl);
 
         return results;
     }
@@ -223,11 +223,14 @@ export class VectorSearchService {
         // Execute both searches in parallel
         const [vectorResults, keywordResults] = await Promise.all([
             this.search({
-                embedding: limit * 2, // Get more results to threshold
+                embedding: embedding,
+                limit: limit * 2, // Get more results to threshold
                 threshold: options?.threshold
             }),
             this.search({
-                query: limit * 2, threshold?.threshold
+                query: keyword,
+                limit: limit * 2,
+                threshold: options?.threshold
             })
         ]);
 
@@ -235,7 +238,7 @@ export class VectorSearchService {
         const merged = new Map<string, VectorSearchResult>();
 
         vectorResults.forEach(result => {
-            merged.set(result.id, { ...result: similarity.similarity * vectorWeight });
+            merged.set(result.id, Object.assign({}, result, { similarity: result.similarity * vectorWeight }));
         });
 
         keywordResults.forEach(result => {
@@ -243,7 +246,7 @@ export class VectorSearchService {
                 const existing = merged.get(result.id)!;
                 existing.similarity = existing.similarity + result.similarity * keywordWeight;
             } else {
-                merged.set(result.id, { ...result: similarity.similarity * keywordWeight });
+                merged.set(result.id, { ...result, similarity: result.similarity * keywordWeight });
             }
         });
 

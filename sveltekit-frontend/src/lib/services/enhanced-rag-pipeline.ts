@@ -5,13 +5,13 @@ import { redisService } from '$lib/server/redis-service';
 import { sql } from 'drizzle-orm';
 
 export interface IndexDocumentResult {
- success: boolean, chunksCreated: number;
+ success: boolean; chunksCreated: number;
  error?: string;
 }
 
 export interface SystemStats {
- documentsIndexed: number, chunksIndexed: number;
- averageRetrievalTime: number, cacheHitRate: number;
+ documentsIndexed: number; chunksIndexed: number;
+ averageRetrievalTime: number; cacheHitRate: number;
  recentQueriesCount: number;
 }
 
@@ -70,20 +70,20 @@ type DrizzleCase = typeof schema.cases.$inferSelect;
 
 export interface RAGPipelineConfig {
  // Configuration
- ollamaBaseUrl: string, embeddingModel: string;
+ ollamaBaseUrl: string; embeddingModel: string;
  generationModel: string;
  // Configuration
- maxRetrievedDocs: number, similarityThreshold: number;
- chunkSize: number, chunkOverlap: number;
+ maxRetrievedDocs: number; similarityThreshold: number;
+ chunkSize: number; chunkOverlap: number;
  // Configuration
- enableReranking: boolean, rerankThreshold: number;
+ enableReranking: boolean; rerankThreshold: number;
  // Legal Configuration
  jurisdiction?: string;
  practiceAreas: string[];
  // Configuration
- cacheEnabled: boolean, cacheTtl: number;
+ cacheEnabled: boolean; cacheTtl: number;
  // Monitoring
- logQueries: boolean, trackPerformance: boolean;
+ logQueries: boolean; trackPerformance: boolean;
 }
 
 export interface RAGQuery {
@@ -233,31 +233,35 @@ export class LegalDocumentReranker {
 
  private calculateTermMatchScore(queryTerms: string[], docTerms: string[]): number {
  if (queryTerms.length === 0) return 0;
- const matches = queryTerms.filter((term) =>
- docTerms.some((docTerm) => docTerm.toLowerCase() === term.toLowerCase());
- );
+        const matches = queryTerms.filter((term) =>
+            docTerms.some((docTerm) => docTerm.toLowerCase() === term.toLowerCase())
+        );
  return matches.length / queryTerms.length;
  }
 } /** * Enhanced RAG Pipeline with PostgreSQL + pgvector integration */
 export class EnhancedRAGPipeline {
- // Keep llm as unknown to avoid strict signature conflicts with different LLM clients.
- // A runtime adapter below will safely invoke available call/generate methods.
- llm: unknown, embeddings: OllamaEmbeddings;
- reranker: LegalDocumentReranker, textSplitter: RecursiveCharacterTextSplitter;
- private config: RAGPipelineConfig;
+    // Keep llm as unknown to avoid strict signature conflicts with different LLM clients.
+    // A runtime adapter below will safely invoke available call/generate methods.
+    llm: unknown; embeddings: OllamaEmbeddings;
+    reranker: LegalDocumentReranker; textSplitter: RecursiveCharacterTextSplitter;
+    private config: RAGPipelineConfig;
 
  constructor(config: RAGPipelineConfig) {
  this.config = config;
  // instantiate the ChatOllama client and store as unknown (safe for assignment)
- this.llm = new ChatOllama({
- baseUrl: config.ollamaBaseUrl, config.generationModel: temperature // For factual legal responses
- });
- this.embeddings = new OllamaEmbeddings({
- baseUrl: config.ollamaBaseUrl, config.embeddingModel,
- });
- this.reranker = new LegalDocumentReranker();
- this.textSplitter = new RecursiveCharacterTextSplitter({
- chunkSize: config.chunkSize, config.chunkOverlap,
+        this.llm = new ChatOllama({
+            baseUrl: config.ollamaBaseUrl,
+            model: config.generationModel,
+            temperature: 0 // For factual legal responses
+        });
+        this.embeddings = new OllamaEmbeddings({
+            baseUrl: config.ollamaBaseUrl,
+            model: config.embeddingModel,
+        });
+        this.reranker = new LegalDocumentReranker();
+        this.textSplitter = new RecursiveCharacterTextSplitter({
+            chunkSize: config.chunkSize,
+            chunkOverlap: config.chunkOverlap,
  separators: ['\n\n', '\n', ', ', ''],
  });
  // Log GPU capabilities (non-blocking, helpful for tracing optimizations)
@@ -318,13 +322,13 @@ let cacheHit = false;
  const queryEmbeddingString = `[${queryEmbedding.join(',')}]`;
  // simple string conditions to avoid nested sql-tag templates which caused parser issues.
  const documentTypesCond = query.documentTypes && query.documentTypes.length
- ? `AND ld.document_type IN (${query.documentTypes.map((t) => `'${t.replace(/'/g, "''")}'`).join(',')})`;
+ ? `AND ld.document_type IN (${query.documentTypes.map((t) => `'${t.replace(/'/g, "''")}'`).join(',')})`
  : '';
  const jurisdictionCond = query.jurisdiction
- ? `AND ld.jurisdiction = '${query.jurisdiction.replace(/'/g, "''")}'`;
+ ? `AND ld.jurisdiction = '${query.jurisdiction.replace(/'/g, "''")}'`
  : '';
  const practiceAreaCond = query.practiceArea
- ? `AND ld.practice_area = '${query.practiceArea.replace(/'/g, "''")}'`;
+ ? `AND ld.practice_area = '${query.practiceArea.replace(/'/g, "''")}'`
  : '';
  // Build a SQL string. Keep ordering by computed distance (embedding similarity).
  const sqlQueryString = `
@@ -338,13 +342,13 @@ let cacheHit = false;
  // Execute the SQL string. db.execute is used as before.
  // Cast the result to the expected DrizzleQueryResult type.
  const result = (await db.execute(
- sql.raw(sqlQueryString);
+ sql.raw(sqlQueryString)
  )) as unknown as DrizzleQueryResult<RetrievedDocumentQueryResultRow>;
  // Access the rows directly from the typed result.
  const rows = result.rows || [];
  // Map database rows to RetrievedDocument interface
  return rows.map((row) => ({
- id: row.document_id, row.content, title: row.title, documentType: row.document_type, jurisdiction: row.jurisdiction, court: row.court, citation: row.citation, 1 - (Number(row.distance) || 0),
+ id: row.document_id, content: row.content, title: row.title, documentType: row.document_type, jurisdiction: row.jurisdiction, court: row.court, citation: row.citation, similarity: 1 - (Number(row.distance) || 0),
  legalRelevanceScore: undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,

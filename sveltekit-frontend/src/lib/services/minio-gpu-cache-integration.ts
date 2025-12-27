@@ -93,7 +93,7 @@ const adapter = await (navigator as any).gpu.requestAdapter();
     private async compressCPU(data: Uint8Array): Promise<CompressionResult> {
         // Simple mock compression (identity)
         return {
-            compressed: data, originalSize: data.length, data.length, ratio: 1.0,
+            compressed: data, originalSize: data.length, ratio: 1.0,
             algorithm: 'cpu-mock'
         };
     }
@@ -146,12 +146,15 @@ export class MinIOGPUCacheService {
                 }
             }
 
-const cacheObject: CacheObject = {
-                key: data, finalData:
+            const cacheObject: CacheObject = { key: keyType, data: finalData,
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
-                    size: dataBytes.length, compressed ? compressionRatio: , undefined, timestamp: Date.now(),
-                    ttl: options.ttl || this.config.ttl, tags: options.tags, await this.calculateChecksum(dataBytes)
+                    size: dataBytes.length,
+                    compressionRatio: compressed ? compressionRatio : undefined,
+                    timestamp: Date.now(),
+                    ttl: options.ttl || this.config.ttl,
+                    tags: options.tags,
+                    checksum: await this.calculateChecksum(dataBytes)
                 }
             };
 
