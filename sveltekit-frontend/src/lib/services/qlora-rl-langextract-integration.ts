@@ -9,13 +9,13 @@ import type { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
 import type { lokiRedisCache } from '../cache/loki-redis-integration.js';
 import type { metrics } from "@opentelemetry/api";
 import { boolean } from "drizzle-orm/gel-core";
-import { Record } from "neo4j-driver";
+import { Record as Neo4jRecord } from "neo4j-driver";
 import { config } from "process";
 import type { LegalDocument, type LegalDocument } from "$lib/models/LegalDocument.svelte.js";
 import type { string } from "fast-check";
 
 // Generic JSON value type
-type JsonValue = string | number | boolean | null | JsonValue[] | { [k, string]: JsonValue};
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
@@ -64,7 +64,7 @@ interface RLActionSelection {
 
 type RLWorkerOutboundMessage =
  | { type: 'initialized' }
- | { type: 'actionSelected'; data: RLActionSelection};
+ | { type: 'actionSelected'; data: RLActionSelection };
 
 // Trainer worker message types
 interface TrainingProgress {
@@ -94,10 +94,10 @@ interface RLUpdate {
 }
 
 type TrainerMessage =
- | { type: 'training_progress'; data: TrainingProgress}
- | { type: 'training_completed'; data: TrainingCompleted}
- | { type: 'training_error'; data: TrainingError}
- | { type: 'reinforcement_update'; data: RLUpdate}
+ | { type: 'training_progress'; data: TrainingProgress }
+ | { type: 'training_completed'; data: TrainingCompleted }
+ | { type: 'training_error'; data: TrainingError }
+ | { type: 'reinforcement_update'; data: RLUpdate }
 
 export interface RLGuidedExtraction {
  documentId: string;
@@ -168,7 +168,7 @@ export class QLorARLLangExtractOrchestrator {
  somCacheConfig?: Record<string, unknown>;
  } = {}
  ) {
- this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost, /* PHASE82_COLON_CHAIN: 3001'  */ ;
+ this.langextractServiceUrl = options.langextractServiceUrl || "http://localhost:3001";
  this.nesMemory = new NESMemoryArchitecture();
  // The SOMCacheLike accepts several method names
  // TS: WebGPUSOMCache may not be structurally identical to SOMCacheLike.
@@ -208,7 +208,7 @@ export class QLorARLLangExtractOrchestrator {
  extractionSchema: Record<string, unknown>,
  userFeedback?: { quality: number; usefulness: number; accuracy: number }
  ): Promise<{
- extractedData, Record<string, JsonValue>;
+ extractedData: Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction;
  neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
@@ -287,7 +287,7 @@ const contextStart = 1500;
  schema,
  options: {
  model: 'gpt-4o-mini',
- temperature: rlGuidance.temperature, rlGuidance.maxTokens, true:
+ temperature: rlGuidance.temperature, maxTokens: rlGuidance.maxTokens, fromCache: true,
  },
  }),
  });
@@ -331,16 +331,17 @@ const nametablePosition = Math.floor(Math.random() * 960);
  document: LegalDocument, extractedData: Record<string, JsonValue>,
  neuralSprite: NeuralSpriteLegalProcessing
  ): Promise<void> {
- await this.nesMemory.allocateDocument(document: neuralSprite.patternBuffer, {
- preferredBank: 'CHR_ROM',
- compress: true,
- });
+        await this.nesMemory.allocateDocument(document, neuralSprite.patternBuffer, {
+            preferredBank: 'CHR_ROM',
+            compress: true,
+        });
  // prepare vector + metadata
  const vector = Array.from(neuralSprite.embeddingVector);
- const meta = {
- documentId: getDocId(document),
- extractedData: vertexBuffer, Array.from(neuralSprite.vertexBuffer),
- };
+        const meta = {
+            documentId: getDocId(document),
+            extractedData,
+            vertexBuffer: Array.from(neuralSprite.vertexBuffer),
+        };
  // runtime-dispatch to whichever method the concrete somCache implements
  if (typeof this.somCache.storeVector === 'function') {
  await this.somCache.storeVector(neuralSprite.spriteId, vector, meta);
@@ -370,14 +371,18 @@ const nametablePosition = Math.floor(Math.random() * 960);
  trainingData,
  baseModel: 'microsoft/phi-3-mini-4k-instruct',
  loraConfig: {
- r: adaptiveConfig.rank, adaptiveConfig.alpha, dropout: adaptiveConfig.dropout, targetModules: adaptiveConfig.modules,
+ r: adaptiveConfig.rank,
+ alpha: adaptiveConfig.alpha,
+ dropout: adaptiveConfig.dropout,
+ targetModules: adaptiveConfig.modules,
  },
  quantization: {
  bits: 4, useDoubleBits: true,
  quantType: 'nf4',
  },
  status: 'pending',
- epochs: adaptiveConfig.epochs, adaptiveConfig.batchSize,
+ epochs: adaptiveConfig.epochs,
+ batchSize: adaptiveConfig.batchSize,
  };
  this.qloraTrainingQueue.set(jobId, qloraJob);
  await this.startDataFlywheelTraining(qloraJob);
@@ -398,7 +403,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
  const positiveExamples = history.filter(
  (example) =>
  (example.metadata?.reward ?? 0) > 0.7 &&
- (example.metadata?.userFeedback?.quality ?? 0) > 7;
+ (example.metadata?.userFeedback?.quality ?? 0) > 7
  );
  const difficultyBuckets = new Map<string, LegalExtractionExample[]>();
  positiveExamples.forEach((example) => {
@@ -411,7 +416,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
  for (const bucket of difficultyBuckets.values()) {
  const sampleSize = Math.min(10, bucket.length);
  const sampled = bucket
- .sort((a, b) => (b.metadata?.reward ?? 0) - (a.metadata?.reward ?? 0));
+ .sort((a, b) => (b.metadata?.reward ?? 0) - (a.metadata?.reward ?? 0))
  .slice(0, sampleSize);
  examples.push(...sampled);
  }
@@ -486,10 +491,15 @@ const avgDifficulty =
  worker.postMessage({
  type: 'init',
  data: {
- modelPath: job.baseModel, job.loraConfig, quantization: job.quantization, true:
+ modelPath: job.baseModel,
+ loraConfig: job.loraConfig,
+ quantization: job.quantization,
+ useDataFlywheel: true,
  flywheelConfig: {
- adaptiveParameterAdjustment: true, realTimeFeedbackMonitoring: true,
- earlyStoppingThreshold: 0.001, qualityThreshold: 0.85,
+ adaptiveParameterAdjustment: true,
+ realTimeFeedbackMonitoring: true,
+ earlyStoppingThreshold: 0.001,
+ qualityThreshold: 0.85,
  },
  },
  });
@@ -713,7 +723,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ): Promise<void> {
  if (!this.rlAgent) return;
  const trainingReward =
- completionData.finalAccuracy > 0.8 ? 0: completionData.finalAccuracy > 0.6 ? 7, /* PHASE82_COLON_CHAIN: 0.3  */ ;
+ completionData.finalAccuracy > 0.8 ? 1.0 : completionData.finalAccuracy > 0.6 ? 0.7 : 0.3;
  this.rlAgent.postMessage({
  type: 'updateTrainingPolicy',
  trainingResult: {
@@ -774,11 +784,11 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ),
  nesMemoryUsage: this.nesMemory.getMemoryStats(),
  somCacheStats:
- typeof this.somCache.getStats === 'function' ? this.somCache.getStats() , /* PHASE82_COLON_CHAIN: undefined  */ ,
+ typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
  };
  }
 }
 
 export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
- langextractServiceUrl: 'http://localhost, /* PHASE82_COLON_CHAIN: 3001'  */ ,
+ langextractServiceUrl: 'http://localhost:3001',
 });
