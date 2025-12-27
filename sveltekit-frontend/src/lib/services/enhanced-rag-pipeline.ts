@@ -352,7 +352,7 @@ let cacheHit = false;
  legalRelevanceScore: undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,
- ...((row.chunk_metadata as Record<string: any>) || {}),
+ ...((row.chunk_metadata as Record<string, unknown>) || {}),
  fullCitation: row.full_citation, row.date_decided, parties: row.parties, outcome: row.outcome, precedentialValue: row.precedential_value,
  },
  }));
