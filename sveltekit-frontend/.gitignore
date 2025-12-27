@@ -48,3 +48,4 @@ reports/latest/vscode-problems.json
 reports/phase76/consolidated-knowledge-base.json
 reports/phase76/error-analysis/error-knowledge-graph.json
 svelte-check-current.json
+reports/

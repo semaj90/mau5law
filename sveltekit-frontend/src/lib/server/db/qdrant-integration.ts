@@ -25,8 +25,7 @@ type QdrantScoredPoint = Awaited<ReturnType<QdrantClient['search']>>[number];
 // CONFIGURATION
 // ============================================================================
 export interface QdrantConfig {
- host: string;
- port: number;
+ host: string;, port: number;
  apiKey?: string;
  timeout?: number;
 }
@@ -38,10 +37,8 @@ export interface PostgreSQLConfig {
 
 // New interface for hybrid search results
 interface HybridSearchResult {
- id: string;
- score: number;
- document: LegalDocument;
- source: 'postgresql' | 'qdrant';
+ id: string;, score: number;
+ document: LegalDocument;, source: 'postgresql' | 'qdrant';
 }
 
 // ============================================================================
@@ -251,8 +248,7 @@ export class QdrantPostgreSQLService {
  useQdrant?: boolean;
  } = {}
  ): Promise<{
- results: HybridSearchResult[];
- performance: { postgresqlTime?: number; qdrantTime?: number; totalTime: number };
+ results: HybridSearchResult[];, performance: { postgresqlTime?: number; qdrantTime?: number; totalTime: number };
  }> {
   const startTime = Date.now();
   const {
@@ -354,7 +350,7 @@ export class QdrantPostgreSQLService {
  async batchSyncToQdrant(
  _entityType: 'document' | 'case', // Prefixed with _ to mark as intentionally unused
  batchSize: number = 100
- ): Promise<{ synced: number; failed: number; errors: string[] }> {
+ ): Promise<{ synced: number;, failed: number; errors: string[] }> {
  // Changed from Promise<any>
  const results = { synced: 0, failed: 0, errors: [] as string[] };
  try {
@@ -408,10 +404,8 @@ export class QdrantPostgreSQLService {
  // HEALTH CHECK AND MONITORING
  // ============================================================================
  async healthCheck(): Promise<{
- postgresql: boolean;
- qdrant: boolean;
- collections: string[];
- syncStatus: { totalDocuments: number; syncedDocuments: number; pendingSyncs: number };
+ postgresql: boolean;, qdrant: boolean;
+ collections: string[];, syncStatus: { totalDocuments: number;, syncedDocuments: number; pendingSyncs: number };
  }> {
  // Changed from Promise<any>
  let postgresql = false;
@@ -472,7 +466,7 @@ export const createQdrantService = (
  const defaultQdrantConfig: QdrantConfig = {
  host: (import.meta.env.QDRANT_HOST as string) || 'localhost',
  port: parseInt((import.meta.env.QDRANT_PORT as string) || '6333'),
- apiKey: import.meta.env.QDRANT_API_KEY as string: undefined,
+ apiKey: import.meta.env.QDRANT_API_KEY as, string: undefined,
  ...qdrantConfig,
  };
 

@@ -39,7 +39,7 @@ class PerformanceMonitor {
  return v.reduce((a, b) => a + b, 0) / v.length;
  }
 
- getComparison(): { json: number; grpc: number; improvement: number } {
+ getComparison(): { json: number;, grpc: number; improvement: number } {
  const json = this.getAverageMetric('json_processing');
  const grpc = this.getAverageMetric('grpc_processing');
  const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -85,7 +85,7 @@ type GrpcStreamUpdate = {
 };
 
 type GrpcWritableStream = {
- write: (data: any) => void; end: () => void;
+ write: (data: any) => void;, end: () => void;
  on: (event: 'data' | 'error' | 'end', handler: (payload?: unknown) => void) => void;
 };
 
@@ -115,11 +115,11 @@ type OllamaServiceType = {
 
 // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
 function mapScoringResultToInsert(result: CaseScoringResult): {
- caseId: string; score: string;
- confidence: string; criteria: string;
- recommendations: string; explanation: string;
- model: string | null; modelVersion: string | null;
- performanceMetrics: string; createdAt: string;
+ caseId: string;, score: string;
+ confidence: string;, criteria: string;
+ recommendations: string;, explanation: string;
+ model: string | null;, modelVersion: string | null;
+ performanceMetrics: string;, createdAt: string;
  riskLevel: string;
  updatedAt?: string;
 } {
@@ -147,46 +147,46 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
 
 // Phoenix Wright AI-Boosted Search Types
 export interface LegalPrecedent {
- id: string; title: string;
- citation: string; court: string;
- date: string; summary: string;
- relevanceScore: number; similarity: number;
- contradictions: string[]; supportingEvidence: string[];
+ id: string;, title: string;
+ citation: string;, court: string;
+ date: string;, summary: string;
+ relevanceScore: number;, similarity: number;
+ contradictions: string[];, supportingEvidence: string[];
 }; export interface ContradictionAnalysis {
- type: 'direct' | 'implied' | 'factual' | 'legal'; severity: 'high' | 'medium' | 'low';
- description: string; evidence: string[];
- precedents: string[]; recommendation: string;
+ type: 'direct' | 'implied' | 'factual' | 'legal';, severity: 'high' | 'medium' | 'low';
+ description: string;, evidence: string[];
+ precedents: string[];, recommendation: string;
 }; export interface EvidenceMatch {
- evidenceId: string; type: 'document' | 'witness' | 'physical' | 'digital';
- relevance: number; confidence: number;
- contradictions: ContradictionAnalysis[]; supportingPrecedents: LegalPrecedent[];
+ evidenceId: string;, type: 'document' | 'witness' | 'physical' | 'digital';
+ relevance: number;, confidence: number;
+ contradictions: ContradictionAnalysis[];, supportingPrecedents: LegalPrecedent[];
  explanation: string;
 }; export interface PhoenixWrightSearchRequest {
- caseId: string; query: string;
+ caseId: string;, query: string;
  evidenceIds: string[];
  jurisdiction?: string;
  caseType?: string;
- timeRange?: { start: string; end: string };
+ timeRange?: { start: string;, end: string };
  maxResults?: number;
  includeContradictions?: boolean;
  semanticThreshold?: number;
 }; export interface PhoenixWrightSearchResult {
- caseId: string; query: string;
- precedents: LegalPrecedent[]; contradictions: ContradictionAnalysis[];
- evidenceMatches: EvidenceMatch[]; rankingExplanation: string;
- confidence: number; searchTime: number;
- modelUsed: string; disclaimer: string;
+ caseId: string;, query: string;
+ precedents: LegalPrecedent[];, contradictions: ContradictionAnalysis[];
+ evidenceMatches: EvidenceMatch[];, rankingExplanation: string;
+ confidence: number;, searchTime: number;
+ modelUsed: string;, disclaimer: string;
 }
 
 // YOᴿHa UI Enhancement Types
 export interface YohaUIConfig {
- theme: 'phoenix' | 'detective' | 'legal'; animations: boolean;
- soundEffects: boolean; autoAdvance: boolean;
- showConfidence: boolean; highlightContradictions: boolean;
+ theme: 'phoenix' | 'detective' | 'legal';, animations: boolean;
+ soundEffects: boolean;, autoAdvance: boolean;
+ showConfidence: boolean;, highlightContradictions: boolean;
 }; export interface YohaUIState {
- currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict'; progress: number;
- activeContradictions: number; evidenceStrength: number;
- precedentMatches: number; animationQueue: string[];
+ currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict';, progress: number;
+ activeContradictions: number;, evidenceStrength: number;
+ precedentMatches: number;, animationQueue: string[];
 }
 
 // Export singleton instance

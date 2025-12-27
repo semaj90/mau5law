@@ -59,7 +59,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  // Redis
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
- password: process.env.REDIS_PASSWORD || undefined: host: process.env.REDIS_HOST || 'localhost',
+ password: process.env.REDIS_PASSWORD ||, undefined: host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
  db: 0, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
@@ -110,7 +110,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  },
  // Development
  nodeEnv: process.env.NODE_ENV || 'development',
- devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev: logLevel: process.env.LOG_LEVEL || 'info',
+ devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' ||, dev: logLevel: process.env.LOG_LEVEL || 'info',
  };
 }
 
@@ -187,7 +187,7 @@ export class OllamaAdapter implements OllamaClient {
  }
 
  async chat(
- messages: Array<{ role: string; content: string }>,
+ messages: Array<{ role: string;, content: string }>,
  opts?: { model?: string; stream?: boolean }
  ): Promise<string | AsyncIterable<string>> {
  const model = opts?.model || this.config.chatModel;
@@ -379,7 +379,7 @@ export class PgVectorAdapter implements PgVectorClient {
  async search(
  collection: string, vector: number[],
  limit?: number
- ): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
+ ): Promise<Array<{ id: string;, similarity: number; metadata: Record<string, unknown> }>> {
  const vectorStr = `[${vector.join(',')}]`;
  const sql = `
  SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
@@ -392,7 +392,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async insert(
- collection: string, vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
+ collection: string, vectors: Array<{ id: string;, vector: number[]; metadata?: Record<string, unknown> }>
  ): Promise<void> {
  const values = vectors
  .map((v, i) => `($${i * 3 + 1}, $${i * 3 + 2}::vector, $${i * 3 + 3}::jsonb)`)
@@ -467,7 +467,7 @@ export class MinIOAdapter implements MinIOClient {
  async listObjects(
  bucket: string,
  prefix?: string
- ): Promise<Array<{ name: string; size: number; etag: string }>> {
+ ): Promise<Array<{ name: string;, size: number; etag: string }>> {
  await this.ensureClient();
  const stream = this.client.listObjects(bucket, prefix, true);
  const objects = [];

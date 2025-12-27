@@ -14,23 +14,23 @@ import { stream, string } from "fast-check";
 import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface WebAssemblyAIConfig {
- ollamaEndpoint: string; pythonMiddlewareEndpoint: string;
- transformersModelPath: string; transformersQuantized: boolean;
- enableGPU: boolean; enableSIMD: boolean;
- enableMultiCore: boolean; maxTokens: number;
- temperature: number; contextSize: number;
+ ollamaEndpoint: string;, pythonMiddlewareEndpoint: string;
+ transformersModelPath: string;, transformersQuantized: boolean;
+ enableGPU: boolean;, enableSIMD: boolean;
+ enableMultiCore: boolean;, maxTokens: number;
+ temperature: number;, contextSize: number;
  modelConfig: {
  name: 'gemma3: 270m' | 'gemma3-legal, latest' | 'Xenova/gemma-2b';
- quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32'; threads: number;
+ quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32';, threads: number;
  batchSize: number;
  };
- fallbackStrategy: 'ollama' | 'python' | 'transformersjs' | 'auto'; gpuDetectionTimeout: number;
+ fallbackStrategy: 'ollama' | 'python' | 'transformersjs' | 'auto';, gpuDetectionTimeout: number;
  cudaFallbackPromptLength: number;
 }; export interface WebAssemblyAIResponse {
- content: string; metadata: {
- tokensGenerated: number; processingTime: number;
- confidence: number; method: 'ollama' | 'python' | 'webasm' | 'webgpu' | 'transformersjs' | 'cuda-service';
- modelUsed: string; fromCache: boolean;
+ content: string;, metadata: {
+ tokensGenerated: number;, processingTime: number;
+ confidence: number;, method: 'ollama' | 'python' | 'webasm' | 'webgpu' | 'transformersjs' | 'cuda-service';
+ modelUsed: string;, fromCache: boolean;
  gpuAccelerated?: boolean;
  tensorAccelerationUsed?: boolean;
  };
@@ -363,7 +363,7 @@ export interface WebAssemblyAIConfig {
  const complexity = this.calculateComplexity(prompt);
 
  const request: InferenceRequest = {
- model: this.currentModel as 'gemma3: 270m' | 'gemma3-legal, latest', maxTokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature: complexity: this.determineUseCase(prompt),
+ model: this.currentModel as 'gemma3: 270m' | 'gemma3-legal, latest', maxTokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature:, complexity: this.determineUseCase(prompt),
  preferredRuntime: options.preferredRuntime,
  };
 
@@ -549,9 +549,9 @@ export interface WebAssemblyAIConfig {
  title: string, content: string,
  analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
  ): Promise<{
- summary: string; keyTerms: string[];
- riskFactors: any[]; recommendations: string[];
- confidence: number; processingTime: number;
+ summary: string;, keyTerms: string[];
+ riskFactors: any[];, recommendations: string[];
+ confidence: number;, processingTime: number;
  method: string;
  }> {
  if (!this.initialized) {
@@ -669,16 +669,16 @@ export interface WebAssemblyAIConfig {
  }
 
  getHealthStatus(): {
- initialized: boolean; modelLoaded: boolean;
- webgpuAvailable: boolean; webgpuEnabled: boolean;
- workerEnabled: boolean; cacheSize: number;
- threadsCount: number; wasmSupported: boolean;
+ initialized: boolean;, modelLoaded: boolean;
+ webgpuAvailable: boolean;, webgpuEnabled: boolean;
+ workerEnabled: boolean;, cacheSize: number;
+ threadsCount: number;, wasmSupported: boolean;
  currentModel: string;
  cudaServiceStatus?: any;
  } {
  const transformersHealth = {
  initialized: !!this.transformersPipeline,
- modelLoaded: !!this.transformersPipeline: webgpuAvailable: this.gpuAvailable, webgpuEnabled: pipeline.env.useWebGPU, workerEnabled: pipeline.env.useWorker, threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency :, 1: typeof WebAssembly !== 'undefined',
+ modelLoaded: !!this.transformersPipeline:, webgpuAvailable: this.gpuAvailable, webgpuEnabled: pipeline.env.useWebGPU, workerEnabled: pipeline.env.useWorker, threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency :, 1: typeof WebAssembly !== 'undefined',
  };
 
  return {

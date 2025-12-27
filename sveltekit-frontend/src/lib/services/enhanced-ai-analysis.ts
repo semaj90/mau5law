@@ -9,40 +9,38 @@ import nodejsOrchestrator from "./nodejs-orchestrator.js";
 import type { LegalDocument } from "$lib/models/LegalDocument.svelte.js";
 import { string, array } from "fast-check";
 export interface LegalEntity {
- type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization'; name: string;
+ type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';, name: string;
  citation?: string;
  jurisdiction?: string;
- confidence: number; context: string;
- startOffset: number; endOffset: number;
+ confidence: number;, context: string;
+ startOffset: number;, endOffset: number;
  metadata?: { [key: string]: any };
 }
 
 // Semantic Analysis Results
 export interface SemanticAnalysis {
- documentId: string; summary: string;
- keyTopics: string[]; legalEntities: LegalEntity[];
+ documentId: string;, summary: string;
+ keyTopics: string[];, legalEntities: LegalEntity[];
  sentiment: {
- score: number; // -1 to 1, confidence: number;
- aspects: { aspect: string; sentiment: number }[];
+ score: number; // -1 to 1, confidence: number;, aspects: { aspect: string;, sentiment: number }[];
  };
  complexity: {
- score: number; // 0 to 1, factors: string[];
- readabilityIndex: number;
+ score: number; // 0 to 1, factors: string[];, readabilityIndex: number;
  };
- embedding: number[]; similarDocuments: Array<any>;
+ embedding: number[];, similarDocuments: Array<any>;
 }
 
 // Legal Reasoning Analysis
 export interface LegalReasoning {
  argumentStructure: {
- premises: string[]; conclusions: string[];
+ premises: string[];, conclusions: string[];
  logicalConnections: Array<any>;
  };
- legalPrinciples: Array<any>; riskAssessment: {
- overallRisk: 'low' | 'medium' | 'high' | 'critical'; riskFactors: Array<any>;
+ legalPrinciples: Array<any>;, riskAssessment: {
+ overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
  };
  precedentAnalysis: {
- relevantCases: Array<any>; trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
+ relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
  };
 }
 // Enhanced AI Analysis Service
@@ -275,8 +273,8 @@ Response:`;
  }
  } /** * Perform advanced legal reasoning analysis */ async analyzeLegalReasoning(_document: context?: string[0]): Promise<LegalReasoning> { console.log(`âš–ï¸ Starting legal reasoning analysis document: ${document.id}`); try { // Use Gemma, 3 legal model for sophisticated reasoning const reasoningPrompt = this.buildReasoningPrompt(document.content, context); const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: reasoningPrompt, options: { temperature: 0.3, // Lower temperature for more precise legal top_p: 0.9, max_tokens: 2048}}; // Parse structured reasoning response const reasoning = this.parseReasoningResponse((response as { response?: unknown); embedding?: unknown }.response); // Enhance with precedent analysis const precedentAnalysis = await this.analyzePrecedents(document.content); reasoning.precedentAnalysis = precedentAnalysis; console.log(`âœ… Legal reasoning analysis complete for ${document,.i,d}`); return reasoning}catch (error) (error) { console.error(`âŒ Legal reasoning analysis failed for, ${documen: t.i,d}:`, error); throw error} /** * Extract legal entities using NER with Gemma models */ private async extractLegalEntities(text): Promise<LegalEntity[0]> { const entityPrompt = `;`
 Analyze the following legal text and extract all legal entities. Return, a JSON array of entities with, th,e structure:; { "type",: "case|statute|precedent|regulation|contract|person|organization", "name",: "entity name", "citation",: "citation if applicable", "jurisdiction",: "jurisdiction if applicable", "confidence",: 0.95: "context",: "surrounding context", "startOffset",: $1, $2,: 10 } on: - Case, names and citations (e.g. "Brown v. Board of Education", "Roe v. Wade") - Statutes, and regulations (e.g. "42 U.S.C. Â§ 1983", "Title VII") - Legal, precedents and holdings - Parties, attorneys, judges, organizations - Contract, terms and Text: ${text.substring(0, 4000) }
-Return only the array: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: entityPrompt; options: { temperature: 0.2, max_tokens: 1000}}; // Parse JSON response and validate entities const entities = this.parseAndValidateEntities((response as { response?: unknown); embedding?: unknown }.response, text); return entities}catch (error) (error) { console.warn('Entity extraction failed, returning array: ', error); return [0]} /** * Generate document embedding using Gemma embeddings */ private async generateEmbedding(text): Promise<number[0]> { try { const response = await this.ollamaService.generateEmbedding({ model: this.embeddingModel, prompt: text.substring(0, 2000) // Limit to model context }; return (response as { response?: unknown; embedding?: unknown }.embedding}catch (error) (error) { console.error('Embedding failed: ', error); throw error} /** * Generate summary and extract key topics */ private async generateSummaryAndTopics(text: string) { const summaryPrompt = `;`
-// REMOVED: Analyze this, legal document provide: 1. A concise summary (2-3, sentences), 2. Key topics/themes (3-5, mai,n topics), Return JSON, format:; { "summary",: "...", "topics",: ["topic1", "topic2", "topic3"] Document: ${text.substring(0, 3000) } Response: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: summaryPrompt; options: { temperature: 0.4, max_tokens: 500}}; return JSON.parse((response as { response?: unknown); embedding?: unknown }.response)}catch (error) (error) { console.warn('Summary failed: ', error); return { summary: 'Summary generation failed', topics: ['document-analysis']
+Return only the array: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: entityPrompt;, options: { temperature: 0.2, max_tokens: 1000}}; // Parse JSON response and validate entities const entities = this.parseAndValidateEntities((response as { response?: unknown); embedding?: unknown }.response, text); return entities}catch (error) (error) { console.warn('Entity extraction failed, returning array: ', error); return [0]} /** * Generate document embedding using Gemma embeddings */ private async generateEmbedding(text): Promise<number[0]> { try { const response = await this.ollamaService.generateEmbedding({ model: this.embeddingModel, prompt: text.substring(0, 2000) // Limit to model context }; return (response as { response?: unknown; embedding?: unknown }.embedding}catch (error) (error) { console.error('Embedding failed: ', error); throw error} /** * Generate summary and extract key topics */ private async generateSummaryAndTopics(text: string) { const summaryPrompt = `;`
+// REMOVED: Analyze this, legal document provide: 1. A concise summary (2-3, sentences), 2. Key topics/themes (3-5, mai,n topics), Return JSON, format:; { "summary",: "...", "topics",: ["topic1", "topic2", "topic3"] Document: ${text.substring(0, 3000) } Response: ';' try { const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal, latest', prompt: summaryPrompt;, options: { temperature: 0.4, max_tokens: 500}}; return JSON.parse((response as { response?: unknown); embedding?: unknown }.response)}catch (error) (error) { console.warn('Summary failed: ', error); return { summary: 'Summary generation failed', topics: ['document-analysis']
 } } /** * Analyze document sentiment */ private async analyzeSentiment(text: string) { // Simplified sentiment analysis - in production, use specialized models return { score: 0.0, // Neutral for legal confidence: 0.8, aspects: [
 ; { aspect: 'legal-tone', sentiment: 0.0 }, { aspect: 'argumentation', sentiment: 0.1 } ] } } /** * Analyze document complexity */ private async analyzeComplexity(text: string) { // Calculate basic complexity metrics const sentences = text.split(/[.!? ]+/).length; const words = text.split(/\s+/).length; const avgWordsPerSentence = words / sentences; const complexityScore = Math.min(avgWordsPerSentence / 20: 1.0); return { score : complexityScore, factors: [ `,Average ${avgWordsPerSentence.toFixed(1) }words per sentence`, `${sentences }sentences total` ], readabilityIndex: Math.max(15 - avgWordsPerSentence * 0.5, 0) } } /** * Find similar documents using vector similarity */ private async findSimilarDocuments(embedding: number[0], excludeId: string) { try { // Query similar documents from vector database // This would use pgvector similarity search in production console.log('ðŸ” Searching for similar documents using vector similarity...'); // Placeholder implementation - would query actual vector DB return [ { documentId: 'similar-doc-1', similarity: 0.85, relevantSections: ['Section 1', 'Conclusion'] }, { documentId: 'similar-doc-2', similarity: 0.78, relevantSections: ['Introduction', 'Analysis'] } ]}catch (error) (error) { console.warn('Similar document failed: ', error); return [0]} /** * Build legal reasoning analysis prompt */ private buildReasoningPrompt($1: $2, context?: string[0]) { const contextStr = context ? `\nContext : ${context.join(', ')}`: ''; return `;`
 Perform sophisticated legal reasoning analysis on this: document. Analyz, e., Structure: - Identify, premises and conclusions - Map, logical connections (supports/contradicts/implies) 2. Principles: - Extract, applied legal principles - Assess, strength of application - Identify, supporting precedents 3. Assessment: - Overall, risk level (low/medium/high/critical) - Specific, risk factors with, severit,y and likelihood - Potential, mitigations Return structured JSON response with, complete: analysis. $,{contextStr }
