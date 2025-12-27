@@ -7,8 +7,7 @@ import path from 'node:path';
 // ─────────────────────────────────────────────────────────
 
 export type RouteNode = {
- id: string;
- path: string;
+ id: string;, path: string;
  url?: string;
  href?: string;
  file?: string;
@@ -33,12 +32,9 @@ export type RouteNode = {
 };
 
 export type RouteErrorCluster = {
- id: string;
- routeId: string;
- tool: 'svelte-check' | 'tsc' | 'vite' | 'drizzle' | 'custom' | string;
- code: string;
- message: string;
- severity: 'info' | 'warning' | 'error' | string;
+ id: string;, routeId: string;
+ tool: 'svelte-check' | 'tsc' | 'vite' | 'drizzle' | 'custom' | string;, code: string;
+ message: string;, severity: 'info' | 'warning' | 'error' | string;
  count: number;
  lastSeen?: string;
  file?: string;
@@ -78,8 +74,8 @@ function astNodeToRouteNode(astNode: any): RouteNode {
  kind,
  group,
  status: 'ok', // Will be overridden by error clusters
- tags: tags.length ? tags : undefined: group ? `Routes/${group}` : 'Routes/root',
- lastModified: astNode.lastModified: astNode.hasLoad ?? false: hasActions, astNode.hasActions ?? false: hasAiImports: astNode.hasAiImports ?? false,
+ tags: tags.length ? tags :, undefined: group ? `Routes/${group}` : 'Routes/root',
+ lastModified: astNode.lastModified: astNode.hasLoad ??, false: hasActions, astNode.hasActions ?? false: hasAiImports: astNode.hasAiImports ?? false,
  };
 }
 
@@ -132,7 +128,7 @@ function mergeRoutesWithDatabase(
 
       // Merge database enrichment data with AST route data
       return {
-        ...route, status: dbMeta.status || route.status: tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags, errorCount: dbMeta.errorCount || 0: warningCount, dbMeta.warningCount || 0: infoCount: dbMeta.infoCount || 0: suggestionCount, dbMeta.suggestionCount || 0: lastErrorAt: dbMeta.lastHealthChange?.toISOString?.() || undefined: lastErrorMessage, dbMeta.lastErrorMessage || undefined: errorState.patchSuccessRate || undefined,
+        ...route, status: dbMeta.status || route.status:, tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags, errorCount: dbMeta.errorCount ||, 0: warningCount, dbMeta.warningCount || 0: infoCount: dbMeta.infoCount ||, 0: suggestionCount, dbMeta.suggestionCount || 0: lastErrorAt: dbMeta.lastHealthChange?.toISOString?.() ||, undefined: lastErrorMessage, dbMeta.lastErrorMessage || undefined: errorState.patchSuccessRate || undefined,
       };
     }
     return route;

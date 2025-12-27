@@ -1,8 +1,8 @@
 // scripts/phase81-fix-colon-corruption.mjs
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
+import os from "node:os";
+import { spawnSync } from "node:child_process";
 
 const norm = (p) => p.replaceAll("\\", "/");
 const cwd = process.cwd();
@@ -34,6 +34,7 @@ function tryResolveFile(p) {
   const abs = path.isAbsolute(raw) ? raw : path.resolve(cwd, raw);
   candidates.push(abs);
 
+  // Hot list variants:
   candidates.push(path.resolve(cwd, "src", "lib", raw));
   candidates.push(path.resolve(cwd, "src", raw));
 
@@ -147,6 +148,8 @@ function delimiterBalanceOk(text) {
 }
 
 async function typescriptParseOk(fileAbs, text) {
+  // Extra guardrail: if TS parser says “syntax is broken”, skip.
+  // If typescript isn't installed, we don't block.
   try {
     const ts = await import("typescript");
     const kind = fileAbs.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
@@ -158,19 +161,22 @@ async function typescriptParseOk(fileAbs, text) {
   }
 }
 
+// -------------------------
+// Fixers (conservative + iterated)
+// -------------------------
+
 function fixGenericColonUnions(line, stats) {
+  // Promise<Float32Array: null> -> Promise<Float32Array | null>
   const before = line;
-  const out = line.replace(/<([^>\n]*?)\s*:\s*(null|undefined|never|void)\b/g, (m, lhs, rhs) => {
-    const replacement = `<${lhs} | ${rhs}`;
-    if (replacement !== m) {
-        stats["generic-colon-union"] = (stats["generic-colon-union"] ?? 0) + 1;
-    }
-    return replacement;
+  const out = line.replace(/<([^>\n]*?)\s*:\s*(null|undefined|never|void)\b/g, (_m, lhs, rhs) => {
+    stats["generic-colon-union"] = (stats["generic-colon-union"] ?? 0) + 1;
+    return `<${lhs} | ${rhs}`;
   });
   return out !== before ? out : before;
 }
 
 function fixTypeAliasColonUnions(line, stats) {
+  // type X = GPUDevice: undefined; -> type X = GPUDevice | undefined;
   if (!/^\s*type\s+\w+\s*=/.test(line)) return line;
   if (!line.includes(":")) return line;
   if (line.includes("{")) return line;
@@ -190,6 +196,7 @@ function fixTypeAliasColonUnions(line, stats) {
 }
 
 function fixParamNameCommaTypePairs(line, stats) {
+  // (key, string) -> (key: string)
   const before = line;
 
   const out = line.replace(/\(([^()\n]*)\)/g, (full, inner) => {
@@ -197,14 +204,10 @@ function fixParamNameCommaTypePairs(line, stats) {
     let s = inner;
 
     s = s.replace(
-      /(\b(?!string|number|boolean|any|unknown|void|never|object|Promise|Array|Record|Map|Set|Function)[A-Za-z_$][\w$]*\b)\s*,\s*(string|number|boolean|any|unknown|object)\b(?!\s*:)/g,
-      (m, name, t) => {
-        const replacement = `${name}: ${t}`;
-        if (replacement !== m) {
-            changed = true;
-            console.log(`[DEBUG] fixParamNameCommaTypePairs: '${m}' -> '${replacement}'`);
-        }
-        return replacement;
+      /(\b[A-Za-z_$][\w$]*\b)\s*,\s*(string|number|boolean|any|unknown|object)\b/g,
+      (_m, name, t) => {
+        changed = true;
+        return `${name}: ${t}`;
       }
     );
 
@@ -217,22 +220,26 @@ function fixParamNameCommaTypePairs(line, stats) {
 }
 
 function fixSignatureTailExtraParam(line, stats) {
+  // foo(x: string), any: Promise<...> -> foo(x: string, options: any): Promise<...>
   const before = line;
 
   if (!/\)\s*,\s*(any|unknown|string|number|boolean)\s*:/.test(line)) return line;
   if (!/(async\s+)?[A-Za-z_$][\w$]*\s*\(|private|public|protected|function/.test(line)) return line;
 
-  const out = line.replace(/\)\s*,\s*(any|unknown|string|number|boolean)\s*:/g, (m, t) => {
-    const replacement = `, options: ${t}):`;
-    if (replacement !== m) {
-        stats["signature-tail-param"] = (stats["signature-tail-param"] ?? 0) + 1;
-    }
-    return replacement;
+  const out = line.replace(/\)\s*,\s*(any|unknown|string|number|boolean)\s*:/g, (_m, t) => {
+    stats["signature-tail-param"] = (stats["signature-tail-param"] ?? 0) + 1;
+    return `, options: ${t}):`;
   });
 
   return out !== before ? out : before;
 }
 
+/**
+ * IMPORTANT:
+ * "object colon chains" are the dangerous ones that caused your autopsy.
+ * We disable them by default. If you enable them, we only touch the
+ * extremely specific pattern where we can prove it's a repeated "key:" chain.
+ */
 function fixObjectColonChainsLineWise(line, stats, enabled) {
   if (!enabled) return line;
 
@@ -240,21 +247,22 @@ function fixObjectColonChainsLineWise(line, stats, enabled) {
   const colonCount = (line.match(/:/g) ?? []).length;
   if (colonCount < 3) return line;
 
+  // avoid type/interface/switch/URLs/ternary-ish
   if (/^\s*(type|interface|export\s+interface)\b/.test(line)) return line;
   if (/^\s*(case|default)\b/.test(line)) return line;
   if (line.includes("http://") || line.includes("https://")) return line;
   if (line.includes("?:")) return line;
 
+  // Only convert if we can see "key: <non-colon stuff> , key2:"-style structure.
+  // Specifically require the NEXT segment to be "identifier:" (not "this." or "svc." etc).
+  // That means we require whitespace + identifier + whitespace + ":".
   let out = line;
   for (let i = 0; i < 10; i++) {
     const next = out.replace(
       /(\b[A-Za-z_$][\w$]*\b)\s*:\s*([^:\n{}()[\]]+?)\s*:\s*(\b[A-Za-z_$][\w$]*\b)\s*:/g,
-      (m, k1, v1, k2) => {
-        const replacement = `${k1}: ${v1.trim()}, ${k2}:`;
-        if (replacement !== m) {
-            stats["object-colon-chain"] = (stats["object-colon-chain"] ?? 0) + 1;
-        }
-        return replacement;
+      (_m, k1, v1, k2) => {
+        stats["object-colon-chain"] = (stats["object-colon-chain"] ?? 0) + 1;
+        return `${k1}: ${v1.trim()}, ${k2}:`;
       }
     );
     if (next === out) break;
@@ -291,10 +299,14 @@ function applyFixersIterative(beforeText, enableObjectChains) {
   return { afterText: text, stats };
 }
 
+// -------------------------
+// Main
+// -------------------------
+
 const args = parseArgv(process.argv.slice(2));
 const dryRun = !!args["dry-run"] || !!args.dryrun;
 const verbose = !!args.verbose;
-const enableObjectChains = !!args["enable-object-chains"];
+const enableObjectChains = !!args["enable-object-chains"]; // OFF by default
 const skipListPath = args.skiplist || ".phase81-colon-skiplist.txt";
 
 const runId =
@@ -327,6 +339,8 @@ if (args.file) {
   for (const entry of lines) {
     const resolved = tryResolveFile(entry);
     if (!resolved) {
+      // Still emit a record so the batch truth is explicit
+      // (we’ll handle it in the loop as “missing”)
       filesAbs.push({ missing: true, entry });
     } else {
       filesAbs.push(resolved);
@@ -410,8 +424,10 @@ for (const f of filesAbs) {
     continue;
   }
 
+  // Always emit diff for review (even if we skip apply)
   writeDiffPatch(outDir, fileAbs, before, afterText);
 
+  // Guardrail 1: delimiter balance
   if (!delimiterBalanceOk(afterText)) {
     filesSkipped++;
     const rec = { file: rel, changed: false, skipped: true, reason: "delimiter-balance-failed", fixes, breakdown: stats };
@@ -421,6 +437,7 @@ for (const f of filesAbs) {
     continue;
   }
 
+  // Guardrail 2: TS parse
   const parseOk = await typescriptParseOk(fileAbs, afterText);
   if (!parseOk) {
     filesSkipped++;

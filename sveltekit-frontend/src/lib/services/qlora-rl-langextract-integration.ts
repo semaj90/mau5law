@@ -15,7 +15,22 @@ import type { LegalDocument, type LegalDocument } from "$lib/models/LegalDocumen
 import type { string } from "fast-check";
 
 // Generic JSON value type
-type JsonValue = string | number | boolean: null | JsonValue[] | { [k: string]: JsonValue };
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
+
+// Safe access helpers to avoid `any` casts on loosely shaped documents
+type UnknownRecord = Record<string, unknown>;
+
+function getStringProp(doc: LegalDocument, key: string): string | undefined {
+ const r = doc as unknown as UnknownRecord;
+ const v = r[key];
+ return typeof v === 'string' ? v : undefined;
+}
+
+function getNumberProp(doc: LegalDocument, key: string): number | undefined {
+ const r = doc as unknown as UnknownRecord;
+ const v = r[key];
+ return typeof v === 'number' ? v : undefined;
+}
 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
@@ -45,9 +60,7 @@ function getStringProp(doc: LegalDocument) | undefined {
 
 // Worker message types for RL agent
 interface RLActionSelection {
- action: number;, temperature: number;
- maxTokens: number;, probability: number;
- explorationBonus: number;
+ action: number;, temperature: number;, maxTokens: number;, probability: number;, explorationBonus: number;
 }
 
 type RLWorkerOutboundMessage =
@@ -57,8 +70,7 @@ type RLWorkerOutboundMessage =
 // Trainer worker message types
 interface TrainingProgress {
  progress: {
- currentEpoch: number;, totalEpochs: number;
- loss: number;, accuracy: number;
+ currentEpoch: number;, totalEpochs: number;, loss: number;, accuracy: number;
  };
 }
 
@@ -73,8 +85,7 @@ interface TrainingError {
 }
 
 interface RLUpdate {
- action: string;, reward: number;
- qValue: number;
+ action: string;, reward: number;, qValue: number;
 }
 
 type TrainerMessage =
@@ -84,33 +95,23 @@ type TrainerMessage =
  | { type: 'reinforcement_update';, data: RLUpdate };
 
 export interface RLGuidedExtraction {
- documentId: string;, extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive';
- temperature: number;, maxTokens: number;
- explorationBonus: number;, confidenceThreshold: number;
- qloraFineTuningEnabled: boolean;
+ documentId: string;, extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive';, temperature: number;, maxTokens: number;, explorationBonus: number;, confidenceThreshold: number;, qloraFineTuningEnabled: boolean;
 }; export interface LegalExtractionExample {
  input: string;, output: Record<string, JsonValue>;
  metadata: {
- documentType: string;, difficulty: number;
- jurisdiction: string;, reward: number;
+ documentType: string;, difficulty: number;, jurisdiction: string;, reward: number;
  userFeedback?: { quality: number };
  };
 }; export interface QLorATrainingJob {
- jobId: string;, trainingData: LegalExtractionExample[];
- baseModel: string;, loraConfig: {
- r: number;, alpha: number;
- dropout: number;, targetModules: string[];
+ jobId: string;, trainingData: LegalExtractionExample[];, baseModel: string;, loraConfig: {
+ r: number;, alpha: number;, dropout: number;, targetModules: string[];
  };
  quantization: {
- bits: 4 | 8;, useDoubleBits: boolean;
- quantType: 'fp4' | 'nf4';
+ bits: 4 | 8;, useDoubleBits: boolean;, quantType: 'fp4' | 'nf4';
  };
- status: 'pending' | 'training' | 'completed' | 'failed';, epochs: number;
- batchSize: number;
+ status: 'pending' | 'training' | 'completed' | 'failed';, epochs: number;, batchSize: number;
 }; export interface NeuralSpriteLegalProcessing {
- spriteId: string;, patternBuffer: ArrayBuffer;
- vertexBuffer: Float32Array;, embeddingVector: Float32Array;
- nametablePosition: number;, attributeData: number;
+ spriteId: string;, patternBuffer: ArrayBuffer;, vertexBuffer: Float32Array;, embeddingVector: Float32Array;, nametablePosition: number;, attributeData: number;
 }
 
 // Add a typed interface for SOM cache implementations to avoid `any` casts
@@ -136,8 +137,7 @@ type SOMCacheLike = {
 
 export class QLorARLLangExtractOrchestrator {
  nesMemory: NESMemoryArchitecture;
- private somCache: SOMCacheLike;, rlAgent: Worker | null;
- langextractServiceUrl: string;
+ private somCache: SOMCacheLike;, rlAgent: Worker | null;, langextractServiceUrl: string;
  private qloraTrainingQueue: Map<string, QLorATrainingJob>;
  extractionHistory: Map<string, RLGuidedExtraction[]>;
 
@@ -184,8 +184,8 @@ export class QLorARLLangExtractOrchestrator {
  }
 
  async processLegalDocument(
- document: LegalDocument, extractionSchema: Record, 
- userFeedback?: { quality: number;, usefulness: number; accuracy: number }
+ document: LegalDocument, extractionSchema: Record,
+ userFeedback?: { quality: number;, usefulness: number;, accuracy: number }
  ): Promise<{
  extractedData: Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction;, neuralSprite: NeuralSpriteLegalProcessing;
@@ -394,9 +394,7 @@ export class QLorARLLangExtractOrchestrator {
 
  private async calculateAdaptiveLoRAConfig(
  documentType: string, trainingData: LegalExtractionExample ): Promise<{
- rank: number;, alpha: number;
- dropout: number;, modules: string[];
- epochs: number;, batchSize: number;
+ rank: number;, alpha: number;, dropout: number;, modules: string[];, epochs: number;, batchSize: number;
  }> {
  if (trainingData.length === 0) {
  return {
@@ -579,7 +577,7 @@ export class QLorARLLangExtractOrchestrator {
 
  private calculateReward(
  extractedData: Record<string, JsonValue>,
- userFeedback?: { quality: number;, usefulness: number; accuracy: number }
+ userFeedback?: { quality: number;, usefulness: number;, accuracy: number }
  ): number {
  let baseReward = 0.5;
  if (extractedData && Object.keys(extractedData).length > 0) {

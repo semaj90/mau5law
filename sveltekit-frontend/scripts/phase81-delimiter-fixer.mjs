@@ -191,6 +191,8 @@ const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const dirArg = args.find(a => a.startsWith('--dir='));
 const fileArg = args.find(a => a.startsWith('--file='));
+const listArg = args.find(a => a.startsWith('--list='));
+const outArg = args.find(a => a.startsWith('--out='));
 
 console.log(`\n🔧 Phase 81: Delimiter Corruption Fixer${dryRun ? ' (DRY RUN)' : ''}`);
 console.log('='.repeat(60));
@@ -200,14 +202,34 @@ if (fileArg) {
   files = [path.resolve(rootDir, fileArg.replace('--file=', ''))];
 } else if (dirArg) {
   files = findFiles(path.resolve(rootDir, dirArg.replace('--dir=', '')));
+} else if (listArg) {
+  const listPath = path.resolve(process.cwd(), listArg.replace('--list=', ''));
+  try {
+    const content = fs.readFileSync(listPath, 'utf8');
+    files = content.split('\n')
+      .map(l => l.trim())
+      .filter(l => l && !l.startsWith('#'))
+      .map(l => path.resolve(rootDir, l));
+  } catch (e) {
+    console.error(`Error reading list file: ${e.message}`);
+    process.exit(1);
+  }
 } else {
   files = findFiles(path.join(rootDir, 'src'));
 }
 
 console.log(`\n📁 Found ${files.length} files to process\n`);
 
+const results = [];
+
 for (const file of files) {
   stats.filesProcessed++;
+  // Check if file exists
+  if (!fs.existsSync(file)) {
+      console.log(`  ⚠️ File not found: ${file}`);
+      continue;
+  }
+
   const relPath = path.relative(rootDir, file);
   const result = fixFile(file, dryRun);
 
@@ -215,6 +237,9 @@ for (const file of files) {
     console.log(`  ✅ ${relPath}: ${result.fixes} fixes`);
     stats.filesModified++;
     stats.fixes += result.fixes;
+    results.push({ file: relPath, fixes: result.fixes, modified: true });
+  } else {
+    results.push({ file: relPath, fixes: 0, modified: false });
   }
 }
 
@@ -230,4 +255,23 @@ if (Object.keys(stats.patterns).length > 0) {
     console.log(`   ${pattern}: ${count}`);
   }
 }
+
+if (outArg) {
+    const outDir = path.resolve(process.cwd(), outArg.replace('--out=', ''));
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+
+    const summaryPath = path.join(outDir, 'summary.json');
+    const jsonlPath = path.join(outDir, 'results.jsonl');
+
+    const summary = {
+        dryRun,
+        stats,
+        timestamp: new Date().toISOString()
+    };
+
+    fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+    fs.writeFileSync(jsonlPath, results.map(r => JSON.stringify(r)).join('\n'));
+    console.log(`\n📁 Wrote results to ${outDir}`);
+}
+
 console.log(`\n✅ Complete!${dryRun ? ' (no changes written)' : ''}`);

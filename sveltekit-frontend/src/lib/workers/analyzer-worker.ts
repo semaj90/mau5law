@@ -74,8 +74,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
 // Process JSON chunk through full pipeline
 async function processChunk(data: {
- id: string;, jsonData: string;
- source: string;
+ id: string;, jsonData: string;, source: string;
  extractEntities?: boolean;
 }): Promise<any> {
  const startTime = performance.now();
