@@ -97,7 +97,7 @@ type TrainerMessage =
  | { type: 'training_progress'; data: TrainingProgress }
  | { type: 'training_completed'; data: TrainingCompleted }
  | { type: 'training_error'; data: TrainingError }
- | { type: 'reinforcement_update'; data: RLUpdate };
+ | { type: 'reinforcement_update'; data: RLUpdate }
 
 export interface RLGuidedExtraction {
  documentId: string;
@@ -116,7 +116,9 @@ export interface LegalExtractionExample {
  documentType: string, difficulty: number, jurisdiction: string, reward: number;
  userFeedback?: { quality: number };
  };
-}; export interface QLorATrainingJob {
+}
+
+export interface QLorATrainingJob {
  jobId: string, trainingData: LegalExtractionExample[], baseModel: string, loraConfig: {
  r: number, alpha: number, dropout: number, targetModules: string[];
  };
@@ -124,7 +126,9 @@ export interface LegalExtractionExample {
  bits: 4 | 8, useDoubleBits: boolean, quantType: 'fp4' | 'nf4';
  };
  status: 'pending' | 'training' | 'completed' | 'failed', epochs: number, batchSize: number;
-}; export interface NeuralSpriteLegalProcessing {
+}
+
+export interface NeuralSpriteLegalProcessing {
  spriteId: string, patternBuffer: ArrayBuffer, vertexBuffer: Float32Array, embeddingVector: Float32Array, nametablePosition: number, attributeData: number;
 }
 
@@ -147,7 +151,7 @@ type SOMCacheLike = {
  metadata?: Record<string, unknown>
  ) => Promise<void>;
  getStats?: () => unknown;
-};
+}
 
 export class QLorARLLangExtractOrchestrator {
  nesMemory: NESMemoryArchitecture;
@@ -226,7 +230,9 @@ export class QLorARLLangExtractOrchestrator {
  const ve = getVectorEmbedding(document);
  if (ve instanceof Float32Array) {
  contextVector.set(ve.subarray(0, 1536));
- }; const contextStart = 1500;
+ }
+
+const contextStart = 1500;
  contextVector[contextStart + 0] = (getNumberProp(document, 'priority') || 0) / 255;
  contextVector[contextStart + 1] = getNumberProp(document, 'confidenceLevel') || 0;
  contextVector[contextStart + 2] = this.mapRiskLevel(getRiskLevel(document) || 'medium');
@@ -289,7 +295,9 @@ export class QLorARLLangExtractOrchestrator {
  for (let i = 0; i < 1024; i++) {
  const tileData = this.encodeDataToTile(extractedData, i);
  patternView.set(tileData, i * 8);
- }; const vertexCount = 256;
+ }
+
+const vertexCount = 256;
  const vertexBuffer = new Float32Array(vertexCount * 3);
  for (let i = 0; i < vertexCount; i++) {
  const idx = i * 3;
@@ -298,7 +306,9 @@ export class QLorARLLangExtractOrchestrator {
  vertexBuffer[idx + 1] = Math.cos(i * 0.1) * (getNumberProp(document, 'confidenceLevel') || 0);
  vertexBuffer[idx + 2] =
  (i / vertexCount) * this.mapRiskLevel(getRiskLevel(document) || 'medium');
- }; const nametablePosition = Math.floor(Math.random() * 960);
+ }
+
+const nametablePosition = Math.floor(Math.random() * 960);
  const attributeData = this.calculateAttributeData(document);
  return {
  spriteId,
@@ -417,7 +427,9 @@ export class QLorARLLangExtractOrchestrator {
  modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'],
  epochs: 3, batchSize: 4,
  };
- }; const avgDifficulty =
+ }
+
+const avgDifficulty =
  trainingData.reduce((sum, ex) => sum + ex.metadata.difficulty, 0) / trainingData.length;
  const avgReward =
  trainingData.reduce((sum, ex) => sum + ex.metadata.reward, 0) / trainingData.length;
@@ -633,7 +645,9 @@ export class QLorARLLangExtractOrchestrator {
  } catch {
  dataStr = String(data);
  }
- }; const hash = this.simpleHash(dataStr + tileIndex);
+ }
+
+const hash = this.simpleHash(dataStr + tileIndex);
  for (let i = 0; i < 8; i++) {
  tile[i] = (hash >> (i * 4)) & 0xff;
  }
@@ -748,6 +762,8 @@ export class QLorARLLangExtractOrchestrator {
  typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
  };
  }
-}; export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
+}
+
+export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
  langextractServiceUrl: 'http://localhost:3001',
 });
