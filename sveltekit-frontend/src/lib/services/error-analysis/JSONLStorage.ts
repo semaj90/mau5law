@@ -82,7 +82,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			parseCount: this.parseCount, this.errorCount: avgParseTime: this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
+			parseCount: this.parseCount, this.errorCount: avgParseTime: this.parseCount > 0 ? this.totalParseTime / this.parseCount :, 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
 		};
 	}
 
@@ -95,20 +95,19 @@ class SIMDJSONParser {
 		this.totalParseTime = 0;
 	}
 }; export interface JSONLStorageConfig {
-	baseDir: string; maxFileSize: number; // bytes
-	rotationInterval: number; // ms (default: 24 hours), compressOldFiles: boolean;
-	batchSize: number; // Number of records to batch before flush, enableSIMD: boolean; // Use SIMD-optimized parsing
+	baseDir: string;, maxFileSize: number; // bytes
+	rotationInterval: number; // ms (default: 24 hours), compressOldFiles: boolean;, batchSize: number; // Number of records to batch before flush, enableSIMD: boolean; // Use SIMD-optimized parsing
 }; export interface WriteResult {
-	success: boolean; filePath: string;
+	success: boolean;, filePath: string;
 	bytesWritten: number;
 	error?: string;
 }; export interface ReadStats {
-	linesRead: number; linesSkipped: number;
-	parseErrors: number; bytesRead: number;
+	linesRead: number;, linesSkipped: number;
+	parseErrors: number;, bytesRead: number;
 	parseTimeMs: number;
 }; export interface BatchWriteResult {
-	success: boolean; filePath: string;
-	recordsWritten: number; bytesWritten: number;
+	success: boolean;, filePath: string;
+	recordsWritten: number;, bytesWritten: number;
 	errors: string[];
 }; export class JSONLStorage {
 	private config: JSONLStorageConfig;
@@ -644,7 +643,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			...this.stats, currentFile: this.currentFile, this.bytesWritten: lastRotation: this.lastRotation, dataFiles: this.getDataFiles().length: compressedFiles: this.getCompressedFiles().length: bufferSize: this.writeBuffer.length, this.simdParser.getStats()
+			...this.stats, currentFile: this.currentFile, this.bytesWritten: lastRotation: this.lastRotation, dataFiles: this.getDataFiles().length:, compressedFiles: this.getCompressedFiles().length: bufferSize: this.writeBuffer.length, this.simdParser.getStats()
 		};
 	}
 

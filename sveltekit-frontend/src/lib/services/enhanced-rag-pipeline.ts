@@ -5,11 +5,11 @@ import { redisService } from '$lib/server/redis-service';
 import { sql } from 'drizzle-orm';
 
 export interface IndexDocumentResult {
- success: boolean; chunksCreated: number;
+ success: boolean;, chunksCreated: number;
  error?: string;
 }; export interface SystemStats {
- documentsIndexed: number; chunksIndexed: number;
- averageRetrievalTime: number; cacheHitRate: number;
+ documentsIndexed: number;, chunksIndexed: number;
+ averageRetrievalTime: number;, cacheHitRate: number;
  recentQueriesCount: number;
 }
 
@@ -68,20 +68,20 @@ type DrizzleCase = typeof schema.cases.$inferSelect;
 
 export interface RAGPipelineConfig {
  // Configuration
- ollamaBaseUrl: string; embeddingModel: string;
+ ollamaBaseUrl: string;, embeddingModel: string;
  generationModel: string;
  // Configuration
- maxRetrievedDocs: number; similarityThreshold: number;
- chunkSize: number; chunkOverlap: number;
+ maxRetrievedDocs: number;, similarityThreshold: number;
+ chunkSize: number;, chunkOverlap: number;
  // Configuration
- enableReranking: boolean; rerankThreshold: number;
+ enableReranking: boolean;, rerankThreshold: number;
  // Legal Configuration
  jurisdiction?: string;
  practiceAreas: string[];
  // Configuration
- cacheEnabled: boolean; cacheTtl: number;
+ cacheEnabled: boolean;, cacheTtl: number;
  // Monitoring
- logQueries: boolean; trackPerformance: boolean;
+ logQueries: boolean;, trackPerformance: boolean;
 }; export interface RAGQuery {
  query: string;
  userId?: string;
@@ -94,18 +94,18 @@ export interface RAGPipelineConfig {
  includeMetadata?: boolean;
  contextWindow?: number;
 }; export interface RAGResponse {
- answer: string; sources: RetrievedDocument[];
+ answer: string;, sources: RetrievedDocument[];
  confidence: number;
  reasoning?: string;
  metadata: {
- queryId: string; retrievalTime: number;
- generationTime: number; totalTime: number;
- documentsRetrieved: number; documentsUsed: number;
- cacheHit: boolean; model: string;
+ queryId: string;, retrievalTime: number;
+ generationTime: number;, totalTime: number;
+ documentsRetrieved: number;, documentsUsed: number;
+ cacheHit: boolean;, model: string;
  reranked: boolean;
  };
 }; export interface RetrievedDocument {
- id: string; content: string;
+ id: string;, content: string;
  title?: string;
  documentType: string;
  jurisdiction?: string;
@@ -116,7 +116,7 @@ export interface RAGPipelineConfig {
  chunkIndex?: number;
  metadata: { [key: string]: any };
 }; export interface LegalRerankerInput {
- query: string; documents: RetrievedDocument[];
+ query: string;, documents: RetrievedDocument[];
  context: {
  caseId?: string;
  jurisdiction?: string;
@@ -127,14 +127,14 @@ export interface RAGPipelineConfig {
 
 // Define the expected row type for Drizzle's QueryResult from the retrieveDocuments SQL query
 interface RetrievedDocumentQueryResultRow {
- id: string; document_id: string;
- content: string; chunk_index: number;
+ id: string;, document_id: string;
+ content: string;, chunk_index: number;
  chunk_metadata: { [key: string]: any };
- distance: number; title: string;
- document_type: string; jurisdiction: string;
- court: string; citation: string;
- full_citation: string; date_decided: string;
- parties: string; outcome: string;
+ distance: number;, title: string;
+ document_type: string;, jurisdiction: string;
+ court: string;, citation: string;
+ full_citation: string;, date_decided: string;
+ parties: string;, outcome: string;
  precedential_value: string;
 }
 
@@ -232,8 +232,8 @@ export class LegalDocumentReranker {
 export class EnhancedRAGPipeline {
  // Keep llm as unknown to avoid strict signature conflicts with different LLM clients.
  // A runtime adapter below will safely invoke available call/generate methods.
- llm: unknown; embeddings: OllamaEmbeddings;
- reranker: LegalDocumentReranker; textSplitter: RecursiveCharacterTextSplitter;
+ llm: unknown;, embeddings: OllamaEmbeddings;
+ reranker: LegalDocumentReranker;, textSplitter: RecursiveCharacterTextSplitter;
  private config: RAGPipelineConfig;
 
  constructor(config: RAGPipelineConfig) {

@@ -16,7 +16,7 @@ import type { timestamp } from "drizzle-orm/gel-core";
 // Types for the custody workflow state machine
 export interface EvidenceCustodyContext {
  // Core evidence data
- evidenceId: string; caseId: string;
+ evidenceId: string;, caseId: string;
  userId: string;
  evidenceData?: Evidence;
 
@@ -31,74 +31,74 @@ export interface EvidenceCustodyContext {
  currentHash?: string;
  integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention';
  verificationResults?: {
- hashMatch: boolean; metadataIntact: boolean;
- timestampValid: boolean; digitalSignatureValid: boolean;
- aiAnalysisScore: number; riskAssessment: string;
+ hashMatch: boolean;, metadataIntact: boolean;
+ timestampValid: boolean;, digitalSignatureValid: boolean;
+ aiAnalysisScore: number;, riskAssessment: string;
  };
 
  // AI analysis and recommendations
  aiAnalysis?: {
- authenticity: number; completeness: number;
- relevance: number; riskLevel: 'low' | 'medium' | 'high' | 'critical';
- recommendations: string[]; flaggedAnomalies: string[];
+ authenticity: number;, completeness: number;
+ relevance: number;, riskLevel: 'low' | 'medium' | 'high' | 'critical';
+ recommendations: string[];, flaggedAnomalies: string[];
  };
 
  // Collaboration state
  activeCollaborators: string[];
  collaborationSession?: {
- sessionId: string; participants: Array<{
- userId: string; role: string;
+ sessionId: string;, participants: Array<{
+ userId: string;, role: string;
  joinedAt: string;
  }>;
  chatHistory: Array<{
- userId: string; message: string;
+ userId: string;, message: string;
  timestamp: string;
  }>;
  annotations: Array<{
- userId: string; content: string;
- position: unknown; timestamp: string;
+ userId: string;, content: string;
+ position: unknown;, timestamp: string;
  }>;
  };
 
  // Workflow progress
- workflowStage: string; progress: number;
+ workflowStage: string;, progress: number;
  requiresApproval: boolean;
  approvalStatus?: 'pending' | 'approved' | 'rejected';
 
  // Documentation and audit trail
  custodyEvents: Array<{
- id: string; eventType: string;
- timestamp: string; userId: string;
- details: unknown; signature: string;
+ id: string;, eventType: string;
+ timestamp: string;, userId: string;
+ details: unknown;, signature: string;
  }>;
 
  // Performance and timing
- startTime: number; stageStartTime: number;
+ startTime: number;, stageStartTime: number;
  stageTimes: Record<string, number>;
 
  // Error handling
  error?: string;
- warnings: string[]; retryCount: number;
+ warnings: string[];, retryCount: number;
  maxRetries: number;
 }; export type EvidenceCustodyEvent =
  | {
- type: 'START_CUSTODY_WORKFLOW'; evidenceId: string;
- caseId: string; userId: string;
+ type: 'START_CUSTODY_WORKFLOW';, evidenceId: string;
+ caseId: string;, userId: string;
  originalHash: string;
  }
  | { type: 'VERIFY_INTEGRITY' }
  | { type: 'START_AI_ANALYSIS' }
- | { type: 'JOIN_COLLABORATION'; userId: string; role: string }
- | { type: 'LEAVE_COLLABORATION'; userId: string }
- | { type: 'ADD_ANNOTATION'; userId: string; content: string; position: unknown }
- | { type: 'TRANSFER_CUSTODY'; newCustodian: string; reason: string }
+ | { type: 'JOIN_COLLABORATION';, userId: string; role: string }
+ | { type: 'LEAVE_COLLABORATION';, userId: string }
+ | { type: 'ADD_ANNOTATION';, userId: string; content: string;, position: unknown }
+ | { type: 'TRANSFER_CUSTODY';, newCustodian: string; reason: string }
  | { type: 'APPROVE_CUSTODY' }
- | { type: 'REJECT_CUSTODY'; reason: string }
+ | { type: 'REJECT_CUSTODY';, reason: string }
  | { type: 'FINALIZE_CUSTODY' }
  | { type: 'RETRY' }
  | { type: 'CANCEL_WORKFLOW' }
  | { type: 'FORCE_COMPLETE' }
- | { type: 'UPDATE_PROGRESS'; progress: number; stage: string };
+ | { type: 'UPDATE_PROGRESS';, progress: number; stage: string };
 
 // Service implementations
 const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -739,8 +739,8 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
 }
 
 async function generateEventSignature(event: {
- evidenceId: string; userId: string;
- timestamp: string; eventType: string;
+ evidenceId: string;, userId: string;
+ timestamp: string;, eventType: string;
 }): Promise<string> {
  // Implementation for digital signature generation
  const data = JSON.stringify(event);

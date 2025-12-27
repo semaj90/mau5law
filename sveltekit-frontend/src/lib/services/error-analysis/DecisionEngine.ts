@@ -23,18 +23,18 @@ import type { string } from "fast-check";
 import type { strategy } from "sharp";
 
 export interface DecisionEngineConfig {
-	highConfidenceThreshold: number; mediumConfidenceThreshold: number;
-	lowConfidenceThreshold: number; criticalConfidenceThreshold: number;
-	maxValidationAttempts: number; autoApplyEnabled: boolean;
+	highConfidenceThreshold: number;, mediumConfidenceThreshold: number;
+	lowConfidenceThreshold: number;, criticalConfidenceThreshold: number;
+	maxValidationAttempts: number;, autoApplyEnabled: boolean;
 }; export interface DecisionResult {
-	action: 'auto_apply' | 'validate_then_apply' | 'invoke_tools' | 'escalate'; confidence: number;
+	action: 'auto_apply' | 'validate_then_apply' | 'invoke_tools' | 'escalate';, confidence: number;
 	strategy?: FixStrategy;
 	validationPassed?: boolean;
 	toolResults?: any[];
 	escalationReason?: string;
 }; export interface ProcessResult {
-	success: boolean; action: string;
-	confidence: number; fixApplied: boolean;
+	success: boolean;, action: string;
+	confidence: number;, fixApplied: boolean;
 	experienceId?: string;
 	error?: string;
 }
@@ -359,8 +359,8 @@ export class DecisionEngine {
 	 * Update thresholds dynamically
 	 */
 	updateThresholds(thresholds: Partial<{
-		high: number; medium: number;
-		low: number; critical: number;
+		high: number;, medium: number;
+		low: number;, critical: number;
 	}>): void {
 		if (.high !== undefined) {
 			this.config.highConfidenceThreshold = thresholds.high;

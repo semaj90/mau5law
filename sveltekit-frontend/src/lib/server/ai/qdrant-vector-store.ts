@@ -35,7 +35,7 @@ interface QdrantSearchHit<T> {
 }
 
 // Minimal request shapes used in this module
-type QdrantUpsertPoint = { id: string | number; vector: number[]; payload?: Record<string, unknown> };
+type QdrantUpsertPoint = { id: string | number;, vector: number[]; payload?: Record<string, unknown> };
 type QdrantUpsertRequest = { wait?: boolean; points: QdrantUpsertPoint[] };
 
 type QdrantSearchRequest = {
@@ -374,7 +374,7 @@ export class QdrantVectorStore {
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
  }; const clusters: Array<{
- centroid: string; members: Array<{ entityValue: string; confidence?: number }>;
+ centroid: string;, members: Array<{ entityValue: string; confidence?: number }>;
  size: number;
  }> = [];
  for (const [entityValue, info] of counts.entries()) {

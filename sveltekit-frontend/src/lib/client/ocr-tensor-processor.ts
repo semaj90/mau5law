@@ -39,9 +39,9 @@ type RecognizeInput =
  | string
  | Blob
  | OffscreenCanvas;
-type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
-type Word = { text: string; bbox: BBox; confidence: number };
-type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
+type BBox = { x0: number;, y0: number; x1: number;, y1: number } | number[];
+type Word = { text: string;, bbox: BBox; confidence: number };
+type RecognizeResult = { data: { text: string;, confidence: number; words: Word[] } };
 type LoggerMessage = Record<string, unknown>;
 
 // accept both module shapes (default export or direct export) and expose common helpers optionally
@@ -66,17 +66,17 @@ declare global {
  Tesseract?: TesseractLike;
  }
 }; export interface OCRResult {
- text: string; confidence: number;
- boundingBoxes: Array<{ text: string; bbox: BBox; confidence: number }>;
+ text: string;, confidence: number;
+ boundingBoxes: Array<{ text: string;, bbox: BBox; confidence: number }>;
 }; export interface TensorData {
- embeddings: Float32Array; dimensions: number;
+ embeddings: Float32Array;, dimensions: number;
  metadata: {
- source: 'ocr' | 'manual' | 'api'; processed_at: number;
- tensor_id: string; confidence: number;
+ source: 'ocr' | 'manual' | 'api';, processed_at: number;
+ tensor_id: string;, confidence: number;
  };
 }; export interface ProcessingResult {
- ocr: OCRResult; embeddings: TensorData;
- searchIndex: Float32Array; processingTime: number;
+ ocr: OCRResult;, embeddings: TensorData;
+ searchIndex: Float32Array;, processingTime: number;
  cacheHit: boolean;
 }
 
@@ -99,7 +99,7 @@ export interface EmbeddingAPIResponse {
  tessjs_create_hocr?: boolean;
  tessjs_create_tsv?: boolean;
 }; export interface BatchProcessingItem {
- image: ImageData | HTMLCanvasElement | File; priority: number;
+ image: ImageData | HTMLCanvasElement | File;, priority: number;
  options: OCRProcessOptions;
 }
 
@@ -393,7 +393,7 @@ interface IShaderCacheManager {
 
  private async generateEmbeddings(
  text: string
- ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
+ ): Promise<{ embeddings: Float32Array;, fromCache: boolean; model: string }> {
  try {
  // Intelligent model selection based on Ollama GPU memory and system state
  const modelConfig = await this.selectOptimalModel();
