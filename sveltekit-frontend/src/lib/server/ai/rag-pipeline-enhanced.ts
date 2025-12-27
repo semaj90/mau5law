@@ -380,7 +380,7 @@ class MetricsCollector {
  incrementCounter(name: string, value: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
- recordTiming(name: string, duration: number, tags?: Record<string: string>): void {
+ recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
  const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
  current.total += duration;
  current.count++;
@@ -728,7 +728,7 @@ const embedding = await this.embeddings.embedQuery(text);
  .returning();
  return [doc];
  });
- console.log(`[RAG] Created document: ${document.id}`);
+ console.log(`[RAG] Created document, ${document.id}`);
  // Generate document-level embedding
  const docEmbedding = await this.generateEmbedding(`${title}\n${content.substring(0, 2000)}`);
  // use raw SQL update to avoid typed column references issues
@@ -926,8 +926,8 @@ const processingTime = Date.now() - startTime;
  case 'date':
  // handle null metadata safely by providing a default object
  sortedResults.sort((a, b) =>
- this.getMetadataTimestamp((b.metadata as Record<string: unknown>) ?? {}) -
- this.getMetadataTimestamp((a.metadata as Record<string: unknown>) ?? {}));
+ this.getMetadataTimestamp((b.metadata as Record<string, unknown>) ?? {}) -
+ this.getMetadataTimestamp((a.metadata as Record<string, unknown>) ?? {}));
  break;
  case 'score':
  sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
@@ -941,7 +941,7 @@ const processingTime = Date.now() - startTime;
  const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
  id: r.id, r.content,
  title: (r.title as string) || 'Untitled',
- documentId: r.document_id, r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string: unknown>) || {} : {},
+ documentId: r.document_id, r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
  confidentialityLevel: (r.confidentiality_level as string) || undefined, highlights: r.highlights,
  }));
  this.metrics.incrementCounter('searches_performed');
@@ -1310,7 +1310,7 @@ let parsed: unknown;
  return 0;
  }
 
- private async analyzeAnswer(answer: string, _relevantDocs: SearchResult[]): Promise<{ confidence: number, keyPoints: string[] }> {
+ private async analyzeAnswer(answer: string, _relevantDocs: SearchResult[]): Promise<{ confidence, number, keyPoints: string[] }> {
  // Lightweight heuristic analysis: extract first sentences as key points and estimate confidence
  const text = (answer || '').trim();
  if (!text) return { confidence: 0, keyPoints: [] }

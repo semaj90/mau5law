@@ -155,7 +155,9 @@ type SOMCacheLike = {
 
 export class QLorARLLangExtractOrchestrator {
  nesMemory: NESMemoryArchitecture;
- private somCache: SOMCacheLike, rlAgent: Worker | null, langextractServiceUrl: string;
+  private somCache: SOMCacheLike;
+  private rlAgent: Worker | null;
+  private langextractServiceUrl: string;
  private qloraTrainingQueue: Map<string, QLorATrainingJob>;
  extractionHistory: Map<string, RLGuidedExtraction[]>;
 
@@ -205,7 +207,7 @@ export class QLorARLLangExtractOrchestrator {
  document: LegalDocument, extractionSchema: Record,
  userFeedback?: { quality: number, usefulness: number, accuracy: number }
  ): Promise<{
- extractedData: Record<string, JsonValue>;
+ extractedData, Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction, neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
  }> {
@@ -372,7 +374,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
  };
  this.qloraTrainingQueue.set(jobId, qloraJob);
  await this.startDataFlywheelTraining(qloraJob);
- console.log(`🔄 DATA FLYWHEEL: QLoRA training started for ${documentType} - Job: ${jobId}`);
+ console.log(`🔄 DATA FLYWHEEL, QLoRA training started for ${documentType} - Job: ${jobId}`);
  console.log(`📊 Training with ${trainingData.length} high-quality examples`);
  return jobId;
  }
@@ -407,7 +409,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
  examples.push(...sampled);
  }
  console.log(
- `🔄 DATA FLYWHEEL: Collected ${examples.length} examples from ${positiveExamples.length} candidates`
+ `🔄 DATA FLYWHEEL, Collected ${examples.length} examples from ${positiveExamples.length} candidates`
  );
  return examples;
  } catch (error) {
@@ -418,7 +420,7 @@ const nametablePosition = Math.floor(Math.random() * 960);
 
  private async calculateAdaptiveLoRAConfig(
  documentType: string, trainingData: LegalExtractionExample ): Promise<{
- rank: number, alpha: number, dropout: number, modules: string[], epochs: number, batchSize: number;
+ rank, number, alpha: number, dropout: number, modules: string[], epochs: number, batchSize: number;
  }> {
  if (trainingData.length === 0) {
  return {
@@ -465,12 +467,12 @@ const avgDifficulty =
  } else if (documentType === 'evidence') {
  config.dropout = 0.02;
  }
- console.log(`🔄 DATA FLYWHEEL: Adaptive config for ${documentType}:`, config);
+ console.log(`🔄 DATA FLYWHEEL, Adaptive config for ${documentType}:`, config);
  return config;
  }
 
  private async startDataFlywheelTraining(job: QLorATrainingJob): Promise<void> {
- console.log(`🔄 DATA FLYWHEEL: Starting enhanced training for job ${job.jobId}`);
+ console.log(`🔄 DATA FLYWHEEL, Starting enhanced training for job ${job.jobId}`);
  job.status = 'training';
  try {
  const worker = new Worker('/static/workers/qlora-trainer.js');
@@ -535,18 +537,18 @@ const avgDifficulty =
  ): Promise<void> {
  const { progress } = progressData;
  console.log(
- `🔄 DATA FLYWHEEL Progress [${job.jobId}]: Epoch ${progress.currentEpoch}/${progress.totalEpochs}, Loss: ${progress.loss.toFixed(4)}, Accuracy: ${progress.accuracy.toFixed(3)}`
+ `🔄 DATA FLYWHEEL Progress [${job.jobId}], Epoch ${progress.currentEpoch}/${progress.totalEpochs}, Loss: ${progress.loss.toFixed(4)}, Accuracy: ${progress.accuracy.toFixed(3)}`
  );
  if (.currentEpoch > 1) {
  const lossImprovement = this.calculateLossImprovement(job.jobId, progress.loss);
  if (lossImprovement < 0.001) {
  console.log(
- `🔄 DATA FLYWHEEL: Early stopping check for ${job.jobId} (minimal improvement)`
+ `🔄 DATA FLYWHEEL, Early stopping check for ${job.jobId} (minimal improvement)`
  );
  }
  if (progress.accuracy < 0.6) {
  console.log(
- `🔄 DATA FLYWHEEL: Low accuracy detected (${progress.accuracy}), may need parameter adjustment`
+ `🔄 DATA FLYWHEEL, Low accuracy detected (${progress.accuracy}), may need parameter adjustment`
  );
  }
  }
@@ -556,9 +558,9 @@ const avgDifficulty =
  private async handleFlywheelCompletion(
  job: QLorATrainingJob, completionData: TrainingCompleted
  ): Promise<void> {
- console.log(`✅ DATA FLYWHEEL: Training completed for ${job.jobId}`);
+ console.log(`✅ DATA FLYWHEEL, Training completed for ${job.jobId}`);
  console.log(
- `📊 Final metrics: Loss: ${completionData.finalLoss}, Accuracy: ${completionData.finalAccuracy}`
+ `📊 Final metrics, Loss: ${completionData.finalLoss}, Accuracy: ${completionData.finalAccuracy}`
  );
  job.status = 'completed';
  await this.deployImprovedModel(job, completionData);
@@ -568,7 +570,7 @@ const avgDifficulty =
 
  private async handleFlywheelRLUpdate(job: QLorATrainingJob), RLUpdate: Promise<void> {
  console.log(
- `🧠 DATA FLYWHEEL RL Update: Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
+ `🧠 DATA FLYWHEEL RL Update, Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
  );
  const rlUpdateKey = `rl_updates:${job.jobId}`;
  const existingUpdates = (await lokiRedisCache.get(rlUpdateKey)) || '[]';
@@ -577,7 +579,7 @@ const avgDifficulty =
  timestamp: new Date().toISOString(),
  ...rlData,
  });
- await lokiRedisCache.set(rlUpdateKey: JSON.stringify(updates), 3600);
+ await lokiRedisCache.set(rlUpdateKey, JSON.stringify(updates), 3600);
  }
 
  private mapRiskLevel(riskLevel: string): number {
@@ -685,18 +687,18 @@ const hash = this.simpleHash(dataStr + tileIndex);
  timestamp: new Date().toISOString(),
  ...progressData,
  });
- await lokiRedisCache.set(progressKey: JSON.stringify(progress), 7200);
+ await lokiRedisCache.set(progressKey, JSON.stringify(progress), 7200);
  }
 
  private async deployImprovedModel(
  job: QLorATrainingJob, completionData: TrainingCompleted
  ): Promise<void> {
- console.log(`🚀 DATA FLYWHEEL: Deploying improved model for ${job.jobId}`);
+ console.log(`🚀 DATA FLYWHEEL, Deploying improved model for ${job.jobId}`);
  const modelKey = `trained_model:${job.jobId}`;
- await lokiRedisCache.set(modelKey: completionData.modelData, 86400);
+ await lokiRedisCache.set(modelKey, completionData.modelData, 86400);
  const registryKey = `model_registry:${job.trainingData[0]?.metadata?.documentType || 'unknown'}`;
- await lokiRedisCache.set(registryKey: job.jobId, 86400);
- console.log(`✅ DEPLOYED: ${job.jobId} is now available for inference`);
+ await lokiRedisCache.set(registryKey, job.jobId, 86400);
+ console.log(`✅ DEPLOYED, ${job.jobId} is now available for inference`);
  }
 
  private async updateRLAgentWithTrainingResults(
@@ -711,7 +713,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  jobId: job.jobId, job.trainingData[0]?.metadata?.documentType, finalAccuracy: completionData.finalAccuracy, finalLoss: completionData.finalLoss, trainingReward: job.loraConfig,
  },
  });
- console.log(`🧠 RL AGENT UPDATED: Training reward ${trainingReward} for ${job.jobId}`);
+ console.log(`🧠 RL AGENT UPDATED, Training reward ${trainingReward} for ${job.jobId}`);
  }
 
  private async trackFlywheelImprovement(
@@ -731,8 +733,8 @@ const hash = this.simpleHash(dataStr + tileIndex);
  if (.length > 50) {
  metrics.splice(0, metrics.length - 50);
  }
- await lokiRedisCache.set(metricsKey: JSON.stringify(metrics), 86400 * 7);
- console.log(`📊 FLYWHEEL METRICS: Improvement tracked for ${job.jobId}`);
+ await lokiRedisCache.set(metricsKey, JSON.stringify(metrics), 86400 * 7);
+ console.log(`📊 FLYWHEEL METRICS, Improvement tracked for ${job.jobId}`);
  }
 
  private async updateRLAgent(

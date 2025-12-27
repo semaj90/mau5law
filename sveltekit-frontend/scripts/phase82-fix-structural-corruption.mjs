@@ -44,6 +44,34 @@ function fixArrowReturnSplice(s) {
   );
 }
 
+function fixGenericTypeColons(s) {
+  // Fix Record<string: unknown> -> Record<string, unknown>
+  // Fix Map<string: any> -> Map<string, any>
+  return s.replace(
+    /\b(Record|Map|Promise)\s*<\s*([^,>]+?)\s*:\s*([^>]+?)\s*>/g,
+    "$1<$2, $3>"
+  );
+}
+
+function fixBadFunctionCallColons(s) {
+  // Fix "lokiRedisCache.set(key: value, ...)" -> "lokiRedisCache.set(key, value, ...)"
+  // This is a specific pattern seen in qlora-rl-langextract-integration.ts
+  let out = s.replace(
+    /(lokiRedisCache\.set|console\.log|metrics\.push)\s*\(([^,():]+)\s*:\s*/g,
+    "$1($2, "
+  );
+  return out;
+}
+
+function fixClassPropertyCommas(s) {
+  // Fix "private a: T, b: U;" -> "private a: T;\n  private b: U;"
+  // Handles private/protected/public/readonly
+  return s.replace(
+    /^\s*(private|protected|public|readonly)\s+([a-zA-Z0-9_$]+)\s*:\s*([^,;]+)\s*,\s*([a-zA-Z0-9_$]+)\s*:\s*([^;]+);/gm,
+    (m, mod, p1, t1, p2, t2) => `  ${mod} ${p1}: ${t1};\n  ${mod} ${p2}: ${t2};`
+  );
+}
+
 function dropImmediateDuplicateBlocks(s) {
   // Very conservative: if two adjacent blocks are *exactly* identical,
   // comment out the second one.
@@ -99,6 +127,9 @@ function applyFixes(input) {
   s = fixStatementJoiners(s);
   s = fixFunctionReturnSplice(s);
   s = fixArrowReturnSplice(s);
+  s = fixGenericTypeColons(s);
+  s = fixBadFunctionCallColons(s);
+  s = fixClassPropertyCommas(s);
   s = dropImmediateDuplicateBlocks(s);
 
   return { text: s, changed: s !== before };
@@ -163,10 +194,12 @@ for (const rel of files) {
   // crude "fix count": number of joiners repaired + return splices
   const joinFixes = (before.match(/}\s*;\s*(?=(function|const|let|var|type|interface|export|class)\b)/g) || []).length;
   const retFixes  = (before.match(/\)\s*\|\s*(undefined|null)\b/g) || []).length;
-  const fixes = joinFixes + retFixes;
-  totalFixes += fixes;
+  const genFixes  = (before.match(/\b(Record|Map|Promise)\s*<\s*[^,>]+?\s*:\s*[^>]+?\s*>/g) || []).length;
+  const callFixes = (before.match(/(lokiRedisCache\.set|console\.log|metrics\.push)\s*\([^,():]+\s*:\s*/g) || []).length;
+  const propFixes = (before.match(/^\s*(private|protected|public|readonly)\s+[a-zA-Z0-9_$]+\s*:\s*[^,;]+\s*,\s*[a-zA-Z0-9_$]+/gm) || []).length;
 
-  filesModified++;
+  const fixes = joinFixes + retFixes + genFixes + callFixes + propFixes;
+  totalFixes += fixes;  filesModified++;
   results.push({ file: rel, changed: true, fixes });
 
   if (!args.dryRun) writeText(abs, after);

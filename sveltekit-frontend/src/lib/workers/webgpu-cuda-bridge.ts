@@ -59,14 +59,14 @@ class WebGPUCudaBridge {
 			const device = await adapter.requestDevice({
 				requiredFeatures: ['texture-compression-bc'] as GPUFeatureName[],
 				requiredLimits: {
-					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize, adapter.limits.maxBufferSize
+					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize
 				}
 			});
 
 			this.webgpuDevice = {
 				device: adapter,
 				capabilities: {
-					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension: adapter.limits.maxStorageBufferBindingSize, adapter.limits.maxBufferSize
+					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension
 				} as any
 			};
 
