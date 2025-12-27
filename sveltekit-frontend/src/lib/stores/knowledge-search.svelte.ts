@@ -10,8 +10,8 @@ import { get } from 'svelte/store';
 
 
 export interface SearchResult {
-    id: number;, score: number;
-    title: string;, url: string;
+    id: number, score: number;
+    title: string, url: string;
     summary: string;
     entities?: string;
 }

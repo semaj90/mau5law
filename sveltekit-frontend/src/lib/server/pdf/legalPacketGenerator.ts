@@ -3,13 +3,13 @@ import type { CaseSynthesis } from '$lib/server/cases/caseSynthesis';
 import type { evidence } from "../db";
 
 interface CaseData {
- id: string;, title: string;
+ id: string, title: string;
  description?: string;
- createdAt: Date;, updatedAt: Date;
+ createdAt: Date, updatedAt: Date;
 }
 
 interface PacketData {
- caseData: CaseData;, synthesis: CaseSynthesis;
+ caseData: CaseData, synthesis: CaseSynthesis;
 }
 
 /**

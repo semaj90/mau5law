@@ -8,22 +8,22 @@ import { redis } from '$lib/server/redis';
 import { auditService } from './audit.service.js';
 
 export interface CitationCollection {
- id: string;, user_id: string;
+ id: string, user_id: string;
  name: string;
  description?: string;
  is_public: boolean;
  citation_count?: number;
- created_at: Date;, updated_at: Date;
+ created_at: Date, updated_at: Date;
 }
 
 export interface CollectionCitation {
- id: string;, collection_id: string;
- citation_id: string;, added_at: Date;
+ id: string, collection_id: string;
+ citation_id: string, added_at: Date;
 }
 
 export interface CitationTag {
- id: string;, citation_id: string;
- tag: string;, created_at: Date;
+ id: string, citation_id: string;
+ tag: string, created_at: Date;
 }
 
 export interface CreateCollectionRequest {
@@ -299,7 +299,7 @@ class CitationLibraryService {
  /**
  * Get popular tags
  */
- async getPopularTags(limit: number = 20): Promise<{ tag: string;, count: number }[]> {
+ async getPopularTags(limit: number = 20): Promise<{ tag: string, count: number }[]> {
  try {
  const tags = await db.raw(
  `SELECT tag, COUNT(*) as count

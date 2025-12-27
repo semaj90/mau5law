@@ -14,8 +14,8 @@ export interface EmbeddingActorInput {
 }
 
 export interface EmbeddingActorOutput {
-  embedding: number[];, dimensions: number;
-  model: string;, processingTime: number;
+  embedding: number[], dimensions: number;
+  model: string, processingTime: number;
   tokenCount?: number;
 }
 
@@ -55,8 +55,8 @@ export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
-  embeddings?: { chunks: number;, dimensions: number };
-  processingTime: number;, success: boolean;
+  embeddings?: { chunks: number, dimensions: number };
+  processingTime: number, success: boolean;
 }
 
 export const documentProcessingActor = fromPromise(
@@ -93,9 +93,9 @@ export interface LegalAnalysisInput {
 }
 
 export interface LegalAnalysisOutput {
-  riskScore: number;, riskFactors: string[];
-  recommendations: string[];, precedents: Array<any>;
-  confidence: number;, processingTime: number;
+  riskScore: number, riskFactors: string[];
+  recommendations: string[], precedents: Array<any>;
+  confidence: number, processingTime: number;
 }
 
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
@@ -134,8 +134,8 @@ export interface RAGSearchInput {
 }
 
 export interface RAGSearchOutput {
-  results: Array<any>;, totalResults: number;
-  processingTime: number;, model: string;
+  results: Array<any>, totalResults: number;
+  processingTime: number, model: string;
 }
 
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {

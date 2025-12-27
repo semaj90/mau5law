@@ -48,7 +48,7 @@ export async function embedVision(item: VisionItem): Promise<VisionItem> {
 
 // Qdrant vector operations
 export interface VectorSearchResult {
- id: string;, score: number;
+ id: string, score: number;
  payload?: Record<string, any>;
 }
 
@@ -125,7 +125,7 @@ export async function getCollectionInfo(): Promise<any> {
 
 // Batch operations for performance
 export async function batchEmbedAndStore(
- documents: Array<{ id: string;, content: string }>
+ documents: Array<{ id: string, content: string }>
 ): Promise<void> {
  const points = await Promise.all(
  documents.map(async (doc) => {

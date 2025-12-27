@@ -7,7 +7,7 @@ export class AccessibilityUtils {
  * Check if browser supports required features
  */
  static checkBrowserCompatibility(): {
- supported: boolean;, issues: string[];
+ supported: boolean, issues: string[];
  } {
  const issues: string[] = [];
 
@@ -151,7 +151,7 @@ export class AccessibilityUtils {
  static checkColorContrast(
  foreground: string, background: string
  ): {
- ratio: number;, wcagAA: boolean;
+ ratio: number, wcagAA: boolean;
  wcagAAA: boolean;
  } {
  const fgLuminance = this.getLuminance(foreground);
@@ -226,7 +226,7 @@ export class AccessibilityUtils {
  * Validate WCAG compliance
  */
  static validateWCAGCompliance(): {
- compliant: boolean;, issues: string[];
+ compliant: boolean, issues: string[];
  } {
  const issues: string[] = [];
 

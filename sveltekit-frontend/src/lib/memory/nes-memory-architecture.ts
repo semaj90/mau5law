@@ -56,9 +56,12 @@ const NES_MEMORY_MAP = {
 
 export interface LegalDocument {
  readonly id: string;
- readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent', priority: number; // 0-255 (8-bit)
- readonly size: number, confidenceLevel: number; // 0.0-1.0
- readonly riskLevel: 'low' | 'medium' | 'high' | 'critical', lastAccessed: number;
+ readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
+ readonly priority: number; // 0-255 (8-bit)
+ readonly size: number;
+ readonly confidenceLevel: number; // 0.0-1.0
+ readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+ readonly lastAccessed: number;
  bankId?: number; // For large documents requiring bank switching
  readonly compressed: boolean;
  readonly metadata: {
@@ -75,9 +78,11 @@ export interface MemoryBank {
  readonly type: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
  readonly startAddress: number;
  readonly endAddress: number;
- readonly size: number, used: number;
+ readonly size: number;
+ readonly used: number;
  readonly documents: Map<string, LegalDocument>;
- isActive: boolean, lastBankSwitch: number;
+ isActive: boolean;
+ lastBankSwitch: number;
  compressionRatio: number;
 }
 

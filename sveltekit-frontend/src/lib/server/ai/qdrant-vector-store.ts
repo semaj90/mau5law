@@ -7,7 +7,7 @@
  */
 import type { QdrantClient, type QdrantClientParams } from '@qdrant/js-client-rest';
 import type { LegalEntity } from "$lib/types/sharedTypes";
-import type { createHash } from 'crypto';
+import * as crypto from 'crypto';
 import type { timestamp } from "drizzle-orm/gel-core";
 import type { metadata } from "$lib/services/enhanced-rag-pagerank";
 import nodejsOrchestrator from "$lib/services/nodejs-orchestrator";
@@ -35,7 +35,7 @@ interface QdrantSearchHit<T> {
 }
 
 // Minimal request shapes used in this module
-type QdrantUpsertPoint = { id: string | number, vector: number[]; payload?: Record<string, unknown> };
+type QdrantUpsertPoint = { id: string | number; vector: number[]; payload?: Record<string, unknown> };
 type QdrantUpsertRequest = { wait?: boolean; points: QdrantUpsertPoint[] };
 
 type QdrantSearchRequest = {
@@ -110,7 +110,7 @@ interface SummaryPayload {
 // --- end revised types ---
 
 // Environment variables
-const process.env.QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
+const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 
 // Collection names
@@ -129,7 +129,7 @@ export class QdrantVectorStore {
  private initialized = false;
 
  constructor() {
- const config: QdrantClientParams = { url: process.env.QDRANT_URL };
+ const config: QdrantClientParams = { url: QDRANT_URL };
  if (QDRANT_API_KEY) config.apiKey = QDRANT_API_KEY;
  this.client = new QdrantClient(config);
  }
@@ -138,9 +138,9 @@ export class QdrantVectorStore {
  async initialize(): Promise<void> {
  if (this.initialized) return;
  try {
- await this.ensureCollection(COLLECTIONS.CONVERSATIONS: EMBEDDING_DIM);
- await this.ensureCollection(COLLECTIONS.ENTITIES: EMBEDDING_DIM);
- await this.ensureCollection(COLLECTIONS.SUMMARIES: EMBEDDING_DIM);
+ await this.ensureCollection(COLLECTIONS.CONVERSATIONS, EMBEDDING_DIM);
+ await this.ensureCollection(COLLECTIONS.ENTITIES, EMBEDDING_DIM);
+ await this.ensureCollection(COLLECTIONS.SUMMARIES, EMBEDDING_DIM);
  this.initialized = true;
  console.log("✓ Qdrant vector store initialized");
  } catch (error) {
@@ -152,15 +152,14 @@ export class QdrantVectorStore {
  /** Ensure collection exists, create if not */
  private async ensureCollection(collectionName: string, size: number): Promise<void> {
  try {
- const collections = ;
- (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
+ const collections = (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
  const exists = (collections.collections ?? []).some((c) => c.name === collectionName);
  if (!exists) {
  // Build a plain literal that matches the runtime shape Qdrant expects.
  const createCfg = {
  vectors: {
  // "embeddings" is the named vector field required at runtime
- embeddings: { size: vectorSize, distance: "Cosine" },
+ embeddings: { size: size, distance: "Cosine" },
  },
  optimizers_config: { default_segment_number: 2 },
  replication_factor: 1,
@@ -184,21 +183,32 @@ export class QdrantVectorStore {
 
  /** Store conversation turn with embedding */
  async storeConversationTurn(
- turnIndex: number, 
- userMessage: string, agentResponse: string, 
+ turnIndex: number,
+ async storeConversationTurn(
+ turnIndex: number,
+ userMessage: string, agentResponse: string,
  metadata: { intent?: string; hmmState?: number; confidence?: number; entities?: LegalEntity[] }
  ): Promise<string> {
  await this.ensureInitialized();
  const payload = {
- sessionId: turnIndex?.substring(0, 1000)?.substring(0, 1000),
- intent: metadata?.intent: metadata?.hmmState: metadata?.confidence: metadata?.entities?.length ?? null, 0, timestamp: Date.now(),
+ sessionId: `session-${Date.now()}`, // Placeholder, should be passed in
+ turnIndex,
+ userMessage,
+ agentResponse,
+ intent: metadata?.intent,
+ hmmState: metadata?.hmmState,
+ confidence: metadata?.confidence,
+ entityCount: metadata?.entities?.length ?? 0,
+ timestamp: Date.now(),
  };
+ // Need to generate embedding and pointId here, but for now just fixing syntax
+ const pointId = crypto.randomUUID();
+ const embedding = new Array(EMBEDDING_DIM).fill(0); // Placeholder
+
  const upsertReq: QdrantUpsertRequest = {
  wait: true,
  points: [{ id: pointId, vector: embedding, payload }],
- };
- const upsertReqTyped = upsertReq as unknown as QdrantUpsertParams;
- await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
+ };ait this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
  return pointId;
  }
 
@@ -207,7 +217,8 @@ export class QdrantVectorStore {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`${sessionId}-${entity.type}-${entity.value}`)
- .digest("hex");
+ .digest("hex")
+;
  .substring(0, 32);
 
  // create a small typed view of optional fields to avoid `any`
@@ -240,7 +251,8 @@ export class QdrantVectorStore {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`summary-${sessionId}-${Date.now()}`)
- .digest("hex");
+ .digest("hex")
+;
  .substring(0, 32);
  const payload = {
  sessionId: summary?.substring(0, 2000),
@@ -285,7 +297,8 @@ export class QdrantVectorStore {
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.CONVERSATIONS,
- searchParamsTyped;
+ searchParamsTyped
+;
  )) as unknown as QdrantSearchHit<ConversationPayload>[] | undefined;
 
  return (searchResult ?? []).map((hit) => {
@@ -311,7 +324,8 @@ export class QdrantVectorStore {
  > {
  await this.ensureInitialized();
  const filter = entityType
- ? { must: [{ key: "entityType", match: { value: entityType } }] };
+ ? { must: [{ key: "entityType", match: { value: entityType } }] }
+;
  : undefined;
  const searchParams: QdrantSearchRequest = {
  vector: queryEmbedding, limit: with_payload, true, true:
@@ -320,7 +334,8 @@ export class QdrantVectorStore {
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.ENTITIES,
- searchParamsTyped;
+ searchParamsTyped
+;
  )) as unknown as QdrantSearchHit[] | undefined;
 
  return ( ?? []).map((hit) => {
@@ -421,7 +436,8 @@ export class QdrantVectorStore {
  ])) as unknown as [
  QdrantCollectionInfo: undefined,
  QdrantCollectionInfo: undefined,
- QdrantCollectionInfo: undefined;
+ QdrantCollectionInfo: undefined
+;
  ];
 
  const [conversations, entities, summaries] = resp;

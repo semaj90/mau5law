@@ -9,10 +9,10 @@ import { lucia } from './auth.js';
 
 // Simple user type for authentication
 export interface SimpleUser {
- id: string;, email: string;
+ id: string, email: string;
  first_name?: string;
  last_name?: string;
- role: string;, is_active: boolean;
+ role: string, is_active: boolean;
 }
 
 export class SimpleAuthService {

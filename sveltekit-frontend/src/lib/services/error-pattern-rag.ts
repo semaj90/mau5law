@@ -15,38 +15,38 @@ import { context, string } from "fast-check";
 import { metadata } from "./enhanced-rag-pagerank";
 
 export interface ErrorPattern {
- fingerprint: string;, errorCode: string;
- errorMessage: string;, normalizedPattern: string;
- filePattern: string | null;, category: string;
- severity: string;, clusterId: string | null;
- embedding: number[]; // 768-dimensional Gemma embedding, firstSeen: Date;, lastSeen: Date; occurrenceCount: number;, metadata: {
+ fingerprint: string, errorCode: string;
+ errorMessage: string, normalizedPattern: string;
+ filePattern: string | null, category: string;
+ severity: string, clusterId: string | null;
+ embedding: number[]; // 768-dimensional Gemma embedding, firstSeen: Date, lastSeen: Date; occurrenceCount: number, metadata: {
  keywords?: string[];
  percentage?: string;
  patternCount?: number;
  examples?: Array<{
- file: string;, line: number;
+ file: string, line: number;
  message: string;
  }>;
  };
 }
 
 export interface FixAttempt {
- id: number;, patternFingerprint: string;
- fixType: string;, fixDescription: string | null;
- fixDiff: string | null;, appliedAt: Date;
- success: boolean | null;, verifiedAt: Date | null;
- verificationMethod: string | null;, filesAffected: number;
- errorsResolved: number;, errorsIntroduced: number;
- rollbackPerformed: boolean;, metadata: Record<string, unknown>;
+ id: number, patternFingerprint: string;
+ fixType: string, fixDescription: string | null;
+ fixDiff: string | null, appliedAt: Date;
+ success: boolean | null, verifiedAt: Date | null;
+ verificationMethod: string | null, filesAffected: number;
+ errorsResolved: number, errorsIntroduced: number;
+ rollbackPerformed: boolean, metadata: Record<string, unknown>;
 }
 
 export interface FixSuggestion {
- pattern: ErrorPattern;, similarity: number;
- confidenceScore: number;, successRate: number;
- totalAttempts: number;, successfulFixes: number;
+ pattern: ErrorPattern, similarity: number;
+ confidenceScore: number, successRate: number;
+ totalAttempts: number, successfulFixes: number;
  recommendedFix: {
- type: string;, description: string;
- estimatedImpact: number;, risk: 'low' | 'medium' | 'high';
+ type: string, description: string;
+ estimatedImpact: number, risk: 'low' | 'medium' | 'high';
  };
  historicalFixes: FixAttempt[];
 }
@@ -147,7 +147,7 @@ export class ErrorPatternRAG {
  async recordFixAttempt(
  db: Database,
  attempt: {
- patternFingerprint: string;, fixType: string;
+ patternFingerprint: string, fixType: string;
  fixDescription?: string;
  fixDiff?: string;
  filesAffected?: number;
@@ -234,7 +234,7 @@ export class ErrorPatternRAG {
  db: Database, errorMessage: string,
  embedding: number[],
  context: {
- file: string;, line: number;
+ file: string, line: number;
  codeSnippet?: string;
  }
  ): Promise<FixSuggestion | null> {
@@ -386,7 +386,7 @@ export async function searchSimilarErrors(
 export async function getSuggestedFix(
  db: Database, errorMessage: string,
  embedding: number[],
- context: { file: string;, line: number }
+ context: { file: string, line: number }
 ): Promise<FixSuggestion | null> {
  return await errorPatternRAG.generateFixSuggestion(db, errorMessage, embedding, context);
 }

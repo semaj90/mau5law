@@ -51,7 +51,7 @@ async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string,
  * Result of RAG sync operation
  */
 export interface RagSyncResult {
- success: boolean;, message: string;
+ success: boolean, message: string;
  chunksProcessed?: number;
  errors?: string[];
 }
@@ -590,9 +590,9 @@ export async function regenerateEvidenceEmbeddings(
  * Health check: Verify RAG sync service is operational
  */
 export async function checkRagSyncHealth(): Promise<{
- healthy: boolean;, message: string;
+ healthy: boolean, message: string;
  details?: {
- qdrantConnected: boolean;, databaseConnected: boolean;
+ qdrantConnected: boolean, databaseConnected: boolean;
  collectionExists: boolean;
  };
 }> {

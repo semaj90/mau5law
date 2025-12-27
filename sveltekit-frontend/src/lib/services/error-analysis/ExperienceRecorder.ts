@@ -24,15 +24,15 @@ import type { strategy } from "sharp";
 import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface ExperienceRecorderConfig {
-	jsonlDir: string;, similarityThreshold: number;
-	maxGroupSize: number;, embeddingDimension: number;
+	jsonlDir: string, similarityThreshold: number;
+	maxGroupSize: number, embeddingDimension: number;
 }; export interface RecordResult {
-	success: boolean;, experienceId: string;
+	success: boolean, experienceId: string;
 	groupId?: string;
 	error?: string;
 }; export interface StrategyRanking {
-	strategy: FixStrategy;, successRate: number;
-	totalAttempts: number;, avgConfidence: number;
+	strategy: FixStrategy, successRate: number;
+	totalAttempts: number, avgConfidence: number;
 }
 
 
@@ -221,7 +221,7 @@ export class ExperienceRecorder {
 		limit: number = 10
 	): Promise<StrategyRanking[]> {
 		// Find similar groups
-		const similarGroups: { groupId: string;, similarity: number }[] = [];
+		const similarGroups: { groupId: string, similarity: number }[] = [];
 
 		for (const [groupId, group] of this.groups) {
 			const similarity = this.cosineSimilarity(errorEmbedding, group.centroid);
@@ -235,7 +235,7 @@ export class ExperienceRecorder {
 
 		// Collect strategies from similar groups
 		const strategyScores = new Map<string, {
-			successes: number;, failures: number;
+			successes: number, failures: number;
 			totalConfidence: number;
 			strategy?: FixStrategy;
 		}>();

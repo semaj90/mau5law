@@ -1,9 +1,9 @@
 // @ts-nocheck - Complex experimental service with external dependencies
 export type WebGPUDiagResult = {
- supported: boolean;, adapterFound: boolean;
+ supported: boolean, adapterFound: boolean;
  deviceCreated: boolean;
  error?: string;
- warnings: string[];, powerPreferenceTried: Array<'high-performance' | 'low-power' | 'default'>;
+ warnings: string[], powerPreferenceTried: Array<'high-performance' | 'low-power' | 'default'>;
  powerPreferenceUsed?: 'high-performance' | 'low-power' | 'default';
  timings: {
  requestAdapterMs?: number;
@@ -11,7 +11,7 @@ export type WebGPUDiagResult = {
  };
  adapter?: {
  label?: string;
- features: string[];, limits: Record<string, number>;
+ features: string[], limits: Record<string, number>;
  isFallbackAdapter?: boolean;
  };
  deviceLimits?: Record<string, number>;

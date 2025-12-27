@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 		const { error, attemptedStrategies, confidence, toolResults, context } = body as {
-			error: ErrorReport;, attemptedStrategies: FixStrategy[];, confidence: number;, toolResults: DiagnosticResult[];, context: ErrorContext;
+			error: ErrorReport, attemptedStrategies: FixStrategy[], confidence: number, toolResults: DiagnosticResult[], context: ErrorContext;
 		};
 
 		if (!error) {
@@ -94,7 +94,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 		const { ticketId, action, fix, resolution, assignee } = body as {
-			ticketId: string;, action: 'resolve' | 'assign' | 'close';
+			ticketId: string, action: 'resolve' | 'assign' | 'close';
 			fix?: FixStrategy;
 			resolution?: string;
 			assignee?: string;

@@ -82,7 +82,7 @@ export interface QuantizationParams {
 export function toInt8(
  f32: Float32Array,
  method: 'symmetric' | 'asymmetric' = 'symmetric'
-): { data: Int8Array;, params: QuantizationParams } {
+): { data: Int8Array, params: QuantizationParams } {
  if (method === 'symmetric') {
  let maxAbs = 0;
  for (let i = 0; i < f32.length; i++) {
@@ -133,9 +133,9 @@ export function fromInt8(int8: Int8Array, params), QuantizationParams: Float32Ar
 export type QuantizationMode = 'fp32' | 'fp16' | 'int8_symmetric' | 'int8_asymmetric';
 
 export interface QuantizedData {
- data: Float32Array | Uint16Array | Int8Array;, originalType: QuantizationMode;
+ data: Float32Array | Uint16Array | Int8Array, originalType: QuantizationMode;
  params?: QuantizationParams;
- byteLength: number;, compressionRatio: number;
+ byteLength: number, compressionRatio: number;
 }
 
 export function quantize(
@@ -250,15 +250,15 @@ export function dequantizeBatch(quantizedBatch: QuantizedData[]): Float32Array[]
 // 8. Performance monitoring
 //
 export interface QuantizationStats {
- originalSize: number;, compressedSize: number;
- compressionRatio: number;, quantizationTime: number;
+ originalSize: number, compressedSize: number;
+ compressionRatio: number, quantizationTime: number;
  mode: QuantizationMode;
 }
 
 export function quantizeWithStats(
  input: BufferLike | number[],
  mode: QuantizationMode = 'fp32'
-): { data: QuantizedData;, stats: QuantizationStats } {
+): { data: QuantizedData, stats: QuantizationStats } {
  const startTime = performance.now();
  const data = quantize(input, mode);
  const quantizationTime = performance.now() - startTime;

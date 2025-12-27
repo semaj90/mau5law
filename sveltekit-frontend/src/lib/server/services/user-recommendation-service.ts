@@ -15,28 +15,28 @@ import { string, array } from "fast-check";
 
 // User behavior pattern interfaces
 export interface UserPattern {
-	userId: string;, commonQueries: string[];
-	frequentCases: string[];, preferredTopics: string[];
-	queryComplexity: 'simple' | 'moderate' | 'complex';, usageFrequency: 'low' | 'medium' | 'high';
+	userId: string, commonQueries: string[];
+	frequentCases: string[], preferredTopics: string[];
+	queryComplexity: 'simple' | 'moderate' | 'complex', usageFrequency: 'low' | 'medium' | 'high';
 	timePatterns: {
-		mostActiveHours: number[];, averageSessionLength: number;
+		mostActiveHours: number[], averageSessionLength: number;
 		queriesPerSession: number;
 	};
 }; export interface RecommendationResult {
-	type: 'query' | 'case' | 'document' | 'legal_precedent';, content: string;
-	confidence: number;, reasoning: string;
+	type: 'query' | 'case' | 'document' | 'legal_precedent', content: string;
+	confidence: number, reasoning: string;
 	relatedItems: string[];
 }; export interface ChatAnalytics {
-	totalQueries: number;, successRate: number;
-	averageProcessingTime: number;, topTopics: Array<{ topic: string;, count: number }>;
-	userSatisfaction: number;, improvementSuggestions: string[];
+	totalQueries: number, successRate: number;
+	averageProcessingTime: number, topTopics: Array<{ topic: string, count: number }>;
+	userSatisfaction: number, improvementSuggestions: string[];
 }
 
 interface StoreAiChatParams {
 	userId: string;
 	sessionId?: string;
 	caseId?: string;
-	query: string;, response: string;
+	query: string, response: string;
 	embedding?: number[];
 	metadata?: Record<string, any>;
 	processingTimeMs?: number;
@@ -426,7 +426,7 @@ interface StoreAiChatParams {
 		return Math.round(successRate * 0.7 + speedScore * 0.3);
 	}
 
-	private generateImprovementSuggestions(stats: any, topTopics: { topic: string;, count: number }[]): string[] {
+	private generateImprovementSuggestions(stats: any, topTopics: { topic: string, count: number }[]): string[] {
 		const suggestions: string[] = [];
 
 		if (stats.successRate < 80) {

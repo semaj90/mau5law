@@ -16,7 +16,7 @@ const DEFAULT_MODEL =
  process.env.OLLAMA_MODEL_CHAT ?? process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
 
 export interface LLMMessage {
- role: 'system' | 'user' | 'assistant';, content: string;
+ role: 'system' | 'user' | 'assistant', content: string;
 }
 
 export interface LLMOptions {
@@ -29,7 +29,7 @@ export interface LLMOptions {
 }
 
 export interface LLMResponse {
- content: string;, model: string;
+ content: string, model: string;
  totalDuration?: number;
  promptEvalCount?: number;
  evalCount?: number;
@@ -135,8 +135,8 @@ ANSWER:`;
  * Relationship suggestion prompt for Evidence Board
  */
 export function buildRelationshipPrompt(
- evidenceA: { text: string;, filename: string; tags: string[] },
- evidenceB: { text: string;, filename: string; tags: string[] }
+ evidenceA: { text: string, filename: string; tags: string[] },
+ evidenceB: { text: string, filename: string; tags: string[] }
 ): string {
  return `You are a legal analyst examining two pieces of evidence for potential relationships.
 
