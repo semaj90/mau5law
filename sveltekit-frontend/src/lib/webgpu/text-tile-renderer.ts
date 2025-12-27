@@ -13,23 +13,23 @@ import type {
 } from '$lib/ai/simd-text-tiling-engine.js';
 
 export interface TextTileRenderConfig {
- canvasWidth: number;, canvasHeight: number;
- tileSize: number;, qualityTier: 'nes' | 'snes' | 'n64';
- enableInstantRender: boolean;, maxConcurrentTiles: number;
+ canvasWidth: number, canvasHeight: number;
+ tileSize: number, qualityTier: 'nes' | 'snes' | 'n64';
+ enableInstantRender: boolean, maxConcurrentTiles: number;
  gpuMemoryPool: number; // MB
 }
 
 export interface InstantUIComponent {
- id: string;, type: 'text-display' | 'data-visualization' | 'interactive-element';
- renderData: ArrayBuffer;, cssStyles: string;
- domStructure: string;, interactionHandlers: string;
- renderTime: number;, gpuUtilization: number;
+ id: string, type: 'text-display' | 'data-visualization' | 'interactive-element';
+ renderData: ArrayBuffer, cssStyles: string;
+ domStructure: string, interactionHandlers: string;
+ renderTime: number, gpuUtilization: number;
 }
 
 export interface RenderingPipeline {
- vertexShader: string;, fragmentShader: string;
- computeShader: string;, uniformBuffer: ArrayBuffer;
- vertexBuffer: ArrayBuffer;, indexBuffer: ArrayBuffer;
+ vertexShader: string, fragmentShader: string;
+ computeShader: string, uniformBuffer: ArrayBuffer;
+ vertexBuffer: ArrayBuffer, indexBuffer: ArrayBuffer;
 }
 
 export class WebGPUTextTileRenderer {
@@ -202,8 +202,8 @@ struct VertexOutput {
 }
 
 struct Uniforms {
- resolution: vec2<f32>;, time: f32;
- qualityTier: f32; // 0=NES, 1=SNES, 2=N64, tileSize: f32;, compressionRatio: f32;
+ resolution: vec2<f32>, time: f32;
+ qualityTier: f32; // 0=NES, 1=SNES, 2=N64, tileSize: f32, compressionRatio: f32;
 }
 
 @group(0) @binding(0) var<uniform> uniforms: Uniforms;
@@ -281,12 +281,12 @@ fn hsv2rgb(hsv: vec3<f32>) -> vec3<f32> {
 // Decompresses 7-bit tile data and prepares for rendering
 struct TileData {
  compressedData: array<u32, 2>; // 7 bytes packed into 2 u32s
- semanticHash: u32;, patternId: u32;
+ semanticHash: u32, patternId: u32;
  metadata: vec4<f32>;
 }
 
 struct RenderData {
- position: vec2<f32>;, texCoord: vec2<f32>;
+ position: vec2<f32>, texCoord: vec2<f32>;
  tileInfo: vec4<f32>;
 }
 
@@ -495,7 +495,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  image-rendering: pixelated;
  image-rendering: -moz-crisp-edges;
  image-rendering: crisp-edges;
- transform-origin: top-left;, animation: nes-flicker-${tile.id} ${((compressed[5] / 127) * 2 + 0.5).toFixed(1)}s infinite ease-in-out;
+ transform-origin: top-left, animation: nes-flicker-${tile.id} ${((compressed[5] / 127) * 2 + 0.5).toFixed(1)}s infinite ease-in-out;
 }
 @keyframes nes-flicker-${tile.id} {
  0%, 100% { opacity: 1; }

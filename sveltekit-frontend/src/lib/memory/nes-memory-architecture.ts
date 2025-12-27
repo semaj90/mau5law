@@ -56,9 +56,9 @@ const NES_MEMORY_MAP = {
 
 export interface LegalDocument {
  readonly id: string;
- readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';, priority: number; // 0-255 (8-bit)
- readonly size: number;, confidenceLevel: number; // 0.0-1.0
- readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';, lastAccessed: number;
+ readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent', priority: number; // 0-255 (8-bit)
+ readonly size: number, confidenceLevel: number; // 0.0-1.0
+ readonly riskLevel: 'low' | 'medium' | 'high' | 'critical', lastAccessed: number;
  bankId?: number; // For large documents requiring bank switching
  readonly compressed: boolean;
  readonly metadata: {
@@ -75,9 +75,9 @@ export interface MemoryBank {
  readonly type: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
  readonly startAddress: number;
  readonly endAddress: number;
- readonly size: number;, used: number;
+ readonly size: number, used: number;
  readonly documents: Map<string, LegalDocument>;
- isActive: boolean;, lastBankSwitch: number;
+ isActive: boolean, lastBankSwitch: number;
  compressionRatio: number;
 }
 
@@ -682,7 +682,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number;, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -829,8 +829,8 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string;, parentHandle: number;
- prior: number;, depth: number;
+ graphNodeId: string, parentHandle: number;
+ prior: number, depth: number;
  }) {
  return plannerMemory.allocate(
  params.graphNodeId: params.parentHandle,
@@ -897,7 +897,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number;, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -1044,8 +1044,8 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string;, parentHandle: number;
- prior: number;, depth: number;
+ graphNodeId: string, parentHandle: number;
+ prior: number, depth: number;
  }) {
  return plannerMemory.allocate(
  params.graphNodeId: params.parentHandle,
@@ -1112,7 +1112,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number;, value: number; updated: number }>;
+ private transpositionCache: Map<string, { visits: number, value: number; updated: number }>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -1259,8 +1259,8 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string;, parentHandle: number;
- prior: number;, depth: number;
+ graphNodeId: string, parentHandle: number;
+ prior: number, depth: number;
  }) {
  return plannerMemory.allocate(
  params.graphNodeId: params.parentHandle,
