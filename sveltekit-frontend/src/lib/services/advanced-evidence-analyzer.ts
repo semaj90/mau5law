@@ -32,15 +32,15 @@ export const EvidenceAnalysisSchema = z.object({
 });
 
 export interface AnalysisResult {
- type: string;, confidence: number;
- results: unknown;, processingTime: number;
- model: string;, timestamp: Date;
+ type: string, confidence: number;
+ results: unknown, processingTime: number;
+ model: string, timestamp: Date;
 }; export interface ComprehensiveAnalysis {
- evidenceId: string;, overallScore: number;
- analyses: AnalysisResult[];, summary: string;
- recommendations: string[];, legalImplications: string[];
- relatedCases: string[];, processingMetrics: {
- totalTime: number;, modelsUsed: string[];
+ evidenceId: string, overallScore: number;
+ analyses: AnalysisResult[], summary: string;
+ recommendations: string[], legalImplications: string[];
+ relatedCases: string[], processingMetrics: {
+ totalTime: number, modelsUsed: string[];
  confidenceAverage: number;
  };
 }
@@ -331,7 +331,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  return keySentences.slice(0, 5);
  }
 
- private analyseSentiment(text: string): { sentiment: string;, score: number; confidence: number } {
+ private analyseSentiment(text: string): { sentiment: string, score: number; confidence: number } {
  const positiveTerms = ['favorable', 'compliant', 'beneficial', 'support', 'approved'];
  const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute'];
 
@@ -350,8 +350,8 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  }
 
  private extractEntities(text: string): {
- parties: string[];, locations: string[];
- amounts: string[];, dates: string[];
+ parties: string[], locations: string[];
+ amounts: string[], dates: string[];
  confidence: number;
  } {
  const partyMatches = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2}\b/g) ?? [];
@@ -372,7 +372,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
 
  private detectPatterns(
  text: string, options: z.infer<typeof EvidenceAnalysisSchema>['options']
- ): { matched: string[];, warnings: string[]; confidence: number } {
+ ): { matched: string[], warnings: string[]; confidence: number } {
  const patterns: Record<string, RegExp> = {
  breachOfContract: /\bbreach\b|\bviolation\b/i,
  intellectualProperty: /\bpatent\b|\btrademark\b|\bcopyright\b/i,
@@ -418,7 +418,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  };
  }
 
- private buildTimeline(text: string): Array<{ date: string;, context: string }> {
+ private buildTimeline(text: string): Array<{ date: string, context: string }> {
  const datePattern = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\w+\s+\d{1,2},?\s+\d{4}\b/g;
  const matches = text.match(datePattern) ?? [];
 

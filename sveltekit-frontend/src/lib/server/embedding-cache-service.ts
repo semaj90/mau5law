@@ -17,16 +17,16 @@ import type { string } from "fast-check";
 const typedRedisService = redisService as RedisService;
 
 interface EmbeddingCacheEntry {
- text: string;, embedding: number[] | string;
- model: string;, timestamp: number;
+ text: string, embedding: number[] | string;
+ model: string, timestamp: number;
  accessCount?: number; // Made optional to handle undefined in cached data
- lastAccessed: number;, compressed: boolean;
+ lastAccessed: number, compressed: boolean;
 }
 
 interface QueryCacheEntry {
- query: string;, results: unknown[]; // Changed from any[]
+ query: string, results: unknown[]; // Changed from any[]
  metadata: Record<string, unknown>; // Changed from any
- timestamp: number;, ttl: number;
+ timestamp: number, ttl: number;
 }; class EmbeddingCacheService {
  // Cache prefixes
  private readonly EMBEDDING_PREFIX = 'emb:';
@@ -215,7 +215,7 @@ interface QueryCacheEntry {
 
  /** * Batch cache multiple embeddings efficiently */
  async batchCacheEmbeddings(
- items: Array<{ text: string;, embedding: number[]; model?: string }>
+ items: Array<{ text: string, embedding: number[]; model?: string }>
  ): Promise<void> {
  if (!typedRedisService.isHealthy() || !items || items.length === 0) return;
  try {

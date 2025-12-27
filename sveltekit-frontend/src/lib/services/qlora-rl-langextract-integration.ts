@@ -32,50 +32,53 @@ function getNumberProp(doc: LegalDocument, key: string): number | undefined {
  return typeof v === 'number' ? v : undefined;
 }
 
-// Safe access helpers to avoid `any` casts on loosely shaped documents
-type UnknownRecord = Record<string, unknown>;
-
-function getStringProp(doc: LegalDocument) | undefined {
- const r = doc as unknown as UnknownRecord;
- const v = r[key];
- return typeof v === 'string' ? v : undefined;
-}; function getNumberProp(doc: LegalDocument, options: string): number | undefined {
- const r = doc as unknown as UnknownRecord;
- const v = r[key];
- return typeof v === 'number' ? v : undefined;
-}; function getRiskLevel(doc: LegalDocument): 'low' | 'medium' | 'high' | 'critical' | undefined {
+function getRiskLevel(doc: LegalDocument): 'low' | 'medium' | 'high' | 'critical' | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r['riskLevel'];
  if (v === 'low' || v === 'medium' || v === 'high' || v === 'critical')
  return v as 'low' | 'medium' | 'high' | 'critical';
  return undefined;
-}; function getVectorEmbedding(doc: LegalDocument): Float32Array | undefined {
+}
+
+function getVectorEmbedding(doc: LegalDocument): Float32Array | undefined {
  const r = (doc as unknown as { metadata?: { vectorEmbedding?: Float32Array } }).metadata;
  return r?.vectorEmbedding;
-}; function getDocId(doc: LegalDocument): string {
+}
+
+function getDocId(doc: LegalDocument): string {
  return getStringProp(doc, 'id') ?? getStringProp(doc, 'documentId') ?? 'unknown';
-}; function getDocType(doc: LegalDocument): string {
+}
+
+function getDocType(doc: LegalDocument): string {
  return getStringProp(doc, 'type') ?? 'contract';
 }
 
 // Worker message types for RL agent
 interface RLActionSelection {
- action: number;, temperature: number;, maxTokens: number;, probability: number;, explorationBonus: number;
+ action: number;
+ temperature: number;
+ maxTokens: number;
+ probability: number;
+ explorationBonus: number;
 }
 
 type RLWorkerOutboundMessage =
  | { type: 'initialized' }
- | { type: 'actionSelected';, data: RLActionSelection };
+ | { type: 'actionSelected'; data: RLActionSelection };
 
 // Trainer worker message types
 interface TrainingProgress {
  progress: {
- currentEpoch: number;, totalEpochs: number;, loss: number;, accuracy: number;
+ currentEpoch: number;
+ totalEpochs: number;
+ loss: number;
+ accuracy: number;
  };
 }
 
 interface TrainingCompleted {
- finalLoss: number;, finalAccuracy: number;
+ finalLoss: number;
+ finalAccuracy: number;
  trainingTime?: number;
  modelData: string;
 }
@@ -85,33 +88,44 @@ interface TrainingError {
 }
 
 interface RLUpdate {
- action: string;, reward: number;, qValue: number;
+ action: string;
+ reward: number;
+ qValue: number;
 }
 
 type TrainerMessage =
- | { type: 'training_progress';, data: TrainingProgress }
- | { type: 'training_completed';, data: TrainingCompleted }
- | { type: 'training_error';, data: TrainingError }
- | { type: 'reinforcement_update';, data: RLUpdate };
+ | { type: 'training_progress'; data: TrainingProgress }
+ | { type: 'training_completed'; data: TrainingCompleted }
+ | { type: 'training_error'; data: TrainingError }
+ | { type: 'reinforcement_update'; data: RLUpdate };
 
 export interface RLGuidedExtraction {
- documentId: string;, extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive';, temperature: number;, maxTokens: number;, explorationBonus: number;, confidenceThreshold: number;, qloraFineTuningEnabled: boolean;
-}; export interface LegalExtractionExample {
- input: string;, output: Record<string, JsonValue>;
+ documentId: string;
+ extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive';
+ temperature: number;
+ maxTokens: number;
+ explorationBonus: number;
+ confidenceThreshold: number;
+ qloraFineTuningEnabled: boolean;
+}
+
+export interface LegalExtractionExample {
+ input: string;
+ output: Record<string, JsonValue>;
  metadata: {
- documentType: string;, difficulty: number;, jurisdiction: string;, reward: number;
+ documentType: string, difficulty: number, jurisdiction: string, reward: number;
  userFeedback?: { quality: number };
  };
 }; export interface QLorATrainingJob {
- jobId: string;, trainingData: LegalExtractionExample[];, baseModel: string;, loraConfig: {
- r: number;, alpha: number;, dropout: number;, targetModules: string[];
+ jobId: string, trainingData: LegalExtractionExample[], baseModel: string, loraConfig: {
+ r: number, alpha: number, dropout: number, targetModules: string[];
  };
  quantization: {
- bits: 4 | 8;, useDoubleBits: boolean;, quantType: 'fp4' | 'nf4';
+ bits: 4 | 8, useDoubleBits: boolean, quantType: 'fp4' | 'nf4';
  };
- status: 'pending' | 'training' | 'completed' | 'failed';, epochs: number;, batchSize: number;
+ status: 'pending' | 'training' | 'completed' | 'failed', epochs: number, batchSize: number;
 }; export interface NeuralSpriteLegalProcessing {
- spriteId: string;, patternBuffer: ArrayBuffer;, vertexBuffer: Float32Array;, embeddingVector: Float32Array;, nametablePosition: number;, attributeData: number;
+ spriteId: string, patternBuffer: ArrayBuffer, vertexBuffer: Float32Array, embeddingVector: Float32Array, nametablePosition: number, attributeData: number;
 }
 
 // Add a typed interface for SOM cache implementations to avoid `any` casts
@@ -137,7 +151,7 @@ type SOMCacheLike = {
 
 export class QLorARLLangExtractOrchestrator {
  nesMemory: NESMemoryArchitecture;
- private somCache: SOMCacheLike;, rlAgent: Worker | null;, langextractServiceUrl: string;
+ private somCache: SOMCacheLike, rlAgent: Worker | null, langextractServiceUrl: string;
  private qloraTrainingQueue: Map<string, QLorATrainingJob>;
  extractionHistory: Map<string, RLGuidedExtraction[]>;
 
@@ -185,10 +199,10 @@ export class QLorARLLangExtractOrchestrator {
 
  async processLegalDocument(
  document: LegalDocument, extractionSchema: Record,
- userFeedback?: { quality: number;, usefulness: number;, accuracy: number }
+ userFeedback?: { quality: number, usefulness: number, accuracy: number }
  ): Promise<{
  extractedData: Record<string, JsonValue>;
- rlGuidance: RLGuidedExtraction;, neuralSprite: NeuralSpriteLegalProcessing;
+ rlGuidance: RLGuidedExtraction, neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
  }> {
  console.log(`⚡ Processing legal document ${getDocId(document)} with RL+QLoRA integration`);
@@ -394,7 +408,7 @@ export class QLorARLLangExtractOrchestrator {
 
  private async calculateAdaptiveLoRAConfig(
  documentType: string, trainingData: LegalExtractionExample ): Promise<{
- rank: number;, alpha: number;, dropout: number;, modules: string[];, epochs: number;, batchSize: number;
+ rank: number, alpha: number, dropout: number, modules: string[], epochs: number, batchSize: number;
  }> {
  if (trainingData.length === 0) {
  return {
@@ -577,7 +591,7 @@ export class QLorARLLangExtractOrchestrator {
 
  private calculateReward(
  extractedData: Record<string, JsonValue>,
- userFeedback?: { quality: number;, usefulness: number;, accuracy: number }
+ userFeedback?: { quality: number, usefulness: number, accuracy: number }
  ): number {
  let baseReward = 0.5;
  if (extractedData && Object.keys(extractedData).length > 0) {
