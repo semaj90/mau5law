@@ -39,7 +39,7 @@ class PerformanceMonitor {
  return v.reduce((a, b) => a + b, 0) / v.length;
  }
 
- getComparison(): { json: number; grpc: number; improvement, /* PHASE82_COLON_CHAIN: number  */ } {
+ getComparison(): { json: number; grpc, /* PHASE82_COLON_CHAIN: number; improvement */ , /* PHASE82_COLON_CHAIN: number  */ } {
  const json = this.getAverageMetric('json_processing');
  const grpc = this.getAverageMetric('grpc_processing');
  const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -63,7 +63,7 @@ type GrpcResponse = {
  detailed_scores?: Record<string, unknown>;
  detailed_scorings?: Record<string, unknown>;
  ai_analysis?: Buffer | string | Uint8Array;
- recommendations?: Array<{ text?: string } | string>;
+ recommendations?: Array<{ text?, string } | string>;
  scoring_date?: { seconds?: number };
  metadata?: {
  model_name?: string;
@@ -85,12 +85,12 @@ type GrpcStreamUpdate = {
 }
 
 type GrpcWritableStream = {
- write: (data: any) => void;
+ write: (data, /* PHASE82_COLON_CHAIN: any) => void */ ;
  end: () => void;
  on: (event, /* PHASE82_COLON_CHAIN: 'data' | 'error' | 'end' */ , handler: (payload?, /* PHASE82_COLON_CHAIN: unknown) => void) => void; */ }
 
 type GrpcClientType = {
- ScoreCase?: (req: unknown, cb: (err, /* PHASE82_COLON_CHAIN: any */ , res?: GrpcResponse) => void) => void;
+ ScoreCase?: (req: unknown, cb: (err, /* PHASE82_COLON_CHAIN: any */ ; res?: GrpcResponse) => void) => void;
  StreamScoringUpdates?: () => GrpcWritableStream | undefined;
  StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -110,7 +110,7 @@ type OllamaServiceType = {
  complete?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
  run?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
  // allow other helpers on the service without typing everything
- [k: string], /* PHASE82_COLON_CHAIN: any; */ };
+ [k, string]: any;};
 
 // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
 function mapScoringResultToInsert(result: CaseScoringResult): {
@@ -120,13 +120,13 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
  criteria: string;
  recommendations: string;
  explanation: string;
- model: string | null, modelVersion: string | null;
- performanceMetrics: string, createdAt: string;
+ model: string | null; modelVersion: string | null;
+ performanceMetrics: string; createdAt: string;
  riskLevel: string;
  updatedAt?: string;
 } {
  const numericScore =
- typeof result.score === 'number' ? result.score : Number(result.score ?? NaN);
+ typeof result.score === 'number' ? score: Number(result.score ?? NaN);
  let riskLevel = 'unknown';
  if (!Number.isNaN(numericScore)) {
  if (numericScore >= 80) riskLevel = 'high';
@@ -149,28 +149,28 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
 
 // Phoenix Wright AI-Boosted Search Types
 export interface LegalPrecedent {
- id: string, title: string;
- citation: string, court: string;
- date: string, summary: string;
- relevanceScore: number, similarity: number;
- contradictions: string[], supportingEvidence: string[];
+ id: string; title: string;
+ citation: string; court: string;
+ date: string; summary: string;
+ relevanceScore: number; similarity: number;
+ contradictions: string[]; supportingEvidence: string[];
 }
 
 export interface ContradictionAnalysis {
- type: 'direct' | 'implied' | 'factual' | 'legal', severity: 'high' | 'medium' | 'low';
- description: string, evidence: string[];
- precedents: string[], recommendation: string;
+ type: 'direct' | 'implied' | 'factual' | 'legal'; severity: 'high' | 'medium' | 'low';
+ description: string; evidence: string[];
+ precedents: string[]; recommendation: string;
 }
 
 export interface EvidenceMatch {
- evidenceId: string, type: 'document' | 'witness' | 'physical' | 'digital';
- relevance: number, confidence: number;
- contradictions: ContradictionAnalysis[], supportingPrecedents: LegalPrecedent[];
+ evidenceId: string; type: 'document' | 'witness' | 'physical' | 'digital';
+ relevance: number; confidence: number;
+ contradictions: ContradictionAnalysis[]; supportingPrecedents: LegalPrecedent[];
  explanation: string;
 }
 
 export interface PhoenixWrightSearchRequest {
- caseId: string, query: string;
+ caseId: string; query: string;
  evidenceIds: string[];
  jurisdiction?: string;
  caseType?: string;
@@ -181,24 +181,24 @@ export interface PhoenixWrightSearchRequest {
 }
 
 export interface PhoenixWrightSearchResult {
- caseId: string, query: string;
- precedents: LegalPrecedent[], contradictions: ContradictionAnalysis[];
- evidenceMatches: EvidenceMatch[], rankingExplanation: string;
- confidence: number, searchTime: number;
- modelUsed: string, disclaimer: string;
+ caseId: string; query: string;
+ precedents: LegalPrecedent[]; contradictions: ContradictionAnalysis[];
+ evidenceMatches: EvidenceMatch[]; rankingExplanation: string;
+ confidence: number; searchTime: number;
+ modelUsed: string; disclaimer: string;
 }
 
 // YOᴿHa UI Enhancement Types
 export interface YohaUIConfig {
- theme: 'phoenix' | 'detective' | 'legal', animations: boolean;
- soundEffects: boolean, autoAdvance: boolean;
- showConfidence: boolean, highlightContradictions: boolean;
+ theme: 'phoenix' | 'detective' | 'legal'; animations: boolean;
+ soundEffects: boolean; autoAdvance: boolean;
+ showConfidence: boolean; highlightContradictions: boolean;
 }
 
 export interface YohaUIState {
- currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict', progress: number;
- activeContradictions: number, evidenceStrength: number;
- precedentMatches: number, animationQueue: string[];
+ currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict'; progress: number;
+ activeContradictions: number; evidenceStrength: number;
+ precedentMatches: number; animationQueue: string[];
 }
 
 // Export singleton instance
@@ -242,7 +242,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
 const proto = loadedPkg as ExpectedProtoShape;
  const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
- | { new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType  */ }
+ | { new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType */ }
  | undefined;
 
  if (!CaseScoringService) {
@@ -252,7 +252,7 @@ const proto = loadedPkg as ExpectedProtoShape;
 
  // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
  this.grpcClient = new (CaseScoringService as unknown as {
- new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType; */ })(target, grpc.credentials.createInsecure(), {
+ new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType */ ;})(target, grpc.credentials.createInsecure(), {
  'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB
  'grpc.max_send_message_length': 100 * 1024 * 1024,
  'grpc.keepalive_time_ms': 10000,
@@ -513,7 +513,7 @@ const req = {
   r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
   ),
   parameters: {
-  model: this.SCORING_MODEL, r.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
+  model: this.SCORING_MODEL, r.temperature ?? DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
   compression: 'GZIP',
   },
   };
@@ -795,7 +795,7 @@ const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
  recommendations.push('Weak case - recommend further investigation or declining prosecution');
  }
 
- if (scores.evidence_strength < 0.6)
+ if (scores.evidence_strength<0.6)
  recommendations.push('Strengthen evidence collection and chain of custody');
  if (scores.witness_reliability < 0.6)
  recommendations.push('Assess witness credibility and consider additional witnesses');
@@ -805,7 +805,7 @@ const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
  return recommendations;
  }
 
- private calculateConfidence(scores: ScoringCriteria): number {
+ private calculateConfidence(scores, ScoringCriteria): number {
  const values = Object.values(scores).filter((v) => typeof v === 'number') as number[];
  if (!values.length) return 0.5;
  const mean = values.reduce((a, b) => a + b, 0) / values.length;
@@ -859,11 +859,11 @@ const parsed = JSON.parse(jsonMatch[0]);
 
  // Collect candidate functions in declared const
  const candidates: Array, OllamaGenerateFnPrompt: undefined> = [
- svc.generateCompletion: svc.generate, svc.complete: svc.run,
+ generateCompletion: svc.generate, complete: svc.run,
  ];
 
  // Pick the first available function
- let fn: OllamaGenerateFnModel |, OllamaGenerateFnPrompt: undefined;
+ let fn: OllamaGenerateFnModel |; OllamaGenerateFnPrompt: undefined;
  for (const c of candidates) {
  if (typeof c === 'function') {
  fn = c;
@@ -945,10 +945,10 @@ const callWithPrompt = async (): Promise<string> => {
  const maxAttempts = 3;
  let lastError: unknown = null;
 
- while (attempt < maxAttempts) {
+ while (attempt<maxAttempts) {
  try {
  // Build a concrete payload with required fields (avoid optional-indexed Insertable typing)
- const insertPayload: InsertPayload = {
+ const insertPayload, InsertPayload = {
  caseId: dbPayload.caseId!,
  score: dbPayload.score!,
  confidence: dbPayload.confidence!,
@@ -1093,7 +1093,7 @@ const callWithPrompt = async (): Promise<string> => {
  ): Promise<LegalPrecedent[]> {
  const prompt = `Find legal precedents relevant to this case query: "${request.query}"
 
-Case Details: -, Jurisdiction: ${request.jurisdiction || 'Any'}
+Case Details: - Jurisdiction: ${request.jurisdiction || 'Any'}
 - Case Type: ${request.caseType || 'General'}
 - Time Range: ${request.timeRange ? `${request.timeRange.start} to ${request.timeRange.end}` : 'Any'}
 
@@ -1247,7 +1247,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
 
 const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.precedents;
  const contradictionScore =
- (results.contradictions.length > 0 ? 0.8 : 1) * weights.contradictions;
+ (results.contradictions.length > 0 ? 8: 1) * weights.contradictions;
  const evidenceScore = (results.evidenceMatches.reduce((sum, match) => sum + match.confidence, 0) /
  Math.max(results.evidenceMatches.length, 1)) *;
  weights.evidenceMatches;

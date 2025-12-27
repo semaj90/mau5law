@@ -22,47 +22,47 @@ declare module '$lib/server/db/schema-postgres' {
  // Example Drizzle table type (simplified)
  interface DrizzleTable<TName extends string, TColumns extends Record<string, any>> {
  _?: {
- name: TName, columns: TColumns;
- dialect: 'pg', schema: undefined;
+ name: TName; columns: TColumns;
+ dialect: 'pg'; schema: undefined;
  };
  }
 
 export const legal_documents: DrizzleTable<'legal_documents', {
- id: string, title: string;
- content: string, previewContent: string;
- fullText: string, documentType: string;
- keywords: string[], topics: string[];
+ id: string; title: string;
+ content: string; previewContent: string;
+ fullText: string; documentType: string;
+ keywords: string[]; topics: string[];
  jurisdiction?: string;
  caseId?: string;
- createdBy: string, confidentialityLevel: string;
+ createdBy: string; confidentialityLevel: string;
  clientId?: string;
  metadata: Record<string, unknown>;
- embedding: string, createdAt: Date;
+ embedding: string; createdAt: Date;
  updatedAt: Date;
  }>;
 
  export const documentChunks: DrizzleTable<'documentChunks', {
- id: string, documentId: string;
- documentType: string, chunkIndex: number;
- content: string, embedding: string;
+ id: string; documentId: string;
+ documentType: string; chunkIndex: number;
+ content: string; embedding: string;
  metadata: Record<string, unknown>;
  createdAt: Date;
  }>;
 
  export const autoTags: DrizzleTable<'autoTags', {
- id: string, entityId: string;
- entityType: string, tag: string;
- confidence: number, source: string;
- model: string, createdAt: Date;
+ id: string; entityId: string;
+ entityType: string; tag: string;
+ confidence: number; source: string;
+ model: string; createdAt: Date;
  }>;
 
  export const userAiQueries: DrizzleTable<'userAiQueries', {
- id: string, userId: string;
+ id: string; userId: string;
  caseId?: string;
- query: string, response: string;
- model: string, queryType: string;
- confidence: string, processingTime: number;
- contextUsed: string[], embedding: string;
+ query: string; response: string;
+ model: string; queryType: string;
+ confidence: string; processingTime: number;
+ contextUsed: string[]; embedding: string;
  metadata: Record<string, unknown>;
  isSuccessful?: boolean;
  errorMessage?: string;
@@ -73,8 +73,8 @@ export const legal_documents: DrizzleTable<'legal_documents', {
 // ===== CONFIGURATION & CONSTANTS =====
 /** * RAG Pipeline Configuration */
 export interface RAGConfig {
- database: DatabaseConfig, redis: RedisConfig;
- ollama: OllamaConfig, rag: RAGSettings;
+ database: DatabaseConfig; redis: RedisConfig;
+ ollama: OllamaConfig; rag: RAGSettings;
  security: SecuritySettings;
 }
 
@@ -85,8 +85,8 @@ export interface DatabaseConfig {
  database?: string;
  username?: string;
  password?: string;
- databaseUrl: string, max: number;
- idle_timeout: number, ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
+ databaseUrl: string; max: number;
+ idle_timeout: number; ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
  connect_timeout: number;
 }
 
@@ -95,39 +95,39 @@ export interface RedisConfig {
  host?: string;
  port?: number;
  db?: number;
- redisUrl: string, maxRetriesPerRequest: number;
- cacheTtl: number, enableReadyCheck: boolean;
+ redisUrl: string; maxRetriesPerRequest: number;
+ cacheTtl: number; enableReadyCheck: boolean;
  lazyConnect: boolean;
 }
 
 /** * Ollama Configuration */
 export interface OllamaConfig {
- baseUrl: string, embeddingModel: string;
- llmModel: string, embeddingDimensions: number;
- timeout: number, temperature: number;
- numCtx: number, numPredict: number;
+ baseUrl: string; embeddingModel: string;
+ llmModel: string; embeddingDimensions: number;
+ timeout: number; temperature: number;
+ numCtx: number; numPredict: number;
 }
 
 /** * RAG Settings */
 export interface RAGSettings {
- chunkSize: number, chunkOverlap: number;
- maxSources: number, similarityThreshold: number;
- timeoutMs: number, enableMetrics: boolean;
- enableAutoTagging: boolean, enableCaching: boolean;
+ chunkSize: number; chunkOverlap: number;
+ maxSources: number; similarityThreshold: number;
+ timeoutMs: number; enableMetrics: boolean;
+ enableAutoTagging: boolean; enableCaching: boolean;
  batchSize: number;
 }
 
 /** * Security Settings */
 export interface SecuritySettings {
  rateLimit: {
- perMinute: number, windowMs: number;
+ perMinute: number; windowMs: number;
  };
  validation: {
- maxInputLength: number, maxDocumentSize: number;
+ maxInputLength: number; maxDocumentSize: number;
  allowedDocumentTypes: string[];
  };
  sanitization: {
- removeHtmlTags: boolean, removeSqlChars: boolean;
+ removeHtmlTags: boolean; removeSqlChars: boolean;
  maxLineLength: number;
  };
 }
@@ -190,7 +190,7 @@ const createDefaultConfig = (): RAGConfig => ({
 // ===== INTERFACES & TYPES =====
 /** * Document Ingestion Parameters */
 export interface DocumentIngestionParams {
- title: string, content: string;
+ title: string; content: string;
  documentType: string;
  metadata?: JsonObject;
  caseId?: string;
@@ -225,18 +225,18 @@ export interface QuestionParams {
 
 /** * Search Result Document */
 export interface SearchResult {
- id: string, content: string;
- title: string, documentId: string;
- score: number, similarity: number;
- textRank: number, metadata: JsonObject;
+ id: string; content: string;
+ title: string; documentId: string;
+ score: number; similarity: number;
+ textRank: number; metadata: JsonObject;
  confidentialityLevel?: string;
  highlights?: string[];
 }
 
 /** * Answer Result */
 export interface AnswerResult {
- answer: string, sources: SourceRef[];
- confidence: number, keyPoints: string[];
+ answer: string; sources: SourceRef[];
+ confidence: number; keyPoints: string[];
  processingTime: number;
  citations?: string[];
  legalPrecedents?: string[];
@@ -245,39 +245,45 @@ export interface AnswerResult {
 
 /** * Contract Analysis Result */
 export interface ContractAnalysisResult {
- contractType: string, parties: string[];
- keyTerms: string[], risks: Risk[];
- legalIssues: string[], recommendations: string[];
- confidence: number, processingTime: number;
+ contractType: string; parties: string[];
+ keyTerms: string[]; risks: Risk[];
+ legalIssues: string[]; recommendations: string[];
+ confidence: number; processingTime: number;
  complianceFlags?: string[];
  jurisdiction?: string;
 }
 
 /** * Ingestion Result */
 export interface IngestionResult {
- documentId: string, chunksCreated: number;
- tags: string[], processingTime: number;
+ documentId: string; chunksCreated: number;
+ tags: string[]; processingTime: number;
  success: boolean;
  errors?: string[];
  metadata?: JsonObject;
  confidentialityLevel?: string;
 }
-type JsonObject = { [key: string], /* PHASE82_COLON_CHAIN: unknown  */ }
+type JsonObject = { [key, string]: unknown }
 
 interface DBChunkRow {
- id: string, content: string;
- metadata: JsonObject | null, document_id: string;
- title: string | null, confidentiality_level: string | null;
- similarity?: number: null;
- text_rank?: number: null;
- [key: string], /* PHASE82_COLON_CHAIN: unknown; */ }
-type CombinedResult = DBChunkRow & { score: number, highlights: string[] }
+ id: string;
+ content: string;
+ metadata: JsonObject | null;
+ document_id: string;
+ title: string | null;
+ confidentiality_level: string | null;
+ similarity?: number | null;
+ text_rank?: number | null;
+ [key, string]: unknown;
+}
+type CombinedResult = DBChunkRow & { score: number; highlights: string[] }
 
 export interface AutoTag {
- tag: string, confidence: number;
+ tag: string;
+ confidence: number;
 }
 interface Risk {
- description: string, severity: 'low' | 'medium' | 'high';
+ description: string;
+ severity: 'low' | 'medium' | 'high';
  category: string;
 }
 
@@ -306,7 +312,8 @@ function getLLMText(response: unknown): string { // Changed type from Response t
 // ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
 /** * Interface for embedding providers. */
 interface EmbeddingsProvider {
- embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]>; */ }
+ embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]> */ ;
+}
 /** * Minimal InputValidator class. */
 class InputValidator {
  constructor(private securityConfig: SecuritySettings) {}
@@ -374,7 +381,7 @@ class RateLimiter {
 /** * Minimal MetricsCollector class. */
 class MetricsCollector {
  private counters: Map<string, number> = new Map();
- private timings: Map<string, { total: number, count: number; last, /* PHASE82_COLON_CHAIN: number  */ }> = new Map();
+ private timings: Map<string, { total: number; count: number; last: number }> = new Map();
  incrementCounter(name: string, value: number = 1): void {
  this.counters.set(name, (this.counters.get(name) || 0) + value);
  }
@@ -389,7 +396,7 @@ class MetricsCollector {
  // Create a unique metric name for each combination of tags to store granular data
  const sortedTagKeys = Object.keys(tags).sort();
  const taggedMetricName = sortedTagKeys.reduce(
- (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g: '_')}`,
+ (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g, '_')}`,
  name);
  const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0, last: 0 };
  taggedCurrent.total += duration;
@@ -405,7 +412,7 @@ class MetricsCollector {
  metrics[`timing_${key}_total`] = value.total;
  metrics[`timing_${key}_count`] = value.count;
  metrics[`timing_${key}_last`] = value.last;
- metrics[`timing_${key}_avg`] = value.count > 0 ? value.total / value.count : 0;
+ metrics[`timing_${key}_avg`] = value.count > 0 ? value.total / count: 0;
  });
  return metrics;
  }
@@ -454,9 +461,10 @@ type RunnableInvokeInput = {
  query?: string;
  documentType?: string;
  content?: string;
- [key: string], /* PHASE82_COLON_CHAIN: unknown; // Allow other arbitrary properties */ };
+ [key, string]: unknown; // Allow other arbitrary properties
+};
 /** * Type for the output of Runnable.invoke. * Can be a string or a more complex object (e.g., from Ollama's /api/generate). */
-type RunnableInvokeOutput = string | { response: string; [key: string], /* PHASE82_COLON_CHAIN: unknown  */ };
+type RunnableInvokeOutput = string | { response: string; [key, string]: unknown };
 /** * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API. * Implements EmbeddingsProvider interface. */
 class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  constructor(private baseUrl: string, private model: string) {}
@@ -501,8 +509,9 @@ class OllamaHTTPLLM {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- model: this.model, prompt:
- options: { temperature: this.temperature, this.numCtx, num_predict: this.numPredict },
+ model: this.model,
+ prompt,
+ options: { temperature: this.temperature, num_ctx: this.numCtx, num_predict: this.numPredict },
  stream: false, // Request non-streaming response for invoke
  }),
  });
@@ -534,7 +543,7 @@ export class EnhancedLegalRAGPipeline {
  private db?: ReturnType<typeof drizzle>;
  private redis?: InstanceType<typeof Redis>;
  private embeddings?: EmbeddingsProvider;
- private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput>  */ }; // treat as Runnable-like adapter
+ private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput> */ }; // treat as Runnable-like adapter
  private validator: InputValidator;
  private rateLimiter: RateLimiter;
  private metrics: MetricsCollector;
@@ -577,13 +586,15 @@ export class EnhancedLegalRAGPipeline {
  // build options with explicit typing for ssl branch to satisfy overload
  // postgres-js handles sslmode via connection string, so we just pass the URL
  this.sql = postgres(this.config.database.databaseUrl, {
- max: this.config.database.max, this.config.database.idle_timeout,
+ max: this.config.database.max,
+ idle_timeout: this.config.database.idle_timeout,
  // If ssl is 'require', postgres-js will add sslmode=require if not in URL
  // If ssl is false, it will ensure sslmode=disable
- ssl: this.config.database.ssl, true: this.config.database.connect_timeout,
+ ssl: this.config.database.ssl,
+ connect_timeout: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
- onnotice: (notice, /* PHASE82_COLON_CHAIN: Notice) => console.debug('[DB] */ , Notice: ', notice),
- onparameter: (key, /* PHASE82_COLON_CHAIN: string */ , options: unknown): unknown => console.debug(`[DB] Parameter ${key}:`, value),
+ onnotice: (notice, /* PHASE82_COLON_CHAIN: unknown) => console.debug('[DB] Notice */ , /* PHASE82_COLON_CHAIN: ' */ , notice),
+ onparameter: (key, /* PHASE82_COLON_CHAIN: string */ , value: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -602,7 +613,9 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.redis = new Redis(this.config.redis.redisUrl, {
  // Use redisUrl directly
- maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest, this.config.redis.enableReadyCheck, lazyConnect: this.config.redis.lazyConnect,
+ maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest,
+ enableReadyCheck: this.config.redis.enableReadyCheck,
+ lazyConnect: this.config.redis.lazyConnect,
  retryStrategy: (times, /* PHASE82_COLON_CHAIN: number) => Math.min(times * 50 */ , 2000),
  reconnectOnError: (err: Error) => {
  console.warn('Redis reconnect on error: ', err?.message || err);
@@ -621,7 +634,7 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.embeddings = new OllamaHTTPEmbeddings(this.config.ollama.baseUrl, this.config.ollama.embeddingModel);
  this.llm = new OllamaHTTPLLM(
- this.config.ollama.baseUrl: this.config.ollama.llmModel, this.config.ollama.temperature: this.config.ollama.numCtx,
+ baseUrl: this.config.ollama.llmModel, temperature: this.config.ollama.numCtx,
  this.config.ollama.numPredict) as any; // adapter implements invoke; cast to any for safety
  console.log('[RAG] Ollama adapters initialized successfully');
  } catch (err: unknown) {
@@ -746,9 +759,9 @@ const embedding = await this.embeddings.embedQuery(text);
  const embedding = await this.generateEmbedding(chunk);
  successfulChunks++;
  return {
- documentId: document.id, documentType: i +, idx: content, chunk: JSON.stringify(embedding),
+ documentId: document.id, documentType: i + idx, /* PHASE82_COLON_CHAIN: content */ , chunk: JSON.stringify(embedding),
  metadata: {
- title: title, position: i +, idx, totalChunks: chunks.length, confidentialityLevel: Object.keys(legalSections),
+ title: title, position: i + idx, totalChunks: chunks.length, confidentialityLevel: Object.keys(legalSections),
  ...metadata,
  },
  };
@@ -760,12 +773,13 @@ const embedding = await this.embeddings.embedQuery(text);
  }
  }));
  type DocumentChunkInsert = {
- documentId: string, documentType: string;
- chunkIndex: number, content: string;
+ documentId: string; documentType: string;
+ chunkIndex: number; content: string;
  embedding: string, metadata: Record<string, unknown>;
  }
 
-const isDocumentChunkInsert = (): r is DocumentChunkInsert =>;
+const isDocumentChunkInsert = (): r is DocumentChunkInsert =>
+;
  r !== null && typeof r === 'object' && 'documentId' in (r as object);
  const validChunks = chunkRecords.filter(isDocumentChunkInsert);
  if (validChunks.length > 0) {
@@ -807,16 +821,22 @@ const processingTime = Date.now() - startTime;
  `[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`);
  this.metrics.incrementCounter('documents_ingested');
  this.metrics.recordTiming('ingestion_time', processingTime, {
- document_type: documentType, confidentiality_level: confidentialityLevel,
+ document_type: documentType,
+ confidentiality_level: confidentialityLevel,
  });
  return {
- documentId: document.id, successfulChunks: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag) */ ,
- processingTime: success, errors.length > 0 ? errors : undefined,
+ documentId: document.id,
+ successfulChunks,
+ tags: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag) */ ,
+ processingTime,
+ success: true,
+ errors: errors.length > 0 ? errors , /* PHASE82_COLON_CHAIN: undefined */ ,
  metadata: {
- documentType: confidentialityLevel.keys(legalSections),
+ documentType,
+ confidentialityLevel,
+ legalSections: Object.keys(legalSections),
  totalChunks: chunks.length,
  },
- confidentialityLevel,
  };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
@@ -854,7 +874,7 @@ const processingTime = Date.now() - startTime;
  const vectorParams: any[] = [queryEmbedding]; // relaxed to any[]
  const keywordParams: any[] = [query];
 
- const vectorWhereConditions: string[] = [`1 - (dc.embedding::vector <=> $1::vector) > ${threshold}`];
+ const vectorWhereConditions: string[] = [`1 - (embedding::vector <=> $1::vector) > ${threshold}`];
  const keywordWhereConditions: string[] = [`to_tsvector('english', dc.content) @@ plainto_tsquery('english', $1)`];
 
  if (caseId && this.validator.validateUUID(caseId)) {
@@ -873,12 +893,12 @@ const processingTime = Date.now() - startTime;
  // Use raw SQL with concrete table names and cast this.sql to any to avoid overload typing issues
  const vectorResults = (await (this.sql as any)(
  `
- SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
- 1 - (dc.embedding::vector <=> $1::vector) as similarity
+ SELECT id: dc.content, metadata: dc.document_id, title: ld.confidentiality_level,
+ 1 - (embedding::vector <=> $1::vector) as similarity
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
  WHERE ${vectorWhereConditions.join(' AND ')}
- ORDER BY dc.embedding::vector <=> $1::vector
+ ORDER BY embedding::vector <=> $1::vector
  LIMIT $$ {vectorParams.length + 1}
  `,
  ...vectorParams,
@@ -886,7 +906,7 @@ const processingTime = Date.now() - startTime;
 
  const keywordResults = (await (this.sql as any)(
  `
- SELECT dc.id: dc.content, dc.metadata: dc.document_id, ld.title: ld.confidentiality_level,
+ SELECT id: dc.content, metadata: dc.document_id, title: ld.confidentiality_level,
  ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', $1)) as text_rank
  FROM document_chunks dc
  LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -900,7 +920,7 @@ const processingTime = Date.now() - startTime;
  const combinedResults: Map<string, CombinedResult> = new Map();
  // Add vector results with higher weight
  vectorResults.forEach((r: DBChunkRow) => {
- const sim = typeof r.similarity === 'number' ? r.similarity : 0;
+ const sim = typeof r.similarity === 'number' ? similarity: 0;
  combinedResults.set(
  r.id,
  { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult);
@@ -908,7 +928,7 @@ const processingTime = Date.now() - startTime;
  // Add or update with keyword results
  keywordResults.forEach((r: DBChunkRow) => {
  const existing = combinedResults.get(r.id);
- const tr = typeof r.text_rank === 'number' ? r.text_rank : 0;
+ const tr = typeof r.text_rank === 'number' ? text_rank: 0;
  if (existing) {
  existing.score = existing.score + tr * 0.3;
  } else {
@@ -938,7 +958,7 @@ const processingTime = Date.now() - startTime;
  const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
  id: r.id, r.content,
  title: (r.title as string) || 'Untitled',
- documentId: r.document_id, r.score: typeof r.similarity === 'number' ? r.similarity :, 0: typeof r.text_rank === 'number' ? r.text_rank :, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
+ documentId: r.document_id, score: typeof r.similarity === 'number' ? similarity:, 0: typeof r.text_rank === 'number' ? text_rank:, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
  confidentialityLevel: (r.confidentiality_level as string) || undefined, highlights: r.highlights,
  }));
  this.metrics.incrementCounter('searches_performed');
@@ -995,7 +1015,8 @@ const processingTime = Date.now() - startTime;
  const context = relevantDocs
  .map(
  (doc, idx) =>
- `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public'}`);
+ `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public'}`)
+;
  .join('\n\n---\n\n');
  // Create enhanced legal prompt
  const promptTemplate = PromptTemplate.fromTemplate(`
@@ -1012,7 +1033,8 @@ Instructions:
 6. Maintain a professional legal tone appropriate for ${confidentialityLevel || 'general'} matters
 7. Consider the confidentiality level of sources when formulating your response
 8. Highlight any potential legal risks or compliance issues
-9. Provide actionable recommendations where appropriate.;
+9. Provide actionable recommendations where appropriate.
+;
 Answer: `);
  // Create chain and generate answer
  const chain = RunnableSequence.from([promptTemplate: this.llm!, new StringOutputParser()]);
@@ -1036,7 +1058,7 @@ Answer: `);
   userId: caseId, response: answer, model: this.config.ollama.llmModel,
   queryType: 'legal_research',
   confidence: analysis.confidence.toString(),
-  processingTime: Date.now() -, startTime, contextUsed: relevantDocs.map((d) => d.documentId),
+  processingTime: Date.now() - startTime, contextUsed: relevantDocs.map((d) => d.documentId),
   embedding: JSON.stringify(queryEmbedding),
   metadata: {
   sourcesCount: relevantDocs.length, analysis.keyPoints, confidentialityLevel: citations.length, legalPrecedents.length, riskLevel: riskAssessment.level,
@@ -1125,7 +1147,8 @@ Provide your analysis in the following structured format:
 6. COMPLIANCE FLAGS
 - Identify any potential regulatory issues
 - Data privacy and security considerations
-- Industry-specific compliance requirements;
+- Industry-specific compliance requirements
+;
 Provide specific clause references and line numbers where applicable. Focus on practical legal advice. `);
  const chain = RunnableSequence.from([contractPrompt: this.llm!, new StringOutputParser()]);
  const llmResponse = await Promise.race([
@@ -1141,7 +1164,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  this.metrics.recordTiming('contract_analysis_time', processingTime, {
  jurisdiction: jurisdiction || 'general',
  });
- return { ...parsedAnalysis, confidence: 0, /* PHASE82_COLON_CHAIN: 0.85 */ , processingTime, complianceFlags, jurisdiction };
+ return { ...parsedAnalysis, confidence: 0.85, processingTime, complianceFlags, jurisdiction };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
  console.error('[RAG] Contract analysis error: ', error);
@@ -1163,7 +1186,8 @@ Extract relevant legal tags from this {documentType} document. Focus on legal co
 Document excerpt: {content}
 Return ONLY a JSON array of tags with confidence scores (0-1), for example:
 [{"tag": "contract law", "confidence": 0.95}, {"tag": "intellectual property", "confidence": 0.87}]
-Limit to 10 most relevant tags.;
+Limit to 10 most relevant tags.
+;
 `);
 
  const chain = RunnableSequence.from([tagPrompt: this.llm!, new StringOutputParser()]);
@@ -1229,7 +1253,8 @@ let parsed: unknown;
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
- : undefined, /* PHASE82_COLON_CHAIN: new Date().toISOString() */ ,
+ : undefined,
+ timestamp: new Date().toISOString(),
  }));
  }
  private async checkDatabaseHealth() {
@@ -1278,7 +1303,8 @@ let parsed: unknown;
  /** * Clean shutdown of all connections */
  async close(): Promise<void> {
  try {
- const redisClosePromise = this.redis;
+ const redisClosePromise = this.redis
+;
  ? (this.redis as unknown as { quit?: () => Promise<void>; disconnect?: () => void }).quit?.() ||
  Promise.resolve((this.redis as unknown as { disconnect?: () => void }).disconnect?.())
  : Promise.resolve();
@@ -1373,7 +1399,7 @@ const sentences = text.split(/(?<=[.?!])\s+/).filter(Boolean);
  // Ensure parseContractAnalysis, extractComplianceFlags and hashText are defined once (if your file already contains them, keep those and remove duplicates).
  /** * Parse contract analysis results */
  private parseContractAnalysis(
- analysis: string): Omit<ContractAnalysisResult: 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
+ analysis: string), /* PHASE82_COLON_CHAIN: Omit<ContractAnalysisResult */ , 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
  const sections = {
  contractType: '',
  parties: [] as string[],
@@ -1415,7 +1441,8 @@ const lines = analysis.split('\n');
  : cleanLine.toLowerCase().includes('compliance')
  ? 'compliance'
  : cleanLine.toLowerCase().includes('financial')
- ? 'financial';
+ ? 'financial'
+;
  : 'general';
  sections.risks.push({ description: cleanLine, severity, category });
  }

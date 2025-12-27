@@ -47,9 +47,58 @@ function fixArrowReturnSplice(s) {
 function fixGenericTypeColons(s) {
   // Fix Record<string: unknown> -> Record<string, unknown>
   // Fix Map<string: any> -> Map<string, any>
+  // Fix Omit<T: K> -> Omit<T, K>
   return s.replace(
-    /\b(Record|Map|Promise)\s*<\s*([^,>]+?)\s*:\s*([^>]+?)\s*>/g,
+    /\b(\w+)\s*<\s*([^,>]+?)\s*:\s*([^>]+?)\s*>/g,
     "$1<$2, $3>"
+  );
+}
+
+function fixMethodSignatureDamage(s) {
+  // Repair damage from fixColonChains on method signatures
+  // embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]> */ ;
+  // -> embedQuery(input: string): Promise<number[]> ;
+  return s.replace(
+    /(\([^)]+:\s*[^,:{}\n]+)\),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(;|})/g,
+    "$1): $2$3"
+  );
+}
+
+function fixArrowFunctionDamage(s) {
+  // Repair damage from fixColonChains on arrow functions
+  // invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput> */
+  // -> invoke: (input: RunnableInvokeInput) => Promise<RunnableInvokeOutput>
+  return s.replace(
+    /(\(\w+),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(,|}|;)/g,
+    "$1: $2$3"
+  );
+}
+
+function fixDottedKeys(s) {
+  // Fix "this.config.ollama.baseUrl: val" -> "baseUrl: val"
+  // Fix "r.score: val" -> "score: val"
+  // Only inside object literals (heuristic: followed by colon)
+  return s.replace(
+    /([a-zA-Z0-9_$]+\.)+([a-zA-Z0-9_$]+)\s*:/g,
+    "$2:"
+  );
+}
+
+function fixBadCommaOperators(s) {
+  // Fix "Date.now() -, startTime" -> "Date.now() - startTime"
+  // Fix "i +, idx" -> "i + idx"
+  return s.replace(
+    /(\s[-+*\/])\s*,\s*/g,
+    "$1 "
+  );
+}
+
+function fixArrayColons(s) {
+  // Fix "[a: b]" -> "[a, b]" (inside array literal)
+  // e.g. RunnableSequence.from([promptTemplate: this.llm!])
+  return s.replace(
+    /\[\s*([a-zA-Z0-9_$]+)\s*:\s*([a-zA-Z0-9_$!.()]+)\s*\]/g,
+    "[$1, $2]"
   );
 }
 
@@ -76,8 +125,10 @@ function fixDoubleValues(s) {
   // Fix "key: val val," -> "key: val,"
   // e.g. "autosaveInterval: 4000 4000," -> "autosaveInterval: 4000,"
   // e.g. "y: 0 0," -> "y: 0,"
+  // NOTE: We must exclude space from the value capture to detect the duplication
+  // AND exclude semicolon to avoid eating next property
   return s.replace(
-    /(\b\w+\s*:\s*)([^,:{}\n]+)\s+\2\s*(,|})/g,
+    /(\b\w+\s*:\s*)([^,:{}\n\s;]+)\s+\2\s*(,|}|;)/g,
     "$1$2$3"
   );
 }
@@ -85,9 +136,57 @@ function fixDoubleValues(s) {
 function fixColonChains(s) {
   // Fix "key: val1: val2," -> "key: val1, /* PHASE82_COLON_CHAIN: val2 */"
   // e.g. "maxStorage...: val1: val2,"
+  // Avoid matching index signatures like [key: string]
+  // AND exclude semicolon to avoid eating next property on same line
   return s.replace(
-    /(\b\w+\s*:\s*[^,:{}\n]+)\s*:\s*([^,:{}\n]+)\s*(,|})/g,
+    /(\b(?<!\[)\w+\s*:\s*[^,:{}\n;]+)\s*:\s*([^,:{}\n;]+)\s*(,|}|;)/g,
     "$1, /* PHASE82_COLON_CHAIN: $2 */ $3"
+  );
+}
+
+function fixColonChainDamage(s) {
+  // Repair damage from previous fixColonChains run where it ate a semicolon
+  // e.g. "score: number; highlights, /* PHASE82_COLON_CHAIN: string[] */ }"
+  // -> "score: number; highlights: string[] }"
+  return s.replace(
+    /(\b\w+\s*:\s*[^,:{}\n]+);\s*(\w+),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(}|;)/g,
+    "$1; $2: $3$4"
+  );
+}
+
+function fixIndexSignatureDamage(s) {
+  // Repair damage from previous fixColonChains run on index signatures
+  // [key: string], /* PHASE82_COLON_CHAIN: unknown; */ } -> [key: string]: unknown; }
+  // [key: string], /* PHASE82_COLON_CHAIN: unknown */ } -> [key: string]: unknown }
+  // Also handles [k: string] or other identifiers
+  return s.replace(
+    /\[\w+:\s*\w+\]\s*,\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(}|;)/g,
+    (match, type, end) => {
+      // Extract the index signature part from the match start
+      const indexSig = match.match(/^\[\w+:\s*\w+\]/)[0];
+      return `${indexSig}: ${type}${end}`;
+    }
+  );
+}
+
+function fixTypeColonNull(s) {
+  // Fix "type: null" -> "type | null"
+  // e.g. "similarity?: number: null;" -> "similarity?: number | null;"
+  return s.replace(
+    /(\b\w+\??\s*:\s*\w+)\s*:\s*(null|undefined)\s*(;|}|,)/g,
+    "$1 | $2$3"
+  );
+}
+
+function fixMixedSeparators(s) {
+  // Fix "id: string, entityId: string;" -> "id: string; entityId: string;"
+  // This is common in DrizzleTable definitions in rag-pipeline-enhanced.ts
+  // We look for a block that ends with ; but has , inside.
+  // This is hard to do safely with regex globally.
+  // Instead, let's target the specific pattern: "prop: type, prop: type;"
+  return s.replace(
+    /(\b\w+\??\s*:\s*[^,;{}]+)\s*,\s*(\b\w+\??\s*:\s*[^,;{}]+)\s*;/g,
+    "$1; $2;"
   );
 }
 
@@ -147,10 +246,19 @@ function applyFixes(input) {
   s = fixFunctionReturnSplice(s);
   s = fixArrowReturnSplice(s);
   s = fixGenericTypeColons(s);
+  s = fixMethodSignatureDamage(s);
+  s = fixArrowFunctionDamage(s);
+  s = fixDottedKeys(s);
+  s = fixBadCommaOperators(s);
+  s = fixArrayColons(s);
   s = fixBadFunctionCallColons(s);
   s = fixClassPropertyCommas(s);
   s = fixDoubleValues(s);
   s = fixColonChains(s);
+  s = fixColonChainDamage(s);
+  s = fixIndexSignatureDamage(s);
+  s = fixTypeColonNull(s);
+  s = fixMixedSeparators(s);
   s = dropImmediateDuplicateBlocks(s);
 
   return { text: s, changed: s !== before };

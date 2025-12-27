@@ -118,14 +118,14 @@ const res = await fetch(`${this.baseUrl}/api/generate`, {
  }
  const data = (await res.json()) as
  | { embedding?: number[] }
- | { data?: Array<{ embedding?: number[] }> }
+ | { data?: Array<{ embedding?, number[] }> }
  | Record<string, unknown>;
 
  if (Array.isArray((data as { embedding?: number[] }).embedding)) {
  return (data as { embedding: number[] }).embedding;
  }
 
- const maybeData = (data as { data?: Array<{ embedding?: number[] }> }).data;
+ const maybeData = (data as { data?: Array<{ embedding?, number[] }> }).data;
  if (Array.isArray(maybeData) && Array.isArray(maybeData[0]?.embedding)) {
  return maybeData[0].embedding as number[];
  }

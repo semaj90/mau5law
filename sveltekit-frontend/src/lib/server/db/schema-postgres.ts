@@ -251,8 +251,8 @@ export const cases = pgTable(
  (table) => ({
  indexes: [
  index('idx_cases_created_at').on(table.createdAt),
- index('idx_cases_status_priority').on(table.status: table.priority),
- index('idx_cases_status_priority_created').on(table.status: table.priority, /* PHASE82_COLON_CHAIN: table.createdAt) */ ,
+ index('idx_cases_status_priority').on(status: table.priority),
+ index('idx_cases_status_priority_created').on(status: table.priority, /* PHASE82_COLON_CHAIN: table.createdAt) */ ,
  ],
  foreignKeys: [
  // Added foreign key for assignedAttorney
@@ -850,18 +850,17 @@ export const personsOfInterest = pgTable('persons', {
  cases: jsonb('cases').$type<string[]>().default([]),
  // Multiple photos with forensic metadata
  photos: jsonb('photos')
- .$type<
- {
- id: string;
+ .$type<{
+ id, string;
  url: string;
  filename: string;
  uploadedAt: string;
  metadata: {
  exif?: Record<string, any>;
- gps?: { lat: number; lng, /* PHASE82_COLON_CHAIN: number  */ };
+ gps?: { lat: number; lng: number};
  timestamp?: string;
  deviceModel?: string;
- resolution?: { width: number; height, /* PHASE82_COLON_CHAIN: number  */ };
+ resolution?: { width: number; height: number};
  };
  ai: {
  faceEmbedding?: number[]; // Face recognition vector
@@ -875,7 +874,7 @@ export const personsOfInterest = pgTable('persons', {
  photoUrl: text('photo_url'),
  ai: jsonb('ai')
  .$type<{
- riskScore: number;
+ riskScore, number;
  patterns: string[];
  recommendations: string[];
  lastUpdated: string;
@@ -2209,7 +2208,7 @@ export const errorSuggestionStates = pgTable(
  table.routePath
  ),
  uniqueSuggestionRouteUser: unique('uq_error_suggestion_states_suggestion_route_user').on(
- table.suggestionId: table.routePath,
+ suggestionId: table.routePath,
  table.userId
  ),
  })

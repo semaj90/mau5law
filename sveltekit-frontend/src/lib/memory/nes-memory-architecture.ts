@@ -139,7 +139,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('INTERNAL_RAM', {
  id: 0,
  type: 'INTERNAL_RAM',
- startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, NES_MEMORY_MAP.INTERNAL_RAM.end, NES_MEMORY_MAP.INTERNAL_RAM.size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, NES_MEMORY_MAP.INTERNAL_RAM.end, size: used, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -148,7 +148,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('CHR_ROM', {
  id: 1,
  type: 'CHR_ROM',
- startAddress: NES_MEMORY_MAP.CHR_ROM.start, NES_MEMORY_MAP.CHR_ROM.end, NES_MEMORY_MAP.CHR_ROM.size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.CHR_ROM.start, NES_MEMORY_MAP.CHR_ROM.end, size: used, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -157,7 +157,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('PRG_ROM', {
  id: 2,
  type: 'PRG_ROM',
- startAddress: NES_MEMORY_MAP.PRG_ROM.start, NES_MEMORY_MAP.PRG_ROM.end, NES_MEMORY_MAP.PRG_ROM.size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.PRG_ROM.start, NES_MEMORY_MAP.PRG_ROM.end, size: used, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -166,7 +166,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('SAVE_RAM', {
  id: 3,
  type: 'SAVE_RAM',
- startAddress: NES_MEMORY_MAP.SAVE_RAM.start, NES_MEMORY_MAP.SAVE_RAM.end, NES_MEMORY_MAP.SAVE_RAM.size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.SAVE_RAM.start, NES_MEMORY_MAP.SAVE_RAM.end, size: used, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -175,7 +175,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('EXPANSION_ROM', {
  id: 4,
  type: 'EXPANSION_ROM',
- startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, NES_MEMORY_MAP.EXPANSION_ROM.end, NES_MEMORY_MAP.EXPANSION_ROM.size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, NES_MEMORY_MAP.EXPANSION_ROM.end, size: used, documents: new Map(),
  isActive: false, // Activated on-demand
  lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
@@ -293,7 +293,7 @@ export class NESMemoryArchitecture {
  // Critical legal documents go to fast RAM
  if (document.riskLevel === 'critical' || document.confidenceLevel > 0.9) {
  if (
- this.memoryBanks.get('INTERNAL_RAM')!.used + size <=
+ this.memoryBanks.get('INTERNAL_RAM')!.used + size<=
  this.memoryBanks.get('INTERNAL_RAM')!.size
  ) {
  return 'INTERNAL_RAM';
@@ -322,7 +322,7 @@ export class NESMemoryArchitecture {
  }
 
  private calculateLegalPriority(
- document: Omit<LegalDocument, 'lastAccessed' | 'priority'>
+ document, Omit<LegalDocument, 'lastAccessed' | 'priority'>
  ): number {
  let priority = this.LEGAL_PRIORITIES.medium; // Base priority
 
@@ -687,7 +687,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
+ private transpositionCache: Map<string, { visits: number; value: number; updated: number}>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -823,7 +823,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity, this.records.length - this.freeList.length: free, this.freeList.length, transpositions: this.transpositionCache.size,
+ capacity: this.capacity, this.records.length - length: free, this.freeList.length, transpositions: this.transpositionCache.size,
  };
  }
 }
@@ -834,11 +834,11 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string, parentHandle: number;
- prior: number, depth: number;
+ graphNodeId: string; parentHandle: number;
+ prior: number; depth: number;
  }) {
  return plannerMemory.allocate(
- params.graphNodeId: params.parentHandle,
+ graphNodeId: params.parentHandle,
  params.prior,
  params.depth
  );
@@ -902,7 +902,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
+ private transpositionCache: Map<string, { visits: number; value: number; updated: number}>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -1038,7 +1038,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity, this.records.length - this.freeList.length: free, this.freeList.length, transpositions: this.transpositionCache.size,
+ capacity: this.capacity, this.records.length - length: free, this.freeList.length, transpositions: this.transpositionCache.size,
  };
  }
 }
@@ -1049,11 +1049,11 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string, parentHandle: number;
- prior: number, depth: number;
+ graphNodeId: string; parentHandle: number;
+ prior: number; depth: number;
  }) {
  return plannerMemory.allocate(
- params.graphNodeId: params.parentHandle,
+ graphNodeId: params.parentHandle,
  params.prior,
  params.depth
  );
@@ -1117,7 +1117,7 @@ class PlannerMemoryManager {
  private handleByGraphId: Map<string, number> = new Map();
  private insertionOrder: number[] = []; // for eviction
  private freeList: number[] = [];
- private transpositionCache: Map<string, { visits: number, value: number; updated, /* PHASE82_COLON_CHAIN: number  */ }>;
+ private transpositionCache: Map<string, { visits: number; value: number; updated: number}>;
  private lastAllocation = 0;
 
  constructor(capacity = 8192) {
@@ -1253,7 +1253,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity, this.records.length - this.freeList.length: free, this.freeList.length, transpositions: this.transpositionCache.size,
+ capacity: this.capacity, this.records.length - length: free, this.freeList.length, transpositions: this.transpositionCache.size,
  };
  }
 }
@@ -1264,11 +1264,11 @@ export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
  allocateNode(params: {
- graphNodeId: string, parentHandle: number;
- prior: number, depth: number;
+ graphNodeId: string; parentHandle: number;
+ prior: number; depth: number;
  }) {
  return plannerMemory.allocate(
- params.graphNodeId: params.parentHandle,
+ graphNodeId: params.parentHandle,
  params.prior,
  params.depth
  );
