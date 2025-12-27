@@ -37,14 +37,14 @@ function fixGenericTypeColons(s) {
 
 function fixMethodSignatureDamage(s) {
   return s.replace(
-    /(\([^)]+:\s*[^,:{}\n]+)\),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(;|})/g,
-    "$1): $2$3"
+    /(\([^)]+\)),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(;|})/g,
+    "$1: $2$3"
   );
 }
 
 function fixArrowFunctionDamage(s) {
   return s.replace(
-    /(\(\w+),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(,|}|;)/g,
+    /(\(\s*\w+\s*),\s*\/\*\s*PHASE82_COLON_CHAIN:\s*([^*]+?)\s*\*\/\s*(,|}|;)/g,
     "$1: $2$3"
   );
 }

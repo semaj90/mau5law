@@ -30,7 +30,7 @@ export class OllamaService {
  private baseUrl: string;
  private readonly timeout: number;
 
- constructor(baseUrl = process.env.OLLAMA_URL || 'http://localhost, /* PHASE82_COLON_CHAIN: 11434' */ , timeout = 30000) {
+ constructor(baseUrl = process.env.OLLAMA_URL || 'http://localhost, /* PHASE82_COLON_CHAIN: 11434'  */ , timeout = 30000) {
  this.baseUrl = baseUrl.replace(/\/$/, '');
  this.timeout = timeout;
  }
@@ -74,7 +74,7 @@ export class OllamaService {
  model,
  prompt: stream.stream ?? false,
  options: {
- temperature: options.temperature ?? 0.7, /* PHASE82_COLON_CHAIN: num_predict.max_tokens ?? 1000 */ ,
+ temperature: options.temperature ?? 7, /* PHASE82_COLON_CHAIN: num_predict.max_tokens ?? 1000  */ ,
  },
  }
 

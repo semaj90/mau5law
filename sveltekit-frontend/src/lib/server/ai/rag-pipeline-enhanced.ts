@@ -312,7 +312,7 @@ function getLLMText(response: unknown): string { // Changed type from Response t
 // ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
 /** * Interface for embedding providers. */
 interface EmbeddingsProvider {
- embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]> */ ;
+ embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]>  */ ;
 }
 /** * Minimal InputValidator class. */
 class InputValidator {
@@ -543,7 +543,7 @@ export class EnhancedLegalRAGPipeline {
  private db?: ReturnType<typeof drizzle>;
  private redis?: InstanceType<typeof Redis>;
  private embeddings?: EmbeddingsProvider;
- private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput> */ }; // treat as Runnable-like adapter
+ private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput>  */ }; // treat as Runnable-like adapter
  private validator: InputValidator;
  private rateLimiter: RateLimiter;
  private metrics: MetricsCollector;
@@ -593,8 +593,8 @@ export class EnhancedLegalRAGPipeline {
  ssl: this.config.database.ssl,
  connect_timeout: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
- onnotice: (notice, /* PHASE82_COLON_CHAIN: unknown) => console.debug('[DB] Notice */ , /* PHASE82_COLON_CHAIN: ' */ , notice),
- onparameter: (key, /* PHASE82_COLON_CHAIN: string */ , value: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
+ onnotice: (notice: unknown) => console.debug('[DB] Notice , /* PHASE82_COLON_CHAIN: '  */ , notice),
+ onparameter: (key, /* PHASE82_COLON_CHAIN: string  */ , value: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -759,7 +759,7 @@ const embedding = await this.embeddings.embedQuery(text);
  const embedding = await this.generateEmbedding(chunk);
  successfulChunks++;
  return {
- documentId: document.id, documentType: i + idx, /* PHASE82_COLON_CHAIN: content */ , chunk: JSON.stringify(embedding),
+ documentId: document.id, documentType: i + idx, /* PHASE82_COLON_CHAIN: content  */ , chunk: JSON.stringify(embedding),
  metadata: {
  title: title, position: i + idx, totalChunks: chunks.length, confidentialityLevel: Object.keys(legalSections),
  ...metadata,
@@ -827,10 +827,10 @@ const processingTime = Date.now() - startTime;
  return {
  documentId: document.id,
  successfulChunks,
- tags: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag) */ ,
+ tags: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag)  */ ,
  processingTime,
  success: true,
- errors: errors.length > 0 ? errors , /* PHASE82_COLON_CHAIN: undefined */ ,
+ errors: errors.length > 0 ? errors , /* PHASE82_COLON_CHAIN: undefined  */ ,
  metadata: {
  documentType,
  confidentialityLevel,
@@ -1249,7 +1249,7 @@ let parsed: unknown;
  const services = ['Database', 'Redis', 'Ollama'];
  return checks.map((result, index) => ({
  service: services[index],
- status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' , /* PHASE82_COLON_CHAIN: 'unhealthy' */ ,
+ status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' , /* PHASE82_COLON_CHAIN: 'unhealthy'  */ ,
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
@@ -1399,7 +1399,7 @@ const sentences = text.split(/(?<=[.?!])\s+/).filter(Boolean);
  // Ensure parseContractAnalysis, extractComplianceFlags and hashText are defined once (if your file already contains them, keep those and remove duplicates).
  /** * Parse contract analysis results */
  private parseContractAnalysis(
- analysis: string), /* PHASE82_COLON_CHAIN: Omit<ContractAnalysisResult */ , 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
+ analysis: string), /* PHASE82_COLON_CHAIN: Omit<ContractAnalysisResult  */ , 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
  const sections = {
  contractType: '',
  parties: [] as string[],

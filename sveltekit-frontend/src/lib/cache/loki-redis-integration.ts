@@ -25,16 +25,16 @@ interface RedisClient {
  initialize?(): Promise<void>;
  getClient?(): RedisClient;
  getSubscriber?(): RedisClient;
- psubscribe(pattern: string, ...args: unknown[]): Promise<unknown>;
- subscribe(channel: string, ...args: unknown[]): Promise<unknown>;
- on(event: string, listener: (...args: unknown[]) => void): this;
- setex(key: string, seconds: number, value: string): Promise<unknown>;
- set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
- get(key: string): Promise<string | null>;
- expire(key: string, seconds: number): Promise<unknown>;
- publish(channel: string, message: string): Promise<unknown>;
- keys(pattern: string): Promise<string[]>;
- del(...keys: string[]): Promise<unknown>;
+ psubscribe(pattern: string, ...args: unknown[]), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ subscribe(channel: string, ...args: unknown[]), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ on(event: string, listener: (...args: unknown[]) => void), /* PHASE82_COLON_CHAIN: this  */ ;
+ setex(key: string, seconds: number, value: string), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ set(key: string, value: string, ...args: unknown[]), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ get(key: string), /* PHASE82_COLON_CHAIN: Promise<string | null>  */ ;
+ expire(key: string, seconds: number), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ publish(channel: string, message: string), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
+ keys(pattern: string), /* PHASE82_COLON_CHAIN: Promise<string[]>  */ ;
+ del(...keys: string[]), /* PHASE82_COLON_CHAIN: Promise<unknown>  */ ;
  quit(): Promise<unknown>;
 }
 
@@ -47,7 +47,7 @@ interface NESMemory {
  getDocument(
  documentId: string
  ):
- | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key: string]: unknown })
+ | (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key, string]: unknown })
  | null;
  getMemoryStats(): {
  documentCount?: number;
@@ -86,7 +86,7 @@ const CACHE_CONFIG = {
  host: 'localhost',
  port: 6379,
  db: 0,
- keyPrefix: 'legal_ai:',
+ keyPrefix: 'legal_ai, /* PHASE82_COLON_CHAIN: '  */ ,
  ttl: {
  documents: 3600, // 1 hour
  searches: 1800, // 30 minutes
