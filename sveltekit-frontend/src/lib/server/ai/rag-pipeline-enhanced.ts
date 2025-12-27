@@ -312,7 +312,7 @@ function getLLMText(response: unknown): string { // Changed type from Response t
 // ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
 /** * Interface for embedding providers. */
 interface EmbeddingsProvider {
- embedQuery(input: string), /* PHASE82_COLON_CHAIN: Promise<number[]>  */ ;
+ embedQuery(input: string): Promise<number[]>;
 }
 /** * Minimal InputValidator class. */
 class InputValidator {
@@ -543,7 +543,7 @@ export class EnhancedLegalRAGPipeline {
  private db?: ReturnType<typeof drizzle>;
  private redis?: InstanceType<typeof Redis>;
  private embeddings?: EmbeddingsProvider;
- private llm?: { invoke: (input, /* PHASE82_COLON_CHAIN: RunnableInvokeInput) => Promise<RunnableInvokeOutput>  */ }; // treat as Runnable-like adapter
+ private llm?: { invoke: (input: RunnableInvokeInput) => Promise<RunnableInvokeOutput> }; // treat as Runnable-like adapter
  private validator: InputValidator;
  private rateLimiter: RateLimiter;
  private metrics: MetricsCollector;
@@ -593,8 +593,8 @@ export class EnhancedLegalRAGPipeline {
  ssl: this.config.database.ssl,
  connect_timeout: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
- onnotice: (notice: unknown) => console.debug('[DB] Notice , /* PHASE82_COLON_CHAIN: '  */ , notice),
- onparameter: (key, /* PHASE82_COLON_CHAIN: string  */ , value: unknown) => console.debug(`[DB] Parameter ${key}:`, value),
+ onnotice: (notice) => console.debug('[DB] Notice:', notice as any),
+ onparameter: (key, value) => console.debug(`[DB] Parameter ${key}:`, value as any),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -616,7 +616,7 @@ export class EnhancedLegalRAGPipeline {
  maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest,
  enableReadyCheck: this.config.redis.enableReadyCheck,
  lazyConnect: this.config.redis.lazyConnect,
- retryStrategy: (times, /* PHASE82_COLON_CHAIN: number) => Math.min(times * 50 */ , 2000),
+ retryStrategy: (times: number) => Math.min(times * 50, 2000),
  reconnectOnError: (err: Error) => {
  console.warn('Redis reconnect on error: ', err?.message || err);
  return String(err?.message || '').includes('READONLY');
@@ -634,8 +634,7 @@ export class EnhancedLegalRAGPipeline {
  try {
  this.embeddings = new OllamaHTTPEmbeddings(this.config.ollama.baseUrl, this.config.ollama.embeddingModel);
  this.llm = new OllamaHTTPLLM(
- baseUrl: this.config.ollama.llmModel, temperature: this.config.ollama.numCtx,
- this.config.ollama.numPredict) as any; // adapter implements invoke; cast to any for safety
+ this.config.ollama.baseUrl, this.config.ollama.llmModel, this.config.ollama.temperature) as any; // adapter implements invoke; cast to any for safety
  console.log('[RAG] Ollama adapters initialized successfully');
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
@@ -691,7 +690,7 @@ const cacheKey = `embedding:${this.hashText(text)}`;
 const embedding = await this.embeddings.embedQuery(text);
 
  if (this.config.rag.enableCaching && this.redis) {
- await this.redis.setex(cacheKey: this.config.redis.cacheTtl, JSON.stringify(embedding));
+ await this.redis.setex(cacheKey, this.config.redis.cacheTtl, JSON.stringify(embedding));
  }
  return embedding;
  }
@@ -726,7 +725,7 @@ const embedding = await this.embeddings.embedQuery(text);
  const [doc] = await tx
  .insert(schema.legal_documents as any) // cast to any to avoid Drizzle type mismatch here
  .values({
- title: content, content.substring(0, 10000), // Preview content
+ title: params.title, previewContent: content.substring(0, 10000), // Preview content
  fullText: content,
  keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
  topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
@@ -759,7 +758,7 @@ const embedding = await this.embeddings.embedQuery(text);
  const embedding = await this.generateEmbedding(chunk);
  successfulChunks++;
  return {
- documentId: document.id, documentType: i + idx, /* PHASE82_COLON_CHAIN: content  */ , chunk: JSON.stringify(embedding),
+ documentId: document.id, documentType: params.documentType, chunkIndex: i + idx, content: chunk, embedding: JSON.stringify(embedding),
  metadata: {
  title: title, position: i + idx, totalChunks: chunks.length, confidentialityLevel: Object.keys(legalSections),
  ...metadata,
@@ -827,10 +826,10 @@ const processingTime = Date.now() - startTime;
  return {
  documentId: document.id,
  successfulChunks,
- tags: tags.map((t, /* PHASE82_COLON_CHAIN: AutoTag) => t.tag)  */ ,
+ tags: tags.map((t: AutoTag) => t.tag),
  processingTime,
  success: true,
- errors: errors.length > 0 ? errors , /* PHASE82_COLON_CHAIN: undefined  */ ,
+ errors: errors.length > 0 ? errors : undefined,
  metadata: {
  documentType,
  confidentialityLevel,
@@ -1249,7 +1248,7 @@ let parsed: unknown;
  const services = ['Database', 'Redis', 'Ollama'];
  return checks.map((result, index) => ({
  service: services[index],
- status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' , /* PHASE82_COLON_CHAIN: 'unhealthy'  */ ,
+ status: (result as PromiseSettledResult<unknown>).status === 'fulfilled' ? 'healthy' : 'unhealthy',
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
