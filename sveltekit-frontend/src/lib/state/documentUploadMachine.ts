@@ -14,21 +14,18 @@ import type { EvidenceProcessingContext } from './evidenceProcessingMachine.js';
 export interface DocumentUploadContext {
  // File information
  file?: File;
- filename: string;
- fileSize: number;
+ filename: string;, fileSize: number;
  mimeType: string;
  fileHash?: string;
 
  // Upload details
- caseId: string;
- userId: string;
+ caseId: string;, userId: string;
  title: string;
  description?: string;
  tags: string[];
 
  // Processing state
- uploadProgress: number;
- validationErrors: string[];
+ uploadProgress: number;, validationErrors: string[];
  extractedText?: string;
  documentId?: string;
  evidenceId?: string;
@@ -44,16 +41,13 @@ export interface DocumentUploadContext {
 
  // Error handling
  error?: string;
- retryCount: number;
- maxRetries: number;
+ retryCount: number;, maxRetries: number;
 }
 
 export type DocumentUploadEvent =
  | {
- type: 'SELECT_FILE';
- file: File;
- caseId: string;
- userId: string;
+ type: 'SELECT_FILE';, file: File;
+ caseId: string;, userId: string;
  title: string;
  description?: string;
  tags?: string[];
@@ -63,9 +57,9 @@ export type DocumentUploadEvent =
  | { type: 'RETRY_UPLOAD' }
  | { type: 'CANCEL_UPLOAD' }
  | { type: 'START_PROCESSING' }
- | { type: 'PROCESSING_UPDATE'; progress: number; stage: string }
+ | { type: 'PROCESSING_UPDATE';, progress: number; stage: string }
  | { type: 'PROCESSING_COMPLETE' }
- | { type: 'PROCESSING_FAILED'; error: string }
+ | { type: 'PROCESSING_FAILED';, error: string }
  | { type: 'FORCE_COMPLETE' }
  | { type: 'RESET' };
 
@@ -301,8 +295,8 @@ export const documentUploadMachine: any = setup({
  onError: {
  target: 'validationError',
  actions: assign(({ event }) => ({
- error: `Validation failed: ${String(event.error)}`,
- validationErrors: [`Validation error: ${String(event.error)}`],
+ error: `Validation, failed: ${String(event.error)}`,
+ validationErrors: [`Validation, error: ${String(event.error)}`],
  })),
  },
  },
@@ -339,7 +333,7 @@ export const documentUploadMachine: any = setup({
  // still continue, just record error
  target: 'extractingText',
  actions: assign(({ event }) => ({
- error: `Hash calculation failed: ${String(event.error)}`,
+ error: `Hash calculation, failed: ${String(event.error)}`,
  })),
  },
  },
@@ -358,7 +352,7 @@ export const documentUploadMachine: any = setup({
  onError: {
  target: 'uploadReady',
  actions: assign(({ event }) => ({
- error: `Text extraction failed: ${String(event.error)}`,
+ error: `Text extraction, failed: ${String(event.error)}`,
  })),
  },
  },
@@ -397,7 +391,7 @@ export const documentUploadMachine: any = setup({
  onError: {
  target: 'uploadError',
  actions: assign(({ event }) => ({
- error: `Upload failed: ${String(event.error)}`,
+ error: `Upload, failed: ${String(event.error)}`,
  })),
  },
  },

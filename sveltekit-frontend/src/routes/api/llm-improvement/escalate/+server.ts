@@ -20,9 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 		const { error, attemptedStrategies, confidence, toolResults, context } = body as {
-			error: ErrorReport;, attemptedStrategies: FixStrategy[];
-			confidence: number;, toolResults: DiagnosticResult[];
-			context: ErrorContext;
+			error: ErrorReport;, attemptedStrategies: FixStrategy[];, confidence: number;, toolResults: DiagnosticResult[];, context: ErrorContext;
 		};
 
 		if (!error) {

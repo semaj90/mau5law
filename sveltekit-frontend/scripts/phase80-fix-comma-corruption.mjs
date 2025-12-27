@@ -38,6 +38,7 @@ const dryRun = args.includes('--dry-run');
 const verbose = args.includes('--verbose');
 const maxFiles = parseInt(args.find(a => a.startsWith('--max='))?.split('=')[1] || '100');
 const singleFile = args.find(a => a.startsWith('--file='))?.split('=')[1];
+const listFile = args.find(a => a.startsWith('--list='))?.split('=')[1];
 
 console.log(`🔧 Phase 80 Chunk 12: Comma Corruption Fixer${dryRun ? ' (DRY RUN)' : ''}\n`);
 
@@ -51,6 +52,26 @@ if (singleFile) {
 
   topFiles = [{ path: fullPath, errors: '?' }];
   console.log(`🎯 Target: Single file ${singleFile}\n`);
+} else if (listFile) {
+  // List file mode
+  const listPath = listFile.startsWith('/') || listFile.match(/^[a-zA-Z]:/)
+      ? listFile
+      : join(process.cwd(), listFile);
+
+  try {
+      const content = readFileSync(listPath, 'utf8');
+      topFiles = content.split('\n')
+          .map(l => l.trim())
+          .filter(l => l && !l.startsWith('#'))
+          .map(f => {
+              const fullPath = f.startsWith('/') || f.match(/^[a-zA-Z]:/) ? f : join(root, f);
+              return { path: fullPath, errors: '?' };
+          });
+      console.log(`🎯 Target: List file ${listFile} (${topFiles.length} files)\n`);
+  } catch (e) {
+      console.error(`Error reading list file: ${e.message}`);
+      process.exit(1);
+  }
 } else {
   // Batch mode (Legacy Phase 80)
   try {
