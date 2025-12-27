@@ -252,7 +252,7 @@ export const cases = pgTable(
  indexes: [
  index('idx_cases_created_at').on(table.createdAt),
  index('idx_cases_status_priority').on(status: table.priority),
- index('idx_cases_status_priority_created').on(status: table.priority, /* PHASE82_COLON_CHAIN: table.createdAt) */ ,
+ index('idx_cases_status_priority_created').on(status: priority, /* PHASE82_COLON_CHAIN: table.createdAt)  */ ,
  ],
  foreignKeys: [
  // Added foreign key for assignedAttorney
@@ -658,7 +658,7 @@ export const autoTagsTable = pgTable(
  name: 'auto_tags_confirmed_by_users_id_fk',
  }).onDelete('set null'),
  ],
- indexes: [index('idx_autotags_entity').on(table.entityId, /* PHASE82_COLON_CHAIN: table.entityType)] */ ,
+ indexes: [index('idx_autotags_entity').on(entityId, /* PHASE82_COLON_CHAIN: table.entityType)]  */ ,
  })
 );
 
@@ -1441,7 +1441,7 @@ export const caseNoteEvidenceRefs = pgTable(
  (table) => ({
  noteIdIdx: index('case_note_refs_note_id_idx').on(table.noteId),
  evidenceIdIdx: index('case_note_refs_evidence_id_idx').on(table.evidenceId),
- uniqueRef: unique('case_note_refs_unique').on(table.noteId, /* PHASE82_COLON_CHAIN: table.evidenceId) */ ,
+ uniqueRef: unique('case_note_refs_unique').on(noteId, /* PHASE82_COLON_CHAIN: table.evidenceId)  */ ,
  })
 );
 

@@ -39,7 +39,7 @@ class PerformanceMonitor {
  return v.reduce((a, b) => a + b, 0) / v.length;
  }
 
- getComparison(): { json: number; grpc, /* PHASE82_COLON_CHAIN: number; improvement */ , /* PHASE82_COLON_CHAIN: number  */ } {
+ getComparison(): { json: number; grpc: number; improvement : number  } {
  const json = this.getAverageMetric('json_processing');
  const grpc = this.getAverageMetric('grpc_processing');
  const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -49,10 +49,10 @@ class PerformanceMonitor {
 
 // Simple logger - avoid `any`
 const logger = {
- info: (msg, /* PHASE82_COLON_CHAIN: string */ , ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
- error: (msg, /* PHASE82_COLON_CHAIN: string */ , ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
- warn: (msg, /* PHASE82_COLON_CHAIN: string */ , ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
- debug: (msg, /* PHASE82_COLON_CHAIN: string */ , ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+ info: (msg, /* PHASE82_COLON_CHAIN: string  */ , ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
+ error: (msg, /* PHASE82_COLON_CHAIN: string  */ , ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
+ warn: (msg, /* PHASE82_COLON_CHAIN: string  */ , ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
+ debug: (msg, /* PHASE82_COLON_CHAIN: string  */ , ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
 };
 
 // --- Added: narrow gRPC types moved ahead of the class to avoid "cannot find name" errors
@@ -85,12 +85,12 @@ type GrpcStreamUpdate = {
 }
 
 type GrpcWritableStream = {
- write: (data, /* PHASE82_COLON_CHAIN: any) => void */ ;
+ write: (data, /* PHASE82_COLON_CHAIN: any) => void  */ ;
  end: () => void;
- on: (event, /* PHASE82_COLON_CHAIN: 'data' | 'error' | 'end' */ , handler: (payload?, /* PHASE82_COLON_CHAIN: unknown) => void) => void; */ }
+ on: (event, /* PHASE82_COLON_CHAIN: 'data' | 'error' | 'end'  */ , handler: (payload?, /* PHASE82_COLON_CHAIN: unknown) => void) => void */ ; }
 
 type GrpcClientType = {
- ScoreCase?: (req: unknown, cb: (err, /* PHASE82_COLON_CHAIN: any */ ; res?: GrpcResponse) => void) => void;
+ ScoreCase?: (req: unknown, cb: (err, /* PHASE82_COLON_CHAIN: any  */ ; res?: GrpcResponse) => void) => void;
  StreamScoringUpdates?: () => GrpcWritableStream | undefined;
  StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -242,7 +242,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
 const proto = loadedPkg as ExpectedProtoShape;
  const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
- | { new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType */ }
+ | { new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType  */ }
  | undefined;
 
  if (!CaseScoringService) {
@@ -252,7 +252,7 @@ const proto = loadedPkg as ExpectedProtoShape;
 
  // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
  this.grpcClient = new (CaseScoringService as unknown as {
- new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType */ ;})(target, grpc.credentials.createInsecure(), {
+ new (...args: unknown[]), /* PHASE82_COLON_CHAIN: GrpcClientType  */ ;})(target, grpc.credentials.createInsecure(), {
  'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB
  'grpc.max_send_message_length': 100 * 1024 * 1024,
  'grpc.keepalive_time_ms': 10000,
@@ -616,7 +616,7 @@ const req = {
  data?: unknown;
  } {
  return {
- caseId: update.case_id, update.event_type, timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) , /* PHASE82_COLON_CHAIN: new Date() */ ,
+ caseId: update.case_id, update.event_type, timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) , /* PHASE82_COLON_CHAIN: new Date()  */ ,
  sequenceNumber: update.sequence_number, update.partial_score ??
  update.criteria_update ??
  update.recommendation_update ??
@@ -723,7 +723,7 @@ const title = String(caseData['title'] ?? 'N/A');
  const prompt = promptLines.join('\n');
 
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: request.temperature ?? this.DEFAULT_TEMPERATURE, /* PHASE82_COLON_CHAIN: max_tokens */ });
+ temperature: request.temperature ?? DEFAULT_TEMPERATURE, /* PHASE82_COLON_CHAIN: max_tokens  */ });
  }
 
  private async calculateComponentScores(

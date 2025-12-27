@@ -139,7 +139,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('INTERNAL_RAM', {
  id: 0,
  type: 'INTERNAL_RAM',
- startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, NES_MEMORY_MAP.INTERNAL_RAM.end, size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end, size: NES_MEMORY_MAP.INTERNAL_RAM.size, used: 0, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -148,7 +148,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('CHR_ROM', {
  id: 1,
  type: 'CHR_ROM',
- startAddress: NES_MEMORY_MAP.CHR_ROM.start, NES_MEMORY_MAP.CHR_ROM.end, size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.CHR_ROM.start, endAddress: NES_MEMORY_MAP.CHR_ROM.end, size: NES_MEMORY_MAP.CHR_ROM.size, used: 0, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -157,7 +157,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('PRG_ROM', {
  id: 2,
  type: 'PRG_ROM',
- startAddress: NES_MEMORY_MAP.PRG_ROM.start, NES_MEMORY_MAP.PRG_ROM.end, size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.PRG_ROM.start, endAddress: NES_MEMORY_MAP.PRG_ROM.end, size: NES_MEMORY_MAP.PRG_ROM.size, used: 0, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -166,7 +166,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('SAVE_RAM', {
  id: 3,
  type: 'SAVE_RAM',
- startAddress: NES_MEMORY_MAP.SAVE_RAM.start, NES_MEMORY_MAP.SAVE_RAM.end, size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.SAVE_RAM.start, endAddress: NES_MEMORY_MAP.SAVE_RAM.end, size: NES_MEMORY_MAP.SAVE_RAM.size, used: 0, documents: new Map(),
  isActive: true, lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
  });
@@ -175,7 +175,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('EXPANSION_ROM', {
  id: 4,
  type: 'EXPANSION_ROM',
- startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, NES_MEMORY_MAP.EXPANSION_ROM.end, size: used, documents: new Map(),
+ startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, endAddress: NES_MEMORY_MAP.EXPANSION_ROM.end, size: NES_MEMORY_MAP.EXPANSION_ROM.size, used: 0, documents: new Map(),
  isActive: false, // Activated on-demand
  lastBankSwitch: Date.now(),
  compressionRatio: 1.0,
@@ -359,7 +359,7 @@ export class NESMemoryArchitecture {
  compressionLevel: number
  ): Promise<any> {
  if (!this.compressionWorker) {
- return { data: ratio, /* PHASE82_COLON_CHAIN: 1.0 */ , priority: 128 };
+ return { data: ratio, /* PHASE82_COLON_CHAIN: 1.0  */ , priority: 128 };
  }
 
  return new Promise((resolve, reject) => {
@@ -383,7 +383,7 @@ export class NESMemoryArchitecture {
  this.compressionWorker!.postMessage({
  documentData: data,
  legalContext: {
- type: document.type, /* PHASE82_COLON_CHAIN: document.riskLevel */ , document.confidenceLevel,
+ type: type, /* PHASE82_COLON_CHAIN: document.riskLevel  */ , document.confidenceLevel,
  },
  compressionLevel,
  });
@@ -582,7 +582,7 @@ export class NESMemoryArchitecture {
  totalCHR,
  usedCHR,
  totalPRG: usedPRG.bankSwitchCount, this.gcCount, this.calculateCompressionSavings(),
- documentCount: accessCount > 0 ? totalAccessTime / accessCount , /* PHASE82_COLON_CHAIN: 0 */ ,
+ documentCount: accessCount > 0 ? totalAccessTime / accessCount , /* PHASE82_COLON_CHAIN: 0  */ ,
  };
  }
 

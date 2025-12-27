@@ -87,7 +87,7 @@ export class WebGPUSOMCache {
  private redisConfig = {
  host: 'localhost',
  port: 6379,
- keyPrefix: 'som_cache, /* PHASE82_COLON_CHAIN: ' */ ,
+ keyPrefix: 'som_cache, /* PHASE82_COLON_CHAIN: '  */ ,
  syncInterval: 30000, // 30 seconds
  };
  private syncTimer: unknown = null;
@@ -250,7 +250,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  this.device = await adapter.requestDevice({
  requiredFeatures: ['shader-f16'] as GPUFeatureName[],
  requiredLimits: {
- maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize, /* PHASE82_COLON_CHAIN: adapter.limits.maxComputeWorkgroupStorageSize */ ,
+ maxStorageBufferBindingSize: maxStorageBufferBindingSize, /* PHASE82_COLON_CHAIN: adapter.limits.maxComputeWorkgroupStorageSize  */ ,
  },
  });
  console.log('🚀 WebGPU initialized for SOM semantic caching');
@@ -401,7 +401,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  }
 
  const textBuffer = this.device.createBuffer({
- size: paddedText.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
+ size: byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST  */ ,
  });
  const embeddingBuffer = this.device.createBuffer({
  size: embeddingDim * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
@@ -464,7 +464,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
 
  private async callGoSOMAnalyzer(errors, NPMError[]): Promise<IntelligentTodo[]> {
  try {
- const response = await fetch('http://localhost, /* PHASE82_COLON_CHAIN: 8080/api/som/analyze' */ , {
+ const response = await fetch('http://localhost, /* PHASE82_COLON_CHAIN: 8080/api/som/analyze'  */ , {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({ errors }),
@@ -562,19 +562,19 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  });
 
  const adjacencyBuffer = this.device.createBuffer({
- size: adjacencyMatrix.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
+ size: byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST  */ ,
  });
  const scoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST */ ,
+ size: byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST  */ ,
  });
  const newScoresBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC */ ,
+ size: byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC  */ ,
  });
  const paramsBuffer = this.device.createBuffer({
  size: 12, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: pageRankScores.byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ */ ,
+ size: byteLength, /* PHASE82_COLON_CHAIN: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ  */ ,
  });
 
  this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -659,13 +659,13 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
 
  private getLocalCachedTodos(key, string): IntelligentTodo[] | null {
  const cached = this.cacheCollection.findOne({ key });
- if (cached && Date.now() - cached.timestamp < 300000) {
+ if (cached && Date.now() - cached.timestamp<300000) {
  return cached.result ?? cached.value ?? null;
  }
  return null;
  }
 
- private cacheResult(key: string, result: IntelligentTodo[]): void {
+ private cacheResult(key, string, result: IntelligentTodo[]): void {
  this.cacheCollection.removeWhere({ key });
  this.cacheCollection.insert({ key: result.now() });
  }

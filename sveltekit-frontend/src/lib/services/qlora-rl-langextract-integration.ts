@@ -168,7 +168,7 @@ export class QLorARLLangExtractOrchestrator {
  somCacheConfig?: Record<string, unknown>;
  } = {}
  ) {
- this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost:3001';
+ this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost, /* PHASE82_COLON_CHAIN: 3001'  */ ;
  this.nesMemory = new NESMemoryArchitecture();
  // The SOMCacheLike accepts several method names
  // TS: WebGPUSOMCache may not be structurally identical to SOMCacheLike.
@@ -208,7 +208,7 @@ export class QLorARLLangExtractOrchestrator {
  extractionSchema: Record<string, unknown>,
  userFeedback?: { quality: number; usefulness: number; accuracy: number }
  ): Promise<{
- extractedData: Record<string, JsonValue>;
+ extractedData, Record<string, JsonValue>;
  rlGuidance: RLGuidedExtraction;
  neuralSprite: NeuralSpriteLegalProcessing;
  qloraJobId?: string;
@@ -672,7 +672,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
 
  private simpleHash(str, string): number {
  let hash = 0;
- for (let i = 0; i < str.length; i++) {
+ for (let i = 0; i<str.length; i++) {
  const char = str.charCodeAt(i);
  hash = (hash << 5) - hash + char;
  hash = hash & hash;
@@ -680,7 +680,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  return Math.abs(hash);
  }
 
- private calculateLossImprovement(_jobId: string): number {
+ private calculateLossImprovement(_jobId, string): number {
  return Math.random() * 0.01;
  }
 
@@ -713,7 +713,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ): Promise<void> {
  if (!this.rlAgent) return;
  const trainingReward =
- completionData.finalAccuracy > 0.8 ? 1.0 : completionData.finalAccuracy > 0.6 ? 0.7 : 0.3;
+ completionData.finalAccuracy > 0.8 ? 0: completionData.finalAccuracy > 0.6 ? 7, /* PHASE82_COLON_CHAIN: 0.3  */ ;
  this.rlAgent.postMessage({
  type: 'updateTrainingPolicy',
  trainingResult: {
@@ -774,11 +774,11 @@ const hash = this.simpleHash(dataStr + tileIndex);
  ),
  nesMemoryUsage: this.nesMemory.getMemoryStats(),
  somCacheStats:
- typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
+ typeof this.somCache.getStats === 'function' ? this.somCache.getStats() , /* PHASE82_COLON_CHAIN: undefined  */ ,
  };
  }
 }
 
 export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
- langextractServiceUrl: 'http://localhost:3001',
+ langextractServiceUrl: 'http://localhost, /* PHASE82_COLON_CHAIN: 3001'  */ ,
 });
