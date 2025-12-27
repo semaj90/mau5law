@@ -25,19 +25,25 @@ This document consolidates learnings from Phases 81 through 85, specifically foc
     - **`qlora-rl-langextract-integration.ts`**: Fixed unterminated regex/string quoting issue (`http://...` context).
     - **`rag-pipeline-enhanced.ts`**: Repaired `postgres` callback syntax and object literal malformations.
     - **`embedding-cache-service.ts`**: Fixed metadata object literal corruption (`...metadata, resultCount`).
-    - **`vector-search-service.ts`**: Fixed object spread syntax (`{ ...r, source }`).
-    - **`minio-service.ts`**: Fixed declaration syntax issues.
+    - **`vector-search-service.ts`**: Fixed object spread syntax (`{ ...r, source }`) and argument syntax (`cacheKey, JSON`).
+    - **`minio-service.ts`**: Fixed declaration syntax issues and corrupted `storeSummary` signature.
+    - **`qlora-rl-langextract-integration.ts`**: Fixed `postMessage` data corruption (`loraConfig: job.loraConfig`).
 
 ## Challenge Areas (Stubborn Files)
-1. **`lib/services/qlora-rl-langextract-integration.ts`** (Still high error count)
-   - *Issue:* Deep structural damage or minification artifacts persisting despite initial fixes.
-2. **`lib/services/enhanced-rag-pipeline.ts`**
-3. **`services/ace-web/minio-service.ts`**
+1. **`server/ai/vector-search-service.ts`** (188 errors)
+   - *Issue:* Argument syntax corruption (`embedding: limit * 2`).
+2. **`lib/services/enhanced-rag-pipeline.ts`** (187 errors)
+3. **`lib/services/minio-gpu-cache-integration.ts`** (185 errors)
+4. **`lib/state/documentUploadMachine.ts`** (183 errors)
+5. **`lib/services/redis-compression-cache.ts`** (182 errors)
 
-## Recommended Next Steps (for Agentic Execution)
-1. **Target:** `src/lib/services/minio-gpu-cache-integration.ts` (186 errors).
+## Recommended Next Steps (Agentic Execution - Round 5)
+1. **Target:** The new Top 3 Offenders:
+   - `src/lib/server/ai/vector-search-service.ts`
+   - `src/lib/services/enhanced-rag-pipeline.ts`
+   - `src/lib/services/minio-gpu-cache-integration.ts`
 2. **Strategy:**
-   - Run "First-Error Context Extractor".
+   - Run "First-Error Context Extractor" on these specific files.
    - Generate surgical micro-fix (3-5 lines).
    - Apply and measure delta.
 3. **Shift:** Pivot from Syntax (TS1005) to Import (TS2307) and Type (TS2339) fixing as syntax blockers are cleared.
