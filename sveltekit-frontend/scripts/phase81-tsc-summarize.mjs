@@ -87,6 +87,7 @@ const summary = {
   topFiles: top(byFile, 30),
   topMessagePatterns: top(byMessage, 20),
   sample: errors.slice(0, 100), // First 100 for quick inspection
+  allErrors: errors, // Full corpus for embedding ingestion
 
   // Cluster metadata for next fixer
   syntax: {

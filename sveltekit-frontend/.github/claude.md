@@ -1,4 +1,309 @@
-# Claude AI Context: Phase 72 SvelteKit Error Analysis
+# Claude AI Context: Phase 76-87 RAG/KAG SvelteKit Error Analysis
+
+## 🔍 Ripgrep Fix (MANDATORY on Windows)
+
+### Problem: `--type mjs` Fails
+Ripgrep on Windows doesn't recognize `mjs` as a built-in type:
+```bash
+$ rg "phase76" scripts --type mjs
+rg: unrecognized file type: mjs
+```
+
+### Solution: Always Use Glob Patterns
+```bash
+# ❌ WRONG (fails)
+rg "pattern" scripts --type js --type mjs
+
+# ✅ CORRECT (works on all platforms)
+rg "pattern" scripts -g'*.js' -g'*.mjs' -g'*.ts' -g'*.mts'
+
+# For complex searches
+rg -n -S "phase76|Phase 76|PHASE 76" . -g"*.{ts,js,mjs,ps1,md}" --hidden --no-ignore
+```
+
+### Permanent Configuration (.ripgreprc)
+Create `.ripgreprc` in workspace root:
+```bash
+# Add modern JS/TS extensions
+--type-add=mjs:*.mjs
+--type-add=mts:*.mts
+--type-add=cts:*.cts
+
+# Sensible defaults
+--smart-case
+--hidden
+--glob=!{.git,node_modules,.svelte-kit,dist,build}/**
+```
+
+Then you can use:
+```bash
+rg "pattern" --type mjs  # Now works!
+```
+
+---
+
+## 🏗️ Phase 76-87 RAG/KAG Architecture (Complete System)
+
+### High-Level Pipeline (6 Stages)
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 1: WEBCRAWL                                                │
+│ ├─ Firecrawl API (primary)                                       │
+│ ├─ SearxNG (self-hosted, no API key)                             │
+│ └─ DuckDuckGo HTML scrape (fallback)                             │
+│ Target Docs: Svelte 5, SvelteKit, Vite, UnoCSS, Lucia, etc.     │
+└────────────────────────┬─────────────────────────────────────────┘
+                         ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 2: PARSE                                                   │
+│ ├─ langextract (port 8095) - Generic text extraction            │
+│ └─ docling - PDF layout preservation                             │
+│ Output: Structured chunks (headers, code, paragraphs)            │
+└────────────────────────┬─────────────────────────────────────────┘
+                         ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 3: CHUNK (Deterministic)                                   │
+│ ├─ Max: 1800 chars                                               │
+│ ├─ Overlap: 200 chars                                            │
+│ └─ Boundaries: Preserve headers, code blocks, sentence endings   │
+└────────────────────────┬─────────────────────────────────────────┘
+                         ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 4: EMBED                                                   │
+│ ├─ Model: embeddinggemma:latest (Ollama port 11434)             │
+│ ├─ Dimensions: 768D                                              │
+│ └─ Distance: Cosine similarity                                   │
+└────────────────────────┬─────────────────────────────────────────┘
+                         ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 5: INDEX (Multi-Backend Storage)                           │
+│ ├─ Qdrant: 15 collections, 55,561 vectors (HNSW index)          │
+│ ├─ PostgreSQL pgvector: 100 errors, 100 embeddings (HNSW)       │
+│ ├─ CouchDB: Graph views (by_priority, by_status)                │
+│ ├─ MinIO: 4 buckets (raw docs, parsed chunks)                   │
+│ └─ Redis: Cache (phase76:codebase:*, semantic:*)                │
+└────────────────────────┬─────────────────────────────────────────┘
+                         ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ STAGE 6: MIRRORED SEARCH (5-Backend Query)                       │
+│ 1. PostgreSQL: Exact filters (error_code, file_path)            │
+│ 2. pgvector: Local HNSW similarity (sub-millisecond)            │
+│ 3. Qdrant: Semantic KB (15 collections)                         │
+│ 4. CouchDB: Graph expansion (related patterns/files)            │
+│ 5. MinIO: Payload retrieval (full context)                      │
+│ → Merge: Deduplicate + rank by weighted score                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Storage Backend Specifications
+
+#### PostgreSQL 17 + pgvector (Port 5434)
+**Container**: `phase66-postgres` (pgvector/pgvector:pg17)
+**Tables**:
+- `ts_errors` (33,599 total, 100 ingested)
+- `error_embeddings` (100 vectors, 768D)
+- `knowledge_graph` (error → pattern links)
+- `fix_attempts` (audit log)
+
+**HNSW Index**:
+```sql
+CREATE INDEX error_embeddings_hnsw_idx
+ON error_embeddings
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+```
+
+**Current Coverage**: 0.3% (100/33,599) - **needs scaling to 10,000**
+
+#### Qdrant (Port 6333)
+**Collections** (15 total, 55,561 vectors):
+- `phase72_error_patterns`: 53,227 vectors (768D, primary)
+- `phase76_knowledge_base`: 1,093 vectors (operator docs, Svelte/SvelteKit)
+- `phase72_ast_knowledge_base`: 14 vectors (surgical patterns)
+- `surgical_fixes_phase66_85`: 48 vectors (1536D, OpenAI embeddings)
+
+**Distance**: Cosine (consistent with pgvector)
+
+#### MinIO (Port 9000)
+**Buckets**:
+- `phase76-summaries` - Webcrawl summaries
+- `phase76-docs` - Raw HTML/PDF
+- `phase76-knowledge` - Parsed chunks
+- `legal-documents` - User uploads
+
+#### CouchDB (Port 5984)
+**Design Docs** (phase76 database):
+- `by_priority` - Errors ranked by impact
+- `by_status` - Open/closed/fixed tracking
+- `recommendations` - AI-generated fix suggestions
+
+#### Redis (Port 6379)
+**Namespaces**:
+- `phase76:codebase:*` - File/symbol cache
+- `phase76:semantic:*` - Embedding cache
+- `topology:cache:*` - Dependency graph
+
+#### Ollama (Port 11434)
+**Models**:
+- `embeddinggemma:latest` - 768D embeddings
+- `gemma3-legal:latest` - Text generation (fix patches)
+
+### Phase 76 Script Inventory
+
+| Script | Purpose | Key Arguments | Output |
+|--------|---------|---------------|--------|
+| `phase76-knowledge-builder.mjs` | Webcrawl + ingest docs | `--crawl <url> --depth 2` | Qdrant vectors, MinIO objects |
+| `phase76-kb-update.mjs` | Index markdown/JSON | `--paths <files> --tags <tags> --kind <type>` | Qdrant + Postgres kb_chunks |
+| `phase76-storage-layer.mjs` | Storage abstraction | N/A (library) | CRUD API |
+| `phase76-couchdb-graph-sync.mjs` | Sync knowledge_graph → CouchDB | Auto | Design docs |
+| `init-qdrant.mjs` | Create collections | Collection schemas | 15 Qdrant collections |
+| `phase86-autonomous-loop.mjs` | Autonomous error fixer | Requires FastMCP | Applied fixes |
+| `phase87-ingest-error-corpus.mjs` | Scale embeddings | `--filter "TS1005,TS1128"` | 10,000+ embeddings |
+| `fastmcp-server.mjs` | MCP tool server | Port 3002 | 10 tools available |
+
+### FastMCP Server (Phase 86 Tool Layer)
+
+**Status**: ✅ Running on port 3002
+**Health**: `GET http://localhost:3002/health` → `{ ok: true, tools: 10 }`
+**Tools List**: `GET http://localhost:3002/tools`
+
+**Tool Registry** (10 tools):
+
+1. **qdrant_search** - Semantic KB search
+   - Args: `{ query: string, collection?: string, limit?: number }`
+   - Returns: `{ results: Array<{ payload, score }> }`
+
+2. **postgres_query** - Raw SQL execution
+   - Args: `{ query: string, params?: any[] }`
+   - Returns: `{ rows: any[] }`
+
+3. **minio_fetch** - S3 object retrieval
+   - Args: `{ bucket: string, key: string }`
+   - Returns: `{ content: string, metadata: object }`
+
+4. **redis_cache** - Cache operations
+   - Args: `{ action: 'get'|'set'|'delete', key: string, value?: any }`
+   - Returns: `{ result: any }`
+
+5. **read_file** - File I/O with line ranges
+   - Args: `{ filepath: string, startLine?: number, endLine?: number }`
+   - Returns: `{ content: string }`
+
+6. **ripgrep** - Advanced code search (JSON output)
+   - Args: `{ pattern: string, paths: string[], globs?: string[] }`
+   - Returns: `{ matches: Array<{ file, line, text }> }`
+   - **IMPORTANT**: Use `globs: ["*.mjs", "*.ts"]` instead of `--type mjs`
+
+7. **search_codebase** - Full-text search
+   - Args: `{ query: string, filePattern?: string }`
+   - Returns: `{ results: Array<{ file, line, snippet }> }`
+
+8. **web_search** - External search
+   - Args: `{ query: string, provider?: 'firecrawl'|'searxng' }`
+   - Returns: `{ results: Array<{ title, url, content }> }`
+
+9. **write_file** - File write/patch
+   - Args: `{ filepath: string, content: string }`
+   - Returns: `{ success: boolean }`
+
+10. **run_command** - Shell execution
+    - Args: `{ command: string, cwd?: string }`
+    - Returns: `{ stdout: string, stderr: string, exitCode: number }`
+
+### Phase 86 Autonomous Loop Workflow
+
+```powershell
+# Terminal 1: Start FastMCP server
+node scripts/fastmcp-server.mjs
+# Wait for: "🚀 FastMCP Server Running on port 3002"
+
+# Terminal 2: Configure PostgreSQL connection
+$env:PGHOST="127.0.0.1"
+$env:PGPORT="5434"
+$env:PGDATABASE="legal"
+$env:PGUSER="user"
+$env:PGPASSWORD="pass"
+
+# Run autonomous loop
+node scripts/phase86-autonomous-loop.mjs
+```
+
+**Loop Execution (6 Steps)**:
+
+1. **Query PostgreSQL**:
+   ```sql
+   SELECT * FROM ts_errors
+   WHERE status='open'
+   ORDER BY impact_score DESC
+   LIMIT 1;
+   ```
+
+2. **Generate Embedding** (embeddinggemma:latest, 768D)
+
+3. **RAG Retrieval**:
+   - pgvector HNSW similarity search
+   - Qdrant semantic search (phase76_knowledge_base)
+
+4. **KAG Expansion**:
+   ```sql
+   SELECT target_name FROM knowledge_graph
+   WHERE source_name = $error_id
+   AND relationship = 'matches';
+   ```
+
+5. **Read Context** (FastMCP `read_file` tool)
+
+6. **Apply Fix** (if confidence ≥0.85):
+   - Generate patch with gemma3-legal:latest
+   - Write via `write_file` tool
+   - Validate: `run_command({ command: "npx tsc --noEmit" })`
+   - Audit: Log to `fix_attempts` table
+
+### HNSW vs FAISS (Vector Index Comparison)
+
+| Feature | HNSW (pgvector/Qdrant) | FAISS |
+|---------|------------------------|-------|
+| **Search Latency** | <5ms (sub-millisecond) | Faster for batch queries |
+| **Index Updates** | Incremental (easy) | Requires full rebuild |
+| **Integration** | PostgreSQL native, Qdrant built-in | External library |
+| **Sync Complexity** | Low (SQL/REST) | High (binary serialization) |
+| **Production Choice** | ✅ **CHOSEN** | Optional/legacy |
+
+**Rationale**: HNSW wins for Phase 86 because incremental updates (as errors get fixed) are trivial, whereas FAISS requires full index rebuilds.
+
+### Current Blockers & Fixes
+
+#### Blocker 1: Low Embedding Coverage (100/33,599 = 0.3%)
+**Impact**: Similarity search quality is poor
+**Fix**: Scale to 10,000 embeddings (syntax errors first)
+```powershell
+$env:SAMPLE_SIZE = "10000"
+node scripts/phase87-ingest-error-corpus.mjs --filter "TS1005,TS1128,TS1109"
+```
+**Expected Runtime**: ~30 minutes (at ~200ms/embedding)
+
+#### Blocker 2: Pattern = "undefined" in knowledge_graph
+**Impact**: KAG expansion retrieves garbage
+**Fix**: Implement deterministic pattern classifier (see scripts/phase87-knowledge-sync.mjs)
+```javascript
+function classifySyntaxPattern({ error_code, error_message }) {
+  if (error_code === 'TS1005') {
+    if (/\.\.\.\/\w+:\s*\w+/.test(error_message)) return 'object-spread-colon';
+    if (/\{\s*\w+:\s*[^,}\n]+\s+\w+:/.test(error_message)) return 'missing-comma';
+    if (/expected.*,/.test(error_message)) return 'comma-expected';
+    return 'ts1005-other';
+  }
+  // ... more patterns
+  return null; // Don't create link if unrecognized
+}
+```
+
+#### Blocker 3: FastMCP `webSearch` Tool (Already Fixed)
+**Original Issue**: `ReferenceError: webSearchTool is not defined`
+**Fix Applied**: Changed `web_search: webSearchTool` → `web_search: webSearch`
+**Status**: ✅ RESOLVED (verified in scripts/fastmcp-server.mjs line 315)
+
+---
 
 ## ⚠️ Phase 79 Pattern Fixer - Critical Safety Protocol
 

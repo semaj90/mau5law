@@ -691,6 +691,214 @@ function rankKnowledge(results, task) {
 }
 ```
 
+## Phase 86: RAG + KAG Autonomous Loop Integration
+
+### Overview
+
+Phase 86 combines RAG (Retrieval-Augmented Generation) and KAG (Knowledge-Augmented Generation) for fully autonomous error fixing:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              PHASE 86 AUTONOMOUS LOOP                           │
+│                                                                  │
+│  1. Pull Target (Postgres Priority Queue)                       │
+│     SELECT * FROM ts_errors WHERE status='open'                │
+│     ORDER BY impact_score DESC LIMIT 1                          │
+│                                                                  │
+│  2. Get Code Context (read_file ±60 lines)                      │
+│     FastMCP: POST /function-call {name: "read_file", ...}      │
+│                                                                  │
+│  3. RAG Retrieval (Qdrant + pgvector)                           │
+│     - Qdrant: Top 8 patterns from phase72_ast_knowledge_base   │
+│     - pgvector: Similar errors via HNSW cosine similarity      │
+│                                                                  │
+│  4. KAG Expansion (knowledge_graph)                             │
+│     - Query related fixes by file, error_code, pattern         │
+│     - Expand context with graph relationships                   │
+│                                                                  │
+│  5. Apply Patch (write_file)                                    │
+│     - Generate minimal fix via LLM                              │
+│     - Apply with FastMCP write_file tool                        │
+│                                                                  │
+│  6. Verify (run_command: tsc --noEmit)                          │
+│     - Check error count before/after                            │
+│     - Rollback if worsened                                      │
+│                                                                  │
+│  7. Write Outcome (Postgres + KB)                               │
+│     - Mark error fixed/unchanged/worsened                       │
+│     - Ingest successful fix as new KB entry                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Phase 86 Implementation
+
+```javascript
+// scripts/phase86-autonomous-loop.mjs
+async function runLoop() {
+  // 1. Check FastMCP server
+  const healthRes = await fetch('http://127.0.0.1:3002/health');
+  console.log("✅ FastMCP server ready");
+
+  // 2. Get next error from priority queue
+  const { rows } = await pool.query(`
+    SELECT * FROM ts_errors
+    WHERE status = 'open'
+    ORDER BY impact_score DESC
+    LIMIT 1
+  `);
+
+  if (rows.length === 0) {
+    console.log("✅ No open errors. System healthy.");
+    return;
+  }
+
+  const error = rows[0];
+  console.log(`🎯 TARGET: [${error.error_code}] in ${error.file_path}`);
+
+  // 3. RAG: Search knowledge base
+  const { embedding } = await ollama.embeddings({
+    model: 'embeddinggemma:latest',
+    prompt: error.error_message
+  });
+
+  const hits = await qdrant.search('phase72_ast_knowledge_base', {
+    vector: embedding,
+    limit: 1,
+    with_payload: true
+  });
+
+  // 4. Read file context
+  const fileRes = await callAgent('read_file', { filepath: error.file_path });
+  const fileContent = fileRes.content[0].text;
+
+  // 5. Decide strategy based on confidence
+  let fixStrategy;
+  if (hits.length > 0 && hits[0].score > 0.85) {
+    fixStrategy = hits[0].payload.fix_strategy;
+    console.log(`💡 KNOWN PATTERN: ${hits[0].payload.pattern_name} (${hits[0].score})`);
+  } else {
+    fixStrategy = "Analyze the error and fix the TypeScript error.";
+    console.log(`🤖 Using generic LLM fix (no confident match)`);
+  }
+
+  // 6. Generate fix
+  const prompt = `
+You are an expert TypeScript developer.
+Fix this error: ${error.error_message}
+File: ${error.file_path}
+Strategy: ${fixStrategy}
+
+\`\`\`typescript
+${fileContent}
+\`\`\`
+
+Return ONLY the fixed code. No explanations.
+`;
+
+  const response = await ollama.chat({
+    model: 'gemma3-legal:latest',
+    messages: [{ role: 'user', content: prompt }],
+    options: { temperature: 0.1 }
+  });
+
+  // 7. Apply fix
+  const fixedContent = response.message.content
+    .replace(/^```typescript\n/, '')
+    .replace(/\n```$/, '');
+
+  await callAgent('write_file', {
+    filepath: error.file_path,
+    content: fixedContent
+  });
+
+  // 8. Validate
+  const valRes = await callAgent('run_command', {
+    command: `npx tsc --noEmit ${error.file_path}`
+  });
+
+  console.log(`Validation: ${valRes.content[0].text}`);
+}
+```
+
+### Confidence Gating
+
+```javascript
+// Decide action based on combined RAG + KAG + LLM scores
+function decideAction(ragScore, kagScore, llmConfidence) {
+  const combined = (ragScore * 0.4) + (kagScore * 0.3) + (llmConfidence * 0.3);
+
+  if (combined >= 0.85) {
+    return { action: 'AUTO_APPLY', reason: 'High confidence match' };
+  } else if (combined >= 0.70) {
+    return { action: 'SUGGEST', reason: 'Medium confidence, needs review' };
+  } else if (combined >= 0.50) {
+    return { action: 'WEB_SEARCH', reason: 'Low confidence, fetch docs' };
+  } else {
+    return { action: 'SKIP', reason: 'No confident match' };
+  }
+}
+```
+
+### Token Accounting for ACE Leaderboard
+
+```javascript
+// Log every LLM call for competitive analysis
+const logEntry = {
+  kind: "llm_call",
+  timestamp: new Date().toISOString(),
+  provider: "gemini" | "ollama" | "claude",
+  model: "gemma3-legal:latest",
+  phase: "phase86",
+  cycle: 1,
+
+  // Token metrics
+  tokens_in: 1024,
+  tokens_out: 512,
+  total_tokens: 1536,
+
+  // Fix metrics
+  error_code: "TS1005",
+  file_path: "src/lib/cache/gpu-leftover-cache.ts",
+  confidence: 0.92,
+  strategy: "missing-comma",
+
+  // Efficiency
+  errors_fixed: 1,
+  efficiency: 0.65  // errors_fixed / total_tokens * 1000
+};
+```
+
+### Pattern Recognition (TS1005, TS1128, TS1109)
+
+```javascript
+// Deterministic pattern labels (replaces "undefined" patterns)
+const PATTERN_RULES = {
+  TS1005: [
+    { regex: /import\s*{\s*\w+\s+\w+/, label: 'missing-comma-import' },
+    { regex: /class.*{\s*\w+:\s*\w+\s+\w+/, label: 'missing-comma-class' },
+    { regex: /;\s*from\s*'/, label: 'missing-semicolon-import' }
+  ],
+  TS1128: [
+    { regex: /}\s*{/, label: 'glued-blocks' },
+    { regex: /const.*=.*const/, label: 'missing-semicolon-decl' }
+  ],
+  TS1109: [
+    { regex: /\/[^/\n]*\n/, label: 'unterminated-regex' },
+    { regex: /=\s*\n/, label: 'trailing-assignment' }
+  ]
+};
+
+function detectPattern(errorCode, fileContent) {
+  const rules = PATTERN_RULES[errorCode] || [];
+  for (const { regex, label } of rules) {
+    if (regex.test(fileContent)) {
+      return label;
+    }
+  }
+  return 'unknown';
+}
+```
+
 ## Monitoring and Metrics
 
 ```javascript
