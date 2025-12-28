@@ -1,8 +1,9 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import fetch from 'node-fetch';
 import { Ollama } from 'ollama';
 import pg from 'pg';
+import { safeSlice, unwrapMcpText } from './lib/mcp_unwrap.mjs';
 
 // CONFIG
 const AGENT_URL = 'http://127.0.0.1:3002/function-call';
@@ -11,31 +12,20 @@ const COLLECTION_AST = 'phase72_ast_knowledge_base';
 const COLLECTION_KB = 'phase76_knowledge_base';
 
 /**
- * Unwrap MCP tool response to plain text
- * Handles various response formats: { content: [{ text }] }, { text }, { result }, raw string
+ * Get current TypeScript error count
  */
-function unwrapMcpText(resp) {
-  if (resp == null) return '';
-  if (typeof resp === 'string') return resp;
-  // Common FastMCP format: { content: [{ type:"text", text:"..." }] }
-  if (Array.isArray(resp.content)) {
-    const t = resp.content
-      .map((c) => (typeof c?.text === 'string' ? c.text : ''))
-      .join('\n');
-    return t;
+function getTscErrorCount() {
+  try {
+    execSync("npx tsc -p tsconfig.json --noEmit --pretty false", {
+      stdio: "pipe",
+      encoding: "utf8",
+    });
+    return 0;
+  } catch (e) {
+    const out = (e.stdout ?? "") + "\n" + (e.stderr ?? "");
+    // count lines like: error TS1005:
+    return out.split("\n").filter((l) => l.includes("error TS")).length;
   }
-  // Some tools may return { text: "..." } or { result: "..." }
-  if (typeof resp.text === 'string') return resp.text;
-  if (typeof resp.result === 'string') return resp.result;
-  return JSON.stringify(resp, null, 2);
-}
-
-/**
- * Safely slice a string without crashing on undefined/null
- */
-function safeSlice(s, n = 800) {
-  const t = (s ?? '').toString();
-  return t.length > n ? t.slice(0, n) : t;
 }
 
 function startMcp() {
@@ -48,14 +38,15 @@ function startMcp() {
 }
 
 // CLIENTS
-// 🛠️ FIX: Use env vars to force TCP/IPv4 and avoid local Windows DB conflict
+// 🔥 CRITICAL: Use Phase 66/87 Docker PostgreSQL (pgvector + embeddings + HNSW)
 const pool = new pg.Pool({
   host: process.env.PGHOST ?? "127.0.0.1",
-  port: Number(process.env.PGPORT ?? "5434"),
-  database: process.env.PGDATABASE ?? "legal",
-  user: process.env.PGUSER ?? "user",
-  password: process.env.PGPASSWORD ?? "pass",
-});const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
+  port: Number(process.env.PGPORT ?? "5434"),        // Phase 66/87 Docker port
+  database: process.env.PGDATABASE ?? "legal",       // Phase 66/87 database
+  user: process.env.PGUSER ?? "user",                // Phase 66/87 user
+  password: process.env.PGPASSWORD ?? "pass",        // Phase 66/87 password
+});
+const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
 const qdrant = new QdrantClient({ url: 'http://127.0.0.1:6333' });
 
 async function runLoop() {
@@ -75,15 +66,15 @@ async function runLoop() {
   }
 
   console.log("♾️  Phase 86 Autonomous Loop Started");
-  console.log(`📊 Config: postgresql://${process.env.PGUSER ?? 'user'}@${process.env.PGHOST ?? '127.0.0.1'}:${process.env.PGPORT ?? '5434'}/${process.env.PGDATABASE ?? 'legal'}`);
+  console.log(`📊 Config: postgresql://${process.env.PGUSER ?? 'legal_admin'}@${process.env.PGHOST ?? '127.0.0.1'}:${process.env.PGPORT ?? '5432'}/${process.env.PGDATABASE ?? 'legal_ai_db'}`);
 
   // Create a fresh pool to avoid any caching issues
   const testPool = new pg.Pool({
     host: process.env.PGHOST ?? "127.0.0.1",
-    port: Number(process.env.PGPORT ?? "5434"),
-    database: process.env.PGDATABASE ?? "legal",
-    user: process.env.PGUSER ?? "user",
-    password: process.env.PGPASSWORD ?? "pass",
+    port: Number(process.env.PGPORT ?? "5432"),        // Phase 76 port
+    database: process.env.PGDATABASE ?? "legal_ai_db", // Phase 76 database
+    user: process.env.PGUSER ?? "legal_admin",         // Phase 76 user
+    password: process.env.PGPASSWORD ?? "123456",      // Phase 76 password
   });
 
   try {
@@ -221,22 +212,45 @@ Return ONLY the full fixed file content. Do not include markdown code blocks or 
         // Strip markdown code blocks if present
         fixedContent = fixedContent.replace(/^```typescript\n/, '').replace(/^```\n/, '').replace(/\n```$/, '');
 
+        // 5. VALIDATION BEFORE PATCH
+        console.log(`🔍 Counting errors before patch...`);
+        const errorsBefore = getTscErrorCount();
+        console.log(`   📊 Errors before: ${errorsBefore}`);
+
+        // Read original file content
+        const originalContent = fileContent;
+
         console.log(`📝 Applying fix to ${error.file_path}...`);
         const writeRes = await callAgent('write_file', {
           filepath: error.file_path,
           content: fixedContent
         });
-        console.log(`✅ Fix Result: ${JSON.stringify(writeRes)}`);
+        console.log(`✅ Fix applied: ${unwrapMcpText(writeRes)}`);
 
-        // VALIDATION
-        console.log(`🔍 Validating fix...`);
-        let validationCmd = `npx tsc --noEmit ${error.file_path}`;
-        if (error.file_path.endsWith('.svelte')) {
-            validationCmd = `npx svelte-check --workspace ${error.file_path}`;
+        // 6. VALIDATION AFTER PATCH
+        console.log(`🔍 Counting errors after patch...`);
+        const errorsAfter = getTscErrorCount();
+        console.log(`   📊 Errors after: ${errorsAfter}`);
+
+        let outcome = 'unknown';
+        if (errorsAfter > errorsBefore) {
+          console.log(`❌ Fix WORSENED the codebase (${errorsBefore} → ${errorsAfter}). Reverting...`);
+          await callAgent('write_file', {
+            filepath: error.file_path,
+            content: originalContent
+          });
+          outcome = 'worsened';
+          console.log(`✅ Reverted to original state`);
+        } else if (errorsAfter === errorsBefore) {
+          console.log(`⚠️ Fix had NO EFFECT (${errorsBefore} → ${errorsAfter})`);
+          outcome = 'unchanged';
+        } else {
+          console.log(`✅ Fix IMPROVED the codebase (${errorsBefore} → ${errorsAfter})`);
+          outcome = 'improved';
         }
 
-        const valRes = await callAgent('run_command', { command: validationCmd });
-        console.log(`Validation Output: ${JSON.stringify(valRes)}`);
+        // Log outcome
+        console.log(`📝 Outcome: ${outcome}`);
 
     } catch (err) {
         console.error("❌ Error during fix generation/application:", err);
@@ -248,7 +262,10 @@ Return ONLY the full fixed file content. Do not include markdown code blocks or 
         console.error("👉 CRITICAL: Still hitting local Windows DB? Run 'Get-Service *postgresql* | Stop-Service' in Admin PowerShell.");
     }
   } finally {
-    await testPool.end();
+    // Ensure pool ends only once
+    if (!testPool.ended) {
+      await testPool.end();
+    }
   }
 }
 

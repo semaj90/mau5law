@@ -29,7 +29,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.phase72') });
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const OLLAMA_CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL || 'gemma3-legal:latest';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
-const QDRANT_AST_COLLECTION = 'phase72_ast_knowledge_base';
+const QDRANT_AST_COLLECTION = 'phase76_knowledge_base'; // Phase 88: 810 points (Svelte 5 + SvelteKit 2 docs)
 const QDRANT_ERROR_COLLECTION = 'phase72_error_patterns';
 
 const args = process.argv.slice(2);

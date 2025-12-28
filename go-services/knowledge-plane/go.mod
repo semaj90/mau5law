@@ -3,13 +3,13 @@ module github.com/semaj90/mau5law/go-services/knowledge-plane
 go 1.25
 
 require (
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/joho/godotenv v1.5.1
 	github.com/json-iterator/go v1.1.12
 	github.com/pgvector/pgvector-go v0.2.2
 	github.com/qdrant/go-client v1.12.0
 	github.com/redis/go-redis/v9 v9.7.0
-	golang.org/x/sync v0.10.0
 )
 
 require (

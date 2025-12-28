@@ -89,6 +89,150 @@ const CONFIG = {
 
 
 /**
+ * Tool: Knowledge Retrieve (Front Door)
+ * Hybrid retrieval from Knowledge Plane: docs + repo snippets + similar errors
+ *
+ * Enhanced with provenance tracking for all results.
+ */
+async function knowledgeRetrieve(args) {
+	const { query, k = 12, mode = 'hybrid', tags = [] } = args;
+
+	const knowledgePlaneUrl = process.env.KNOWLEDGE_PLANE_URL || 'http://127.0.0.1:8099';
+	const startTime = Date.now();
+
+	try {
+		// First try Knowledge Plane /svelte/docs/search for Svelte-specific queries
+		if (query.match(/svelte|sveltekit|bits.?ui|\$state|\$derived|\$effect|\$props/i)) {
+			const svelteBody = JSON.stringify({
+				query,
+				sources: ['svelte', 'sveltekit', 'codebase', 'bits-ui'],
+				max_results: k,
+				context: 3
+			});
+
+			const svelteRes = await fetch(`${knowledgePlaneUrl}/svelte/docs/search`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: svelteBody
+			});
+
+			if (svelteRes.ok) {
+				const svelteData = await svelteRes.json();
+				if (svelteData.results && svelteData.results.length > 0) {
+					const duration = Date.now() - startTime;
+
+					return {
+						source: 'svelte_docs',
+						results: svelteData.results.map((r, idx) => ({
+							text: r.snippet || r.context,
+							source: r.source,
+							category: r.category,
+							line: r.line,
+							score: 0.95, // Docs get high priority
+							tags: [r.category, 'docs', 'svelte5'],
+							// Enhanced provenance
+							provenance: {
+								collection: 'svelte_docs_ripgrep',
+								source_file: r.source,
+								source_line: r.line,
+								chunk_id: `svelte_docs_${idx}`,
+								retrieval_method: 'ripgrep_fast_search',
+								timestamp: new Date().toISOString()
+							}
+						})),
+						count: svelteData.results.length,
+						meta: {
+							...svelteData.meta,
+							total_duration_ms: duration,
+							retrieval_path: 'knowledge_plane_svelte_docs',
+							query_type: 'svelte_specific'
+						}
+					};
+				}
+			}
+		}
+
+		// Fallback: Knowledge Plane /retrieve (hybrid RAG)
+		const retrieveBody = JSON.stringify({
+			query,
+			top_k: k,
+			mode,
+			filters: tags.length > 0 ? tags : undefined
+		});
+
+		const retrieveRes = await fetch(`${knowledgePlaneUrl}/retrieve`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: retrieveBody
+		});
+
+		if (!retrieveRes.ok) {
+			throw new Error(`Knowledge Plane /retrieve failed: ${retrieveRes.status}`);
+		}
+
+		const data = await retrieveRes.json();
+		const duration = Date.now() - startTime;
+
+		// Normalize and add provenance to hybrid results
+		const contexts = (data.contexts || data.hits || []).map((ctx, idx) => ({
+			...ctx,
+			provenance: {
+				collection: data.collection || 'phase76_knowledge_base',
+				chunk_id: ctx.id || ctx.point_id || `chunk_${idx}`,
+				source_url: ctx.url || ctx.payload?.url,
+				source_tags: ctx.tags || ctx.payload?.tags || [],
+				retrieval_method: mode,
+				score: ctx.score || ctx.distance,
+				timestamp: new Date().toISOString()
+			}
+		}));
+
+		return {
+			source: 'knowledge_plane_hybrid',
+			contexts,
+			count: contexts.length,
+			meta: {
+				latency_ms: data.latency_ms || data.meta?.duration_ms || duration,
+				total_duration_ms: duration,
+				retrieval_path: 'knowledge_plane_hybrid',
+				mode,
+				query,
+				tags
+			}
+		};
+	} catch (error) {
+		// Graceful fallback to Qdrant direct search
+		console.warn('⚠️  Knowledge Plane unavailable, falling back to Qdrant:', error.message);
+
+		const fallbackResult = await qdrantSearch({ query, limit: k, threshold: 0.5 });
+		const duration = Date.now() - startTime;
+
+		// Add provenance to fallback results
+		return {
+			...fallbackResult,
+			source: 'qdrant_fallback',
+			results: (fallbackResult.results || []).map((r, idx) => ({
+				...r,
+				provenance: {
+					collection: CONFIG.qdrant.collection,
+					chunk_id: r.id || `fallback_${idx}`,
+					retrieval_method: 'qdrant_direct_search',
+					score: r.score,
+					timestamp: new Date().toISOString(),
+					fallback_reason: error.message
+				}
+			})),
+			meta: {
+				total_duration_ms: duration,
+				retrieval_path: 'qdrant_fallback',
+				fallback: true,
+				original_error: error.message
+			}
+		};
+	}
+}
+
+/**
  * Tool: Search Qdrant knowledge base
  */
 async function qdrantSearch(args) {
@@ -399,9 +543,70 @@ async function runCommand(args) {
 }
 
 /**
+ * Tool: Knowledge Retrieve (FRONT DOOR - use this first)
+ * Hybrid retrieval: Qdrant semantic + Postgres pgvector + reciprocal rank fusion
+ * Returns: contexts with provenance (source, tags, chunk_id, score)
+ */
+async function knowledgeRetrieve(args) {
+	const { query, limit = 10, threshold = 0.5, filter_tags = null } = args;
+
+	const KNOWLEDGE_PLANE_URL = process.env.KNOWLEDGE_PLANE_URL || 'http://localhost:8099';
+
+	try {
+		// Call Knowledge Plane /rag/retrieve/hybrid
+		const response = await fetch(`${KNOWLEDGE_PLANE_URL}/rag/retrieve/hybrid`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query,
+				top_k: limit,
+				score_threshold: threshold,
+				filter_tags: filter_tags ? filter_tags.split(',') : null
+			})
+		});
+
+		if (!response.ok) {
+			// Fallback to simple Qdrant search
+			console.warn('⚠️  Knowledge Plane unavailable, falling back to qdrant_search');
+			return await qdrantSearch({ query, limit, threshold });
+		}
+
+		const data = await response.json();
+
+		// Return MCP-compatible format with provenance
+		return {
+			contexts: data.results.map(item => ({
+				text: item.text || item.content || item.summary,
+				score: item.score,
+				provenance: {
+					source: item.source || item.url || 'unknown',
+					tags: item.tags || [],
+					chunk_id: item.id || item.chunk_id,
+					collection: item.collection || CONFIG.qdrant.collection
+				}
+			})),
+			query,
+			retrieval_method: 'hybrid',
+			total_results: data.results.length
+		};
+	} catch (error) {
+		console.error('❌ knowledge_retrieve error:', error.message);
+
+		// Fallback to Qdrant-only search
+		const fallback = await qdrantSearch({ query, limit, threshold });
+		return {
+			...fallback,
+			retrieval_method: 'fallback_qdrant',
+			warning: 'Knowledge Plane unavailable, using Qdrant-only search'
+		};
+	}
+}
+
+/**
  * Available tools registry
  */
 const tools = {
+	knowledge_retrieve: knowledgeRetrieve, // 🆕 FRONT DOOR - Hybrid KB retrieval
 	qdrant_search: qdrantSearch,
 	postgres_query: postgresQuery,
 	minio_fetch: minioFetch,
@@ -498,11 +703,31 @@ const server = createServer(async (req, res) => {
 			}
 			console.log("🔧 MCP RAW BODY:", JSON.stringify(reqBody));
 
-			// Support multiple request schemas (OpenAI-style, MCP-style, custom)
-			const toolName = reqBody?.name ?? reqBody?.tool ?? reqBody?.function_name ?? reqBody?.function ?? reqBody?.call?.name ?? reqBody?.call?.function?.name ?? reqBody?.tool_call?.function?.name ?? reqBody?.tool_calls?.[0]?.function?.name ?? reqBody?.tool_calls?.[0]?.name;
+			// Support multiple request schemas (OpenAI-style, MCP-style, custom, agent formats)
+			const toolName = reqBody?.name
+				?? reqBody?.tool
+				?? reqBody?.toolName
+				?? reqBody?.function_name
+				?? reqBody?.functionName
+				?? reqBody?.function
+				?? reqBody?.call?.name
+				?? reqBody?.call?.function?.name
+				?? reqBody?.tool_call?.function?.name
+				?? reqBody?.tool_calls?.[0]?.function?.name
+				?? reqBody?.tool_calls?.[0]?.name;
 
-			let args = reqBody?.arguments ?? reqBody?.args ?? reqBody?.parameters ?? reqBody?.call?.arguments ?? reqBody?.tool_calls?.[0]?.function?.arguments ?? {};
+			let args = reqBody?.arguments
+				?? reqBody?.args
+				?? reqBody?.input
+				?? reqBody?.params
+				?? reqBody?.parameters
+				?? reqBody?.call?.arguments
+				?? reqBody?.tool_calls?.[0]?.function?.arguments
+				?? {};
 			if (typeof args === "string") args = JSON.parse(args);
+
+			// Extract model hint if present
+			const modelHint = reqBody?.model ?? reqBody?.llm ?? null;
 
 			// Validate tool name
 			if (!toolName) {
@@ -579,6 +804,7 @@ server.listen(CONFIG.port, async () => {
 	}
 
 	console.log(`\n📦 Available Tools (${Object.keys(tools).length}):`);
+	console.log(`   - knowledge_retrieve: 🆕 Front door KB search (Svelte docs + hybrid RAG)`);
 	console.log(`   - qdrant_search: Search knowledge base`);
 	console.log(`   - postgres_query: Query PostgreSQL`);
 	console.log(`   - minio_fetch: Fetch from MinIO`);
@@ -589,7 +815,9 @@ server.listen(CONFIG.port, async () => {
 	console.log(`   - web_search: External search (disabled by default)`);
 	console.log(`   - write_file: Write/patch files`);
 	console.log(`   - run_command: Execute shell commands`);
-	console.log(`\n✨ Ready for autonomous error fixing!\n`);
+	console.log(`\n💡 Agent tip: Always call knowledge_retrieve FIRST before generating code!`);
+	console.log(`   This ensures Svelte 5 runes, SvelteKit 2 routing, and Bits-UI patterns.`);
+	console.log(`\n✨ Ready for autonomous error fixing with KB grounding!\n`);
 });
 
 // Keep-alive handler (don't exit on Ctrl+C, let parent process manage lifecycle)
