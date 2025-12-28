@@ -11,8 +11,8 @@
 #>
 
 param(
-    [string]$Host = "127.0.0.1",
-    [int]$Port = 8090
+    [string]$ServerHost = "127.0.0.1",
+    [int]$ServerPort = 8090
 )
 
 $ErrorActionPreference = "Stop"
@@ -58,9 +58,9 @@ try {
 }
 
 Write-Host ""
-Write-Host "📡 Starting FastAPI server on http://${Host}:${Port}" -ForegroundColor Cyan
+Write-Host "📡 Starting FastAPI server on http://${ServerHost}:${ServerPort}" -ForegroundColor Cyan
 Write-Host "   Press Ctrl+C to stop" -ForegroundColor Gray
 Write-Host ""
 
 # Start server
-& $python scripts/phase89-fastapi-server.py --host $Host --port $Port
+& $python scripts/phase89-fastapi-server.py --host $ServerHost --port $ServerPort

@@ -1,53 +1,54 @@
-# Phase 89: Redis Cache + Top-K Index - Quick Reference
+# Phase 89: Quick Reference & Command Cheat Sheet
 
-## 🚀 ONE-LINERS
+**Last Updated**: December 28, 2025
+**Current Status**: Re-embedding 795/72,664 svelte errors (1.03%)
 
+---
+
+## 🚀 Quick Start
+
+### Check System Status
 ```powershell
-# Check status
-.\scripts\RUN_PHASE89_COMPLETE.ps1 -Action stats
+.\scripts\phase89-verify-system.ps1
+```
 
-# Monitor index build (auto-refresh every 10s)
-.\scripts\phase89-monitor-topk.ps1
+### Monitor Re-embedding Progress
+```powershell
+.\scripts\phase89-monitor-reembed.ps1
+```
 
-# Query errors (with cache)
-node scripts/phase89-enhanced-ranker.mjs "TS1005" --top 20
-
-# Web search
-node scripts/phase89-web-search.mjs "TS2304"
-
-# Fix errors
-node scripts/phase89-agentic-fixer.mjs --limit 100
-
-# Full pipeline
-.\scripts\RUN_PHASE89_COMPLETE.ps1 -Action full
+### Query Similar Errors
+```powershell
+node scripts/phase89-similarity-ranker.mjs "error TS1005"
 ```
 
 ---
 
-## 📊 CURRENT STATUS (2025-01-13 13:05)
+## 📊 CURRENT STATUS (December 28, 2025)
 
 | Component | Status | Progress |
 |-----------|--------|----------|
-| **Embeddings** | ✅ Complete | 45,661 / 45,730 (99.8%) |
-| **Top-K Index** | ⏳ Building | 5,520 / 45,661 (12.1%) |
-| **Redis Cache** | ✅ Running | ~5,500 keys |
-| **Web Search** | ✅ Ready | SO + GitHub APIs |
-| **Enhanced Ranker** | ✅ Ready | Cache cascade |
+| **TSC Embeddings** | ✅ Complete | 38,906 / 38,930 (99.94%) |
+| **Svelte Embeddings** | ⏳ Re-embedding | 795 / 72,664 (1.03%) |
+| **Top-K Index** | ⏸️ Paused | 8,456 (old data) |
+| **Redis Cache** | ✅ Running | ~800 keys |
+| **Qdrant** | ✅ Running | 810 points |
+| **CouchDB** | ⚠️ Empty | 0 documents |
 
-**ETA for Index**: ~2.5 hours (250-280 errors/min)
+**ETA for Re-embedding**: ~12 hours (at 1.6/s rate)
+**Target**: 111,594 total errors (2.4x increase)
 
 ---
 
 ## 🔍 KEY METRICS
 
-### Database
-- **Total errors**: 45,730
-- **Embedded**: 45,661 (99.8%)
-- **TSC**: 38,930 errors
-- **Svelte-check**: 6,800 errors
-- **DB size**: 369 MB
+### Database (legal_ai_db @ 5434)
+- **Total errors**: 39,725 (target: 111,594)
+- **TSC**: 38,930 errors ✅
+- **Svelte-check**: 795 / 72,664 (1.03%) ⏳
+- **Cache hit rate**: 0.1% (improving)
 
-### Top-K Index (Current)
+### Infrastructure
 - **Indexed**: 5,520 errors (12.1%)
 - **Relationships**: 110,215
 - **Neighbors per error**: 20
