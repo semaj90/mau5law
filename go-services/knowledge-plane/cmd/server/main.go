@@ -88,6 +88,7 @@ func main() {
 	mux.HandleFunc("/expand", h.Expand)
 	mux.HandleFunc("/compose_prompt", h.ComposePrompt)
 	mux.HandleFunc("/runs", h.IngestRun)
+	mux.HandleFunc("/svelte/docs/search", h.SvelteDocsSearch) // Svelte 5 docs search
 
 	// Start server
 	srv := &http.Server{

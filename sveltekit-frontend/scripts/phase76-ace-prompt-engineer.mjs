@@ -64,7 +64,7 @@ const CONFIG = {
 	qdrant: {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
 		errorCollection: 'phase72_error_patterns',
-		knowledgeCollection: 'knowledge_base',
+		knowledgeCollection: 'phase76_knowledge_base', // Phase 88: 810 points (Svelte 5 + SvelteKit 2 docs)
 		topK: 10,
 		scoreThreshold: 0.4,     // Lowered further to ensure retrieval
 		knowledgeThreshold: 0.3  // Lowered further to ensure Svelte 5 docs are retrieved
@@ -145,6 +145,17 @@ class ACEPromptEngineer {
 		console.log(chalk.gray(`Task: ${this.task}`));
 		if (this.file) console.log(chalk.gray(`File: ${this.file}`));
 		console.log(chalk.gray(`Iterations: ${this.iterations}\n`));
+
+		// Load Svelte 5 policy pack (Phase 88)
+		console.log(chalk.cyan('   📚 Loading Svelte 5 Policy Pack...'));
+		const policyPackPath = path.join(rootDir, 'data/knowledge/svelte5-policy-pack.md');
+		try {
+			this.svelte5PolicyPack = await fs.readFile(policyPackPath, 'utf-8');
+			console.log(chalk.green(`   ✅ Policy pack loaded (${this.svelte5PolicyPack.length} chars)\n`));
+		} catch (error) {
+			console.log(chalk.yellow(`   ⚠️  Policy pack not found: ${policyPackPath}`));
+			this.svelte5PolicyPack = null;
+		}
 
 		// Load knowledge base
 		const kbPath = path.join(rootDir, CONFIG.knowledge.basePath);
@@ -397,6 +408,18 @@ class ACEPromptEngineer {
 		console.log(chalk.cyan('   ✍️  Step 3: Building Contextual Prompt'));
 
 		// ========================================
+		// PHASE 88: PREPEND SVELTE 5 POLICY PACK
+		// ========================================
+		let prompt = '';
+
+		if (this.svelte5PolicyPack) {
+			console.log(chalk.green('   📋 Prepending Svelte 5 Policy Pack (enforces runes, bans export let)'));
+			prompt += `# SYSTEM POLICY: SVELTE 5 ENFORCEMENT\n\n`;
+			prompt += this.svelte5PolicyPack;
+			prompt += `\n\n---\n\n`;
+		}
+
+		// ========================================
 		// AGENTIC DETECTION: Check for Svelte 4 patterns
 		// ========================================
 		const svelte4Patterns = [
@@ -421,7 +444,7 @@ class ACEPromptEngineer {
 
 		const templatePrompt = this.selectPromptTemplate();
 
-		let prompt = `${templatePrompt.prompt}\n\n`;
+		prompt += `${templatePrompt.prompt}\n\n`;
 
 		// Add error patterns from RAG
 		if (ragContext.errors && ragContext.errors.length > 0) {

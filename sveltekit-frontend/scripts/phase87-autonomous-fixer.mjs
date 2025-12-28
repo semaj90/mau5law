@@ -35,7 +35,7 @@ const AGENT_URL = 'http://127.0.0.1:3002/function-call';
 const QDRANT_URL = 'http://127.0.0.1:6333';
 const OLLAMA_URL = 'http://127.0.0.1:11434';
 const EMBEDDING_MODEL = 'embeddinggemma:latest';
-const KNOWLEDGE_COLLECTION = 'phase72_ast_knowledge_base';
+const KNOWLEDGE_COLLECTION = 'phase76_knowledge_base'; // Phase 88: 810 points (Svelte 5 docs + operator docs)
 const CONFIDENCE_THRESHOLD = 0.85;
 
 const PG_CONFIG = {

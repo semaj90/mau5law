@@ -9,8 +9,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$ROOT = (Get-Location).Path
-$SERVICE_DIR = "$ROOT\go-services\knowledge-plane"
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SERVICE_DIR = $SCRIPT_DIR
+$ROOT = Split-Path -Parent (Split-Path -Parent $SERVICE_DIR)
 
 Write-Host "`n" -NoNewline
 Write-Host ("="*80) -ForegroundColor Cyan

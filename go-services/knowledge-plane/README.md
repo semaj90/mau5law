@@ -181,6 +181,61 @@ Knowledge Plane Service (:8765)
 
 ---
 
+### 5. `/svelte/docs/search` - Svelte 5 Documentation Search 🆕
+
+**Purpose**: Search Svelte 5/SvelteKit 2/bits-ui docs + your codebase using ripgrep for agentic self-update with latest APIs.
+
+**Input:**
+```json
+{
+  "query": "$state rune|getOllamaEndpoint",
+  "sources": ["svelte", "sveltekit", "codebase", "bits-ui"],
+  "max_results": 20,
+  "context": 3
+}
+```
+
+**Output:**
+```json
+{
+  "results": [
+    {
+      "source": "svelte.txt",
+      "line": 842,
+      "match": "$state rune - reactive state management",
+      "context": "...\n$state creates reactive state in Svelte 5...\n",
+      "snippet": "$state creates reactive state in Svelte 5",
+      "category": "rune:state"
+    },
+    {
+      "source": "src/lib/utils/getOllamaEndpoint.ts",
+      "line": 15,
+      "match": "export function getOllamaEndpoint() {",
+      "context": "import { env } from '$env/dynamic/public';\nexport function getOllamaEndpoint() {\n  return env.PUBLIC_OLLAMA_URL || 'http://localhost:11434';\n}",
+      "snippet": "export function getOllamaEndpoint() {...}",
+      "category": "codebase-example"
+    }
+  ],
+  "query": "$state rune|getOllamaEndpoint",
+  "sources": ["svelte", "sveltekit", "codebase"],
+  "timestamp": "2025-12-28T06:45:00Z",
+  "meta": {
+    "total_results": 2,
+    "duration_ms": 45
+  }
+}
+```
+
+**Sources:**
+- `svelte`: Search `data/svelte-docs/svelte.txt`
+- `sveltekit`: Search `data/svelte-docs/sveltekit.txt`
+- `codebase`: Search `src/` for Svelte 5 patterns (`$state`, `$derived`, `$effect`, `$props`, `.svelte.ts`, `bits-ui`)
+- `bits-ui`: Search for bits-ui component usage
+
+**Use Case**: Gemma3-legal:latest can call this endpoint via tool calling to get up-to-date Svelte 5/SvelteKit 2/bits-ui docs before generating code.
+
+---
+
 ## JSONL Dataset Format
 
 **Purpose**: Train ACE contextual engineering prompting with real RAG+KAG examples.

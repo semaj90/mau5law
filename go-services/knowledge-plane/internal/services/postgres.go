@@ -42,7 +42,7 @@ func NewPostgresService(ctx context.Context, cfg *config.Config) (*PostgresServi
 
 	// Test connection
 	var dbName, dbUser, dbHost string
-	err = pool.QueryRow(ctx, "SELECT current_database(), current_user, inet_server_addr()").Scan(&dbName, &dbUser, &dbHost)
+	err = pool.QueryRow(ctx, "SELECT current_database(), current_user, COALESCE(inet_server_addr()::text, 'localhost')").Scan(&dbName, &dbUser, &dbHost)
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify connection: %w", err)
 	}
