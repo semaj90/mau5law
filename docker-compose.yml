@@ -770,7 +770,55 @@ services:
   #     - postgres
   #   restart: unless-stopped
 
+  couchdb:
+    image: couchdb:3.3
+    container_name: phase87-couchdb
+    ports:
+      - "5984:5984"
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: legal_ai_pass
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+      - couchdb_config:/opt/couchdb/etc/local.d
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rag-kag-middleware:
+    build:
+      context: ./python-services/rag-kag-middleware
+      dockerfile: Dockerfile
+    container_name: phase87-rag-middleware
+    ports:
+      - "8765:8765"
+    environment:
+      COUCHDB_URL: http://admin:legal_ai_pass@couchdb:5984
+      POSTGRES_URL: postgresql://user:pass@postgres:5432/legal
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379
+      OLLAMA_URL: http://host.docker.internal:11434
+      EMBEDDING_MODEL: embeddinggemma:latest
+      LLM_MODEL: gemma3-legal:latest
+    depends_on:
+      - couchdb
+      - postgres
+      - qdrant
+      - redis
+    networks:
+      - legal-ai-network
+    volumes:
+      - ./checkpoints:/app/checkpoints
+
 volumes:
+  couchdb_data:
+    driver: local
+  couchdb_config:
+    driver: local
   postgres_data:
     driver: local
   minio_data:

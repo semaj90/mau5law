@@ -1,7 +1,115 @@
-# GitHub Copilot Context: Phase 72 KAG Error Fixing
+# GitHub Copilot Context: Phase 76-87 RAG/KAG Error Fixing
 
 ## Overview
-This project uses **Phase 72 KAG (Knowledge-Augmented Generation)** to store and replay verified error fixes across the codebase. All fixes are stored in Redis at `127.0.0.1:4005` under the `phase72:kag` namespace.
+This project uses **Phase 76-87 RAG/KAG (Retrieval & Knowledge-Augmented Generation)** for autonomous error fixing. The system combines webcrawl → parse → embed → index → mirrored search across multiple backends.
+
+---
+
+## 🔍 Ripgrep Usage Fix (CRITICAL)
+
+### Problem: `rg --type mjs` Fails on Windows
+Ripgrep on Windows doesn't ship with `mjs` type definition, causing:
+```bash
+rg: unrecognized file type: mjs
+```
+
+### Solution: Use Glob Patterns Instead
+```bash
+# ❌ WRONG (causes "unrecognized file type: mjs")
+rg "pattern" scripts --type js --type mjs
+
+# ✅ CORRECT (use glob patterns)
+rg "pattern" scripts -g'*.js' -g'*.mjs' -g'*.ts' -g'*.mts'
+
+# Or add mjs type permanently
+rg --type-add 'mjs:*.mjs' --type-list
+```
+
+### For .ripgreprc Configuration
+Create `.ripgreprc` in project root:
+```bash
+--type-add=mjs:*.mjs
+--type-add=mts:*.mts
+--type-add=cts:*.cts
+```
+
+---
+
+## 🏗️ Phase 76-87 RAG/KAG Architecture
+
+### Complete Pipeline (Webcrawl → Fix)
+```
+WEBCRAWL (Firecrawl/SearxNG)
+    ↓
+PARSE (langextract port 8095, docling)
+    ↓
+CHUNK (deterministic: headers, paragraphs, code blocks)
+    ↓
+EMBED (embeddinggemma:latest 768D via Ollama)
+    ↓
+INDEX (Qdrant HNSW + pgvector HNSW + CouchDB views)
+    ↓
+MIRRORED SEARCH:
+  ├─ PostgreSQL: Exact filters + metadata
+  ├─ pgvector: Local similarity (HNSW cosine)
+  ├─ Qdrant: Semantic knowledge base (15 collections)
+  ├─ CouchDB: Graph views (by_priority, by_status)
+  └─ MinIO: Payload retrieval (raw docs, parsed chunks)
+```
+
+### Storage Backends
+| Backend | Port | Purpose | Data Format |
+|---------|------|---------|-------------|
+| **PostgreSQL 17 + pgvector** | 5434 | Error metadata, HNSW search | 100 errors, 100 embeddings (768D) |
+| **Qdrant** | 6333 | Semantic KB, vector search | 15 collections, 55,561 vectors |
+| **MinIO (S3)** | 9000 | Raw docs, parsed chunks | 4 buckets (phase76-summaries, docs, knowledge, legal-documents) |
+| **CouchDB** | 5984 | Graph views, design docs | phase76 design docs (by_priority, by_status) |
+| **Redis** | 6379 | Cache, topology | phase76:codebase:*, phase76:semantic:* |
+| **Ollama** | 11434 | Embeddings, LLM | embeddinggemma:latest (768D), gemma3-legal:latest |
+
+### Key Scripts (Phase 76 Knowledge Base)
+| Script | Purpose | Input | Output |
+|--------|---------|-------|--------|
+| `phase76-knowledge-builder.mjs` | Webcrawl + ingest + embed | URLs, crawl depth | Qdrant vectors, MinIO objects |
+| `phase76-storage-layer.mjs` | Storage abstraction | Postgres, Redis, MinIO | Unified CRUD API |
+| `phase76-couchdb-graph-sync.mjs` | Sync AST graph | knowledge_graph table | CouchDB design docs |
+| `init-qdrant.mjs` | Create collections | Collection names | 15 Qdrant collections |
+| `phase76-fastmcp-server.mjs` | FastMCP tool server | Port 3003 | 10 MCP tools |
+| `phase86-autonomous-loop.mjs` | Autonomous error fixing | FastMCP, Qdrant, pgvector | Applied fixes |
+
+### Phase 86 Autonomous Loop Quick Start
+```powershell
+# Terminal 1: FastMCP Server (port 3002)
+node scripts/fastmcp-server.mjs
+
+# Terminal 2: Autonomous Loop
+$env:PGHOST="127.0.0.1"
+$env:PGPORT="5434"
+$env:PGDATABASE="legal"
+$env:PGUSER="user"
+$env:PGPASSWORD="pass"
+node scripts/phase86-autonomous-loop.mjs
+```
+
+### FastMCP Server (10 Tools)
+1. **qdrant_search** - Semantic KB search (768D cosine)
+2. **postgres_query** - Raw SQL execution
+3. **minio_fetch** - S3-compatible object retrieval
+4. **redis_cache** - Cache get/set/delete
+5. **read_file** - File I/O with line ranges
+6. **ripgrep** - Advanced code search (use glob patterns!)
+7. **search_codebase** - Full-text search
+8. **web_search** - External search (Firecrawl/SearxNG)
+9. **write_file** - File write operations
+10. **run_command** - Shell execution
+
+### HNSW vs FAISS (Vector Search)
+| Feature | HNSW (pgvector/Qdrant) | FAISS |
+|---------|------------------------|-------|
+| **Search Speed** | Sub-millisecond (<5ms) | Faster bulk search |
+| **Indexing** | Incremental, easy updates | Batch rebuild required |
+| **Integration** | PostgreSQL native, Qdrant built-in | External binary |
+| **Production** | ✅ **CHOSEN** (easier sync) | Optional/legacy |
 
 ---
 

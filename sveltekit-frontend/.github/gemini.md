@@ -1,4 +1,150 @@
-# Google Gemini Context: Phase 72 Knowledge Base & Embedding Pipeline
+# Google Gemini Context: Phase 76-87 RAG/KAG Pipeline & Knowledge Base
+
+## 🔍 Ripgrep Usage Fix (Windows)
+
+### Issue: `rg --type mjs` Not Recognized
+On Windows, ripgrep doesn't include `mjs` type definition by default:
+```bash
+rg: unrecognized file type: mjs
+```
+
+### Solution: Use Glob Patterns
+```bash
+# ❌ WRONG (fails on Windows)
+rg "pattern" scripts --type js --type mjs
+
+# ✅ CORRECT (works everywhere)
+rg "pattern" scripts -g'*.js' -g'*.mjs' -g'*.ts' -g'*.mts' -g'*.ps1' -g'*.md'
+
+# Or define type on the fly
+rg --type-add "mjs:*.mjs" --type-add "mts:*.mts" -n "phase76" scripts --type mjs --type mts
+```
+
+### Permanent Fix (.ripgreprc)
+Create `.ripgreprc` in project root:
+```bash
+--type-add=mjs:*.mjs
+--type-add=mts:*.mts
+--type-add=cts:*.cts
+--smart-case
+--hidden
+```
+
+---
+
+## 🏗️ Phase 76-87 RAG/KAG Architecture (Complete)
+
+### Ingestion Pipeline (5 Stages)
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. WEBCRAWL (Firecrawl API, SearxNG, DuckDuckGo HTML)      │
+│    → Svelte 5, SvelteKit, Vite, UnoCSS, Lucia Auth docs    │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 2. PARSE (langextract port 8095, docling for PDFs)         │
+│    → Extract headers, code blocks, paragraphs               │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 3. CHUNK (Deterministic: 1800 chars, 200 overlap)          │
+│    → Preserve context boundaries (headers, blocks)         │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 4. EMBED (embeddinggemma:latest via Ollama)                │
+│    → 768D vectors, cosine similarity                        │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 5. INDEX (Multi-Backend Storage)                            │
+│    ├─ Qdrant: 15 collections, 55,561 vectors (HNSW)        │
+│    ├─ PostgreSQL pgvector: 100 errors, 100 embeddings      │
+│    ├─ CouchDB: Graph views (by_priority, by_status)        │
+│    ├─ MinIO: Raw docs (4 buckets)                          │
+│    └─ Redis: Cache (phase76:codebase:*, semantic:*)        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Mirrored Search Strategy (5 Backends)
+When Phase 86 autonomous loop encounters an error:
+
+1. **PostgreSQL**: Exact filters (error_code, file_path) + metadata
+2. **pgvector**: Local HNSW similarity (cosine, sub-millisecond)
+3. **Qdrant**: Semantic KB search (15 collections, 768D)
+4. **CouchDB**: Graph expansion (related errors, patterns, files)
+5. **MinIO**: Payload retrieval (full context, parsed docs)
+
+**Merge Strategy**:
+```javascript
+finalScore = (pgvectorScore * 0.4) + (qdrantScore * 0.4) + (graphScore * 0.2)
+// Deduplicate by chunk_id, rank by final score
+```
+
+### Storage Backend Details
+| Backend | Port | Role | Current Data |
+|---------|------|------|-------------|
+| PostgreSQL 17 + pgvector | 5434 | Error metadata, HNSW search | 100/33,599 errors (0.3%), 100 embeddings (768D) |
+| Qdrant | 6333 | Semantic knowledge base | 15 collections, 55,561 vectors (phase72_error_patterns: 53,227) |
+| MinIO (S3) | 9000 | Object storage | phase76-summaries, phase76-docs, phase76-knowledge, legal-documents |
+| CouchDB | 5984 | Graph views | phase76 design docs (by_priority, by_status, recommendations) |
+| Redis | 6379 | Cache layer | phase76:codebase:*, phase76:semantic:*, topology:cache:* |
+| Ollama | 11434 | Embeddings + LLM | embeddinggemma:latest (768D), gemma3-legal:latest (generation) |
+
+### Phase 76 Scripts Reference
+| Script | Purpose | Key Flags |
+|--------|---------|----------|
+| `phase76-knowledge-builder.mjs` | Webcrawl + ingest | `--crawl <url> --depth 2` |
+| `phase76-kb-update.mjs` | Index docs into KB | `--paths <files> --tags <tags> --kind <type>` |
+| `phase76-storage-layer.mjs` | Storage abstraction | N/A (library) |
+| `phase76-couchdb-graph-sync.mjs` | Sync knowledge_graph | Auto-run |
+| `init-qdrant.mjs` | Create collections | Auto-run |
+| `phase86-autonomous-loop.mjs` | Autonomous fixer | Requires FastMCP server |
+| `phase87-ingest-error-corpus.mjs` | Scale embeddings | `--filter "TS1005,TS1128"` |
+
+### FastMCP Server (Phase 86 Tool Surface)
+**Port**: 3002
+**Health Endpoint**: `GET http://localhost:3002/health`
+**Tools Endpoint**: `GET http://localhost:3002/tools`
+
+**Available Tools** (10 total):
+1. `qdrant_search` - Search Qdrant collections (768D cosine)
+2. `postgres_query` - Execute SQL (ts_errors, error_embeddings, knowledge_graph)
+3. `minio_fetch` - Retrieve objects from S3-compatible storage
+4. `redis_cache` - Cache operations (get/set/delete)
+5. `read_file` - Read files with line range support
+6. `ripgrep` - Symbol/pattern search (JSON output, use glob patterns!)
+7. `search_codebase` - Full-text search across workspace
+8. `web_search` - External search (Firecrawl/SearxNG/DuckDuckGo)
+9. `write_file` - Write/patch files
+10. `run_command` - Execute shell commands (PowerShell on Windows)
+
+### Quick Start: Phase 86 Autonomous Loop
+```powershell
+# Terminal 1: Start FastMCP server
+node scripts/fastmcp-server.mjs
+# Output: 🚀 FastMCP Server Running on port 3002
+
+# Terminal 2: Run autonomous loop
+$env:PGHOST="127.0.0.1"
+$env:PGPORT="5434"
+$env:PGDATABASE="legal"
+$env:PGUSER="user"
+$env:PGPASSWORD="pass"
+node scripts/phase86-autonomous-loop.mjs
+```
+
+**Expected Behavior**:
+1. Query PostgreSQL for highest-impact error (ORDER BY impact_score DESC)
+2. Generate embedding via embeddinggemma:latest (768D)
+3. RAG retrieval: pgvector HNSW + Qdrant semantic search
+4. KAG expansion: knowledge_graph related patterns
+5. Read file context via FastMCP `read_file` tool
+6. Apply fix (if confidence ≥0.85)
+7. Validate: Run TSC, compare error counts
+8. Audit: Log to fix_attempts table
+
+---
 
 ## ⚠️ CRITICAL: Phase 79 Pattern Fixer Safety Protocol
 
