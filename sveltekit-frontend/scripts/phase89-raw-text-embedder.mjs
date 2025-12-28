@@ -14,9 +14,10 @@
 
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
-import ollama from 'ollama';
 import pg from 'pg';
 import { createClient } from 'redis';
+import { extractTags } from './lib/phase89-cuda-tags.mjs';
+import { embedCached } from './lib/phase89-embed.mjs';
 
 const { Pool } = pg;
 
@@ -63,6 +64,7 @@ async function main() {
       line_number INTEGER,
       raw_text TEXT NOT NULL,
       embedding vector(768),
+      tags TEXT[], -- New: CUDA/Svelte tags
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
@@ -164,37 +166,28 @@ async function ingestAndEmbed(source, lines) {
     for (let i = 0; i < batch.length; i++) {
       try {
         const text = batch[i];
-        const cacheKey = `emb:${hashContent(text)}`;
-        let embeddingVector;
 
-        // Check Redis cache
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-          embeddingVector = JSON.parse(cached);
-        } else {
-          // Generate new embedding
-          const response = await ollama.embeddings({
-            model: CONFIG.ollama.embeddingModel,
-            prompt: text
-          });
-          embeddingVector = response.embedding;
+        // Use cached embedder (Redis-backed)
+        const embeddingVector = await embedCached({
+          rds: redis,
+          text,
+          model: CONFIG.ollama.embeddingModel,
+          ollamaUrl: CONFIG.ollama.host
+        });
 
-          // Cache in Redis (24h TTL)
-          await redis.set(cacheKey, JSON.stringify(embeddingVector), { EX: 86400 });
-        }
+        // Extract tags for filtering/analysis
+        const tags = extractTags(text, source);
 
         await db.query(`
           UPDATE raw_error_embeddings
-          SET embedding = $1
-          WHERE id = $2
-        `, [JSON.stringify(embeddingVector), insertedIds[i]]);
+          SET embedding = $1, tags = $2
+          WHERE id = $3
+        `, [JSON.stringify(embeddingVector), tags, insertedIds[i]]);
 
       } catch (err) {
         console.warn(`      ⚠️  Failed to embed line ${insertedIds[i]}: ${err.message}`);
       }
-    }
-
-    // Progress indicator
+    }    // Progress indicator
     const progress = ((batchIdx + 1) / batches.length * 100).toFixed(1);
     process.stdout.write(`\r   Progress: ${progress}% (${batchIdx + 1}/${batches.length} batches)`);
   }

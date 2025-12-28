@@ -17,6 +17,9 @@
 import ollama from 'ollama';
 import pg from 'pg';
 import { createClient } from 'redis';
+import { getJson, setJson, sha256 } from './lib/phase89-cache.mjs';
+import { embedCached } from './lib/phase89-embed.mjs';
+import { fuseRRF } from './lib/phase89-rrf.mjs';
 import { callLLM, setProvider } from './llm-router.mjs';
 
 const { Pool } = pg;
@@ -93,13 +96,62 @@ async function main() {
     queryText = args.join(' ');
     console.log(`🔍 Finding similar errors to: "${queryText}"\n`);
 
-    // Generate embedding for query
-    const embeddingResult = await ollama.embeddings({
-      model: CONFIG.ollama.embeddingModel,
-      prompt: queryText
-    });
+    // Check if this looks like an error code (e.g., "TS2345")
+    const errorCodeMatch = queryText.match(/TS\d+/);
 
-    queryEmbedding = JSON.stringify(embeddingResult.embedding);
+    if (errorCodeMatch) {
+      const errorCode = errorCodeMatch[0];
+
+      // Try exact match first
+      const exactMatch = await db.query(`
+        SELECT id, raw_text, embedding
+        FROM raw_error_embeddings
+        WHERE raw_text LIKE $1
+        LIMIT 1
+      `, [`%${errorCode}%`]);
+
+      if (exactMatch.rows.length > 0) {
+        console.log(`✅ Found exact match for ${errorCode} in database`);
+        queryText = exactMatch.rows[0].raw_text;
+        queryEmbedding = exactMatch.rows[0].embedding;
+      } else {
+        // No exact match - use semantic fallback with error code template
+        console.log(`⚠️  No exact match for ${errorCode} in database`);
+        console.log(`💡 Falling back to semantic search with template query\n`);
+
+        // Generate template query based on error code
+        const templates = {
+          'TS2345': "Type 'X' is not assignable to type 'Y'",
+          'TS2322': "Type 'X' is not assignable to parameter of type 'Y'",
+          'TS2339': "Property 'X' does not exist on type 'Y'",
+          'TS1005': "';' expected - missing semicolon or brace",
+          'TS7006': "Parameter 'X' implicitly has an 'any' type",
+          'TS2304': "Cannot find name 'X'"
+        };
+
+        queryText = templates[errorCode] || queryText;
+        console.log(`   Using template: "${queryText}"`);
+
+        const embedding = await embedCached({
+          rds: redis,
+          text: queryText,
+          model: CONFIG.ollama.embeddingModel,
+          ollamaUrl: CONFIG.ollama.host
+        });
+
+        queryEmbedding = JSON.stringify(embedding);
+      }
+    } else {
+      // Regular text query - generate embedding
+      const embedding = await embedCached({
+        rds: redis,
+        text: queryText,
+        model: CONFIG.ollama.embeddingModel,
+        ollamaUrl: CONFIG.ollama.host
+      });
+
+      queryEmbedding = JSON.stringify(embedding);
+    }
   }
 
   // ============================================================
@@ -107,18 +159,47 @@ async function main() {
   // ============================================================
   console.log('📊 Running cosine similarity search...');
 
-  const similarErrors = await db.query(`
-    SELECT
-      id,
-      source,
-      raw_text,
-      1 - (embedding <=> $1::vector) AS similarity
-    FROM raw_error_embeddings
-    WHERE embedding IS NOT NULL
-      AND 1 - (embedding <=> $1::vector) >= $2
-    ORDER BY embedding <=> $1::vector
-    LIMIT $3
-  `, [queryEmbedding, CONFIG.search.minSimilarity, CONFIG.search.topK]);
+  // Get top-K from Redis cache
+  const cacheKey = `ret:${sha256(queryText || errorId.toString())}`;
+  const cached = await getJson(redis, cacheKey);
+
+  let similarErrors;
+  if (cached) {
+    console.log(`💾 Retrieved ${cached.length} results from cache\n`);
+    similarErrors = { rows: cached };
+  } else {
+    similarErrors = await db.query(`
+      SELECT
+        id,
+        source,
+        raw_text,
+        1 - (embedding <=> $1::vector) AS similarity
+      FROM raw_error_embeddings
+      WHERE embedding IS NOT NULL
+        AND 1 - (embedding <=> $1::vector) >= $2
+      ORDER BY embedding <=> $1::vector
+      LIMIT $3
+    `, [queryEmbedding, CONFIG.search.minSimilarity, CONFIG.search.topK]);
+
+    // Cache for 2 hours
+    await setJson(redis, cacheKey, similarErrors.rows, 7200);
+    console.log(`💾 Cached ${similarErrors.rows.length} results\n`);
+  }
+
+  // Fetch ripgrep results for text queries
+  let ripgrepResults = [];
+  if (queryText) {
+    // TODO: Integrate ripgrep search here
+    // ripgrepResults = await searchWithRipgrep(queryText);
+  }
+
+  // Fuse results with RRF if multiple sources
+  if (ripgrepResults.length > 0) {
+    similarErrors = { rows: fuseRRF(
+      [similarErrors.rows, ripgrepResults],
+      [0.7, 0.3] // Weight vector search more than ripgrep
+    )};
+  }
 
   console.log(`   Found ${similarErrors.rows.length} similar errors\n`);
 

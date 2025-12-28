@@ -109,8 +109,18 @@ async def lifespan(app: FastAPI):
     await http_client.aclose()
     print("🛑 Phase 89 RAG Server stopped")
 
-# Update app initialization
-app = FastAPI(title="Phase 89 RAG Server", version="1.0.0", lifespan=lifespan)# ============================================
+# Create FastAPI app with lifespan
+app = FastAPI(title="Phase 89 RAG Server", version="1.0.0", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ============================================
 # Embedding Functions
 # ============================================
 
