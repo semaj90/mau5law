@@ -66,4 +66,638 @@ The following routes have been migrated to `(app)`:
 - `gpu-evidence-graph`
 - `persons-of-interest`
 
+---
 
+## 🔬 Phase 89: ACE Contextual Engineering
+
+### Error Cluster Insights (Auto-Generated)
+
+**Cluster 0** (200 errors) | `tsc` | Priority: medium
+- **Tags**: `typescript_error`, `svelte_component`, `syntax_comma`, `sveltekit_page`, `syntax_semicolon`
+- **Pattern**: TS1005 comma/semicolon syntax errors in generated proxy files
+- **Fix Strategy**: These are `.svelte-kit/types/` generated files - fix the source `.svelte` components
+
+### Svelte 5 Runes Quick Reference
+
+| Old Syntax | New Syntax (Svelte 5) |
+|------------|----------------------|
+| `export let prop` | `let { prop } = $props()` |
+| `let value = 0` | `let value = $state(0)` |
+| `$: doubled = x * 2` | `let doubled = $derived(x * 2)` |
+| `$: { console.log(x) }` | `$effect(() => { console.log(x) })` |
+| `on:click={handler}` | `onclick={handler}` |
+
+### Searchable Tags (ripgrep)
+
+```bash
+# Find Svelte 5 runes usage
+rg "\$state|\$derived|\$effect|\$props" --type svelte
+
+# Find bits-ui components
+rg "from 'bits-ui'" --type svelte
+
+# Find UnoCSS classes
+rg "class=\"[^\"]*\"" --type svelte | grep -E "bg-|text-|flex-|grid-"
+```
+
+---
+
+## 📦 bits-ui + UnoCSS Configuration
+
+### Dependencies (Already Installed)
+```json
+{
+  "bits-ui": "2.14.4",
+  "unocss": "^66.5.2",
+  "@unocss/preset-uno": "^66.5.2",
+  "@unocss/preset-icons": "^66.5.1",
+  "@unocss/svelte-scoped": "^66.5.1"
+}
+```
+
+### bits-ui Headless Components (Svelte 5 Compatible)
+```svelte
+<script lang="ts">
+  import { Dialog, Button } from 'bits-ui';
+
+  let isOpen = $state(false);
+</script>
+
+<Button.Root onclick={() => isOpen = true}>
+  Open Dialog
+</Button.Root>
+
+<Dialog.Root bind:open={isOpen}>
+  <Dialog.Portal>
+    <Dialog.Overlay class="fixed inset-0 bg-black/50" />
+    <Dialog.Content class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg">
+      <Dialog.Title>Dialog Title</Dialog.Title>
+      <Dialog.Description>Content here</Dialog.Description>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+### UnoCSS Utility Classes
+```html
+<!-- Layout -->
+<div class="flex items-center justify-between gap-4">
+
+<!-- Colors (dark mode) -->
+<div class="bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
+
+<!-- Typography -->
+<h1 class="text-2xl font-bold tracking-tight">
+
+<!-- Animations -->
+<div class="transition-all duration-300 hover:scale-105">
+```
+
+---
+
+## 🚀 Phase 89 Pipeline Commands
+
+```powershell
+# Run full clustering pipeline (40K errors)
+$env:PHASE72_PYTHON="C:\Users\james\Videos\deeds-web-app\.venv\Scripts\python.exe"
+& $env:PHASE72_PYTHON scripts/phase89-enhanced-cuda-pipeline.py --chunk-size 500
+
+# Check cluster results
+curl -X POST "http://localhost:6333/collections/phase89_error_clusters/points/scroll" -H "Content-Type: application/json" -d '{"limit":10,"with_payload":true}'
+
+# Start dev server
+npm run dev -- --port 5175
+```
+
+## Cluster 32 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.212Z
+
+Cluster 32: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 37 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.351Z
+
+Cluster 37: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 36 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.470Z
+
+Cluster 36: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 35 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.585Z
+
+Cluster 35: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 30 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.694Z
+
+Cluster 30: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 31 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.797Z
+
+Cluster 31: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 33 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:03.920Z
+
+Cluster 33: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 34 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.024Z
+
+Cluster 34: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 6 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.148Z
+
+Cluster 6: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 7 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.274Z
+
+Cluster 7: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 8 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.375Z
+
+Cluster 8: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 9 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.474Z
+
+Cluster 9: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 11 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.577Z
+
+Cluster 11: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 12 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.689Z
+
+Cluster 12: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 13 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.791Z
+
+Cluster 13: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 14 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.897Z
+
+Cluster 14: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 15 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:04.996Z
+
+Cluster 15: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 16 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.121Z
+
+Cluster 16: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 17 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.216Z
+
+Cluster 17: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 18 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.322Z
+
+Cluster 18: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 19 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.421Z
+
+Cluster 19: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 20 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.541Z
+
+Cluster 20: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 21 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.663Z
+
+Cluster 21: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 22 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.773Z
+
+Cluster 22: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 23 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.883Z
+
+Cluster 23: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 24 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:05.990Z
+
+Cluster 24: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 25 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:06.100Z
+
+Cluster 25: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 26 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:06.217Z
+
+Cluster 26: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 27 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:06.321Z
+
+Cluster 27: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 29 (1000 errors)
+
+**Generated:** 2025-12-29T19:22:06.436Z
+
+Cluster 29: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 28 (999 errors)
+
+**Generated:** 2025-12-29T19:22:06.529Z
+
+Cluster 28: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 4 (992 errors)
+
+**Generated:** 2025-12-29T19:22:06.625Z
+
+Cluster 4: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 10 (989 errors)
+
+**Generated:** 2025-12-29T19:22:06.726Z
+
+Cluster 10: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 0 (986 errors)
+
+**Generated:** 2025-12-29T19:22:06.820Z
+
+Cluster 0: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 38 (505 errors)
+
+**Generated:** 2025-12-29T19:22:06.925Z
+
+Cluster 38: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 5 (5 errors)
+
+**Generated:** 2025-12-29T19:22:07.041Z
+
+Cluster 5: 5 errors (LLM summary unavailable)
+
+---
+
+## Cluster 2 (3 errors)
+
+**Generated:** 2025-12-29T19:22:07.151Z
+
+Cluster 2: 3 errors (LLM summary unavailable)
+
+---
+
+## Cluster 3 (2 errors)
+
+**Generated:** 2025-12-29T19:22:07.262Z
+
+Cluster 3: 2 errors (LLM summary unavailable)
+
+---
+
+## Cluster 1 (2 errors)
+
+**Generated:** 2025-12-29T19:22:07.367Z
+
+Cluster 1: 2 errors (LLM summary unavailable)
+
+---
+
+
+# Phase 89: Error Cluster Knowledge Base
+> Auto-generated from GPU clustering + LLM summarization
+> Last updated: 2025-12-29T19:29:37.275Z
+
+## Cluster Overview
+- **Total Clusters**: 7- **Total Errors**: 34480- **Largest Cluster**: 5000 errors
+
+## Clusters (Sorted by Size)
+
+### Cluster 5 (5000 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a syntax problem likely stemming from an attempt to define class properties or object literals with incorrect or missing delimiters (equals signs, commas, colons, and semicolons). This suggests a potential issue with how properties are being initialized or structured within the `KAGTraverser.ts` file, possibly due to a typo or misunderstanding of TypeScript syntax.
+
+**Error IDs**: 25601, 25602, 25603, 25604, 25605, 25606, 25607, 25608, 25609, 25610...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 6 (5000 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a syntax issue, likely stemming from a corrupted or incomplete TypeScript file. These errors suggest a problem with the code's structure, potentially due to a failed code generation, copy-paste error, or an issue with the editor's auto-completion/formatting.
+
+**Error IDs**: 30601, 30602, 30603, 30604, 30605, 30606, 30607, 30608, 30609, 30610...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 1 (5000 errors)
+**Tags**: 
+
+**Summary**: The errors consistently indicate missing colons (`:`) and commas (`,`) within TypeScript code, suggesting a syntax error likely due to incorrect object or array definition. This points to a potential issue with how data structures are being defined or passed, possibly involving a recent code change or a misconfigured TypeScript configuration.
+
+**Error IDs**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 3 (5000 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a significant problem with syntax, likely stemming from a malformed template literal or incorrect variable declaration within the codebase. These issues cascade, causing TypeScript to misinterpret subsequent code and generate a series of related errors across multiple files.
+
+**Error IDs**: 15601, 15602, 15603, 15604, 15605, 15606, 15607, 15608, 15609, 15610...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 4 (5000 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a syntax problem, likely a missing or misplaced semicolon, brace, or comma, disrupting the expected structure of TypeScript code. This suggests a potential issue with code formatting or a logical error in how data structures (objects, arrays, or type definitions) are being defined within the `contextual-attachment-helper.ts` and `sse.ts` files.
+
+**Error IDs**: 20601, 20602, 20603, 20604, 20605, 20606, 20607, 20608, 20609, 20610...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 2 (4976 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a likely issue with incorrect syntax, specifically missing or misplaced parentheses, colons, commas, or semicolons within function definitions or type annotations. This suggests a problem with the structure of the TypeScript code, possibly due to a copy-paste error, incorrect refactoring, or a misunderstanding of the expected syntax.
+
+**Error IDs**: 8126, 8127, 8128, 8129, 8130, 8131, 8132, 8133, 8150, 8151...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+### Cluster 7 (4504 errors)
+**Tags**: 
+
+**Summary**: The errors indicate a syntax problem, likely a missing or misplaced comma or semicolon, within the `matrix-compiler.ts` file. This suggests a structural issue in the code, potentially within an object definition, array initialization, or function parameter list, leading to parsing errors.
+
+**Error IDs**: 35601, 35602, 35603, 35604, 35605, 35606, 35607, 35608, 35609, 35610...
+
+**Vector Search**: ✅ Indexed in Qdrant
+- Model: `embeddinggemma:latest`
+- Similarity: `cosine`
+
+---
+
+## Tag Index (Ripgrep Searchable)
+
+
+## Cluster 32 (1000 errors)
+
+**Generated:** 2025-12-29T20:09:46.367Z
+
+Cluster 32: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 37 (1000 errors)
+
+**Generated:** 2025-12-29T20:09:46.449Z
+
+Cluster 37: 10 errors (LLM summary unavailable)
+
+---
+
+## Cluster 36 (1000 errors)
+
+**Generated:** 2025-12-29T20:09:46.520Z
+
+Cluster 36: 10 errors (LLM summary unavailable)
+
+---
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 1:27:37 PM
+
+**Query**: Analyze TypeScript module caching errors and Svelte 5 runes migration issues
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+```json
+{
+  "analysis": "The user query focuses on two distinct issues: TypeScript module caching errors and Svelte 5 runes migration problems. The provided context primarily addresses TypeScript module caching errors, specifically the 'Module '"$lib/server/db"' has no exported member 'db'' issue. There's no direct information about Svelte 5 runes migration, suggesting this aspect of the query is not covered by the available knowledge base.",
+  "errorPattern": "TS_MODULE_CACHE",
+  "rootCause": "
+
+---
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 1:32:44 PM
+
+**Query**: Fix TypeScript module caching and analyze error patterns
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+```json
+{
+  "analysis": "The user is experiencing a TypeScript module caching issue, specifically the error `Module '"$lib/server/db"' has no exported member 'db'` despite the export existing. The provided knowledge base identifies this as a common problem with the TypeScript Language Server (TSServer) caching module shapes, leading to an IDE/editor error that doesn't reflect the actual runtime behavior.",
+  "errorPattern": "TS Module Export Cache",
+  "rootCause": "The TypeScript Language Server
+
+---
+
+
+## Phase 89 Analysis Update - 2025-12-29T21:32:50.323Z
+
+**Providers Used:** gemini
+**Files Analyzed:** 1
+**Tool Calls:** 0
+
+### gemini (gemini-2.0-flash-exp)
+**Critical Issues:** 0
+**Recommendations:** 0
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 1:51:26 PM
+
+**Query**: Analyze and fix TypeScript syntax errors in src/lib/actions/accessibility-actions.ts, src/lib/actors/xstate-actor-wrapper.ts, and src/lib/adapters/webasm-ai-adapter.ts. Focus on TS1005 comma and arrow function errors. Provide specific code fixes.
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+```json
+{
+  "analysis": "The user query requests analysis and fixes for TypeScript syntax errors, specifically TS1005 errors related to commas and arrow functions, in three files: `src/lib/actions/accessibility-actions.ts`, `src/lib/actors/xstate-actor-wrapper.ts`, and `src/lib/adapters/webasm-ai-adapter.ts`. The provided context highlights a common TypeScript Language Server caching issue that can manifest as 'Module has no exported member' errors, even though the code functions correctly at ru
+
+---
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 1:52:54 PM
+
+**Query**: Analyze TypeScript errors in src/lib/actions/accessibility-actions.ts and provide fixes
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+```json
+{
+  "analysis": "The user query describes a TypeScript error occurring in `src/lib/actions/accessibility-actions.ts`. The provided context highlights a common TypeScript error related to module exports and the TypeScript Language Server (TSServer) cache. This error manifests as the IDE reporting that a module doesn't have an exported member, even though the export exists in the module's `index.ts` file. The root cause is that the TSServer is caching outdated module shapes and hasn't relo
+
+---
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 1:54:21 PM
+
+**Query**: Analyze TypeScript module caching errors
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+```json
+{
+  "analysis": "The user query concerns TypeScript module caching errors, specifically the error 'Module '"$lib/server/db"' has no exported member 'db''. The provided context highlights a common issue with the TypeScript Language Server (TSServer) caching module shapes, leading to this error even when the export exists in the module. This is a purely IDE/editor-side problem, as the runtime environment functions correctly.",
+  "errorPattern": "TS Module Export Cache Miss",
+  "rootCause":
+
+---
+
+
+## Phase 89: ACE Analysis - 12/29/2025, 2:09:31 PM
+
+**Query**: how to migrate export let to 
+**Provider**: ollama
+**Top Knowledge Score**: N/A
+
+The user is asking how to migrate from `export let` to an alternative syntax.  The provided context doesn't directly address a migration *from* `export let`, but it highlights potential issues with TypeScript's module export caching and provides general best practices for Svelte and SvelteKit development.  The context suggests that if you're encountering errors related to exported members not being recognized, it's likely due to a caching problem within the TypeScript Language Server, not a fundamental incompatibility with `export let` itself.
+
+---

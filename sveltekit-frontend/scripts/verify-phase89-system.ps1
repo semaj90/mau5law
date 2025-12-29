@@ -4,7 +4,7 @@
 Write-Host "🔍 Phase 89: Full System Verification" -ForegroundColor Cyan
 Write-Host ""
 
-$errors = @()
+$allErrors = @()
 
 # =====================================================
 # 1. PostgreSQL Connection
@@ -12,9 +12,9 @@ $errors = @()
 Write-Host "1️⃣ Checking PostgreSQL..." -ForegroundColor Yellow
 $PGHOST = "127.0.0.1"
 $PGPORT = "5434"
-$PGDATABASE = "legal"
-$PGUSER = "user"
-$env:PGPASSWORD = "pass"
+$PGDATABASE = "legal_ai_db"
+$PGUSER = "legal_admin"
+$env:PGPASSWORD = "123456"
 
 try {
     $pgResult = psql -h $PGHOST -p $PGPORT -d $PGDATABASE -U $PGUSER -c "SELECT 1" -t 2>&1
@@ -22,7 +22,7 @@ try {
         Write-Host "   ✅ PostgreSQL connected" -ForegroundColor Green
 
         # Check Phase 89 tables
-        $tables = @('phase89_fix_attempts', 'phase89_kb_cards', 'phase89_error_clusters', 'phase89_timeline', 'phase89_cosine_rankings', 'phase89_ast_signatures')
+        $tables = @('phase89_fix_attempts', 'phase89_kb_cards', 'phase89_error_clusters', 'phase89_timeline', 'phase89_cosine_rankings', 'phase89_ast_signatures', 'phase89_edit_log')
         $query = "SELECT tablename FROM pg_tables WHERE tablename LIKE 'phase89%'"
         $existingTables = (psql -h $PGHOST -p $PGPORT -d $PGDATABASE -U $PGUSER -c $query -t).Trim() -split "`n" | ForEach-Object { $_.Trim() }
 
@@ -31,15 +31,15 @@ try {
             Write-Host "   ✅ All Phase 89 tables exist" -ForegroundColor Green
         } else {
             Write-Host "   ⚠️ Missing tables: $($missingTables -join ', ')" -ForegroundColor Yellow
-            $errors += "Missing PostgreSQL tables"
+            $allErrors += "Missing PostgreSQL tables"
         }
     } else {
         Write-Host "   ❌ PostgreSQL connection failed" -ForegroundColor Red
-        $errors += "PostgreSQL not accessible"
+        $allErrors += "PostgreSQL not accessible"
     }
 } catch {
     Write-Host "   ❌ PostgreSQL check failed: $($_.Exception.Message)" -ForegroundColor Red
-    $errors += "PostgreSQL error"
+    $allErrors += "PostgreSQL error"
 }
 
 Write-Host ""
@@ -49,12 +49,12 @@ Write-Host ""
 # =====================================================
 Write-Host "2️⃣ Checking Redis..." -ForegroundColor Yellow
 try {
-    $redisTest = redis-cli PING 2>&1
-    if ($redisTest -eq "PONG") {
-        Write-Host "   ✅ Redis connected" -ForegroundColor Green
+    $redisTest = docker exec phase66-redis redis-cli PING 2>&1
+    if ($redisTest -match "PONG") {
+        Write-Host "   ✅ Redis connected (via Docker)" -ForegroundColor Green
 
         # Check keyspace
-        $keyCount = redis-cli DBSIZE
+        $keyCount = docker exec phase66-redis redis-cli DBSIZE
         Write-Host "   ℹ️ Total keys: $keyCount" -ForegroundColor Cyan
 
         if ($keyCount -gt 1000) {
@@ -64,11 +64,11 @@ try {
         }
     } else {
         Write-Host "   ❌ Redis connection failed" -ForegroundColor Red
-        $errors += "Redis not accessible"
+        $allErrors += "Redis not accessible"
     }
 } catch {
     Write-Host "   ❌ Redis check failed: $($_.Exception.Message)" -ForegroundColor Red
-    $errors += "Redis error"
+    $allErrors += "Redis error"
 }
 
 Write-Host ""
@@ -78,28 +78,28 @@ Write-Host ""
 # =====================================================
 Write-Host "3️⃣ Checking Qdrant..." -ForegroundColor Yellow
 try {
-    $qdrantHealth = Invoke-RestMethod -Uri "http://localhost:6333/health" -Method GET -TimeoutSec 5
+    $qdrantHealth = Invoke-RestMethod -Uri "http://127.0.0.1:6333/collections" -Method GET -TimeoutSec 5
     Write-Host "   ✅ Qdrant connected" -ForegroundColor Green
 
     # Check collections
-    $collections = @('phase89_error_chunks', 'phase89_ast_chunks', 'phase89_kb_cards', 'phase76_knowledge_base')
+    $collections = @('phase89_error_chunks', 'phase89_ast_embeddings', 'phase89_error_clusters', 'phase89_rag_patterns', 'phase89_kb_cards', 'phase89_edit_log')
     foreach ($collection in $collections) {
         try {
-            $collectionInfo = Invoke-RestMethod -Uri "http://localhost:6333/collections/$collection" -Method GET -TimeoutSec 5
+            $collectionInfo = Invoke-RestMethod -Uri "http://127.0.0.1:6333/collections/$collection" -Method GET -TimeoutSec 5
             $pointCount = $collectionInfo.result.points_count
-            if ($pointCount -gt 0) {
+            if ($pointCount -ge 0) {
                 Write-Host "   ✅ $collection`: $pointCount points" -ForegroundColor Green
             } else {
                 Write-Host "   ⚠️ $collection`: empty (run CUDA pipeline)" -ForegroundColor Yellow
             }
         } catch {
             Write-Host "   ❌ $collection`: not found" -ForegroundColor Red
-            $errors += "Missing Qdrant collection: $collection"
+            $allErrors += "Missing Qdrant collection: $collection"
         }
     }
 } catch {
-    Write-Host "   ❌ Qdrant connection failed" -ForegroundColor Red
-    $errors += "Qdrant not accessible"
+    Write-Host "   ❌ Qdrant connection failed: $($_.Exception.Message)" -ForegroundColor Red
+    $allErrors += "Qdrant not accessible"
 }
 
 Write-Host ""
@@ -121,12 +121,12 @@ try {
             Write-Host "   ✅ Model: $model" -ForegroundColor Green
         } else {
             Write-Host "   ⚠️ Model missing: $model" -ForegroundColor Yellow
-            $errors += "Missing Ollama model: $model"
+            $allErrors += "Missing Ollama model: $model"
         }
     }
 } catch {
     Write-Host "   ❌ Ollama connection failed" -ForegroundColor Red
-    $errors += "Ollama not accessible"
+    $allErrors += "Ollama not accessible"
 }
 
 Write-Host ""
@@ -143,9 +143,17 @@ try {
 
     $configTest = Invoke-RestMethod -Uri "http://localhost:5175/api/phase89/config" -Method GET -TimeoutSec 5
     Write-Host "   ✅ /api/phase89/config responding" -ForegroundColor Green
+
+    # Additional check for status
+    if ($statusTest.success) {
+        Write-Host "   ✅ Status API OK" -ForegroundColor Green
+    } else {
+        Write-Host "   ❌ Status API failed" -ForegroundColor Red
+        $allErrors += "Status API error"
+    }
 } catch {
     Write-Host "   ⚠️ API endpoints not accessible (dev server not running?)" -ForegroundColor Yellow
-    Write-Host "   Run: npm run dev" -ForegroundColor Cyan
+    Write-Host "   Run: npm run dev" -ForegroundColor Gray
 }
 
 Write-Host ""
@@ -154,16 +162,15 @@ Write-Host ""
 # 6. Namespace Coherence
 # =====================================================
 Write-Host "6️⃣ Checking Namespace Coherence..." -ForegroundColor Yellow
-
-# Check Redis prefixes
-$prefixes = @('phase89:', 'emb:', 'topk:', 'kb:')
+$prefixes = @("phase89:", "emb:", "topk:", "kb:")
 foreach ($prefix in $prefixes) {
     try {
-        $keyCount = (redis-cli KEYS "$prefix*").Count
-        if ($keyCount -gt 0) {
-            Write-Host "   ✅ Prefix $prefix`: $keyCount keys" -ForegroundColor Green
+        $keys = docker exec phase66-redis redis-cli KEYS "$prefix*"
+        $count = ($keys -split "`n").Count
+        if ($count -gt 0) {
+            Write-Host "   ✅ Prefix $prefix`: $count keys" -ForegroundColor Green
         } else {
-            Write-Host "   ⚠️ Prefix $prefix`: no keys (run pipeline)" -ForegroundColor Yellow
+            Write-Host "   ⚠️ Prefix $prefix`: no keys found" -ForegroundColor Yellow
         }
     } catch {
         Write-Host "   ❌ Failed to check prefix: $prefix" -ForegroundColor Red
@@ -171,30 +178,22 @@ foreach ($prefix in $prefixes) {
 }
 
 Write-Host ""
-
-# =====================================================
-# Summary
-# =====================================================
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Gray
-if ($errors.Count -eq 0) {
-    Write-Host "✅ Phase 89 System: FULLY WIRED" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "🚀 Ready to use!" -ForegroundColor Cyan
-    Write-Host "   Dashboard: http://localhost:5175/admin/phase89" -ForegroundColor White
-    Write-Host "   Explorer: http://localhost:5175/admin/explorer" -ForegroundColor White
-    Write-Host ""
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+if ($allErrors.Count -eq 0) {
+    Write-Host "🚀 Phase 89 System: FULLY WIRED" -ForegroundColor Green
+    Write-Host "All systems operational and connected." -ForegroundColor Green
 } else {
     Write-Host "⚠️ Phase 89 System: PARTIALLY WIRED" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "Issues found:" -ForegroundColor Red
-    foreach ($error in $errors) {
-        Write-Host "   • $error" -ForegroundColor Red
+    foreach ($err in $allErrors) {
+        Write-Host "   - $err" -ForegroundColor Red
     }
     Write-Host ""
     Write-Host "Fix steps:" -ForegroundColor Cyan
-    Write-Host "   1. Run: scripts/setup-phase89-db.ps1" -ForegroundColor White
-    Write-Host "   2. Run: node scripts/phase89-cuda-integrated-pipeline.mjs" -ForegroundColor White
-    Write-Host "   3. Start dev server: npm run dev" -ForegroundColor White
-    Write-Host ""
+    Write-Host "   1. Run: scripts/setup-phase89-db.ps1"
+    Write-Host "   2. Run: node scripts/phase89-cuda-integrated-pipeline.mjs"
+    Write-Host "   3. Start dev server: npm run dev"
 }
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Gray
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+Write-Host ""

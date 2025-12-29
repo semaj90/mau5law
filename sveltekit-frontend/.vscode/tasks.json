@@ -596,6 +596,24 @@
 			},
 			"group": "test",
 			"detail": "Phase 89: Scan scripts for destructive operations (DROP, DELETE, rm -rf, etc.)"
+		},
+		{
+			"label": "🤖 Phase 89: Agentic Fixer (Auto)",
+			"type": "shell",
+			"command": "node scripts/phase89-agentic-fixer.mjs --limit 50",
+			"group": "build"
+		},
+		{
+			"label": "🧹 Phase 89: Clear Caches (Fix TSServer)",
+			"type": "shell",
+			"command": "Remove-Item -Recurse -Force node_modules/.cache, .svelte-kit, build -ErrorAction SilentlyContinue; echo \"Caches cleared. Please restart VS Code or reload window.\"",
+			"group": "build"
+		},
+		{
+			"label": "🤖 Phase 89: Agentic Fixer (Scale Up)",
+			"type": "shell",
+			"command": "node scripts/phase89-agentic-fixer.mjs --limit 200",
+			"group": "build"
 		}
 	],
 	"inputs": [

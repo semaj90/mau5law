@@ -239,6 +239,7 @@ async function main() {
 	console.error('  - web:crawl, web:search, web:scrape');
 	console.error('  - agent:delegate, agent:discover, agent:broadcast');
 	console.error('  - fix:svelte5, fix:suggest');
+	console.error('  - phase89:cluster, phase89:summarize, phase89:tag');
 	console.error('');
 }
 

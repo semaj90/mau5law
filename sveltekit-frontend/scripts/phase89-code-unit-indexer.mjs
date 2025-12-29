@@ -64,9 +64,14 @@ let db, redis;
 async function connect() {
   console.log('\n🔌 Connecting...');
 
-  db = new Pool(CONFIG.postgres);
-  await db.query('SELECT 1');
-  console.log('   ✅ PostgreSQL');
+  try {
+    db = new Pool(CONFIG.postgres);
+    await db.query('SELECT 1');
+    console.log('   ✅ PostgreSQL');
+  } catch (e) {
+    console.error(`   ❌ PostgreSQL failed: ${e.message}`);
+    throw e;
+  }
 
   redis = createClient({ url: CONFIG.redis.url });
   redis.on('error', () => {});
@@ -87,7 +92,9 @@ async function connect() {
         });
         console.log(`   ✅ Created ${collection}`);
       }
-    } catch {}
+    } catch (e) {
+      console.error(`   ⚠️  Qdrant ${collection} error: ${e.message}`);
+    }
   }
   console.log('');
 }
@@ -696,10 +703,10 @@ async function buildDependencyGraph(units) {
 
       for (const edge of edges) {
         await db.query(`
-          INSERT INTO phase89_import_edges (from_unit_id, to_unit_id, edge_type, from_path, to_path)
-          VALUES ($1, $2, $3, $4, $5)
-          ON CONFLICT DO NOTHING
-        `, [edge.from_id, edge.to_id, edge.kind, edge.from_path, edge.to_path]);
+          INSERT INTO phase89_import_edges (from_file, to_file, kind)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (from_file, to_file, kind) DO NOTHING
+        `, [edge.from_path, edge.to_path, edge.kind]);
       }
 
       console.log(`   ✅ Stored ${edges.length} edges in PostgreSQL\n`);

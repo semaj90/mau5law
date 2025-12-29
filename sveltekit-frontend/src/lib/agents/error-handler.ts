@@ -37,7 +37,11 @@ export class ToolErrorHandler {
  /**
  * Handle fetch errors
  */
- static handleFetchError(error: unknown, context), string: ToolExecutionError {
+return new ToolExecutionError(
+ErrorType.NETWORK_ERROR,
+`Network error in ${context}: ${error.message}`,
+error as Error,
+true);
  if (error instanceof TypeError) {
  if (error.message.includes('fetch')) {
  return new ToolExecutionError(
@@ -67,10 +71,11 @@ export class ToolErrorHandler {
  true
  );
  }
-
- /**
+return new ToolExecutionError(
+ErrorType.SERVICE_UNAVAILABLE,
  * Handle HTTP response errors
- */
+true
+);
  static handleResponseError(
  status: number, statusText: string,
  context: string

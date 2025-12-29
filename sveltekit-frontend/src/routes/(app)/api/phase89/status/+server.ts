@@ -216,5 +216,36 @@ export const GET: RequestHandler = async () => {
 		wiring_score: Object.values(status.integration).filter(Boolean).length + '/6'
 	};
 
+	// ============================================================
+	// GPU Status (CUDA)
+	// ============================================================
+
+	try {
+		const pythonPath = 'C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe';
+		const gpuCheck = await new Promise((resolve) => {
+			const { spawn } = require('child_process');
+			const proc = spawn(pythonPath, ['-c',
+				'import torch; print(f"{torch.cuda.is_available()}|{torch.cuda.get_device_name(0) if torch.cuda.is_available() else \'N/A\'}|{torch.cuda.memory_allocated(0)/1e9:.2f}|{torch.cuda.get_device_properties(0).total_memory/1e9:.2f}" if torch.cuda.is_available() else "False|N/A|0|0")'
+			]);
+
+			let output = '';
+			proc.stdout.on('data', (data: Buffer) => { output += data.toString(); });
+			proc.on('close', () => {
+				const [available, name, used, total] = output.trim().split('|');
+				resolve({
+					available: available === 'True',
+					device_name: name,
+					memory_used_gb: parseFloat(used),
+					memory_total_gb: parseFloat(total),
+					memory_utilization: total !== '0' ? ((parseFloat(used) / parseFloat(total)) * 100).toFixed(1) + '%' : '0%'
+				});
+			});
+		});
+
+		status.gpu = gpuCheck;
+	} catch (err: any) {
+		status.gpu = { available: false, error: err.message };
+	}
+
 	return json(status);
 };

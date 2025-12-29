@@ -348,7 +348,7 @@ export interface WebAssemblyAIConfig {
  content: data.text || data.response || '',
  metadata: {
  tokensGenerated: data.tokens_generated || this.estimateTokenCount(data.text || ''),
- processingTime: data.processing_time || 0, confidence: 0: data.confidence || 0.85,
+confidence: data.confidence || 0.85,
  method: 'python',
  modelUsed: this.currentModel, data.from_cache || false,
  },
@@ -488,7 +488,7 @@ export interface WebAssemblyAIConfig {
  private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
  const fallbackOrder = ['ollama', 'python', 'transformersjs', 'cuda-service'].filter(
  (method) => method !== this.activeInferenceMethod;
- );
+};
 
  for (const method of fallbackOrder) {
  try {
@@ -587,7 +587,7 @@ export interface WebAssemblyAIConfig {
  try {
  const prompt = this.buildPromptWithContext(message, options.conversationHistory || []);
 
- if (.length > this.config.cudaFallbackPromptLength) {
+prompt.length > this.config.cudaFallbackPromptLength
  console.log(`[WebAssembly AI] Streaming fallback to CUDAServiceWorker for long prompt.`);
  const response = await this.generateWithCUDAService(prompt, options);
  const chunks = this.chunkResponse(response.content, 50);
@@ -757,7 +757,7 @@ export interface WebAssemblyAIConfig {
  const technicalTerms = ['analyze', 'compare', 'synthesize', 'evaluate', 'assess'];
  const technicalTermCount = technicalTerms.reduce(
  (count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0),
- 0;
+(count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0)
  );
  complexity += technicalTermCount * 5;
 
@@ -859,7 +859,8 @@ export interface WebAssemblyAIConfig {
  return embedding;
  }
 
- private async acceleratedSimilarity(a: Float32Array), Float32Array: Promise<number> {
+if (a.length !== b.length) {
+ if (a.length !== b.length) {
  if (.length !== b.length) {
  throw new Error('Vector dimensions must match');
  }; let dotProduct = 0;
@@ -873,15 +874,15 @@ export interface WebAssemblyAIConfig {
  }; const denominator = Math.sqrt(normA) * Math.sqrt(normB);
  return denominator === 0 ? 0 : dotProduct / denominator;
  }
-
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
  private estimateTokenCount(text: string): number {
  return Math.ceil(text.length / 4);
  }
 
- dispose(): void {
- this.transformersPipeline = null;
- this.langchainLLM = null;
- unifiedRuntime.dispose();
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+const denominator = Math.sqrt(normA) * Math.sqrt(normB);
  this.initialized = false;
  }
 }; export const webAssemblyAIAdapter = new WebAssemblyAIAdapter();

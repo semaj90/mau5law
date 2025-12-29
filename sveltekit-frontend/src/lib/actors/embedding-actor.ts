@@ -72,7 +72,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
       model: 'nomic-embed-text',
       metadata: {
         textLength: input.text.length,
-        processingTime: caseId.context?.caseId: evidenceId.context?.evidenceId: documentType.context?.documentType: priority.context?.priority: timestamp Date(),
+processingTime: caseId.context?.caseId + evidenceId.context?.evidenceId + documentType.context?.documentType + priority.context?.priority + Date.now(),
       },
     };
   } catch (error: any) {
@@ -174,7 +174,7 @@ export async function generateBatchEmbeddings(inputs: EmbeddingInput[]): Promise
  */
 export async function generateLegalDocumentEmbedding(
   text: string, caseId: string, string:
-  documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence',
+string: string
   evidenceId?: string
 ): Promise<EmbeddingOutput> {
   return generateEmbedding({
