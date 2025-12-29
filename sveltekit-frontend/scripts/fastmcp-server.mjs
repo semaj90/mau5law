@@ -543,66 +543,6 @@ async function runCommand(args) {
 }
 
 /**
- * Tool: Knowledge Retrieve (FRONT DOOR - use this first)
- * Hybrid retrieval: Qdrant semantic + Postgres pgvector + reciprocal rank fusion
- * Returns: contexts with provenance (source, tags, chunk_id, score)
- */
-async function knowledgeRetrieve(args) {
-	const { query, limit = 10, threshold = 0.5, filter_tags = null } = args;
-
-	const KNOWLEDGE_PLANE_URL = process.env.KNOWLEDGE_PLANE_URL || 'http://localhost:8099';
-
-	try {
-		// Call Knowledge Plane /rag/retrieve/hybrid
-		const response = await fetch(`${KNOWLEDGE_PLANE_URL}/rag/retrieve/hybrid`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				query,
-				top_k: limit,
-				score_threshold: threshold,
-				filter_tags: filter_tags ? filter_tags.split(',') : null
-			})
-		});
-
-		if (!response.ok) {
-			// Fallback to simple Qdrant search
-			console.warn('⚠️  Knowledge Plane unavailable, falling back to qdrant_search');
-			return await qdrantSearch({ query, limit, threshold });
-		}
-
-		const data = await response.json();
-
-		// Return MCP-compatible format with provenance
-		return {
-			contexts: data.results.map(item => ({
-				text: item.text || item.content || item.summary,
-				score: item.score,
-				provenance: {
-					source: item.source || item.url || 'unknown',
-					tags: item.tags || [],
-					chunk_id: item.id || item.chunk_id,
-					collection: item.collection || CONFIG.qdrant.collection
-				}
-			})),
-			query,
-			retrieval_method: 'hybrid',
-			total_results: data.results.length
-		};
-	} catch (error) {
-		console.error('❌ knowledge_retrieve error:', error.message);
-
-		// Fallback to Qdrant-only search
-		const fallback = await qdrantSearch({ query, limit, threshold });
-		return {
-			...fallback,
-			retrieval_method: 'fallback_qdrant',
-			warning: 'Knowledge Plane unavailable, using Qdrant-only search'
-		};
-	}
-}
-
-/**
  * Available tools registry
  */
 const tools = {

@@ -8,11 +8,21 @@ Your .venv already has PyTorch 2.9.0+cu128 installed.
 Usage:
     python scripts/benchmark-cuda-pytorch.py
     # Or with your venv:
-    .venv\Scripts\python.exe scripts/benchmark-cuda-pytorch.py
+    .venv\\Scripts\\python.exe scripts/benchmark-cuda-pytorch.py
 """
 
-import time
 import sys
+import os
+
+# Fix Windows console encoding
+if sys.platform == 'win32':
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except:
+        pass
+
+import time
 from typing import Tuple
 
 try:
@@ -120,11 +130,11 @@ def main():
     results = []
 
     for config in configs:
-        print(f"\n📊 {config['name']} - {config['dim']}D vectors")
+        print(f"\n[CONFIG] {config['name']} - {config['dim']}D vectors")
         print("-" * 60)
 
         # CPU Benchmark
-        print("\n   🖥️  CPU Performance:")
+        print("\n   [CPU] CPU Performance:")
         try:
             cpu_stats = benchmark("cpu", config["num_docs"], config["dim"])
             print(f"      Mean:       {cpu_stats['mean_ms']:.2f} ms")
@@ -138,7 +148,7 @@ def main():
 
         # CUDA Benchmark
         if CUDA_AVAILABLE:
-            print("\n   🚀 CUDA Performance:")
+            print("\n   [CUDA] CUDA Performance:")
             try:
                 cuda_stats = benchmark("cuda", config["num_docs"], config["dim"])
                 print(f"      Mean:       {cuda_stats['mean_ms']:.2f} ms")
@@ -149,12 +159,12 @@ def main():
 
                 if cpu_stats:
                     speedup = cpu_stats['mean_ms'] / cuda_stats['mean_ms']
-                    print(f"\n   ⚡ Speedup: {speedup:.2f}x faster with CUDA")
+                    print(f"\n   [SPEEDUP] {speedup:.2f}x faster with CUDA")
 
                     if speedup > 1:
-                        print(f"   ✅ CUDA wins for {config['name']}")
+                        print(f"   [OK] CUDA wins for {config['name']}")
                     else:
-                        print(f"   ⚠️  CPU faster (transfer overhead dominates)")
+                        print(f"   [WARN] CPU faster (transfer overhead dominates)")
 
                 results.append({
                     "config": config["name"],

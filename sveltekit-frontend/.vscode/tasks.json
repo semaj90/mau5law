@@ -457,6 +457,145 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "🚀 Phase 89: Index All Code Units",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase89-code-unit-indexer.mjs",
+				"--index"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"PHASE72_PYTHON": "C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe",
+					"NODE_OPTIONS": "--max-old-space-size=8192"
+				}
+			},
+			"group": "build",
+			"detail": "Phase 89: Index routes + components + modules → Qdrant (SAFE: non-destructive)"
+		},
+		{
+			"label": "📂 Phase 89: Index Routes Only",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase89-code-unit-indexer.mjs",
+				"--routes"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"PHASE72_PYTHON": "C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe"
+				}
+			},
+			"group": "build",
+			"detail": "Phase 89: Index SvelteKit routes only (SAFE: non-destructive)"
+		},
+		{
+			"label": "📦 Phase 89: Index Components Only",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase89-code-unit-indexer.mjs",
+				"--components"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"PHASE72_PYTHON": "C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe"
+				}
+			},
+			"group": "build",
+			"detail": "Phase 89: Index Svelte components only (SAFE: non-destructive)"
+		},
+		{
+			"label": "🔬 Phase 89: CUDA Clustering",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"$env:PHASE72_PYTHON = 'C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe'; & $env:PHASE72_PYTHON scripts/phase89-cuda-clustering.py 2>&1 | Tee-Object -FilePath reports/cuda-clustering-latest.log"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"detail": "Phase 89: GPU-accelerated error clustering on RTX 3060 Ti (SAFE: read-only analysis)"
+		},
+		{
+			"label": "📊 Phase 89: System Status",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '📊 Phase 89: System Status' -ForegroundColor Cyan; Write-Host '═' * 60; Write-Host ''; Write-Host '1️⃣ PostgreSQL' -ForegroundColor Yellow; $pg = docker exec phase66-postgres psql -U user -d legal -c 'SELECT source, COUNT(*) as total FROM raw_error_embeddings GROUP BY source;' 2>&1; Write-Host $pg; Write-Host ''; Write-Host '2️⃣ Redis' -ForegroundColor Yellow; $redis = docker exec phase66-redis redis-cli DBSIZE 2>&1; Write-Host \"   Keys: $redis\"; Write-Host ''; Write-Host '3️⃣ Qdrant' -ForegroundColor Yellow; $qdrant = curl -s 'http://localhost:6333/collections/phase89_code_units' 2>&1 | ConvertFrom-Json; Write-Host \"   phase89_code_units: $($qdrant.result.points_count) points\"; Write-Host ''; Write-Host '4️⃣ CUDA' -ForegroundColor Yellow; $cuda = & 'C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe' -c 'import torch; print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"Not available\")' 2>&1; Write-Host \"   GPU: $cuda\"; Write-Host ''"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 89: Check PostgreSQL, Redis, Qdrant, and CUDA status (SAFE: read-only)"
+		},
+		{
+			"label": "🔍 Phase 89: Verify Wiring",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/phase89-verify-wiring.ps1"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 89: Verify all systems are correctly wired (SAFE: read-only)"
+		},
+		{
+			"label": "🌐 Phase 89: Start Topology Explorer",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev",
+				"--",
+				"--port",
+				"5175"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build",
+			"detail": "Phase 89: Start dev server for AST Topology Explorer at http://localhost:5175/ast-topology"
+		},
+		{
+			"label": "🛡️ Phase 89: Safeguard Check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🛡️ Phase 89: Safeguard Check' -ForegroundColor Green; Write-Host '═' * 60; Write-Host ''; Write-Host 'Checking for destructive operations...' -ForegroundColor Yellow; Write-Host ''; $dangerous = @('DROP TABLE', 'TRUNCATE', 'DELETE FROM', 'docker rm', 'docker-compose down', 'rm -rf'); $files = Get-ChildItem -Path scripts -Filter 'phase89-*.mjs' -ErrorAction SilentlyContinue; $safe = $true; foreach ($file in $files) { $content = Get-Content $file.FullName -Raw; foreach ($pattern in $dangerous) { if ($content -match [regex]::Escape($pattern)) { Write-Host \"⚠️  Found '$pattern' in $($file.Name)\" -ForegroundColor Red; $safe = $false } } }; if ($safe) { Write-Host '✅ All Phase 89 scripts are SAFE (no destructive patterns found)' -ForegroundColor Green } else { Write-Host '⚠️  Review flagged files before running' -ForegroundColor Yellow }; Write-Host ''"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 89: Scan scripts for destructive operations (DROP, DELETE, rm -rf, etc.)"
 		}
 	],
 	"inputs": [

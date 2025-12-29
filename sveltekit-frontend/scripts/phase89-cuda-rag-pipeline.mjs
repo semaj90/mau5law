@@ -16,6 +16,13 @@
  * - Postgres: Error metadata + stats
  */
 
+// Fix: Prevent EPIPE crash when piping to Select-Object -First
+process.stdout.on('error', (err) => {
+	if (err?.code === 'EPIPE') process.exit(0);
+	throw err;
+});
+
+// Import adaptive chunking and learning pipeline
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { createHash } from 'crypto';
 import { readFileSync, readdirSync, statSync } from 'fs';
