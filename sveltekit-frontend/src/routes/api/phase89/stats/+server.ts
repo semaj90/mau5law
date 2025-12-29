@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import pg from 'pg';
 
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://user:pass@127.0.0.1:5434/legal';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://legal_admin:123456@127.0.0.1:5434/legal_ai_db';
 const pool = new pg.Pool({ connectionString: DATABASE_URL });
 
 /**

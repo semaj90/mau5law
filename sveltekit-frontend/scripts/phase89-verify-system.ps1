@@ -101,6 +101,19 @@ try {
         Write-Host "      points_count: $($collection.result.points_count)" -ForegroundColor Gray
         Write-Host "      vectors_count: $($collection.result.vectors_count)" -ForegroundColor Gray
     }
+
+    # Check Phase 89 collections
+    $phase89Collections = @("phase89_ast_embeddings", "phase89_error_clusters", "phase89_recommendations")
+    foreach ($col in $phase89Collections) {
+        try {
+            $colInfo = Invoke-RestMethod -Uri "http://localhost:6333/collections/$col" -TimeoutSec 5
+            if ($colInfo.result) {
+                Write-Host "   ✅ $col collection exists ($($colInfo.result.points_count) points)" -ForegroundColor Green
+            }
+        } catch {
+            Write-Host "   ⏳ $col collection not created yet" -ForegroundColor Yellow
+        }
+    }
 } catch {
     Write-Host "   ❌ Failed to query Qdrant: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host "      Is Qdrant running? Check: curl http://localhost:6333/collections" -ForegroundColor Gray
