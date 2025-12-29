@@ -29,8 +29,54 @@ class AgenticToolCaller {
 			validate_fix: this.validateFix.bind(this),
 			update_rag: this.updateRAG.bind(this),
 			update_kag: this.updateKAG.bind(this),
-			cosine_rank: this.cosineRank.bind(this)
+			cosine_rank: this.cosineRank.bind(this),
+			search_local_docs: this.searchLocalDocs.bind(this)
 		};
+	}
+
+	// Tool 8: Search local documentation files (llms.txt, copilot.md, etc.)
+	async searchLocalDocs(query) {
+		console.log(`🔎 Tool: search_local_docs (query: "${query}")`);
+
+		return new Promise((resolve) => {
+			const rg = spawn('rg', [
+				'-i',
+				'-F', // Fixed string search
+				query,
+				'data/svelte-docs',
+				'data/typescript-docs',
+				'copilot.md',
+				'claude.md',
+				'llms.txt',
+				'--max-count=5',
+				'--no-heading',
+				'-C', '3'
+			]);
+
+			let output = '';
+			rg.stdout.on('data', (data) => {
+				output += data.toString();
+			});
+
+			rg.on('close', (code) => {
+				if (code === 0 && output.trim()) {
+					console.log(`   ✅ Found local documentation matches`);
+					resolve({
+						success: true,
+						source: 'local-docs',
+						content: output.substring(0, 1500)
+					});
+				} else {
+					console.log(`   ⚠️  No local documentation found`);
+					resolve({ success: false, content: '' });
+				}
+			});
+
+			rg.on('error', (err) => {
+				console.error(`   ❌ ripgrep failed: ${err.message}`);
+				resolve({ success: false, error: err.message });
+			});
+		});
 	}
 
 	// Tool 1: Cluster errors using CUDA

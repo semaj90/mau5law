@@ -65,9 +65,11 @@ export const GET: RequestHandler = async () => {
 		// Qdrant Stats
 		const qdrantCollections = [
 			'phase89_error_chunks',
-			'phase89_ast_chunks',
+			'phase89_ast_embeddings',
+			'phase89_error_clusters',
+			'phase89_rag_patterns',
 			'phase89_kb_cards',
-			'phase76_knowledge_base'
+			'phase89_edit_log'
 		];
 
 		const qdrantStats: Record<string, number> = {};

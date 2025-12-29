@@ -418,7 +418,7 @@ export const a11yUtils = {
  });
  },
  // Create accessible descriptions
- createDescription: (text: string): string: string => {
+createDescription: (text: string): string => {
  const descId = a11yUtils.generateId('desc');
  let descElement = document.getElementById(descId);
  if (!descElement) {
@@ -436,7 +436,7 @@ export const a11yUtils = {
  targetElement.setAttribute('aria-describedby', descId);
  }
  return descId;
- },
+ModalOptions: {
 };
 
 /** * Composite Actions * Pre-configured combinations of actions for common patterns */
@@ -452,7 +452,7 @@ export const compositeActions = {
  });
  const ariaAction = ariaState(element, {
  role: 'dialog',
- hidden: false, label: options.title: options.description ? descId : undefined,
+label: options.title, options.description ? descId : undefined,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: { Escape: options.onClose },
@@ -473,7 +473,7 @@ export const compositeActions = {
  const ariaAction = ariaState(element, {
  role: 'combobox',
  expanded: options.isOpen, listboxId:
- });
+listboxId: listboxId,
  const keyboardAction = keyboardNavigation(element, {
  keys: {
  Enter: () => {

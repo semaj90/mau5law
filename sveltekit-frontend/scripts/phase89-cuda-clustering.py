@@ -132,7 +132,8 @@ class CUDAErrorClusterer:
         print(f"   ✅ {len(embeddings)} valid embeddings (dim={len(embeddings[0])})")
 
         # Extract embeddings and convert to proper format (Robust Patch)
-        import json
+        embedding_dim = len(embeddings[0]) if embeddings else 768
+
         def to_vec(x):
             if x is None:
                 return None
@@ -147,6 +148,9 @@ class CUDAErrorClusterer:
                 x = x.tolist()
             try:
                 v = np.asarray(x, dtype=np.float32)
+                # Validate dimension
+                if len(v) != embedding_dim:
+                    return None
                 return v
             except:
                 return None
@@ -168,8 +172,11 @@ class CUDAErrorClusterer:
         # Compute cosine similarity matrix on GPU
         similarity_matrix = torch.mm(embeddings_norm, embeddings_norm.t())
 
-        # Convert to distance matrix (1 - similarity)
-        distance_matrix = 1 - similarity_matrix.cpu().numpy()
+        # Clamp similarity to [-1, 1] to handle floating point precision
+        similarity_matrix = torch.clamp(similarity_matrix, -1.0, 1.0)
+
+        # Convert to distance matrix (1 - similarity), ensure non-negative
+        distance_matrix = torch.clamp(1.0 - similarity_matrix, 0.0, 2.0).cpu().numpy()
 
         # DBSCAN clustering (runs on CPU with precomputed distances)
         clustering = DBSCAN(eps=0.3, min_samples=2, metric='precomputed')
@@ -188,7 +195,9 @@ class CUDAErrorClusterer:
                 clusters[label].append(errors[idx])
 
         print(f"Found {len(clusters)} clusters (noise excluded)")
-        return clusters    def summarize_cluster(self, cluster):
+        return clusters
+
+    def summarize_cluster(self, cluster):
         """Generate comprehensive summary for a cluster"""
         # Extract common patterns
         sources = [e['source'] for e in cluster]
@@ -238,7 +247,10 @@ class CUDAErrorClusterer:
         candidate_norm = torch.nn.functional.normalize(candidate_tensor, p=2, dim=1)
 
         # Cosine similarity
-        similarities = torch.mm(query_norm, candidate_norm.t()).squeeze().cpu().numpy()
+        similarities = torch.mm(query_norm, candidate_norm.t()).squeeze()
+
+        # Clamp similarity to [-1, 1] to handle floating point precision
+        similarities = torch.clamp(similarities, -1.0, 1.0).cpu().numpy()
 
         # Sort by similarity (descending)
         ranked_indices = np.argsort(-similarities)
@@ -259,7 +271,7 @@ class CUDAErrorClusterer:
 
             # Generate recommendation
             recommendation = {
-                'cluster_id': cluster_id,
+                'cluster_id': int(cluster_id),  # Ensure native int for JSON serialization
                 'priority': priority,
                 'action': self._get_action(summary),
                 'summary': summary,
@@ -294,47 +306,116 @@ class CUDAErrorClusterer:
 
         collection_name = "phase89_error_clusters"
 
-        # Create collection if it doesn't exist
+        # Detect dimension from first valid embedding
+        embedding_dim = 768
+        found_dim = False
+        for errors in clusters.values():
+            for e in errors:
+                emb = e.get('embedding')
+                if emb:
+                    try:
+                        if isinstance(emb, str): emb = json.loads(emb)
+                        if hasattr(emb, "tolist"): emb = emb.tolist()
+                        if isinstance(emb, (list, tuple, np.ndarray)):
+                            embedding_dim = len(emb)
+                            found_dim = True
+                            break
+                    except:
+                        continue
+            if found_dim: break
+
+        print(f"   ℹ️  Detected embedding dimension: {embedding_dim}")
+
+        # Delete old collection if dimensions changed, then recreate
         try:
-            self.qdrant.get_collection(collection_name)
+            info = self.qdrant.get_collection(collection_name)
+            # If collection exists with wrong dimensions, delete it
+            if info.config.params.vectors.size != embedding_dim:
+                self.qdrant.delete_collection(collection_name)
+                raise Exception("Recreate with correct dimensions")
         except:
             self.qdrant.create_collection(
                 collection_name=collection_name,
-                vectors_config=VectorParams(size=384, distance=Distance.COSINE)
+                vectors_config=VectorParams(size=embedding_dim, distance=Distance.COSINE)
             )
 
         # Upload cluster centroids and recommendations
         points = []
         for cluster_id, errors in clusters.items():
-            # Compute cluster centroid (mean embedding)
-            embeddings = np.array([e['embedding'] for e in errors])
-            centroid = np.mean(embeddings, axis=0)
+            # Compute cluster centroid (mean embedding) - use cleaned embeddings
+            valid_embeddings = []
+            expected_dim = embedding_dim  # Default embedding dimension
+
+            for e in errors:
+                emb = e.get('embedding')
+                if emb is None:
+                    continue
+
+                # Convert to proper format
+                try:
+                    if isinstance(emb, str):
+                        emb = json.loads(emb)
+                    if hasattr(emb, "tolist"):
+                        emb = emb.tolist()
+
+                    vec = np.asarray(emb, dtype=np.float32)
+
+                    # Ensure consistent dimension
+                    if len(valid_embeddings) == 0:
+                        expected_dim = len(vec)
+                        valid_embeddings.append(vec)
+                    elif len(vec) == expected_dim:
+                        valid_embeddings.append(vec)
+                    # Skip vectors with wrong dimensions
+                except Exception:
+                    continue
+
+            if len(valid_embeddings) == 0:
+                continue  # Skip clusters with no valid embeddings
+
+            # Stack and compute mean
+            stacked = np.stack(valid_embeddings, axis=0)
+            centroid = np.mean(stacked, axis=0)
 
             # Find matching recommendation
             recommendation = next((r for r in recommendations if r['cluster_id'] == cluster_id), None)
 
+            # Safe access to error properties
+            primary_source = errors[0].get('source', 'unknown') if errors else 'unknown'
+            if primary_source is None:
+                primary_source = 'unknown'
+
+            # Convert cluster_id to native Python int
+            point_id = int(cluster_id)
+
             point = PointStruct(
-                id=cluster_id,
+                id=point_id,
                 vector=centroid.tolist(),
                 payload={
-                    'cluster_id': cluster_id,
+                    'cluster_id': point_id,
                     'cluster_size': len(errors),
-                    'primary_source': errors[0]['source'],
-                    'error_type': recommendation['summary']['error_type'] if recommendation else 'unknown',
+                    'primary_source': primary_source,
+                    'error_type': recommendation['summary']['error_type'] if recommendation and recommendation.get('summary') else 'unknown',
                     'priority': recommendation['priority'] if recommendation else 'low',
                     'action': recommendation['action'] if recommendation else 'review',
-                    'top_tags': recommendation['summary']['top_tags'] if recommendation else [],
+                    'top_tags': recommendation['summary']['top_tags'] if recommendation and recommendation.get('summary') else [],
                     'timestamp': datetime.now().isoformat()
                 }
             )
             points.append(point)
 
-        self.qdrant.upsert(collection_name=collection_name, points=points)
-        print(f"✅ Uploaded {len(points)} cluster centroids to Qdrant")
+        if points:
+            self.qdrant.upsert(collection_name=collection_name, points=points)
+            print(f"✅ Uploaded {len(points)} cluster centroids to Qdrant")
+        else:
+            print("⚠️  No valid clusters to upload")
 
     def update_knowledge_base(self, recommendations):
         """Update PostgreSQL knowledge base with recommendations"""
         cursor = self.conn.cursor()
+
+        # Drop table to ensure schema matches
+        cursor.execute("DROP TABLE IF EXISTS error_cluster_recommendations")
 
         # Create recommendations table if it doesn't exist
         cursor.execute("""
@@ -354,7 +435,7 @@ class CUDAErrorClusterer:
             cursor.execute("""
                 INSERT INTO error_cluster_recommendations (cluster_id, priority, action, summary)
                 VALUES (%s, %s, %s, %s)
-            """, (rec['cluster_id'], rec['priority'], rec['action'], json.dumps(rec['summary'])))
+            """, (int(rec['cluster_id']), rec['priority'], rec['action'], json.dumps(rec['summary'])))
 
         self.conn.commit()
         cursor.close()

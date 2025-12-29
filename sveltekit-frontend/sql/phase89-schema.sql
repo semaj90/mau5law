@@ -1,12 +1,23 @@
 -- Phase 89: CUDA-Accelerated Knowledge System Schema
 -- Run this to create all required tables for the Phase 89 dashboard
 
+-- Clean up existing tables to ensure fresh schema
+DROP VIEW IF EXISTS phase89_health_summary CASCADE;
+DROP VIEW IF EXISTS phase89_cluster_summary CASCADE;
+DROP VIEW IF EXISTS phase89_fix_success_rate CASCADE;
+
+DROP TABLE IF EXISTS phase89_fix_attempts CASCADE;
+DROP TABLE IF EXISTS phase89_kb_cards CASCADE;
+DROP TABLE IF EXISTS phase89_error_clusters CASCADE;
+DROP TABLE IF EXISTS phase89_timeline CASCADE;
+DROP TABLE IF EXISTS phase89_cosine_rankings CASCADE;
+
 -- =====================================================
 -- Fix Attempts Tracking Table
 -- =====================================================
-CREATE TABLE IF NOT EXISTS phase89_fix_attempts (
+CREATE TABLE phase89_fix_attempts (
     id SERIAL PRIMARY KEY,
-    error_instance_id INTEGER REFERENCES error_instances(id),
+    error_instance_id BIGINT REFERENCES phase89_error_instances(id),
     file_path TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fix_type TEXT NOT NULL, -- 'agentic', 'batch', 'manual'
@@ -24,7 +35,7 @@ CREATE INDEX idx_fix_attempts_status ON phase89_fix_attempts(status);
 -- =====================================================
 -- Knowledge Base Cards Table
 -- =====================================================
-CREATE TABLE IF NOT EXISTS phase89_kb_cards (
+CREATE TABLE phase89_kb_cards (
     id SERIAL PRIMARY KEY,
     card_type TEXT NOT NULL, -- 'pattern', 'fix', 'antipattern'
     title TEXT NOT NULL,
@@ -46,11 +57,11 @@ CREATE INDEX idx_kb_cards_tags ON phase89_kb_cards USING gin(tags);
 -- =====================================================
 -- Error Clusters Table
 -- =====================================================
-CREATE TABLE IF NOT EXISTS phase89_error_clusters (
+CREATE TABLE phase89_error_clusters (
     id SERIAL PRIMARY KEY,
     cluster_id INTEGER NOT NULL,
     cluster_pattern TEXT NOT NULL,
-    error_instance_id INTEGER REFERENCES error_instances(id),
+    error_instance_id BIGINT REFERENCES phase89_error_instances(id),
     confidence FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     metadata JSONB
@@ -63,7 +74,7 @@ CREATE INDEX idx_clusters_error ON phase89_error_clusters(error_instance_id);
 -- =====================================================
 -- Timeline Events Table
 -- =====================================================
-CREATE TABLE IF NOT EXISTS phase89_timeline (
+CREATE TABLE phase89_timeline (
     id SERIAL PRIMARY KEY,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     event_type TEXT NOT NULL, -- 'fix_attempt', 'kb_update', 'cluster_found', 'embedding_generated'
@@ -80,7 +91,7 @@ CREATE INDEX idx_timeline_success ON phase89_timeline(success);
 -- =====================================================
 -- Cosine Similarity Rankings Table
 -- =====================================================
-CREATE TABLE IF NOT EXISTS phase89_cosine_rankings (
+CREATE TABLE phase89_cosine_rankings (
     id SERIAL PRIMARY KEY,
     query_text TEXT NOT NULL,
     top_match TEXT NOT NULL,
@@ -96,6 +107,7 @@ CREATE INDEX idx_rankings_timestamp ON phase89_cosine_rankings(created_at DESC);
 -- =====================================================
 -- AST Signatures Table (for GPU clustering)
 -- =====================================================
+-- Note: phase89_ast_signatures might already exist from indexer, so we use IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS phase89_ast_signatures (
     id SERIAL PRIMARY KEY,
     file_path TEXT NOT NULL UNIQUE,
@@ -109,9 +121,9 @@ CREATE TABLE IF NOT EXISTS phase89_ast_signatures (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_ast_signatures_file ON phase89_ast_signatures(file_path);
-CREATE INDEX idx_ast_signatures_hash ON phase89_ast_signatures(signature_hash);
-CREATE INDEX idx_ast_signatures_runes ON phase89_ast_signatures USING gin(runes_usage);
+CREATE INDEX IF NOT EXISTS idx_ast_signatures_file ON phase89_ast_signatures(file_path);
+CREATE INDEX IF NOT EXISTS idx_ast_signatures_hash ON phase89_ast_signatures(signature_hash);
+CREATE INDEX IF NOT EXISTS idx_ast_signatures_runes ON phase89_ast_signatures USING gin(runes_usage);
 
 -- =====================================================
 -- Views for Dashboard Aggregations
@@ -128,7 +140,7 @@ SELECT
             ROUND((COUNT(*) FILTER (WHERE status = 'resolved')::NUMERIC / COUNT(*)::NUMERIC) * 100, 1)
         ELSE 0
     END as resolution_rate
-FROM error_instances;
+FROM phase89_error_instances;
 
 -- Cluster Summary
 CREATE OR REPLACE VIEW phase89_cluster_summary AS
@@ -165,10 +177,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Drop triggers if they exist before creating
+DROP TRIGGER IF EXISTS phase89_kb_cards_update ON phase89_kb_cards;
 CREATE TRIGGER phase89_kb_cards_update
     BEFORE UPDATE ON phase89_kb_cards
     FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS phase89_ast_signatures_update ON phase89_ast_signatures;
 CREATE TRIGGER phase89_ast_signatures_update
     BEFORE UPDATE ON phase89_ast_signatures
     FOR EACH ROW EXECUTE FUNCTION update_timestamp();
@@ -199,15 +214,15 @@ INSERT INTO phase89_kb_cards (card_type, title, description, file_path, confiden
 ('fix', 'TypeScript Import Resolution', 'Use explicit .ts extension for SvelteKit imports', 'src/routes/api/admin/routes/+server.ts', 0.88, ARRAY['typescript', 'imports'], true),
 ('antipattern', 'Direct DOM Manipulation', 'Avoid document.querySelector in SSR context', 'src/lib/utils/legacy.ts', 0.82, ARRAY['ssr', 'dom', 'antipattern'], false);
 
--- Sample Error Clusters
+-- Sample Error Clusters (linking to existing instances if any)
 INSERT INTO phase89_error_clusters (cluster_id, cluster_pattern, error_instance_id, confidence)
 SELECT
     42,
     'TypeScript import resolution errors',
     id,
     0.85
-FROM error_instances
-WHERE error_message LIKE '%Cannot find module%'
+FROM phase89_error_instances
+WHERE message LIKE '%Cannot find module%'
 LIMIT 5;
 
 -- Sample Fix Attempts
@@ -218,7 +233,7 @@ SELECT
     'agentic',
     CASE WHEN random() > 0.3 THEN 'success' ELSE 'failed' END,
     0.7 + (random() * 0.3)
-FROM error_instances
+FROM phase89_error_instances
 LIMIT 10;
 
 -- =====================================================
