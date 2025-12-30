@@ -15,11 +15,11 @@ import { createClient } from 'redis';
 
 const CONFIG = {
   postgres: {
-    user: 'user',
-    password: 'password',
+    user: 'legal_admin',
+    password: '123456',
     host: 'localhost',
     port: 5434,
-    database: 'legal'
+    database: 'legal_ai_db'
   },
   redis: {
     url: 'redis://localhost:6379'
@@ -50,11 +50,13 @@ function parseTypeScriptErrors() {
   console.log(`📊 Debug: Output length: ${output.length} chars\n`);
 
   const errors = [];
-  const lines = output.split('\n');
+  const lines = output.split('\n').map(l => l.trim());
+  // Regex: File(Line,Col): error Code: Message
+  // Matches: src/file.ts(1,1): error TS1234: Message
   const errorPattern = /^(.+?)\((\d+),(\d+)\):\s+(error\s+\w+):\s+(.+)$/;
 
   console.log(`📊 Debug: Found ${lines.length} lines in output`);
-  console.log(`📊 Debug: First 3 lines:`);
+  console.log(`📊 Debug: First 3 lines (trimmed):`);
   for (let i = 0; i < Math.min(3, lines.length); i++) {
     console.log(`   [${i}]: ${lines[i].substring(0, 100)}`);
   }
@@ -101,6 +103,18 @@ function parseTypeScriptErrors() {
 // Generate Embedding
 // ============================================================
 async function generateEmbedding(text) {
+  // Check Redis cache first
+  const cacheKey = `embed:${text}`;
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      // process.stdout.write(' (cache hit)');
+      return JSON.parse(cached);
+    }
+  } catch (e) {
+    // Ignore redis errors
+  }
+
   const response = await fetch(`${CONFIG.ollama.url}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -115,7 +129,16 @@ async function generateEmbedding(text) {
   }
 
   const data = await response.json();
-  return data.embedding;
+  const embedding = data.embedding;
+
+  // Cache result (valid for 7 days)
+  try {
+    await redis.setEx(cacheKey, 7 * 24 * 60 * 60, JSON.stringify(embedding));
+  } catch (e) {
+    // Ignore redis errors
+  }
+
+  return embedding;
 }
 
 // ============================================================

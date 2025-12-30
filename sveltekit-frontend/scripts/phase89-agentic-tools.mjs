@@ -44,7 +44,6 @@ class AgenticToolCaller {
 				'-F', // Fixed string search
 				query,
 				'data/svelte-docs',
-				'data/typescript-docs',
 				'copilot.md',
 				'claude.md',
 				'llms.txt',
