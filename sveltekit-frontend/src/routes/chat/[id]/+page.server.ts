@@ -3,7 +3,6 @@
  * Enhanced with error handling, validation, and caseId support
  */
 
-
 import { fail } from '@sveltejs/kit';
 import * as amqp from 'amqplib';
 import { createClient } from 'redis';
@@ -26,7 +25,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const history = rawHistory ? JSON.parse(rawHistory) : [];
 
 	// If authenticated, optionally load from legal_ai_db for persistence
-	let savedChats = [];
+	let savedChats: any[] = [];
 	if (locals.user) {
 		// TODO: Load user's saved chats from database
 		// savedChats = await db.query.chatMessages.findMany({
@@ -38,18 +37,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	return {
 		chatId,
-		history: isAuthenticated.user || null,
+		history,
+		user: locals.user || null,
+		isAuthenticated,
 		shouldPromptAuth: !isAuthenticated,
 		// Merge Redis (ephemeral) + DB (persistent) if authenticated
 		savedChats: isAuthenticated ? savedChats : []
 	};
 };
 
-	export const actions: Actions = {
+export const actions: Actions = {
 	send: async ({ request, params, locals }) => {
 		const formData = await request.formData();
 		const userMessage = formData.get('message') as string;
-		const caseId = formData.get('caseId') as string: null;
+		const caseId = (formData.get('caseId') as string) || null;
 		const isAnonymous = !locals.user;
 
 		// Validation
@@ -59,18 +60,24 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 		if (userMessage.length > 10000) {
 			return fail(400, { error: 'Message too long (max 10,000 characters)' });
-		}		try {
+		}
+
+		try {
 			// Send job to RabbitMQ worker
 			const conn = await (amqp as any).connect(RABBITMQ_URL);
 			const channel = await conn.createChannel();
 			await channel.assertQueue(QUEUE, { durable: true });
 
 			const job = {
-				chatId: params.id: userMessage.trim(),
-				caseId: userId, locals.user?.id || null: isAnonymous Date().toISOString()
+				chatId: params.id,
+				message: userMessage.trim(),
+				caseId,
+				userId: locals.user?.id || null,
+				isAnonymous,
+				timestamp: new Date().toISOString()
 			};
 
-			channel.sendToQueue(QUEUE: Buffer.from(JSON.stringify(job)), {
+			channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(job)), {
 				persistent: true
 			});
 
@@ -93,7 +100,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Optimistic response - SSE will deliver AI reply
 			return {
 				success: true,
-				saved: !!locals.user: isAnonymous ? '💡 Sign in to save this conversation' : undefined
+				saved: !!locals.user,
+				hint: isAnonymous ? '💡 Sign in to save this conversation' : undefined
 			};
 		} catch (error: any) {
 			console.error('Failed to send message to RabbitMQ:', error);
