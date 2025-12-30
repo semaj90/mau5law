@@ -9,7 +9,7 @@ import hashlib
 import json
 import sys
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
@@ -92,7 +92,7 @@ class QdrantEventLogger:
         redis_key: Optional[str],
         metadata: Dict
     ) -> str:
-        """
+        r"""
         Create deterministic event card text for embedding.
 
         Example:
@@ -155,8 +155,15 @@ NOTES: {notes or 'no notes'}"""
             raise RuntimeError("Not connected to Postgres (call connect() first)")
 
         event_id = uuid.uuid4()
-        ts = datetime.utcnow()
+        ts = datetime.now(timezone.utc)
         metadata = metadata or {}
+
+        # Extract individual fields from metadata
+        feature_tags = metadata.get('feature_tags', [])
+        error_tags = metadata.get('error_tags', [])
+        codec = metadata.get('codec')
+        notes = metadata.get('notes')
+        confidence = metadata.get('confidence')
 
         async with self.pool.acquire() as conn:
             await conn.execute(
@@ -164,12 +171,12 @@ NOTES: {notes or 'no notes'}"""
                 INSERT INTO phase89_qdrant_events (
                     event_id, ts, actor, op, collection, point_id,
                     vector_hash, payload_hash, redis_key_ref, diff_json,
-                    run_id, metadata
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                    run_id, feature_tags, error_tags, codec, notes, confidence
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
                 """,
                 event_id, ts, self.actor, op, collection, point_id,
                 vector_hash, payload_hash, redis_key, diff_json,
-                self.run_id, metadata
+                str(self.run_id), feature_tags, error_tags, codec, notes, confidence
             )
 
         print(f"📝 Event logged: {op} → {collection} (event_id={event_id})")
@@ -271,7 +278,7 @@ async def demo():
 
     # Initialize (update DSN for your environment)
     logger = QdrantEventLogger(
-        postgres_dsn="postgresql://user:password@localhost:5432/legal",
+        postgres_dsn="postgresql://user:pass@localhost:5434/legal",
         qdrant_url="http://localhost:6333",
         actor="phase89-demo"
     )

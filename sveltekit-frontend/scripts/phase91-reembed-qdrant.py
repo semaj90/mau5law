@@ -32,12 +32,22 @@ BATCH_SIZE = 16
 # =============================================================================
 # Ollama Embedding
 # =============================================================================
-async def get_embedding(text: str) -> np.ndarray:
-    """Get 768-dim embedding from Ollama."""
+async def get_embedding(text: str, task_type: str = "retrieval_document") -> np.ndarray:
+    """Get 768-dim embedding from Ollama.
+
+    Args:
+        text: Text to embed
+        task_type: 'retrieval_document' (storage) or 'retrieval_query' (search)
+                   Video [08:59] - Typed Artifacts Philosophy
+    """
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             f"{OLLAMA_URL}/api/embeddings",
-            json={'model': OLLAMA_MODEL, 'prompt': text}
+            json={
+                'model': OLLAMA_MODEL,
+                'prompt': text,
+                'options': {'task_type': task_type}  # Video [08:59]
+            }
         )
         response.raise_for_status()
         embedding = response.json().get('embedding', [])
