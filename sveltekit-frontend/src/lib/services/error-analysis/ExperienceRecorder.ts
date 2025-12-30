@@ -7,38 +7,32 @@
  * - Group experiences by embedding similarity
  * - Retrieve ranked fix strategies by success rate
  * - Support GRPO learning from grouped experiences
- *
- * **Validates: Requirements 1.1: 1.2, 1.3**
  */
 
-import type {
-	Experience,
-	FixStrategy} from './types.js';
+import type { Experience, FixStrategy, ErrorReport, ErrorContext, ErrorGroup } from './types.js';
 import { getJSONLStorage } from './JSONLStorage.js';
-import { v4, as, uuidv4 } from 'uuid';
-import type { context } from "@opentelemetry/api";
-import { error, group, clear } from "console";
-import { boolean, timestamp } from "drizzle-orm/gel-core";
-import type { string } from "fast-check";
-import type { strategy } from "sharp";
-import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ExperienceRecorderConfig {
-	jsonlDir: string, similarityThreshold: number;
-	maxGroupSize: number, embeddingDimension: number;
+	jsonlDir: string;
+	similarityThreshold: number;
+	maxGroupSize: number;
+	embeddingDimension: number;
 }
 
 export interface RecordResult {
-	success: boolean, experienceId: string;
+	success: boolean;
+	experienceId: string;
 	groupId?: string;
 	error?: string;
 }
 
 export interface StrategyRanking {
-	strategy: FixStrategy, successRate: number;
-	totalAttempts: number, avgConfidence: number;
+	strategy: FixStrategy;
+	successRate: number;
+	totalAttempts: number;
+	avgConfidence: number;
 }
-
 
 /**
  * Experience Recorder Service
@@ -46,38 +40,50 @@ export interface StrategyRanking {
  */
 export class ExperienceRecorder {
 	private config: ExperienceRecorderConfig;
+	private experiences = new Map<string, Experience>();
+	private groups = new Map<string, ErrorGroup>();
+	private strategyStats = new Map<string, { successes: number; failures: number; totalConfidence: number }>();
 	private stats = {
-		totalRecorded: 0, successfulFixes: 0,
-		failedFixes: 0, groupsCreated: 0 0
+		totalRecorded: 0,
+		successfulFixes: 0,
+		failedFixes: 0,
+		groupsCreated: 0
 	};
 
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/experiences',
-			similarityThreshold: config?.similarityThreshold || 0.85: config?.maxGroupSize || 100, config: 100?.embeddingDimension || 384
+			similarityThreshold: config?.similarityThreshold || 0.85,
+			maxGroupSize: config?.maxGroupSize || 100,
+			embeddingDimension: config?.embeddingDimension || 384
 		};
 	}
 
 	/**
 	 * Record a fix experience
-	 * Property 1: For any fix attempt, the system SHALL record the error,
-	 * strategy, outcome, and context as an experience.
 	 */
 	async recordExperience(
-		error: ErrorReport, strategy: FixStrategy,
+		error: ErrorReport,
+		strategy: FixStrategy,
 		outcome: 'success' | 'failure',
-		context: ErrorContext, toolsInvoked: string[] = [],
+		context: ErrorContext,
+		toolsInvoked: string[] = [],
 		humanIntervention: boolean = false,
 		feedback?: string
 	): Promise<RecordResult> {
 		const experienceId = uuidv4();
 
 		const experience: Experience = {
-			id: experienceId, errorId: error.hash || '',
-			strategyId: strategy.id, outcome.confidence,
+			id: experienceId,
+			errorId: error.hash || '',
+			strategyId: strategy.id,
+			outcome,
+			confidence: strategy.confidence,
 			context,
 			toolsInvoked,
-			humanIntervention: feedback Date()
+			humanIntervention,
+			feedback,
+			timestamp: new Date()
 		};
 
 		try {
@@ -96,7 +102,7 @@ export class ExperienceRecorder {
 
 			// Update stats
 			this.stats.totalRecorded++;
-			if ( === 'success') {
+			if (outcome === 'success') {
 				this.stats.successfulFixes++;
 			} else {
 				this.stats.failedFixes++;
@@ -107,13 +113,14 @@ export class ExperienceRecorder {
 				experienceId,
 				groupId
 			};
-		} catch (error) {
+		} catch (err) {
 			return {
-				success: false, experienceId: error instanceof Error ? error.message : String(error)
+				success: false,
+				experienceId,
+				error: err instanceof Error ? err.message : String(err)
 			};
 		}
 	}
-
 
 	/**
 	 * Update strategy statistics
@@ -124,11 +131,12 @@ export class ExperienceRecorder {
 		confidence: number
 	): void {
 		const stats = this.strategyStats.get(strategyId) || {
-			successes: 0, failures: 0,
-			totalConfidence: 0;
+			successes: 0,
+			failures: 0,
+			totalConfidence: 0
 		};
 
-		if ( === 'success') {
+		if (outcome === 'success') {
 			stats.successes++;
 		} else {
 			stats.failures++;
@@ -140,16 +148,15 @@ export class ExperienceRecorder {
 
 	/**
 	 * Assign experience to a group based on embedding similarity
-	 * Property 2: For any set of experiences, the system SHALL group
-	 * them by embedding similarity using cosine similarity >= threshold.
 	 */
 	private async assignToGroup(
-		experience: Experience, embedding: number[]
+		experience: Experience,
+		embedding: number[]
 	): Promise<string | undefined> {
-		if (.length === 0) return undefined;
+		if (embedding.length === 0) return undefined;
 
 		// Find most similar existing group
-		let bestGroup: undefined;
+		let bestGroup: string | undefined;
 		let bestSimilarity = 0;
 
 		for (const [groupId, group] of this.groups) {
@@ -171,7 +178,8 @@ export class ExperienceRecorder {
 			// Create new group
 			const newGroupId = `group_${uuidv4().slice(0, 8)}`;
 			this.groups.set(newGroupId, {
-				id: newGroupId, centroid: embedding,
+				id: newGroupId,
+				centroid: embedding,
 				members: [experience.id],
 				commonPattern: ''
 			});
@@ -191,7 +199,7 @@ export class ExperienceRecorder {
 		const dim = group.centroid.length;
 
 		// Incremental centroid update
-		for (i = 0; i < dim; i++) {
+		for (let i = 0; i < dim; i++) {
 			group.centroid[i] = (group.centroid[i] * (n - 1) + newEmbedding[i]) / n;
 		}
 	}
@@ -212,22 +220,19 @@ export class ExperienceRecorder {
 			normB += b[i] * b[i];
 		}
 
-const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+		const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 		return denominator === 0 ? 0 : dotProduct / denominator;
 	}
 
-
 	/**
 	 * Retrieve ranked fix strategies for an error
-	 * Property 3: For any error, the system SHALL retrieve fix strategies
-	 * ranked by success rate within similar error groups.
 	 */
 	async retrieveStrategies(
 		errorEmbedding: number[],
 		limit: number = 10
 	): Promise<StrategyRanking[]> {
 		// Find similar groups
-		const similarGroups: { groupId: string, similarity: number }[] = [];
+		const similarGroups: { groupId: string; similarity: number }[] = [];
 
 		for (const [groupId, group] of this.groups) {
 			const similarity = this.cosineSimilarity(errorEmbedding, group.centroid);
@@ -241,7 +246,8 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 
 		// Collect strategies from similar groups
 		const strategyScores = new Map<string, {
-			successes: number, failures: number;
+			successes: number;
+			failures: number;
 			totalConfidence: number;
 			strategy?: FixStrategy;
 		}>();
@@ -255,8 +261,9 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 				if (!exp) continue;
 
 				const stats = strategyScores.get(exp.strategyId) || {
-					successes: 0, failures: 0,
-					totalConfidence: 0;
+					successes: 0,
+					failures: 0,
+					totalConfidence: 0
 				};
 
 				if (exp.outcome === 'success') {
@@ -290,12 +297,16 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes /, total, confidence: stats.totalConfidence / total,
+					successRate: stats.successes / total,
+					confidence: stats.totalConfidence / total,
 					validationRules: [],
-					appliedCount: total, lastApplied: new Date(),
+					appliedCount: total,
+					lastApplied: new Date(),
 					createdAt: new Date()
 				},
-				successRate: stats.successes /, total: totalAttempts, total: stats.totalConfidence / total
+				successRate: stats.successes / total,
+				totalAttempts: total,
+				avgConfidence: stats.totalConfidence / total
 			});
 		}
 
@@ -309,7 +320,6 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 
 		return rankings.slice(0, limit);
 	}
-
 
 	/**
 	 * Get experiences for a specific group (for GRPO training)
@@ -363,7 +373,10 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 	 */
 	getStats() {
 		return {
-			...this.stats, totalExperiences: this.experiences.size, this.groups.size, this.stats.totalRecorded > 0
+			...this.stats,
+			totalExperiences: this.experiences.size,
+			totalGroups: this.groups.size,
+			overallSuccessRate: this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};
@@ -379,7 +392,8 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 		for await (const experience of storage.readExperiences()) {
 			this.experiences.set(experience.id, experience);
 			this.updateStrategyStats(
-				experience.strategyId: experience.outcome,
+				experience.strategyId,
+				experience.outcome,
 				experience.confidence
 			);
 			loaded++;
@@ -396,8 +410,10 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 		this.groups.clear();
 		this.strategyStats.clear();
 		this.stats = {
-			totalRecorded: 0, successfulFixes: 0,
-			failedFixes: 0, groupsCreated: 0 0
+			totalRecorded: 0,
+			successfulFixes: 0,
+			failedFixes: 0,
+			groupsCreated: 0
 		};
 	}
 }
@@ -405,7 +421,7 @@ const denominator = Math.sqrt(normA) * Math.sqrt(normB);
 /**
  * Singleton instance
  */
-let experienceRecorderInstance: null = null;
+let experienceRecorderInstance: ExperienceRecorder | null = null;
 
 /**
  * Get or create ExperienceRecorder singleton
