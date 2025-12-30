@@ -20,6 +20,7 @@ export interface CUDADevice {
   temperature?: number;
   utilization?: number;
 }
+
 export interface CUDAServiceStatus {
   available: boolean;
   devices: CUDADevice[];
@@ -34,11 +35,11 @@ export interface WebGPUSOMCache {
   learningRate: number;
   neighborhoodRadius: number;
   decayRate: number;
-  // Methods that were missing
-  findSimilar(vector: Float32Array, k?: number): Array<any>;
-  updateWithWeight(id: string, vector: Float32Array, weight, size: number): void;
+  // Methods
+  findSimilar(vector: Float32Array, k?: number): Array<unknown>;
+  updateWithWeight(id: string, vector: Float32Array, weight: number, size: number): void;
   getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
-  storeVector(id: string, vector), Float32Array: void;
+  storeVector(id: string, vector: Float32Array): void;
 }
 
 // WebGPU Topology Accelerator
@@ -61,7 +62,7 @@ export interface LocalLLMConnector {
 }
 
 // Hidden Markov Model for AssemblyScript compatibility
-export class HiddenMarkaraiModel {
+export class HiddenMarkovModel {
   constructor(config: {
     stateCount: number;
     observationCount: number;
@@ -75,13 +76,13 @@ export class HiddenMarkaraiModel {
 
 // Tensor Acceleration Types
 export interface TensorAccelerator {
-  acceleratedSimilarity(a: Float32Array, b), Float32Array: number;
+  acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
   batchProcess(vectors: Float32Array[]): Promise<Float32Array[]>;
 }
 
 // Export namespace for compatibility
 export declare const tensorAccelerator: TensorAccelerator;
-export declare function acceleratedSimilarity(a: Float32Array, b), Float32Array: number;
+export declare function acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
 
 // WebAssembly Memory Types for AssemblyScript
 export interface WASMMemory {
@@ -94,8 +95,8 @@ export interface WASMMemory {
 export interface WASMMath {
   sqrt(x: number): number;
   abs(x: number): number;
-  max(a: number, b);
-  min(a: number, b);
+  max(a: number, b: number): number;
+  min(a: number, b: number): number;
 }
 
 declare global {
@@ -105,7 +106,7 @@ declare global {
 
   // AssemblyScript load/store functions
   function load<T>(ptr: number): T;
-  function store<T>(ptr: number): T: void;
+  function store<T>(ptr: number, value: T): void;
 
   // AssemblyScript types
   type usize = number;
@@ -114,4 +115,5 @@ declare global {
   type i64 = bigint;
   type f64 = number;
 }
+
 export {};
