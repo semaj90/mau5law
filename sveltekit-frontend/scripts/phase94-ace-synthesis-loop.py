@@ -668,14 +668,15 @@ async def main():
             import psycopg2
             conn = psycopg2.connect(POSTGRES_DSN)
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM phase94_knowledge_cards")
+            cursor.execute("SELECT COUNT(*) FROM knowledge_cards")
             count = cursor.fetchone()[0]
             print(f"\n✅ PostgreSQL: Connected")
             print(f"   Knowledge cards: {count}")
             cursor.close()
             conn.close()
         except Exception as e:
-            print(f"❌ PostgreSQL: {e}")
+            print(f"⚠️ PostgreSQL: {e}")
+            print(f"   Run once to initialize: python scripts/phase94-ace-synthesis-loop.py --query 'test'")
 
         print("\n💡 Ready to use ACE Synthesis Loop!")
         print("   Try: python scripts/phase94-ace-synthesis-loop.py --query 'How do Svelte 5 runes work?'")

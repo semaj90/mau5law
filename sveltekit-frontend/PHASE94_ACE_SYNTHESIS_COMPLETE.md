@@ -1,7 +1,7 @@
 # Phase 94: ACE Synthesis Loop - Complete Implementation
 
-**Date**: 2025-12-30  
-**Status**: ✅ Production Ready with Graceful Fallbacks  
+**Date**: 2025-12-30
+**Status**: ✅ Production Ready with Graceful Fallbacks
 **Architecture**: Pattern Detection → LLM Synthesis → Knowledge Graph Updates
 
 ## 🎯 Overview
@@ -120,7 +120,7 @@ Output (LLM available):
 Svelte 5 runes are used throughout the project for reactive state management:
 
 1. $state() - Used in AiAssistant.svelte for chat messages [1]
-2. $derived() - Computed values in BarrelStore.svelte [2]  
+2. $derived() - Computed values in BarrelStore.svelte [2]
 3. $effect() - Side effects in auth flows [3]
 
 The project follows Svelte 5 best practices with snippet syntax and no legacy stores.
@@ -175,12 +175,12 @@ CREATE TABLE phase94_knowledge_cards (
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     validated BOOLEAN DEFAULT FALSE,
     validation_notes TEXT,
-    
+
     -- Provenance
     llm_model VARCHAR(100),
     embedding_model VARCHAR(100),
     context_files_count INT,
-    
+
     -- Feedback loop
     success_count INT DEFAULT 0,
     failure_count INT DEFAULT 0,
@@ -194,9 +194,9 @@ CREATE INDEX idx_kc_validated ON phase94_knowledge_cards (validated, created_at 
 
 ### Qdrant: phase94_knowledge_graph
 
-**Collection**: `phase94_knowledge_graph`  
-**Vector Dim**: 768 (embeddinggemma:latest)  
-**Distance**: COSINE  
+**Collection**: `phase94_knowledge_graph`
+**Vector Dim**: 768 (embeddinggemma:latest)
+**Distance**: COSINE
 
 **Payload**:
 ```json
@@ -213,9 +213,9 @@ CREATE INDEX idx_kc_validated ON phase94_knowledge_cards (validated, created_at 
 
 ### Qdrant: phase94_file_index
 
-**Collection**: `phase94_file_index`  
-**Vector Dim**: 768  
-**Distance**: COSINE  
+**Collection**: `phase94_file_index`
+**Vector Dim**: 768
+**Distance**: COSINE
 
 **Payload**:
 ```json
@@ -277,7 +277,7 @@ def _fallback_synthesis(self, query: str, context: List[Dict]) -> str:
     """When LLM unavailable, return context summary"""
     if not context:
         return f"❌ LLM unavailable and no context provided for: {query}"
-    
+
     summary_lines = [f"📋 Context Summary for: {query}\n"]
     for idx, ctx in enumerate(context[:3], 1):
         file_path = ctx.get("file_path", "unknown")
@@ -285,7 +285,7 @@ def _fallback_synthesis(self, query: str, context: List[Dict]) -> str:
         summary_lines.append(f"{idx}. {file_path}")
         if tags:
             summary_lines.append(f"   Tags: {', '.join(tags)}")
-    
+
     summary_lines.append(f"\n💡 Start Ollama for AI-generated answers: ollama serve")
     return "\n".join(summary_lines)
 ```
@@ -438,14 +438,14 @@ python scripts/phase94-ace-synthesis-loop.py --validate "card-id" --failure "Out
 // In fastmcp-server.mjs
 async function aceQueryKnowledge(args) {
   const { query } = args;
-  
+
   const cmd = `python scripts/phase94-ace-synthesis-loop.py --query "${query}"`;
   const result = await runCommand({ command: cmd });
-  
+
   // Parse output
   const answerMatch = result.stdout.match(/📋 Answer:\n([\s\S]+)/);
   const answer = answerMatch ? answerMatch[1] : result.stdout;
-  
+
   return {
     ok: true,
     query,
@@ -491,6 +491,6 @@ const tools = {
 
 ---
 
-**Status**: ✅ **Production Ready with Graceful Degradation**  
-**LLM**: Optional (falls back to context summary)  
+**Status**: ✅ **Production Ready with Graceful Degradation**
+**LLM**: Optional (falls back to context summary)
 **Phase**: 94 (ACE Synthesis Loop)
