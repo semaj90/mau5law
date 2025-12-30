@@ -230,6 +230,15 @@ Instructions:
 Answer:"""
 
         try:
+            # Check if Ollama is available
+            health_check = await self.client.get(
+                f"{self.ollama_url}/api/tags",
+                timeout=5.0
+            )
+
+            if health_check.status_code != 200:
+                raise Exception("Ollama not responding")
+
             response = await self.client.post(
                 f"{self.ollama_url}/api/generate",
                 json={
@@ -240,13 +249,45 @@ Answer:"""
                         "temperature": 0.3,  # Low temp for accuracy
                         "top_p": 0.9
                     }
-                }
+                },
+                timeout=60.0  # Longer timeout for generation
             )
             response.raise_for_status()
             return response.json()["response"]
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                # Model not found - provide fallback
+                print(f"⚠️ Model '{LLM_MODEL}' not found in Ollama")
+                print(f"   Available models: Try 'ollama list' or use gemma2:2b")
+                return self._fallback_synthesis(query, context)
+            else:
+                print(f"❌ LLM HTTP error: {e}")
+                return self._fallback_synthesis(query, context)
+        except httpx.ConnectError:
+            print(f"⚠️ Ollama not running at {self.ollama_url}")
+            print(f"   Start with: ollama serve")
+            return self._fallback_synthesis(query, context)
         except Exception as e:
             print(f"❌ LLM synthesis failed: {e}")
-            return f"Error: {e}"
+            return self._fallback_synthesis(query, context)
+
+    def _fallback_synthesis(self, query: str, context: List[Dict]) -> str:
+        """Fallback when LLM is unavailable - extract from context"""
+        if not context:
+            return f"❌ LLM unavailable and no context provided for: {query}"
+
+        # Simple pattern-based extraction
+        summary_lines = [f"📋 Context Summary for: {query}\n"]
+
+        for idx, ctx in enumerate(context[:3], 1):
+            file_path = ctx.get("file_path", "unknown")
+            tags = ctx.get("tags", [])
+            summary_lines.append(f"{idx}. {file_path}")
+            if tags:
+                summary_lines.append(f"   Tags: {', '.join(tags)}")
+
+        summary_lines.append(f"\n💡 Start Ollama for AI-generated answers: ollama serve")
+        return "\n".join(summary_lines)
 
     async def close(self):
         await self.client.aclose()
@@ -584,8 +625,61 @@ async def main():
     parser.add_argument("--validate", help="Validate knowledge card by ID")
     parser.add_argument("--success", action="store_true", help="Mark as successful")
     parser.add_argument("--failure", help="Mark as failed with notes")
+    parser.add_argument("--status", action="store_true", help="Show system status")
 
     args = parser.parse_args()
+
+    # Status check (lightweight, no init)
+    if args.status:
+        print("🔍 Phase 94: ACE Synthesis Loop - System Status\n")
+
+        # Check Ollama
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get(f"{OLLAMA_URL}/api/tags", timeout=3.0)
+                if resp.status_code == 200:
+                    models_data = resp.json().get("models", [])
+                    print(f"✅ Ollama: Running at {OLLAMA_URL}")
+                    print(f"   Models: {', '.join([m['name'] for m in models_data[:3]])}")
+                else:
+                    print(f"⚠️ Ollama: Responding but status {resp.status_code}")
+        except:
+            print(f"❌ Ollama: Not running at {OLLAMA_URL}")
+            print(f"   Start with: ollama serve")
+
+        # Check Qdrant
+        try:
+            qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+            kb_exists = qdrant.collection_exists(KB_COLLECTION)
+            file_exists = qdrant.collection_exists(FILE_INDEX_COLLECTION)
+
+            print(f"\n✅ Qdrant: Running at {QDRANT_HOST}:{QDRANT_PORT}")
+            print(f"   {KB_COLLECTION}: {'✅ Exists' if kb_exists else '⚠️ Not created'}")
+            print(f"   {FILE_INDEX_COLLECTION}: {'✅ Exists' if file_exists else '⚠️ Not created'}")
+
+            if kb_exists:
+                kb_info = qdrant.get_collection(KB_COLLECTION)
+                print(f"   KB points: {kb_info.points_count}")
+        except Exception as e:
+            print(f"❌ Qdrant: Connection failed - {e}")
+
+        # Check Postgres
+        try:
+            import psycopg2
+            conn = psycopg2.connect(POSTGRES_DSN)
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM phase94_knowledge_cards")
+            count = cursor.fetchone()[0]
+            print(f"\n✅ PostgreSQL: Connected")
+            print(f"   Knowledge cards: {count}")
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            print(f"❌ PostgreSQL: {e}")
+
+        print("\n💡 Ready to use ACE Synthesis Loop!")
+        print("   Try: python scripts/phase94-ace-synthesis-loop.py --query 'How do Svelte 5 runes work?'")
+        return
 
     loop = ACESynthesisLoop()
 
