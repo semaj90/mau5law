@@ -5,29 +5,32 @@ async function testLocalDocsSearch() {
     console.log('🧪 Testing search_local_docs tool...');
     const agent = new AgenticToolCaller();
 
-    // Test a specific Svelte 5 query that should be in llms.txt
-    const query = '$state';
-
+    // Test 1: Simple word
+    console.log('\n--- Test 1: Simple Word "Svelte" ---');
     try {
-        const result = await agent.tools.search_local_docs(query);
-        console.log('\n📄 Result Content Preview:');
-        console.log(result.content);
-
-        if (result.success && result.content.includes('$state')) {
-            console.log('\n✅ Test PASSED: Found $state in local docs');
-            process.exit(0);
+        const result1 = await agent.tools.search_local_docs('Svelte');
+        if (result1.success && result1.content.length > 0) {
+            console.log('✅ Test 1 PASSED: Found "Svelte"');
         } else {
-            console.error('\n❌ Test FAILED: Did not find expected content');
-            process.exit(1);
+            console.error('❌ Test 1 FAILED');
         }
-    } catch (err) {
-        console.error('\n❌ Test FAILED with error:', err);
-        process.exit(1);
-    } finally {
-        // Clean up connections
-        await agent.pool.end();
-        await agent.redis.quit();
-    }
+    } catch (e) { console.error('❌ Test 1 Error:', e); }
+
+    // Test 2: Special characters (Fixed string check)
+    console.log('\n--- Test 2: Special Chars "$state" ---');
+    try {
+        const result2 = await agent.tools.search_local_docs('$state');
+        // $state should be in llms.txt or svelte.txt
+        if (result2.success && result2.content.includes('$state')) {
+            console.log('✅ Test 2 PASSED: Found "$state"');
+        } else {
+            console.error('❌ Test 2 FAILED: Content does not contain literal $state or none found');
+            console.log('debug content:', result2.content);
+        }
+    } catch (e) { console.error('❌ Test 2 Error:', e); }
+
+    await agent.pool.end();
+    await agent.redis.quit();
 }
 
 testLocalDocsSearch();

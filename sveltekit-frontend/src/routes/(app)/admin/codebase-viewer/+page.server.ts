@@ -3,11 +3,11 @@ import { Pool } from 'pg';
 import type { PageServerLoad } from './$types';
 
 const db = new Pool({
-	user: 'user',
-	password: 'password',
+	user: 'legal_admin',
+	password: '123456',
 	host: 'localhost',
 	port: 5434,
-	database: 'legal'
+	database: 'legal_ai_db'
 });
 
 const qdrant = new QdrantClient({ url: 'http://localhost:6333' });

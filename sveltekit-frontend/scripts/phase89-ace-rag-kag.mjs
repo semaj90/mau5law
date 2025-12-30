@@ -62,7 +62,7 @@ const CONFIG = {
 let qdrant, db, redis, genai;
 
 // =============================================================================
-// Initialize Services
+// Initialize Services with Retry
 // =============================================================================
 async function init() {
 	console.log('🚀 Phase 89: ACE RAG+KAG Analyzer\n');
@@ -71,8 +71,21 @@ async function init() {
 
 	qdrant = new QdrantClient({ url: CONFIG.qdrant.url });
 	db = new Pool(CONFIG.postgres);
+
+	// Connect to Redis with retry
 	redis = createClient({ url: CONFIG.redis.url });
-	await redis.connect();
+	let retries = 3;
+	while (retries > 0) {
+		try {
+			await redis.connect();
+			break;
+		} catch (err) {
+			retries--;
+			if (retries === 0) throw err;
+			console.log(`⏳ Redis connection failed, retrying... (${retries} left)`);
+			await new Promise(resolve => setTimeout(resolve, 2000));
+		}
+	}
 
 	if (CONFIG.gemini.apiKey) {
 		genai = new GoogleGenerativeAI(CONFIG.gemini.apiKey);
@@ -81,7 +94,7 @@ async function init() {
 	console.log('✅ Services connected');
 	console.log('   • Qdrant:', CONFIG.qdrant.url);
 	console.log('   • PostgreSQL:', `${CONFIG.postgres.host}:${CONFIG.postgres.port}`);
-	console.log('   • Redis:', CONFIG.redis.url);
+	console.log('   • Redis:', CONFIG.redis.url, '✓');
 	console.log('   • Ollama:', CONFIG.ollama.url);
 	console.log('   • Gemini:', genai ? 'Configured' : 'Not configured (will use Ollama)');
 	console.log('');
@@ -185,23 +198,108 @@ class FileTimelineTracker {
 }
 
 // =============================================================================
-// ACE Contextual Engineering
+// ACE Contextual Engineering with Redis Caching
 // =============================================================================
 class ACEContextualPromptEngineer {
 	constructor(qdrantClient, fileTracker) {
 		this.qdrant = qdrantClient;
 		this.fileTracker = fileTracker;
+		this.cacheStats = {
+			embeddingHits: 0,
+			embeddingMisses: 0,
+			knowledgeHits: 0,
+			knowledgeMisses: 0,
+			gpuTime: [], // Track GPU computation times for variance
+			cacheTime: [] // Track cache retrieval times
+		};
 	}
 
 	/**
-	 * Generate embedding for query using Ollama
+	 * Generate embedding for query using Ollama (with Redis caching)
 	 */
 	async embedQuery(text) {
+		// Generate cache key from text hash
+		const crypto = await import('crypto');
+		const hash = crypto.createHash('sha256').update(text).digest('hex');
+		const cacheKey = `ace:embedding:${hash}`;
+
+		// Try Redis cache first
+		const cacheStart = performance.now();
+		const cached = await redis.get(cacheKey);
+		if (cached) {
+			const cacheEnd = performance.now();
+			this.cacheStats.embeddingHits++;
+			this.cacheStats.cacheTime.push(cacheEnd - cacheStart);
+			console.log(`   💾 Cache HIT (${(cacheEnd - cacheStart).toFixed(2)}ms)`);
+			return JSON.parse(cached);
+		}
+
+		// Cache miss - compute with GPU
+		const gpuStart = performance.now();
 		const response = await ollama.embeddings({
 			model: CONFIG.ollama.embeddingModel,
 			prompt: text
 		});
+		const gpuEnd = performance.now();
+		this.cacheStats.embeddingMisses++;
+		this.cacheStats.gpuTime.push(gpuEnd - gpuStart);
+
+		// Store in Redis (1 hour TTL)
+		await redis.setEx(cacheKey, 3600, JSON.stringify(response.embedding));
+		console.log(`   🎮 GPU computed (${(gpuEnd - gpuStart).toFixed(2)}ms) → cached`);
+
 		return response.embedding;
+	}
+
+	/**
+	 * Calculate variance of GPU cache performance
+	 */
+	calculateVariance(times) {
+		if (times.length === 0) return 0;
+		const mean = times.reduce((a, b) => a + b, 0) / times.length;
+		const variance = times.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / times.length;
+		return { mean, variance, stdDev: Math.sqrt(variance) };
+	}
+
+	/**
+	 * Print cache statistics with variance analysis
+	 */
+	printCacheStats() {
+		const totalEmbeddings = this.cacheStats.embeddingHits + this.cacheStats.embeddingMisses;
+		const hitRate = totalEmbeddings > 0
+			? ((this.cacheStats.embeddingHits / totalEmbeddings) * 100).toFixed(1)
+			: 0;
+
+		const gpuStats = this.calculateVariance(this.cacheStats.gpuTime);
+		const cacheStats = this.calculateVariance(this.cacheStats.cacheTime);
+
+		console.log('\n📊 Redis GPU Cache Statistics');
+		console.log('━'.repeat(60));
+		console.log(`\n🎯 Cache Hit Rate: ${hitRate}%`);
+		console.log(`   • Hits: ${this.cacheStats.embeddingHits}`);
+		console.log(`   • Misses: ${this.cacheStats.embeddingMisses}`);
+		console.log(`   • Total: ${totalEmbeddings}`);
+
+		if (this.cacheStats.gpuTime.length > 0) {
+			console.log(`\n🎮 GPU Computation (embeddinggemma:latest)`);
+			console.log(`   • Mean: ${gpuStats.mean.toFixed(2)}ms`);
+			console.log(`   • Variance: ${gpuStats.variance.toFixed(2)}`);
+			console.log(`   • Std Dev: ±${gpuStats.stdDev.toFixed(2)}ms`);
+		}
+
+		if (this.cacheStats.cacheTime.length > 0) {
+			console.log(`\n💾 Redis Cache Retrieval`);
+			console.log(`   • Mean: ${cacheStats.mean.toFixed(2)}ms`);
+			console.log(`   • Variance: ${cacheStats.variance.toFixed(2)}`);
+			console.log(`   • Std Dev: ±${cacheStats.stdDev.toFixed(2)}ms`);
+		}
+
+		if (this.cacheStats.gpuTime.length > 0 && this.cacheStats.cacheTime.length > 0) {
+			const speedup = (gpuStats.mean / cacheStats.mean).toFixed(1);
+			console.log(`\n⚡ Cache Speedup: ${speedup}x faster`);
+		}
+
+		console.log('\n━'.repeat(60) + '\n');
 	}
 
 	/**
@@ -551,13 +649,37 @@ async function runACEAnalysis(query) {
 	await fs.writeFile('reports/phase89-ace-analysis.json', JSON.stringify(results, null, 2));
 	console.log('💾 Results saved to reports/phase89-ace-analysis.json');
 
-	// 12. Update copilot.md with analysis
+	// 12. Print cache statistics with variance
+	ace.printCacheStats();
+
+	// 13. Save Gemma3 analysis to reports
+	const gemmaAnalysis = {
+		timestamp: new Date().toISOString(),
+		query,
+		provider,
+		model: provider === 'ollama' ? CONFIG.ollama.chatModel : CONFIG.gemini.model,
+		analysis: response,
+		cacheStats: {
+			embeddingHitRate: ((ace.cacheStats.embeddingHits / (ace.cacheStats.embeddingHits + ace.cacheStats.embeddingMisses)) * 100).toFixed(1),
+			gpuStats: ace.calculateVariance(ace.cacheStats.gpuTime),
+			cacheStats: ace.calculateVariance(ace.cacheStats.cacheTime)
+		}
+	};
+
+	await fs.writeFile(
+		`reports/phase89-gemma3-analysis-${Date.now()}.json`,
+		JSON.stringify(gemmaAnalysis, null, 2)
+	);
+	console.log('💾 Gemma3 analysis saved to reports/phase89-gemma3-analysis-*.json');
+
+	// 14. Update copilot.md with analysis
 	const updateBlock = `
 ## Phase 89: ACE Analysis - ${new Date().toLocaleString()}
 
 **Query**: ${query}
-**Provider**: ${provider}
+**Provider**: ${provider} (${gemmaAnalysis.model})
 **Top Knowledge Score**: ${knowledgeChunks[0]?.score.toFixed(3) || 'N/A'}
+**Cache Hit Rate**: ${gemmaAnalysis.cacheStats.embeddingHitRate}%
 
 ${analysis.analysis || analysis.rawResponse?.slice(0, 500) || 'No analysis'}
 

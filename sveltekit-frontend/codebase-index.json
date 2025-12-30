@@ -1,0 +1,530 @@
+{
+  "metadata": {
+    "generated": "2025-12-29T23:35:00Z",
+    "indexer": "phase89-codebase-indexer",
+    "totalFiles": 17480,
+    "steeringDocs": [
+      ".kiro/steering/product.md",
+      ".kiro/steering/structure.md",
+      ".kiro/steering/tech.md"
+    ]
+  },
+  "tags": {
+    "product": {
+      "evidence": {
+        "description": "Evidence board and document processing",
+        "paths": [
+          "src/routes/(app)/evidence/**",
+          "src/lib/components/evidence/**",
+          "src/lib/services/evidence.ts",
+          "go-services/legal-engine/evidence/**"
+        ]
+      },
+      "search": {
+        "description": "Semantic search with Qdrant and embeddings",
+        "paths": [
+          "src/routes/(app)/search/**",
+          "src/routes/(app)/admin/knowledge-search/**",
+          "src/lib/services/qdrant.ts",
+          "src/lib/services/vector-search.ts",
+          "scripts/phase89-*.mjs"
+        ]
+      },
+      "vision": {
+        "description": "OCR and document analysis",
+        "paths": [
+          "src/lib/services/vision.ts",
+          "src/lib/services/ocr.ts",
+          "go-services/legal-engine/vision/**"
+        ]
+      },
+      "inference": {
+        "description": "AI/LLM inference and analysis",
+        "paths": [
+          "src/lib/services/llm.ts",
+          "src/lib/services/gemini.ts",
+          "src/lib/services/ollama.ts",
+          "scripts/phase89-ace-rag-kag.mjs",
+          "scripts/llm-router.mjs"
+        ]
+      }
+    },
+    "structure": {
+      "frontend": {
+        "routes": {
+          "description": "SvelteKit routes and pages",
+          "paths": [
+            "src/routes/(app)/**",
+            "src/routes/(auth)/**",
+            "src/routes/api/**"
+          ],
+          "fileCount": 500
+        },
+        "lib": {
+          "description": "Shared libraries and utilities",
+          "paths": [
+            "src/lib/components/**",
+            "src/lib/services/**",
+            "src/lib/stores/**",
+            "src/lib/utils/**"
+          ],
+          "fileCount": 300
+        },
+        "scripts": {
+          "description": "Build and automation scripts",
+          "paths": [
+            "scripts/**"
+          ],
+          "fileCount": 200
+        }
+      },
+      "backend": {
+        "go": {
+          "description": "Go microservices",
+          "paths": [
+            "go-services/legal-engine/**",
+            "go-services/rag-service/**"
+          ],
+          "fileCount": 49
+        },
+        "python": {
+          "description": "Python ML and data processing",
+          "paths": [
+            "python/**",
+            "scripts/*.py"
+          ],
+          "fileCount": 20
+        },
+        "sql": {
+          "description": "Database schemas and migrations",
+          "paths": [
+            "drizzle/**",
+            "scripts/*-schema.sql",
+            "migrations/**"
+          ],
+          "fileCount": 30
+        }
+      },
+      "infra": {
+        "docker": {
+          "description": "Docker configurations",
+          "paths": [
+            "docker-compose*.yml",
+            "Dockerfile*"
+          ],
+          "fileCount": 10
+        },
+        "config": {
+          "description": "Configuration files",
+          "paths": [
+            ".env*",
+            "*.config.*",
+            "tsconfig*.json"
+          ],
+          "fileCount": 50
+        }
+      },
+      "docs": {
+        "steering": {
+          "description": "Product/structure/tech steering documents",
+          "paths": [
+            ".kiro/steering/product.md",
+            ".kiro/steering/structure.md",
+            ".kiro/steering/tech.md"
+          ],
+          "fileCount": 3
+        },
+        "specs": {
+          "description": "Feature specifications",
+          "paths": [
+            ".kiro/specs/**"
+          ],
+          "fileCount": 20
+        },
+        "phase": {
+          "description": "Phase documentation and reports",
+          "paths": [
+            "PHASE*.md",
+            "reports/**"
+          ],
+          "fileCount": 200
+        }
+      }
+    },
+    "tech": {
+      "sveltekit": {
+        "description": "SvelteKit 2 framework files",
+        "patterns": [
+          "**/*.svelte",
+          "src/routes/**",
+          "+page.ts",
+          "+server.ts"
+        ],
+        "paths": [
+          "src/routes/**",
+          "src/lib/**/*.svelte",
+          "svelte.config.js"
+        ]
+      },
+      "go": {
+        "description": "Go backend services",
+        "patterns": [
+          "**/*.go",
+          "go.mod",
+          "go.sum"
+        ],
+        "paths": [
+          "go-services/**"
+        ]
+      },
+      "quic": {
+        "description": "QUIC protocol implementation",
+        "patterns": [
+          "**/quic/**",
+          "**/*quic*"
+        ],
+        "paths": [
+          "go-services/quic/**",
+          "src/lib/services/quic.ts"
+        ]
+      },
+      "pgvector": {
+        "description": "PostgreSQL vector extension",
+        "patterns": [
+          "**/pgvector/**",
+          "**/*vector*.sql"
+        ],
+        "paths": [
+          "drizzle/schema/**",
+          "scripts/*-vector-*.sql"
+        ]
+      },
+      "qdrant": {
+        "description": "Qdrant vector database",
+        "patterns": [
+          "**/qdrant/**",
+          "**/*qdrant*"
+        ],
+        "paths": [
+          "src/lib/services/qdrant.ts",
+          "scripts/phase89-*-qdrant-*.mjs"
+        ]
+      },
+      "neo4j": {
+        "description": "Neo4j graph database",
+        "patterns": [
+          "**/neo4j/**",
+          "**/*graph*"
+        ],
+        "paths": [
+          "src/lib/services/neo4j.ts",
+          "scripts/*-neo4j-*.mjs"
+        ]
+      },
+      "redis": {
+        "description": "Redis caching and pub/sub",
+        "patterns": [
+          "**/redis/**",
+          "**/*cache*"
+        ],
+        "paths": [
+          "src/lib/services/redis.ts",
+          "scripts/phase89-ace-rag-kag.mjs"
+        ]
+      },
+      "minio": {
+        "description": "MinIO object storage",
+        "patterns": [
+          "**/minio/**",
+          "**/*storage*"
+        ],
+        "paths": [
+          "src/lib/services/minio.ts",
+          "scripts/*-minio-*.mjs"
+        ]
+      }
+    }
+  },
+  "knownIssues": [
+    "⚠️ SSR module error - Requires SvelteKit rebuild",
+    "⚠️ Route conflict - /(app)/api/phase89/clusters duplicate"
+  ],
+  "navigation": {
+    "gettingStarted": [
+      "Start with steering documents: .kiro/steering/",
+      "Review product vision: .kiro/steering/product.md",
+      "Understand structure: .kiro/steering/structure.md",
+      "Learn tech stack: .kiro/steering/tech.md"
+    ],
+    "quickLinks": {
+      "adminUI": "http://localhost:5175/admin/codebase-viewer",
+      "knowledgeSearch": "http://localhost:5175/admin/knowledge-search",
+      "aceAnalyzer": "node scripts/phase89-ace-rag-kag.mjs",
+      "agenticFixer": "node scripts/phase89-agentic-fixer.mjs"
+    }
+  },
+  "qdrantCollections": {
+    "metadata": {
+      "generated": "2025-12-30T00:01:22.085Z",
+      "collections": 14,
+      "totalPoints": 0
+    },
+    "collections": {
+      "phase89_code_units": {
+        "summary": "The 'phase89_code_units' collection contains 100 code snippets primarily composed of Svelte, TypeScript, and JavaScript files. It appears to represent a codebase or project with a focus on web development.",
+        "primaryUseCase": "Code analysis, component search, or identifying patterns within a Svelte/TypeScript/JavaScript project.",
+        "recommendedFor": "Developers seeking to understand the structure, identify reusable code, or debug issues within a Svelte/TypeScript/JavaScript project.",
+        "topics": [],
+        "fileTypes": [
+          "svelte",
+          "ts",
+          "js"
+        ],
+        "errorCodes": [],
+        "tags": []
+      },
+      "phase89_kb_cards": {
+        "summary": "The 'phase89_kb_cards' collection contains 42 data points, likely representing knowledge base cards or similar informational units. It appears to be related to cluster summaries and was generated using CUDA.",
+        "primaryUseCase": "Retrieval of cluster summaries or related information, potentially for debugging or analysis.",
+        "recommendedFor": "Queries related to understanding cluster behavior, troubleshooting CUDA-related issues, or accessing information from a knowledge base.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": [
+          "cluster_summary",
+          "cuda_generated"
+        ]
+      },
+      "phase81_test": {
+        "summary": "This Qdrant collection contains two entries related to TypeScript compilation errors. Both entries indicate a 'comma expected' error specifically within the ACPToolRegistry.ts file at line 97.",
+        "primaryUseCase": "Debugging TypeScript compilation errors, particularly related to syntax issues in ACPToolRegistry.ts.",
+        "recommendedFor": "Developers encountering 'comma expected' errors in their TypeScript code, especially when working with or debugging the ACPToolRegistry.ts file.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "knowledge_base": {
+        "summary": "This Qdrant collection, named 'knowledge_base,' appears to be a comprehensive repository of technical knowledge and code snippets, likely focused on web development and related technologies.",
+        "primaryUseCase": "Troubleshooting, learning best practices, and finding code examples related to web development, particularly SvelteKit, TypeScript, and associated tooling.",
+        "recommendedFor": "Developers seeking solutions for common web development challenges, exploring new technologies like SvelteKit and LLMs, or needing code examples for tasks like authentication, data storage, and form handling.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": [
+          "#database",
+          "#migration",
+          "#uuid",
+          "#schema",
+          "#postgresql",
+          "#drizzle-orm",
+          "#type-safety",
+          "#svelte5",
+          "#runes",
+          "#reactivity",
+          "#best-practices",
+          "#performance",
+          "#typescript",
+          "#patterns",
+          "sveltekit",
+          "form-actions",
+          "validation",
+          "ux",
+          "forms",
+          "manual",
+          "knowledge",
+          "#ace",
+          "#agentic",
+          "#autonomous",
+          "#gemma3",
+          "#llm",
+          "#workflow",
+          "#self-prompting",
+          "#tool-calling",
+          "auth",
+          "lucia",
+          "session",
+          "security",
+          "redis",
+          "rate-limit",
+          "middleware",
+          "dos-protection",
+          "#snippets",
+          "#examples",
+          "#templates",
+          "#state-management",
+          "#effects",
+          "#forms",
+          "#api",
+          "#animation",
+          "cache",
+          "performance",
+          "optimization",
+          "data",
+          "zod",
+          "schema",
+          "api",
+          "upload",
+          "s3",
+          "minio",
+          "presigned",
+          "file",
+          "storage",
+          "#sveltekit",
+          "#endpoints",
+          "#serverside",
+          "#authentication",
+          "#category",
+          "#technology",
+          "#issue-type",
+          "#component",
+          "rest",
+          "routing",
+          "#typescript5.6",
+          "#types",
+          "#generics",
+          "#strictmode",
+          "#redis",
+          "#caching",
+          "#ttl",
+          "#invalidation",
+          "#clustering",
+          "#vscode",
+          "#tsserver",
+          "#module-resolution",
+          "#cache",
+          "#debugging"
+        ]
+      },
+      "phase72_evidence_embeddings": {
+        "summary": "This Qdrant collection, 'phase72_evidence_embeddings,' contains text data from various sources, including legal documents, news articles, and legislative bills. The content appears to cover a range of topics, from criminal justice and human trafficking to labor disputes and legal interpretations.",
+        "primaryUseCase": "Information retrieval and semantic search across diverse legal and news-related documents.",
+        "recommendedFor": "Searching for information related to legal cases, government actions, legislative initiatives, or specific events mentioned in the sample messages. Useful for researchers, legal professionals, or anyone needing to quickly find relevant information from a broad range of sources.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "phase89_error_chunks": {
+        "summary": "This Qdrant collection, 'phase89_error_chunks', appears to contain a set of error messages, likely related to parsing or syntax errors. The repeated message suggests a consistent issue.",
+        "primaryUseCase": "Debugging syntax errors, particularly those involving expected commas in a programming language or configuration file.",
+        "recommendedFor": "Troubleshooting compilation or parsing errors where a comma is expected but missing or misplaced.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "phase76_knowledge_base": {
+        "summary": "This Qdrant collection, 'phase76_knowledge_base', appears to contain documentation and knowledge base articles related to SvelteKit, Svelte, and associated tools like 'ace' and 'runes'. It seems to cover a range of topics including routing, testing, and operator documentation.",
+        "primaryUseCase": "Retrieving documentation and troubleshooting information for SvelteKit and Svelte development, particularly related to 'ace' and 'runes'.",
+        "recommendedFor": "Developers working with SvelteKit and Svelte, needing to understand routing, testing, or utilizing the 'ace' and 'runes' tools, and those seeking official documentation or guides.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": [
+          "sveltekit2,docs,official,routing",
+          "ace,operator-docs,phase88,kb_doc,agentic,prompts",
+          "svelte5,docs,official,runes",
+          "ace,operator-docs,phase88,kb_doc,testing",
+          "ace,operator-docs,phase88,kb_doc,mcp",
+          "ace,mcp,phase76,operator-docs",
+          "ace,operator-docs,phase88,kb_doc",
+          "ace,operator-docs,phase76,phase87",
+          "ace,operator-docs,phase88,kb_doc,phase-guide"
+        ]
+      },
+      "phase72_error_patterns": {
+        "summary": "This Qdrant collection, 'phase72_error_patterns', contains data related to common programming errors, likely from a TypeScript environment. It appears to focus on syntax and declaration issues.",
+        "primaryUseCase": "TypeScript error pattern identification and debugging assistance.",
+        "recommendedFor": "Developers encountering TypeScript compilation errors, particularly those struggling with syntax or declaration issues.  It's useful for quickly identifying and understanding common error messages.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [
+          "TS1128",
+          "TS1005",
+          "TS1434",
+          "TS1389",
+          "TS1068",
+          "TS1442",
+          "TS1131",
+          "TS1109",
+          "TS1144",
+          "TS1127",
+          "TS1435",
+          "TS1002",
+          "TS1003"
+        ],
+        "tags": []
+      },
+      "phase72_ast_knowledge_base": {
+        "summary": "This Qdrant collection documents a focused effort to reduce TypeScript errors within a software project, specifically targeting a 'Hot 10' list of files. It details specific error patterns encountered and the surgical, first-error fixing approach used to resolve them.",
+        "primaryUseCase": "TypeScript error remediation and debugging",
+        "recommendedFor": "Debugging TypeScript code, understanding error resolution strategies, and identifying common TypeScript pitfalls in the listed files (embedding-cache-service, qlora, minio-service, minio-gpu-cache, vector-search-service, enhanced-rag-pipeline).",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "phase89_error_clusters": {
+        "summary": "This Qdrant collection, 'phase89_error_clusters', appears to contain data related to errors encountered within TypeScript and Svelte/SvelteKit projects. It likely represents clustered or grouped error messages, rather than individual errors.",
+        "primaryUseCase": "Identifying and understanding common error patterns in TypeScript and Svelte/SvelteKit development.",
+        "recommendedFor": "Debugging Svelte/SvelteKit projects, identifying recurring error types, and potentially training a model to predict or suggest fixes for common errors.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": [
+          "typescript_error",
+          "svelte_component",
+          "syntax_comma",
+          "sveltekit_page",
+          "syntax_semicolon",
+          "sveltekit_layout"
+        ]
+      },
+      "surgical_fixes_phase66_85": {
+        "summary": "This Qdrant collection, 'surgical_fixes_phase66_85', contains 48 data points likely related to surgical procedures or corrections, potentially representing a specific phase or iteration (66_85) of a development or refinement process.",
+        "primaryUseCase": "Debugging and analysis of surgical procedure data or related code/processes, particularly focusing on identifying and rectifying errors.",
+        "recommendedFor": "Investigating issues or patterns related to surgical procedures, understanding the evolution of fixes across different phases, and troubleshooting errors encountered during the process.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [
+          "TS1005",
+          "TS1128"
+        ],
+        "tags": []
+      },
+      "phase79_knowledge_base": {
+        "summary": "The 'phase79_knowledge_base' collection contains 100 data points, likely representing a knowledge base of some kind.  The specific content is unknown without further details on the data itself.",
+        "primaryUseCase": "Unknown - requires further investigation of the data content. Could be used for question answering, information retrieval, or similar knowledge-based tasks.",
+        "recommendedFor": "Querying when seeking information related to the content stored within the 'phase79_knowledge_base' collection.  Further context is needed to provide more specific recommendations.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "codebase_routes": {
+        "summary": "The 'codebase_routes' collection contains data related to routes within a codebase. It likely represents navigation paths or API endpoints defined within a software project.",
+        "primaryUseCase": "Route discovery and analysis within a software codebase, potentially for documentation generation or API exploration.",
+        "recommendedFor": "Developers needing to understand the structure of a codebase's routing system, generate API documentation, or identify potential route conflicts.",
+        "topics": [],
+        "fileTypes": [],
+        "errorCodes": [],
+        "tags": []
+      },
+      "phase89_code_chunks": {
+        "summary": "The 'phase89_code_chunks' collection contains code snippets primarily written in TypeScript, Svelte, JavaScript, and MJS. It appears to be a repository of code fragments likely used for development or analysis.",
+        "primaryUseCase": "Code snippet retrieval and analysis, potentially for debugging, code completion, or understanding code structure.",
+        "recommendedFor": "Searching for specific code examples, identifying patterns in code, or understanding the structure of code within the 'phase89' project.",
+        "topics": [],
+        "fileTypes": [
+          "ts",
+          "svelte",
+          "mjs",
+          "js"
+        ],
+        "errorCodes": [],
+        "tags": []
+      }
+    }
+  }
+}

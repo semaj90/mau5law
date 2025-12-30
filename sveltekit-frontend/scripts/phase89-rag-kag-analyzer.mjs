@@ -417,7 +417,7 @@ async function webSearch(query) {
 	// 1. Search local documentation cache (including llms.txt)
 	try {
 		const { stdout } = await execAsync(
-			`rg -i "${query}" data/svelte-docs data/typescript-docs copilot.md claude.md llms.txt --max-count=5 --no-heading -C 3`,
+			`rg -i "${query}" data/svelte-docs copilot.md claude.md llms.txt --max-count=5 --no-heading -C 3`,
 			{ timeout: 5000 }
 		);
 		if (stdout) {
