@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Phase 92: Event Sourcing + Timeline Layer
+Phase 92: Event Sourcing + Timeline Layer (Final Form)
 Audit log for all Qdrant edits with semantic timeline search
 
 Architecture:
@@ -10,79 +11,92 @@ Timeline Collections:
   - phase92_timeline_events (semantic search over edit history)
   - Postgres phase89_qdrant_events (authoritative truth)
 
-Features:
-  - Event sourcing for all Qdrant operations
-  - LangExtract metadata extraction from logs
-  - Semantic timeline search (768-d embeddinggemma)
-  - Provenance tracking (who changed what when)
-  - Diff tracking (payload changes)
+CRITICAL FIX: Stores timestamps as FLOAT (Unix epoch) for Qdrant Range filtering.
 
 Usage:
     python scripts/phase92-event-sourcing.py --init-db
-    python scripts/phase92-event-sourcing.py --log-event "upsert" "phase89_cache_index" 12345
+    python scripts/phase92-event-sourcing.py --log-event "upsert" "phase89_cache_index" "12345"
     python scripts/phase92-event-sourcing.py --search-timeline "runes migration"
     python scripts/phase92-event-sourcing.py --recent-edits --hours 24
 """
 
-import argparse
+import os
+import sys
+
+# Windows UTF-8 support (MUST be before any print statements)
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
+
+import json
 import asyncio
 import hashlib
-import json
-import sys
-import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
+from typing import List, Optional, Dict, Any
+from uuid import uuid4
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
+# Add scripts to path for local imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
-    import asyncpg
-    import httpx
-    import redis.asyncio as aioredis
+    import psycopg2
+    from psycopg2.extras import Json
+except ImportError:
+    print("❌ Missing psycopg2. Install: pip install psycopg2-binary")
+    sys.exit(1)
+
+try:
     from qdrant_client import QdrantClient
     from qdrant_client.http import models
 except ImportError:
-    print("❌ Missing dependencies. Install:")
-    print("   pip install asyncpg httpx redis[asyncio] qdrant-client")
+    print("❌ Missing qdrant-client. Install: pip install qdrant-client")
     sys.exit(1)
 
-# Import shared helpers
-from phase89_json import loads_bytes, loads_str, dumps, BACKEND
-from phase89_codec import decode_blob
+try:
+    import httpx
+except ImportError:
+    httpx = None
+
+# Try to import JSON helper
+try:
+    from phase89_json import BACKEND
+    print(f"📦 JSON Backend: {BACKEND}")
+except ImportError:
+    BACKEND = "json"
+    print(f"📦 JSON Backend: {BACKEND} (fallback)")
 
 # =============================================================================
 # Configuration
 # =============================================================================
-POSTGRES_DSN = "postgresql://user:pass@localhost:5434/legal"
-REDIS_URL = "redis://127.0.0.1:6379"
-QDRANT_URL = "http://127.0.0.1:6333"
-OLLAMA_URL = "http://localhost:11434"
-LANGEXTRACT_URL = "http://localhost:8095"
+POSTGRES_DSN = os.getenv("POSTGRES_DSN", "postgresql://user:pass@localhost:5434/legal")
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6333"))
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+LANGEXTRACT_URL = os.getenv("LANGEXTRACT_URL", "http://localhost:8095")
 
 TIMELINE_COLLECTION = "phase92_timeline_events"
 EMBEDDING_MODEL = "embeddinggemma:latest"
 EMBEDDING_DIM = 768
 
 # =============================================================================
-# Postgres Event Schema
+# Postgres Schema
 # =============================================================================
 CREATE_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS phase89_qdrant_events (
     event_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     ts TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    actor TEXT NOT NULL,  -- script/service name
-    op TEXT NOT NULL,  -- upsert | delete | payload_patch | collection_create
+    actor TEXT NOT NULL,
+    op TEXT NOT NULL,
     collection TEXT NOT NULL,
     point_id TEXT,
-    vector_hash TEXT,  -- sha256(signature_text)
-    payload_hash TEXT,  -- sha256(normalized_payload_json)
-    redis_key_ref TEXT,  -- optional Redis key that produced this
-    diff_json JSONB,  -- optional: what changed
-    run_id TEXT,  -- correlation ID
+    vector_hash TEXT,
+    payload_hash TEXT,
+    redis_key_ref TEXT,
+    diff_json JSONB,
+    run_id TEXT,
     feature_tags TEXT[],
     error_tags TEXT[],
-    codec TEXT,  -- blob codec if decoded
+    codec TEXT,
     notes TEXT,
     confidence FLOAT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -95,7 +109,16 @@ CREATE INDEX IF NOT EXISTS idx_qdrant_events_op ON phase89_qdrant_events(op);
 CREATE INDEX IF NOT EXISTS idx_qdrant_events_feature_tags ON phase89_qdrant_events USING GIN(feature_tags);
 CREATE INDEX IF NOT EXISTS idx_qdrant_events_error_tags ON phase89_qdrant_events USING GIN(error_tags);
 CREATE INDEX IF NOT EXISTS idx_qdrant_events_run_id ON phase89_qdrant_events(run_id);
+CREATE INDEX IF NOT EXISTS idx_qdrant_events_redis_key ON phase89_qdrant_events(redis_key_ref);
 """
+
+# =============================================================================
+# Event Config
+# =============================================================================
+class EventConfig:
+    def __init__(self):
+        self.run_id = str(uuid4())
+        self.actor = "phase92-event-logger"
 
 # =============================================================================
 # Event Sourcing Engine
@@ -103,36 +126,55 @@ CREATE INDEX IF NOT EXISTS idx_qdrant_events_run_id ON phase89_qdrant_events(run
 class EventSourcingEngine:
     """Audit log for all Qdrant edits with semantic timeline."""
 
-    def __init__(
-        self,
-        postgres_dsn: str = POSTGRES_DSN,
-        qdrant_url: str = QDRANT_URL,
-        redis_url: str = REDIS_URL,
-        langextract_url: str = LANGEXTRACT_URL
-    ):
-        self.postgres_dsn = postgres_dsn
-        self.qdrant_url = qdrant_url
-        self.redis_url = redis_url
-        self.langextract_url = langextract_url
+    def __init__(self, config: EventConfig = None):
+        self.config = config or EventConfig()
+        self.qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
-        self.pg_pool: Optional[asyncpg.Pool] = None
-        self.redis: Optional[aioredis.Redis] = None
-        self.qdrant = QdrantClient(url=qdrant_url)
+        # Connect to Postgres
+        try:
+            self.pg_conn = psycopg2.connect(POSTGRES_DSN)
+            self.pg_conn.autocommit = True
+            print(f"✅ Postgres connected")
+        except Exception as e:
+            print(f"⚠️ Postgres connection failed: {e}")
+            self.pg_conn = None
 
-    async def init_db(self):
-        """Initialize Postgres schema."""
+    def _compute_hash(self, data: Any) -> str:
+        """Deterministic hash for payloads/vectors."""
+        if isinstance(data, dict):
+            s = json.dumps(data, sort_keys=True)
+        else:
+            s = str(data)
+        return hashlib.sha256(s.encode()).hexdigest()
+
+    def _get_embedding(self, text: str) -> List[float]:
+        """Get embedding from Ollama."""
+        try:
+            import requests
+            response = requests.post(
+                f"{OLLAMA_URL}/api/embeddings",
+                json={"model": EMBEDDING_MODEL, "prompt": text},
+                timeout=30
+            )
+            if response.status_code == 200:
+                return response.json().get("embedding", [])
+        except Exception as e:
+            print(f"⚠️ Embedding failed: {e}")
+
+        # Return zero vector as fallback
+        return [0.0] * EMBEDDING_DIM
+
+    def init_db(self):
+        """Initialize Postgres schema and Qdrant collection."""
         print("🔧 Initializing Postgres schema...")
 
-        self.pg_pool = await asyncpg.create_pool(
-            self.postgres_dsn,
-            min_size=2,
-            max_size=10
-        )
-
-        async with self.pg_pool.acquire() as conn:
-            await conn.execute(CREATE_TABLE_SQL)
-
-        print("   ✅ Tables created")
+        if self.pg_conn:
+            try:
+                with self.pg_conn.cursor() as cur:
+                    cur.execute(CREATE_TABLE_SQL)
+                print("   ✅ Tables created")
+            except Exception as e:
+                print(f"   ❌ Table creation failed: {e}")
 
         # Create Qdrant timeline collection
         print(f"🔧 Initializing Qdrant {TIMELINE_COLLECTION}...")
@@ -150,459 +192,314 @@ class EventSourcingEngine:
             )
 
             # Create payload indexes
-            self.qdrant.create_payload_index(
-                collection_name=TIMELINE_COLLECTION,
-                field_name="actor",
-                field_schema=models.PayloadSchemaType.KEYWORD
-            )
-            self.qdrant.create_payload_index(
-                collection_name=TIMELINE_COLLECTION,
-                field_name="op",
-                field_schema=models.PayloadSchemaType.KEYWORD
-            )
-            self.qdrant.create_payload_index(
-                collection_name=TIMELINE_COLLECTION,
-                field_name="collection",
-                field_schema=models.PayloadSchemaType.KEYWORD
-            )
-            self.qdrant.create_payload_index(
-                collection_name=TIMELINE_COLLECTION,
-                field_name="feature_tags",
-                field_schema=models.PayloadSchemaType.KEYWORD
-            )
-            self.qdrant.create_payload_index(
-                collection_name=TIMELINE_COLLECTION,
-                field_name="error_tags",
-                field_schema=models.PayloadSchemaType.KEYWORD
-            )
+            for field in ["actor", "op", "collection", "tags"]:
+                try:
+                    self.qdrant.create_payload_index(
+                        collection_name=TIMELINE_COLLECTION,
+                        field_name=field,
+                        field_schema=models.PayloadSchemaType.KEYWORD
+                    )
+                except:
+                    pass
+
+            # Float index for timestamp range queries
+            try:
+                self.qdrant.create_payload_index(
+                    collection_name=TIMELINE_COLLECTION,
+                    field_name="ts",
+                    field_schema=models.PayloadSchemaType.FLOAT
+                )
+            except:
+                pass
 
             print(f"   ✅ Collection created with indexes")
 
         print()
 
-    async def connect(self):
-        """Connect to services."""
-        if not self.pg_pool:
-            self.pg_pool = await asyncpg.create_pool(
-                self.postgres_dsn,
-                min_size=2,
-                max_size=10
-            )
-
-        if not self.redis:
-            self.redis = await aioredis.from_url(
-                self.redis_url,
-                decode_responses=False
-            )
-
-    async def close(self):
-        """Close connections."""
-        if self.pg_pool:
-            await self.pg_pool.close()
-        if self.redis:
-            await self.redis.aclose()
-
     async def log_event(
         self,
         op: str,
         collection: str,
-        point_id: Optional[str] = None,
-        actor: str = "manual",
-        vector_text: Optional[str] = None,
-        payload: Optional[Dict] = None,
-        redis_key: Optional[str] = None,
-        diff: Optional[Dict] = None,
-        run_id: Optional[str] = None,
-        notes: Optional[str] = None
+        point_id: str,
+        payload: Dict = None,
+        vector: List[float] = None,
+        tags: List[str] = None,
+        notes: str = None
     ) -> str:
         """
-        Log a Qdrant event to Postgres + Timeline collection.
+        Logs an event to BOTH Postgres (Truth) and Qdrant (Semantic Search).
 
-        Returns event_id
+        CRITICAL: Stores ts as FLOAT for Qdrant Range filtering.
         """
-        event_id = str(uuid.uuid4())
-        ts = datetime.utcnow()
+        # 1. Prepare Data
+        ts_now = datetime.now(timezone.utc)
+        ts_float = ts_now.timestamp()  # CRITICAL: Float for Qdrant Range filter
+        event_id = str(uuid4())
 
-        # Compute hashes
-        vector_hash = None
-        if vector_text:
-            vector_hash = hashlib.sha256(vector_text.encode()).hexdigest()
+        safe_payload = payload or {}
+        safe_tags = tags or []
 
-        payload_hash = None
-        if payload:
-            normalized = dumps(payload, sort_keys=True)
-            payload_hash = hashlib.sha256(normalized.encode()).hexdigest()
+        # 2. Build event summary for embedding
+        event_summary = f"{op} on {collection}: {point_id}"
+        if safe_tags:
+            event_summary += f" (tags: {', '.join(safe_tags)})"
+        if notes:
+            event_summary += f" - {notes}"
 
-        # Extract codec if Redis key
-        codec = None
-        if redis_key and self.redis:
+        # 3. Write to Postgres (The Audit Log)
+        if self.pg_conn:
             try:
-                blob = await self.redis.get(redis_key.encode())
-                if blob:
-                    decoded = decode_blob(blob)
-                    codec = decoded.codec
-            except:
-                pass
+                with self.pg_conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO phase89_qdrant_events
+                        (event_id, ts, actor, op, collection, point_id,
+                         payload_hash, feature_tags, notes)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        event_id, ts_now, self.config.actor, op, collection,
+                        str(point_id), self._compute_hash(safe_payload),
+                        safe_tags, notes
+                    ))
+                print(f"📝 Postgres: {event_id}")
+            except Exception as e:
+                print(f"❌ Postgres Write Error: {e}")
 
-        # Extract tags from payload (if available)
-        feature_tags = []
-        error_tags = []
-        confidence = None
+        # 4. Get embedding for event
+        if vector is None:
+            vector = self._get_embedding(event_summary)
 
-        if payload:
-            feature_tags = payload.get('feature_tags', []) or payload.get('tags', [])
-            error_tags = payload.get('error_tags', [])
-            confidence = payload.get('confidence')
+        # 5. Write to Qdrant Timeline (The Semantic Log)
+        if vector and len(vector) == EMBEDDING_DIM:
+            q_payload = {
+                "event_id": event_id,
+                "ts": ts_float,  # FLOAT for Range filtering!
+                "ts_iso": ts_now.isoformat(),  # ISO for display
+                "actor": self.config.actor,
+                "op": op,
+                "collection": collection,
+                "point_id": str(point_id),
+                "tags": safe_tags,
+                "notes": notes or "",
+                "summary": event_summary
+            }
 
-        # Build event card text for embedding
-        event_card_text = self._build_event_card(
-            ts=ts,
-            op=op,
-            collection=collection,
-            actor=actor,
-            point_id=point_id,
-            redis_key=redis_key,
-            feature_tags=feature_tags,
-            error_tags=error_tags,
-            codec=codec,
-            notes=notes
-        )
-
-        # Use LangExtract to extract structured metadata (if available)
-        langextract_metadata = await self._extract_metadata(event_card_text)
-
-        if langextract_metadata:
-            # Override with LangExtract tags if better
-            if langextract_metadata.get('feature_tags'):
-                feature_tags = langextract_metadata['feature_tags']
-            if langextract_metadata.get('error_tags'):
-                error_tags = langextract_metadata['error_tags']
-            if langextract_metadata.get('confidence') and not confidence:
-                confidence = langextract_metadata['confidence']
-            if langextract_metadata.get('notes') and not notes:
-                notes = langextract_metadata['notes']
-
-        # Write to Postgres
-        async with self.pg_pool.acquire() as conn:
-            await conn.execute(
-                """
-                INSERT INTO phase89_qdrant_events (
-                    event_id, ts, actor, op, collection, point_id,
-                    vector_hash, payload_hash, redis_key_ref, diff_json,
-                    run_id, feature_tags, error_tags, codec, notes, confidence
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-                """,
-                event_id, ts, actor, op, collection, point_id,
-                vector_hash, payload_hash, redis_key, diff,
-                run_id, feature_tags, error_tags, codec, notes, confidence
-            )
-
-        # Embed event card
-        embedding = await self._embed_text(event_card_text)
-
-        # Write to Qdrant timeline
-        timeline_payload = {
-            'event_id': event_id,
-            'ts': ts.isoformat(),
-            'actor': actor,
-            'op': op,
-            'collection': collection,
-            'point_id': point_id,
-            'redis_key_ref': redis_key,
-            'feature_tags': feature_tags,
-            'error_tags': error_tags,
-            'codec': codec,
-            'notes': notes or '',
-            'confidence': confidence,
-            'event_card_text': event_card_text
-        }
-
-        self.qdrant.upsert(
-            collection_name=TIMELINE_COLLECTION,
-            points=[models.PointStruct(
-                id=event_id,
-                vector=embedding,
-                payload=timeline_payload
-            )]
-        )
+            try:
+                self.qdrant.upsert(
+                    collection_name=TIMELINE_COLLECTION,
+                    points=[
+                        models.PointStruct(
+                            id=event_id,
+                            vector=vector,
+                            payload=q_payload
+                        )
+                    ]
+                )
+                print(f"✅ Qdrant Timeline: {event_id}")
+            except Exception as e:
+                print(f"❌ Qdrant Write Error: {e}")
+        else:
+            print(f"⚠️ Skipped Qdrant (no valid embedding)")
 
         return event_id
-
-    def _build_event_card(
-        self,
-        ts: datetime,
-        op: str,
-        collection: str,
-        actor: str,
-        point_id: Optional[str] = None,
-        redis_key: Optional[str] = None,
-        feature_tags: List[str] = [],
-        error_tags: List[str] = [],
-        codec: Optional[str] = None,
-        notes: Optional[str] = None
-    ) -> str:
-        """Build event card text for embedding."""
-        lines = [
-            f"KIND: qdrant_event",
-            f"TS: {ts.isoformat()}",
-            f"OP: {op}",
-            f"COLLECTION: {collection}",
-            f"ACTOR: {actor}"
-        ]
-
-        if point_id:
-            lines.append(f"POINT_ID: {point_id}")
-        if redis_key:
-            lines.append(f"KEY: {redis_key}")
-        if feature_tags:
-            lines.append(f"TAGS: {','.join(feature_tags)}")
-        if error_tags:
-            lines.append(f"ERROR_TAGS: {','.join(error_tags)}")
-        if codec:
-            lines.append(f"CODEC: {codec}")
-        if notes:
-            lines.append(f"NOTES: {notes}")
-
-        return '\n'.join(lines)
-
-    async def _extract_metadata(self, text: str) -> Optional[Dict]:
-        """Extract structured metadata using LangExtract."""
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"{self.langextract_url}/extract",
-                    json={
-                        'content': text,
-                        'document_type': 'timeline_event',
-                        'extract_entities': True,
-                        'extract_structure': True
-                    }
-                )
-
-                if response.status_code == 200:
-                    result = response.json()
-
-                    # Parse entities for tags
-                    entities = result.get('entities', [])
-                    feature_tags = []
-                    error_tags = []
-
-                    for entity in entities:
-                        entity_type = entity.get('type', '').lower()
-                        entity_text = entity.get('text', '')
-
-                        if entity_type in ['technology', 'framework', 'library']:
-                            feature_tags.append(entity_text.lower())
-                        elif entity_type in ['error', 'bug', 'issue']:
-                            error_tags.append(entity_text.lower())
-
-                    return {
-                        'feature_tags': feature_tags,
-                        'error_tags': error_tags,
-                        'confidence': result.get('confidence', 0.5),
-                        'notes': result.get('summary', '')
-                    }
-        except:
-            pass
-
-        return None
-
-    async def _embed_text(self, text: str) -> List[float]:
-        """Get embedding from Ollama."""
-        import requests
-
-        response = requests.post(
-            f"{OLLAMA_URL}/api/embeddings",
-            json={
-                'model': EMBEDDING_MODEL,
-                'prompt': text
-            },
-            timeout=30
-        )
-
-        if response.status_code != 200:
-            raise Exception(f"Ollama error: {response.status_code}")
-
-        return response.json()['embedding']
 
     async def search_timeline(
         self,
         query: str,
-        limit: int = 10,
-        hours: Optional[int] = None,
-        collection_filter: Optional[str] = None,
-        actor_filter: Optional[str] = None
-    ) -> List[Dict]:
-        """
-        Semantic search over timeline events.
-
-        Args:
-            query: Search query text
-            limit: Max results
-            hours: Only events in last N hours
-            collection_filter: Filter by collection name
-            actor_filter: Filter by actor name
-        """
-        # Embed query
-        query_vector = await self._embed_text(query)
-
-        # Build filter
-        must_conditions = []
-
-        if hours:
-            cutoff = datetime.utcnow() - timedelta(hours=hours)
-            must_conditions.append(
-                models.FieldCondition(
-                    key="ts",
-                    range=models.Range(
-                        gte=cutoff.isoformat()
-                    )
-                )
-            )
-
-        if collection_filter:
-            must_conditions.append(
-                models.FieldCondition(
-                    key="collection",
-                    match=models.MatchValue(value=collection_filter)
-                )
-            )
-
-        if actor_filter:
-            must_conditions.append(
-                models.FieldCondition(
-                    key="actor",
-                    match=models.MatchValue(value=actor_filter)
-                )
-            )
-
-        search_filter = None
-        if must_conditions:
-            search_filter = models.Filter(must=must_conditions)
-
-        # Search
-        results = self.qdrant.search(
-            collection_name=TIMELINE_COLLECTION,
-            query_vector=query_vector,
-            query_filter=search_filter,
-            limit=limit,
-            with_payload=True
-        )
-
-        return [
-            {
-                'event_id': hit.id,
-                'score': hit.score,
-                **hit.payload
-            }
-            for hit in results
-        ]
-
-    async def recent_edits(
-        self,
         hours: int = 24,
-        limit: int = 50
+        limit: int = 10
     ) -> List[Dict]:
-        """Get recent edits from Postgres."""
-        async with self.pg_pool.acquire() as conn:
-            rows = await conn.fetch(
-                """
-                SELECT event_id, ts, actor, op, collection, point_id,
-                       redis_key_ref, feature_tags, error_tags, notes
-                FROM phase89_qdrant_events
-                WHERE ts >= NOW() - INTERVAL '$1 hours'
-                ORDER BY ts DESC
-                LIMIT $2
-                """,
-                hours, limit
-            )
+        """
+        Semantic search over timeline events with time filtering.
 
-            return [dict(row) for row in rows]
+        Uses FLOAT timestamp for Range filter (fixes ValidationError).
+        """
+        print(f"🔍 Searching timeline: '{query}' (Last {hours}h)")
+        print()
+
+        # 1. Calculate Cutoff Timestamp (FLOAT)
+        cutoff_dt = datetime.now(timezone.utc) - timedelta(hours=hours)
+        cutoff_ts = cutoff_dt.timestamp()  # CRITICAL: Float for Range filter
+
+        # 2. Get query embedding
+        query_vector = self._get_embedding(query)
+
+        if not query_vector or len(query_vector) != EMBEDDING_DIM:
+            print("❌ Failed to get query embedding")
+            return []
+
+        # 3. Search with Time Filter (using query_points instead of deprecated search)
+        try:
+            results_obj = self.qdrant.query_points(
+                collection_name=TIMELINE_COLLECTION,
+                query=query_vector,
+                limit=limit,
+                query_filter=models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="ts",
+                            range=models.Range(
+                                gte=cutoff_ts  # FLOAT fixes ValidationError!
+                            )
+                        )
+                    ]
+                ),
+                with_payload=True
+            )
+            hits = results_obj.points
+
+            print(f"📊 Found {len(hits)} events:")
+            results = []
+            for hit in hits:
+                p = hit.payload
+                ts_val = p.get('ts', 0)
+
+                # Convert float timestamp to datetime for display
+                if isinstance(ts_val, (int, float)):
+                    dt = datetime.fromtimestamp(ts_val, tz=timezone.utc)
+                    time_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    time_str = str(ts_val)
+
+                print(f"   [{time_str}] {p.get('op')} {p.get('collection')} (Score: {hit.score:.4f})")
+                if p.get('notes'):
+                    print(f"      Notes: {p.get('notes')}")
+
+                results.append({
+                    'event_id': p.get('event_id'),
+                    'score': hit.score,
+                    'ts': ts_val,
+                    'op': p.get('op'),
+                    'collection': p.get('collection'),
+                    'actor': p.get('actor'),
+                    'notes': p.get('notes')
+                })
+
+            return results
+
+        except Exception as e:
+            print(f"❌ Search Failed: {e}")
+            return []
+
+    def recent_edits(self, hours: int = 24, limit: int = 50) -> List[Dict]:
+        """Get recent edits from Postgres."""
+        if not self.pg_conn:
+            print("❌ No Postgres connection")
+            return []
+
+        try:
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+            with self.pg_conn.cursor() as cur:
+                cur.execute("""
+                    SELECT event_id, ts, actor, op, collection, point_id,
+                           redis_key_ref, feature_tags, error_tags, notes
+                    FROM phase89_qdrant_events
+                    WHERE ts >= %s
+                    ORDER BY ts DESC
+                    LIMIT %s
+                """, (cutoff, limit))
+
+                columns = [desc[0] for desc in cur.description]
+                rows = cur.fetchall()
+                return [dict(zip(columns, row)) for row in rows]
+        except Exception as e:
+            print(f"❌ Query failed: {e}")
+            return []
+
+    def close(self):
+        """Close connections."""
+        if self.pg_conn:
+            self.pg_conn.close()
 
 # =============================================================================
 # CLI
 # =============================================================================
-async def main():
+def main():
+    import argparse
+
     parser = argparse.ArgumentParser(
-        description='Phase 92: Event Sourcing + Timeline Layer'
+        description='Phase 92: Event Sourcing + Timeline Layer (Final Form)'
     )
-    parser.add_argument('--init-db', action='store_true', help='Initialize Postgres schema')
-    parser.add_argument('--log-event', nargs=3, metavar=('OP', 'COLLECTION', 'POINT_ID'), help='Log an event')
-    parser.add_argument('--actor', default='manual', help='Actor name')
+    parser.add_argument('--init-db', action='store_true', help='Initialize DB schemas')
+    parser.add_argument('--log-event', nargs=3, metavar=('OP', 'COLLECTION', 'POINT_ID'),
+                        help='Log an event')
+    parser.add_argument('--actor', default='cli-user', help='Actor name')
     parser.add_argument('--search-timeline', metavar='QUERY', help='Search timeline semantically')
     parser.add_argument('--recent-edits', action='store_true', help='Show recent edits')
     parser.add_argument('--hours', type=int, default=24, help='Hours lookback')
     parser.add_argument('--limit', type=int, default=10, help='Max results')
+    parser.add_argument('--notes', type=str, help='Notes for log event')
+    parser.add_argument('--json', action='store_true', help='JSON output')
 
     args = parser.parse_args()
-
-    print(f"📦 JSON Backend: {BACKEND}")
     print()
 
-    engine = EventSourcingEngine()
+    config = EventConfig()
+    config.actor = args.actor
+    engine = EventSourcingEngine(config)
 
     try:
-        await engine.connect()
-
         if args.init_db:
-            await engine.init_db()
+            engine.init_db()
             print("✅ Database initialized")
 
         elif args.log_event:
             op, collection, point_id = args.log_event
-
             print(f"📝 Logging event...")
             print(f"   Op: {op}")
             print(f"   Collection: {collection}")
             print(f"   Point: {point_id}")
             print()
 
-            event_id = await engine.log_event(
+            event_id = asyncio.run(engine.log_event(
                 op=op,
                 collection=collection,
                 point_id=point_id,
-                actor=args.actor
-            )
+                tags=["cli-test"],
+                notes=args.notes
+            ))
 
+            print()
             print(f"✅ Event logged: {event_id}")
 
         elif args.search_timeline:
-            print(f"🔍 Searching timeline: {args.search_timeline}")
-            print()
-
-            results = await engine.search_timeline(
+            asyncio.run(engine.search_timeline(
                 query=args.search_timeline,
-                limit=args.limit,
-                hours=args.hours
-            )
-
-            for i, result in enumerate(results, 1):
-                print(f"{i}. [{result['op']}] {result['collection']} (score: {result['score']:.3f})")
-                print(f"   Actor: {result['actor']}")
-                print(f"   Time: {result['ts']}")
-                if result.get('notes'):
-                    print(f"   Notes: {result['notes']}")
-                print()
+                hours=args.hours,
+                limit=args.limit
+            ))
 
         elif args.recent_edits:
-            print(f"📊 Recent edits (last {args.hours} hours):")
-            print()
+            edits = engine.recent_edits(hours=args.hours, limit=args.limit)
 
-            edits = await engine.recent_edits(hours=args.hours, limit=args.limit)
-
-            for edit in edits:
-                print(f"• [{edit['op']}] {edit['collection']}")
-                print(f"  Actor: {edit['actor']}")
-                print(f"  Time: {edit['ts']}")
-                if edit.get('notes'):
-                    print(f"  Notes: {edit['notes']}")
+            if args.json:
+                # JSON output for MCP tools
+                import json
+                print(json.dumps({
+                    'recent_edits': edits,
+                    'count': len(edits),
+                    'hours': args.hours
+                }, default=str))
+            else:
+                # Human-readable output
+                print(f"📊 Recent edits (last {args.hours} hours):")
                 print()
+
+                if not edits:
+                    print("   No recent edits found")
+                else:
+                    for edit in edits:
+                        print(f"• [{edit['op']}] {edit['collection']}")
+                        print(f"  Actor: {edit['actor']}")
+                        print(f"  Time: {edit['ts']}")
+                        if edit.get('notes'):
+                            print(f"  Notes: {edit['notes']}")
+                        print()
 
         else:
             parser.print_help()
 
     finally:
-        await engine.close()
+        engine.close()
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()

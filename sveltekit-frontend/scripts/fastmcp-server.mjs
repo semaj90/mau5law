@@ -542,6 +542,210 @@ async function runCommand(args) {
 	});
 }
 
+// =============================================================================
+// ACE Tools: Phase 92/93 Integration (Event Sourcing + Smart Filtering)
+// =============================================================================
+
+/**
+ * Tool: ACE Smart Search
+ * Hierarchical retrieval: Extract intent → Filter tags → HNSW search → GPU rerank
+ */
+async function aceSmartSearch(args) {
+	const { query, limit = 5, collection = 'phase89_cache_index' } = args;
+
+	try {
+		const cmd = `python scripts/phase93-smart-filter.py "${query}" --limit ${limit} --collection ${collection} --json`;
+		const cp = spawn(cmd, { shell: true, cwd: process.cwd() });
+
+		let stdout = '';
+		let stderr = '';
+
+		cp.stdout.on('data', (data) => { stdout += data.toString(); });
+		cp.stderr.on('data', (data) => { stderr += data.toString(); });
+
+		return new Promise((resolve, reject) => {
+			cp.on('close', (code) => {
+				if (code !== 0) {
+					resolve({
+						ok: false,
+						error: `Smart filter failed with code ${code}`,
+						stderr,
+						query,
+						collection
+					});
+				} else {
+					try {
+						// Parse JSON output
+						const data = JSON.parse(stdout);
+						resolve({
+							ok: true,
+							query,
+							intent: data.intent || {},
+							results: data.results || [],
+							timings: data.timings || {},
+							stats: data.stats || {},
+							meta: {
+								tool: 'ace_smart_search',
+								collection,
+								retrieval_method: 'hierarchical_filter_search_rerank'
+							}
+						});
+					} catch (parseError) {
+						resolve({
+							ok: false,
+							error: `JSON parse failed: ${parseError.message}`,
+							stdout,
+							stderr
+						});
+					}
+				}
+			});
+
+			cp.on('error', (err) => {
+				resolve({
+					ok: false,
+					error: `Process error: ${err.message}`
+				});
+			});
+		});
+	} catch (error) {
+		return {
+			ok: false,
+			error: error.message,
+			query,
+			collection
+		};
+	}
+}
+
+/**
+ * Tool: ACE Timeline Recent Edits
+ * Get recent edits from event sourcing timeline
+ */
+async function aceTimelineRecent(args) {
+	const { hours = 24, limit = 10 } = args;
+
+	try {
+		const cmd = `python scripts/phase92-event-sourcing.py --recent-edits --hours ${hours} --limit ${limit} --json`;
+		const cp = spawn(cmd, { shell: true, cwd: process.cwd() });
+
+		let stdout = '';
+		let stderr = '';
+
+		cp.stdout.on('data', (data) => { stdout += data.toString(); });
+		cp.stderr.on('data', (data) => { stderr += data.toString(); });
+
+		return new Promise((resolve, reject) => {
+			cp.on('close', (code) => {
+				if (code !== 0) {
+					resolve({
+						ok: false,
+						error: `Timeline query failed with code ${code}`,
+						stderr,
+						hours,
+						limit
+					});
+				} else {
+					try {
+						// Parse JSON output
+						const data = JSON.parse(stdout);
+						resolve({
+							ok: true,
+							recent_edits: data.recent_edits || [],
+							count: data.count || 0,
+							hours: data.hours || hours,
+							meta: {
+								tool: 'ace_timeline_recent',
+								source: 'phase92_postgres_qdrant'
+							}
+						});
+					} catch (parseError) {
+						resolve({
+							ok: false,
+							error: `JSON parse failed: ${parseError.message}`,
+							stdout,
+							stderr
+						});
+					}
+				}
+			});
+
+			cp.on('error', (err) => {
+				resolve({
+					ok: false,
+					error: `Process error: ${err.message}`
+				});
+			});
+		});
+	} catch (error) {
+		return {
+			ok: false,
+			error: error.message,
+			hours,
+			limit
+		};
+	}
+}
+
+/**
+ * Tool: ACE Timeline Verify
+ * Verify timeline collection status and configuration
+ */
+async function aceTimelineVerify(args) {
+	try {
+		const cmd = `python scripts/phase92-timeline-collection.py --verify`;
+		const cp = spawn(cmd, { shell: true, cwd: process.cwd() });
+
+		let stdout = '';
+		let stderr = '';
+
+		cp.stdout.on('data', (data) => { stdout += data.toString(); });
+		cp.stderr.on('data', (data) => { stderr += data.toString(); });
+
+		return new Promise((resolve, reject) => {
+			cp.on('close', (code) => {
+				if (code !== 0) {
+					resolve({
+						ok: false,
+						error: `Timeline verify failed with code ${code}`,
+						stderr
+					});
+				} else {
+					// Parse output (structured text)
+					const exists = stdout.includes('✅ Collection exists');
+					const pointsMatch = stdout.match(/Points: (\d+)/);
+					const statusMatch = stdout.match(/Status: (\w+)/);
+
+					resolve({
+						ok: true,
+						collection: 'phase92_timeline_events',
+						exists,
+						points: pointsMatch ? parseInt(pointsMatch[1]) : 0,
+						status: statusMatch ? statusMatch[1] : 'unknown',
+						raw_output: stdout,
+						meta: {
+							tool: 'ace_timeline_verify',
+							collection_type: 'matryoshka_int8_quantized'
+						}
+					});
+				}
+			});
+
+			cp.on('error', (err) => {
+				resolve({
+					ok: false,
+					error: `Process error: ${err.message}`
+				});
+			});
+		});
+	} catch (error) {
+		return {
+			ok: false,
+			error: error.message
+		};
+	}
+}
+
 /**
  * Available tools registry
  */
@@ -556,7 +760,11 @@ const tools = {
 	ripgrep: ripgrep,
 	web_search: webSearch,
 	write_file: writeFile,
-	run_command: runCommand
+	run_command: runCommand,
+	// ACE Phase 92/93 Tools
+	ace_smart_search: aceSmartSearch,      // 🧠 Hierarchical retrieval with GPU rerank
+	ace_timeline_recent: aceTimelineRecent, // 📊 Recent edits from event log
+	ace_timeline_verify: aceTimelineVerify  // ✅ Verify timeline collection
 };
 
 // Removed deprecated handleFunctionCall - tools are called directly from registry
@@ -755,8 +963,13 @@ server.listen(CONFIG.port, async () => {
 	console.log(`   - web_search: External search (disabled by default)`);
 	console.log(`   - write_file: Write/patch files`);
 	console.log(`   - run_command: Execute shell commands`);
+	console.log(`   - ace_smart_search: 🧠 Hierarchical retrieval (filter → HNSW → GPU rerank)`);
+	console.log(`   - ace_timeline_recent: 📊 Recent edits from event sourcing timeline`);
+	console.log(`   - ace_timeline_verify: ✅ Verify timeline collection status`);
 	console.log(`\n💡 Agent tip: Always call knowledge_retrieve FIRST before generating code!`);
 	console.log(`   This ensures Svelte 5 runes, SvelteKit 2 routing, and Bits-UI patterns.`);
+	console.log(`\n🧠 ACE Tools: Use ace_smart_search for intent-based retrieval with 87-98% search reduction!`);
+	console.log(`   Phase 92/93: Event sourcing + Smart filtering with GPU reranking on RTX 3060 Ti`);
 	console.log(`\n✨ Ready for autonomous error fixing with KB grounding!\n`);
 });
 
