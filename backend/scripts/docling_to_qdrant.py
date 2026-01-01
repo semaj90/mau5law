@@ -126,10 +126,9 @@ class DoclingQdrantPipeline:
             page = pdf_doc[page_num]
             pix = page.get_pixmap(dpi=150)
 
-            # Save to temp file
-            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-                pix.save(tmp.name)
-                temp_path = tmp.name
+            # Save to temp file - close file first, then save with PyMuPDF
+            temp_path = tempfile.mktemp(suffix='.png')
+            pix.save(temp_path)
 
             try:
                 # Process with GraniteDoclingParser
@@ -154,7 +153,10 @@ class DoclingQdrantPipeline:
                     print(f"   ⚠️ Page {page_num + 1} failed: {result.get('error', 'unknown')}")
 
             finally:
-                os.unlink(temp_path)
+                try:
+                    os.unlink(temp_path)
+                except:
+                    pass  # Ignore cleanup errors
 
         pdf_doc.close()
         elapsed = time.time() - start_time

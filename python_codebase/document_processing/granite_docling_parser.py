@@ -52,10 +52,14 @@ class GraniteDoclingParser:
 
             self.model = Idefics3ForConditionalGeneration.from_pretrained(
                 "ibm-granite/granite-docling-258m",
-                device_map=self.device,
-                torch_dtype=torch.float16,
+                device_map="auto" if self.device == "cuda" else None,
+                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
                 trust_remote_code=True,
             )
+
+            # Move to device if no device_map
+            if self.device != "cuda":
+                self.model = self.model.to(self.device)
 
             logger.info(f"Loaded {self.model_name} model successfully")
 
