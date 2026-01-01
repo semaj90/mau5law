@@ -33,14 +33,16 @@ import hashlib
 
 # Add granite-docling-worker to path
 GRANITE_WORKER_PATH = Path(__file__).parent.parent.parent / "granite-docling-worker"
+PYTHON_CODEBASE_PATH = Path(__file__).parent.parent.parent / "python_codebase"
 sys.path.insert(0, str(GRANITE_WORKER_PATH))
+sys.path.insert(0, str(PYTHON_CODEBASE_PATH))
 
 try:
-    from src.processing.gpu_processor import GPUProcessor
-    from src.processing.cpu_processor import CPUProcessor
+    from document_processing.granite_docling_parser import GraniteDoclingParser
     DOCLING_AVAILABLE = True
+    print("✅ GraniteDoclingParser available")
 except ImportError as e:
-    print(f"⚠️  Warning: granite-docling modules not available: {e}")
+    print(f"⚠️  Warning: granite-docling-parser not available: {e}")
     DOCLING_AVAILABLE = False
 
 class DoclingQdrantPipeline:
@@ -65,12 +67,9 @@ class DoclingQdrantPipeline:
 
         # DocLing processors
         if DOCLING_AVAILABLE:
-            if torch.cuda.is_available():
-                self.processor = GPUProcessor(batch_size=8)
-                print("✅ Using GPU processor (granite-docling-258m)")
-            else:
-                self.processor = CPUProcessor(threads=4)
-                print("✅ Using CPU processor (Tesseract fallback)")
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.processor = GraniteDoclingParser(device=device)
+            print(f"✅ Using GraniteDoclingParser on {device}")
         else:
             self.processor = None
 
@@ -95,7 +94,7 @@ class DoclingQdrantPipeline:
             print(f"✅ Created 768d collection")
 
     def process_document(self, pdf_path: str, doc_id: str = None) -> Dict[str, Any]:
-        """Process document with DocLing processor"""
+        """Process document with GraniteDoclingParser"""
         if not self.processor:
             raise RuntimeError("DocLing processor not available")
 
@@ -105,29 +104,72 @@ class DoclingQdrantPipeline:
         print(f"\n📄 Processing: {pdf_path}")
         print(f"   Doc ID: {doc_id}")
 
-        # Read PDF file
-        with open(pdf_path, 'rb') as f:
-            pdf_bytes = f.read()
+        # Convert PDF to images and process each page
+        import fitz  # PyMuPDF
+        from PIL import Image
+        import tempfile
+        import os
 
-        # Process with DocLing processor
         start_time = time.time()
-        result = self.processor.process_document(pdf_bytes, doc_id)
+
+        pages = []
+        tables = []
+
+        pdf_doc = fitz.open(pdf_path)
+        total_pages = len(pdf_doc)
+        print(f"   Total pages: {total_pages}")
+
+        for page_num in range(total_pages):
+            print(f"   Processing page {page_num + 1}/{total_pages}...")
+
+            # Render page to image
+            page = pdf_doc[page_num]
+            pix = page.get_pixmap(dpi=150)
+
+            # Save to temp file
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                pix.save(tmp.name)
+                temp_path = tmp.name
+
+            try:
+                # Process with GraniteDoclingParser
+                result = self.processor.parse_document(temp_path)
+
+                if result.get('success'):
+                    text = result.get('text', '')
+                    doc_tags = result.get('doc_tags', {})
+
+                    pages.append({
+                        'page_num': page_num + 1,
+                        'text': text,
+                        'layout_type': doc_tags.get('layout_type', 'text'),
+                        'bbox': [0, 0, pix.width, pix.height],
+                        'confidence': result.get('metadata', {}).get('confidence', 0.9)
+                    })
+
+                    # Extract tables from doc_tags if present
+                    if 'tables' in doc_tags:
+                        tables.extend(doc_tags['tables'])
+                else:
+                    print(f"   ⚠️ Page {page_num + 1} failed: {result.get('error', 'unknown')}")
+
+            finally:
+                os.unlink(temp_path)
+
+        pdf_doc.close()
         elapsed = time.time() - start_time
 
         print(f"✅ DocLing processing: {elapsed:.2f}s")
-
-        # Extract pages count
-        pages_count = len(result.get('pages', []))
-        tables_count = len(result.get('tables', []))
-
-        print(f"   Pages: {pages_count}")
-        print(f"   Tables: {tables_count}")
+        print(f"   Pages processed: {len(pages)}")
+        print(f"   Tables found: {len(tables)}")
 
         return {
             "doc_id": doc_id,
-            "result": result,
+            "result": {"pages": pages, "tables": tables},
             "processing_time": elapsed
-        }    def extract_chunks(self, docling_result: Dict, doc_id: str, chunk_size: int = 512) -> List[Dict]:
+        }
+
+    def extract_chunks(self, docling_result: Dict, doc_id: str, chunk_size: int = 512) -> List[Dict]:
         """Extract text chunks with layout metadata from DocLing output"""
         chunks = []
         chunk_id = 0

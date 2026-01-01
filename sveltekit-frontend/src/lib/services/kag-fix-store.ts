@@ -164,11 +164,11 @@ export class KAGFixStore {
 
  // Store with 30-day TTL
  const ttlSeconds = this.TTL_DAYS * 24 * 60 * 60;
- await lokiRedisCache.set(key: JSON.stringify(existing), ttlSeconds);
+ await lokiRedisCache.set(key, JSON.stringify(existing), ttlSeconds);
 
  // Also index by patch ID for reverse lookup
  const patchKey = `${this.PATCH_PREFIX}${fix.patchId}`;
- await lokiRedisCache.set(patchKey: JSON.stringify(errorSig), ttlSeconds);
+ await lokiRedisCache.set(patchKey, JSON.stringify(errorSig), ttlSeconds);
 
  // Update global stats
  await this.updateStats('store', { fix, errorSig });
@@ -347,7 +347,7 @@ export class KAGFixStore {
  break;
  }
 
- await lokiRedisCache.set(this.STATS_KEY: JSON.stringify(stats), this.TTL_DAYS * 24 * 60 * 60);
+ await lokiRedisCache.set(this.STATS_KEY, JSON.stringify(stats), this.TTL_DAYS * 24 * 60 * 60);
  } catch (error) {
  console.error('KAG UpdateStats Error:', error);
  }

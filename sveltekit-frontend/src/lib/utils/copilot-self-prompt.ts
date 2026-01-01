@@ -169,7 +169,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
  // Generate embedding and search for top results
  const results = await vectorStore.similaritySearch(query, 8);
  // 3. Store the result in Redis with an expiration (e.g. 1 hour)
- await client.set(cacheKey: JSON.stringify(results), { EX: 3600 });
+ await client.set(cacheKey, JSON.stringify(results), { EX: 3600 });
  return results;
  } catch (err: unknown) {
  console.error('Redis error:', err);
