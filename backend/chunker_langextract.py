@@ -86,8 +86,10 @@ class HybridChunker:
     OVERLAP_TOKENS = 50    # Overlap when splitting
     TOKENS_PER_WORD = 1.3  # Rough estimate for token counting
 
-    def __init__(self, doc_id: str):
-        self.doc_id = doc_id
+    def __init__(self, doc_id: Optional[str] = None, chunk_size: int = 512, overlap: int = 50):
+        self.doc_id = doc_id or f"doc_{uuid.uuid4().hex[:8]}"
+        self.MAX_CHUNK_TOKENS = chunk_size
+        self.OVERLAP_TOKENS = overlap
         self.chunks: List[Chunk] = []
         self.chunk_counter = 0
 
