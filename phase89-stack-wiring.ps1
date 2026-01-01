@@ -208,15 +208,17 @@ Write-Host "`n🔥 PyTorch + CUDA (RTX 3060 Ti)`n" -ForegroundColor Yellow
 $pythonExe = "C:\Users\james\Videos\deeds-web-app\.venv\Scripts\python.exe"
 
 if (Test-Path $pythonExe) {
-    $cudaCheck = & $pythonExe -c "import torch; print(f'PyTorch {torch.__version__}'); print(f'CUDA Available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}'); print(f'Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB' if torch.cuda.is_available() else 'N/A')" 2>&1
+    $cudaCheck = & $pythonExe -c "import torch; print('PyTorch:', torch.__version__); print('CUDA:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A'); print('Memory:', f'{torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB' if torch.cuda.is_available() else 'N/A')" 2>&1
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  ✅ PyTorch + CUDA Configured" -ForegroundColor Green
         $cudaCheck -split "`n" | ForEach-Object {
-            Write-Host "     $_" -ForegroundColor Gray
+            if ($_ -match "PyTorch|CUDA|GPU|Memory") {
+                Write-Host "     $_" -ForegroundColor Green
+            }
         }
     } else {
-        Write-Host "  ⚠️  PyTorch not installed or CUDA unavailable" -ForegroundColor Yellow
+        Write-Host "  ⚠️  PyTorch error: $cudaCheck" -ForegroundColor Yellow
     }
 } else {
     Write-Host "  ⚠️  Python venv not found at $pythonExe" -ForegroundColor Yellow

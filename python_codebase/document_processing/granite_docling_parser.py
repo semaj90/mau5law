@@ -87,7 +87,9 @@ class GraniteDoclingParser:
             image = Image.open(image_path).convert("RGB")
 
             # Prepare inputs
-            inputs = self.processor(images=image, return_tensors="pt").to(self.device)
+            # Use the correct instruction for granite-docling model with image placeholder
+            prompts = "<image>Convert this page to docling."
+            inputs = self.processor(text=prompts, images=image, return_tensors="pt").to(self.device)
 
             # Debug logging
             logger.info(f"Input keys: {list(inputs.keys())}")
@@ -118,12 +120,20 @@ class GraniteDoclingParser:
             with torch.no_grad():
                 output = self.model.generate(
                     **generate_inputs,
-                    max_new_tokens=4096,
+                    max_new_tokens=1024,
                     do_sample=False,
                 )
 
+            logger.info(f"Output tokens: {output[0].tolist()[:20]}...")
+
             # Decode output
             parsed_text = self.processor.decode(output[0], skip_special_tokens=True)
+
+            logger.info(f"Extracted text length: {len(parsed_text)}")
+            if len(parsed_text) > 0:
+                logger.info(f"Extracted text preview: {parsed_text[:100]}...")
+            else:
+                logger.warning("Extracted text is empty!")
 
             # Extract DocTags format
             doc_tags = self._extract_doc_tags(parsed_text)

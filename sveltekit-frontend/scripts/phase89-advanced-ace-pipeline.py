@@ -215,6 +215,9 @@ class AdvancedACEPipeline:
         similarities = torch.mm(embeddings_norm, embeddings_norm.T)
         distances = 1 - similarities
 
+        # Clamp distances to [0, 2] to ensure non-negative for DBSCAN
+        distances = torch.clamp(distances, min=0.0, max=2.0)
+
         torch.cuda.synchronize()
         distance_time = (time.perf_counter() - start) * 1000
         print(f"   ✅ Computed 1000x1000 distance matrix in {distance_time:.2f}ms\n")
