@@ -7,6 +7,10 @@
 // Import handlers to trigger registration
 import './scanRepo.js';
 import './kbSearch.js';
+import './clusterTag.js';
+import './chunkEmbed.js';
+import './langextractBatch.js';
+import './crawlDocs.js';
 
 // Re-export registry
 export { toolRegistry, getToolDefinitions } from '../registry.js';
