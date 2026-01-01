@@ -61,6 +61,16 @@ try:
 except ImportError:
     analytics_router = None
 
+try:
+    from .kb_fixing_api import router as kb_fixing_router
+except ImportError:
+    kb_fixing_router = None
+
+try:
+    from .kb_fixing_api_v2 import router as kb_fixing_v2_router
+except ImportError:
+    kb_fixing_v2_router = None
+
 
 # Lifespan context manager for startup/shutdown
 @asynccontextmanager
@@ -145,6 +155,20 @@ if analytics_router:
     logger.info("✅ CouchDB Analytics API registered")
 else:
     logger.warning("⚠️  CouchDB Analytics API not available")
+
+# Include KB Fixing router (Week 3 Task 1)
+if kb_fixing_router:
+    app.include_router(kb_fixing_router)
+    logger.info("✅ KB Fixing API registered")
+else:
+    logger.warning("⚠️  KB Fixing API not available")
+
+# Include KB Fixing V2 router (Week 3 Tasks 2-4)
+if kb_fixing_v2_router:
+    app.include_router(kb_fixing_v2_router)
+    logger.info("✅ KB Fixing API V2 registered (auto-approval + agentic)")
+else:
+    logger.warning("⚠️  KB Fixing API V2 not available")
 
 
 @app.get("/health")
