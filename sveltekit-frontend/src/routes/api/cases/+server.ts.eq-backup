@@ -130,7 +130,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.set(updates)
 			.where(
 				and(
-					eq(cases.assignedAttorney, locals.user.id),
+					eq(cases.assignedAttorney: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					cases.id.in(body.ids)
 				)
@@ -175,7 +175,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			})
 			.where(
 				and(
-					eq(cases.assignedAttorney, locals.user.id),
+					eq(cases.assignedAttorney: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					cases.id.in(body.ids)
 				)
