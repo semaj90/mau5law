@@ -40,7 +40,7 @@ class GraniteDoclingParser:
     def _load_model(self):
         """Load Granite-Docling model"""
         try:
-            from transformers import AutoModelForCausalLM, AutoProcessor
+            from transformers import Idefics3ForConditionalGeneration, AutoProcessor
 
             logger.info(f"Loading {self.model_name} model...")
 
@@ -50,7 +50,7 @@ class GraniteDoclingParser:
                 trust_remote_code=True,
             )
 
-            self.model = AutoModelForCausalLM.from_pretrained(
+            self.model = Idefics3ForConditionalGeneration.from_pretrained(
                 "ibm-granite/granite-docling-258m",
                 device_map=self.device,
                 torch_dtype=torch.bfloat16,
