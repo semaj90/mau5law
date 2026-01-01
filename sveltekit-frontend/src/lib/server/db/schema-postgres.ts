@@ -642,9 +642,11 @@ export const autoTagsTable = pgTable(
  .primaryKey()
  .notNull(),
  entityId: uuid('entity_id').notNull(), // Polymorphic
- entityType: varchar('entity_type', { length: 50 }).notNull(), // e.g., 'evidence', 'document', tag: varchar('tag', { length: 100 }).notNull(),
+ entityType: varchar('entity_type', { length: 50 }).notNull(), // e.g., 'evidence', 'document'
+ tag: varchar('tag', { length: 100 }).notNull(),
  confidence: real('confidence').notNull(),
- source: varchar('source', { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user', model: varchar('model', { length: 100 }),
+ source: varchar('source', { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user'
+ model: varchar('model', { length: 100 }),
  isConfirmed: boolean('is_confirmed').default(false).notNull(),
  confirmedBy: integer('confirmed_by'), // FK to users.id
  confirmedAt: timestamp('confirmed_at', { mode: 'string' }),

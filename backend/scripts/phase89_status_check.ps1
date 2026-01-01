@@ -16,7 +16,7 @@ Write-Host "1️⃣ Qdrant Collections:" -ForegroundColor $warning
 try {
     $collections = curl -s http://localhost:6333/collections | ConvertFrom-Json
     $phase89_collections = $collections.result.collections | Where-Object { $_.name -match "phase89|knowledge_base" }
-    
+
     if ($phase89_collections.Count -ge 7) {
         Write-Host "   ✅ Found $($phase89_collections.Count) Phase 89 collections" -ForegroundColor $success
         $phase89_collections | Select-Object -First 5 | ForEach-Object {
@@ -35,7 +35,7 @@ Write-Host ""
 Write-Host "2️⃣ PostgreSQL Timeline Tables:" -ForegroundColor $warning
 try {
     $tables = docker exec phase66-postgres psql -U user -d legal -c "\dt phase89*" 2>&1 | Select-String -Pattern "phase89"
-    
+
     if ($tables) {
         Write-Host "   ✅ Timeline tables created:" -ForegroundColor $success
         $tables | ForEach-Object { Write-Host "      $_" -ForegroundColor $success }
