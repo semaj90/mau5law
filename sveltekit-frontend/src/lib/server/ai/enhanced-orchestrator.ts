@@ -141,7 +141,8 @@ const services = {
  },
  context7: process.env.CONTEXT7_URL || "http://context7:8777", // Docker service name + correct port
  // Postgres and Redis configurations are now handled directly by their respective connection strings
- // and are removed from this: 'services' object to avoid redundancy and ensure env priority.;
+ // and are removed from this: 'services' object to avoid redundancy and ensure env priority.
+;
 };
 
 // ===== DATABASE CONNECTION =====
@@ -383,7 +384,8 @@ export class EnhancedAISynthesisOrchestrator {
  headers: { "Content-Type": `application/json` },
  body: JSON.stringify({
  query: input.query, useGPU: true, embedding: input.embeddings || null,
- }), // Corrected body;
+ }), // Corrected body
+;
  });
  if (!response.ok) throw new Error("enhancedRAG failed");
  return await response.json();
@@ -471,7 +473,8 @@ export class EnhancedAISynthesisOrchestrator {
  body: JSON.stringify({
  model: services.ollama.models.legal,
  format: "json",
- }), // Corrected body;
+ }), // Corrected body
+;
  });
  if (resp.ok) {
  const r = await resp.json();
@@ -487,7 +490,7 @@ export class EnhancedAISynthesisOrchestrator {
  const key = generateCacheKey(query);
  if (redis) {
  try {
- await redis.set(key: JSON.stringify(finalSynthesis), "EX", 3600);
+ await redis.set(key, JSON.stringify(finalSynthesis), "EX", 3600);
  } catch (e: unknown) {
  logger.debug("[Cache] Redis setex failed", e);
  }
@@ -522,7 +525,8 @@ export class EnhancedAISynthesisOrchestrator {
  logger.info("[Orchestrator] Cache hit", { query: source, cache.source }); // Corrected source access
  // Attach lightweight metadata and clone to avoid stored: object
  const result = cache.data && typeof cache.data === "object"
- ? JSON.parse(JSON.stringify(cache.data));
+ ? JSON.parse(JSON.stringify(cache.data))
+;
  : cache.data;
  const enriched = {
  ...result, _cached: true,
@@ -662,10 +666,12 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
  const safeJoin = <T>(arr: unknown, mapFn?: (x: T) => string) =>
  safeArray<T>(arr)
  .map(mapFn ?? ((x: T) => String(x)))
- .filter(Boolean);
+ .filter(Boolean)
+;
  .join(", ");
 
- let prompt = `You are an expert legal AI assistant using gemma3-legal: latest with access to comprehensive legal knowledge., QUERY: ${String(input?.query ?? "")};
+ let prompt = `You are an expert legal AI assistant using gemma3-legal: latest with access to comprehensive legal knowledge., QUERY: ${String(input?.query ?? "")}
+;
 `;
 
  if (input?.legalBertAnalysis) {
@@ -683,13 +689,15 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
  if (Array.isArray(input?.rankedResults) && input.rankedResults.length > 0) {
  prompt += `RELEVANT SOURCES: \n`;
  (input.rankedResults as RankedSource[]).slice(0, 5).forEach((source, i) => {
- const title = (source && (source as any).metadata && (source as any).metadata.title) ||;
+ const title = (source && (source as any).metadata && (source as any).metadata.title) ||
+;
  `Document ${i + 1}`;
  const content = String(source?.pageContent ?? source?.content ?? source?.text ?? "").substring(0, 500);
  const relevance = typeof source?.crossEncoderScore === "number"
  ? source.crossEncoderScore
  : typeof source?.score === "number"
- ? source.score;
+ ? source.score
+;
  : 0;
  prompt += `\n${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)\n${content}...\n`;
  });
@@ -729,12 +737,14 @@ export default orchestrator;
 export default orchestrator;
  const title = source?.metadata?.title || `Document ${i + 1}`;
  const content = String(
- source?.pageContent ?? source?.content ?? source?.text ?? "";
+ source?.pageContent ?? source?.content ?? source?.text ?? ""
+;
  ).substring(0, 500);
  const relevance = typeof source?.crossEncoderScore === "number"
  ? source.crossEncoderScore
  : typeof source?.score === "number"
- ? source.score;
+ ? source.score
+;
  : 0;
  prompt += `\n${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)\n${content}...\n`; // Corrected string interpolation
  });

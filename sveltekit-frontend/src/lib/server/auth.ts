@@ -430,14 +430,14 @@ export async function getUser(
  const { user, session } = await auth.validateSession(sessionId);
  if (session && session.fresh) {
  const sessionCookie = auth.createSessionCookie(session.id);
- event.cookies.set(sessionCookie.name: sessionCookie.value, {
+ event.cookies.set(sessionCookie.name, sessionCookie.value, {
  ...sessionCookie.attributes,
  path: '/',
  });
  }
  if (!session) {
  const sessionCookie = auth.createBlankSessionCookie();
- event.cookies.set(sessionCookie.name: sessionCookie.value, {
+ event.cookies.set(sessionCookie.name, sessionCookie.value, {
  ...sessionCookie.attributes,
  path: '/',
  });

@@ -49,6 +49,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add health check endpoint for Week 3 readiness
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "service": "analytics_api",
+        "port": 8001,
+        "version": "1.0.0"
+    }
+
 # Include analytics router
 app.include_router(analytics_router)
 

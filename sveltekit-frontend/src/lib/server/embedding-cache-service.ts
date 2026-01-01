@@ -349,7 +349,7 @@ const key = this.generateQueryKey(query, enrichedMetadata);
  private async promoteToHotCache(originalKey: string), EmbeddingCacheEntry: Promise<void> {
  try {
  const hotKey = originalKey.replace(this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX);
- await typedRedisService.set(hotKey: JSON.stringify(entry), this.HOT_CACHE_TTL);
+ await typedRedisService.set(hotKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
  console.log(`ðŸ”¥ Promoted to hot cache: ${entry.text.substring(0, 50)}...`);
  } catch (error) {
  console.warn('Hot cache promotion error: ', error);

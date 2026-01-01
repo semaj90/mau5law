@@ -49,7 +49,7 @@ export async function cacheGetJSON<T>(key: string): Promise<T | null> {
 export async function cacheSetJSON(key: string, value: any, ttlSeconds = TTL_SECONDS) {
  try {
  await ensureRedis();
- await redis.set(key: JSON.stringify(value), 'EX', ttlSeconds);
+ await redis.set(key, JSON.stringify(value), 'EX', ttlSeconds);
  } catch (err) {
  console.warn('Cache set failed:', err);
  }

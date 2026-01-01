@@ -9,6 +9,15 @@ Tests:
     Task 4: Agentic fix generation
 """
 
+import sys
+
+# Fix Windows console encoding issues
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 import requests
 import json
 import time
