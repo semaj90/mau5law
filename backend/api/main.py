@@ -56,6 +56,11 @@ try:
 except ImportError:
     poi_router = None
 
+try:
+    from .couchdb_analytics_api import router as analytics_router
+except ImportError:
+    analytics_router = None
+
 
 # Lifespan context manager for startup/shutdown
 @asynccontextmanager
@@ -133,6 +138,13 @@ if poi_router:
     logger.info("✅ POI routes registered")
 else:
     logger.warning("⚠️  POI routes not available")
+
+# Include CouchDB Analytics router
+if analytics_router:
+    app.include_router(analytics_router)
+    logger.info("✅ CouchDB Analytics API registered")
+else:
+    logger.warning("⚠️  CouchDB Analytics API not available")
 
 
 @app.get("/health")

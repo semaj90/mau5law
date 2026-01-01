@@ -69,6 +69,18 @@ def create_design_docs():
                 }
                 """
             },
+            "most_imported_files": {
+                "map": """
+                function(doc) {
+                    if (doc.type === 'file' && doc.imports) {
+                        doc.imports.forEach(function(imp) {
+                            emit(imp, doc.path);
+                        });
+                    }
+                }
+                """,
+                "reduce": "_count"
+            },
             "dependency_graph": {
                 "map": """
                 function(doc) {
@@ -126,19 +138,87 @@ def create_design_docs():
     client.llm_summaries.save(summaries_design)
     print("✅ Created design doc: _design/summaries")
 
+    # Design doc for analytics
+    analytics_design = {
+        "_id": "_design/analytics",
+        "language": "javascript",
+        "views": {
+            "file_complexity": {
+                "map": """
+                function(doc) {
+                    if (doc.type === 'file') {
+                        var complexity = {
+                            path: doc.path,
+                            lines_of_code: doc.metadata ? doc.metadata.lines_of_code : 0,
+                            function_count: doc.functions ? doc.functions.length : 0,
+                            class_count: doc.classes ? doc.classes.length : 0,
+                            import_count: doc.imports ? doc.imports.length : 0,
+                            error_count: doc.error_count || 0
+                        };
+                        // Estimated cyclomatic complexity: functions + classes * 2 + imports / 5
+                        complexity.estimated_cyclomatic =
+                            complexity.function_count +
+                            (complexity.class_count * 2) +
+                            Math.floor(complexity.import_count / 5);
+
+                        emit(doc.path, complexity);
+                    }
+                }
+                """
+            },
+            "error_propagation": {
+                "map": """
+                function(doc) {
+                    if (doc.type === 'file' && doc.error_count > 0) {
+                        // Emit files that import this error file
+                        emit(doc.path, {
+                            file: doc.path,
+                            errors: doc.error_count,
+                            imported_by: []
+                        });
+                    }
+                }
+                """
+            }
+        }
+    }
+
+    if "_design/analytics" in client.codebase_graph:
+        existing = client.codebase_graph["_design/analytics"]
+        analytics_design["_rev"] = existing["_rev"]
+
+    client.codebase_graph.save(analytics_design)
+    print("✅ Created design doc: _design/analytics")
+
     # Design doc for error clusters
     clusters_design = {
         "_id": "_design/clusters",
         "language": "javascript",
         "views": {
+            "by_severity": {
+                "map": """
+                function(doc) {
+                    if (doc.type === 'error_cluster') {
+                        emit(doc.severity, {
+                            cluster_id: doc.cluster_id,
+                            label: doc.cluster_label,
+                            file_count: doc.affected_files ? doc.affected_files.length : 0,
+                            occurrence_count: doc.occurrence_count
+                        });
+                    }
+                }
+                """
+            },
             "by_size": {
                 "map": """
                 function(doc) {
                     if (doc.type === 'error_cluster') {
-                        emit(doc.member_files.length, {
+                        var file_count = doc.affected_files ? doc.affected_files.length : (doc.member_files ? doc.member_files.length : 0);
+                        emit(file_count, {
                             cluster_id: doc.cluster_id,
                             label: doc.cluster_label,
-                            file_count: doc.member_files.length
+                            file_count: file_count,
+                            severity: doc.severity
                         });
                     }
                 }
