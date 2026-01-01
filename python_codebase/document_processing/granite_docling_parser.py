@@ -89,8 +89,30 @@ class GraniteDoclingParser:
             # Prepare inputs
             inputs = self.processor(images=image, return_tensors="pt").to(self.device)
 
+            # Debug logging
+            logger.info(f"Input keys: {list(inputs.keys())}")
+            if 'pixel_values' in inputs:
+                logger.info(f"Pixel values shape: {inputs['pixel_values'].shape}")
+
             # Filter inputs for generate (remove rows/cols if present as they cause issues with Idefics3)
             generate_inputs = {k: v for k, v in inputs.items() if k not in ['rows', 'cols']}
+
+            # Ensure input_ids and attention_mask exist
+            if 'input_ids' not in generate_inputs:
+                logger.info("Adding default input_ids (BOS) and attention_mask")
+                bos_token_id = self.processor.tokenizer.bos_token_id
+                batch_size = generate_inputs['pixel_values'].shape[0]
+                generate_inputs['input_ids'] = torch.full(
+                    (batch_size, 1),
+                    bos_token_id,
+                    dtype=torch.long,
+                    device=self.device
+                )
+                generate_inputs['attention_mask'] = torch.ones(
+                    (batch_size, 1),
+                    dtype=torch.long,
+                    device=self.device
+                )
 
             # Generate output
             with torch.no_grad():
