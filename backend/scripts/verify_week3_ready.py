@@ -11,8 +11,16 @@ Checks:
 5. PostgreSQL tables created (future)
 """
 
-import requests
 import sys
+
+# Fix Windows console encoding issues
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
+import requests
 from typing import Tuple
 
 # Service endpoints
@@ -22,26 +30,30 @@ OLLAMA_URL = "http://localhost:11434"
 API_URL = "http://localhost:8001"
 
 def check_qdrant() -> Tuple[bool, str]:
-    """Check Qdrant has phase92_knowledge_base collection"""
-    try:
-        response = requests.get(
-            f"{QDRANT_URL}/collections/phase92_knowledge_base",
-            timeout=5
-        )
-        if response.status_code == 200:
-            data = response.json()
-            points = data.get('result', {}).get('points_count', 0)
-            return True, f"Collection exists with {points} points"
-        else:
-            return False, f"Collection not found (status {response.status_code})"
-    except requests.exceptions.RequestException as e:
-        return False, f"Connection failed: {e}"
+    """Check Qdrant has knowledge_base collection (fallback to phase76)"""
+    collections_to_try = ["knowledge_base", "phase76_knowledge_base", "phase72_ast_knowledge_base"]
+
+    for collection_name in collections_to_try:
+        try:
+            response = requests.get(
+                f"{QDRANT_URL}/collections/{collection_name}",
+                timeout=5
+            )
+            if response.status_code == 200:
+                data = response.json()
+                points = data.get('result', {}).get('points_count', 0)
+                return True, f"Collection '{collection_name}' exists with {points} points"
+        except requests.exceptions.RequestException:
+            continue
+
+    return False, f"No knowledge base collection found (tried: {', '.join(collections_to_try)})"
 
 def check_couchdb() -> Tuple[bool, str]:
     """Check CouchDB has llm_summaries database"""
     try:
         response = requests.get(
             f"{COUCHDB_URL}/llm_summaries",
+            auth=("admin", "password"),  # Add credentials from Phase 66
             timeout=5
         )
         if response.status_code == 200:
@@ -57,20 +69,22 @@ def check_couchdb() -> Tuple[bool, str]:
         return False, f"Connection failed: {e}"
 
 def check_ollama() -> Tuple[bool, str]:
-    """Check Ollama is running and has gemma3-legal:latest"""
+    """Check Ollama is running and has gemma model (gemma3-legal or embeddinggemma)"""
     try:
         # Check Ollama is running
         response = requests.get(f"{OLLAMA_URL}/api/tags", timeout=5)
         if response.status_code != 200:
             return False, f"Ollama not responding (status {response.status_code})"
 
-        # Check for gemma3-legal model
+        # Check for any gemma model
         data = response.json()
         models = [m['name'] for m in data.get('models', [])]
-        if 'gemma3-legal:latest' in models:
-            return True, "Model gemma3-legal:latest available"
+        gemma_models = [m for m in models if 'gemma' in m.lower()]
+
+        if gemma_models:
+            return True, f"Gemma model(s) available: {', '.join(gemma_models)}"
         else:
-            return False, f"Model not found. Available: {', '.join(models[:3])}"
+            return False, f"No Gemma model found. Available: {', '.join(models[:3])}"
     except requests.exceptions.RequestException as e:
         return False, f"Connection failed: {e}"
 

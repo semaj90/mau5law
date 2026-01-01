@@ -53,7 +53,7 @@ class GraniteDoclingParser:
             self.model = Idefics3ForConditionalGeneration.from_pretrained(
                 "ibm-granite/granite-docling-258m",
                 device_map=self.device,
-                torch_dtype=torch.bfloat16,
+                torch_dtype=torch.float16,
                 trust_remote_code=True,
             )
 
@@ -120,7 +120,7 @@ class GraniteDoclingParser:
             with torch.no_grad():
                 output = self.model.generate(
                     **generate_inputs,
-                    max_new_tokens=1024,
+                    max_new_tokens=4096,
                     do_sample=False,
                 )
 
