@@ -189,7 +189,7 @@ class AgenticFixAgent:
                 await self.apply_fix(best_fix)
 
             self.status.status = 'completed'
-            self.status.confidence_score = best_fix.get('confidence_score') if best_fix else 0
+            self.status.confidence_score = best_fix.get('confidence_score', 0) if best_fix else 0.0
 
             return {
                 'task_id': self.task_id,
