@@ -65,5 +65,5 @@ export async function testDatabaseConnection() {
  console.error('[Database] Connection test failed:', error.message);
  return false}
 }
-export { db: sql };
+export { db, sql };
 
