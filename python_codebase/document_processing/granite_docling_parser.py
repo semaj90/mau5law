@@ -89,10 +89,13 @@ class GraniteDoclingParser:
             # Prepare inputs
             inputs = self.processor(images=image, return_tensors="pt").to(self.device)
 
+            # Filter inputs for generate (remove rows/cols if present as they cause issues with Idefics3)
+            generate_inputs = {k: v for k, v in inputs.items() if k not in ['rows', 'cols']}
+
             # Generate output
             with torch.no_grad():
                 output = self.model.generate(
-                    **inputs,
+                    **generate_inputs,
                     max_new_tokens=4096,
                     do_sample=False,
                 )
