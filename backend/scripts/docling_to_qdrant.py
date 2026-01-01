@@ -38,7 +38,6 @@ sys.path.insert(0, str(GRANITE_WORKER_PATH))
 try:
     from src.processing.gpu_processor import GPUProcessor
     from src.processing.cpu_processor import CPUProcessor
-    from src.processing.pipeline_manager import PipelineManager
     DOCLING_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️  Warning: granite-docling modules not available: {e}")
@@ -64,15 +63,16 @@ class DoclingQdrantPipeline:
         # Collections
         self.collection_name = "phase89_docling_chunks"
 
-        # DocLing pipeline manager
+        # DocLing processors
         if DOCLING_AVAILABLE:
-            self.pipeline = PipelineManager()
-            self.gpu_processor = GPUProcessor() if torch.cuda.is_available() else None
-            self.cpu_processor = CPUProcessor()
+            if torch.cuda.is_available():
+                self.processor = GPUProcessor(batch_size=8)
+                print("✅ Using GPU processor (granite-docling-258m)")
+            else:
+                self.processor = CPUProcessor(threads=4)
+                print("✅ Using CPU processor (Tesseract fallback)")
         else:
-            self.pipeline = None
-            self.gpu_processor = None
-            self.cpu_processor = None
+            self.processor = None
 
         print(f"✅ GPU Device: {self.device}")
         if torch.cuda.is_available():
@@ -95,9 +95,9 @@ class DoclingQdrantPipeline:
             print(f"✅ Created 768d collection")
 
     def process_document(self, pdf_path: str, doc_id: str = None) -> Dict[str, Any]:
-        """Process document with DocLing pipeline"""
-        if not self.pipeline:
-            raise RuntimeError("DocLing pipeline not available")
+        """Process document with DocLing processor"""
+        if not self.processor:
+            raise RuntimeError("DocLing processor not available")
 
         if not doc_id:
             doc_id = Path(pdf_path).stem
@@ -109,14 +109,9 @@ class DoclingQdrantPipeline:
         with open(pdf_path, 'rb') as f:
             pdf_bytes = f.read()
 
-        # Process with GPU or CPU processor
+        # Process with DocLing processor
         start_time = time.time()
-
-        if self.gpu_processor:
-            result = self.gpu_processor.process_document(pdf_bytes, doc_id)
-        else:
-            result = self.cpu_processor.process_document(pdf_bytes, doc_id)
-
+        result = self.processor.process_document(pdf_bytes, doc_id)
         elapsed = time.time() - start_time
 
         print(f"✅ DocLing processing: {elapsed:.2f}s")
@@ -132,9 +127,7 @@ class DoclingQdrantPipeline:
             "doc_id": doc_id,
             "result": result,
             "processing_time": elapsed
-        }
-
-    def extract_chunks(self, docling_result: Dict, doc_id: str, chunk_size: int = 512) -> List[Dict]:
+        }    def extract_chunks(self, docling_result: Dict, doc_id: str, chunk_size: int = 512) -> List[Dict]:
         """Extract text chunks with layout metadata from DocLing output"""
         chunks = []
         chunk_id = 0
