@@ -67,7 +67,7 @@ class TimelineLogger:
         """
         self.db_url = db_url or os.getenv(
             "TIMELINE_DB_URL",
-            "postgresql://user@localhost:5434/legal"
+            os.getenv("DATABASE_URL", "postgresql://legal_admin:123456@localhost:5434/legal_ai_db")
         )
         self.ollama_url = ollama_url or os.getenv(
             "OLLAMA_URL",

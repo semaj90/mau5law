@@ -28,7 +28,7 @@ export async function getEvidence(user: UserType, request: Request, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItems = await drizzleDb.query.evidenceTable.findMany({
- where: eq(schema.evidenceTable.uploadedBy, user.id), // Assuming uploadedBy is userId
+ where: eq(schema.evidenceTable.uploadedBy: user.id), // Assuming uploadedBy is userId
  });
  return json({ success: true, data: evidenceItems });
  } catch (error) {
