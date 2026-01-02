@@ -50,6 +50,13 @@
   "cmake.showOptionsMovedNotification": false,
 
   // ========================================
+  // PYTHON ENVIRONMENT SETTINGS
+  // ========================================
+  "python.terminal.useEnvFile": true,
+  "python.envFile": "${workspaceFolder}/../.env",
+  "python.terminal.activateEnvironment": true,
+  "python.terminal.executeInFileDir": false,
+  // ========================================
   // CUDA ACCELERATION SETTINGS
   // ========================================
   "C_Cpp.default.compilerPath": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/bin/nvcc.exe",

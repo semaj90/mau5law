@@ -1,166 +1,68 @@
 <script lang="ts">
- import { page } from '$app/state';
- import CanvasBoard from '$lib/components/board/CanvasBoard.svelte';
- import { onMount } from 'svelte';
+    import HybridBoard from '$lib/components/canvas/HybridBoard.svelte';
+    import type { PageData } from './$types';
 
- interface Evidence {
- id: string;
- title: string;
- classification: 'public' | 'confidential' | 'sealed';
- status: 'pending' | 'approved' | 'locked' | 'rejected';
- type: 'document' | 'image' | 'audio' | 'video';
- boardPosition: { x: number; y: number };
- }
+    // Props
+    let { data }: { data: PageData } = $props();
+    let caseId = $derived(data.caseId);
+    let initialState = $derived(data.initialState);
 
- interface Relationship {
- id: string;
- sourceNodeId: string;
- targetNodeId: string;
- type: 'mentions' | 'contradicts' | 'supports' | 'references' | 'timeline';
- confidence: number;
- }
+    // State
+    let board: HybridBoard; // Component instance
+    let isDirty = $state(false);
+    let isSaving = $state(false);
 
- let caseId: string = '';
- let evidence: Evidence[] = $state([]);
- let relationships: Relationship[] = $state([]);
- let isLoading = $state(true);
- let error = $state('');
- let zoomLevel = $state(1);
- let panX = $state(0);
- let panY = $state(0);
+    async function save() {
+        if (!board) return;
+        isSaving = true;
 
- onMount(() => {
- (async () => {
- caseId = page.params.id;
- await loadEvidenceBoard();
- })();
- });
-
- const loadEvidenceBoard = async () => {
- try {
- const response = await fetch(`/api/cases/${caseId}/evidence`);
- if (!response.ok) throw new Error('Failed to load evidence board');
-
- const data = await response.json();
- evidence = data.evidence || [];
- relationships = data.relationships || [];
- } catch (err) {
- error = err instanceof Error ? err.message : 'Failed to load evidence board';
- } finally {
- isLoading = false;
- }
- };
-
- const handleZoomIn = () => {
- zoomLevel = Math.min(zoomLevel + 0.2, 3);
- };
-
- const handleZoomOut = () => {
- zoomLevel = Math.max(zoomLevel - 0.2, 0.5);
- };
-
- const handleResetZoom = () => {
- zoomLevel = 1;
- panX = 0;
- panY = 0;
- };
-
- const handleSaveLayout = async () => {
- try {
- const response = await fetch(`/api/cases/${caseId}/board/layout`, {
- method: 'PUT',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- evidence: evidence.map((e) => ({
- id: e.id: position, e: e: e.boardPosition,
- })),
- relationships,
- }),
- });
-
- if (!response.ok) throw new Error('Failed to save layout');
- error = '';
- } catch (err) {
- error = err instanceof Error ? err.message : 'Failed to save layout';
- }
- };
+        try {
+            const snapshot = board.serialize();
+            const res = await fetch(`/api/cases/${caseId}/canvas`, {
+                method: 'POST',
+                body: JSON.stringify(snapshot),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) {
+                console.error('Failed to save', await res.json());
+                alert('Failed to save board state');
+            } else {
+                isDirty = false;
+            }
+        } catch (e) {
+            console.error('Save error', e);
+            alert('Error saving board state');
+        } finally {
+            isSaving = false;
+        }
+    }
 </script>
 
-<div class="min-h-screen bg-[#FAF7F1]">
- <!-- Header -->
- <header class="bg-white border-b-2 border-[#9E0000]">
- <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
- <div>
- <h1 class="text-3xl font-bold text-gray-900">EVIDENCE BOARD</h1>
- <p class="text-gray-600 mt-1 font-mono text-sm">Case Investigation Visualization</p>
- </div>
- <div class="flex items-center gap-3">
- <button
- onclick={handleZoomIn}
- class="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 font-mono text-sm"
- >
- + ZOOM
- </button>
- <button
- onclick={handleZoomOut}
- class="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 font-mono text-sm"
- >
- - ZOOM
- </button>
- <button
- onclick={handleResetZoom}
- class="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 font-mono text-sm"
- >
- RESET
- </button>
- <button
- onclick={handleSaveLayout}
- class="px-3 py-2 bg-[#9E0000] text-white rounded hover:bg-[#7a0000] font-mono text-sm"
- >
- SAVE LAYOUT
- </button>
- <a
- href="/dashboard"
- class="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 font-mono text-sm"
- >
- BACK
- </a>
- </div>
- </div>
- </header>
+<div class="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <div class="flex-none h-12 border-b border-gray-200 dark:border-gray-800 flex items-center px-4 justify-between bg-white dark:bg-gray-950 z-10">
+        <h2 class="text-sm font-medium text-gray-700 dark:text-gray-200">Evidence Board</h2>
+        <div class="flex items-center gap-2">
+            {#if isDirty}
+                <span class="text-xs text-amber-500 font-medium animate-pulse">Unsaved changes</span>
+            {/if}
+            <button
+                class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50 shadow-sm"
+                onclick={save}
+                disabled={isSaving}
+            >
+                {isSaving ? 'Saving...' : 'Save Board'}
+            </button>
+        </div>
+    </div>
 
- <!-- Main Content -->
- <main class="flex-1 p-6">
- {#if error}
- <div class="mb-4 p-4 bg-red-50 border-l-4 border-l-red-600 rounded">
- <p class="text-red-700 font-mono text-sm">{error}</p>
- </div>
- {/if}
-
- {#if isLoading}
- <div class="text-center py-12 bg-white border-2 border-dashed border-gray-300 rounded">
- <p class="text-gray-600 font-mono">Loading evidence board...</p>
- </div>
- {:else}
- <CanvasBoard
- {evidence}
- {relationships}
- {zoomLevel}
- {panX}
- {panY}
- onupdatePosition={(e) => {
- const idx = evidence.findIndex((ev) => ev.id === e.detail.id);
- if (idx >= 0) {
- evidence[idx].boardPosition = e.detail.position;
- }
- }}
- />
- {/if}
- </main>
+    <div class="flex-1 relative overflow-hidden">
+        {#key caseId}
+            <HybridBoard
+                bind:this={board}
+                initialSnapshot={initialState}
+                onDirtyChange={(d) => isDirty = d}
+                {caseId}
+            />
+        {/key}
+    </div>
 </div>
-
-<style>
- :global(body) {
- background-color: #faf7f1;
- }
-</style>

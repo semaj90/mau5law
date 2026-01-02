@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 import {
     bigint,
     boolean,
+    doublePrecision,
     foreignKey,
     index,
     integer,
@@ -60,19 +61,6 @@ export const evidenceRelationshipTypeEnum = pgEnum('evidence_relationship_type',
  'same_person',
  'timeline',
  'chain_of_custody',
- 'corroborates',
- 'alibi',
- 'motive',
- 'opportunity',
- 'means',
- 'witness_statement',
- 'physical_evidence',
- 'digital_evidence',
- 'circumstantial',
- 'direct_evidence',
- 'hearsay',
- 'privileged',
- 'inadmissible',
 ]);
 export const evidenceRelationshipStrengthEnum = pgEnum('evidence_relationship_strength', [
  'low',
@@ -333,6 +321,23 @@ export const evidence = pgTable(
  title: varchar('title', { length: 255 }).notNull(),
  description: text('description'),
  evidenceType: evidenceTypeEnum('evidence_type').notNull(),
+ type: varchar('type', { length: 50 }),
+ evidenceNumber: integer('evidence_number'),
+ summary: text('summary'),
+ posX: doublePrecision('pos_x'),
+ posY: doublePrecision('pos_y'),
+ collectedAt: timestamp('collected_at', { mode: 'string' }),
+ collectedBy: uuid('collected_by'),
+ verifiedAt: timestamp('verified_at', { mode: 'string' }),
+ verified: boolean('verified'),
+ createdAt: timestamp('created_at', { mode: 'string' }),
+ fileSize: integer('file_size'),
+ mimeType: varchar('mime_type', { length: 100 }),
+ hash: varchar('hash', { length: 255 }),
+ tags: jsonb('tags'),
+ aiAnalysis: jsonb('ai_analysis'),
+ aiTags: jsonb('ai_tags'),
+ aiSummary: text('ai_summary'),
  fileType: varchar('file_type', { length: 50 }),
  subType: varchar('sub_type', { length: 50 }),
  fileUrl: text('file_url'),
@@ -724,15 +729,15 @@ export const attachmentVerifications = pgTable('attachment_verifications', {
 });
 
 export const canvasStates = pgTable('canvas_states', {
- id: uuid('id')
- .default(sql`gen_random_uuid()`)
- .primaryKey()
- .notNull(),
- caseId: uuid('case_id'), // FK to cases.id
- userId: integer('user_id'), // FK to users.id
- stateData: jsonb('state_data').notNull(),
- createdAt: timestamp('created_at').defaultNow(),
- updatedAt: timestamp('updated_at').defaultNow(),
+	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+	caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }).notNull(),
+	name: varchar('name', { length: 255 }).default('Untitled Board').notNull(),
+	canvasData: jsonb('canvas_data').notNull(),
+	version: integer('version').default(1),
+	isDefault: boolean('is_default').default(false),
+	createdBy: uuid('created_by'), // FK to users.id (references users.id if available)
+	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 
 export const canvasAnnotations = pgTable('canvas_annotations', {
@@ -814,6 +819,14 @@ export const savedReports = pgTable('saved_reports', {
  caseId: uuid('case_id'), // FK to cases.id
  savedAt: timestamp('saved_at').defaultNow().notNull(),
  notes: text('notes'),
+ exportFormat: varchar('export_format', { length: 50 }),
+ version: integer('version'),
+ wordCount: integer('word_count'),
+ tags: jsonb('tags'),
+ metadata: jsonb('metadata'),
+ sharedWith: jsonb('shared_with'),
+ lastExported: timestamp('last_exported', { mode: 'string' }),
+ createdBy: uuid('created_by'),
  createdAt: timestamp('created_at').defaultNow(),
  updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -957,7 +970,9 @@ export const userEmbeddings = pgTable('user_embeddings', {
  .default(sql`gen_random_uuid()`)
  .primaryKey()
  .notNull(),
- userId: integer('user_id').notNull(),
+ userId: uuid('user_id').notNull(),
+ content: text('content'),
+ metadata: jsonb('metadata'),
  embedding: text('embedding').notNull(), // Store vector as text
  model: varchar('model', { length: 100 }).notNull(),
  createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -1512,9 +1527,10 @@ export const workspaceEvidence = pgTable(
  .notNull()
  .references(() => evidence.id, { onDelete: 'cascade' }),
  relevanceScore: real('relevance_score').default(0),
- addedBy: varchar('added_by', { length: 50 }).default('user'), // 'system', 'user', createdAt: timestamp('created_at', { withTimezone: true })
- .default(sql`now()`)
- .notNull(),
+  addedBy: varchar('added_by', { length: 50 }).default('user'), // 'system', 'user'
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .default(sql`now()`)
+    .notNull(),
  },
  (table) => ({
  workspaceIdIdx: index('workspace_evidence_workspace_id_idx').on(table.workspaceId),
@@ -1536,7 +1552,8 @@ export const workspaceStatutes = pgTable(
  statuteId: uuid('statute_id').references(() => statutes.id, { onDelete: 'cascade' }),
  statuteText: text('statute_text'), // Fallback if statute not in DB
  relevanceScore: real('relevance_score').default(0),
- source: varchar('source', { length: 50 }).default('user'), // 'ai', 'user', 'citation', createdAt: timestamp('created_at', { withTimezone: true })
+ source: varchar('source', { length: 50 }).default('user'), // 'ai', 'user', 'citation'
+  createdAt: timestamp('created_at', { withTimezone: true })
  .default(sql`now()`)
  .notNull(),
  },
@@ -1587,7 +1604,8 @@ export const workspaceCitations = pgTable(
  .references(() => workspaces.id, { onDelete: 'cascade' }),
  messageId: uuid('message_id').references(() => ragMessages.id, { onDelete: 'cascade' }),
  citationText: text('citation_text').notNull(), // e.g., "Penal Code 187(a)", citationURL: text('citation_url'),
- citationType: varchar('citation_type', { length: 50 }).default('statute'), // 'statute', 'case', 'regulation', 'precedent', createdAt: timestamp('created_at', { withTimezone: true })
+ citationType: varchar('citation_type', { length: 50 }).default('statute'), // 'statute', 'case', 'regulation', 'precedent'
+  createdAt: timestamp('created_at', { withTimezone: true })
  .default(sql`now()`)
  .notNull(),
  },
@@ -2210,9 +2228,10 @@ export const errorSuggestionStates = pgTable(
  table.routePath
  ),
  uniqueSuggestionRouteUser: unique('uq_error_suggestion_states_suggestion_route_user').on(
- suggestionId: table.routePath,
- table.userId
- ),
+  table.suggestionId,
+  table.routePath,
+  table.userId
+  ),
  })
 );
 
@@ -2322,3 +2341,30 @@ export const auditLog = pgTable('audit_log', {
 	details: jsonb('details').default({}).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 });
+
+export const ragIndexMetadata = pgTable('rag_index_metadata', {
+	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+	chunkId: uuid('chunk_id'),
+	evidenceId: uuid('evidence_id'),
+	qdrantPointId: text('qdrant_point_id'),
+	tags: text('tags').array(),
+	jurisdiction: text('jurisdiction'),
+	indexedAt: timestamp('indexed_at', { withTimezone: true, mode: 'string' }),
+	tagWeight: real('tag_weight'),
+	embeddingModel: text('embedding_model'),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+});
+
+export const citationTags = pgTable('citation_tags', {
+	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+	name: text('name').notNull(),
+	jurisdiction: text('jurisdiction'),
+	description: text('description'),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+	namespace: text('namespace'),
+	synonyms: text('synonyms').array(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+});
+
+
