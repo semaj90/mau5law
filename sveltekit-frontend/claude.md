@@ -33,6 +33,42 @@ import { db } from '$lib/server/db';
 - Env-only wiring (no infra mutations): `ENHANCED_RAG_URL`, `DATABASE_URL`, `PGVECTOR_ENABLED`/`ENABLE_PGVECTOR`, `REDIS_URL`/`UPSTASH_REDIS_REST_URL`, `QDRANT_URL`, `OLLAMA_URL`/`OLLAMA_BASE_URL`, optional Docker flags.
 - Mirror pattern for other system health endpoints if needed; consume via `initializePhase13()` or the GET endpoint.
 
+---
+
+## 📚 Knowledge Graph / RAG / KAG / DAG Sources
+
+### AI Agent Context Files
+| File | Purpose | Load When |
+|------|---------|-----------|
+| `copilot.md` | Primary Copilot instructions | Copilot sessions |
+| `claude.md` | Primary Claude context | Always (this file) |
+| `gemini.md` | Gemini agent context | Gemini sessions |
+| `CLAUDE_RAG_KAG_RULES.md` | RAG/KAG endpoint generation rules | API endpoints |
+
+### Extended Documentation (docs/)
+| File | Content |
+|------|---------|
+| `docs/CLAUDE.md` | GPU environment, Phase 72 logging |
+| `docs/GEMINI.md` | FastMCP tools, Phase 72 automation |
+| `docs/COPILOT.md` | VS Code tasks, Phase 72 integration |
+
+### Cross-Reference Rules
+```
+WHEN editing database schema:
+  READ: claude.md#drizzle-orm-0.44
+  APPLY: db:check → db:generate → review → db:migrate:apply
+
+WHEN fixing TypeScript errors:
+  READ: COPILOT_ERROR_FIXING_GUIDE.md
+  APPLY: Largest cluster first, validate with svelte-check
+
+WHEN creating API endpoints:
+  READ: CLAUDE_RAG_KAG_RULES.md
+  APPLY: Category-specific rules (auth, data, ai, cache)
+```
+
+---
+
 ## 🔄 Phase 74: Core Route Gate & Fix Waves
 
 ### Operating Loop
@@ -66,4 +102,71 @@ The following routes have been migrated to `(app)`:
 - `gpu-evidence-graph`
 - `persons-of-interest`
 
+---
 
+## 🗄️ Drizzle ORM 0.44 Migration Best Practices
+
+### Stack
+- **Drizzle ORM**: 0.44.x
+- **Drizzle Kit**: 0.30.x
+- **PostgreSQL**: via `postgres-js` driver
+- **Schema Location**: `src/lib/server/db/schema-postgres.ts`
+- **Migrations Directory**: `drizzle/`
+
+### Migration Scripts (package.json)
+```bash
+db:check           # Validate schema syntax before any operation
+db:push:dev        # Interactive push (development only, with prompts)
+db:generate        # Create SQL migration files (review before applying)
+db:migrate:apply   # Apply migrations (production-safe)
+db:verify:canvas   # Verify canvas_states table exists
+db:studio          # Open Drizzle Studio GUI
+```
+
+### "No Data Loss" Workflow
+```
+1. Change schema → src/lib/server/db/schema-postgres.ts
+2. npm run db:generate → Creates drizzle/00XX_xxx.sql
+3. REVIEW the SQL file:
+   ✅ CREATE TABLE, ALTER TABLE ADD COLUMN
+   ❌ DROP TABLE, DROP COLUMN, TRUNCATE, ALTER COLUMN TYPE
+4. npm run db:migrate:apply → Applies to database
+```
+
+### Critical Rules
+1. **Never use `db:push` on production** - Use `db:generate` → review → `db:migrate:apply`
+2. **Always review generated SQL** for DROP/TRUNCATE statements
+3. **Use `doublePrecision()` for float8 columns** to avoid precision loss
+4. **Run `db:check` before any migration** to catch syntax errors early
+5. **Backup before migrations**: `pg_dump -Fc -f backup.dump`
+
+### Schema Type Mappings
+| PostgreSQL | Drizzle |
+|------------|---------|
+| `uuid` | `uuid()` |
+| `text` | `text()` |
+| `varchar(n)` | `varchar('col', { length: n })` |
+| `integer` | `integer()` |
+| `boolean` | `boolean()` |
+| `jsonb` | `jsonb()` |
+| `timestamp` | `timestamp('col', { mode: 'string' })` |
+| `float8/double precision` | `doublePrecision()` |
+| `float4/real` | `real()` |
+| `text[]` | `text('col').array()` |
+
+### Canvas States Table Verification
+Before saving board state, verify table exists:
+```typescript
+import { verifyCanvasStatesTable } from '$lib/server/db/verify-canvas-table';
+
+const tableExists = await verifyCanvasStatesTable();
+if (!tableExists) {
+    return json({ error: 'canvas_states table missing', code: 'TABLE_MISSING' }, { status: 503 });
+}
+```
+
+### Related Files
+- `src/lib/server/db/schema-postgres.ts` - Main schema
+- `src/lib/server/db/index.ts` - DB client + exports
+- `drizzle.config.ts` - Drizzle Kit configuration
+- `drizzle/` - Migration files

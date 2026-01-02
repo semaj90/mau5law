@@ -155,3 +155,73 @@ After Phase 72 completes:
 2. **Check error reduction:** 12k → 6k → 3k → ~1.2k (~90%)
 3. **Analyze clusters:** Identify remaining error patterns for Phase 73
 4. **Update ACE:** Ingest logs into Qdrant + Postgres for future runs
+
+---
+
+## 🗄️ Drizzle ORM 0.44 Migration Best Practices
+
+### Stack
+- **Drizzle ORM**: 0.44.x
+- **Drizzle Kit**: 0.30.x
+- **PostgreSQL**: via `postgres-js` driver
+- **Schema Location**: `src/lib/server/db/schema-postgres.ts`
+- **Migrations Directory**: `drizzle/`
+
+### Migration Scripts (package.json)
+```bash
+db:check           # Validate schema syntax before any operation
+db:push:dev        # Interactive push (development only, with prompts)
+db:generate        # Create SQL migration files (review before applying)
+db:migrate:apply   # Apply migrations (production-safe)
+db:verify:canvas   # Verify canvas_states table exists
+db:studio          # Open Drizzle Studio GUI
+```
+
+### "No Data Loss" Workflow
+```
+1. Change schema → src/lib/server/db/schema-postgres.ts
+2. npm run db:generate → Creates drizzle/00XX_xxx.sql
+3. REVIEW the SQL file:
+   ✅ CREATE TABLE, ALTER TABLE ADD COLUMN
+   ❌ DROP TABLE, DROP COLUMN, TRUNCATE, ALTER COLUMN TYPE
+4. npm run db:migrate:apply → Applies to database
+```
+
+### Critical Rules
+1. **Never use `db:push` on production** - Use `db:generate` → review → `db:migrate:apply`
+2. **Always review generated SQL** for DROP/TRUNCATE statements
+3. **Use `doublePrecision()` for float8 columns** to avoid precision loss
+4. **Run `db:check` before any migration** to catch syntax errors early
+5. **Backup before migrations**: `pg_dump -Fc -f backup.dump`
+
+### Schema Type Mappings
+| PostgreSQL | Drizzle |
+|------------|---------|
+| `uuid` | `uuid()` |
+| `text` | `text()` |
+| `varchar(n)` | `varchar('col', { length: n })` |
+| `integer` | `integer()` |
+| `boolean` | `boolean()` |
+| `jsonb` | `jsonb()` |
+| `timestamp` | `timestamp('col', { mode: 'string' })` |
+| `float8/double precision` | `doublePrecision()` |
+| `float4/real` | `real()` |
+| `text[]` | `text('col').array()` |
+
+### Canvas States Table Verification
+Before saving board state, verify table exists:
+```typescript
+import { verifyCanvasStatesTable } from '$lib/server/db/verify-canvas-table';
+
+const tableExists = await verifyCanvasStatesTable();
+if (!tableExists) {
+    return json({ error: 'canvas_states table missing', code: 'TABLE_MISSING' }, { status: 503 });
+}
+```
+
+### Related Files
+- `src/lib/server/db/schema-postgres.ts` - Main schema
+- `src/lib/server/db/index.ts` - DB client + exports
+- `src/lib/server/db/verify-canvas-table.ts` - Table existence check
+- `drizzle.config.ts` - Drizzle Kit configuration
+- `drizzle/` - Migration files

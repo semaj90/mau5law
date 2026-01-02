@@ -11,7 +11,7 @@ import {
     timestamp,
     varchar
 } from 'drizzle-orm/pg-core';
-import { users } from './schema-postgres.js';
+import { users } from './schema-postgres';
 
 // Enum for chat message roles
 export const chatMessageRoleEnum = pgEnum('chat_message_role', ['user', 'assistant', 'system']);
@@ -21,9 +21,11 @@ export const chatMessageRoleEnum = pgEnum('chat_message_role', ['user', 'assista
  * Stores all chat messages for both anonymous (migrated) and authenticated users
  */
 export const chatMessages = pgTable('chat_messages', {
-	id: varchar('id', { length: 255 }).primaryKey(), // msg_1735123456789_abc123, chatId: varchar('chat_id', { length: 255 }).notNull(), // Groups messages by conversation
+	id: varchar('id', { length: 255 }).primaryKey(), // msg_1735123456789_abc123
+	chatId: varchar('chat_id', { length: 255 }).notNull(), // Groups messages by conversation
 	userId: varchar('user_id', { length: 255 }).references(() => users.id, { onDelete: 'cascade' }), // Nullable for anonymous (pre-migration)
-	role: chatMessageRoleEnum('role').notNull(), // 'user' | 'assistant' | 'system', content: text('content').notNull(), // Message text
+	role: chatMessageRoleEnum('role').notNull(), // 'user' | 'assistant' | 'system'
+	content: text('content').notNull(), // Message text
 	timestamp: timestamp('timestamp', { withTimezone: true }).notNull().defaultNow(), // When sent
 	migratedFrom: varchar('migrated_from', { length: 255 }), // Anonymous session ID (if migrated)
 	metadata: text('metadata'), // JSON string for additional data (model, tokens, etc.)

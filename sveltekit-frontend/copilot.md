@@ -33,6 +33,44 @@ import { db } from '$lib/server/db';
 - Env-driven only (no container changes): `ENHANCED_RAG_URL`, `DATABASE_URL` + `PGVECTOR_ENABLED`/`ENABLE_PGVECTOR`, `REDIS_URL`/`UPSTASH_REDIS_REST_URL`, `QDRANT_URL`, `OLLAMA_URL`/`OLLAMA_BASE_URL`, optional Docker flags.
 - Mirror this shape for other modules (e.g., `/api/system/vector`, `/api/system/ai`), consume via `initializePhase13()` or health endpoint.
 
+---
+
+## 📚 Knowledge Graph / RAG / KAG / DAG Sources
+
+### AI Agent Context Files
+| File | Purpose | Load When |
+|------|---------|-----------|
+| `copilot.md` | Primary Copilot instructions | Always |
+| `claude.md` | Claude/Cursor context | Cursor sessions |
+| `gemini.md` | Gemini agent context | Gemini sessions |
+| `CLAUDE_RAG_KAG_RULES.md` | RAG/KAG endpoint generation rules | API endpoints |
+| `COPILOT_ERROR_FIXING_GUIDE.md` | Error pattern database | Fixing errors |
+| `COPILOT_ENDPOINT_PATTERNS.md` | API endpoint templates | New endpoints |
+
+### Extended Documentation (docs/)
+| File | Content |
+|------|---------|
+| `docs/COPILOT.md` | VS Code tasks, Phase 72 integration |
+| `docs/CLAUDE.md` | GPU environment, Phase 72 logging |
+| `docs/GEMINI.md` | FastMCP tools, Phase 72 automation |
+
+### Cross-Reference Rules
+```
+WHEN editing database schema:
+  READ: copilot.md#drizzle-orm-0.44
+  APPLY: db:check → db:generate → review → db:migrate:apply
+
+WHEN fixing TypeScript errors:
+  READ: COPILOT_ERROR_FIXING_GUIDE.md
+  APPLY: Largest cluster first, validate with svelte-check
+
+WHEN creating API endpoints:
+  READ: CLAUDE_RAG_KAG_RULES.md
+  APPLY: Category-specific rules (auth, data, ai, cache)
+```
+
+---
+
 ## 🔄 Phase 74: Core Route Gate & Fix Waves
 
 ### Operating Loop
@@ -492,7 +530,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ## Clusters (Sorted by Size)
 
 ### Cluster 5 (5000 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a syntax problem likely stemming from an attempt to define class properties or object literals with incorrect or missing delimiters (equals signs, commas, colons, and semicolons). This suggests a potential issue with how properties are being initialized or structured within the `KAGTraverser.ts` file, possibly due to a typo or misunderstanding of TypeScript syntax.
 
@@ -505,7 +543,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 6 (5000 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a syntax issue, likely stemming from a corrupted or incomplete TypeScript file. These errors suggest a problem with the code's structure, potentially due to a failed code generation, copy-paste error, or an issue with the editor's auto-completion/formatting.
 
@@ -518,7 +556,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 1 (5000 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors consistently indicate missing colons (`:`) and commas (`,`) within TypeScript code, suggesting a syntax error likely due to incorrect object or array definition. This points to a potential issue with how data structures are being defined or passed, possibly involving a recent code change or a misconfigured TypeScript configuration.
 
@@ -531,7 +569,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 3 (5000 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a significant problem with syntax, likely stemming from a malformed template literal or incorrect variable declaration within the codebase. These issues cascade, causing TypeScript to misinterpret subsequent code and generate a series of related errors across multiple files.
 
@@ -544,7 +582,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 4 (5000 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a syntax problem, likely a missing or misplaced semicolon, brace, or comma, disrupting the expected structure of TypeScript code. This suggests a potential issue with code formatting or a logical error in how data structures (objects, arrays, or type definitions) are being defined within the `contextual-attachment-helper.ts` and `sse.ts` files.
 
@@ -557,7 +595,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 2 (4976 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a likely issue with incorrect syntax, specifically missing or misplaced parentheses, colons, commas, or semicolons within function definitions or type annotations. This suggests a problem with the structure of the TypeScript code, possibly due to a copy-paste error, incorrect refactoring, or a misunderstanding of the expected syntax.
 
@@ -570,7 +608,7 @@ Cluster 1: 2 errors (LLM summary unavailable)
 ---
 
 ### Cluster 7 (4504 errors)
-**Tags**: 
+**Tags**:
 
 **Summary**: The errors indicate a syntax problem, likely a missing or misplaced comma or semicolon, within the `matrix-compiler.ts` file. This suggests a structural issue in the code, potentially within an object definition, array initialization, or function parameter list, leading to parsing errors.
 
@@ -694,7 +732,7 @@ Cluster 36: 10 errors (LLM summary unavailable)
 
 ## Phase 89: ACE Analysis - 12/29/2025, 2:09:31 PM
 
-**Query**: how to migrate export let to 
+**Query**: how to migrate export let to
 **Provider**: ollama
 **Top Knowledge Score**: N/A
 
@@ -772,3 +810,70 @@ The user is asking how to migrate from `export let` to an alternative syntax.  T
   "analysis": "The provided context primarily focuses on Svelte 5 runes (reactive declarations) and migration patterns, alongside TypeScript Language Server issues and Phase13 integration details. It doesn't directly provide comprehensive Svelte 5 component patterns beyond mentioning runes and their usage. The TypeScript Language Server issue highlights a common problem with cached module shapes, which can lead to import errors even when the code is correct. The Phase13 integration det
 
 ---
+
+## 🗄️ Drizzle ORM 0.44 Migration Best Practices
+
+### Stack
+- **Drizzle ORM**: 0.44.x
+- **Drizzle Kit**: 0.30.x
+- **PostgreSQL**: via `postgres-js` driver
+- **Schema Location**: `src/lib/server/db/schema-postgres.ts`
+- **Migrations Directory**: `drizzle/`
+
+### Migration Scripts (package.json)
+```bash
+db:check           # Validate schema syntax before any operation
+db:push:dev        # Interactive push (development only, with prompts)
+db:generate        # Create SQL migration files (review before applying)
+db:migrate:apply   # Apply migrations (production-safe)
+db:verify:canvas   # Verify canvas_states table exists
+db:studio          # Open Drizzle Studio GUI
+```
+
+### "No Data Loss" Workflow
+```
+1. Change schema → src/lib/server/db/schema-postgres.ts
+2. npm run db:generate → Creates drizzle/00XX_xxx.sql
+3. REVIEW the SQL file:
+   ✅ CREATE TABLE, ALTER TABLE ADD COLUMN
+   ❌ DROP TABLE, DROP COLUMN, TRUNCATE, ALTER COLUMN TYPE
+4. npm run db:migrate:apply → Applies to database
+```
+
+### Critical Rules
+1. **Never use `db:push` on production** - Use `db:generate` → review → `db:migrate:apply`
+2. **Always review generated SQL** for DROP/TRUNCATE statements
+3. **Use `doublePrecision()` for float8 columns** to avoid precision loss
+4. **Run `db:check` before any migration** to catch syntax errors early
+5. **Backup before migrations**: `pg_dump -Fc -f backup.dump`
+
+### Schema Type Mappings
+| PostgreSQL | Drizzle |
+|------------|---------|
+| `uuid` | `uuid()` |
+| `text` | `text()` |
+| `varchar(n)` | `varchar('col', { length: n })` |
+| `integer` | `integer()` |
+| `boolean` | `boolean()` |
+| `jsonb` | `jsonb()` |
+| `timestamp` | `timestamp('col', { mode: 'string' })` |
+| `float8/double precision` | `doublePrecision()` |
+| `float4/real` | `real()` |
+| `text[]` | `text('col').array()` |
+
+### Canvas States Table Verification
+Before saving board state, verify table exists:
+```typescript
+import { verifyCanvasStatesTable } from '$lib/server/db/verify-canvas-table';
+
+const tableExists = await verifyCanvasStatesTable();
+if (!tableExists) {
+    return json({ error: 'canvas_states table missing', code: 'TABLE_MISSING' }, { status: 503 });
+}
+```
+
+### Related Files
+- `src/lib/server/db/schema-postgres.ts` - Main schema
+- `src/lib/server/db/index.ts` - DB client + exports
+- `drizzle.config.ts` - Drizzle Kit configuration
+- `drizzle/` - Migration files
