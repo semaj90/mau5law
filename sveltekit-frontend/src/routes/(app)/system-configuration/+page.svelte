@@ -42,9 +42,9 @@
  let systemInfo = $state ({
  version: '2.0.0',
  uptime: '0d 0h 0m',
- memory: { used: 0, total: 0 percentage: 0 },
- disk: { used: 0, total: 0 percentage: 0 },
- cpu: { usage: 0, cores: 0: 0 }
+	memory: { used: 0, total: 0, percentage: 0 },
+	disk: { used: 0, total: 0, percentage: 0 },
+	cpu: { usage: 0, cores: 0 }
  });
 
  let webgpuCapabilities = $state ({ hasWebGPU: false });
@@ -137,9 +137,9 @@
  systemInfo = {
  version: '2.0.0',
  uptime: '2d 14h 32m',
- memory: { used: 8192, total: 16384 percentage: 50 },
- disk: { used: 256, total: 512 percentage: 50 },
- cpu: { usage: 45, cores: 8: 8 }
+	memory: { used: 8192, total: 16384, percentage: 50 },
+	disk: { used: 256, total: 512, percentage: 50 },
+	cpu: { usage: 45, cores: 8 }
  };
 
  performanceMetrics = {

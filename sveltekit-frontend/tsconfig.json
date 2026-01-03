@@ -80,6 +80,11 @@
     "src/lib/services/gpu-typescript-error-processor.ts",
     "src/lib/graph/sora-graph-traversal.ts",
     "src/lib/api/vector-search-client.ts",
-    "src/routes_parked/**"
+    "src/routes_parked/**",
+    // Exclude backup/fixed folders - these inflate error count massively
+    "src_fixed/**",
+    "src.backup/**",
+    "../src_fixed/**",
+    "../src.backup/**"
   ]
 }

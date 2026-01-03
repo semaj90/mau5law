@@ -210,7 +210,36 @@ class EmbeddingService:
             return []
 
 class AutoTagger:
-    """Auto-tag file profiles based on content"""
+    """Auto-tag file profiles based on content + deterministic heuristics"""
+
+    # Deterministic path-based tags (applied first)
+    PATH_RULES = {
+        "src/routes/": {"role": "route"},
+        "+page": {"surface": "sveltekit_route"},
+        "+layout": {"surface": "sveltekit_route"},
+        "+server": {"surface": "server"},
+        "src/lib/server/": {"surface": "server"},
+        "/api/": {"surface": "api"},
+    }
+
+    # Import-based tech tags
+    IMPORT_TECH = {
+        "drizzle": "drizzle",
+        "QdrantClient": "qdrant",
+        "ioredis": "redis",
+        "redis": "redis",
+        "langextract": "langextract",
+        "/extract": "langextract",
+        "svelte": "svelte",
+        "typescript": "ts",
+    }
+
+    # Config detection
+    CONFIG_MARKERS = [
+        "export const prerender",
+        "export const ssr",
+        "export const csr",
+    ]
 
     ROLE_KEYWORDS = {
         "component": ["svelte", "component", "ui", "button", "input", "modal"],
@@ -230,22 +259,47 @@ class AutoTagger:
     }
 
     def auto_tag(self, profile: FileProfile) -> FileProfile:
-        """Auto-generate tags based on file content"""
+        """Auto-generate tags: deterministic heuristics first, then LLM fills gaps"""
         tags = set(profile.tags or [])
+        tech_tags = set()
 
-        # Detect role
         file_lower = profile.file_path.lower()
-        comments_lower = " ".join(profile.comments).lower()
+        file_content = " ".join(profile.comments).lower()
+        imports_str = " ".join(profile.imports).lower()
 
-        for role, keywords in self.ROLE_KEYWORDS.items():
-            if any(kw in file_lower or kw in comments_lower for kw in keywords):
-                profile.role = role
-                tags.add(role)
+        # 1. DETERMINISTIC PATH-BASED TAGS (highest priority)
+        for path_pattern, tag_rules in self.PATH_RULES.items():
+            if path_pattern in file_lower:
+                if "role" in tag_rules and not profile.role:
+                    profile.role = tag_rules["role"]
+                if "surface" in tag_rules:
+                    surf = tag_rules["surface"]
+                    if surf not in profile.surface:
+                        profile.surface.append(surf)
+
+        # 2. IMPORT-BASED TECH TAGS
+        for import_key, tech_tag in self.IMPORT_TECH.items():
+            if import_key in imports_str or import_key in file_content:
+                tech_tags.add(tech_tag)
+
+        # 3. CONFIG DETECTION
+        for marker in self.CONFIG_MARKERS:
+            if marker in file_content:
+                if "sveltekit_config" not in profile.surface:
+                    profile.surface.append("sveltekit_config")
                 break
 
-        # Detect surface areas
+        # 4. FALLBACK ROLE DETECTION (only if not set by path)
+        if not profile.role:
+            for role, keywords in self.ROLE_KEYWORDS.items():
+                if any(kw in file_lower or kw in file_content for kw in keywords):
+                    profile.role = role
+                    tags.add(role)
+                    break
+
+        # 5. SURFACE AREA DETECTION (supplement path-based tags)
         for surface, keywords in self.SURFACE_KEYWORDS.items():
-            if any(kw in file_lower or kw in comments_lower for kw in keywords):
+            if any(kw in file_lower or kw in file_content for kw in keywords):
                 if surface not in profile.surface:
                     profile.surface.append(surface)
                 tags.add(surface)
@@ -267,6 +321,9 @@ class AutoTagger:
             profile.change_frequency = "warm"
         else:
             profile.change_frequency = "hot"
+
+        # Merge tech tags
+        tags.update(tech_tags)
 
         profile.tags = list(tags)
         return profile
@@ -439,20 +496,29 @@ async def main():
     # Ensure collection exists
     await indexer.ensure_collection()
 
-    # Sample files to index
-    sample_files = [
-        "src/routes/+page.svelte",
-        "src/lib/services/codebase-indexer.ts",
-        "src/routes/api/health/+server.ts",
-    ]
+    # Scan src directory
+    root = Path(".")
+    if not (root / "src").exists():
+        # Fallback if running from parent
+        root = Path("sveltekit-frontend")
 
-    # Check which files exist
-    root = Path("sveltekit-frontend")
+    src_path = root / "src"
+
+    print(f"🔍 Scanning {src_path}...")
     existing_files = []
-    for f in sample_files:
-        full_path = root / f
-        if full_path.exists():
-            existing_files.append(str(full_path))
+
+    # Extensions to index
+    extensions = {".svelte", ".ts", ".js", ".server.ts", ".md"}
+
+    for path in src_path.rglob("*"):
+        if path.is_file() and path.suffix in extensions:
+            # Skip node_modules and .svelte-kit just in case
+            if "node_modules" in str(path) or ".svelte-kit" in str(path):
+                continue
+            existing_files.append(str(path))
+
+    # Limit for safety/speed
+    existing_files = existing_files[:50]  # Index top 50 files for Demo
 
     if not existing_files:
         print("⚠️  No sample files found. Specify files to index.")
