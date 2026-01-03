@@ -21,9 +21,10 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 from collections import defaultdict
 
-# Import enhanced indexer for embedding/tagging
-sys.path.insert(0, os.path.dirname(__file__))
-from phase89_enhanced_codebase_indexer import EnhancedCodebaseIndexer
+# Import enhanced indexer for embedding/tagging from backend
+backend_scripts = os.path.join(os.path.dirname(__file__), '..', '..', 'backend', 'scripts')
+sys.path.insert(0, backend_scripts)
+from fastmcp_ripgrep_indexer import FastMCPCodebaseIndexer as EnhancedCodebaseIndexer
 
 
 class ACECheckIngester:
@@ -34,6 +35,34 @@ class ACECheckIngester:
     def __init__(self):
         self.indexer = EnhancedCodebaseIndexer()
         self.run_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+        # Initialize Qdrant client
+        from qdrant_client import QdrantClient
+        self.qdrant = QdrantClient(url=os.getenv("QDRANT_URL", "http://localhost:6333"))
+
+        # Ollama config
+        self.ollama_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
+        self.embedding_model = "embeddinggemma:latest"
+
+    def get_embedding(self, text: str) -> Optional[List[float]]:
+        """Get embedding vector from Ollama"""
+        import requests
+
+        try:
+            response = requests.post(
+                f"{self.ollama_url}/api/embeddings",
+                json={"model": self.embedding_model, "prompt": text},
+                timeout=30
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("embedding")
+            else:
+                return None
+        except Exception as e:
+            print(f"   ⚠️  Embedding failed: {e}")
+            return None
 
     def run_checks(self) -> Tuple[str, str]:
         """Run svelte-check and tsc, return outputs"""
@@ -89,18 +118,23 @@ class ACECheckIngester:
             })
 
         # Parse svelte-check output (machine format)
-        # Format: /path/file.svelte:123:45 Error: TS2339 - Message
-        svelte_pattern = r'(.+?):(\d+):(\d+)\s+(Error|Warning):\s+(TS\d+)\s+-\s+(.+)'
+        # Format: timestamp ERROR "file" line:col "message"
+        # Example: 1767398430921 ERROR "src\\lib\\file.ts" 100:3 "',' expected."
+        svelte_pattern = r'\d+\s+(ERROR|WARNING)\s+"([^"]+)"\s+(\d+):(\d+)\s+"(.+?)"'
 
         for match in re.finditer(svelte_pattern, svelte_output, re.MULTILINE):
-            file_path, line, col, severity, code, message = match.groups()
+            severity, file_path, line, col, message = match.groups()
+
+            # Extract error code if present (TS2339, ts7016, etc.)
+            code_match = re.search(r'(TS\d+|ts\d+)', message)
+            code = code_match.group(1) if code_match else 'UNKNOWN'
 
             errors.append({
                 'tool': 'svelte-check',
-                'file': file_path.strip(),
+                'file': file_path.strip().replace('\\\\', '/'),
                 'line': int(line),
                 'col': int(col),
-                'code': code,
+                'code': code.upper(),
                 'message': message.strip(),
                 'severity': severity.lower()
             })
@@ -259,11 +293,11 @@ Generate a brief analysis (2-3 sentences):
         # Ensure collection exists
         collection_name = 'phase89_ace_cluster_cards'
         try:
-            self.indexer.qdrant.get_collection(collection_name)
+            self.qdrant.get_collection(collection_name)
         except:
             from qdrant_client.models import Distance, VectorParams
             print(f"   📦 Creating {collection_name} collection...")
-            self.indexer.qdrant.create_collection(
+            self.qdrant.create_collection(
                 collection_name=collection_name,
                 vectors_config=VectorParams(size=768, distance=Distance.COSINE)
             )
@@ -274,9 +308,8 @@ Generate a brief analysis (2-3 sentences):
             # Build signature for embedding
             signature = f"{card['error_code']}: {card['pattern']}\n{card['llm_analysis']}"
 
-            # Get embedding (with caching)
-            cache_key = hashlib.md5(signature.encode()).hexdigest()
-            embedding = self.indexer.get_embedding(signature, cache_key)
+            # Get embedding
+            embedding = self.get_embedding(signature)
 
             if embedding:
                 point = PointStruct(
@@ -288,7 +321,7 @@ Generate a brief analysis (2-3 sentences):
 
         # Batch upsert
         if points:
-            self.indexer.qdrant.upsert(
+            self.qdrant.upsert(
                 collection_name=collection_name,
                 points=points
             )
@@ -304,10 +337,10 @@ Generate a brief analysis (2-3 sentences):
         # Ensure collection exists
         collection_name = 'phase89_file_error_cards'
         try:
-            self.indexer.qdrant.get_collection(collection_name)
+            self.qdrant.get_collection(collection_name)
         except:
             print(f"   📦 Creating {collection_name} collection...")
-            self.indexer.qdrant.create_collection(
+            self.qdrant.create_collection(
                 collection_name=collection_name,
                 vectors_config=VectorParams(size=768, distance=Distance.COSINE)
             )
@@ -319,8 +352,7 @@ Generate a brief analysis (2-3 sentences):
             signature = f"FILE: {card['file_path']}\n{card['error_summary']}\nCODES: {', '.join(card['error_codes'])}"
 
             # Get embedding
-            cache_key = hashlib.md5(signature.encode()).hexdigest()
-            embedding = self.indexer.get_embedding(signature, cache_key)
+            embedding = self.get_embedding(signature)
 
             if embedding:
                 point_id = hashlib.md5(card['file_path'].encode()).hexdigest()
@@ -333,7 +365,7 @@ Generate a brief analysis (2-3 sentences):
 
         # Batch upsert
         if points:
-            self.indexer.qdrant.upsert(
+            self.qdrant.upsert(
                 collection_name=collection_name,
                 points=points
             )

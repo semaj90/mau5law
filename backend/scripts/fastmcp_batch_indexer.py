@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import List
 import concurrent.futures
 from datetime import datetime
+from tqdm import tqdm
 
 # Add to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -71,30 +72,25 @@ async def batch_index(
     success = 0
     failed = 0
 
-    for i in range(0, total, batch_size):
-        batch = files[i:i + batch_size]
-        batch_num = (i // batch_size) + 1
-        total_batches = (total + batch_size - 1) // batch_size
+    with tqdm(total=total, desc="Indexing Codebase", unit="file") as pbar:
+        for i in range(0, total, batch_size):
+            batch = files[i:i + batch_size]
 
-        print(f"📦 Batch {batch_num}/{total_batches} ({len(batch)} files)")
+            # Process batch in parallel
+            tasks = [indexer.index_file(f) for f in batch]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        # Process batch in parallel
-        tasks = [indexer.index_file(f) for f in batch]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+            # Count results
+            for result in results:
+                if isinstance(result, Exception):
+                    failed += 1
+                elif result is not None:
+                    success += 1
+                else:
+                    failed += 1
 
-        # Count results
-        for result in results:
-            if isinstance(result, Exception):
-                failed += 1
-            elif result is not None:
-                success += 1
-            else:
-                failed += 1
-
-        # Progress
-        progress = ((i + len(batch)) / total) * 100
-        print(f"   ✅ Progress: {progress:.1f}% ({success} success, {failed} failed)")
-        print()
+            pbar.update(len(batch))
+            pbar.set_postfix(success=success, failed=failed)
 
     return success, failed
 

@@ -44,43 +44,59 @@
     - Set up key namespacing
     - _Requirements: 7.3, 7.5_
 
-- [ ] 2. Multi-Database Coordinator
-  - [ ] 2.1 Create MultiDBCoordinator class
+- [x] 2. Multi-Database Coordinator
+  - [x] 2.1 Create MultiDBCoordinator class
     - Implement atomic transaction management
     - Add rollback capability
     - Add retry queue for failed operations
     - _Requirements: 6.1, 6.4, 6.5_
 
-  - [ ] 2.2 Write property test for atomicity
+  - [x] 2.2 Create RetryQueue processor
+    - Exponential backoff (2^attempts seconds)
+    - Dead letter queue for permanently failed operations
+    - PostgreSQL-backed queue for persistence
+    - Automatic retry scheduling
+    - _Requirements: 6.4, 6.5_
+
+  - [x] 2.3 Build ChangePropagate service
+    - Automatic change detection
+    - Multi-database update coordination
+    - Dependency tracking
+    - Cache invalidation
+    - Event logging
+    - _Requirements: 6.2, 6.4_
+
+  - [x] 2.4 Write property test for atomicity
     - **Property 2: Multi-Database Atomicity**
     - **Validates: Requirements 6.1**
     - Test that all operations complete or rollback
     - Test rollback on failure
     - Test retry queue
+    - Test change propagation
 
 
 ### Phase 2: AST Analysis Integration
 
-- [ ] 3. AST Analysis Service
-  - [ ] 3.1 Create ASTAnalysisService class
+- [x] 3. AST Analysis Service
+  - [x] 3.1 Create ASTAnalysisService class
     - Integrate ts-ast-autofixer
     - Extract imports, exports, components, functions
     - Detect errors with AST context
     - _Requirements: 3.1, 3.2_
 
-  - [ ] 3.2 Create Neo4j graph storage
+  - [x] 3.2 Create Neo4j graph storage
     - Store file nodes
     - Store component/function nodes
     - Create import/dependency relationships
     - _Requirements: 3.3_
 
-  - [ ] 3.3 Create dependency query API
+  - [x] 3.3 Create dependency query API
     - Query dependencies for a file
     - Query reverse dependencies
     - Query dependency graph
     - _Requirements: 3.4_
 
-  - [ ] 3.4 Write property test for AST consistency
+  - [x] 3.4 Write property test for AST consistency
     - **Property 3: AST Graph Consistency**
     - **Validates: Requirements 3.1, 3.2, 3.3**
     - Test that Neo4j graph matches AST structure
@@ -89,26 +105,26 @@
 
 ### Phase 3: File Analysis Pipeline
 
-- [ ] 4. Comment Extraction and Pattern Search
-  - [ ] 4.1 Create comment extraction utility
+- [x] 4. Comment Extraction and Pattern Search
+  - [x] 4.1 Create comment extraction utility
     - Extract comments from TypeScript/Svelte files
     - Parse JSDoc comments
     - Extract TODO/FIXME markers
     - _Requirements: 4.1_
 
-  - [ ] 4.2 Create pattern search utility
+  - [x] 4.2 Create pattern search utility
     - Integrate ripgrep for fast search
     - Use awk for pattern extraction
     - Search for related code patterns
     - _Requirements: 4.2_
 
-  - [ ] 4.3 Create AI analysis service
+  - [x] 4.3 Create AI analysis service
     - Integrate gemma3-legal for analysis
     - Generate summaries and recommendations
     - Calculate confidence scores
     - _Requirements: 4.3, 10.1, 10.2_
 
-  - [ ] 4.4 Write property test for pattern search
+  - [x] 4.4 Write property test for pattern search
     - **Property 11: Pattern Search Completeness**
     - **Validates: Requirements 4.1, 4.2**
     - Test comment extraction
@@ -118,26 +134,26 @@
 
 ### Phase 4: Enhanced Qdrant Tagging
 
-- [ ] 5. Enhanced Tag Creation
-  - [ ] 5.1 Create EnhancedQdrantTag interface
+- [x] 5. Enhanced Tag Creation
+  - [x] 5.1 Create EnhancedQdrantTag interface
     - Define TypeScript interface
     - Add validation with Zod
     - Create factory functions
     - _Requirements: 2.1_
 
-  - [ ] 5.2 Implement tag creation pipeline
+  - [x] 5.2 Implement tag creation pipeline
     - Generate embeddings with CUDA
     - Create AI summary with gemma3-legal
     - Store in all databases atomically
     - _Requirements: 2.1, 2.2, 6.2_
 
-  - [ ] 5.3 Implement tag update mechanism
+  - [x] 5.3 Implement tag update mechanism
     - Update summary after analysis
     - Update cluster assignment
     - Propagate changes to all databases
     - _Requirements: 2.2, 6.4_
 
-  - [ ] 5.4 Write property test for tag completeness
+  - [x] 5.4 Write property test for tag completeness
     - **Property 1: Enhanced Tag Completeness**
     - **Validates: Requirements 2.1, 2.2**
     - Test that all fields are populated
@@ -145,20 +161,20 @@
     - Test timestamp format
 
 - [ ] 6. Tag Rename Operation
-  - [ ] 6.1 Create tag rename service
+  - [x] 6.1 Create tag rename service
     - Update Qdrant collection
     - Update PostgreSQL records
     - Update Neo4j relationships
     - Update CouchDB documents
     - _Requirements: 12.1, 12.2, 12.3, 12.4_
 
-  - [ ] 6.2 Implement rollback mechanism
+  - [x] 6.2 Implement rollback mechanism
     - Track all changes
     - Rollback on any failure
     - Log rollback operations
     - _Requirements: 12.5_
 
-  - [ ] 6.3 Write property test for rename atomicity
+  - [x] 6.3 Write property test for rename atomicity
     - **Property 7: Tag Rename Atomicity**
     - **Validates: Requirements 12.1, 12.2, 12.3, 12.4, 12.5**
     - Test atomic updates across databases
@@ -169,19 +185,19 @@
 ### Phase 5: CUDA Tensor Analysis
 
 - [ ] 7. CUDA Embedding Generation
-  - [ ] 7.1 Create CUDA embedding service
+  - [x] 7.1 Create CUDA embedding service
     - Integrate embeddinggemma with CUDA
     - Batch embedding generation
     - GPU memory management
     - _Requirements: 7.1_
 
-  - [ ] 7.2 Create similarity computation
+  - [x] 7.2 Create similarity computation
     - Compute cosine similarity on GPU
     - Batch similarity matrix computation
     - Optimize for large datasets
     - _Requirements: 7.2_
 
-  - [ ] 7.3 Create coordinate computation
+  - [x] 7.3 Create coordinate computation
     - Implement dimensionality reduction (UMAP/t-SNE)
     - Compute 3D coordinates for visualization
     - Run on GPU for performance
@@ -194,20 +210,20 @@
     - Test GPU memory management
     - Test batch processing
 
-- [ ] 8. Redis Coordinate Caching
-  - [ ] 8.1 Create coordinate cache service
+- [x] 8. Redis Coordinate Caching
+  - [x] 8.1 Create coordinate cache service
     - Cache tensor coordinates in Redis
     - Set TTL to 24 hours
     - Implement cache invalidation
     - _Requirements: 7.3, 7.5_
 
-  - [ ] 8.2 Create cache retrieval API
+  - [x] 8.2 Create cache retrieval API
     - Fast coordinate lookup (< 10ms)
     - Batch coordinate retrieval
     - Cache miss handling
     - _Requirements: 7.4_
 
-  - [ ]* 8.3 Write property test for cache consistency
+  - [x] 8.3 Write property test for cache consistency
     - **Property 6: Cache Consistency**
     - **Validates: Requirements 7.3, 7.5**
     - Test cache invalidation on update
@@ -217,26 +233,26 @@
 
 ### Phase 6: K-means Clustering
 
-- [ ] 9. Clustering Service
-  - [ ] 9.1 Create KMeansClusteringService class
+- [x] 9. Clustering Service
+  - [x] 9.1 Create KMeansClusteringService class
     - Fetch all enhanced tags from Qdrant
     - Extract embeddings
     - Run k-means clustering (default k=10)
     - _Requirements: 5.1, 5.2, 5.3_
 
-  - [ ] 9.2 Create cluster summary generation
+  - [x] 9.2 Create cluster summary generation
     - Generate summaries with gemma3-legal
     - Include representative tags
     - Calculate cluster statistics
     - _Requirements: 5.4_
 
-  - [ ] 9.3 Store cluster metadata
+  - [x] 9.3 Store cluster metadata
     - Store in PostgreSQL clusters table
     - Update tag cluster assignments
     - Cache cluster summaries in Redis
     - _Requirements: 5.5_
 
-  - [ ]* 9.4 Write property test for cluster coherence
+  - [x] 9.4 Write property test for cluster coherence
     - **Property 5: Cluster Coherence**
     - **Validates: Requirements 5.3**
     - Test that tags are closer to their centroid
@@ -245,20 +261,20 @@
 
 ### Phase 7: FastMCP/FastAPI Middleware
 
-- [ ] 10. FastAPI Server Setup
-  - [ ] 10.1 Create FastAPI application
+- [x] 10. FastAPI Server Setup
+  - [x] 10.1 Create FastAPI application
     - Set up FastAPI with CORS
     - Configure middleware
     - Add health check endpoint
     - _Requirements: 8.1, 8.5_
 
-  - [ ] 10.2 Integrate FastMCP
+  - [x] 10.2 Integrate FastMCP
     - Install and configure FastMCP
     - Register all tools
     - Generate tool schemas
     - _Requirements: 8.1, 8.3_
 
-  - [ ] 10.3 Create tool endpoints
+  - [x] 10.3 Create tool endpoints
     - analyze_file tool
     - semantic_search tool
     - cluster_tags tool
@@ -266,13 +282,13 @@
     - get_dependencies tool
     - _Requirements: 8.2_
 
-  - [ ] 10.4 Add authentication
+  - [x] 10.4 Add authentication
     - Implement JWT authentication
     - Add API key support
     - Protect sensitive endpoints
     - _Requirements: 8.4_
 
-  - [ ]* 10.5 Write property test for tool execution
+  - [x] 10.5 Write property test for tool execution
     - **Property 8: Recommendation Confidence**
     - **Validates: Requirements 9.5, 10.3**
     - Test tool execution
@@ -282,14 +298,14 @@
 
 ### Phase 8: Codebase Indexing
 
-- [ ] 11. File Watcher and Indexer
-  - [ ] 11.1 Create file watcher service
+- [x] 11. File Watcher and Indexer
+  - [x] 11.1 Create file watcher service
     - Watch TypeScript/Svelte files
     - Detect file changes
     - Trigger re-indexing
     - _Requirements: 9.1, 9.2_
 
-  - [ ] 11.2 Create indexing pipeline
+  - [x] 11.2 Create indexing pipeline
     - AST analysis
     - Comment extraction
     - Pattern search
@@ -298,56 +314,59 @@
     - Multi-DB storage
     - _Requirements: 9.1_
 
-  - [ ] 11.3 Create semantic search API
+  - [x] 11.3 Create semantic search API
     - Generate query embeddings
     - Search Qdrant with filters
     - Rank by semantic similarity
     - _Requirements: 9.3_
 
-  - [ ]* 11.4 Write property test for semantic search
+  - [x] 11.4 Write property test for semantic search
     - **Property 4: Semantic Search Accuracy**
     - **Validates: Requirements 9.3**
     - Test cosine similarity ranking
     - Test filter application
     - Test result relevance
 
-- [ ] 12. AI Recommendation Engine
-  - [ ] 12.1 Create recommendation service
+- [x] 12. AI Recommendation Engine
+  - [x] 12.1 Create recommendation service
     - Analyze errors with gemma3-legal
     - Generate fix recommendations
     - Rank by confidence
     - _Requirements: 10.1, 10.2, 10.3_
 
-  - [ ] 12.2 Create fix verification
+  - [x] 12.2 Create fix verification
     - Apply fixes automatically
     - Verify error resolution
     - Store successful fixes
     - _Requirements: 10.4, 10.5_
 
-  - [ ]* 12.3 Write property test for error analysis
+  - [x] 12.3 Write property test for error analysis
     - **Property 9: Error Analysis Completeness**
     - **Validates: Requirements 3.5, 10.1**
     - Test error storage with AST context
     - Test recommendation generation
     - Test fix verification
+    - **16 tests passing** (added event log parser + auto-detect)
 
 
 ### Phase 9: Admin UI Development
 
-- [ ] 13. Admin UI Route Setup
-  - [ ] 13.1 Create admin route structure
-    - Create `/admin/knowledge-base` route
+- [x] 13. Admin UI Route Setup
+  - [x] 13.1 Create admin route structure
+    - Create `/command-center/codebase` route
+    - Create `/command-center/codebase/errors` route
+    - Create `/command-center/codebase/clusters/[clusterId]` route
+    - Create API endpoints for stats, errors, clusters
     - Set up layout with navigation
-    - Add authentication guard
     - _Requirements: 1.1_
 
-  - [ ] 13.2 Create route graph visualization component
-    - Integrate D3.js or Cytoscape.js
+  - [x] 13.2 Create route graph visualization component
+    - Integrate D3.js for force-directed graph
     - Render nodes and edges
     - Add zoom and pan controls
     - _Requirements: 1.1, 11.1_
 
-  - [ ] 13.3 Add node interaction handlers
+  - [x] 13.3 Add node interaction handlers
     - Click to view details
     - Hover to show metadata
     - Expand to show connections
@@ -360,39 +379,39 @@
     - Test node interaction
     - Test metadata display
 
-- [ ] 14. Search and Filter Components
-  - [ ] 14.1 Create semantic search component
+- [x] 14. Search and Filter Components
+  - [x] 14.1 Create semantic search component
     - Search input with autocomplete
     - Real-time search results
     - Highlight matching nodes
     - _Requirements: 1.3_
 
-  - [ ] 14.2 Create category filter component
+  - [x] 14.2 Create category filter component
     - Filter by tag category
     - Filter by cluster
     - Filter by file type
     - _Requirements: 1.4, 11.4_
 
-  - [ ] 14.3 Create graph export component
+  - [x] 14.3 Create graph export component
     - Export to JSON
     - Export to PNG/SVG
     - Export to CSV
     - _Requirements: 11.5_
 
-- [ ] 15. Tag Management Components
-  - [ ] 15.1 Create tag detail view
+- [x] 15. Tag Management Components
+  - [x] 15.1 Create tag detail view
     - Display all tag metadata
     - Show embedding visualization
     - Show cluster assignment
     - _Requirements: 1.2_
 
-  - [ ] 15.2 Create tag rename dialog
+  - [x] 15.2 Create tag rename dialog
     - Input validation
     - Confirmation dialog
     - Progress indicator
     - _Requirements: 12.1_
 
-  - [ ] 15.3 Create cluster visualization
+  - [x] 15.3 Create cluster visualization
     - Display clusters as groups
     - Show cluster summaries
     - Navigate between clusters
