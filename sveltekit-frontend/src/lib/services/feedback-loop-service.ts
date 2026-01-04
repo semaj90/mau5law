@@ -188,8 +188,7 @@ export class FeedbackLoopService {
                 actualOutput: trainingPoint.actualOutput,
                 userRating: trainingPoint.userRating,
                 corrections: trainingPoint.corrections,
-                contextTags: JSON.stringify(trainingPoint.contextTags),
-                difficultyLevel: trainingPoint.difficultyLevel,
+                contextTags: JSON.stringify(trainingPoint.contextTags, difficultyLevel: trainingPoint.difficultyLevel,
                 processed: false
                 // createdAt: new Date(), // Removed, rely on DB default
                 // updatedAt: new Date(), // Removed, rely on DB default
@@ -489,9 +488,7 @@ export class FeedbackLoopService {
         }
 
         return {
-            suggestedFeatures: pattern.preferredFeatures.slice(0, 5),
-            qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area} features`),
-            personalizedSettings: {
+            suggestedFeatures: pattern.preferredFeatures.slice(0, 5, qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area} features`, personalizedSettings: {
                 responseTimeThreshold: pattern.responseTimeThreshold,
                 qualityExpectations: pattern.qualityExpectations,
                 difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner'

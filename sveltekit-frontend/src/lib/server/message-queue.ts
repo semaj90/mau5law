@@ -26,12 +26,10 @@ class InMemoryQueue extends EventEmitter {
  }
 
  // Redis-compatible methods
- async lpush(queueName: string), string: Promise<number> {
+ async lpush(queueName: string, string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
- data: JSON.parse(data),
- timestamp: Date.now(),
- attempts: 0, maxAttempts: this.options.maxRetries || 3,
+ data: JSON.parse(data, timestamp: Date.now(, attempts: 0, maxAttempts, this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
@@ -42,12 +40,10 @@ class InMemoryQueue extends EventEmitter {
  return this.messages.get(queueName)!.length;
  }
 
- async rpush(queueName: string), string: Promise<number> {
+ async rpush(queueName: string, string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
- data: JSON.parse(data),
- timestamp: Date.now(),
- attempts: 0, maxAttempts: this.options.maxRetries || 3,
+ data: JSON.parse(data, timestamp: Date.now(, attempts: 0, maxAttempts, this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
@@ -110,11 +106,9 @@ class InMemoryQueue extends EventEmitter {
  const message: QueueMessage = JSON.parse(messageData) as QueueMessage; // Cast to QueueMessage
  try {
  await callback({
- content: Buffer.from(JSON.stringify(message.data)),
- fields: { deliveryTag: Date.now() },
+ content: Buffer.from(JSON.stringify(message.data, fields: { deliveryTag: Date.now() },
  properties: {}, // Empty properties object
- ack: () => this.ack(queueName, message),
- nack: () => this.nack(queueName, message),
+ ack: () => this.ack(queueName, message, nack: () => this.nack(queueName, message),
  });
  const stats = this.stats.get(queueName)!;
  stats.processed++;
@@ -132,12 +126,12 @@ class InMemoryQueue extends EventEmitter {
  processMessage();
  }
 
- private async ack(queueName: string), QueueMessage: Promise<void> {
+ private async ack(queueName: string, QueueMessage: Promise<void> {
  // Message successfully processed
  console.log(`✅ Message acknowledged: ${queueName}`);
  }
 
- private async nack(queueName: string), QueueMessage: Promise<void> {
+ private async nack(queueName: string, QueueMessage: Promise<void> {
  // Requeue or move to dead letter
  const stats = this.stats.get(queueName)!;
  stats.failed++;
@@ -197,10 +191,7 @@ export const cache = {
  console.log(`📚 Cache GET: ${_key}`);
  return null; // Simulate cache miss for now
  },
- lpush: messageQueue.lpush.bind(messageQueue),
- rpush: messageQueue.rpush.bind(messageQueue),
- blpop: messageQueue.blpop.bind(messageQueue),
- llen: messageQueue.llen.bind(messageQueue),
+ lpush: messageQueue.lpush.bind(messageQueue, rpush: messageQueue.rpush.bind(messageQueue, blpop: messageQueue.blpop.bind(messageQueue, llen: messageQueue.llen.bind(messageQueue),
  async close(): Promise<void> {
  await messageQueue.close();
  },
@@ -212,13 +203,11 @@ export const rabbit = {
  console.log('🐇 RabbitMQ (in-memory) connected');
  return {
  createChannel: () => ({
- publish: messageQueue.publish.bind(messageQueue),
- consume: messageQueue.consume.bind(messageQueue),
+ publish: messageQueue.publish.bind(messageQueue, consume: messageQueue.consume.bind(messageQueue),
  }),
  };
  },
- publish: messageQueue.publish.bind(messageQueue),
- consume: messageQueue.consume.bind(messageQueue),
+ publish: messageQueue.publish.bind(messageQueue, consume: messageQueue.consume.bind(messageQueue),
  async close(): Promise<void> {
  await messageQueue.close();
  },
@@ -228,7 +217,7 @@ export const rabbit = {
 export class WorkflowQueue extends InMemoryQueue {
  private workflows: Map<string, any> = new Map();
 
- async startWorkflow(workflowId: string), unknown: Promise<void> {
+ async startWorkflow(workflowId: string, unknown: Promise<void> {
  this.workflows.set(workflowId, {
  id: workflowId, state: initialState,
  history: [{ state: initialState, timestamp: Date.now() }],
@@ -240,7 +229,7 @@ export class WorkflowQueue extends InMemoryQueue {
  );
  }
 
- async updateWorkflow(workflowId: string), unknown: Promise<void> {
+ async updateWorkflow(workflowId: string, unknown: Promise<void> {
  const workflow = this.workflows.get(workflowId);
  if (workflow) {
  workflow.state = newState;

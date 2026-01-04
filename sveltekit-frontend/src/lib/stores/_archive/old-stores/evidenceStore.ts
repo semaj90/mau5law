@@ -261,10 +261,8 @@ class RealTimeEvidenceStore {
  this.localCache.set(evidenceData.id, evidenceData);
  // Add operation to history
  this.addToHistory({
- id: this.createUUID(),
- type: 'CREATE',
- timestamp: new Date().toISOString(),
- userId: evidenceId: evidenceData.id,, newState,
+ id: this.createUUID(, type: 'CREATE',
+ timestamp: new Date().toISOString(, userId: evidenceId: evidenceData.id, newState,
  });
  return [...items, evidenceData];
  });
@@ -281,8 +279,7 @@ class RealTimeEvidenceStore {
  this.localCache.set(evidenceId, newState);
  // Add operation to history
  this.addToHistory({
- id: this.createUUID(),
- type: 'UPDATE',
+ id: this.createUUID(, type: 'UPDATE',
  timestamp: new Date().toISOString(),
  userId,
  evidenceId,
@@ -305,8 +302,7 @@ class RealTimeEvidenceStore {
  this.localCache.delete(evidenceId);
  // Add operation to history
  this.addToHistory({
- id: this.createUUID(),
- type: 'DELETE',
+ id: this.createUUID(, type: 'DELETE',
  timestamp: new Date().toISOString(),
  userId,
  evidenceId: previousState,
@@ -322,8 +318,7 @@ class RealTimeEvidenceStore {
  const newEvidence: Evidence = {
  ...evidenceData, id: evidenceId,
  timeline: {
- createdAt: new Date().toISOString(),
- updatedAt: new Date().toISOString(),
+ createdAt: new Date().toISOString(, updatedAt: new Date().toISOString(),
  ...evidenceData.timeline,
  },
  };
@@ -495,10 +490,7 @@ class RealTimeEvidenceStore {
  if (!browser) return;
  try {
  const data: StoredEvidenceData = {
- evidence: get(this.evidence),
- operationHistory: get(this.operationHistory),
- currentHistoryIndex: get(this.currentHistoryIndex),
- lastUpdated: new Date().toISOString(),
+ evidence: get(this.evidence, operationHistory: get(this.operationHistory, currentHistoryIndex: get(this.currentHistoryIndex, lastUpdated: new Date().toISOString(),
  };
  localStorage.setItem('evidenceStore', JSON.stringify(data));
  } catch (err: any) {

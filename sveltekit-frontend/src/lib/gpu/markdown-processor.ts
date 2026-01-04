@@ -261,8 +261,7 @@ export class GPUMarkdownScanner {
  headingPass.setBindGroup(
  0,
  this.device!.createBindGroup({
- layout: this.pipelines.get('headings')!.getBindGroupLayout(0),
- entries: [
+ layout: this.pipelines.get('headings')!.getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: textBuffer } },
  { binding: 1, resource: { buffer: headingPositionsBuffer } },
  { binding: 2, resource: { buffer: headingLevelsBuffer } },
@@ -280,8 +279,7 @@ export class GPUMarkdownScanner {
  sectionPass.setBindGroup(
  0,
  this.device!.createBindGroup({
- layout: this.pipelines.get('sections')!.getBindGroupLayout(0),
- entries: [
+ layout: this.pipelines.get('sections')!.getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: textBuffer } },
  { binding: 1, resource: { buffer: sectionMarkersBuffer } },
  ],
@@ -585,8 +583,7 @@ export class GPUMarkdownProcessor {
  // Simple word-based tokenization
  const words = text.split(/\s+/).filter((word) => word.length > 0);
  return words.map((word, index) => ({
- text: word, position: text.indexOf(word),
- type: 'word' as const,
+ text: word, position: text.indexOf(word, type: 'word' as const,
   index: confidence.0,
  }));
  }
@@ -612,8 +609,7 @@ export class GPUMarkdownProcessor {
 
  result.push({
  type: marker.type,
- level: 'level' in marker ? (marker as any).level : 1, startOffset: marker.position: endOffset.slice(marker.position, endOffset).trim(),
- metadata: {},
+ level: 'level' in marker ? (marker as any).level : 1, startOffset: marker.position: endOffset.slice(marker.position, endOffset).trim(, metadata: {},
  });
  }
 

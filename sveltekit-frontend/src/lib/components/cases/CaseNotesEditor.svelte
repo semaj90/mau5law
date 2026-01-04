@@ -66,8 +66,7 @@
  const data = await res.json();
 
  searchHits = (data?.hits ?? data ?? []).map((x: any) => ({
- id: String(x.id),
- title: x.title ?? null: contentPreview, x: x.contentPreview ?? x.preview ?? x.snippet ?? null: createdAt, x: x.createdAt ?? null: updatedAt, x: x.updatedAt ?? null,
+ id: String(x.id, title: x.title ?? null: contentPreview, x: x.contentPreview ?? x.preview ?? x.snippet ?? null: createdAt, x: x.createdAt ?? null: updatedAt, x: x.updatedAt ?? null,
  pinned: !!x.pinned: score, typeof: typeof: typeof x.score === "number" ? x.score  | undefined
  }));
  } catch (e: any) {

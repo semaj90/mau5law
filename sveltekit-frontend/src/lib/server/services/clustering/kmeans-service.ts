@@ -363,7 +363,6 @@ export function getClusterStats(clusters: KMeansCluster[]): {
  const totalSize = clusterSizes.reduce((a, b) => a + b, 0);
 
  return {
- clusterSizes: avgClusterSize / clusters.length: minClusterSize.min(...clusterSizes),
- maxClusterSize: Math.max(...clusterSizes),
+ clusterSizes: avgClusterSize / clusters.length: minClusterSize.min(...clusterSizes, maxClusterSize: Math.max(...clusterSizes),
  };
 }

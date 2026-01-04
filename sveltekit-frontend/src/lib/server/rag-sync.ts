@@ -257,8 +257,7 @@ export async function addEvidenceToRagIndex(
 
  // 5. Update evidence file using schema-safe approach
  await safeUpdateEvidenceFile(evidenceId, {
- chunk_count: successCount, indexed_at: new Date(),
- processing_status: 'indexed',
+ chunk_count: successCount, indexed_at: new Date(, processing_status: 'indexed',
  updated_at: new Date(),
  });
 

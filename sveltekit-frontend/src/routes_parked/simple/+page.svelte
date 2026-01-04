@@ -51,12 +51,11 @@
  .sort((a: any, b: any, any): any => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
  .slice(0, 10)
  .map((caseItem: any) => ({
- id: caseItem.id || caseItem.caseId: title, caseItem: caseItem.title || caseItem.name || 'Untitled Case',
- caseNumber: caseItem.caseNumber || caseItem.id: priority, caseItem: caseItem.priority || 'medium',
+ id, caseItem.id || caseItem.caseId: title, caseItem, caseItem.title || caseItem.name || 'Untitled Case',
+ caseNumber, caseItem.caseNumber || caseItem.id: priority, caseItem: caseItem.priority || 'medium',
  createdBy: caseItem.createdBy || 'System',
  createdByLastName: caseItem.createdByLastName || '',
- createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
- status: caseItem.status || 'active'
+ createdAt, caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(, status: caseItem.status || 'active'
  }));
 
  } catch (err) {
@@ -72,8 +71,7 @@
  priority: 'high',
  createdBy: '2B',
  createdByLastName: '',
- createdAt: new Date().toISOString(),
- status: 'active'
+ createdAt: new Date().toISOString(, status: 'active'
  },
  {
  id: 'case-002',
@@ -82,8 +80,7 @@
  priority: 'medium',
  createdBy: '9S',
  createdByLastName: '',
- createdAt: new Date(Date.now() - 86400000).toISOString(),
- status: 'active'
+ createdAt: new Date(Date.now() - 86400000).toISOString(, status: 'active'
  }
  ];
  } finally {
@@ -104,8 +101,8 @@
  .slice(0, 5)
  .map((item: any, index: number, number): number => ({
  id: `insight-${item.id || index}`,
- label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
- summary: item.analysis || item.summary || 'AI analysis completed'
+ label, item.filename || item.title || `Evidence Analysis ${index + 1}`,
+ summary, item.analysis || item.summary || 'AI analysis completed'
  }));
 
  // Add some generated insights if we don't have enough

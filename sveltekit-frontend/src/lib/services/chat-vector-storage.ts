@@ -52,7 +52,7 @@ class ChatVectorStorage {
         return message.id;
     }
 
-    async predictUserIntent(_userId: string), string: Promise<IntentPrediction> {
+    async predictUserIntent(_userId: string, string: Promise<IntentPrediction> {
         return {
             predictedIntent: 'general_inquiry',
             confidence: 0.3,
@@ -110,7 +110,7 @@ export async function storeChatWithVector(
     return await chatVectorStorage.storeChatMessage(message);
 }
 
-export async function getPredictiveAssistance(userId: string), string: Promise<IntentPrediction> {
+export async function getPredictiveAssistance(userId: string, string: Promise<IntentPrediction> {
     return await chatVectorStorage.predictUserIntent(userId, currentInput, sessionId);
 }
 

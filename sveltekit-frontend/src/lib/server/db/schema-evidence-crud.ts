@@ -49,14 +49,9 @@ export const citationTags = pgTable(
  id: uuid('id')
  .default(sql`gen_random_uuid()`)
  .primaryKey()
- .notNull(),
- name: varchar('name', { length: 255 }).notNull(),
- jurisdiction: jurisdictionEnum('jurisdiction').notNull(),
- description: text('description'),
- createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+ .notNull(, name: varchar('name', { length: 255 }).notNull(, jurisdiction: jurisdictionEnum('jurisdiction').notNull(, description: text('description', createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
  .defaultNow()
- .notNull(),
- updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+ .notNull(, updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
  .defaultNow()
  .notNull(),
  },
@@ -82,11 +77,9 @@ export const evidenceTags = pgTable(
  {
  evidenceId: uuid('evidence_id')
  .notNull()
- .references(() => evidence.id, { onDelete: 'cascade' }),
- tagId: uuid('tag_id')
+ .references(() => evidence.id, { onDelete: 'cascade' }, tagId: uuid('tag_id')
  .notNull()
- .references(() => citationTags.id, { onDelete: 'cascade' }),
- createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+ .references(() => citationTags.id, { onDelete: 'cascade' }, createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
  .defaultNow()
  .notNull(),
  },
@@ -110,9 +103,7 @@ export const ragIndexMetadata = pgTable(
  id: uuid('id')
  .default(sql`gen_random_uuid()`)
  .primaryKey()
- .notNull(),
- chunkId: uuid('chunk_id').notNull(),
- evidenceId: uuid('evidence_id')
+ .notNull(, chunkId: uuid('chunk_id').notNull(, evidenceId: uuid('evidence_id')
  .notNull()
  .references(() => evidence.id, { onDelete: 'cascade' }),
  // Array of tag names for weighting
@@ -121,8 +112,7 @@ export const ragIndexMetadata = pgTable(
  .default(sql`'{}'::text[]`)
  .notNull(),
  // Weight multiplier (default 1.0, 1.5 if tags match)
- tagWeight: real('tag_weight').default(1.0).notNull(),
- updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+ tagWeight: real('tag_weight').default(1.0).notNull(, updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
  .defaultNow()
  .notNull(),
  },
@@ -146,13 +136,7 @@ export const auditLog = pgTable(
  id: uuid('id')
  .default(sql`gen_random_uuid()`)
  .primaryKey()
- .notNull(),
- userId: uuid('user_id'),
- resourceType: auditResourceTypeEnum('resource_type').notNull(),
- resourceId: uuid('resource_id').notNull(),
- operation: auditOperationEnum('operation').notNull(),
- oldValues: jsonb('old_values'),
- newValues: jsonb('new_values'),
+ .notNull(, userId: uuid('user_id', resourceType: auditResourceTypeEnum('resource_type').notNull(, resourceId: uuid('resource_id').notNull(, operation: auditOperationEnum('operation').notNull(, oldValues: jsonb('old_values', newValues: jsonb('new_values'),
  // Timestamp is immutable - no updates allowed
  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'string' })
  .defaultNow()

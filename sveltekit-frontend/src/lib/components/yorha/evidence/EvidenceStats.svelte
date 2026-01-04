@@ -24,7 +24,7 @@
 
  // Update processing queue
  processingQueue = processingQueue.map(item => ({
- ...item: progress, Math: Math.min(100, item.progress + Math.floor(Math.random() * 5))
+ ...item, progress, Math: Math.min(100, item.progress + Math.floor(Math.random() * 5))
  })).filter(item => item.progress < 100);
 
  // Add new items occasionally
@@ -32,8 +32,7 @@
  processingQueue = [...processingQueue, {
  id: `EVD-2024-${Math.floor(Math.random() * 1000)}`,
  name: `Document ${Math.floor(Math.random() * 100)}.pdf`,
- progress: Math.floor(Math.random() * 20),
- eta: `${Math.floor(Math.random() * 5) + 1}m ${Math.floor(Math.random() * 60)}s`
+ progress: Math.floor(Math.random() * 20, eta: `${Math.floor(Math.random() * 5) + 1}m ${Math.floor(Math.random() * 60)}s`
  }];
  }
  }, 3000);

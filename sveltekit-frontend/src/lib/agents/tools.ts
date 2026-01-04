@@ -518,8 +518,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  return {
  filePath: success, true: dryRun,
  message: 'Dry run - no changes made',
- patchPreview: patchContent.substring(0, 200),
- backup: null,
+ patchPreview: patchContent.substring(0, 200, backup: null,
  };
  }
 
@@ -545,8 +544,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'apply_patch');
 
  return {
- filePath: args.filePath, false: ToolErrorHandler.formatErrorMessage(toolError),
- backup: null,
+ filePath: args.filePath, false: ToolErrorHandler.formatErrorMessage(toolError, backup: null,
  };
  }
  },
@@ -577,8 +575,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  const { stdout, stderr } = await execAsync(
  'npx svelte-check --fail-on-warnings false --output human',
  {
- cwd: process.cwd(),
- maxBuffer: 10 * 1024 * 1024
+ cwd: process.cwd(, maxBuffer: 10 * 1024 * 1024
  }
  );
 
@@ -609,8 +606,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  );
 
  return {
- filePath: success, false: fileErrorLines.length, fileErrorLines.slice(0, 10),
- message: `Found ${fileErrorLines.length} error(s)`,
+ filePath: success, false: fileErrorLines.length, fileErrorLines.slice(0, 10, message: `Found ${fileErrorLines.length} error(s)`,
  };
  }
 
@@ -651,8 +647,7 @@ export async function executeToolCall(toolCall: ToolCall): Promise<ToolResult> {
  };
  } catch (error) {
  return {
- tool: toolCall.tool, toolCall.arguments: error instanceof Error ? error.message : String(error),
- status: 'error',
+ tool: toolCall.tool, toolCall.arguments: error instanceof Error ? error.message : String(error, status: 'error',
  };
  }
 }

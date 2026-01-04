@@ -123,8 +123,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const diff: Diff = {
@@ -152,8 +151,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const retrievedFixes = await knowledgeBaseLearning.retrieveFixesForError(similarError, 5);
@@ -169,8 +167,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const diff: Diff = {
@@ -245,8 +242,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  context: 'const x = 5;',
  explanation: 'Use const for immutable variables',
  lineStart: 1, lineEnd: 1, status: 'applied' as const,
-  createdAt: new Date(),
- appliedAt: new Date(),
+  createdAt: new Date(, appliedAt: new Date(),
  },
  ],
  metrics: {
@@ -326,8 +322,7 @@ describe('Error Analysis Pipeline - Integration Tests', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const diff: Diff = {

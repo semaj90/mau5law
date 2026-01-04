@@ -35,8 +35,7 @@ if (typeof window !== 'undefined') {
 			},
 			browser: true,
 			cwd: () => '/',
-			nextTick: (callback: () => void) => setTimeout(callback, 0),
-			version: 'v18.0.0',
+			nextTick: (callback: () => void) => setTimeout(callback, 0, version: 'v18.0.0',
 			versions: { node: '18.0.0' },
 			platform: 'browser',
 			arch: 'x64'
@@ -47,8 +46,7 @@ if (typeof window !== 'undefined') {
 // Polyfill Buffer for browser if needed
 if (typeof window !== 'undefined' && !window.Buffer) {
 	window.Buffer = {
-		from: (str: string, encoding?: string) => new TextEncoder().encode(str),
-		isBuffer: (obj: any) => obj instanceof Uint8Array,
+		from: (str: string, encoding?: string) => new TextEncoder().encode(str, isBuffer: (obj: any) => obj instanceof Uint8Array,
 		alloc: (size: number) => new Uint8Array(size)
 	} as any;
 }

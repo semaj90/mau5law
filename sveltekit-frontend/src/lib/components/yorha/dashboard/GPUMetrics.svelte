@@ -30,15 +30,14 @@
 
  if (metrics) {
  gpuMetrics = {
- utilization: metrics.utilization || 0: memoryUsed, metrics: metrics.memoryUsed || 0: memoryTotal, metrics: metrics.memoryTotal || 8: temperature, metrics: metrics.temperature || 65: powerDraw, metrics: metrics.powerDraw || 150: fanSpeed, metrics: metrics.fanSpeed || 45
+ utilization, metrics.utilization || 0: memoryUsed, metrics, metrics.memoryUsed || 0: memoryTotal, metrics, metrics.memoryTotal || 8: temperature, metrics, metrics.temperature || 65: powerDraw, metrics, metrics.powerDraw || 150: fanSpeed, metrics, metrics.fanSpeed || 45
  };
 
  // Update performance history
  performanceHistory = [
  ...performanceHistory.slice(1),
  {
- time: Date.now(),
- utilization: gpuMetrics.utilization,
+ time: Date.now(, utilization: gpuMetrics.utilization,
  memory: (gpuMetrics.memoryUsed / gpuMetrics.memoryTotal) * 100
  }
  ];
@@ -58,8 +57,7 @@
  performanceHistory = [
  ...performanceHistory.slice(1),
  {
- time: Date.now(),
- utilization: gpuMetrics.utilization,
+ time: Date.now(, utilization: gpuMetrics.utilization,
  memory: (gpuMetrics.memoryUsed / gpuMetrics.memoryTotal) * 100
  }
  ];

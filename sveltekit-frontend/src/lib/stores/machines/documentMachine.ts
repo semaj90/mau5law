@@ -86,8 +86,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  'Document ready for processing',
  ],
  processingProgress: () => 10,
- }),
- on: {
+ }, on: {
  START_PROCESSING: {
  target: 'processing',
  actions: assign({
@@ -106,8 +105,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  initial: 'extractingText',
  entry: assign({
  processingProgress: () => 20,
- }),
- states: {
+ }, states: {
  extractingText: {
  entry: assign({
  currentStep: () => 'extracting_text',
@@ -115,8 +113,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Extracting text content',
  ],
- }),
- on: {
+ }, on: {
  EXTRACT_TEXT: {
  target: 'analyzingWithAI',
  actions: assign({
@@ -143,8 +140,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Running AI analysis',
  ],
- }),
- on: {
+ }, on: {
  ANALYZE_AI: {
  target: 'generatingEmbedding',
  actions: assign({
@@ -171,8 +167,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Generating vector embeddings',
  ],
- }),
- on: {
+ }, on: {
  GENERATE_EMBEDDING: {
  target: 'extractingEntities',
  actions: assign({
@@ -199,8 +194,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Extracting legal entities',
  ],
- }),
- on: {
+ }, on: {
  EXTRACT_ENTITIES: {
  target: 'calculatingRisk',
  actions: assign({
@@ -227,8 +221,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Calculating risk assessment',
  ],
- }),
- on: {
+ }, on: {
  CALCULATE_RISK: {
  target: 'completing',
  actions: assign({
@@ -256,14 +249,12 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Finalizing processing',
  ],
- }),
- on: {
+ }, on: {
  PROCESSING_COMPLETE: {
  target: '#documentProcessor.completed',
  actions: assign({
  processingProgress: () => 100,
- processedAt: () => new Date(),
- currentStep: () => 'completed',
+ processedAt: () => new Date(, currentStep: () => 'completed',
  processingSteps: (context) => [
  ...(context.processingSteps || []),
  'Processing completed successfully',
@@ -287,8 +278,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  completed: {
  entry: assign({
  currentStep: () => 'completed',
- }),
- on: {
+ }, on: {
  RESET: {
  target: 'idle',
  actions: assign({
@@ -324,8 +314,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  error: {
  entry: assign({
  currentStep: () => 'error',
- }),
- on: {
+ }, on: {
  RETRY: {
  target: 'processing',
  actions: assign({
@@ -365,8 +354,7 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
  ...(context.processingSteps || []),
  'Processing cancelled',
  ],
- }),
- on: {
+ }, on: {
  RESET: {
  target: 'idle',
  actions: assign({

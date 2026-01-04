@@ -236,9 +236,7 @@ export class MultiLanguageDetector {
 		while ((match = regex.exec(output)) !== null) {
 			errors.push({
 				file: match[1],
-				line: parseInt(match[2]),
-				column: parseInt(match[3]),
-				severity: match[4] as 'error' | 'warning',
+				line: parseInt(match[2], column: parseInt(match[3], severity: match[4] as 'error' | 'warning',
 				message: match[5],
 				code: match[6],
 				source: 'cpp'
@@ -259,8 +257,7 @@ export class MultiLanguageDetector {
 		while ((match = regex.exec(output)) !== null) {
 			errors.push({
 				file: match[1],
-				line: parseInt(match[2]),
-				column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
+				line: parseInt(match[2], column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'cppcheck',
 				source: 'cpp'
@@ -281,8 +278,7 @@ export class MultiLanguageDetector {
 		while ((match = regex.exec(output)) !== null) {
 			errors.push({
 				file: match[1],
-				line: parseInt(match[2]),
-				column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
+				line: parseInt(match[2], column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'mypy',
 				source: 'python'
@@ -325,9 +321,7 @@ export class MultiLanguageDetector {
 		while ((match = regex.exec(output)) !== null) {
 			errors.push({
 				file: match[1],
-				line: parseInt(match[2]),
-				column: parseInt(match[3]),
-				severity: 'warning',
+				line: parseInt(match[2], column: parseInt(match[3], severity: 'warning',
 				message: match[4],
 				code: 'go-vet',
 				source: 'go'
@@ -348,9 +342,7 @@ export class MultiLanguageDetector {
 		while ((match = regex.exec(output)) !== null) {
 			errors.push({
 				file: match[1],
-				line: parseInt(match[2]),
-				column: parseInt(match[3]),
-				severity: 'warning',
+				line: parseInt(match[2], column: parseInt(match[3], severity: 'warning',
 				message: match[5],
 				code: match[4],
 				source: 'go'

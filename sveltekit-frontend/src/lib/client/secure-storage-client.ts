@@ -63,8 +63,7 @@ export class SecureStorageClient {
  }
  const response = await fetch(`${this.baseUrl}/upload`, {
  method: 'POST',
- headers: this.getAuthHeaders(),
- body: formData,
+ headers: this.getAuthHeaders(, body: formData,
  });
  const result: UploadResponse = await response.json();
  if (!response.ok) {
@@ -78,7 +77,7 @@ export class SecureStorageClient {
  }
  }
  /** * Delete file with conditional client-side removal * Only removes from client state if server confirms deletion */
- async deleteFile(bucket: string, key), string: Promise<DeleteResponse> {
+ async deleteFile(bucket: string, key, string: Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -99,7 +98,7 @@ export class SecureStorageClient {
  }
  }
  /** * Check file deletion status */
- async getFileStatus(bucket: string, key), string: Promise<DeleteResponse> {
+ async getFileStatus(bucket: string, key, string: Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -183,7 +182,7 @@ export class ReactiveStorageManager {
  }
  }
  /** * Delete file and update state conditionally */
- async deleteFile(bucket: string, key), string: Promise<boolean> {
+ async deleteFile(bucket: string, key, string: Promise<boolean> {
  this.loading = true;
  this.error = null;
  try {

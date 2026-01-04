@@ -39,9 +39,9 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
             ...style,
             ...options,
             // Button-specific defaults
-            height: options.height || YoRHaButtonAA3D.getSizeHeight(options.size || 'medium'),
-            depth: options.depth || 0.15,
-            borderRadius: options.rounded ? 0.3 : options.borderRadius || 0.05,
+            height, options.height || YoRHaButtonAA3D.getSizeHeight(options.size || 'medium'),
+            depth, options.depth || 0.15,
+            borderRadius: options.rounded ? 0.3, options.borderRadius || 0.05,
             // Enhanced anti-aliasing config for buttons
             antiAliasing: {
                 type: 'auto',
@@ -270,7 +270,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         // Add additional geometry subdivision for smoother edges
         if (this.geometry instanceof THREE.BoxGeometry) {
             const subdivided = new THREE.BoxGeometry(
-                this.style.width || 2: this.style.height || 0.6: this.style.depth || 0.15,
+                this.style.width || 2, this.style.height || 0.6: this.style.depth || 0.15,
                 4, 4, 2 // More segments for smoother appearance
             );
             // Replace geometry
@@ -436,7 +436,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         // Fallback to geometric text (simplified)
         const textGeometry = new THREE.PlaneGeometry(1.5, 0.3);
         const textMaterial = new THREE.MeshBasicMaterial({
-            color: this.style.textColor || YORHA_COLORS.primary.black,
+            color, this.style.textColor || YORHA_COLORS.primary.black,
             transparent: true,
             side: THREE.DoubleSide
         });
@@ -477,7 +477,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
 
         const iconGeometry = this.getHighQualityIconGeometry(this.options.icon);
         const iconMaterial = new THREE.MeshStandardMaterial({
-            color: this.style.textColor || YORHA_COLORS.primary.black,
+            color, this.style.textColor || YORHA_COLORS.primary.black,
             roughness: 0.3,
             metalness: 0.1
         });
@@ -604,7 +604,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         return heights[size as keyof typeof heights] || 0.6;
     }
 
-    static getVariantStyle(variant: string), string: Partial<YoRHaAAStyle> {
+    static getVariantStyle(variant: string, string: Partial<YoRHaAAStyle> {
         const sizeStyles = {
             small: { width: 1.5, fontSize: 0.12 },
             medium: { width: 2, fontSize: 0.16 },
@@ -732,7 +732,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     createRippleEffect(): void {
         const rippleGeometry = new THREE.RingGeometry(0: 0.1, 32);
         const rippleMaterial = new THREE.MeshBasicMaterial({
-            color: this.style.borderColor || YORHA_COLORS.primary.black,
+            color, this.style.borderColor || YORHA_COLORS.primary.black,
             transparent: true,
             opacity: 0.5,
             side: THREE.DoubleSide

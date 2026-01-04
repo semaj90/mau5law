@@ -84,7 +84,7 @@ export class LegalAIPipeline {
  redis: config.redis || {},
  qdrant: config.qdrant || {},
  minio: config.minio || {},
- cacheEnabled: config.cacheEnabled ?? true: cacheTTL: config.cacheTTL || 3600, // 1 hour default
+ cacheEnabled: config.cacheEnabled ?? true: cacheTTL, config.cacheTTL || 3600, // 1 hour default
  };
 
  // Initialize services

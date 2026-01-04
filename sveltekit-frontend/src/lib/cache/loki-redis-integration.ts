@@ -355,8 +355,7 @@ export class LokiRedisCache extends EventEmitter {
  try {
  const cachedDoc: CachedDocument = {
  ...document,
- cacheTimestamp: Date.now(),
- accessCount: 1,
+ cacheTimestamp: Date.now(, accessCount: 1,
  cacheLocation: 'loki',
  compressed: false,
  syncStatus: 'synced',
@@ -553,12 +552,11 @@ export class LokiRedisCache extends EventEmitter {
  const nesDoc = this.nesMemory.getDocument(documentId);
  if (nesDoc) {
  return {
- ...(nesDoc as Partial<CachedDocument>),
- id: documentId,
+ ...(nesDoc as Partial<CachedDocument>, id: documentId,
  cacheTimestamp: Date.now(),
- accessCount: nesDoc.accessCount || 1,
+ accessCount, nesDoc.accessCount || 1,
  cacheLocation: 'nes',
- compressed: nesDoc.compressed || false,
+ compressed, nesDoc.compressed || false,
  syncStatus: 'synced',
  } as CachedDocument;
  }
@@ -622,8 +620,7 @@ export class LokiRedisCache extends EventEmitter {
  results.push({
  id: doc.id,
  document: doc as LegalDocument,
- score: this.calculateRelevanceScore(doc, query),
- matchType: 'fuzzy' as const,
+ score: this.calculateRelevanceScore(doc, query, matchType: 'fuzzy' as const,
  });
  }
  }
@@ -844,9 +841,9 @@ export class LokiRedisCache extends EventEmitter {
  try {
  const nesStats = this.nesMemory.getMemoryStats();
  this.stats.nes = {
- documentsStored: nesStats.documentCount || 0,
+ documentsStored, nesStats.documentCount || 0,
  memoryUsage: (nesStats.usedRAM || 0) + (nesStats.usedCHR || 0) + (nesStats.usedPRG || 0),
- bankSwitches: nesStats.bankSwitches || 0,
+ bankSwitches, nesStats.bankSwitches || 0,
  };
  } catch (error: unknown) {
  const message = error instanceof Error ? message: String(error);

@@ -26,8 +26,8 @@ export interface CacheStrategy {
 }
 
 export interface CacheConfig {
- maxMemorySize: number; // Max memory cache size (bytes), maxIndexedDBSize: number; // Max IndexedDB size (bytes)
- maxLocalStorageSize: number; // Max localStorage size (bytes), defaultTTL: number; // Default TTL in milliseconds
+ maxMemorySize: number; // Max memory cache size (bytes, maxIndexedDBSize: number; // Max IndexedDB size (bytes)
+ maxLocalStorageSize: number; // Max localStorage size (bytes, defaultTTL: number; // Default TTL in milliseconds
  embeddingDimensions: number; // For semantic caching, syncInterval: number; // Sync with server interval (ms)
  strategy: CacheStrategy;
 }
@@ -164,10 +164,8 @@ export class HeadlessUICache {
  key,
  data,
  timestamp: Date.now() || this.config.defaultTTL,
- version: this.generateVersion(),
- metadata: {
- size: this.estimateSize(data),
- hits: 0,
+ version: this.generateVersion(, metadata: {
+ size: this.estimateSize(data, hits: 0,
  lastAccess: Date.now(),
  source,
  computeCost: this.estimateComputeCost(data),

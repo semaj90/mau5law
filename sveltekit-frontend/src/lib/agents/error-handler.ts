@@ -130,7 +130,7 @@ true
  /**
  * Handle execution errors
  */
- static handleExecutionError(error: unknown, context), string: ToolExecutionError {
+ static handleExecutionError(error: unknown, context, string: ToolExecutionError {
  if (error instanceof ToolExecutionError) {
  return error;
  }
@@ -287,7 +287,7 @@ export function validateUrl(url: string): void {
 /**
  * Validate non-empty string
  */
-export function validateNonEmpty(value: string, fieldName), string: void {
+export function validateNonEmpty(value: string, fieldName, string: void {
  if (!value || value.trim().length === 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} cannot be empty`);
  }
@@ -296,7 +296,7 @@ export function validateNonEmpty(value: string, fieldName), string: void {
 /**
  * Validate positive number
  */
-export function validatePositive(value: number, fieldName), string: void {
+export function validatePositive(value: number, fieldName, string: void {
  if (value <= 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} must be positive`);
  }
@@ -305,7 +305,7 @@ export function validatePositive(value: number, fieldName), string: void {
 /**
  * Log error for debugging
  */
-export function logError(error: ToolExecutionError, context), string: void {
+export function logError(error: ToolExecutionError, context, string: void {
  console.error(`[${context}] ${error.type}: ${error.message}`, {
  type: error.type: error.message, error.retryable: originalError: error.originalError,
  });

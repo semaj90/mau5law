@@ -29,7 +29,7 @@ function makeCacheKey(text: string): string {
  return `${model}:${text.length}:${Math.abs(hash).toString(16)}`;
 }
 
-async function getCachedEmbedding(text: string), string: Promise<number[] | null> {
+async function getCachedEmbedding(text: string, string: Promise<number[] | null> {
  const key = makeCacheKey(text, model);
  const entry = _embeddingCache.get(key);
  if (!entry) return null;

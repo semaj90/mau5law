@@ -83,8 +83,7 @@ async function runRipgrep(
           matches.push({
             file: json.data.path.text,
             line: json.data.line_number,
-            content: json.data.lines.text.trim(),
-            column: json.data.submatches?.[0]?.start
+            content: json.data.lines.text.trim(, column: json.data.submatches?.[0]?.start
           });
         }
       } catch {
@@ -107,11 +106,11 @@ async function scanRepoHandler(request: ScanRepoRequest): Promise<ToolResult<Sca
   const filesScanned = new Set<string>();
 
   const options = {
-    caseSensitive: request.options?.caseSensitive ?? false,
-    maxResults: request.options?.maxResults ?? 1000,
-    includeLineNumbers: request.options?.includeLineNumbers ?? true,
-    includeContext: request.options?.includeContext ?? 2,
-    excludes: request.excludes ?? ['node_modules', '.git', 'dist']
+    caseSensitive, request.options?.caseSensitive ?? false,
+    maxResults, request.options?.maxResults ?? 1000,
+    includeLineNumbers, request.options?.includeLineNumbers ?? true,
+    includeContext, request.options?.includeContext ?? 2,
+    excludes, request.excludes ?? ['node_modules', '.git', 'dist']
   };
 
   for (const patternDef of request.patterns) {
@@ -127,7 +126,7 @@ async function scanRepoHandler(request: ScanRepoRequest): Promise<ToolResult<Sca
     for (const match of matches) {
       allMatches.push({
         ...match,
-        pattern_name: patternDef.name || patternDef.pattern
+        pattern_name, patternDef.name || patternDef.pattern
       });
       filesScanned.add(match.file);
     }
@@ -135,7 +134,7 @@ async function scanRepoHandler(request: ScanRepoRequest): Promise<ToolResult<Sca
 
   return {
     success: true,
-    run_id: request.run_id,
+    run_id, request.run_id,
     tool: 'scan_repo',
     data: {
       matches: allMatches,

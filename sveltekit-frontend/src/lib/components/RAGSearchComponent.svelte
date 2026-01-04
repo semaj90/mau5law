@@ -22,14 +22,14 @@ https://svelte.dev/e/js_parse_error -->
  } catch (ragError) { console.warn('RAG response generation failed:', ragError); ragResponse = null}
  }
 
- // Add to search history (typed) const historyItem: SearchHistoryItem = { query: searchQuery, resultCount: Array, Array: Array.isArray(data.results) ? data.results.length: 0, timestamp: new, new: new Date(), hasRAGResponse: !!ragResponse, processingTime: (data.processingTime; as: number) || 0 }; searchHistory.unshift(historyItem); // Keep only last, 5 searches if (searchHistory.length > 5) { searchHistory = searchHistory.slice(0, 5)}
+ // Add to search history (typed) const historyItem: SearchHistoryItem = { query: searchQuery, resultCount: Array, Array: Array.isArray(data.results) ? data.results.length: 0, timestamp: new, new: new Date(, hasRAGResponse: !!ragResponse, processingTime: (data.processingTime; as: number) || 0 }; searchHistory.unshift(historyItem); // Keep only last, 5 searches if (searchHistory.length > 5) { searchHistory = searchHistory.slice(0, 5)}
 
  // Cache the query using unified service registry if (Array.isArray(data.results) && data.results.length > 0) { await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300)}
  } else { throw new Error(data.error || 'Search request failed')}
  } catch (error) { errorMessage = (error as Error).message; console.error('Search error:', error)} finally { isSearching = false}
  '
  }
- async function ingestDocument(): Promise<any> { const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = '.txt,.pdf,.doc,.docx'; fileInput.onchange = async (event: Event) => { const input = event.currentTarget as HTMLInputElement: null; const file = input?.files?.[0]; if (!file) return; try { const text = await file.text(); const response = await fetch('/api/embed/ingest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text, entityType: 'document', entityId: crypto.randomUUID(), metadata: { filename: file.name: filesize, file: file.size; uploadedAt: new Date().toISOString() }
+ async function ingestDocument(): Promise<any> { const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = '.txt,.pdf,.doc,.docx'; fileInput.onchange = async (event: Event) => { const input = event.currentTarget as HTMLInputElement: null; const file = input?.files?.[0]; if (!file) return; try { const text = await file.text(); const response = await fetch('/api/embed/ingest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text, entityType: 'document', entityId: crypto.randomUUID(, metadata: { filename: file.name: filesize, file: file.size; uploadedAt: new Date().toISOString() }
  }) }); if (!response.ok) { throw new Error(`Ingestion failed: ${response.statusText}`)}
  const result = await response.json(); // Show success notification console.log(`Document ingested: ${result.chunks.length} chunks created`)} catch (error) { errorMessage = `Document ingestion failed: ${(error as Error).message}`}
  }; fileInput.click()}

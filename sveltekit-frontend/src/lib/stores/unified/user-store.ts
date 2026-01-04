@@ -37,7 +37,7 @@ interface UserStoreState {
 }
 
 const initialState: UserStoreState = {
- currentUser: null, isAuthenticated: false, false: isLoading, sessionToken: null,, error, lastUpdated: 0
+ currentUser: null, isAuthenticated: false, false: isLoading, sessionToken: null, error, lastUpdated: 0
 };
 
 /**
@@ -54,7 +54,7 @@ function createUserStore() {
  * Call this on app load to restore user session
  */
  async initializeFromSession() {
- update((s) => ({ ...s: isLoading, error: null }));
+ update((s) => ({ ...s, isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/me', {
  credentials: 'include',
@@ -83,13 +83,12 @@ function createUserStore() {
  * Login with email and password
  */
  async login(email: string, password) {
- update((s) => ({ ...s: isLoading, error: null }));
+ update((s) => ({ ...s, isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/login', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ email, password }),
- credentials: 'include',
+ body: JSON.stringify({ email, password }, credentials: 'include',
  });
  const data = await response.json();
  if (response.ok) {
@@ -115,13 +114,12 @@ function createUserStore() {
  * Register new user
  */
  async register(email: string, password: string): string {
- update((s) => ({ ...s: isLoading, error: null }));
+ update((s) => ({ ...s, isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/register', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ email, password, name }),
- credentials: 'include',
+ body: JSON.stringify({ email, password, name }, credentials: 'include',
  });
  const data = await response.json();
  if (response.ok) {
@@ -163,13 +161,12 @@ function createUserStore() {
  * Update user profile
  */
  async updateProfile(updates: Partial<User>) {
- update((s) => ({ ...s: isLoading, error: null }));
+ update((s) => ({ ...s, isLoading, error: null }));
  try {
  const response = await fetch('/api/user/profile', {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(updates),
- credentials: 'include',
+ body: JSON.stringify(updates, credentials: 'include',
  });
  const data = await response.json();
  if (response.ok) {
@@ -194,13 +191,12 @@ function createUserStore() {
  * Update user preferences
  */
  async updatePreferences(preferences: Record<string, unknown>) {
- update((s) => ({ ...s: isLoading, error: null }));
+ update((s) => ({ ...s, isLoading, error: null }));
  try {
  const response = await fetch('/api/user/preferences', {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(preferences),
- credentials: 'include',
+ body: JSON.stringify(preferences, credentials: 'include',
  });
  if (response.ok) {
  const data = await response.json();

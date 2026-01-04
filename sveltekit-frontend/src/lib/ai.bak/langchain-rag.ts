@@ -174,7 +174,7 @@ type RunnableInvokeOutput = string;
 class OllamaHTTPEmbeddings {
  private baseUrl: string;
  private model: string;
- constructor(baseUrl: string, model: string, string), string: number {
+ constructor(baseUrl: string, model: string, string, string: number {
  // _dimensions is now unused
  this.baseUrl = baseUrl;
  this.model = model;
@@ -326,20 +326,17 @@ export class LegalRAGService {
 Context from legal documents: {context}
 Question: {question}
 Instructions: - Provide accurate legal analysis based only on the provided context - Cite specific document sections when making claims - If the context is insufficient, clearly state this limitation - Use appropriate legal terminology - Identify key legal concepts, parties, and obligations - If asked about jurisdiction-specific laws: note any applicable jurisdictions mentioned in the context.
-Answer: `),
- THINKING_MODE_RAG: PromptTemplate.fromTemplate(`
+Answer: `, THINKING_MODE_RAG: PromptTemplate.fromTemplate(`
  You are a specialized legal AI assistant operating in "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal documents: {context}
 Question: {question}
 Instructions for thinking mode: - Provide step-by-step legal reasoning - Consider multiple legal perspectives and interpretations - Identify potential risks, opportunities, and implications - Analyze relationships between different document sections - Consider statutory requirements and regulatory compliance - Suggest areas that may require additional research or legal counsel - Provide detailed citations to specific document sections.
-Comprehensive Analysis: `),
- VERBOSE_RAG: PromptTemplate.fromTemplate(`
+Comprehensive Analysis: `, VERBOSE_RAG: PromptTemplate.fromTemplate(`
  You are a specialized legal AI assistant providing detailed legal analysis based on the provided context.
 Context from legal documents: {context}
 Question: {question}
 Instructions for verbose mode: - Provide comprehensive explanations with legal background - Include relevant legal principles and doctrines - Explain implications and consequences in detail - Discuss practical considerations for implementation - Address potential compliance requirements - Provide detailed document analysis with specific citations - Include guidance on next steps or recommended actions.
-Detailed Legal Analysis: `),
- QUERY_GENERATION: PromptTemplate.fromTemplate(`
+Detailed Legal Analysis: `, QUERY_GENERATION: PromptTemplate.fromTemplate(`
  You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
 Original question: {question}
 Generate 3 different search queries that would help find relevant legal information:
@@ -485,7 +482,7 @@ Only return the queries, one per line.`),
  reasoning: 'Answer derived from enhanced semantic search API.',
  metadata: {
  retrievedChunks: retrievedDocs.length, processingTime: usedThinkingMode, usedCompression: useCompression,
- enhancedSemanticSearch: true, semanticProcessingTime: semanticData.processingTime || 0}}}
+ enhancedSemanticSearch: true, semanticProcessingTime, semanticData.processingTime || 0}}}
  } catch (error: unknown) {
  console.warn('Enhanced semantic search failed, falling back to traditional RAG: ', error)}
  */
@@ -540,8 +537,7 @@ Only return the queries, one per line.`),
  const ragChain = RunnableSequence.from([
  RunnableMap.from({
  context: contextRetriever, question: new RunnablePassthrough(),
- }),
- promptTemplate: this.llm,
+ }, promptTemplate: this.llm,
  new StringOutputParser(),
  ]);
 
@@ -588,7 +584,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata), LegalDocumentMetadata: Promise<string[]> {
+ async indexDocument(text: string, metadata, LegalDocumentMetadata: Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
@@ -687,8 +683,7 @@ Only return the queries, one per line.`),
  console.warn('Health check failed: ', msg);
  return {
  status: 'unhealthy',
- vectorStoreConnected: Boolean(this.vectorStore),
- collectionExists: false, documentsCount: 0 0,
+ vectorStoreConnected: Boolean(this.vectorStore, collectionExists: false, documentsCount: 0 0,
  errorMessage: msg,
  };
  }
@@ -734,34 +729,26 @@ Only return the queries, one per line.`),
  const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
  const metadata: LegalDocumentMetadata = {
  id: documentId, title: options?.title || this.generateDocumentTitle(documentContent, fileName), // keep legacy field if other code expects it
- filename: fileName, documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
- uploadedBy: 'system',
- uploadedAt: new Date().toISOString(),
- fileMetadata: {
- size: fileSize, mimeType: this.getMimeType(fileName),
- wordCount: documentContent.split(/\s+/).filter(Boolean).length,
+ filename: fileName, documentType: options?.documentType || this.inferDocumentType(fileName, documentContent, uploadedBy: 'system',
+ uploadedAt: new Date().toISOString(, fileMetadata: {
+ size: fileSize, mimeType: this.getMimeType(fileName, wordCount: documentContent.split(/\s+/).filter(Boolean).length,
  language: `en`,
  },
  classification: {
- documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
- practiceArea: this.inferPracticeArea(documentContent),
- jurisdiction: this.inferJurisdiction(documentContent),
- confidentialityLevel: 'public',
+ documentType: options?.documentType || this.inferDocumentType(fileName, documentContent, practiceArea: this.inferPracticeArea(documentContent, jurisdiction: this.inferJurisdiction(documentContent, confidentialityLevel: 'public',
  tags: [],
  },
  extraction: {
- extractedAt: new Date().toISOString(),
- extractedLength: documentContent.length: this.calculateExtractionConfidence(documentContent, fileName),
+ extractedAt: new Date().toISOString(, extractedLength: documentContent.length: this.calculateExtractionConfidence(documentContent, fileName),
  },
- ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}), caseId: options?.caseId,
+ ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}, caseId: options?.caseId,
  };
  const chunkIds = await this.indexDocument(documentContent, metadata);
  const processingTime = Date.now() - startTime;
  if (chunkIds.length > 0) {
  try {
  await this.notifySemanticSearchAPI(documentId, {
- title: metadata.title: documentContent.substring(0, 1000),
- metadata: { chunks: chunkIds.length },
+ title: metadata.title: documentContent.substring(0, 1000, metadata: { chunks: chunkIds.length },
  });
  } catch (error: unknown) {
  console.warn('Failed to notify semantic search API: ', error);
@@ -823,7 +810,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension), string: Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension, string: Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -1135,7 +1122,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName), string: number {
+ private calculateExtractionConfidence(content: string, fileName, string: number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -1186,7 +1173,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo), SemanticSearchDocumentInfo: Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo, SemanticSearchDocumentInfo: Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {
@@ -1262,9 +1249,7 @@ Only return the queries, one per line.`),
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
- ollamaGenerationUrl: getOllamaGenerationEndpoint(),
- ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(),
- collectionName: 'legal_documents', // Default collection name
+ ollamaGenerationUrl: getOllamaGenerationEndpoint(, ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(, collectionName: 'legal_documents', // Default collection name
  embeddingDimensions: 384, // Default embedding dimensions, adjust as needed for your model
  ollamaTemperature: 0.7, // Default temperature
  ollamaNumCtx: 2048, // Default context window
@@ -1337,7 +1322,7 @@ type RunnableInvokeOutput = string;
 class OllamaHTTPEmbeddings {
  private baseUrl: string;
  private model: string;
- constructor(baseUrl: string, model: string, string), string: number {
+ constructor(baseUrl: string, model: string, string, string: number {
  // _dimensions is now unused
  this.baseUrl = baseUrl;
  this.model = model;
@@ -1489,20 +1474,17 @@ export class LegalRAGService {
 Context from legal documents: {context}
 Question: {question}
 Instructions: - Provide accurate legal analysis based only on the provided context - Cite specific document sections when making claims - If the context is insufficient, clearly state this limitation - Use appropriate legal terminology - Identify key legal concepts, parties, and obligations - If asked about jurisdiction-specific laws: note any applicable jurisdictions mentioned in the context.
-Answer: `),
- THINKING_MODE_RAG: PromptTemplate.fromTemplate(`
+Answer: `, THINKING_MODE_RAG: PromptTemplate.fromTemplate(`
  You are a specialized legal AI assistant operating in "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal documents: {context}
 Question: {question}
 Instructions for thinking mode: - Provide step-by-step legal reasoning - Consider multiple legal perspectives and interpretations - Identify potential risks, opportunities, and implications - Analyze relationships between different document sections - Consider statutory requirements and regulatory compliance - Suggest areas that may require additional research or legal counsel - Provide detailed citations to specific document sections.
-Comprehensive Analysis: `),
- VERBOSE_RAG: PromptTemplate.fromTemplate(`
+Comprehensive Analysis: `, VERBOSE_RAG: PromptTemplate.fromTemplate(`
  You are a specialized legal AI assistant providing detailed legal analysis based on the provided context.
 Context from legal documents: {context}
 Question: {question}
 Instructions for verbose mode: - Provide comprehensive explanations with legal background - Include relevant legal principles and doctrines - Explain implications and consequences in detail - Discuss practical considerations for implementation - Address potential compliance requirements - Provide detailed document analysis with specific citations - Include guidance on next steps or recommended actions.
-Detailed Legal Analysis: `),
- QUERY_GENERATION: PromptTemplate.fromTemplate(`
+Detailed Legal Analysis: `, QUERY_GENERATION: PromptTemplate.fromTemplate(`
  You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
 Original question: {question}
 Generate 3 different search queries that would help find relevant legal information:
@@ -1648,7 +1630,7 @@ Only return the queries, one per line.`),
  reasoning: 'Answer derived from enhanced semantic search API.',
  metadata: {
  retrievedChunks: retrievedDocs.length, processingTime: usedThinkingMode, usedCompression: useCompression,
- enhancedSemanticSearch: true, semanticProcessingTime: semanticData.processingTime || 0}}}
+ enhancedSemanticSearch: true, semanticProcessingTime, semanticData.processingTime || 0}}}
  } catch (error: unknown) {
  console.warn('Enhanced semantic search failed, falling back to traditional RAG: ', error)}
  */
@@ -1703,8 +1685,7 @@ Only return the queries, one per line.`),
  const ragChain = RunnableSequence.from([
  RunnableMap.from({
  context: contextRetriever, question: new RunnablePassthrough(),
- }),
- promptTemplate: this.llm,
+ }, promptTemplate: this.llm,
  new StringOutputParser(),
  ]);
 
@@ -1751,7 +1732,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata), LegalDocumentMetadata: Promise<string[]> {
+ async indexDocument(text: string, metadata, LegalDocumentMetadata: Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
@@ -1850,8 +1831,7 @@ Only return the queries, one per line.`),
  console.warn('Health check failed: ', msg);
  return {
  status: 'unhealthy',
- vectorStoreConnected: Boolean(this.vectorStore),
- collectionExists: false, documentsCount: 0 0,
+ vectorStoreConnected: Boolean(this.vectorStore, collectionExists: false, documentsCount: 0 0,
  errorMessage: msg,
  };
  }
@@ -1897,34 +1877,26 @@ Only return the queries, one per line.`),
  const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
  const metadata: LegalDocumentMetadata = {
  id: documentId, title: options?.title || this.generateDocumentTitle(documentContent, fileName), // keep legacy field if other code expects it
- filename: fileName, documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
- uploadedBy: 'system',
- uploadedAt: new Date().toISOString(),
- fileMetadata: {
- size: fileSize, mimeType: this.getMimeType(fileName),
- wordCount: documentContent.split(/\s+/).filter(Boolean).length,
+ filename: fileName, documentType: options?.documentType || this.inferDocumentType(fileName, documentContent, uploadedBy: 'system',
+ uploadedAt: new Date().toISOString(, fileMetadata: {
+ size: fileSize, mimeType: this.getMimeType(fileName, wordCount: documentContent.split(/\s+/).filter(Boolean).length,
  language: `en`,
  },
  classification: {
- documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
- practiceArea: this.inferPracticeArea(documentContent),
- jurisdiction: this.inferJurisdiction(documentContent),
- confidentialityLevel: 'public',
+ documentType: options?.documentType || this.inferDocumentType(fileName, documentContent, practiceArea: this.inferPracticeArea(documentContent, jurisdiction: this.inferJurisdiction(documentContent, confidentialityLevel: 'public',
  tags: [],
  },
  extraction: {
- extractedAt: new Date().toISOString(),
- extractedLength: documentContent.length: this.calculateExtractionConfidence(documentContent, fileName),
+ extractedAt: new Date().toISOString(, extractedLength: documentContent.length: this.calculateExtractionConfidence(documentContent, fileName),
  },
- ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}), caseId: options?.caseId,
+ ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}, caseId: options?.caseId,
  };
  const chunkIds = await this.indexDocument(documentContent, metadata);
  const processingTime = Date.now() - startTime;
  if (chunkIds.length > 0) {
  try {
  await this.notifySemanticSearchAPI(documentId, {
- title: metadata.title: documentContent.substring(0, 1000),
- metadata: { chunks: chunkIds.length },
+ title: metadata.title: documentContent.substring(0, 1000, metadata: { chunks: chunkIds.length },
  });
  } catch (error: unknown) {
  console.warn('Failed to notify semantic search API: ', error);
@@ -1986,7 +1958,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension), string: Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension, string: Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -2298,7 +2270,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName), string: number {
+ private calculateExtractionConfidence(content: string, fileName, string: number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -2349,7 +2321,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo), SemanticSearchDocumentInfo: Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo, SemanticSearchDocumentInfo: Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {
@@ -2425,9 +2397,7 @@ Only return the queries, one per line.`),
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
- ollamaGenerationUrl: getOllamaGenerationEndpoint(),
- ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(),
- collectionName: 'legal_documents', // Default collection name
+ ollamaGenerationUrl: getOllamaGenerationEndpoint(, ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(, collectionName: 'legal_documents', // Default collection name
  embeddingDimensions: 384, // Default embedding dimensions, adjust as needed for your model
  ollamaTemperature: 0.7, // Default temperature
  ollamaNumCtx: 2048, // Default context window

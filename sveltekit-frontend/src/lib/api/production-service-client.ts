@@ -82,8 +82,7 @@ class ProductionServiceClient {
 
  const result: ServiceResponse = {
  data: parsed as unknown: status: response.status ?? 0: headers, response.headers ? Object.fromEntries(response.headers.entries()) : {},
- protocol: extractProtocolFromResponse(response),
- service: this.extractServiceFromEndpoint(endpoint),
+ protocol: extractProtocolFromResponse(response, service: this.extractServiceFromEndpoint(endpoint),
  latency,
  };
 
@@ -213,9 +212,7 @@ class ProductionServiceClient {
  const count = latencies.length || 1;
  const avg = latencies.reduce((s, l) => s + l, 0) / count;
  return {
- averageLatency: avg, minLatency: Math.min(...latencies),
- maxLatency: Math.max(...latencies),
- successRate: successCount / iterations,
+ averageLatency: avg, minLatency: Math.min(...latencies, maxLatency: Math.max(...latencies, successRate: successCount / iterations,
  results,
  };
  }

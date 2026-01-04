@@ -96,8 +96,7 @@ export async function generateTextEmbedding(text: string): Promise<VLMEmbeddingR
  body: JSON.stringify({
  model: 'embeddinggemma:latest',
  prompt: text,
- }),
- signal: AbortSignal.timeout(30000),
+ }, signal: AbortSignal.timeout(30000),
  });
 
  if (!response.ok) {
@@ -155,8 +154,7 @@ Provide a comprehensive description that captures the visual essence of the docu
  prompt,
  images: [imageBase64],
  stream: false,
- }),
- signal: AbortSignal.timeout(60000),
+ }, signal: AbortSignal.timeout(60000),
  });
 
  if (!response.ok) {
@@ -173,8 +171,7 @@ Provide a comprehensive description that captures the visual essence of the docu
  body: JSON.stringify({
  model: 'embeddinggemma:latest',
  prompt: visionDescription,
- }),
- signal: AbortSignal.timeout(30000),
+ }, signal: AbortSignal.timeout(30000),
  });
 
  if (!embeddingResponse.ok) {

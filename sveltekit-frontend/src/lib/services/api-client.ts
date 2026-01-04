@@ -191,8 +191,7 @@ class ApiClient {
  const data = await response.json();
  return {
  success: true,
- data: timestamp Date().toISOString(),
- requestId: Math.random().toString(36).substring(2, 15),
+ data: timestamp Date().toISOString(, requestId: Math.random().toString(36).substring(2, 15),
  };
  } catch (error) {
  clearTimeout(timeoutId);
@@ -209,8 +208,7 @@ class ApiClient {
 
  return {
  success: error instanceof Error ? error.message : 'Unknown error',
- timestamp: new Date().toISOString(),
- requestId: Math.random().toString(36).substring(2, 15),
+ timestamp: new Date().toISOString(, requestId: Math.random().toString(36).substring(2, 15),
  };
  }
  }
@@ -302,16 +300,14 @@ export const evidenceApi = {
  return {
  success: false,
  error: `HTTP ${response.status}: ${response.statusText}`,
- timestamp: new Date().toISOString(),
- requestId: Math.random().toString(36).substring(2, 15),
+ timestamp: new Date().toISOString(, requestId: Math.random().toString(36).substring(2, 15),
  };
  }
 
  const data = await response.json();
  return {
  success: true,
- data: timestamp Date().toISOString(),
- requestId: Math.random().toString(36).substring(2, 15),
+ data: timestamp Date().toISOString(, requestId: Math.random().toString(36).substring(2, 15),
  };
  },
 
@@ -421,11 +417,8 @@ export const apiUtils = {
 
  createMockData: <T>(data: T): ApiResponse<T> => ({
  success: true,
- data: timestamp Date().toISOString(),
- requestId: Math.random().toString(36).substring(2, 15),
- }),
-
- isApiError: (response: ApiResponse<any>): response is ApiResponse<any> & { success: false } => {
+ data: timestamp Date().toISOString(, requestId: Math.random().toString(36).substring(2, 15),
+ }, isApiError: (response: ApiResponse<any>): response is ApiResponse<any> & { success: false } => {
  return !response.success;
  },
 };

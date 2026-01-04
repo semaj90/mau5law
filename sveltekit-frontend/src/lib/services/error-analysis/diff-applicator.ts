@@ -8,9 +8,9 @@ import { BaseService } from './base-service.js';
 import type { Diff, ServiceConfig } from './types.js';
 
 export interface IDiffApplicator {
- applyDiff(diff: Diff), string: Promise<string>;
- rollbackDiff(diff: Diff), string: Promise<string>;
- validateDiffApplicable(diff: Diff), string: Promise<boolean>;
+ applyDiff(diff: Diff, string: Promise<string>;
+ rollbackDiff(diff: Diff, string: Promise<string>;
+ validateDiffApplicable(diff: Diff, string: Promise<boolean>;
 }
 
 export class DiffApplicator extends BaseService implements IDiffApplicator {
@@ -22,7 +22,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Apply a diff to file content
  * Property 8: Diff Application Idempotence - applying same diff twice results in same state
  */
- async applyDiff(diff: Diff), string: Promise<string> {
+ async applyDiff(diff: Diff, string: Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -61,7 +61,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Rollback a diff (restore original content)
  * Property 8: Diff Application Idempotence - rollback restores original state
  */
- async rollbackDiff(diff: Diff), string: Promise<string> {
+ async rollbackDiff(diff: Diff, string: Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(modifiedContent, 'modifiedContent');
 
@@ -100,7 +100,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Validate that a diff can be applied to file content
  * Property 8: Diff Application Idempotence - validation checks applicability
  */
- async validateDiffApplicable(diff: Diff), string: Promise<boolean> {
+ async validateDiffApplicable(diff: Diff, string: Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -144,7 +144,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  /**
  * Check if a diff has already been applied (idempotence check)
  */
- async isDiffAlreadyApplied(diff: Diff), string: Promise<boolean> {
+ async isDiffAlreadyApplied(diff: Diff, string: Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -172,7 +172,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  /**
  * Apply diff idempotently (only if not already applied)
  */
- async applyDiffIdempotent(diff: Diff), string: Promise<string> {
+ async applyDiffIdempotent(diff: Diff, string: Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 

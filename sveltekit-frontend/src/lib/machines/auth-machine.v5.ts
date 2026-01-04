@@ -34,27 +34,19 @@ const initialContext: AuthContext = {
 export const authMachine = setup({
   types: {} as { context: AuthContext; events: AuthEvent },
   actions: {
-    setLoading: assign({ isLoading: () => true }),
-    clearLoading: assign({ isLoading: () => false }),
-    setError: assign({
-      error: ({ event }) => ('error' in event ? event.error : 'Unknown error'),
-      isLoading: () => false
-    }),
-    setUser: assign({
-      user: ({ event }) => ('user' in event ? event.user as AuthContext['user'] : null),
-      session: ({ event }) => ('session' in event ? event.session as AuthContext['session'] : null),
-      isLoading: () => false,
+    setLoading: assign({ isLoading: () => true }, clearLoading: assign({ isLoading: () => false }, setError: assign({
+      error: ({ event }) => ('error' in event ? event.error : 'Unknown error', isLoading: () => false
+    }, setUser: assign({
+      user: ({ event }) => ('user' in event ? event.user as AuthContext['user'] : null, session: ({ event }) => ('session' in event ? event.session as AuthContext['session'] : null, isLoading: () => false,
       error: () => undefined,
-    }),
-    clearUser: assign({ user: () => null, session: () => null }),
+    }, clearUser: assign({ user: () => null, session: () => null }),
   },
   actors: {
     authenticate: fromPromise(async ({ input }, { input: { email: string; password: string } }) => {
       // Stub: Replace with real auth logic
       console.log('Auth stub called with:', input.email);
       return { user: { id: '1', email: input.email }, session: { id: 'sess_1' } };
-    }),
-    logout: fromPromise(async () => {
+    }, logout: fromPromise(async () => {
       return { success: true };
     }),
   },
@@ -72,8 +64,7 @@ export const authMachine = setup({
       entry: 'setLoading',
       invoke: {
         src: 'authenticate',
-        input: ({ event }) => ('data' in event ? event.data : { email: '', password: '' }),
-        onDone: {
+        input: ({ event }) => ('data' in event ? event.data : { email: '', password: '' }, onDone: {
           target: 'authenticated',
           actions: 'setUser',
         },

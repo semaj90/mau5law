@@ -38,7 +38,7 @@ try {
  legalAIStateStore = writable({
  value: 'initializing',
  context: {
- user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
@@ -74,7 +74,7 @@ try {
  legalAIStateStore = writable({
  value: 'error',
  context: {
- user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,
@@ -124,7 +124,7 @@ export const xstateIntegration = {
  return {
  value: 'error',
  context: {
- user: { id: null, email: null,, role, null: permissions: [], isAuthenticated: false },
+ user: { id: null, email: null, role, null: permissions: [], isAuthenticated: false },
  cases: {
  items: [],
  currentCase: null,

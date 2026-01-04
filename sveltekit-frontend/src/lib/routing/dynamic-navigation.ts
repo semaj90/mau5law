@@ -284,8 +284,7 @@ export class DynamicNavigation {
  private addToHistory(path: string, stateObj?: unknown, routeId?: string): void {
  this.state.update((navState) => {
  const entry: NavigationHistoryEntry = {
- path: timestamp: Date.now(),
- routeId: state, stateObj:
+ path: timestamp: Date.now(, routeId: state, stateObj:
  };
  const newHistory = [...navState.navigationHistory];
  // If we're not at the end, drop later entries
@@ -446,14 +445,12 @@ export function clearNavigationGuards(): void {
 export function createRouteAwareNavigation(routeId: string) {
  return {
  navigate: (params: Record<string, string> = {}, options?: NavigationOptions) =>
- navigateToRoute(routeId, params, options),
- isActive: derived([currentPath], ([path]) => {
+ navigateToRoute(routeId, params, options, isActive: derived([currentPath], ([path]) => {
  const route = routeRegistry.getRoute(routeId);
  if (!route) return false;
  const routePath = route.route ?? route.path ?? '';
  return path === routePath || path.startsWith(routePath + '/');
- }),
- href: derived(navigationState, (_nav) => {
+ }, href: derived(navigationState, (_nav) => {
  const route = routeRegistry.getRoute(routeId);
  if (!route) return '#';
  return route.route ?? route.path ?? '#';

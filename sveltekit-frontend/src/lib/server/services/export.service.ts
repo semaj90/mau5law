@@ -31,8 +31,7 @@ class ExportService {
  try {
  const data = {
  collection: collectionName || 'Citations Export',
- exportedAt: new Date().toISOString(),
- count: citations.length,
+ exportedAt: new Date().toISOString(, count: citations.length,
  citations,
  };
 

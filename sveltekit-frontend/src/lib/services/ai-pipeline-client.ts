@@ -213,8 +213,7 @@ export class AIPipelineClient {
 			const response = await fetch(`${this.baseUrl}/api/ai/embeddings`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ text }),
-				signal: AbortSignal.timeout(10000) // 10s timeout
+				body: JSON.stringify({ text }, signal: AbortSignal.timeout(10000) // 10s timeout
 			});
 
 			if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -254,8 +253,7 @@ export class AIPipelineClient {
 		if (!status.ollama) {
 			console.warn('[AIPipelineClient] Analysis service unavailable');
 			return {
-				analysis: this.getFallbackAnalysis(content, documentType),
-				cached: false
+				analysis: this.getFallbackAnalysis(content, documentType, cached: false
 			};
 		}
 
@@ -264,8 +262,7 @@ export class AIPipelineClient {
 			const response = await fetch(`${this.baseUrl}/api/ai/analyze`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ content, documentType }),
-				signal: AbortSignal.timeout(30000) // 30s timeout
+				body: JSON.stringify({ content, documentType }, signal: AbortSignal.timeout(30000) // 30s timeout
 			});
 
 			if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -283,8 +280,7 @@ export class AIPipelineClient {
 		}
 
 		return {
-			analysis: this.getFallbackAnalysis(content, documentType),
-			cached: false
+			analysis: this.getFallbackAnalysis(content, documentType, cached: false
 		};
 	}
 
@@ -315,8 +311,7 @@ export class AIPipelineClient {
 			const response = await fetch(`${this.baseUrl}/api/ai/rag`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query, ...options }),
-				signal: AbortSignal.timeout(15000) // 15s timeout
+				body: JSON.stringify({ query, ...options }, signal: AbortSignal.timeout(15000) // 15s timeout
 			});
 
 			if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -408,7 +403,7 @@ export class AIPipelineClient {
 		return Math.abs(hash).toString(36);
 	}
 
-	private getFallbackAnalysis(content: string), string: unknown {
+	private getFallbackAnalysis(content: string, string: unknown {
 		// Simple client-side analysis when services are down
 		const words = content.toLowerCase().split(/\s+/);
 		const wordCount = words.length;
@@ -450,6 +445,5 @@ export async function checkAIServices(): Promise<ServiceStatus> {
 
 // Export cache utilities
 export const cacheUtils = {
-	clear: () => aiPipelineClient.clearCache(),
-	processQueue: () => aiPipelineClient.processOfflineQueue()
+	clear: () => aiPipelineClient.clearCache(, processQueue: () => aiPipelineClient.processOfflineQueue()
 };

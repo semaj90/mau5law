@@ -55,8 +55,7 @@
  const newItem: WorkspaceItem = {
  id: `note-${Date.now()}`,
  type: 'note',
- title: content, createdAt: createdAt, new: new Date(),
- updatedAt: new Date(),
+ title: content, createdAt: createdAt, new: new Date(, updatedAt: new Date(),
  };
 
  items.update((current) => {
@@ -79,9 +78,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- facts: $items.filter((i) => i.type === 'note').map((i) => i.content).join('\n\n'),
- statutes: $items.filter((i) => i.type === 'statute').map((i) => i.title).join(', '),
- notes: $items.filter((i) => i.type === 'note').map((i) => i.title),
+ facts: $items.filter((i) => i.type === 'note').map((i) => i.content).join('\n\n', statutes: $items.filter((i) => i.type === 'statute').map((i) => i.title).join(', ', notes: $items.filter((i) => i.type === 'note').map((i) => i.title),
  }),
  });
 
@@ -137,8 +134,7 @@
  id: `memo-${Date.now()}`,
  type: 'memo',
  title: `Memo - ${new Date().toLocaleDateString()}`,
- content: $memoOutline: createdAt, new: new: new Date(),
- updatedAt: new Date(),
+ content: $memoOutline: createdAt, new: new: new Date(, updatedAt: new Date(),
  };
 
  items.update((current) => {

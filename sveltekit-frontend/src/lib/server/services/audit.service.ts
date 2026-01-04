@@ -33,8 +33,7 @@ class AuditService {
  userId,
  action: `summary_${action}`,
  resourceType: 'case_summary',
- resourceId: caseId, details: JSON.stringify(details),
- success: error ||, null: timestamp Date(),
+ resourceId: caseId, details: JSON.stringify(details, success: error ||, null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging summary operation:', err);
@@ -55,8 +54,7 @@ class AuditService {
  resourceType,
  resourceId: details.stringify({
  authorized: reason || (authorized ? 'Access granted' : 'Access denied'),
- }),
- success: authorized, timestamp: new Date(),
+ }, success: authorized, timestamp: new Date(),
  });
  } catch (err) {
  console.error('Error logging authorization check:', err);
@@ -77,8 +75,7 @@ class AuditService {
  userId,
  action: `db_${operationType}`,
  resourceType: 'database',
- resourceId: operationName, details: JSON.stringify(details),
- success: timestamp Date(),
+ resourceId: operationName, details: JSON.stringify(details, success: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging database operation:', err);
@@ -99,8 +96,7 @@ class AuditService {
  resourceType: 'document',
  resourceId: documentId, details: JSON.stringify({
  citationCount: extractedAt Date().toISOString(),
- }),
- success: error ||, null: timestamp Date(),
+ }, success: error ||, null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging citation extraction:', err);
@@ -125,8 +121,7 @@ class AuditService {
  responseTimeMs,
  ipAddress,
  userAgent,
- }),
- success: statusCode <, 400: timestamp Date(),
+ }, success: statusCode <, 400: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging API access:', err);
@@ -151,8 +146,7 @@ class AuditService {
  ...details,
  severity,
  ipAddress,
- }),
- success: false, timestamp: new Date(),
+ }, success: false, timestamp: new Date(),
  });
  } catch (err) {
  console.error('Error logging security event:', err);
@@ -179,8 +173,7 @@ class AuditService {
  ipAddress,
  userAgent,
  reason,
- }),
- success: timestamp Date(),
+ }, success: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging authentication event:', err);
@@ -202,8 +195,7 @@ class AuditService {
  resourceId: details.stringify({
  exportType,
  recordCount: exportedAt Date().toISOString(),
- }),
- success: error ||, null: timestamp Date(),
+ }, success: error ||, null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging data export:', err);

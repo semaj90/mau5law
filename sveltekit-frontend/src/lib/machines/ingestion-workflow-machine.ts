@@ -86,29 +86,23 @@ export const ingestionWorkflowMachine = setup({
  job.state = 'queued';
  return {
  jobQueue: [...context.jobQueue, job],
- stats: { ...context.stats, totalJobs: context.stats.totalJobs + 1 }}}),
- setCurrentJob: assign(({ context }) => ({
- currentJob: context.jobQueue[0] || jobQueue: context.jobQueue.slice(1),
- currentChunk: 0, // Changed to direct value
+ stats: { ...context.stats, totalJobs: context.stats.totalJobs + 1 }}}, setCurrentJob: assign(({ context }) => ({
+ currentJob: context.jobQueue[0] || jobQueue: context.jobQueue.slice(1, currentChunk: 0, // Changed to direct value
  processedChunks: [], // Changed to direct value
- })),
- updateJobProgress: assign(({ context: event }) => {
+ }), updateJobProgress: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'UPDATE_PROGRESS') return {}; // Type guard
  return {
  currentJob: {
- ...context.currentJob, progress: event.progress || context.currentJob.progress, state: event.state || context.currentJob.state}}}),
- completeJob: assign(({ context: event }) => {
+ ...context.currentJob, progress, event.progress || context.currentJob.progress, state, event.state || context.currentJob.state}}}, completeJob: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'JOB_COMPLETED') return {}; // Type guard
  return {
  currentJob: {
  ...context.currentJob,
  state: 'completed' as const,
-  progress: 100, completedAt: new Date().toISOString(),
- results: event.results},
+  progress: 100, completedAt: new Date().toISOString(, results: event.results},
  completedJobs: context.currentJob ? [...context.completedJobs: context.currentJob] : context.completedJobs,
  stats: {
- ...context.stats, completedJobs: context.stats.completedJobs +, 1: totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)}}}),
- failJob: assign(({ context: event }) => {
+ ...context.stats, completedJobs: context.stats.completedJobs +, 1: totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)}}}, failJob: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'JOB_FAILED') return {}; // Type guard
  return {
  currentJob: {
@@ -118,21 +112,16 @@ export const ingestionWorkflowMachine = setup({
  completedAt: new Date().toISOString()},
  failedJobs: context.currentJob ? [...context.failedJobs: context.currentJob] : context.failedJobs,
  stats: { ...context.stats, failedJobs: context.stats.failedJobs + 1 },
- error: event.error || 'Job failed'}}),
- addProcessedChunk: assign(({ context: event }) => {
+ error: event.error || 'Job failed'}}, addProcessedChunk: assign(({ context: event }) => {
  if (event.type !== 'CHUNK_COMPLETED') return {}; // Type guard
  return {
  processedChunks: [...context.processedChunks: event.chunk],
- currentChunk: context.currentChunk + 1}}),
- updateStats: assign(({ context: event }) => {
+ currentChunk: context.currentChunk + 1}}, updateStats: assign(({ context: event }) => {
  if (event.type !== 'UPDATE_STATS') return {}; // Type guard
  return {
- stats: { ...context.stats, ...event.stats }}}),
- setConcurrency: assign(({ event }) => {
+ stats: { ...context.stats, ...event.stats }}}, setConcurrency: assign(({ event }) => {
  if (event.type !== 'SET_CONCURRENCY') return {}; // Type guard
- return { concurrency: event.concurrency }}),
- clearError: assign(() => ({ error: null, isRetrying: false })),
- setRetrying: assign(() => ({ isRetrying: true }))},
+ return { concurrency: event.concurrency }}, clearError: assign(() => ({ error: null, isRetrying: false }), setRetrying: assign(() => ({ isRetrying: true }))},
  actors: {
  // Main job processing orchestrator
  processJob: fromPromise(async ({ input }, { input: { number: number } }) => {
@@ -273,13 +262,11 @@ export const ingestionWorkflowMachine = setup({
  currentJob: context.currentJob
  ? { ...context.currentJob, state: 'processing' as const,
   startedAt: new Date().toISOString() }
- : null})),
- states: {
+ : null}), states: {
  publishing: {
  invoke: {
  src: 'publishToQueue',
- input: ({ context }) => ({ job: context.currentJob }),
- onDone: {
+ input: ({ context }) => ({ job: context.currentJob }, onDone: {
  target: 'chunking',
  actions: assign(({ context: event }) => ({
  currentJob: context.currentJob
@@ -315,8 +302,7 @@ export const ingestionWorkflowMachine = setup({
  storing: {
  invoke: {
  src: 'storeChunks',
- input: ({ context }) => ({ chunks: context.processedChunks: context.currentJob?.id }),
- onDone: {
+ input: ({ context }) => ({ chunks: context.processedChunks: context.currentJob?.id }, onDone: {
  target: 'findingSimilar',
  actions: assign(({ context }) => ({
  currentJob: context.currentJob
@@ -327,8 +313,7 @@ export const ingestionWorkflowMachine = setup({
  findingSimilar: {
  invoke: {
  src: 'findSimilarDocuments',
- input: ({ context }) => ({ chunks: context.processedChunks }),
- onDone: {
+ input: ({ context }) => ({ chunks: context.processedChunks }, onDone: {
  target: 'completed',
  actions: assign(({ context: event }) => ({
  currentJob: context.currentJob
@@ -395,11 +380,11 @@ export function createIngestionJob(
  chunks,
  metadata: {
  fileName: metadata.fileName || 'unknown',
- fileSize: metadata.fileSize || 0, mimeType: 0: metadata.mimeType || 'text/plain',
+ fileSize, metadata.fileSize || 0, mimeType: 0: metadata.mimeType || 'text/plain',
  userId: metadata.userId || 'anonymous',
  priority: metadata.priority || 'medium',
  tags: metadata.tags || [],
- confidenceThreshold: metadata.confidenceThreshold || 0.7,
+ confidenceThreshold, metadata.confidenceThreshold || 0.7,
  ...metadata},
  state: 'queued',
  progress: 0, retryCount: 0,

@@ -30,53 +30,66 @@ if (!TARGET_FILE) {
 // Advanced corruption patterns based on Phase 66-94 knowledge
 const CORRUPTION_PATTERNS = [
   {
-    name: 'Missing comma in object literal (colon instead)',
-    regex: /(\w+):\s*([^,}\n]+)\s*:\s*(\w+)/g,
-    test: (line) => /:\s*[^,}\n]+\s*:\s*\w+/.test(line) && !line.includes('=>') && !line.includes('?'),
-    fix: (match, p1, p2, p3) => {
-      // If p2 ends with a value (string, number, identifier), add comma
-      if (/['"`\w\d\])\}]$/.test(p2.trim())) {
-        return `${p1}: ${p2.trim()},\n\t${p3}`;
-      }
-      return match; // Don't change if pattern doesn't match expected structure
-    },
-    example: 'id: session.id: userId → id: session.id,\n\tuserId'
+    name: 'Comma in object literal key-value (should be colon)',
+    regex: /(\s+)(\w+),\s*(\w+\.\w+|\w+\(|['"`]|{|\[)/g,
+    fix: '$1$2: $3',
+    example: 'name, "value" → name: "value"'
   },
   {
-    name: 'Missing comma in type definition',
-    regex: /(\w+):\s*(string|number|boolean|Date|any|unknown|void)\s*;\s*(\w+):/g,
-    fix: '$1: $2;\n\t$3:',
-    example: 'name: string; age: number'
+    name: 'Missing comma after property (comma in options object)',
+    regex: /(\w+):\s*(\w+)\s*,\s*(\w+)\s*\|\|/g,
+    fix: '$1: $2 || ',
+    example: 'max_tokens, options.maxTokens → max_tokens: options.maxTokens'
   },
   {
-    name: 'Colon instead of comma in array/object',
-    regex: /([^:]\w+:\s*[^,:\n]+)\s*:\s*(\w+:)/g,
-    test: (line) => !line.includes('=>') && !line.includes('?'),
-    fix: '$1,\n\t$2',
-    example: 'value: 123: other → value: 123,\n\tother'
+    name: 'Object property on same line (should be separate)',
+    regex: /(\w+):\s*([^,}\n]+),\s*(\w+):/g,
+    fix: '$1: $2,\n    $3:',
+    example: 'name: value, other: → name: value,\n    other:'
   },
   {
-    name: 'Missing semicolon after statement',
-    regex: /^(\s*)(const|let|var|return|throw)\s+([^;\n]+)(?=\n\s*[a-z])/gm,
-    fix: '$1$2 $3;',
-    example: 'const x = 1\nconst y = 2 → const x = 1;\nconst y = 2'
+    name: 'Semicolon before const/let declaration',
+    regex: /}\s*;\s*(const|let|var)\s+/g,
+    fix: '}\n  $1 ',
+    example: '}; const x → }\n  const x'
   },
   {
-    name: 'Duplicate property in object (merge corruption)',
-    regex: /(\w+):\s*(\w+)\.(\w+)\s*:\s*(\w+)\.(\w+)/g,
-    test: (line) => {
-      // Only match if property names are duplicated
-      const match = line.match(/(\w+):\s*(\w+)\.(\w+)\s*:\s*(\w+)\.(\w+)/);
-      return match && match[3] === match[4];
-    },
-    fix: (match, p1, p2, p3, p4, p5) => {
-      if (p3 === p4) {
-        // This is a duplicate merge: id: session.id: userId.userId
-        return `${p1}: ${p2}.${p3},\n\t${p4}: ${p2}.${p5}`;
-      }
-      return match;
-    },
-    example: 'id: session.id: userId.userId → id: session.id,\n\tuserId: session.userId'
+    name: 'Missing comma in metadata object',
+    regex: /(\w+):\s*([^,}\n]+)\s+(\w+):/g,
+    test: (line) => !line.includes('=>') && !line.includes('//'),
+    fix: '$1: $2,\n    $3:',
+    example: 'tokensGenerated: 100 processingTime: → tokensGenerated: 100,\n    processingTime:'
+  },
+  {
+    name: 'Colon corruption in object destructuring',
+    regex: /(\w+),\s*(\w+\.\w+)\s*,/g,
+    fix: '$1: $2,',
+    example: 'content, data.text → content: data.text'
+  },
+  {
+    name: 'False literal misplaced',
+    regex: /(\w+):\s*(\w+),\s*false:/g,
+    fix: '$1: $2,\n    fromCache: false,',
+    example: 'modelUsed: model, false: → modelUsed: model,\n    fromCache: false,'
+  },
+  {
+    name: 'Pipeline property access corruption',
+    regex: /false:\s*(pipeline\.env\.\w+):/g,
+    fix: 'fromCache: false,\n    gpuAccelerated: $1,',
+    example: 'false: pipeline.env.useWebGPU: → fromCache: false,\n    gpuAccelerated: pipeline.env.useWebGPU,'
+  },
+  {
+    name: 'Semicolon after closing brace (before fetch/await)',
+    regex: /}\s*;\s*(const|if|return|await)/g,
+    fix: '}\n  $1',
+    example: '}; const data → }\n  const data'
+  },
+  {
+    name: 'Missing colon after property name',
+    regex: /(\s+)(\w+)\s+(['"`{[])/g,
+    test: (line) => !line.includes('//') && !line.includes('function') && !line.includes('class'),
+    fix: '$1$2: $3',
+    example: 'content "value" → content: "value"'
   }
 ];
 

@@ -191,8 +191,7 @@ export class BrowserGemma {
  for (let i = 0; i < words.length; i++) {
  tokenCount++;
  yield {
- text: words[i] + (i < words.length - 1 ? ' ' : ''),
- done: i === words.length - 1,
+ text: words[i] + (i < words.length - 1 ? ' ' : '', done: i === words.length - 1,
  tokenCount,
  };
  // Simulate streaming delay

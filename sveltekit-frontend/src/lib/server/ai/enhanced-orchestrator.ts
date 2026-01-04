@@ -31,38 +31,23 @@ import type { cache } from "sharp";
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable("legal_documents", {
- id: uuid("id").defaultRandom().primaryKey(),
- content: text("content").notNull(),
+ id: uuid("id").defaultRandom().primaryKey(, content: text("content").notNull(),
  // Keep a text fallback for serialized embeddings for compatibility.
  embedding: text("embedding").notNull(),
  // Add optional pgvector physical column (managed separately via raw SQL)
  // embedding_vector will be created via ensurePgvectorColumn() if pgvector is installed.
  metadata: json("metadata"), // switched to json for structured metadata (pg jsonb semantics)
- documentType: text("document_type"),
- caseId: text("case_id"),
- createdAt: timestamp("created_at").defaultNow(),
- updatedAt: timestamp("updated_at").defaultNow(),
+ documentType: text("document_type", caseId: text("case_id", createdAt: timestamp("created_at").defaultNow(, updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const autoSolveResults = pgTable("autosolve_results", {
- id: uuid("id").defaultRandom().primaryKey(),
- query: text("query").notNull(),
- solution: json("solution"), // switched to json
- confidence: integer("confidence"),
- processingTime: integer("processing_time"),
- serviceUsed: text("service_used"),
- success: boolean("success"),
- createdAt: timestamp("created_at").defaultNow(),
+ id: uuid("id").defaultRandom().primaryKey(, query: text("query").notNull(, solution: json("solution"), // switched to json
+ confidence: integer("confidence", processingTime: integer("processing_time", serviceUsed: text("service_used", success: boolean("success", createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const synthesisCache = pgTable("synthesis_cache", {
- id: uuid("id").defaultRandom().primaryKey(),
- queryHash: text("query_hash").unique().notNull(),
- result: json("result"), // switched to json
- metadata: json("metadata"),
- hitCount: integer("hit_count").default(0),
- lastAccessed: timestamp("last_accessed").defaultNow(),
- createdAt: timestamp("created_at").defaultNow(),
+ id: uuid("id").defaultRandom().primaryKey(, queryHash: text("query_hash").unique().notNull(, result: json("result"), // switched to json
+ metadata: json("metadata", hitCount: integer("hit_count").default(0, lastAccessed: timestamp("last_accessed").defaultNow(, createdAt: timestamp("created_at").defaultNow(),
 }); // Corrected closing parenthesis
 
 // Create an explicit schema object for Drizzle to avoid inline typing/inference issues
@@ -266,8 +251,7 @@ interface EnhancedPromptInput {
 // Runtime-safe placeholders for optional dynamic imports (will be overridden in initialize when available)
 let AIAssistantInputSynthesizer: any = null;
 let legalBERT: any = {
- analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }),
- calculateLegalSimilarity: async (_q: string, options: string): string => ({ similarity: 0, confidence: 0.5, legalRelevance: 0.5 }),
+ analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }, calculateLegalSimilarity: async (_q: string, options: string): string => ({ similarity: 0, confidence: 0.5, legalRelevance: 0.5 }),
 }
 
 let monitoringService: any = null;
@@ -334,8 +318,7 @@ export class EnhancedAISynthesisOrchestrator {
  try {
  const pgConfig: PoolConfig = {
  host: process.env.POSTGRES_HOST || "postgres",
- port: parseInt(process.env.POSTGRES_PORT || "5432", 10),
- database: process.env.POSTGRES_DB || "legal_ai_db",
+ port: parseInt(process.env.POSTGRES_PORT || "5432", 10, database: process.env.POSTGRES_DB || "legal_ai_db",
  user: process.env.POSTGRES_USER || "legal_admin",
  password: process.env.POSTGRES_PASSWORD || "123456",
  max: 20,
@@ -383,7 +366,7 @@ export class EnhancedAISynthesisOrchestrator {
  method: "POST",
  headers: { "Content-Type": `application/json` },
  body: JSON.stringify({
- query: input.query, useGPU: true, embedding: input.embeddings || null,
+ query: input.query, useGPU: true, embedding, input.embeddings || null,
  }), // Corrected body
 ;
  });
@@ -609,11 +592,7 @@ export class EnhancedAISynthesisOrchestrator {
  status: this.initialized ? "healthy" : "initializing",
  services: {
  postgres: await this.checkPostgres(), // Corrected
- redis: await this.checkRedis(),
- neo4j: this.neo4jStore !==, pgVector: this.pgVectorStore !==, ollama, await this.checkOllama(),
- enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
- gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
- context7: await this.checkService(services.context7),
+ redis: await this.checkRedis(, neo4j: this.neo4jStore !==, pgVector: this.pgVectorStore !==, ollama, await this.checkOllama(, enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG, gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator, context7: await this.checkService(services.context7),
  },
  };
  }

@@ -70,8 +70,7 @@ export class RAGMinIOGPUSOMCache {
  this.somGrid[i][j] = {
  weights: weights,
  documents: [],
- lastAccess: Date.now(),
- cluster: i * this.gridWidth + j,
+ lastAccess: Date.now(, cluster: i * this.gridWidth + j,
  };
  }
  }
@@ -168,8 +167,7 @@ export class RAGMinIOGPUSOMCache {
  // Store document with intelligent placement
  async store(id: string, content: string, options: string): Promise<void> {
  const entry: CacheEntry = {
- id: content, timestamp: Date.now(),
- accessCount: 1, clusterId: 0,
+ id: content, timestamp: Date.now(, accessCount: 1, clusterId: 0,
  priority: this.calculatePriority(content, vector),
  }
 

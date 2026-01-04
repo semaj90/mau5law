@@ -139,46 +139,36 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('INTERNAL_RAM', {
  id: 0,
  type: 'INTERNAL_RAM',
- startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end, size: NES_MEMORY_MAP.INTERNAL_RAM.size, used: 0, documents: new Map(),
- isActive: true, lastBankSwitch: Date.now(),
- compressionRatio: 1.0,
+ startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start, endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end, size: NES_MEMORY_MAP.INTERNAL_RAM.size, used: 0, documents: new Map(, isActive: true, lastBankSwitch: Date.now(, compressionRatio: 1.0,
  });
 
  // CHR-ROM bank (8KB - legal document patterns)
  this.memoryBanks.set('CHR_ROM', {
  id: 1,
  type: 'CHR_ROM',
- startAddress: NES_MEMORY_MAP.CHR_ROM.start, endAddress: NES_MEMORY_MAP.CHR_ROM.end, size: NES_MEMORY_MAP.CHR_ROM.size, used: 0, documents: new Map(),
- isActive: true, lastBankSwitch: Date.now(),
- compressionRatio: 1.0,
+ startAddress: NES_MEMORY_MAP.CHR_ROM.start, endAddress: NES_MEMORY_MAP.CHR_ROM.end, size: NES_MEMORY_MAP.CHR_ROM.size, used: 0, documents: new Map(, isActive: true, lastBankSwitch: Date.now(, compressionRatio: 1.0,
  });
 
  // PRG-ROM bank (32KB - legal processing logic)
  this.memoryBanks.set('PRG_ROM', {
  id: 2,
  type: 'PRG_ROM',
- startAddress: NES_MEMORY_MAP.PRG_ROM.start, endAddress: NES_MEMORY_MAP.PRG_ROM.end, size: NES_MEMORY_MAP.PRG_ROM.size, used: 0, documents: new Map(),
- isActive: true, lastBankSwitch: Date.now(),
- compressionRatio: 1.0,
+ startAddress: NES_MEMORY_MAP.PRG_ROM.start, endAddress: NES_MEMORY_MAP.PRG_ROM.end, size: NES_MEMORY_MAP.PRG_ROM.size, used: 0, documents: new Map(, isActive: true, lastBankSwitch: Date.now(, compressionRatio: 1.0,
  });
 
  // Save RAM bank (8KB - persistent legal data)
  this.memoryBanks.set('SAVE_RAM', {
  id: 3,
  type: 'SAVE_RAM',
- startAddress: NES_MEMORY_MAP.SAVE_RAM.start, endAddress: NES_MEMORY_MAP.SAVE_RAM.end, size: NES_MEMORY_MAP.SAVE_RAM.size, used: 0, documents: new Map(),
- isActive: true, lastBankSwitch: Date.now(),
- compressionRatio: 1.0,
+ startAddress: NES_MEMORY_MAP.SAVE_RAM.start, endAddress: NES_MEMORY_MAP.SAVE_RAM.end, size: NES_MEMORY_MAP.SAVE_RAM.size, used: 0, documents: new Map(, isActive: true, lastBankSwitch: Date.now(, compressionRatio: 1.0,
  });
 
  // Expansion ROM bank (8KB - legal plugins)
  this.memoryBanks.set('EXPANSION_ROM', {
  id: 4,
  type: 'EXPANSION_ROM',
- startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, endAddress: NES_MEMORY_MAP.EXPANSION_ROM.end, size: NES_MEMORY_MAP.EXPANSION_ROM.size, used: 0, documents: new Map(),
- isActive: false, // Activated on-demand
- lastBankSwitch: Date.now(),
- compressionRatio: 1.0,
+ startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start, endAddress: NES_MEMORY_MAP.EXPANSION_ROM.end, size: NES_MEMORY_MAP.EXPANSION_ROM.size, used: 0, documents: new Map(, isActive: false, // Activated on-demand
+ lastBankSwitch: Date.now(, compressionRatio: 1.0,
  });
  }
 
@@ -273,8 +263,7 @@ export class NESMemoryArchitecture {
  const legalDocument: LegalDocument = {
  ...document,
  priority,
- lastAccessed: Date.now(),
- compressed: compress,
+ lastAccessed: Date.now(, compressed: compress,
  bankId: bank.id,
  };
  // Allocate document in bank
@@ -450,7 +439,7 @@ export class NESMemoryArchitecture {
  }
  }
 
- private async swapToExpansionROM(docId: string), LegalDocument: Promise<void> {
+ private async swapToExpansionROM(docId: string, LegalDocument: Promise<void> {
  const expansionBank = this.memoryBanks.get('EXPANSION_ROM');
  if (!expansionBank) return;
 
@@ -589,8 +578,7 @@ export class NESMemoryArchitecture {
  usedPRG,
  bankSwitches: this.bankSwitchCount,
  garbageCollections: this.gcCount,
- compressionSavings: this.calculateCompressionSavings(),
- documentCount: accessCount,
+ compressionSavings: this.calculateCompressionSavings(, documentCount: accessCount,
  averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
  };
  }

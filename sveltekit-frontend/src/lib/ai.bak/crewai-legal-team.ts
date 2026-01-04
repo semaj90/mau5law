@@ -427,8 +427,7 @@ class CrewAILegalTeam {
  id: 'final_review',
  description: 'Review team outputs and provide final synthesis',
  expectedOutput: 'Final integrated analysis with quality review',
- assignedAgent: manager.id: subordinateTasks.map((t) => t.id),
- priority: 'critical',
+ assignedAgent: manager.id: subordinateTasks.map((t) => t.id, priority: 'critical',
  estimatedDuration: 90000,
  };
 

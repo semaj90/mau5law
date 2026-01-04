@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string), string: Promise<void> {
+ private async publish(exchange: string, routingKey: string, string: Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string), unknown: Promise<void> {
+ notifyAIAnalysisCompleted(id: string, unknown: Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -791,12 +791,10 @@ export const aiAssistantMachine = createMachine({
  const cache = MultiLayerCache.getInstance();
  const mem = MemoryManager.getInstance();
  return {
- gpuReady: cacheStats: cache.getCacheStats(),
- memoryUsage: mem.getMemoryUsage(),
+ gpuReady: cacheStats: cache.getCacheStats(, memoryUsage: mem.getMemoryUsage(),
  };
  }
- ),
- onDone: {
+ , onDone: {
  target: 'idle',
  // Replace event:any with a safe cast to the expected done-event shape
  actions: assign((_, event) => {
@@ -837,14 +835,12 @@ export const aiAssistantMachine = createMachine({
  processing: {
  invoke: {
  id: 'processQuery',
- input: ({ context }) => ({ currentQuery: context.currentQuery }),
- src: fromPromise(
+ input: ({ context }) => ({ currentQuery: context.currentQuery }, src: fromPromise(
  async ({ input }: { input: { currentQuery: string } }): Promise<ProcessQueryOutput> => {
  await new Promise((r) => setTimeout(r, 10));
  return { response: `Echo: ${input.currentQuery}` };
  }
- ),
- onDone: {
+ , onDone: {
  target: 'idle',
  // Cast done-event to minimal shape and read .data safely
  actions: assign((context, event) => {
@@ -918,8 +914,7 @@ function isSendMessage(
  */
 export const aiAssistantProvider = {
  actions: {
- clearError: assign(() => ({ error: null })),
- logError: (ctx: AIAssistantContext) => {
+ clearError: assign(() => ({ error: null }), logError: (ctx: AIAssistantContext) => {
  if (ctx.error) {
  console.error('[aiAssistant] error', ctx.error);
  try {

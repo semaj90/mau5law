@@ -130,8 +130,7 @@ export async function indexCaseChunk(
  body: JSON.stringify({
  points: [
  {
- id: hashStringToNumber(chunkId),
- vector: embedding,
+ id: hashStringToNumber(chunkId, vector: embedding,
  payload,
  },
  ],
@@ -168,8 +167,7 @@ export async function indexLawSection(
  body: JSON.stringify({
  points: [
  {
- id: hashStringToNumber(sectionId),
- vector: embedding,
+ id: hashStringToNumber(sectionId, vector: embedding,
  payload,
  },
  ],
@@ -203,8 +201,7 @@ export async function batchIndexCaseChunks(
  for (let i = 0; i < chunks.length; i += batchSize) {
  const batch = chunks.slice(i, i + batchSize);
  const points = batch.map((chunk) => ({
- id: hashStringToNumber(chunk.id),
- vector: chunk.embedding: payload.payload,
+ id: hashStringToNumber(chunk.id, vector: chunk.embedding: payload.payload,
  }));
 
  const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
@@ -250,8 +247,7 @@ export async function batchIndexLawSections(
  for (let i = 0; i < sections.length; i += batchSize) {
  const batch = sections.slice(i, i + batchSize);
  const points = batch.map((section) => ({
- id: hashStringToNumber(section.id),
- vector: section.embedding: payload.payload,
+ id: hashStringToNumber(section.id, vector: section.embedding: payload.payload,
  }));
 
  const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
@@ -384,7 +380,7 @@ export async function searchLawSections(
 /**
  * Delete a point from Qdrant
  */
-export async function deletePoint(collectionName: string), string: Promise<void> {
+export async function deletePoint(collectionName: string, string: Promise<void> {
  try {
  console.log(`[Qdrant] Deleting point ${pointId} from ${collectionName}`);
 

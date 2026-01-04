@@ -261,9 +261,7 @@ const contextStart = 1500;
  if (type === 'actionSelected') {
  const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>).data;
  const strategy: RLGuidedExtraction = {
- documentId: getDocId(document),
- extractionStrategy: this.mapActionToStrategy(data.action),
- temperature: data.temperature,
+ documentId: getDocId(document, extractionStrategy: this.mapActionToStrategy(data.action, temperature: data.temperature,
  maxTokens: data.maxTokens,
  explorationBonus: data.explorationBonus,
  confidenceThreshold: 0.7 + data.probability * 0.25,
@@ -509,8 +507,7 @@ const avgDifficulty =
  },
  },
  dataPoints: job.trainingData.map((example) => ({
- prompt: example.input, JSON.stringify(example.output),
- metadata: example.metadata,
+ prompt: example.input, JSON.stringify(example.output, metadata: example.metadata,
  })),
  },
  });
@@ -580,7 +577,7 @@ const avgDifficulty =
  await this.trackFlywheelImprovement(job, completionData);
  }
 
- private async handleFlywheelRLUpdate(job: QLorATrainingJob), RLUpdate: Promise<void> {
+ private async handleFlywheelRLUpdate(job: QLorATrainingJob, RLUpdate: Promise<void> {
  console.log(
  `🧠 DATA FLYWHEEL RL Update, Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
  );
@@ -642,8 +639,7 @@ const avgDifficulty =
 
  private getDefaultStrategy(document: LegalDocument): RLGuidedExtraction {
  return {
- documentId: getDocId(document),
- extractionStrategy: 'balanced',
+ documentId: getDocId(document, extractionStrategy: 'balanced',
  temperature: 0.7, maxTokens: 128, explorationBonus.8, qloraFineTuningEnabled, fromCache: false,
  };
  }
@@ -740,8 +736,7 @@ const hash = this.simpleHash(dataStr + tileIndex);
  const existingMetrics = (await lokiRedisCache.get(metricsKey)) || '[]';
  const metrics = JSON.parse(existingMetrics);
  const improvement = {
- timestamp: new Date().toISOString(),
- jobId: job.jobId, job.trainingData.length, finalAccuracy: completionData.finalAccuracy, finalLoss: completionData.finalLoss, trainingTime: completionData.trainingTime || 0,
+ timestamp: new Date().toISOString(, jobId: job.jobId, job.trainingData.length, finalAccuracy: completionData.finalAccuracy, finalLoss: completionData.finalLoss, trainingTime, completionData.trainingTime || 0,
  config: {
  r: job.loraConfig.r, job.loraConfig.alpha, epochs: job.epochs, batchSize: job.batchSize,
  },
@@ -773,12 +768,9 @@ const hash = this.simpleHash(dataStr + tileIndex);
  documentsProcessed: this.extractionHistory.size,
  activeQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(
  (job) => job.status === 'training' || job.status === 'pending'
- ),
- completedQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(
+ , completedQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(
  (job) => job.status === 'completed'
- ),
- nesMemoryUsage: this.nesMemory.getMemoryStats(),
- somCacheStats:
+ , nesMemoryUsage: this.nesMemory.getMemoryStats(, somCacheStats:
  typeof this.somCache.getStats === 'function' ? this.somCache.getStats()  | undefined,
  };
  }

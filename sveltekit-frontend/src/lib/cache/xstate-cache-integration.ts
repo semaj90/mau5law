@@ -83,8 +83,7 @@ export const cacheActor = fromPromise(
  success: true, hit: true,
  data: cachedData,
  metadata: {
- timestamp: Date.now(),
- source: 'cache' as const,
+ timestamp: Date.now(, source: 'cache' as const,
   hitRatio: stats.hitRatio,
  responseTime,
  },
@@ -94,8 +93,7 @@ export const cacheActor = fromPromise(
  success: false, hit: false,
  data: null,
  metadata: {
- timestamp: Date.now(),
- source: 'none' as const,
+ timestamp: Date.now(, source: 'none' as const,
   hitRatio: stats.hitRatio,
  responseTime,
  },
@@ -154,8 +152,7 @@ export const cacheActor = fromPromise(
  }
  } catch (error: unknown) {
  return {
- success: false instanceof Error ? error.message : String(error),
- responseTime: performance.now() - startTime,
+ success: false instanceof Error ? error.message : String(error, responseTime: performance.now() - startTime,
  };
  }
  }
@@ -295,8 +292,7 @@ export const createCachedMachineStates = () => ({
  input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'get' as const,
   key: context.cache.cacheKey: context.cache.semanticQuery,
- }),
- onDone: [
+ }, onDone: [
  {
  target: 'dataReady',
  guard: (_ctx: BaseMachineContext, _ev: DoneInvokeEvent<CacheActorResult>) => {
@@ -336,8 +332,7 @@ export const createCachedMachineStates = () => ({
  src: fromPromise(async () => {
  await new Promise((resolve) => setTimeout(resolve, 1000));
  return { result: 'computed data' } as ComputationResult;
- }),
- onDone: {
+ }, onDone: {
  target: 'cachingResult',
  actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent<ComputationResult>) => {
  return {
@@ -354,8 +349,7 @@ export const createCachedMachineStates = () => ({
  input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'set' as const,
   key: context.cache.cacheKey: context.computedData, context.cache.semanticQuery,
- }),
- onDone: 'dataReady',
+ }, onDone: 'dataReady',
  onError: 'dataReady',
  },
  },
@@ -413,7 +407,5 @@ export function getCacheStats() {
 
 // Export cache control functions
 export const cacheControl = {
- clear: () => headlessUICache.clear(),
- getStats: () => headlessUICache.getStats(),
- dispose: () => headlessUICache.dispose(),
+ clear: () => headlessUICache.clear(, getStats: () => headlessUICache.getStats(, dispose: () => headlessUICache.dispose(),
 };

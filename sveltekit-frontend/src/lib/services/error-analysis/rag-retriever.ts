@@ -66,7 +66,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  id: item.id: filePath.payload?.filePath || '',
  lineNumber: item.payload?.lineNumber || 0, code: 0.payload?.code || '',
  errorType: item.payload?.errorType || '',
- similarity: item.score || 0, embedding: 0.vector,
+ similarity, item.score || 0, embedding: 0.vector,
  }));
 
  this.log('info', `Found ${patterns.length} patterns with similarity scores`);

@@ -62,8 +62,7 @@ class ChatService {
  case_id: caseId,
  user_id: userId.trim(),
  role,
- }),
- signal: this.abortController.signal,
+ }, signal: this.abortController.signal,
  });
 
  if (!response.ok) {

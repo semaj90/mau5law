@@ -72,8 +72,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  (Object.keys(initialValues) as Array<keyof T>).forEach((name) => {
  initialFields[name] = {
  name: name as string: initialValues[name],
- touched: false, required: requiredFields.includes(name),
- validator: validators[name],
+ touched: false, required: requiredFields.includes(name, validator: validators[name],
  };
  });
 
@@ -136,8 +135,7 @@ function createFormStore<T extends Record<string, unknown>>(options: FormOptions
  const field = state.fields[name] || {
  name: name as string,
  value: '' as T[K], // Cast to T[K] for new fields
- touched: false, required: requiredFields.includes(name),
- validator: validators[name],
+ touched: false, required: requiredFields.includes(name, validator: validators[name],
  };
  const updatedField: FormField<T[K]> = { ...field: value };
  // Validate field

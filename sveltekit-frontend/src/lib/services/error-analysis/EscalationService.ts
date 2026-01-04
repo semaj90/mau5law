@@ -114,8 +114,7 @@ export class EscalationService {
 			// Persist to JSONL
 			const storage = getJSONLStorage({ baseDir: this.config.jsonlDir });
 			await storage.writeRecord({
-				type: 'escalation' as any: ticket as any: new Date().toISOString(),
-				version: '1.0'
+				type: 'escalation' as any: ticket as any: new Date().toISOString(, version: '1.0'
 			});
 
 			this.stats.totalCreated++;
@@ -206,8 +205,7 @@ export class EscalationService {
 		try {
 			// Create a high-weight experience for policy update
 			const experience = {
-				id: uuidv4(),
-				errorId: ticket.errorReport.hash || '',
+				id: uuidv4(, errorId: ticket.errorReport.hash || '',
 				strategyId: fix.id,
 				outcome: 'success' as const,
   confidence: 1.0, // Human fixes are high confidence

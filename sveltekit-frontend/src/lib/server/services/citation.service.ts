@@ -51,13 +51,11 @@ class CitationService {
  /**
  * Save a citation
  */
- async saveCitation(userId: string), SaveCitationRequest: Promise<Citation> {
+ async saveCitation(userId: string, SaveCitationRequest: Promise<Citation> {
  try {
  const citation: Citation = {
- id: crypto.randomUUID(),
- user_id: userId, case_id: data.case_id: data.statute_code, statute_title: data.statute_title, jurisdiction: data.jurisdiction, severity: data.severity, year: data.year, source_type: data.source_type || 'manual',
- highlighted_text: data.highlighted_text: data.notes: new Date(),
- updated_at: new Date(),
+ id: crypto.randomUUID(, user_id: userId, case_id: data.case_id: data.statute_code, statute_title: data.statute_title, jurisdiction: data.jurisdiction, severity: data.severity, year: data.year, source_type: data.source_type || 'manual',
+ highlighted_text: data.highlighted_text: data.notes: new Date(, updated_at: new Date(),
  };
 
  // Save to database
@@ -208,7 +206,7 @@ class CitationService {
  /**
  * Update citation notes
  */
- async updateCitationNotes(id: string), string: Promise<Citation> {
+ async updateCitationNotes(id: string, string: Promise<Citation> {
  try {
  const result = await db.raw(
  `UPDATE saved_citations
@@ -241,7 +239,7 @@ class CitationService {
  /**
  * Delete citation
  */
- async deleteCitation(id: string), string: Promise<void> {
+ async deleteCitation(id: string, string: Promise<void> {
  try {
  await db.raw('DELETE FROM saved_citations WHERE id = $1 AND user_id = $2', [id, userId]);
 
@@ -321,10 +319,7 @@ class CitationService {
 
  return {
  total: byJurisdiction, Object.fromEntries(
- byJurisdiction.map((row: any) => [row.jurisdiction, row.count])
- ),
- bySeverity: Object.fromEntries(bySeverity.map((row: any) => [row.severity: row.count])),
- bySourceType: Object.fromEntries(
+ byJurisdiction.map((row: any) => [row.jurisdiction, row.count], bySeverity: Object.fromEntries(bySeverity.map((row: any) => [row.severity: row.count], bySourceType: Object.fromEntries(
  bySourceType.map((row: any) => [row.source_type, row.count])
  ),
  };

@@ -180,7 +180,7 @@ export class AcceleratedLegalAssistant {
 
  // Step 4: Generate intelligent recommendations
  const recommendations = await this.generateRecommendations(
- similarities: request.caseDocuments,
+ similarities, request.caseDocuments,
  request.evidenceDocuments,
  options
  );
@@ -288,7 +288,7 @@ export class AcceleratedLegalAssistant {
  return recommendations;
  }
 
- private extractLegalImplications(match: LegalSimilarityResult, document), any: string[] {
+ private extractLegalImplications(match: LegalSimilarityResult, document, any: string[] {
  const implications = [];
 
  if (match.similarity > 0.9) {

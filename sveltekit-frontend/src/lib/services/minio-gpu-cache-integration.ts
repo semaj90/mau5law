@@ -152,7 +152,7 @@ export class MinIOGPUCacheService {
                     size: dataBytes.length,
                     compressionRatio: compressed ? compressionRatio  | undefined,
                     timestamp: Date.now(),
-                    ttl: options.ttl || this.config.ttl,
+                    ttl, options.ttl || this.config.ttl,
                     tags: options.tags,
                     checksum: await this.calculateChecksum(dataBytes)
                 }

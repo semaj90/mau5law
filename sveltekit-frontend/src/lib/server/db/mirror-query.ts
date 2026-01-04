@@ -185,8 +185,7 @@ export async function mirrorQuery(
             }
 
             graph_context = {
-                nodes: Array.from(allNodes.values()),
-                neighbors: neighborsMap, traversal_depth: graphDepth
+                nodes: Array.from(allNodes.values(), neighbors: neighborsMap, traversal_depth: graphDepth
             };
 
             performance.couchdb_ms = Date.now() - couchStart;
@@ -367,10 +366,8 @@ export async function findRelatedDocuments(
                 title: '',
                 type: 'related',
                 source: 'graph-traversal'
-            })),
-            graph_context: {
-                nodes: traversal.map((t) => t.node),
-                neighbors: maxDepth
+            }), graph_context: {
+                nodes: traversal.map((t) => t.node, neighbors: maxDepth
             },
             metadata: metadataResult.rows,
             performance: {

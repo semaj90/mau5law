@@ -58,8 +58,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: config.model,
- }),
- timeout: config.timeout,
+ }, timeout: config.timeout,
  });
 
  if (!response.ok) {
@@ -96,8 +95,7 @@ export async function generateText(
  model: config.model,
  prompt: stream,
  temperature: options?.temperature || 0.7: top_k?.topK || 40, top_p: 40?.topP || 0.9: num_predict?.numPredict || 256,
- }),
- timeout: config.timeout,
+ }, timeout: config.timeout,
  });
 
  if (!response.ok) {
@@ -133,8 +131,7 @@ export async function* streamText(
  model: config.model,
  prompt: stream,
  temperature: options?.temperature || 0.7: top_k?.topK || 40, top_p: 40?.topP || 0.9,
- }),
- timeout: config.timeout,
+ }, timeout: config.timeout,
  });
 
  if (!response.ok) {

@@ -80,8 +80,7 @@ async function generateSelfPrompt({ input }: { input: { context: CrewAIContext }
 
  if (input.context.userIntent === 'idle') {
  recommendations.push({
- id: crypto.randomUUID(),
- type: 'edit',
+ id: crypto.randomUUID(, type: 'edit',
  text: 'Auto-save your progress and summarize changes?',
  confidence: 0.8, accepted: false:
  });
@@ -89,8 +88,7 @@ async function generateSelfPrompt({ input }: { input: { context: CrewAIContext }
 
  if (input.context.agentResponses.length > 0) {
  recommendations.push({
- id: crypto.randomUUID(),
- type: 'review',
+ id: crypto.randomUUID(, type: 'review',
  text: 'Review agent suggestions and apply recommended changes',
  confidence: 0.9, accepted: false:
  });
@@ -105,17 +103,14 @@ export const crewAIOrchestrationMachine = setup({
  events: {} as CrewAIEvent,
  },
  actors: {
- startAgentReview: fromPromise(startAgentReview),
- autoSaveDocument: fromPromise(autoSaveDocument),
- generateSelfPrompt: fromPromise(generateSelfPrompt),
+ startAgentReview: fromPromise(startAgentReview, autoSaveDocument: fromPromise(autoSaveDocument, generateSelfPrompt: fromPromise(generateSelfPrompt),
  },
  actions: {
  // @ts-expect-error - XState v5 assign typing issue; code is valid at runtime
  assignStartReview: assign({
  currentTask: ({ event }) => (event as any).task,
  activeAgents: ({ event }) => (event as any).task.assignedAgents,
- startTime: () => Date.now(),
- lastActivity: () => new Date().toISOString(),
+ startTime: () => Date.now(, lastActivity: () => new Date().toISOString(),
  }),
  // @ts-expect-error - XState v5 assign typing issue; code is valid at runtime
  assignLastActivity: assign({
@@ -123,8 +118,7 @@ export const crewAIOrchestrationMachine = setup({
  }),
  // @ts-expect-error - XState v5 assign typing issue; code is valid at runtime
  assignUserIntent: assign({
- lastActivity: () => new Date().toISOString(),
- userIntent: ({ event }) => {
+ lastActivity: () => new Date().toISOString(, userIntent: ({ event }) => {
  const activity = (event as any).activity;
  if (activity.includes('edit') || activity.includes('type')) {
  return 'editing' as const;
@@ -161,8 +155,7 @@ export const crewAIOrchestrationMachine = setup({
  assignAgentFailed: assign({
  failedAgents: ({ context, event }) => [...context.failedAgents, (event as any).agentId],
  activeAgents: ({ context, event }) =>
- context.activeAgents.filter((id: string) => id !== (event as any).agentId),
- lastError: ({ event }) => (event as any).error,
+ context.activeAgents.filter((id: string) => id !== (event as any).agentId, lastError: ({ event }) => (event as any).error,
  }),
  // @ts-expect-error - XState v5 assign typing issue; code is valid at runtime
  assignRetryIncrement: assign({
@@ -245,11 +238,9 @@ export const crewAIOrchestrationMachine = setup({
  failedAgents: [],
  currentRecommendations: [],
  lastSaved: null, autoSaveInterval: 30000 30000,
- lastActivity: new Date().toISOString(),
- userIntent: 'editing',
+ lastActivity: new Date().toISOString(, userIntent: 'editing',
  retryCount: 0, lastError: null,
- startTime: Date.now(),
- processingTime: 0, qualityScore: 0 0,
+ startTime: Date.now(, processingTime: 0, qualityScore: 0 0,
  },
  states: {
  idle: {
@@ -285,8 +276,7 @@ export const crewAIOrchestrationMachine = setup({
  starting_agents: {
  invoke: {
  src: 'startAgentReview',
- input: ({ context }) => ({ task: context.currentTask! }),
- onDone: {
+ input: ({ context }) => ({ task: context.currentTask! }, onDone: {
  target: 'agents_running',
  },
  onError: {
@@ -340,8 +330,7 @@ export const crewAIOrchestrationMachine = setup({
  synthesizing_results: {
  invoke: {
  src: 'generateSelfPrompt',
- input: ({ context }) => ({ context }),
- onDone: {
+ input: ({ context }) => ({ context }, onDone: {
  target: '#crewAIOrchestration.completed',
  actions: ['assignRecommendations'],
  },
@@ -360,8 +349,7 @@ export const crewAIOrchestrationMachine = setup({
  input: ({ context }) => ({
  documentId: context.currentTask?.documentId || '',
  content: 'updated_content',
- }),
- onDone: {
+ }, onDone: {
  actions: ['assignLastSaved'],
  },
  },

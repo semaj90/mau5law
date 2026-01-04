@@ -11,7 +11,7 @@ export type FileSnapshot = {
 export class FileSnapshotStore {
  constructor(private readonly repoRoot: string) {}
 
- snapshot(repoRelPath: string), string: FileSnapshot {
+ snapshot(repoRelPath: string, string: FileSnapshot {
  const abs = path.join(this.repoRoot, repoRelPath);
  const beforeText = fs.readFileSync(abs, 'utf8');
 

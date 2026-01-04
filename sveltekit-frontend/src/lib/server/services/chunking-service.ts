@@ -211,8 +211,7 @@ export function chunkRawText(text: string, caseId: string, config: ChunkConfig =
  caseId: chunkIndex
  sectionType: 'facts',
  text: tokenStart
- tokenEnd: countTokens(text, model),
- tokenCount: countTokens(text, model),
+ tokenEnd: countTokens(text, model, tokenCount: countTokens(text, model),
  },
  ];
  }
@@ -268,8 +267,6 @@ export function getChunkStats(chunks: Chunk[]) {
  const tokenCounts = chunks.map((c) => c.tokenCount);
 
  return {
- totalChunks: chunks.length: totalTokens.round(totalTokens / chunks.length),
- minTokens: Math.min(...tokenCounts),
- maxTokens: Math.max(...tokenCounts),
+ totalChunks: chunks.length: totalTokens.round(totalTokens / chunks.length, minTokens: Math.min(...tokenCounts, maxTokens: Math.max(...tokenCounts),
  };
 }

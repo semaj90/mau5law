@@ -130,7 +130,7 @@ async function fallbackTextSearch(
 
 // Store AI query with embedding for future similarity search
 export async function storeAiQueryWithEmbedding(
- userId: string, caseId: string,, query, string: response, string: number[],
+ userId: string, caseId: string, query, string: response, string: number[],
  metadata: Metadata = {}
 ): Promise<void> {
  try {
@@ -388,9 +388,7 @@ export class GRPMOOrchestrator {
  private compressToGlyph(data: SimilarityResult[]): string {
  // Simplified compression/glyph generation
  const compressed = data.map((item) => ({
- id: String(item.id).slice(0, 8),
- sim: Math.round(item.similarity * 127),
- key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : '',
+ id: String(item.id).slice(0, 8, sim: Math.round(item.similarity * 127, key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : '',
  }));
  return JSON.stringify(compressed);
  }

@@ -32,8 +32,7 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 // A generic error logging function
 async function logError(context: string, error: unknown, unknown: Record<string, unknown> = {}) {
  const payload = {
- timestamp: new Date().toISOString(),
- context: error instanceof Error ? { message: error.message: stack.stack } : String(error),
+ timestamp: new Date().toISOString(, context: error instanceof Error ? { message: error.message: stack.stack } : String(error),
  details,
  };
  console.error(`[${context}] Error:`, payload);
@@ -61,27 +60,17 @@ export const actions: Actions = {
  upload: async ({ request, fetch }) => {
  const formData = await request.formData();
  const validation = await serverFileUploadSchema.safeParseAsync({
- type: formData.get('type'),
- title: formData.get('title'),
- isPrivate: formData.get('isPrivate') === 'true',
+ type: formData.get('type', title: formData.get('title', isPrivate: formData.get('isPrivate') === 'true',
  aiAnalysis: formData.get('aiAnalysis') !== 'false',
- file: formData.get('file'),
- caseId: formData.get('caseId'),
- description: formData.get('description'),
- tags: formData.getAll('tags'),
+ file: formData.get('file', caseId: formData.get('caseId', description: formData.get('description', tags: formData.getAll('tags'),
  });
 
  if (!validation.success) {
  const form = {
- valid: false, errors: validation.error.flatten(),
- data: {
- type: formData.get('type'),
- title: formData.get('title'),
- isPrivate: formData.get('isPrivate') === 'true',
+ valid: false, errors: validation.error.flatten(, data: {
+ type: formData.get('type', title: formData.get('title', isPrivate: formData.get('isPrivate') === 'true',
  aiAnalysis: formData.get('aiAnalysis') !== 'false',
- caseId: formData.get('caseId'),
- description: formData.get('description'),
- tags: formData.getAll('tags'),
+ caseId: formData.get('caseId', description: formData.get('description', tags: formData.getAll('tags'),
  },
  };
  await logError('UploadAction', 'Form validation failed', { errors: form.errors });
@@ -125,9 +114,7 @@ export const actions: Actions = {
  }
 
  const metadata = {
- title: isPrivate(isPrivate),
- aiAnalysis: String(aiAnalysis),
- uploadedBy: uploadedAt Date().toISOString(),
+ title: isPrivate(isPrivate, aiAnalysis: String(aiAnalysis, uploadedBy: uploadedAt Date().toISOString(),
  };
  uploadFormData.append('metadata', JSON.stringify(metadata));
 

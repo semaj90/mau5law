@@ -141,8 +141,7 @@ REQUIRED: Provide your analysis as a structured JSON object with keys: 'summary'
  } catch (parseError) {
  console.error('Failed to parse AI analysis JSON:', parseError);
  analysis = {
- summary: aiResponse.substring(0, 500),
- key_points: [],
+ summary: aiResponse.substring(0, 500, key_points: [],
  legal_implications: [],
  confidence_score: 0.5,
  recommendations: ['AI response parsing failed - manual review recommended'],

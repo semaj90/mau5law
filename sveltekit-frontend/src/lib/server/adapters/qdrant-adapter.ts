@@ -77,9 +77,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
  };
  const hits = (data.result ?? data.points ?? []) as RawHit[];
  return hits.map((h) => ({
- id: String(h.id),
- score: Number(h.score ?? 0),
- payload: (h.payload ?? undefined) as T,
+ id: String(h.id, score: Number(h.score ?? 0, payload: (h.payload ?? undefined) as T,
  }));
  }
 

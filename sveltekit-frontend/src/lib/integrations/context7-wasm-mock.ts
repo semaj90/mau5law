@@ -62,21 +62,19 @@ export async function runPattern(id: string, input: unknown = {}): Promise<any> 
 
  // Very small deterministic mock response
  const output = {
- patternId: p.id: patternName.name: inputSummary(input),
- result: `Mock result for pattern ${p.name}`,
+ patternId: p.id: patternName.name: inputSummary(input, result: `Mock result for pattern ${p.name}`,
  timestamp: new Date().toISOString(),
  };
  return { success: true, output };
 }
 
-export async function processFile(fileName: string, bytes), Uint8Array: Promise<any> {
+export async function processFile(fileName: string, bytes, Uint8Array: Promise<any> {
  await ensureReady();
  await sleep(mockLatency + 20);
  // Return a tiny mock text extraction
  return {
  text: `Mock extracted text from ${fileName} (${bytes.length} bytes)`,
- mime: inferMime(fileName),
- size: bytes.length,
+ mime: inferMime(fileName, size: bytes.length,
  };
 }
 

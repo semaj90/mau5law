@@ -92,9 +92,7 @@ export const legalDocumentProcessingMachine = setup({
  events: {} as LegalDocumentEvent,
  },
  actors: {
- performOCR: fromPromise(performOCR),
- chunkDocument: fromPromise(chunkDocument),
- generateEmbeddings: fromPromise(generateLegalEmbeddings),
+ performOCR: fromPromise(performOCR, chunkDocument: fromPromise(chunkDocument, generateEmbeddings: fromPromise(generateLegalEmbeddings),
  },
  guards: {
  canRetry: ({ context }) => context.retryCount < context.maxRetries,
@@ -141,8 +139,7 @@ export const legalDocumentProcessingMachine = setup({
  input: ({ context }) => ({
  fileContent: context.fileContent!,
  fileName: context.fileName,
- }),
- onDone: {
+ }, onDone: {
  target: 'chunking',
  actions: assign({
  ocrText: ({ event }) => event.output.ocrText,
@@ -163,8 +160,7 @@ export const legalDocumentProcessingMachine = setup({
  chunking: {
  invoke: {
  src: 'chunkDocument',
- input: ({ context }) => ({ ocrText: context.ocrText! }),
- onDone: {
+ input: ({ context }) => ({ ocrText: context.ocrText! }, onDone: {
  target: 'embedding',
  actions: assign({
  chunks: ({ event }) => event.output.chunks,
@@ -185,8 +181,7 @@ export const legalDocumentProcessingMachine = setup({
  embedding: {
  invoke: {
  src: 'generateEmbeddings',
- input: ({ context }) => ({ chunks: context.chunks }),
- onDone: {
+ input: ({ context }) => ({ chunks: context.chunks }, onDone: {
  target: 'completed',
  actions: assign({
  embeddings: ({ event }) => event.output.embeddings,

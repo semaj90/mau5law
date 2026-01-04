@@ -73,8 +73,7 @@ export async function generateCompletion(
  return fetchFromOllama<OllamaGenerateResponse>('/api/generate', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(body),
- timeoutMs: params.timeoutMs,
+ body: JSON.stringify(body, timeoutMs: params.timeoutMs,
  });
 }
 
@@ -88,8 +87,7 @@ export async function generateEmbedding(
  return fetchFromOllama<OllamaEmbeddingResponse>('/api/embeddings', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(body),
- timeoutMs: params.timeoutMs,
+ body: JSON.stringify(body, timeoutMs: params.timeoutMs,
  });
 }
 

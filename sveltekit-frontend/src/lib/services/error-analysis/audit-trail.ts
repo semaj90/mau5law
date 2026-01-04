@@ -54,9 +54,7 @@ export class AuditTrail extends BaseService {
  this.validateInput(status, 'status');
 
  const entry: AuditEntry = {
- id: this.generateId(),
- timestamp: new Date().toISOString(),
- operation: 'analyze',
+ id: this.generateId(, timestamp: new Date().toISOString(, operation: 'analyze',
  details,
  status,
  errorMessage,
@@ -83,9 +81,7 @@ export class AuditTrail extends BaseService {
  this.validateInput(status, 'status');
 
  const entry: AuditEntry = {
- id: this.generateId(),
- timestamp: new Date().toISOString(),
- operation: 'fix',
+ id: this.generateId(, timestamp: new Date().toISOString(, operation: 'fix',
  details,
  status,
  errorMessage,
@@ -111,9 +107,7 @@ export class AuditTrail extends BaseService {
  this.validateInput(status, 'status');
 
  const entry: AuditEntry = {
- id: this.generateId(),
- timestamp: new Date().toISOString(),
- operation: 'validate',
+ id: this.generateId(, timestamp: new Date().toISOString(, operation: 'validate',
  details,
  status,
  errorMessage,
@@ -139,9 +133,7 @@ export class AuditTrail extends BaseService {
  this.validateInput(status, 'status');
 
  const entry: AuditEntry = {
- id: this.generateId(),
- timestamp: new Date().toISOString(),
- operation: 'rollback',
+ id: this.generateId(, timestamp: new Date().toISOString(, operation: 'rollback',
  details,
  status,
  errorMessage,
@@ -169,8 +161,7 @@ export class AuditTrail extends BaseService {
  const operation = enabled ? 'enable' : 'disable';
 
  const entry: AuditEntry = {
- id: this.generateId(),
- timestamp: new Date().toISOString() as 'enable' | 'disable',
+ id: this.generateId(, timestamp: new Date().toISOString() as 'enable' | 'disable',
  details: { flag, enabled },
  status,
  errorMessage,

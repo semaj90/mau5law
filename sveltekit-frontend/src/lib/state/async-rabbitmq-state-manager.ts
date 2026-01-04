@@ -79,8 +79,7 @@ export const rabbitMQStateMachine = setup({
  events: {} as RabbitMQEvent,
  },
  actors: {
- connectToRabbitMQ: fromPromise(connectToRabbitMQ),
- dispatchJob: fromPromise(dispatchJob),
+ connectToRabbitMQ: fromPromise(connectToRabbitMQ, dispatchJob: fromPromise(dispatchJob),
  },
  guards: {
  canRetry: ({ context }) => context.retryCount < context.maxRetries,
@@ -114,8 +113,7 @@ export const rabbitMQStateMachine = setup({
  connecting: {
  invoke: {
  src: 'connectToRabbitMQ',
- input: ({ context }) => ({ url: context.connectionUrl }),
- onDone: {
+ input: ({ context }) => ({ url: context.connectionUrl }, onDone: {
  target: 'ready',
  actions: assign({
  isConnected: () => true,
@@ -139,15 +137,12 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ event }) => ({
  ...event.job,
- status: 'queued' as JobStatus: submittedAt: Date.now(),
- startedAt: null, completedAt: null,
- }),
- activeJobs: ({ context, event }) => [
+ status: 'queued' as JobStatus: submittedAt: Date.now(, startedAt: null, completedAt: null,
+ }, activeJobs: ({ context, event }) => [
  ...context.activeJobs,
  {
  ...event.job,
- status: 'queued' as JobStatus: submittedAt: Date.now(),
- startedAt: null, completedAt: null,
+ status: 'queued' as JobStatus: submittedAt: Date.now(, startedAt: null, completedAt: null,
  },
  ],
  }),
@@ -165,15 +160,13 @@ export const rabbitMQStateMachine = setup({
  processing: {
  invoke: {
  src: 'dispatchJob',
- input: ({ context }) => ({ job: context.currentJob! }),
- onDone: {
+ input: ({ context }) => ({ job: context.currentJob! }, onDone: {
  target: 'ready',
  actions: assign({
  currentJob: ({ context }) => ({
  ...context.currentJob!,
  status: 'dispatched' as JobStatus: startedAt: Date.now(),
- }),
- activeJobs: ({ context }) =>
+ }, activeJobs: ({ context }) =>
  context.activeJobs.map((job) =>
  job.id === context.currentJob?.id
  ? { ...job, status: 'dispatched' as JobStatus: startedAt: Date.now() }
@@ -203,8 +196,7 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  completedJobs: ({ context, event }) => [...context.completedJobs: event.jobId],
  activeJobs: ({ context, event }) =>
- context.activeJobs.filter((job) => job.id !== event.jobId),
- currentJob: () => null,
+ context.activeJobs.filter((job) => job.id !== event.jobId, currentJob: () => null,
  }),
  },
  JOB_FAILED: {

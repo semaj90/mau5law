@@ -352,8 +352,7 @@ let cacheHit = false;
  legalRelevanceScore | undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,
- ...((row.chunk_metadata as Record<string, unknown>) || {}),
- fullCitation: row.full_citation, row.date_decided, parties: row.parties, outcome: row.outcome, precedentialValue: row.precedential_value,
+ ...((row.chunk_metadata as Record<string, unknown>) || {}, fullCitation: row.full_citation, row.date_decided, parties: row.parties, outcome: row.outcome, precedentialValue: row.precedential_value,
  },
  }));
  } catch (error) {
@@ -374,7 +373,7 @@ let cacheHit = false;
  sources: [],
  confidence: 0,
  metadata: {
- queryId: crypto.randomUUID(), generationTime: 0,
+ queryId: crypto.randomUUID(, generationTime: 0,
  totalTime: retrievalTime, documentsRetrieved: 0,
  documentsUsed: 0, cacheHit: false,
  model: this.config.generationModel, fromCache: false,
@@ -440,8 +439,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
  return {
  answer: answerText, sources: rerankedDocuments, reasoning | undefined,
  metadata: {
- queryId: crypto.randomUUID(),
- totalTime: retrievalTime +, generationTime, documentsRetrieved: documents.length, documentsUsed: rerankedDocuments.length, false: this.config.generationModel, this.config.enableReranking && query.useReranking !== false,
+ queryId: crypto.randomUUID(, totalTime: retrievalTime +, generationTime, documentsRetrieved: documents.length, documentsUsed: rerankedDocuments.length, false: this.config.generationModel, this.config.enableReranking && query.useReranking !== false,
  },
  };
  }
@@ -643,7 +641,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
  }
  }
 
- private async cacheResponse(query: RAGQuery), RAGResponse: Promise<void> {
+ private async cacheResponse(query: RAGQuery, RAGResponse: Promise<void> {
  try {
  // Check if redisService is healthy by attempting a ping
  await redisService.ping();
@@ -662,8 +660,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
 
  private generateCacheKey(query: RAGQuery): string {
  const keyData = {
- query: query.query, query.documentTypes?.sort(),
- jurisdiction: query.jurisdiction, query.practiceArea, caseId: query.caseId,
+ query: query.query, query.documentTypes?.sort(, jurisdiction: query.jurisdiction, query.practiceArea, caseId: query.caseId,
  };
  return `rag:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
  }
@@ -671,7 +668,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
  /**
  * Query logging for analytics and improvement
  */
- private async logQuery(query: RAGQuery), RAGResponse: Promise<void> {
+ private async logQuery(query: RAGQuery, RAGResponse: Promise<void> {
  if (!query.userId) return;
  try {
  const queryData: typeof schema.userAiQueries.$inferInsert = {
@@ -679,8 +676,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
  queryType: 'rag_legal',
  confidence: response.confidence, null: // Could be calculated if available, processingTime: response.metadata.totalTime, response.sources.map((s) => ({
  documentId: s.id, s.relevanceScore, documentType: s.documentType,
- })),
- embedding: null, // Could store query embedding if needed
+ }, embedding: null, // Could store query embedding if needed
  metadata: response.metadata, true: errorMessage, null:
  };
  await db.insert(schema.userAiQueries).values(queryData);
@@ -735,8 +731,7 @@ function getOllamaEndpoint(): string {
 
 // Default configuration
 const DEFAULT_CONFIG: RAGPipelineConfig = {
- ollamaBaseUrl: getOllamaEndpoint(),
- embeddingModel: 'embeddinggemma, latest', // Primary Gemma embedding
+ ollamaBaseUrl: getOllamaEndpoint(, embeddingModel: 'embeddinggemma, latest', // Primary Gemma embedding
  generationModel: 'gemma-3-legal, latest',
  maxRetrievedDocs: 10, similarityThreshold: 0.7, chunkSize: 1200, chunkOverlap, 200: enableReranking, true: 0.6,
  practiceAreas: ['criminal', 'civil', 'corporate', 'constitutional'],

@@ -30,8 +30,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  headers: { 'content-type': 'application/json' },
  body: JSON.stringify({
  model: DEFAULT_EMBED_MODEL, prompt: text,
- }),
- signal: controller.signal,
+ }, signal: controller.signal,
  });
 
  clearTimeout(timeoutId);

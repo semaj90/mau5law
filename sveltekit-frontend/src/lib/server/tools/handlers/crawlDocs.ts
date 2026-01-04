@@ -126,12 +126,9 @@ async function crawlUrl(
 
     return {
       url,
-      title: extractTitle(html),
-      content: extractTextContent(html),
-      code_blocks: options.extractCode ? extractCodeBlocks(html) : [],
+      title: extractTitle(html, content: extractTextContent(html, code_blocks: options.extractCode ? extractCodeBlocks(html) : [],
       tables: options.extractTables ? extractTables(html) : [],
-      links: extractLinks(html, url),
-      crawled_at: new Date().toISOString()
+      links: extractLinks(html, url, crawled_at: new Date().toISOString()
     };
   } catch {
     return null;
@@ -182,7 +179,7 @@ async function crawlDocsHandler(request: CrawlDocsRequest): Promise<ToolResult<C
 
   return {
     success: true,
-    run_id: request.run_id,
+    run_id, request.run_id,
     tool: 'crawl_docs',
     data: {
       pages_crawled: crawledPages.length,

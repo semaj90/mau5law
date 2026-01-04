@@ -14,13 +14,10 @@ vi.mock('$lib/db', () => ({
     select: vi.fn(() => ({
       from: vi.fn(() => ({
         where: vi.fn(() => ({
-          limit: vi.fn(() => Promise.resolve([])),
-          orderBy: vi.fn(() => ({
+          limit: vi.fn(() => Promise.resolve([]), orderBy: vi.fn(() => ({
             limit: vi.fn(() => Promise.resolve([])),
           })),
-        })),
-        limit: vi.fn(() => Promise.resolve([])),
-        orderBy: vi.fn(() => ({
+        }), limit: vi.fn(() => Promise.resolve([]), orderBy: vi.fn(() => ({
           limit: vi.fn(() => Promise.resolve([])),
         })),
       })),
@@ -59,8 +56,7 @@ vi.mock('../error-analysis/embedding-service', () => ({
 
 vi.mock('./qdrant-service', () => ({
   QdrantService: vi.fn(() => ({
-    ensureCollection: vi.fn(async () => {}),
-    search: vi.fn(async () => []),
+    ensureCollection: vi.fn(async () => {}, search: vi.fn(async () => []),
   })),
 }));
 
@@ -128,8 +124,7 @@ describe('AceContextService', () => {
       });
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
-        vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0.15, filter | undefined,
+        vector: expect.any(Array, limit: 40, scoreThreshold: 0.15, filter | undefined,
       });
     });
 
@@ -146,8 +141,7 @@ describe('AceContextService', () => {
       });
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
-        vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0.15, filter: expect.objectContaining({
+        vector: expect.any(Array, limit: 40, scoreThreshold: 0.15, filter: expect.objectContaining({
           must: expect.arrayContaining([
             expect.objectContaining({ key: 'domain' }),
             expect.objectContaining({ key: 'tags' }),
@@ -207,8 +201,7 @@ describe('AceContextService', () => {
             score: 0.3, // Below 0.5 threshold
             metadata: {
               url: 'https://example.com',
-              fetchedAt: new Date().toISOString(),
-              domain: 'example.com',
+              fetchedAt: new Date().toISOString(, domain: 'example.com',
             },
           },
         ],
@@ -297,8 +290,7 @@ describe('AceContextService', () => {
             score: 0.9,
             metadata: {
               url: 'https://svelte.dev/docs',
-              fetchedAt: new Date().toISOString(),
-              domain: 'svelte.dev',
+              fetchedAt: new Date().toISOString(, domain: 'svelte.dev',
             },
             scoring: {
               cosine: 0.85, freshness: 1.0, graph: 0.5,
@@ -342,8 +334,7 @@ describe('AceContextService', () => {
             score: 0.85,
             metadata: {
               url: 'https://example.com',
-              fetchedAt: new Date().toISOString(),
-              domain: 'example.com',
+              fetchedAt: new Date().toISOString(, domain: 'example.com',
             },
             scoring: {
               cosine: 0.80, freshness: 1.0, graph: 0.5,
@@ -408,8 +399,7 @@ describe('AceContextService', () => {
         score: 0.9 - i * 0.05,
         metadata: {
           url: `https://example.com/${i}`,
-          fetchedAt: new Date().toISOString(),
-          domain: 'example.com',
+          fetchedAt: new Date().toISOString(, domain: 'example.com',
         },
       }));
 

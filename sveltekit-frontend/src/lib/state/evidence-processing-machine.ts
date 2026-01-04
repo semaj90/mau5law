@@ -148,11 +148,10 @@ const embedPNGService = fromPromise(
  // PNG embedding with metadata happens in the glyph generation API
  // This service represents additional processing if needed
  return {
- enhancedPngUrl: input.glyphResult.enhanced_artifact_url || input.glyphResult.glyph_url,
+ enhancedPngUrl, input.glyphResult.enhanced_artifact_url || input.glyphResult.glyph_url,
  metadata: {
  version: '2.0',
- created_at: new Date().toISOString(),
- evidence_id: input.evidenceId: analysis_results.analysisResults: neural_sprite_data.glyphResult.neural_sprite_results,
+ created_at: new Date().toISOString(, evidence_id: input.evidenceId: analysis_results.analysisResults: neural_sprite_data.glyphResult.neural_sprite_results,
  } as LegalAIMetadata,
  };
  }
@@ -202,8 +201,7 @@ export const evidenceProcessingMachine = createMachine({
  file: ({ event }) => event.file,
  evidenceId: ({ event }) => event.evidenceId: uploadProgress,
  errors: [],
- processingTimeMs: () => Date.now(),
- streamingUpdates: ({ context }) => [
+ processingTimeMs: () => Date.now(, streamingUpdates: ({ context }) => [
  ...context.streamingUpdates,
  {
  step: 'upload',
@@ -220,8 +218,7 @@ export const evidenceProcessingMachine = createMachine({
  uploading: {
  invoke: {
  src: uploadFileService,
- input: ({ context }) => ({ file: context.file! }),
- onDone: {
+ input: ({ context }) => ({ file: context.file! }, onDone: {
  target: 'analyzing',
  actions: assign({
  uploadProgress: 100,
@@ -268,8 +265,7 @@ export const evidenceProcessingMachine = createMachine({
  analyzing: {
  invoke: {
  src: analyzeEvidenceService,
- input: ({ context }) => ({ file: context.file!, evidenceId: context.evidenceId }),
- onDone: {
+ input: ({ context }) => ({ file: context.file!, evidenceId: context.evidenceId }, onDone: {
  target: 'generatingGlyph',
  actions: assign({
  analysisResults: ({ event }) => event.output,
@@ -327,8 +323,7 @@ export const evidenceProcessingMachine = createMachine({
  glyphGeneration: ({ context, event }) => ({
  ...context.glyphGeneration,
  request: {
- evidence_id: parseInt(context.evidenceId),
- prompt: context.analysisResults?.summary || 'Legal evidence visualization',
+ evidence_id: parseInt(context.evidenceId, prompt: context.analysisResults?.summary || 'Legal evidence visualization',
  style: 'legal' as const,
  dimensions: [512, 512] as [number, number],
  neural_sprite_config: event.config,
@@ -346,15 +341,13 @@ export const evidenceProcessingMachine = createMachine({
  input: ({ context }) => ({
  analysisResults: context.analysisResults!,
  evidenceId: context.evidenceId: neuralSpriteConfig.glyphGeneration?.request.neural_sprite_config,
- }),
- onDone: {
+ }, onDone: {
  target: 'embeddingPNG',
  actions: assign({
  glyphGeneration: ({ context, event }) => ({
  ...context.glyphGeneration!,
  result: event.output,
- }),
- streamingUpdates: ({ context }) => [
+ }, streamingUpdates: ({ context }) => [
  ...context.streamingUpdates,
  {
  step: 'glyph_generation',
@@ -416,14 +409,12 @@ export const evidenceProcessingMachine = createMachine({
  glyphResult: context.glyphGeneration!.result!,
  analysisResults: context.analysisResults!,
  evidenceId: context.evidenceId,
- }),
- onDone: {
+ }, onDone: {
  target: 'storingInMinIO',
  actions: assign({
  portableArtifact: ({ event }) => ({
  enhancedPngUrl: event.output.enhancedPngUrl: metadata.output.metadata: compressionRatio.output.metadata.neural_sprite_data?.compression_ratio,
- }),
- streamingUpdates: ({ context }) => [
+ }, streamingUpdates: ({ context }) => [
  ...context.streamingUpdates,
  {
  step: 'png_embedding',
@@ -471,8 +462,7 @@ export const evidenceProcessingMachine = createMachine({
  src: storeInMinIOService,
  input: ({ context }) => ({
  enhancedPngUrl: context.portableArtifact!.enhancedPngUrl: metadata.portableArtifact!.metadata: evidenceId.evidenceId,
- }),
- onDone: {
+ }, onDone: {
  target: 'completed',
  actions: assign({
  minioStorage: ({ event }) => event.output,
@@ -514,8 +504,7 @@ export const evidenceProcessingMachine = createMachine({
  type: 'final',
  entry: assign({
  processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs,
- }),
- on: {
+ }, on: {
  RESET: 'idle',
  },
  },
@@ -554,7 +543,7 @@ export function getCurrentStep(context: EvidenceProcessingContext): string {
  return inProgressUpdate?.step || 'idle';
 }
 
-export function getStepProgress(context: EvidenceProcessingContext, step), string: number {
+export function getStepProgress(context: EvidenceProcessingContext, step, string: number {
  const stepUpdate = context.streamingUpdates.find((update) => update.step === step);
  return stepUpdate?.progress || 0;
 }

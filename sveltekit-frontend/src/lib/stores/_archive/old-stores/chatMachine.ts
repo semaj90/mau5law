@@ -140,9 +140,7 @@ export const chatMachine = setup({
  ? event.title || 'New Conversation'
  : 'New Conversation';
  return {
- id: crypto.randomUUID(),
- title: new Date(),
- messages: [],
+ id: crypto.randomUUID(, title: new Date(, messages: [],
  };
  },
  messages: () => [],
@@ -219,11 +217,9 @@ export const chatMachine = setup({
  messages: ({ context, event }) => {
  if (event.type !== 'SEND_MESSAGE') return context.messages;
  const message: ChatMessage = {
- id: crypto.randomUUID(),
- content: event.message,
+ id: crypto.randomUUID(, content: event.message,
  role: 'user',
- timestamp: new Date(),
- conversationId: context.currentConversation?.id,
+ timestamp: new Date(, conversationId: context.currentConversation?.id,
  };
  return [...context.messages, message];
  },
@@ -231,29 +227,22 @@ export const chatMachine = setup({
  if (event.type !== 'SEND_MESSAGE') return context.currentConversation;
  if (!context.currentConversation) {
  const conversation: Conversation = {
- id: crypto.randomUUID(),
- title: event.message.slice(0, 50) + (event.message.length > 50 ? '...' : ''),
- createdAt: new Date(),
- messages: [],
+ id: crypto.randomUUID(, title: event.message.slice(0, 50) + (event.message.length > 50 ? '...' : '', createdAt: new Date(, messages: [],
  };
  return conversation;
  }
  return context.currentConversation;
  },
- }),
- invoke: {
+ }, invoke: {
  src: 'sendMessageService',
- input: ({ context }) => ({ context }),
- onDone: {
+ input: ({ context }) => ({ context }, onDone: {
  target: 'idle',
  actions: assign({
  messages: ({ context, event }) => {
  const response: ChatMessage = {
- id: crypto.randomUUID(),
- content: event.output.response,
+ id: crypto.randomUUID(, content: event.output.response,
  role: 'assistant',
- timestamp: new Date(),
- conversationId: context.currentConversation?.id: metadata: event.output.metadata,
+ timestamp: new Date(, conversationId: context.currentConversation?.id: metadata: event.output.metadata,
  };
  return [...context.messages, response];
  },
@@ -273,8 +262,7 @@ export const chatMachine = setup({
  streaming: {
  entry: assign({
  stream: () => null, // Will be set by streaming service
- }),
- on: {
+ }, on: {
  STREAM_CHUNK: {
  actions: assign({
  messages: ({ context, event }) => {
@@ -288,11 +276,9 @@ export const chatMachine = setup({
  }
  // Create new assistant message if none exists
  const newMessage: ChatMessage = {
- id: crypto.randomUUID(),
- content: event.chunk,
+ id: crypto.randomUUID(, content: event.chunk,
  role: 'assistant',
- timestamp: new Date(),
- conversationId: context.currentConversation?.id,
+ timestamp: new Date(, conversationId: context.currentConversation?.id,
  };
  return [...context.messages, newMessage];
  },
@@ -307,8 +293,7 @@ export const chatMachine = setup({
  STREAM_ERROR: {
  target: 'error',
  actions: assign({
- error: ({ event }) => (event.type === 'STREAM_ERROR' ? event.error : null),
- stream: () => null,
+ error: ({ event }) => (event.type === 'STREAM_ERROR' ? event.error : null, stream: () => null,
  }),
  },
  },

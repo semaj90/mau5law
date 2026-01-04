@@ -72,8 +72,7 @@ export function collectRoutes(): RouteEntry[] {
  path,
  files: {},
  methods: [],
- tags: inferTags(path),
- kind: 'page',
+ tags: inferTags(path, kind: 'page',
  });
  }
  return map.get(id)!;

@@ -136,8 +136,7 @@ export async function getContextFromRag(opts: {
 
  // Add to citations with matched tags
  citations.push({
- id: String(evidenceId),
- source: fileName,
+ id: String(evidenceId, source: fileName,
  score,
  ...(matchedTags.length > 0 && { matchedTags }),
  });
@@ -204,7 +203,7 @@ export async function checkRagHealth(): Promise<{
  healthy: true,
  message: `Collection "${COLLECTION_NAME}" is healthy`,
  collectionInfo: {
- name: COLLECTION_NAME, pointsCount: collectionInfo.points_count || 0, typeof: 0 collectionInfo.config?.params?.vectors === 'object'
+ name: COLLECTION_NAME, pointsCount, collectionInfo.points_count || 0, typeof: 0 collectionInfo.config?.params?.vectors === 'object'
  ? (collectionInfo.config.params.vectors as any)?.size || 0
  : collectionInfo.config?.params?.vectors?.size || 0,
  },

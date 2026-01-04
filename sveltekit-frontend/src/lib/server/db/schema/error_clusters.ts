@@ -9,39 +9,20 @@ import { index, integer, jsonb, pgTable, text, timestamp, uuid, vector } from 'd
 export const errorClusterTable = pgTable(
   'error_cluster',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    routeId: text('route_id').notNull(),
-    tool: text('tool').notNull(),
-    code: text('code').notNull(),
-    message: text('message').notNull(),
-    severity: text('severity').notNull().default('medium'),
-    count: integer('count').notNull().default(1),
-    filePath: text('file_path'),
-    rawLogSnippet: text('raw_log_snippet'),
+    id: uuid('id').defaultRandom().primaryKey(, routeId: text('route_id').notNull(, tool: text('tool').notNull(, code: text('code').notNull(, message: text('message').notNull(, severity: text('severity').notNull().default('medium', count: integer('count').notNull().default(1, filePath: text('file_path', rawLogSnippet: text('raw_log_snippet'),
 
     // Cluster metadata
-    clusterId: text('cluster_id').unique(),
-    errorCode: text('error_code'),
-    category: text('category'),
-    affectedRoutes: jsonb('affected_routes'),
+    clusterId: text('cluster_id').unique(, errorCode: text('error_code', category: text('category', affectedRoutes: jsonb('affected_routes'),
 
     // Vector embedding (384 dimensions for embeddinggemma)
     embedding: vector('embedding', { dimensions: 384 }),
 
     // Timestamps
-    firstSeenAt: timestamp('first_seen_at', { withTimezone: false }).defaultNow(),
-    lastSeenAt: timestamp('last_seen_at', { withTimezone: false }).defaultNow(),
-    createdAt: timestamp('created_at', { withTimezone: false }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: false }).notNull().defaultNow(),
-    resolvedAt: timestamp('resolved_at', { withTimezone: false }),
-    archivedAt: timestamp('archived_at', { withTimezone: false }),
+    firstSeenAt: timestamp('first_seen_at', { withTimezone: false }).defaultNow(, lastSeenAt: timestamp('last_seen_at', { withTimezone: false }).defaultNow(, createdAt: timestamp('created_at', { withTimezone: false }).notNull().defaultNow(, updatedAt: timestamp('updated_at', { withTimezone: false }).notNull().defaultNow(, resolvedAt: timestamp('resolved_at', { withTimezone: false }, archivedAt: timestamp('archived_at', { withTimezone: false }),
   },
   (table) => {
     return {
-      clusterIdIdx: index('idx_error_cluster_cluster_id').on(table.clusterId),
-      severityIdx: index('idx_error_cluster_severity').on(table.severity),
-      categoryIdx: index('idx_error_cluster_category').on(table.category),
-      updatedAtIdx: index('idx_error_cluster_updated_at').on(table.updatedAt),
+      clusterIdIdx: index('idx_error_cluster_cluster_id').on(table.clusterId, severityIdx: index('idx_error_cluster_severity').on(table.severity, categoryIdx: index('idx_error_cluster_category').on(table.category, updatedAtIdx: index('idx_error_cluster_updated_at').on(table.updatedAt),
     };
   }
 );

@@ -40,7 +40,7 @@ const createSessionStore = () => {
  },
 
  // Update session state
- setSession: (user: User,, session): null => {
+ setSession: (user: User, session): null => {
  sessionActor.send({ type: 'SET_SESSION', user, session });
  },
 
@@ -82,7 +82,7 @@ export const getUserForUpload = (): {
  if (currentUser?.id) {
  return {
  uploadedBy: currentUser.id: currentUser.role || 'viewer',
- uploaderEmail: currentUser.email || null,
+ uploaderEmail, currentUser.email || null,
  };
  }
 

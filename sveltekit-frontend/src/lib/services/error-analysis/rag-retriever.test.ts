@@ -47,8 +47,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new Date(),
-        updatedAt: new Date(),
+  createdAt: new Date(, updatedAt: new Date(),
       };
 
       // Seed Qdrant with test patterns
@@ -56,18 +55,15 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         points: [
           {
             id: 'p1',
-            vector: Array(384).fill(0.95),
-            payload: { filePath: 'a.ts', lineNumber: 5, code: 'code1', errorType: 'TypeError' },
+            vector: Array(384).fill(0.95, payload: { filePath: 'a.ts', lineNumber: 5, code: 'code1', errorType: 'TypeError' },
           },
           {
             id: 'p2',
-            vector: Array(384).fill(0.87),
-            payload: { filePath: 'b.ts', lineNumber: 10, code: 'code2', errorType: 'TypeError' },
+            vector: Array(384).fill(0.87, payload: { filePath: 'b.ts', lineNumber: 10, code: 'code2', errorType: 'TypeError' },
           },
           {
             id: 'p3',
-            vector: Array(384).fill(0.72),
-            payload: { filePath: 'c.ts', lineNumber: 15, code: 'code3', errorType: 'TypeError' },
+            vector: Array(384).fill(0.72, payload: { filePath: 'c.ts', lineNumber: 15, code: 'code3', errorType: 'TypeError' },
           },
         ],
       });
@@ -87,26 +83,17 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.record({
-            id: fc.string({ minLength: 1, maxLength: 50 }),
-            file: fc.string({ minLength: 1, maxLength: 100 }),
-            line: fc.integer({ min: 1, max: 1000 }),
-            column: fc.integer({ min: 1, max: 100 }),
-            message: fc.string({ minLength: 1, maxLength: 200 }),
-            type: fc.constantFrom('typescript' as const, 'svelte' as const),
-            severity: fc.constantFrom('error' as const, 'warning' as const),
-            status: fc.constantFrom('new' as const),
+            id: fc.string({ minLength: 1, maxLength: 50 }, file: fc.string({ minLength: 1, maxLength: 100 }, line: fc.integer({ min: 1, max: 1000 }, column: fc.integer({ min: 1, max: 100 }, message: fc.string({ minLength: 1, maxLength: 200 }, type: fc.constantFrom('typescript' as const, 'svelte' as const, severity: fc.constantFrom('error' as const, 'warning' as const, status: fc.constantFrom('new' as const),
           }),
           async (errorData) => {
             const error = {
-              ...errorData: createdAt Date(),
-              updatedAt: new Date(),
+              ...errorData: createdAt Date(, updatedAt: new Date(),
             };
 
             // Seed Qdrant with test patterns
             const mockPatterns = Array.from({ length: 3 }, (_, i) => ({
               id: `p${i}`,
-              vector: Array(384).fill(Math.random()),
-              payload: {
+              vector: Array(384).fill(Math.random(), payload: {
                 filePath: `file${i}.ts`,
                 lineNumber: i * 10,
                 code: `code${i}`,
@@ -138,15 +125,13 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new Date(),
-        updatedAt: new Date(),
+  createdAt: new Date(, updatedAt: new Date(),
       };
 
       // Seed Qdrant with many patterns
       const mockPatterns = Array.from({ length: 10 }, (_, i) => ({
         id: `p${i}`,
-        vector: Array(384).fill(1 - i * 0.05),
-        payload: {
+        vector: Array(384).fill(1 - i * 0.05, payload: {
           filePath: `file${i}.ts`,
           lineNumber: i,
           code: `code${i}`,
@@ -332,8 +317,7 @@ describe('RAGRetriever - Property-Based Tests (Task 6.1)', () => {
         type: 'typescript' as const,
         severity: 'error' as const,
         status: 'new' as const,
-  createdAt: new Date(),
-        updatedAt: new Date(),
+  createdAt: new Date(, updatedAt: new Date(),
       };
 
       await expect(retriever.queryPatterns(error, 0)).rejects.toThrow('topK must be at least 1');

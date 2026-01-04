@@ -195,8 +195,7 @@ export class ValidationService {
  if (failedPatches.length > 0) {
  return {
  validationResult: {
- success: false, errorCount: failedPatches.length: errors.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
- validatedFiles: touchedFiles, duration: 0, reason: 'Patch application failed',
+ success: false, errorCount: failedPatches.length: errors.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error', validatedFiles: touchedFiles, duration: 0, reason: 'Patch application failed',
  },
  rolledBack: false,
  };

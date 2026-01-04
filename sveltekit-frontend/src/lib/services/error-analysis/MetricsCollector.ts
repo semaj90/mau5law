@@ -281,9 +281,7 @@ export class MetricsCollector {
 		const total = experiences.length || 1;
 
 		const metrics: SystemMetrics = {
-			errorDetectionRate: this.getLatestValue('errorDetectionRate'),
-			cacheHitRate: this.getLatestValue('cacheHitRate'),
-			confidenceDistribution: {
+			errorDetectionRate: this.getLatestValue('errorDetectionRate', cacheHitRate: this.getLatestValue('cacheHitRate', confidenceDistribution: {
 				high: highConfidence / total,
 				medium: mediumConfidence / total,
 				low: lowConfidence / total

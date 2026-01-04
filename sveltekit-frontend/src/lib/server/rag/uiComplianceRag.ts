@@ -51,8 +51,7 @@ export class GemmaVectorStore {
  async similaritySearch(query: string, k = 5): Promise<StoredDoc[]> {
  const [queryVector] = await embedWithGemma([query]);
  const scored = this.vectors.map((vector, index) => ({
- score: cosine(vector, queryVector),
- doc: this.docs[index],
+ score: cosine(vector, queryVector, doc: this.docs[index],
  }));
 
  return scored

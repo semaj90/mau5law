@@ -10,8 +10,7 @@ import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 // Mock cacheService module
 vi.mock('../cache.service', () => ({
  cacheService: {
- getOrSet: vi.fn(),
- invalidate: vi.fn(),
+ getOrSet: vi.fn(, invalidate: vi.fn(),
  }
 }));
 
@@ -80,8 +79,7 @@ describe('Performance Tests', () => {
  text: 'Cached summary',
  citations: [],
  holding: 'Holding',
- version: 1, createdAt: new Date(),
- createdBy: 'user-123',
+ version: 1, createdAt: new Date(, createdBy: 'user-123',
  isCurrent: true,
  };
 
@@ -108,8 +106,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1, createdAt: new Date(),
- createdBy: 'user-123',
+ version: 1, createdAt: new Date(, createdBy: 'user-123',
  isCurrent: true,
  });
 
@@ -173,8 +170,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1, createdAt: new Date(),
- createdBy: 'user-123',
+ version: 1, createdAt: new Date(, createdBy: 'user-123',
  isCurrent: true,
  });
 
@@ -201,8 +197,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1, createdAt: new Date(),
- createdBy: 'user-123',
+ version: 1, createdAt: new Date(, createdBy: 'user-123',
  isCurrent: true,
  });
 

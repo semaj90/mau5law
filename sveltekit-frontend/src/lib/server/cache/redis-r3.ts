@@ -65,10 +65,7 @@ class RedisR3Cache {
  if (!uint8Buffer || !scaleStr || !offsetStr || !lengthStr) return null;
 
  const quant: QuantizedEmbedding = {
- data: new Uint8Array(uint8Buffer.buffer),
- scale: parseFloat(scaleStr),
- offset: parseFloat(offsetStr),
- originalLength: parseInt(lengthStr),
+ data: new Uint8Array(uint8Buffer.buffer, scale: parseFloat(scaleStr, offset: parseFloat(offsetStr, originalLength: parseInt(lengthStr),
  };
 
  return { float32: quant };

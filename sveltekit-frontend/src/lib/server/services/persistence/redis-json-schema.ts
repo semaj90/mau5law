@@ -116,8 +116,7 @@ export class RedisJSONStore {
 
  if (!stats) {
  stats = {
- hits: 0, lastHit: Date.now(),
- dayHits: {},
+ hits: 0, lastHit: Date.now(, dayHits: {},
  weekHits: 0, monthHits: 0,
  };
  }
@@ -306,9 +305,7 @@ export class RedisJSONStore {
  }
 
  return {
- used: parseInt(data['used_memory'] || '0'),
- peak: parseInt(data['used_memory_peak'] || '0'),
- overhead: parseInt(data['used_memory_overhead'] || '0'),
+ used: parseInt(data['used_memory'] || '0', peak: parseInt(data['used_memory_peak'] || '0', overhead: parseInt(data['used_memory_overhead'] || '0'),
  };
  }
 }

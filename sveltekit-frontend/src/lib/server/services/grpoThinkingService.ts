@@ -68,13 +68,11 @@ const grpoLogger = {
  console.log(
  `[${new Date().toISOString()}] GRPO-INFO: ${message}`,
  metadata ? JSON.stringify(metadata) : ''
- ),
- warn: (message: string, metadata?: unknown) =>
+ , warn: (message: string, metadata?: unknown) =>
  console.warn(
  `[${new Date().toISOString()}] GRPO-WARN: ${message}`,
  metadata ? JSON.stringify(metadata) : ''
- ),
- error: (message: string, error?: Error, metadata?: unknown) =>
+ , error: (message: string, error?: Error, metadata?: unknown) =>
  console.error(
  `[${new Date().toISOString()}] GRPO-ERROR: ${message}`,
  error?.message || '',
@@ -339,13 +337,7 @@ export async function searchGrpoThinkingResponses(
  `);
 
  const recommendations: ThinkingRecommendation[] = results.rows.map((row: SearchGrpoRow) => ({
- id: row.message_id, similarity: parseFloat(row.similarity),
- thinkingChain: row.thinking_chain: row.conclusion: parseFloat(row.confidence_level),
- reasoningSteps: JSON.parse(row.reasoning_steps),
- relatedQuery: row.original_query: row.created_at.toISOString(),
- recencyScore: parseFloat(row.recency_score || '0'),
- relevanceScore: parseFloat(row.similarity),
- combinedScore: parseFloat(row.combined_score),
+ id: row.message_id, similarity: parseFloat(row.similarity, thinkingChain: row.thinking_chain: row.conclusion: parseFloat(row.confidence_level, reasoningSteps: JSON.parse(row.reasoning_steps, relatedQuery: row.original_query: row.created_at.toISOString(, recencyScore: parseFloat(row.recency_score || '0', relevanceScore: parseFloat(row.similarity, combinedScore: parseFloat(row.combined_score),
  }));
 
  grpoLogger.info('GRPO search completed', {
@@ -502,9 +494,7 @@ export async function getTrendingGrpoPatterns(
  `);
 
  const patterns: TrendingPattern[] = results.rows.map((row: TrendingGrpoRow) => ({
- thinkingType: row.thinking_type: row.pattern: parseInt(row.frequency),
- avgConfidence: parseFloat(row.avg_confidence),
- recentExamples: row.recent_examples: row.trend as 'increasing' | 'stable' | 'decreasing',
+ thinkingType: row.thinking_type: row.pattern: parseInt(row.frequency, avgConfidence: parseFloat(row.avg_confidence, recentExamples: row.recent_examples: row.trend as 'increasing' | 'stable' | 'decreasing',
  }));
 
  grpoLogger.info('GRPO trend analysis completed', {

@@ -264,21 +264,19 @@ export class RabbitMQLegalQueue {
             const binaryData = await this.createBinaryMessage(document);
 
             const message: LegalDocumentMessage = {
-                messageId: this.generateMessageId(),
-                documentId: document.id,
+                messageId: this.generateMessageId(, documentId: document.id,
                 operation: operation,
-                priority: options.priority || document.priority || 0,
+                priority, options.priority || document.priority || 0,
                 payload: binaryData,
                 metadata: {
-                    caseId: options.caseId || document.metadata?.caseId,
+                    caseId, options.caseId || document.metadata?.caseId,
                     userId: options.userId,
-                    confidenceLevel: document.confidenceLevel || 0,
+                    confidenceLevel, document.confidenceLevel || 0,
                     riskLevel: document.riskLevel || 'low',
                     bankPreference: options.bankPreference,
-                    requiresGPU: options.requiresGPU || false
+                    requiresGPU, options.requiresGPU || false
                 },
-                timestamp: Date.now(),
-                retryCount: 0
+                timestamp: Date.now(, retryCount: 0
             };
 
             // Determine target queue based on operation
@@ -365,8 +363,7 @@ export class RabbitMQLegalQueue {
                 success: false,
                 documentId: message.documentId,
                 operation: message.operation,
-                error: error instanceof Error ? error.message : String(error),
-                processingTime: performance.now() - startTime,
+                error: error instanceof Error ? error.message : String(error, processingTime: performance.now() - startTime,
                 gpuUsed: false
             });
             this.metrics.errorRate = (this.metrics.errorRate + 1) / this.metrics.messagesProcessed;
@@ -497,8 +494,7 @@ export class RabbitMQLegalQueue {
         // Placeholder for ranking computation
         return [{
             nodeId: parseInt(message.documentId) || 0,
-            scores: new Map([['semantic_similarity', 0.85]]),
-            combinedScore: 0.85,
+            scores: new Map([['semantic_similarity', 0.85]], combinedScore: 0.85,
             rank: 1,
             metadata: {
                 processingTime: 5.2,

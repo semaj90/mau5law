@@ -129,9 +129,8 @@ async function handleValidate() {
 		const response = await sourceValidationAPI.validateSources({
 			case_id: caseId,
 			query: searchQuery,
-			selected_chunk_ids: Array.from(selectedChunks),
-			rejected_chunk_ids: Array.from(rejectedChunks),
-			validation_notes: validationNotes || undefined
+			selected_chunk_ids: Array.from(selectedChunks, rejected_chunk_ids: Array.from(rejectedChunks),
+			validation_notes, validationNotes || undefined
 		});
 
 		onValidationComplete?.(response.validation_id, response.approved_chunks);

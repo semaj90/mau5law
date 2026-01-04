@@ -47,8 +47,7 @@ function chunkText(
       if (currentChunk.length + sentence.length > chunkSize && currentChunk) {
         chunks.push({
           id: `chunk_${chunks.length}`,
-          content: currentChunk.trim(),
-          metadata: {},
+          content: currentChunk.trim(, metadata: {},
           start_idx: startIdx,
           end_idx: startIdx + currentChunk.length
         });
@@ -62,8 +61,7 @@ function chunkText(
     if (currentChunk.trim()) {
       chunks.push({
         id: `chunk_${chunks.length}`,
-        content: currentChunk.trim(),
-        metadata: {},
+        content: currentChunk.trim(, metadata: {},
         start_idx: startIdx,
         end_idx: content.length
       });
@@ -181,7 +179,7 @@ async function chunkEmbedHandler(request: ChunkEmbedRequest): Promise<ToolResult
 
   return {
     success: true,
-    run_id: request.run_id,
+    run_id, request.run_id,
     tool: 'chunk_embed',
     data: {
       chunks_created: chunksCreated,

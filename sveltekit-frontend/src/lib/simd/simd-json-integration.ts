@@ -153,9 +153,8 @@ export function benchmarkJSONParsing(sampleSizeKB = 100, iterations = 1000) {
     items: Array.from({ length: Math.floor((sampleSizeKB * 1024) / 100) }, (_, i) => ({
       id: i,
       name: `Item ${i}`,
-      value: Math.random(),
-      tags: ['tag1', 'tag2', 'tag3'],
-      metadata: { created: new Date().toISOString(), active: true }
+      value: Math.random(, tags: ['tag1', 'tag2', 'tag3'],
+      metadata: { created: new Date().toISOString(, active: true }
     }))
   };
   
@@ -182,11 +181,8 @@ export function benchmarkJSONParsing(sampleSizeKB = 100, iterations = 1000) {
 
   const results = {
     payloadSize: `${(jsonString.length / 1024).toFixed(2)}KB`,
-    iterations: nativeTimeMs.toFixed(2),
-    simdTimeMs: timeSIMD.toFixed(2),
-    speedup: `${(timeNative / timeSIMD).toFixed(2)}x`,
-    opsPerSecNative: Math.round((iterations / timeNative) * 1000),
-    opsPerSecSIMD: Math.round((iterations / timeSIMD) * 1000)
+    iterations: nativeTimeMs.toFixed(2, simdTimeMs: timeSIMD.toFixed(2, speedup: `${(timeNative / timeSIMD).toFixed(2)}x`,
+    opsPerSecNative: Math.round((iterations / timeNative) * 1000, opsPerSecSIMD: Math.round((iterations / timeSIMD) * 1000)
   };
 
   console.table(results);

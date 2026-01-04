@@ -227,8 +227,7 @@ class RouteRegistry {
     private getPathHref(route: RouteDefinition | GeneratedRoute): { path?: string; href?: string } {
         const r = route as unknown as Record<string, unknown>;
         return {
-            path: this.asString(r['path']),
-            href: this.asString(r['href'])
+            path: this.asString(r['path'], href: this.asString(r['href'])
         };
     }
 
@@ -270,8 +269,7 @@ class RouteRegistry {
         if (!this.options.persistState || !browser) return;
         try {
             const persistedData = {
-                favorites: Array.from(this.favorites),
-                recentRoutes: this.recentRoutes, routeHistory: this.routeHistory
+                favorites: Array.from(this.favorites, recentRoutes: this.recentRoutes, routeHistory: this.routeHistory
             };
             localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
         } catch (e) {

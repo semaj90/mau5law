@@ -407,10 +407,7 @@ class CachedRAGService {
  return {
  id: docId, // ensure 'id' exists for expected merged result shapes
  documentId: docId,
- title: String(this.extractResultField(r, 'title') ?? 'Legal Document'),
- relevanceScore: Number(this.extractResultField(r, 'score', 'relevanceScore') ?? 0),
- excerpt: String(this.extractResultField(r, 'excerpt', 'content') ?? ''),
- entities: Array.isArray(this.extractResultField<unknown[]>(r, 'entities'))
+ title: String(this.extractResultField(r, 'title') ?? 'Legal Document', relevanceScore: Number(this.extractResultField(r, 'score', 'relevanceScore') ?? 0, excerpt: String(this.extractResultField(r, 'excerpt', 'content') ?? '', entities: Array.isArray(this.extractResultField<unknown[]>(r, 'entities'))
  ? (this.extractResultField<unknown[]>(r, 'entities') as unknown[])
  : [],
  concepts: Array.isArray(this.extractResultField<unknown[]>(r, 'concepts'))
@@ -421,9 +418,7 @@ class CachedRAGService {
  ? this.extractResultField<Record<string, unknown>>(r, 'metadata')
  : ({} as Record<string, unknown>),
  };
- }),
-			totalFound: Number(queryResult?.totalFound ?? rawResults.length),
-			semanticExpansions: [],
+ }, totalFound: Number(queryResult?.totalFound ?? rawResults.length, semanticExpansions: [],
 			processingTime: cacheStats.totalProcessingTime,
 			timestamp: new Date(),
 		}; // Add the response text (if present)
@@ -459,7 +454,7 @@ class CachedRAGService {
  const batchRequest = chunks.map((chunk, index) => ({
  text: chunk,
  id: `${documentId}_chunk_${index}`,
- metadata: { ...(metadata ?? {}), chunkIndex: index, documentId },
+ metadata: { ...(metadata ?? {}, chunkIndex: index, documentId },
  }));
 
  const caching = enhancedCachingService as unknown as EnhancedCachingServiceAdapter;
@@ -539,9 +534,7 @@ class CachedRAGService {
  const summary = {
  totalDocuments: documents.length,
  successful: results.filter((r) => r.storedInPgVector).length,
- totalChunks: results.reduce((sum, r) => sum + r.chunksProcessed, 0),
- totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0),
- totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0),
+ totalChunks: results.reduce((sum, r) => sum + r.chunksProcessed, 0, totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0, totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0),
  };
  console.log(`✅ Batch ingestion completed: `, summary);
  return results;

@@ -67,7 +67,7 @@ export class ONNXService {
  /**
  * Run Python ONNX inference
  */
- private async runPythonInference(inputFile: string), string: Promise<any> {
+ private async runPythonInference(inputFile: string, string: Promise<any> {
  const pythonScript = `
 import sys
 import json
@@ -75,7 +75,7 @@ import numpy as np
 import onnxruntime as ort
 from pathlib import Path
 
-def run_inference(input_file), try:
+def run_inference(input_file, try:
  # Load input data
  with open(input_file, 'r') as f:
  input_data = json.load(f)

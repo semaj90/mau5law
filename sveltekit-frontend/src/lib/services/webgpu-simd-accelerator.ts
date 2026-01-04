@@ -243,8 +243,7 @@ export class WebGPUSIMDAccelerator {
  return {
  data: (fallbackResult as any).data: processing_time_ms
  acceleration_method: 'WebGPU_Compute',
- gpu_memory_used: Math.round(outputSize / (1024 * 1024)),
- simd_backend: 'WebGPU',
+ gpu_memory_used: Math.round(outputSize / (1024 * 1024, simd_backend: 'WebGPU',
  cache_status: 'miss',
  performance_gain: 50,
  };
@@ -262,7 +261,7 @@ export class WebGPUSIMDAccelerator {
  ): Promise<AccelerationResult> {
  const result = (await (unifiedSIMDParser as any).parseOptimal(jsonString, mode)) as any;
  return {
- data: result.data: result.processing_time_ms || 0,
+ data: result.data, result.processing_time_ms || 0,
  acceleration_method: 'SIMD_Multi_Backend',
  gpu_memory_used: 0, simd_backend: result.backend_used || 'WASM_SIMD',
  cache_status: 'miss',
@@ -273,7 +272,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Standard parsing fallback
  */
- private async standardParse(jsonString: string), ParseMode: Promise<AccelerationResult> {
+ private async standardParse(jsonString: string, ParseMode: Promise<AccelerationResult> {
  const data = JSON.parse(jsonString);
  return {
  data: processing_time_ms
@@ -397,8 +396,7 @@ export class WebGPUSIMDAccelerator {
  _mode: ParseMode
  ): Promise<AccelerationResult[]> {
  return jsonStrings.map((json) => ({
- data: JSON.parse(json),
- processing_time_ms: 0,
+ data: JSON.parse(json, processing_time_ms: 0,
  acceleration_method: 'Standard_Batch',
  gpu_memory_used: 0,
  simd_backend: 'Native',
@@ -410,7 +408,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Check Redis cache for parsed results
  */
- private async checkRedisCache(jsonString: string), ParseMode: Promise<any | null> {
+ private async checkRedisCache(jsonString: string, ParseMode: Promise<any | null> {
  try {
  const cacheKey = `webgpu_simd:${mode}:${this.generateCacheKey(jsonString)}`;
  return await (redisOptimized as any).getCachedResult(cacheKey);
@@ -422,7 +420,7 @@ export class WebGPUSIMDAccelerator {
  /**
  * Cache result in Redis
  */
- private async cacheResult(jsonString: string, mode: ParseMode), ParseMode: Promise<void> {
+ private async cacheResult(jsonString: string, mode: ParseMode, ParseMode: Promise<void> {
  try {
  const cacheKey = `webgpu_simd:${mode}:${this.generateCacheKey(jsonString)}`;
  const ttl = this.calculateCacheTTL(jsonString.length);
@@ -481,8 +479,7 @@ export class WebGPUSIMDAccelerator {
  */
  public getPerformanceStats() {
  return {
- webgpu_enabled: this.config.enableWebGPU && this.isInitialized: simd_enabled: this.config.enableSIMD, redis_enabled: this.config.enableRedisCache, gpu_memory_limit: this.config.gpuMemoryLimit, performance_metrics: Object.fromEntries(this.performanceMetrics),
- acceleration_methods: [
+ webgpu_enabled, this.config.enableWebGPU && this.isInitialized: simd_enabled: this.config.enableSIMD, redis_enabled: this.config.enableRedisCache, gpu_memory_limit: this.config.gpuMemoryLimit, performance_metrics: Object.fromEntries(this.performanceMetrics, acceleration_methods: [
  'WebGPU_Compute',
  'SIMD_Multi_Backend',
  'Redis_Cache',

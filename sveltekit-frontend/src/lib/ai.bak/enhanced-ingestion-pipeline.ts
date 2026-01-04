@@ -10,8 +10,7 @@ import type { DocumentEmbedding, SOMNode } from './som-rag-system.js';
 import { SelfOrganizingMapRAG } from './som-rag-system.js';
 
 const errorHandler = {
- system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data),
- analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data),
+ system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data, analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data),
 };
 
 const copilotOrchestrator = async (
@@ -222,8 +221,7 @@ export class EnhancedIngestionPipeline {
  const contextLibId = await resolveLibraryId('copilot-architecture');
  const architectureDocs = await getLibraryDocs(contextLibId, 'legal-ai-integration');
  this.copilotContext = {
- architecture_summary: architectureDocs.substring(0, 2000),
- legal_context: 'Legal AI workflow with evidence processing',
+ architecture_summary: architectureDocs.substring(0, 2000, legal_context: 'Legal AI workflow with evidence processing',
  copilot_patterns: 'SvelteKit + Drizzle ORM + Qdrant + multimodal analysis',
  enhancement_priority: true,
  };
@@ -235,23 +233,19 @@ export class EnhancedIngestionPipeline {
 
  private async initializeMultimodalProcessors(): Promise<void> {
  this.multimodalProcessors.set('image', {
- process: this.processImageEvidence.bind(this),
- supportedFormats: ['jpg', 'jpeg', 'png', 'tiff', 'bmp'],
+ process: this.processImageEvidence.bind(this, supportedFormats: ['jpg', 'jpeg', 'png', 'tiff', 'bmp'],
  });
 
  this.multimodalProcessors.set('video', {
- process: this.processVideoEvidence.bind(this),
- supportedFormats: ['mp4', 'avi', 'mov', 'mkv', 'webm'],
+ process: this.processVideoEvidence.bind(this, supportedFormats: ['mp4', 'avi', 'mov', 'mkv', 'webm'],
  });
 
  this.multimodalProcessors.set('audio', {
- process: this.processAudioEvidence.bind(this),
- supportedFormats: ['mp3', 'wav', 'flac', 'm4a', 'ogg'],
+ process: this.processAudioEvidence.bind(this, supportedFormats: ['mp3', 'wav', 'flac', 'm4a', 'ogg'],
  });
 
  this.multimodalProcessors.set('document', {
- process: this.processDocumentEvidence.bind(this),
- supportedFormats: ['pdf', 'docx', 'txt', 'rtf'],
+ process: this.processDocumentEvidence.bind(this, supportedFormats: ['pdf', 'docx', 'txt', 'rtf'],
  });
  }
 
@@ -264,8 +258,7 @@ export class EnhancedIngestionPipeline {
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'image',
- legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.ocr ?? 0.8: timestamp: Date.now(),
+ legal_category: this.determineLegalCategory(evidence, confidence: evidence.metadata.confidence_scores?.ocr ?? 0.8: timestamp: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -281,8 +274,7 @@ export class EnhancedIngestionPipeline {
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'video',
- legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.scene_analysis ?? 0.8: timestamp: Date.now(),
+ legal_category: this.determineLegalCategory(evidence, confidence: evidence.metadata.confidence_scores?.scene_analysis ?? 0.8: timestamp: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -298,8 +290,7 @@ export class EnhancedIngestionPipeline {
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'audio',
- legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.legal_relevance ?? 0.8: timestamp: Date.now(),
+ legal_category: this.determineLegalCategory(evidence, confidence: evidence.metadata.confidence_scores?.legal_relevance ?? 0.8: timestamp: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -315,8 +306,7 @@ export class EnhancedIngestionPipeline {
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'document',
- legal_category: this.determineLegalCategory(evidence),
- confidence: 0.9, timestamp: Date.now(),
+ legal_category: this.determineLegalCategory(evidence, confidence: 0.9, timestamp: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);

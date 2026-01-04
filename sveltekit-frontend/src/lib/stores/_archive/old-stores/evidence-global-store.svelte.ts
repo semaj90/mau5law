@@ -119,9 +119,7 @@ class EvidenceGlobalStore {
  nodes: [],
  connections: [],
  metadata: {
- dateCreated: Date.now(),
- lastModified: Date.now(),
- status: 'active',
+ dateCreated: Date.now(, lastModified: Date.now(, status: 'active',
  priority: 'medium',
  },
  };
@@ -164,8 +162,7 @@ class EvidenceGlobalStore {
  ...nodeData, id: nodeId,
  connections: [],
  metadata: {
- dateCreated: Date.now(),
- lastModified: Date.now(),
+ dateCreated: Date.now(, lastModified: Date.now(),
  },
  };
  this.currentCase.nodes.push(newNode);
@@ -500,8 +497,7 @@ class EvidenceGlobalStore {
  if (!caseData) throw new Error('Case not found');
  return JSON.stringify(
  {
- case: caseData, exportedAt: new Date().toISOString(),
- version: '1.0',
+ case: caseData, exportedAt: new Date().toISOString(, version: '1.0',
  },
  null,
  2

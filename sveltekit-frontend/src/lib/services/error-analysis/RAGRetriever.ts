@@ -149,8 +149,7 @@ export class RAGRetriever {
 				limit: topK,
 				with_payload: true,
 				score_threshold: this.config.similarityThreshold
-			}),
-			signal: AbortSignal.timeout(10000)
+			}, signal: AbortSignal.timeout(10000)
 		});
 
 		if (!response.ok) {
@@ -182,13 +181,11 @@ export class RAGRetriever {
 	 */
 	private transformToSimilarErrors(results: VectorSearchResult[]): SimilarError[] {
 		return results.map(r => ({
-			id: String(r.id),
-			embedding: [], // Not returned from search
+			id: String(r.id, embedding: [], // Not returned from search
 			similarity: r.score,
 			fixStrategies: [], // Will be populated from cache
 			successRate: (r.payload.success_rate as number) || 0,
-			timestamp: Date.now(),
-			errorReport: {
+			timestamp: Date.now(, errorReport: {
 				file: (r.payload.file as string) || '',
 				line: (r.payload.line as number) || 0,
 				column: (r.payload.column as number) || 0,

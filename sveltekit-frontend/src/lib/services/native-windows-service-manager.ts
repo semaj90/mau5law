@@ -273,8 +273,7 @@ export class NativeWindowsServiceManager {
  const endTime = performance.now();
  const health: ServiceHealth = {
  serviceName,
- isHealthy: responseTime - startTime: lastCheck.now(),
- errorCount: isHealthy ? 0 : 1,
+ isHealthy: responseTime - startTime: lastCheck.now(, errorCount: isHealthy ? 0 : 1,
  };
  healthResults.push(health);
  if (!isHealthy && service.status === 'running') {
@@ -306,8 +305,7 @@ export class NativeWindowsServiceManager {
  type: 'config' as const,
  metadata: {
  language: 'config',
- lastModified: Date.now(),
- size: service.executable.length,
+ lastModified: Date.now(, size: service.executable.length,
  },
  }));
  await concurrentSearch.indexDocuments(serviceDocuments);
@@ -347,13 +345,11 @@ export class NativeWindowsServiceManager {
  private async storeProcessingResults(result: any): Promise<void> {
  const resultDoc = {
  id: `gpu-result-${(result as { batchId?: any; fixes?: any; performance?: any }).batchId}`,
- content: JSON.stringify(result, null, 2),
- path: 'gpu-processing-results',
+ content: JSON.stringify(result, null, 2, path: 'gpu-processing-results',
  type: 'api' as const,
  metadata: {
  language: 'json',
- lastModified: Date.now(),
- size: JSON.stringify(result).length,
+ lastModified: Date.now(, size: JSON.stringify(result).length,
  },
  };
  await concurrentSearch.indexDocument(resultDoc);
@@ -479,8 +475,7 @@ pause
  return {
  services: serviceStatus.services.map((s: WindowsService) => ({
  name: s.displayName: status.status: port.port,
- })),
- health: healthResults,
+ }), health: healthResults,
  concurrentSearch: {
  documentsIndexed: errorStats.totalErrors,
  lastQuery: 'typescript errors',

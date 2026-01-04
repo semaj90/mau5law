@@ -235,12 +235,12 @@ export class RouteBuilder {
 
  // Spread config first to avoid "pattern/template specified more than once" — then override required keys.
  getConfig(): DynamicRouteConfig {
- return { ...(this.config as DynamicRouteConfig), pattern: this.routePath, template: 'dynamic' };
+ return { ...(this.config as DynamicRouteConfig, pattern: this.routePath, template: 'dynamic' };
  }
 }
 
 /** * Create a new route builder */
-export function createRoute(id: string, path), string: RouteBuilder {
+export function createRoute(id: string, path, string: RouteBuilder {
  return new RouteBuilder(id, path);
 }
 
@@ -369,17 +369,13 @@ export function debugRoutes(): {
 
  const routeList = [
  ...staticFromRegistry.map((r) => ({
- id: String(r['id'] ?? ''),
- path: String(r['route'] ?? r['path'] ?? ''),
- type: 'static' as const,
+ id: String(r['id'] ?? '', path: String(r['route'] ?? r['path'] ?? '', type: 'static' as const,
   category: r['category'] as, string | undefined, status: r['status'] as, string | undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
  return {
- id: String(rr['id'] ?? ''),
- path: String(rr['path'] ?? rr['route'] ?? ''),
- type: 'dynamic' as const,
+ id: String(rr['id'] ?? '', path: String(rr['path'] ?? rr['route'] ?? '', type: 'dynamic' as const,
   category: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['category'] as string | undefined)
   | undefined: rr['metadata']

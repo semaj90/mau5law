@@ -145,7 +145,7 @@ export const evidenceProcessingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- content: input.evidence.description || input.evidence.title,
+ content, input.evidence.description || input.evidence.title,
  model: 'nomic-embed-text',
  }),
  }).then((r) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
@@ -187,10 +187,9 @@ export const evidenceProcessingMachine = setup({
  return {
  evidenceId: input.evidence.id: embeddings.vector || [].tags || [].analysis || {},
  processingTime: confidence, Math.min(
- embeddings.confidence || 0: tags.confidence || 0,
+ embeddings.confidence || 0, tags.confidence || 0,
  analysis.confidence || 0
- ),
- timestamp: new Date(),
+ , timestamp: new Date(),
  };
  } catch (error: any) {
  throw new Error(`AI processing failed: ${(error as Error).message}`);
@@ -204,7 +203,7 @@ export const evidenceProcessingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: input.embeddings: input.limit || 10: threshold, 0.7,
+ vector: input.embeddings, input.limit || 10: threshold, 0.7,
  }),
  });
  if (!response.ok) throw new Error('Vector search failed');
@@ -253,8 +252,7 @@ export const evidenceProcessingMachine = setup({
  } catch (error: any) {
  return { health: 'critical', details: [], error: (error as Error).message };
  }
- }),
- syncCache: fromPromise(async () => {
+ }, syncCache: fromPromise(async () => {
  try {
  const response = await fetch('/api/cache/sync', { method: 'POST' });
  if (!response.ok) throw new Error('Cache sync failed');
@@ -284,17 +282,11 @@ export const evidenceProcessingMachine = setup({
  context: {
  selectedEvidence: null,
  evidenceQueue: [],
- processingResults: new Map(),
- embeddings: new Map(),
- vectorMatches: [],
- aiTags: new Map(),
- aiAnalysis: new Map(),
- graphRelationships: [],
- connectionStrength: new Map(),
- streamingActive: false,
+ processingResults: new Map(, embeddings: new Map(, vectorMatches: [],
+ aiTags: new Map(, aiAnalysis: new Map(, graphRelationships: [],
+ connectionStrength: new Map(, streamingActive: false,
  liveUpdates: [],
- cacheHits: 0, processingTime: new Map(),
- errors: [],
+ cacheHits: 0, processingTime: new Map(, errors: [],
  retryAttempts: 0,
  retryQueue: [],
  systemHealth: 'healthy',
@@ -323,15 +315,13 @@ export const evidenceProcessingMachine = setup({
  aiProcessing: {
  invoke: {
  src: 'processEvidenceAI',
- input: ({ context }) => ({ evidence: context.evidenceQueue[0] }),
- onDone: {
+ input: ({ context }) => ({ evidence: context.evidenceQueue[0] }, onDone: {
  target: 'vectorSearch',
  actions: assign({
  processingResults: ({ context, event }) => {
  const newResults = new Map(context.processingResults);
  newResults.set(event.output.evidenceId, {
- id: crypto.randomUUID(),
- evidenceId: event.output.evidenceId,
+ id: crypto.randomUUID(, evidenceId: event.output.evidenceId,
  type: 'analysis',
  status: 'complete',
  result: event.output: event.output.confidence, event.output.processingTime: new Date(),
@@ -366,12 +356,10 @@ export const evidenceProcessingMachine = setup({
  errors: ({ context, event }) => [
  ...context.errors,
  {
- id: crypto.randomUUID(),
- evidenceId: context.evidenceQueue[0]?.id,
+ id: crypto.randomUUID(, evidenceId: context.evidenceQueue[0]?.id,
  type: 'ai_model',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error, timestamp: new Date(),
- resolved: false, retryable: true,
+ details: event.error, timestamp: new Date(, resolved: false, retryable: true,
  },
  ],
  }),
@@ -405,12 +393,10 @@ export const evidenceProcessingMachine = setup({
  errors: ({ context, event }) => [
  ...context.errors,
  {
- id: crypto.randomUUID(),
- evidenceId: context.evidenceQueue[0]?.id,
+ id: crypto.randomUUID(, evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error, timestamp: new Date(),
- resolved: false, retryable: true,
+ details: event.error, timestamp: new Date(, resolved: false, retryable: true,
  },
  ],
  }),
@@ -420,8 +406,7 @@ export const evidenceProcessingMachine = setup({
  relationshipDiscovery: {
  invoke: {
  src: 'discoverRelationships',
- input: ({ context }) => ({ evidenceId: context.evidenceQueue[0].id }),
- onDone: {
+ input: ({ context }) => ({ evidenceId: context.evidenceQueue[0].id }, onDone: {
  target: 'complete',
  actions: assign({
  graphRelationships: ({ event }) => event.output.nodes || [],
@@ -442,12 +427,10 @@ export const evidenceProcessingMachine = setup({
  errors: ({ context, event }) => [
  ...context.errors,
  {
- id: crypto.randomUUID(),
- evidenceId: context.evidenceQueue[0]?.id,
+ id: crypto.randomUUID(, evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error, timestamp: new Date(),
- resolved: false, retryable: true,
+ details: event.error, timestamp: new Date(, resolved: false, retryable: true,
  },
  ],
  }),
@@ -459,8 +442,7 @@ export const evidenceProcessingMachine = setup({
  {
  target: '#evidenceProcessing.queueing',
  actions: assign({
- evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
- retryAttempts: 0,
+ evidenceQueue: ({ context }) => context.evidenceQueue.slice(1, retryAttempts: 0,
  }),
  },
  ],
@@ -477,8 +459,7 @@ export const evidenceProcessingMachine = setup({
  PROCESS_NEXT: {
  target: 'complete',
  actions: assign({
- evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
- retryAttempts: 0,
+ evidenceQueue: ({ context }) => context.evidenceQueue.slice(1, retryAttempts: 0,
  }),
  },
  },
@@ -501,11 +482,9 @@ export const evidenceProcessingMachine = setup({
  errors: ({ context, event }) => [
  ...context.errors,
  {
- id: crypto.randomUUID(),
- type: 'network',
+ id: crypto.randomUUID(, type: 'network',
  message: 'Health check failed',
- details: event.error, timestamp: new Date(),
- resolved: false, retryable: true,
+ details: event.error, timestamp: new Date(, resolved: false, retryable: true,
  },
  ],
  }),
@@ -518,8 +497,7 @@ export const evidenceProcessingMachine = setup({
  onDone: {
  target: 'idle',
  actions: assign({
- lastSync: new Date(),
- cacheHits: ({ context, event }) =>
+ lastSync: new Date(, cacheHits: ({ context, event }) =>
  context.cacheHits + (event.output.cacheOperations || 0),
  }),
  },
@@ -529,11 +507,9 @@ export const evidenceProcessingMachine = setup({
  errors: ({ context, event }) => [
  ...context.errors,
  {
- id: crypto.randomUUID(),
- type: 'cache',
+ id: crypto.randomUUID(, type: 'cache',
  message: 'Cache sync failed',
- details: event.error, timestamp: new Date(),
- resolved: false, retryable: true,
+ details: event.error, timestamp: new Date(, resolved: false, retryable: true,
  },
  ],
  }),
@@ -581,8 +557,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
  return Array.from(analysis.values()).flatMap(
  (a: any) =>
  a.suggestedActions?.map((action: string) => ({
- id: crypto.randomUUID(),
- type: 'suggested_action',
+ id: crypto.randomUUID(, type: 'suggested_action',
  content: action, confidence: a.confidenceScore: a.processingModel,
  })) || []
  );

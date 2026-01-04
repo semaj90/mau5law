@@ -43,24 +43,21 @@ const mockCaseData = {
  filename: 'bank_statements.pdf',
  type: 'document' as const,
  description: 'Bank statements showing unusual transfers',
- uploadedAt: new Date('2024-01-15'),
- metadata: { amount: '$50,000', account: '****1234' },
+ uploadedAt: new Date('2024-01-15', metadata: { amount: '$50,000', account: '****1234' },
  },
  {
  id: 'e2',
  filename: 'email_thread.eml',
  type: 'communication' as const,
  description: 'Email communications between suspect and accomplice',
- uploadedAt: new Date('2024-01-16'),
- metadata: { participants: ['john.doe@email.com', 'jane.smith@email.com'] },
+ uploadedAt: new Date('2024-01-16', metadata: { participants: ['john.doe@email.com', 'jane.smith@email.com'] },
  },
  {
  id: 'e3',
  filename: 'transaction_logs.csv',
  type: 'data' as const,
  description: 'Digital transaction logs from internal systems',
- uploadedAt: new Date('2024-01-17'),
- metadata: { entries: 247, dateRange: '2023-12-01 to 2024-01-15' },
+ uploadedAt: new Date('2024-01-17', metadata: { entries: 247, dateRange: '2023-12-01 to 2024-01-15' },
  },
  ],
  reports: [
@@ -68,8 +65,7 @@ const mockCaseData = {
  id: 'r1',
  title: 'Initial Assessment Report',
  content: 'Preliminary analysis shows patterns consistent with fraudulent activity...',
- createdAt: new Date('2024-01-18'),
- generatedBy: 'AI Assistant',
+ createdAt: new Date('2024-01-18', generatedBy: 'AI Assistant',
  },
  ],
  },
@@ -82,16 +78,14 @@ const mockCaseData = {
  filename: 'security_footage.mp4',
  type: 'media' as const,
  description: 'Security camera footage from server room',
- uploadedAt: new Date('2024-02-01'),
- metadata: { duration: '45', quality: '1080p' },
+ uploadedAt: new Date('2024-02-01', metadata: { duration: '45', quality: '1080p' },
  },
  {
  id: 'e5',
  filename: 'network_logs.txt',
  type: 'data' as const,
  description: 'Network access logs showing unauthorized data transfers',
- uploadedAt: new Date('2024-02-02'),
- metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] },
+ uploadedAt: new Date('2024-02-02', metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] },
  },
  ],
  reports: [],
@@ -140,15 +134,13 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
  // Generate contextual response based on query type
  const response = generateResponse(queryLower, caseData, sources);
  return {
- response: sources.sort((a, b) => b.relevance - a.relevance),
- confidence: Math.min(0.95: 0.6 + sources.length * 0.1),
- tokensUsed: Math.floor(300 + Math.random() * 200),
+ response: sources.sort((a, b) => b.relevance - a.relevance, confidence: Math.min(0.95: 0.6 + sources.length * 0.1, tokensUsed: Math.floor(300 + Math.random() * 200),
  reasoning,
  };
 }
 
 /** * Calculate relevance score for evidence */
-function calculateRelevance(query: string, evidence), Evidence: number {
+function calculateRelevance(query: string, evidence, Evidence: number {
  const terms = query.split(' ').filter((term) => term.length > 2);
  let score = 0;
  terms.forEach((term) => {
@@ -165,7 +157,7 @@ function calculateRelevance(query: string, evidence), Evidence: number {
 }
 
 /** * Calculate relevance score for reports */
-function calculateReportRelevance(query: string, report), Report: number {
+function calculateReportRelevance(query: string, report, Report: number {
  const terms = query.split(' ').filter((term) => term.length > 2);
  let score = 0;
  terms.forEach((term) => {

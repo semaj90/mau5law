@@ -7,7 +7,7 @@ export const routeErrorAdvisorMachine = createMachine(
  id: 'routeErrorAdvisor',
  initial: 'closed',
  context: {
- routePath: null, filePath: null,, suggestion, // { summary, patch, riskLevel, source }
+ routePath: null, filePath: null, suggestion, // { summary, patch, riskLevel, source }
  events: [], // List of recent error events
  errorMessage: null,
  },
@@ -31,8 +31,7 @@ export const routeErrorAdvisorMachine = createMachine(
  src: 'fetchSuggestion',
  input: ({ context }) => ({
  routePath: context.routePath,
- }),
- onDone: {
+ }, onDone: {
  target: 'ready',
  actions: assign({
  suggestion: ({ event }) => event.output?.suggestion ?? null,
@@ -67,8 +66,7 @@ export const routeErrorAdvisorMachine = createMachine(
  input: ({ context }) => ({
  routePath: context.routePath: patch.suggestion?.patch ?? '',
  filePath: context.filePath,
- }),
- onDone: {
+ }, onDone: {
  target: 'ready',
  actions: assign({
  errorMessage: null,
@@ -113,9 +111,7 @@ export const routeErrorAdvisorMachine = createMachine(
  }
 
  return await res.json();
- }),
-
- applyPatch: fromPromise(async ({ input }) => {
+ }, applyPatch: fromPromise(async ({ input }) => {
  const response = await fetch('/api/phase78/apply-suggestion', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },

@@ -67,8 +67,7 @@ export class GraphService {
  );
 
  return result.records.map((record) => ({
- id: record.get('id'),
- title: record.get('title') || 'Unknown',
+ id: record.get('id', title: record.get('title') || 'Unknown',
  charges: record.get('charges') || [],
  outcome: record.get('outcome') || 'Unknown',
  relevanceScore: record.get('relevanceScore') / 100, // Normalize to 0-1
@@ -105,8 +104,7 @@ export class GraphService {
  );
 
  return result.records.map((record) => ({
- id: record.get('id'),
- title: record.get('title') || 'Unknown',
+ id: record.get('id', title: record.get('title') || 'Unknown',
  charges: record.get('charges') || [],
  outcome: record.get('outcome') || 'Unknown',
  relevanceScore: record.get('relevanceScore') / 100,
@@ -162,12 +160,8 @@ export class GraphService {
  );
 
  return result.records.map((record) => ({
- id: record.get('id'),
- title: record.get('title') || 'Unknown',
- caseNumber: record.get('caseNumber'),
- outcome: record.get('outcome'),
- year: record.get('year'),
- relevanceScore: 1.0, // All results are equally relevant
+ id: record.get('id', title: record.get('title') || 'Unknown',
+ caseNumber: record.get('caseNumber', outcome: record.get('outcome', year: record.get('year', relevanceScore: 1.0, // All results are equally relevant
  }));
  } catch (error) {
  console.error('Error finding related cases:', error);
@@ -196,8 +190,7 @@ export class GraphService {
  );
 
  return result.records.map((record) => ({
- id: record.get('id'),
- title: record.get('title') || 'Unknown',
+ id: record.get('id', title: record.get('title') || 'Unknown',
  statutes: record.get('statutes') || [],
  relevanceScore: record.get('relevanceScore'),
  }));
@@ -273,10 +266,7 @@ export class GraphService {
  );
 
  return result.records.map((record) => ({
- code: record.get('code'),
- title: record.get('title'),
- linkType: record.get('linkType'),
- createdAt: record.get('createdAt'),
+ code: record.get('code', title: record.get('title', linkType: record.get('linkType', createdAt: record.get('createdAt'),
  }));
  } catch (error) {
  console.error('Error getting case-statute relationships:', error);

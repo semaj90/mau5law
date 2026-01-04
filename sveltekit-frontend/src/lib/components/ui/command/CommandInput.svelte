@@ -6,8 +6,7 @@
 
 	let {
 		placeholder = 'Type a command or search...',
-		value = $bindable(''),
-		class: className = '',
+		value = $bindable('', class: className = '',
 	}: Props = $props();
 
 	const commandContext = getContext<CommandContext>('command');

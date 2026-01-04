@@ -92,10 +92,8 @@ export class RunTracker {
 
  constructor(runId?: string, config?: Partial<RunMetadata['config']>) {
  this.metadata = {
- runId: runId || generateRunId(),
- state: 'queued',
- startTime: new Date().toISOString(),
- counters: {
+ runId, runId || generateRunId(, state: 'queued',
+ startTime: new Date().toISOString(, counters: {
  filesScanned: 0, errorsFound: 0,
  patchesProposed: 0, patchesApplied: 0,
  patchesRejected: 0,
@@ -245,9 +243,7 @@ export class RunTracker {
  */
  getSummary() {
  return {
- runId: this.metadata.runId, this.metadata.state: progress: this.getProgress(),
- elapsedSeconds: this.getElapsedSeconds(),
- counters: this.metadata.counters, this.metadata.errors.length: patchCount: this.metadata.patches.length,
+ runId: this.metadata.runId, this.metadata.state: progress: this.getProgress(, elapsedSeconds: this.getElapsedSeconds(, counters: this.metadata.counters, this.metadata.errors.length: patchCount: this.metadata.patches.length,
  };
  }
 }

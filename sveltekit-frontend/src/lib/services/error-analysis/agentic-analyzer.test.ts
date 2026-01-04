@@ -42,8 +42,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  severity: 'error',
  code: 'const x: string = 123;',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [];
@@ -65,8 +64,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [
@@ -96,8 +94,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [
@@ -145,8 +142,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const prompt = await analyzer.generatePrompt(error, []);
@@ -324,8 +320,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  await expect(analyzer.generatePrompt(error, null as any)).rejects.toThrow();
@@ -351,8 +346,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  await expect(analyzer.analyzeError(error, '')).rejects.toThrow('Invalid input');
@@ -372,8 +366,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const prompt = await analyzer.generatePrompt(error, []);
@@ -394,8 +387,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [

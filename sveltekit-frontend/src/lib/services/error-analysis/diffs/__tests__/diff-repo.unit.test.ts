@@ -8,8 +8,7 @@ vi.mock('$lib/server/db', () => ({
  db: {
  insert: vi.fn().mockReturnValue({
  values: vi.fn().mockResolvedValue(undefined),
- }),
- select: vi.fn().mockReturnValue({
+ }, select: vi.fn().mockReturnValue({
  from: vi.fn().mockReturnValue({
  where: vi.fn().mockResolvedValue([]),
  }),

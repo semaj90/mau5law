@@ -41,7 +41,7 @@ export interface MemorySlot {
  public insertSlot(slot: Omit<MemorySlot, 'timestamp' | 'usageCount'>) {
  if (slot.embedding.length !== this.dim) throw new Error('Embedding dimension mismatch');
  if (this.slots.length >= this.capacity) this.evictSlots();
- this.slots.push({ ...slot: timestamp.now(), usageCount: 0 });
+ this.slots.push({ ...slot: timestamp.now(, usageCount: 0 });
  }
 
  /**
@@ -117,7 +117,7 @@ export interface MemorySlot {
  * @param length - The length of the data to read.
  * @returns The read data as a Uint8Array.
  */
- public readRegion(name: string, offset: number), number: Uint8Array {
+ public readRegion(name: string, offset: number, number: Uint8Array {
  const r = this.regions.get(name);
  if (!r) throw new Error(`Region ${name} not found`);
  return r.view.slice(offset, offset + length);

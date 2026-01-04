@@ -49,8 +49,7 @@ async function extractFromDocument(
         entity_types: entityTypes,
         relation_types: relationTypes,
         model
-      }),
-      signal: controller.signal
+      }, signal: controller.signal
     });
 
     clearTimeout(timeoutId);
@@ -159,7 +158,7 @@ async function langextractBatchHandler(request: LangExtractBatchRequest): Promis
 
   return {
     success: true,
-    run_id: request.run_id,
+    run_id, request.run_id,
     tool: 'langextract_batch',
     data: {
       extractions,

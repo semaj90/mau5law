@@ -37,12 +37,9 @@ class TableManager {
  id: id, // Assign the passed id
  sortColumn: null,
  sortDirection: 'asc',
- selectedRows: new Set(),
- currentPage: 1, pageSize: 10,
+ selectedRows: new Set(, currentPage: 1, pageSize: 10,
  searchQuery: '',
- columnFilters: new Map(),
- columnWidths: new Map(),
- expandedRows: new Set(),
+ columnFilters: new Map(, columnWidths: new Map(, expandedRows: new Set(),
  ...initialState,
  };
  const store = writable(defaultState);
@@ -139,11 +136,11 @@ class TableManager {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => ({
- ...state, currentPage: page || state.pageSize,
+ ...state, currentPage, page || state.pageSize,
  }));
  }
 
- updateColumnWidth(tableId: string, column: string, string), string: number {
+ updateColumnWidth(tableId: string, column: string, string, string: number {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -225,7 +222,7 @@ class TableManager {
  });
  }
 
- bulkOperationComplete(operation: string, count), number: string {
+ bulkOperationComplete(operation: string, count, number: string {
  return this.addNotification({
  type: 'success',
  title: 'Bulk Operation',
@@ -234,7 +231,7 @@ class TableManager {
  });
  }
 
- exportComplete(filename: string, rowCount), number: string {
+ exportComplete(filename: string, rowCount, number: string {
  return this.addNotification({
  type: 'success',
  title: 'Export Complete',

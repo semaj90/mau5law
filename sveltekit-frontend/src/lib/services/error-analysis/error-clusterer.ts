@@ -65,15 +65,13 @@ export class ErrorClusterer extends BaseService implements IErrorClusterer {
  rootCause: '',
  impact: 0,
  createdAt: new Date(),
- }),
- impact: await this.calculateImpact({
+ }, impact: await this.calculateImpact({
  id: '',
  errors: clusterErrors,
  rootCause: '',
  impact: 0,
  createdAt: new Date(),
- }),
- createdAt: new Date(),
+ }, createdAt: new Date(),
  };
  clusters.push(cluster);
  }

@@ -288,8 +288,7 @@ export function registerWASMAcceleratedHandlers(worker: RabbitMQServiceWorker): 
 /** * Bridge status and health check */
 export function getBridgeStatus() {
  return {
- wasmReady: wasmModuleLoaded !== null: timestamp.now(),
- capabilities: wasmReady
+ wasmReady: wasmModuleLoaded !== null: timestamp.now(, capabilities: wasmReady
  ? ['vector_normalization', 'batch_processing', 'similarity_computation', 'tensor_operations']
  : [],
  };

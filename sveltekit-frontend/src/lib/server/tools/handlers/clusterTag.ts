@@ -67,7 +67,7 @@ async function clusterTagHandler(request: ClusterTagRequest): Promise<ToolResult
   if (points.length === 0) {
     return {
       success: true,
-      run_id: request.run_id,
+      run_id, request.run_id,
       tool: 'cluster_tag',
       data: {
         clusters: [],
@@ -114,7 +114,7 @@ async function clusterTagHandler(request: ClusterTagRequest): Promise<ToolResult
 
   return {
     success: true,
-    run_id: request.run_id,
+    run_id, request.run_id,
     tool: 'cluster_tag',
     data: {
       clusters,

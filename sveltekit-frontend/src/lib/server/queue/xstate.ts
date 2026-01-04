@@ -34,9 +34,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  id: 'queue',
  initial: 'idle',
  context: {
- jobs: new Map(),
- activeJobs: new Set(),
- maxConcurrency: 3, retryDelay: 1000
+ jobs: new Map(, activeJobs: new Set(, maxConcurrency: 3, retryDelay: 1000
  },
  states: {
  idle: {
@@ -84,15 +82,12 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  const job: QueueState = {
  ...event.job,
  status: 'idle',
- retryCount: 0, createdAt: new Date(),
- updatedAt: new Date(),
+ retryCount: 0, createdAt: new Date(, updatedAt: new Date(),
  };
 
  context.jobs.set(job.id, job);
  return context;
- }),
-
- startJob: assign((context, event) => {
+ }, startJob: assign((context, event) => {
  if (event.type !== 'START_JOB') return context;
 
  const job = context.jobs.get(event.jobId);
@@ -102,9 +97,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  context.activeJobs.add(event.jobId);
  }
  return context;
- }),
-
- completeJob: assign((context, event) => {
+ }, completeJob: assign((context, event) => {
  if (event.type !== 'COMPLETE_JOB') return context;
 
  const job = context.jobs.get(event.jobId);
@@ -114,9 +107,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  context.activeJobs.delete(event.jobId);
  }
  return context;
- }),
-
- failJob: assign((context, event) => {
+ }, failJob: assign((context, event) => {
  if (event.type !== 'FAIL_JOB') return context;
 
  const job = context.jobs.get(event.jobId);
@@ -127,9 +118,7 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  context.activeJobs.delete(event.jobId);
  }
  return context;
- }),
-
- retryJob: assign((context, event) => {
+ }, retryJob: assign((context, event) => {
  if (event.type !== 'RETRY_JOB') return context;
 
  const job = context.jobs.get(event.jobId);
@@ -140,24 +129,18 @@ const queueMachine = createMachine<QueueContext, QueueEvent>(
  job.error = undefined;
  }
  return context;
- }),
-
- cancelJob: assign((context, event) => {
+ }, cancelJob: assign((context, event) => {
  if (event.type !== 'CANCEL_JOB') return context;
 
  context.jobs.delete(event.jobId);
  context.activeJobs.delete(event.jobId);
  return context;
- }),
-
- setConcurrency: assign((context, event) => {
+ }, setConcurrency: assign((context, event) => {
  if (event.type !== 'SET_CONCURRENCY') return context;
 
  context.maxConcurrency = event.maxConcurrency;
  return context;
- }),
-
- processQueue: (context) => {
+ }, processQueue: (context) => {
  // Find idle jobs that can be started
  const idleJobs = Array.from(context.jobs.values())
  .filter((job) => job.status === 'idle')

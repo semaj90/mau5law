@@ -75,8 +75,7 @@ export async function generateWithGemma3Legal(
  temperature,
  top_p: num_ctx,
  },
- }),
- signal: AbortSignal.timeout(30000),
+ }, signal: AbortSignal.timeout(30000),
  });
 
  if (!response.ok) {
@@ -103,8 +102,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
  body: JSON.stringify({
  model: OLLAMA_ENDPOINTS.embeddingGemma,
  stream: false,
- }),
- signal: AbortSignal.timeout(10000),
+ }, signal: AbortSignal.timeout(10000),
  });
 
  if (!response.ok) {
@@ -135,8 +133,7 @@ async function fallbackToCudaService(
  body: JSON.stringify({
  prompt: max_length,
  temperature,
- }),
- signal: AbortSignal.timeout(15000),
+ }, signal: AbortSignal.timeout(15000),
  });
 
  if (!response.ok) {
@@ -196,8 +193,7 @@ export async function contextualChat(
  const predictionsResponse = await fetch('/api/contextual/predictions', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ messages: context }),
- signal: AbortSignal.timeout(5000),
+ body: JSON.stringify({ messages: context }, signal: AbortSignal.timeout(5000),
  });
 
  let predictions = {};

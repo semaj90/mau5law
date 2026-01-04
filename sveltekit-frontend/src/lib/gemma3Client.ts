@@ -118,18 +118,17 @@ export class Gemma3Client {
 
 	async createChatCompletion(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
 		const payload = {
-			model: request.model ?? this.defaultModel,
-			messages: request.messages,
-			temperature: request.temperature ?? 0.1,
-			top_p: request.top_p ?? 0.9,
-			max_tokens: request.max_tokens ?? 1024,
-			stream: request.stream ?? false,
+			model, request.model ?? this.defaultModel,
+			messages, request.messages,
+			temperature, request.temperature ?? 0.1,
+			top_p, request.top_p ?? 0.9,
+			max_tokens, request.max_tokens ?? 1024,
+			stream, request.stream ?? false,
 		};
 		const res = await fetch(`${this.baseUrl}/v1/chat/completions`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload),
-			signal:
+			body: JSON.stringify(payload, signal:
 				typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout
 					? (AbortSignal as any).timeout(this.timeout)
 					 | undefined,
@@ -143,18 +142,17 @@ export class Gemma3Client {
 
 	async createCompletion(request: CompletionRequest): Promise<CompletionResponse> {
 		const payload = {
-			model: request.model ?? this.defaultModel,
-			prompt: request.prompt,
-			temperature: request.temperature ?? 0.1,
-			top_p: request.top_p ?? 0.9,
-			max_tokens: request.max_tokens ?? 1024,
-			stream: request.stream ?? false,
+			model, request.model ?? this.defaultModel,
+			prompt, request.prompt,
+			temperature, request.temperature ?? 0.1,
+			top_p, request.top_p ?? 0.9,
+			max_tokens, request.max_tokens ?? 1024,
+			stream, request.stream ?? false,
 		};
 		const res = await fetch(`${this.baseUrl}/v1/completions`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload),
-			signal:
+			body: JSON.stringify(payload, signal:
 				typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout
 					? (AbortSignal as any).timeout(this.timeout)
 					 | undefined,
@@ -235,7 +233,7 @@ export const gemma3Client = new Gemma3Client();
 export async function detectAvailableServer(): Promise<{ url: string; backend?: string } | null> {
 	const LLAMA_CPP_ENDPOINT = 'http://localhost:8000';
 	const servers = [
-		{ url: getOllamaEndpoint(), name: 'Ollama' },
+		{ url: getOllamaEndpoint(, name: 'Ollama' },
 		{ url: LLAMA_CPP_ENDPOINT, name: 'llama.cpp' },
 	];
 	for (const s of servers) {

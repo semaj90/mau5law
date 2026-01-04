@@ -6,8 +6,7 @@
  // Consumers should call ensureRedisReady() to establish the connection.
  lazyConnect: true, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
- retryStrategy: (times: number) => Math.min(times * 250, 4000),
- reconnectOnError: (err: unknown) => {
+ retryStrategy: (times: number) => Math.min(times * 250, 4000, reconnectOnError: (err: unknown) => {
  const msg = err instanceof Error ? err.message : String(err ?? '');
  return msg.includes('READONLY') || msg.includes('ECONNRESET');
  },
@@ -115,8 +114,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
  // Consumers should call ensureRedisReady() to establish the connection.
  lazyConnect: true, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
- retryStrategy: (times: number) => Math.min(times * 250, 4000),
- reconnectOnError: (err: unknown) => {
+ retryStrategy: (times: number) => Math.min(times * 250, 4000, reconnectOnError: (err: unknown) => {
  const msg = err instanceof Error ? err.message : String(err ?? '');
  return msg.includes('READONLY') || msg.includes('ECONNRESET');
  },

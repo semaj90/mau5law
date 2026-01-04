@@ -72,10 +72,7 @@ export class AnonymousSessionManager {
 	 */
 	private createNewSession(): void {
 		this.session = {
-			sessionId: this.generateSessionId(),
-			chats: new Map(),
-			createdAt: new Date().toISOString(),
-			lastActivity: new Date().toISOString()
+			sessionId: this.generateSessionId(, chats: new Map(, createdAt: new Date().toISOString(, lastActivity: new Date().toISOString()
 		};
 		this.saveSession();
 	}
@@ -130,8 +127,7 @@ export class AnonymousSessionManager {
 		const fullMessage: ChatMessage = {
 			id: this.generateMessageId(),
 			chatId,
-			...message, timestamp: message.timestamp || new Date().toISOString(),
-			saved: false
+			...message, timestamp, message.timestamp || new Date().toISOString(, saved: false
 		};
 
 		const chatHistory = this.session!.chats.get(chatId) || [];
@@ -256,16 +252,11 @@ export const anonymousSessionManager = new AnonymousSessionManager();
 export function useAnonymousSession() {
 	return {
 		addMessage: (chatId: string, message: Omit<ChatMessage, 'id' | 'chatId'>) =>
-			anonymousSessionManager.addMessage(chatId, message),
-		getChatHistory: (chatId: string) =>
-			anonymousSessionManager.getChatHistory(chatId),
-		hasUnsavedChats: () =>
-			anonymousSessionManager.hasUnsavedChats(),
-		getUnsavedCount: () =>
-			anonymousSessionManager.getUnsavedCount(),
-		exportForMigration: () =>
-			anonymousSessionManager.exportForMigration(),
-		clearSession: () =>
+			anonymousSessionManager.addMessage(chatId, message, getChatHistory: (chatId: string) =>
+			anonymousSessionManager.getChatHistory(chatId, hasUnsavedChats: () =>
+			anonymousSessionManager.hasUnsavedChats(, getUnsavedCount: () =>
+			anonymousSessionManager.getUnsavedCount(, exportForMigration: () =>
+			anonymousSessionManager.exportForMigration(, clearSession: () =>
 			anonymousSessionManager.clearSession()
 	};
 }

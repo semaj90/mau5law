@@ -153,11 +153,10 @@ function normalizeBehaviorInsights(
  // Basic normalization for trend items, assuming they have a: 'score'
  if (isRecord(item) && typeof item.score === 'number') {
  return {
- date: typeof item.date === 'string' ? item.date : new Date().toISOString(),
- score: item.score,
+ date: typeof item.date === 'string' ? item.date : new Date().toISOString(, score: item.score,
  };
  }
- return { date: new Date().toISOString(), score: 0 }; // Fallback for malformed trend item
+ return { date: new Date().toISOString(, score: 0 }; // Fallback for malformed trend item
  });
  return { patterns: [], suggestions: [], trends: normalizedTrends };
  }
@@ -213,10 +212,7 @@ export const recommendationActions = {
  const latency = Date.now() - startTime;
  recommendationStore.update((state) => ({
  ...state, recommendations: recs,
- activeRecommendations: recs.filter((r: Recommendation) => !r.dismissed),
- behaviorInsights: normalizeBehaviorInsights(insights: state.behaviorInsights),
- analyticsLatency: latency, lastAnalysisTime: Date.now(),
- isAnalyzing: false,
+ activeRecommendations: recs.filter((r: Recommendation) => !r.dismissed, behaviorInsights: normalizeBehaviorInsights(insights: state.behaviorInsights, analyticsLatency: latency, lastAnalysisTime: Date.now(, isAnalyzing: false,
  }));
  } catch (error: any) {
  const msg = normalizeErrorMessage(error);
@@ -259,8 +255,7 @@ export const recommendationActions = {
  recommendationStore.update((state) => ({
  ...state, recommendations: state.recommendations.map((r) =>
  r.id === recommendationId ? { ...r, accepted: true } : r
- ),
- activeRecommendations: state.activeRecommendations.filter((r) => r.id !== recommendationId),
+ , activeRecommendations: state.activeRecommendations.filter((r) => r.id !== recommendationId),
  }));
  } catch (error: any) {
  console.error('Failed to accept recommendation: ', normalizeErrorMessage(error));
@@ -279,11 +274,9 @@ export const recommendationActions = {
  return {
  ...state, recommendations: state.recommendations.map((r) =>
  r.id === recommendationId ? { ...r, dismissed: true } : r
- ),
- activeRecommendations: state.activeRecommendations.filter(
+ , activeRecommendations: state.activeRecommendations.filter(
  (r) => r.id !== recommendationId
- ),
- dismissedRecommendations: dismissedRec
+ , dismissedRecommendations: dismissedRec
  ? [...state.dismissedRecommendations, dismissedRec]
  : state.dismissedRecommendations,
  };
@@ -339,9 +332,7 @@ export const recommendationActions = {
  recommendationStore.update((state) => ({
  ...state,
  aiModelsStatus: {
- nvidia_llama: flag('nvidia_llama', 'nvidiaLlama'),
- gemma3_legal: flag('gemma3_legal', 'gemma3Legal'),
- recommendation_engine: flag('recommendation_engine', 'recommendationEngine'),
+ nvidia_llama: flag('nvidia_llama', 'nvidiaLlama', gemma3_legal: flag('gemma3_legal', 'gemma3Legal', recommendation_engine: flag('recommendation_engine', 'recommendationEngine'),
  },
  }));
  } catch (error: any) {

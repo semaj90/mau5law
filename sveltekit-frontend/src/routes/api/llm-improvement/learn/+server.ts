@@ -27,7 +27,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: result.success,
 			result: {
-				version: result.version, message: result.message, validationScore: result.validationScore, rollback: result.rollback
+				version: result.version,
+				message: result.message,
+				validationScore: result.validationScore,
+				rollback: result.rollback
 			},
 			status: pipeline.getStatus()
 		});
@@ -55,7 +58,7 @@ export const GET: RequestHandler = async () => {
 			pipeline: {
 				status: pipeline.getStatus(),
 				stats: pipeline.getStats()
-			}.getStats(),
+			},
 			experiences: recorder.getStats()
 		});
 	} catch (err) {
@@ -100,7 +103,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 		}
 	} catch (err) {
 		return json(
-			{ error: err instanceof Error ? err.message : 'Action failed' },
+			{ error: err instanceof Error ? err.message : 'Failed to update pipeline' },
 			{ status: 500 }
 		);
 	}

@@ -27,8 +27,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
 input.documentId, input.caseId, chunkIndex: input.chunkIndex,
-      }),
-      timeout: 30000,
+      }, timeout: 30000,
     });
     if (!response.ok) {
       throw new Error(`Embedding failed: ${response.statusText}`);
@@ -66,15 +65,14 @@ export const documentProcessingActor = fromPromise(
       const response = await fetchWithTimeout('/api/ai/process-document', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify(input),
-        timeout: 60000, // 60s timeout for document processing
+        body: JSON.stringify(input, timeout: 60000, // 60s timeout for document processing
       });
       if (!response.ok) {
         throw new Error(`Document failed: ${response.statusText}`);
       }
       const data = await response.json();
       return {
-        documentId: input.documentId, data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
+        documentId: input.documentId, data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success, data.success || true,
       } as DocumentProcessingOutput;
     } catch (error: Error | unknown) {
       throw new Error(
@@ -104,8 +102,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(input),
-      timeout: 45000,
+      body: JSON.stringify(input, timeout: 45000,
     });
     if (!response.ok) {
       throw new Error(`Legal failed: ${response.statusText}`);
@@ -115,7 +112,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       riskScore: data.riskScore ||, 0, riskFactors: data.riskFactors || [],
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
-riskScore: data.riskScore || 0, riskFactors: data.riskFactors || [],
+riskScore, data.riskScore || 0, riskFactors: data.riskFactors || [],
     } as LegalAnalysisOutput;
   } catch (error: Error | unknown) {
     throw new Error(
@@ -144,8 +141,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     const response = await fetchWithTimeout('/api/ai/rag-search', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(input),
-      timeout: 30000,
+      body: JSON.stringify(input, timeout: 30000,
     });
     if (!response.ok) {
       throw new Error(`RAG failed: ${response.statusText}`);
@@ -294,7 +290,7 @@ export const workflowActor = x.x.x.fromPromise(
 
  const totalTime = Date.now() - startTime;
  return {
- results: totalTime && errors.length === 0, // Overall success depends on individual step success and no errors
+ results, totalTime && errors.length === 0, // Overall success depends on individual step success and no errors
  errors,
  } as WorkflowOutput;
  } catch (error: Error | unknown) {
