@@ -1,3 +1,3 @@
 <script lang="ts">
-    let x: number = "string";
+    let x: number = 0;
 </script>

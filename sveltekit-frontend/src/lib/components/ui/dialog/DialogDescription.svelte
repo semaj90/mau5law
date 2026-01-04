@@ -1,15 +1,21 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+	import type { DialogDescriptionProps } from './types';
+
+	interface Props extends DialogDescriptionProps {
+		children?: Snippet;
+	}
+
+	let {
+		children,
+		class: className = '',
+	}: Props = $props();
+
+	const defaultClass = 'text-sm text-slate-400';
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<p class="{defaultClass} {className}" data-dialog-description="">
+	{#if children}
+		{@render children()}
+	{/if}
+</p>

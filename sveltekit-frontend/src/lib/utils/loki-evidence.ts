@@ -70,13 +70,14 @@ export class LokiEvidenceService {
  autoloadCallback: () => {
  this.setupCollections();
  this.isInitialized = true;
- console.log('âœ… Loki database initialized');
+ console.log('✅ Loki database initialized');
  resolve();
  },
- autosave: true, autosaveInterval: 4000 4000,
+ autosave: true,
+ autosaveInterval: 4000
  });
  } catch (error: Error | unknown) {
- console.error('â Œ Loki database failed: ', error);
+ console.error('❌ Loki database failed: ', error);
  reject(error);
  }
  });
@@ -122,8 +123,11 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'CREATE',
  collectionName: 'evidence',
- recordId: evidence.id, evidence: new Date().toISOString(),
- synced: false, retryCount: 0 0,
+ recordId: evidence.id,
+ timestamp: new Date().toISOString(),
+ data: evidence,
+ synced: false,
+ retryCount: 0
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -150,8 +154,9 @@ export class LokiEvidenceService {
  ...existing,
  ...changes,
  timeline: {
- ...existing.timeline, createdAt: existing.timeline?.createdAt || new Date().toISOString(),
- updatedAt: new Date().toISOString(),
+ ...existing.timeline,
+ createdAt: existing.timeline?.createdAt || new Date().toISOString(),
+ updatedAt: new Date().toISOString()
  },
  };
  this.evidenceCollection.update(updated);
@@ -160,9 +165,11 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'UPDATE',
  collectionName: 'evidence',
- recordId: evidenceId, data: changes,
+ recordId: evidenceId,
+ data: changes,
  timestamp: new Date().toISOString(),
- synced: false, retryCount: 0 0,
+ synced: false,
+ retryCount: 0
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -190,8 +197,10 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'DELETE',
  collectionName: 'evidence',
- recordId: evidenceId, timestamp: new Date().toISOString(),
- synced: false, retryCount: 0 0,
+ recordId: evidenceId,
+ timestamp: new Date().toISOString(),
+ synced: false,
+ retryCount: 0
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -240,7 +249,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({ type: type });
  }
 
- public getEvidenceByDateRange(startDate: string), string: LokiEvidence[] {
+ public getEvidenceByDateRange(startDate: string, endDate: string): LokiEvidence[] {
  if (!this.evidenceCollection) return [];
  return this.evidenceCollection.where((obj: LokiEvidence) => {
  const createdAt = new Date(obj.timeline?.createdAt || 0);
@@ -342,13 +351,16 @@ export class LokiEvidenceService {
  // Sync status and conflict resolution
  public getSyncStatus() {
  if (!this.syncQueue) {
- return { pending: 0, failed: 0 0, total: 0, inProgress: false };
+ return { pending: 0, failed: 0, total: 0, inProgress: false };
  }
  const all = this.syncQueue.find({});
  const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
  const failed = all.filter((op) => !op.synced && op.retryCount >= 5).length;
  return {
- pending: failed.length: this.syncInProgress,
+ pending,
+ failed,
+ total: all.length,
+ inProgress: this.syncInProgress
  };
  }
 

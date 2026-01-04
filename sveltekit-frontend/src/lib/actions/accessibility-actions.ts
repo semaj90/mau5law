@@ -436,13 +436,22 @@ createDescription: (text: string): string => {
  targetElement.setAttribute('aria-describedby', descId);
  }
  return descId;
-ModalOptions: {
+ }
 };
 
-/** * Composite Actions * Pre-configured combinations of actions for common patterns */
+interface ModalOptions {
+ onClose?: () => void;
+ title?: string;
+ description?: string;
+}
+
+/**
+ * Composite Actions
+ * Pre-configured combinations of actions for common patterns
+ */
 export const compositeActions = {
  // Modal dialog with full accessibility
- modal: (element: HTMLElement): ModalOptions: ModalOptions => {
+ modal: (element: HTMLElement, options: ModalOptions = {}) => {
  // removed unused titleId assignment
  const descId = a11yUtils.generateId('modal-desc');
  // Apply multiple actions
@@ -452,7 +461,8 @@ export const compositeActions = {
  });
  const ariaAction = ariaState(element, {
  role: 'dialog',
-label: options.title, options.description ? descId : undefined,
+ label: options.title,
+ describedby: options.description ? descId : undefined,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: { Escape: options.onClose },

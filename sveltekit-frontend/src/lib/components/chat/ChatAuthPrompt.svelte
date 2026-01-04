@@ -11,9 +11,16 @@
 	import { fade, slide } from 'svelte/transition';
 
 	// Props
-	export let isAuthenticated: boolean = false;
-	export let showPrompt: boolean = true;
-	export let variant: 'banner' | 'toast' | 'inline' = 'banner';
+	interface Props {
+		isAuthenticated?: boolean;
+		showPrompt?: boolean;
+		variant?: 'banner' | 'toast' | 'inline';
+	}
+	let {
+		isAuthenticated = false,
+		showPrompt = true,
+		variant = 'banner'
+	}: Props = $props();
 
 	const session = useAnonymousSession();
 

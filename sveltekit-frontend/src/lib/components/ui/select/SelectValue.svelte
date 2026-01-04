@@ -1,15 +1,29 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import { getContext } from 'svelte';
+	import type { SelectContext, SelectValueProps } from './types';
+
+	interface Props extends SelectValueProps {
+		/** Mapping of values to display labels */
+		labels?: Record<string, string>;
+	}
+
+	let {
+		placeholder = 'Select...',
+		labels = {},
+		class: className = '',
+	}: Props = $props();
+
+	const selectContext = getContext<SelectContext>('select');
+
+	const displayValue = $derived(
+		selectContext?.value
+			? (labels[selectContext.value] ?? selectContext.value)
+			: placeholder
+	);
+
+	const isPlaceholder = $derived(!selectContext?.value);
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<span class="{isPlaceholder ? 'text-muted-foreground' : ''} {className}">
+	{displayValue}
+</span>

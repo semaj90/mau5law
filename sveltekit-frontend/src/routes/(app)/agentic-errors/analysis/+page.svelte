@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Button } from 'bits-ui';
 	import type { PageData } from './$types';
 
 	const { data } = $props<{ data: PageData }>();
@@ -34,7 +33,7 @@
 			</p>
 		</div>
 
-		<Button.Root
+		<button
 			onclick={generateAnalysis}
 			disabled={generating || !data.hasGeminiKey}
 			class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -44,7 +43,7 @@
 			{:else}
 				🔄 Regenerate Analysis
 			{/if}
-		</Button.Root>
+		</button>
 	</div>
 
 	{#if !data.hasGeminiKey}
@@ -216,12 +215,12 @@
 			</p>
 
 			{#if data.hasGeminiKey}
-				<Button.Root
+				<button
 					onclick={generateAnalysis}
 					class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
 				>
 					🚀 Generate First Analysis
-				</Button.Root>
+				</button>
 			{:else}
 				<p class="text-yellow-400">Set GEMINI_API_KEY in .env first</p>
 			{/if}

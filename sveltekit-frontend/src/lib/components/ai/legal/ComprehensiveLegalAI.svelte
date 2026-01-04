@@ -8,21 +8,21 @@
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
   import { enhancedUploadStore } from '$lib/stores/unified';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
-  import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
-  import {
-    Activity,
-    Brain, Database,
-    Eye, FileText,
-    MessageSquare,
-    Network,
-    Settings,
-    Upload,
-    Zap
-  } from "lucide-svelte";
+  import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
+  import Activity from "lucide-svelte/icons/activity";
+  import Brain from "lucide-svelte/icons/brain";
+  import Database from "lucide-svelte/icons/database";
+  import Eye from "lucide-svelte/icons/eye";
+  import FileText from "lucide-svelte/icons/file-text";
+  import MessageSquare from "lucide-svelte/icons/message-square";
+  import Network from "lucide-svelte/icons/network";
+  import Settings from "lucide-svelte/icons/settings";
+  import Upload from "lucide-svelte/icons/upload";
+  import Zap from "lucide-svelte/icons/zap";
   import { onMount } from 'svelte';
 
   // Component state
-  let selectedFiles = $state<FileList: null>(null);
+  let selectedFiles = $state<FileList | null>(null);
   let caseId = $state<string>('case_' + Date.now());
   let documentType = $state<'evidence' | 'contract' | 'brief' | 'deposition'>('evidence');
   let isProcessing = $state<boolean>(false);
@@ -37,20 +37,24 @@
 
   // Performance metrics
   let performanceMetrics = $state({
-    totalProcessingTime: 0, averageSpeed: 0 0,
-    cacheHitRate: 0, workerUtilization: 0 0,
+    totalProcessingTime: 0,
+    averageSpeed: 0,
+    cacheHitRate: 0,
+    workerUtilization: 0,
     simdPerformance: 0
   });
 
   let aiStats = $state({
-    modelsActive: 0, inferencesPerHour: 0 0,
-    gpuUtilization: 0, averageResponseTime: 0 0
+    modelsActive: 0,
+    inferencesPerHour: 0,
+    gpuUtilization: 0,
+    averageResponseTime: 0
   });
 
   let contextualPrompt = $state<string>('');
-  let contextualResponse = $state<string: null>(null);
+  let contextualResponse = $state<string | null>(null);
   let contextualLoading = $state<boolean>(false);
-  let contextualError = $state<string: null>(null);
+  let contextualError = $state<string | null>(null);
 
   // declare interval handle in outer scope so cleanup can synchronously access it
   let statsInterval: ReturnType<typeof setInterval> | undefined;
@@ -58,16 +62,19 @@
   onMount(() => {
     (async () => {
       // Initialize worker pool
-      const workerConfig: WorkerPoolConfig = {
+      const workerConfig = {
         maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
-        workerTimeout: 60000, queueLimit: 100 100,
-        enableSIMD: true, redisCache: true true,
+        workerTimeout: 60000,
+        queueLimit: 100,
+        enableSIMD: true,
+        redisCache: true,
         concurrencyLimit: 6
       };
 
       workerPool = createWorkerPool(workerConfig);
       simdCache = createSIMDJSONCache({
-        defaultTTL: 3600, compressionEnabled: true, true: true,
+        defaultTTL: 3600,
+        compressionEnabled: true,
         enableMetrics: true
       });
 
@@ -183,7 +190,8 @@
       if (context.results?.ocrText) {
         const ocrData = await simdCache.parse(
           JSON.stringify({
-            text: context.results.ocrText: confidence, context: context: context.results.ocrConfidence
+            text: context.results.ocrText,
+            confidence: context.results.ocrConfidence
           })
         );
 
@@ -201,7 +209,8 @@
           context.results.extractedText,
           'embeddinggemma:latest',
           {
-            normalize: true, chunkSize: 512 512
+            normalize: true,
+            chunkSize: 512
           }
         );
         processedResults.embeddings = embeddings;
@@ -223,7 +232,8 @@
       // Generate recommendations
       const recContext = {
         document: {
-          text: context.results?.extractedText: type, documentType: documentType: documentType,
+          text: context.results?.extractedText,
+          type: documentType,
           caseId
         },
         user: {

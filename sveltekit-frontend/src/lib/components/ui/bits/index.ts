@@ -99,5 +99,9 @@ export { default as AIRecommendations } from './AIRecommendations.svelte';
 export { default as AISearchBar } from './AISearchBar.svelte';
 export { default as AIAssistantTest } from './AIAssistantTest.svelte';
 
+// Svelte 5 Runes-based components (new architecture)
+export { default as Svelte5Button } from './Svelte5Button.svelte';
+export { default as Svelte5Dialog } from './Svelte5Dialog.svelte';
+
 // Export types
 export * from './types.js';

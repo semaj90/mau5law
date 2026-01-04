@@ -7,13 +7,9 @@
  * Phase: Agentic RAG Source Validation (Task 1.3)
  */
 
-import { sourceValidationAPI } from '$lib/services/source-validation-api';
 import {
-	SOURCE_TYPE_CONFIG,
-	getConfidenceLabel,
-	getConfidenceColor,
-	type KBSearchResult,
-	type SourceValidatorProps
+  type KBSearchResult,
+  type SourceValidatorProps
 } from '$lib/types/source-validation';
 
 // Svelte 5 props
@@ -141,11 +137,7 @@ function truncate(text: string, maxLength: number = 200): string {
       {@const badge = getConfidenceBadge(chunk.confidence)}
 
       <div
-        class="chunk-card p-3 rounded-lg border transition-all cursor-pointer"
-        class:border-primary={isSelected}
-        class:bg-primary/5={isSelected}
-        class:border-base-300={!isSelected}
-        class:hover:border-primary/50={!isSelected}
+        class="chunk-card p-3 rounded-lg border transition-all cursor-pointer {isSelected ? 'border-primary bg-primary-5' : 'border-base-300 hover:border-primary-50'}"
         onclick={() => toggleChunk(chunk.chunk_id)}
         role="button"
         tabindex="0"
@@ -259,7 +251,7 @@ function truncate(text: string, maxLength: number = 200): string {
 
 <style>
   .source-validator {
-    @apply p-4;
+    padding: 1rem;
   }
 
   .chunks-list::-webkit-scrollbar {
@@ -267,10 +259,25 @@ function truncate(text: string, maxLength: number = 200): string {
   }
 
   .chunks-list::-webkit-scrollbar-track {
-    @apply bg-base-200 rounded;
+    background: oklch(var(--b2));
+    border-radius: 0.25rem;
   }
 
   .chunks-list::-webkit-scrollbar-thumb {
-    @apply bg-base-300 rounded hover:bg-base-content/30;
+    background: oklch(var(--b3));
+    border-radius: 0.25rem;
+  }
+
+  .chunks-list::-webkit-scrollbar-thumb:hover {
+    background: oklch(var(--bc) / 0.3);
+  }
+
+  /* Tailwind compat classes for conditional styling */
+  .bg-primary-5 {
+    background-color: oklch(var(--p) / 0.05);
+  }
+
+  .border-primary-50 {
+    border-color: oklch(var(--p) / 0.5);
   }
 </style>

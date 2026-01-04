@@ -1,15 +1,15 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { ContextMenuSeparatorProps } from './types';
+
+	interface Props extends ContextMenuSeparatorProps {}
+
+	let {
+		class: className = '',
+	}: Props = $props();
+
+	const defaultClass = `
+		-mx-1 my-1 h-px bg-muted
+	`.replace(/\s+/g, ' ').trim();
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<div class="{defaultClass} {className}" role="separator"></div>

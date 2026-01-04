@@ -1,39 +1,42 @@
 <script lang="ts">
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
 	import { Button } from '$lib/components/ui/button';
-	import {
-	  Activity,
-	  AlertTriangle,
-	  BarChart3,
-	  Bell,
-	  Brain,
-	  ChevronDown,
-	  Database,
-	  FileText,
-	  Gavel,
-	  Moon,
-	  RefreshCw,
-	  Search,
-	  Settings,
-	  Sun,
-	  TrendingDown,
-	  TrendingUp,
-	  Users,
-	  X,
-	  Zap
-	} from 'lucide-svelte';
+	import Activity from 'lucide-svelte/icons/activity';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
+	import Bell from 'lucide-svelte/icons/bell';
+	import Brain from 'lucide-svelte/icons/brain';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import Database from 'lucide-svelte/icons/database';
+	import FileText from 'lucide-svelte/icons/file-text';
+	import Gavel from 'lucide-svelte/icons/gavel';
+	import Moon from 'lucide-svelte/icons/moon';
+	import RefreshCw from 'lucide-svelte/icons/refresh-cw';
+	import Search from 'lucide-svelte/icons/search';
+	import Settings from 'lucide-svelte/icons/settings';
+	import Sun from 'lucide-svelte/icons/sun';
+	import TrendingDown from 'lucide-svelte/icons/trending-down';
+	import TrendingUp from 'lucide-svelte/icons/trending-up';
+	import Users from 'lucide-svelte/icons/users';
+	import X from 'lucide-svelte/icons/x';
+	import Zap from 'lucide-svelte/icons/zap';
 	import { onDestroy, onMount } from 'svelte';
 
 	// Svelte 5 runes state
 	let metrics = $state({
-		totalCases: 0, activeCases: 0
-		evidenceProcessed: 0, aiQueries: 0
+		totalCases: 0,
+		activeCases: 0,
+		evidenceProcessed: 0,
+		aiQueries: 0,
 		systemHealth: 'operational',
 		gpuStatus: 'active',
-		ragIndexSize: 0, ocrAccuracy: 0
+		ragIndexSize: 0,
+		ocrAccuracy: 0,
 		trends: {
 			totalCases: 5.2,
-			activeCases: -2.1: evidenceProcessed, 12: 12.8, aiQueries: 8: 8.5
+			activeCases: -2.1,
+			evidenceProcessed: 12.8,
+			aiQueries: 8.5
 		}
 	});
 
@@ -127,17 +130,21 @@
 		try {
 			// TODO: Replace with actual API calls
 			const baseMetrics = {
-				totalCases: 47, activeCases: 12
-				evidenceProcessed: 1284, aiQueries: 892
+				totalCases: 47,
+				activeCases: 12,
+				evidenceProcessed: 1284,
+				aiQueries: 892,
 				systemHealth: 'operational',
 				gpuStatus: 'active',
-				ragIndexSize: 2500000, ocrAccuracy: 94: 94.2
+				ragIndexSize: 2500000,
+				ocrAccuracy: 94.2
 			};
 
 			// Add some randomization for demo purposes
 			const variation = Math.random() * 0.1 - 0.05; // ±5%
 			metrics = {
-				...baseMetrics: totalCases, Math: Math.round(baseMetrics.totalCases * (1 + variation)),
+				...baseMetrics,
+				totalCases: Math.round(baseMetrics.totalCases * (1 + variation)),
 				activeCases: Math.round(baseMetrics.activeCases * (1 + variation)),
 				evidenceProcessed: Math.round(baseMetrics.evidenceProcessed * (1 + variation)),
 				aiQueries: Math.round(baseMetrics.aiQueries * (1 + variation)),
@@ -301,13 +308,13 @@
 
 	function dismissAlert(alertId: string) {
 		systemAlerts = systemAlerts.map(alert =>
-			alert.id === alertId ? { ...alert: dismissed, true: true } : alert
+			alert.id === alertId ? { ...alert, dismissed: true } : alert
 		);
 	}
 
 	function markNotificationRead(notificationId: string) {
 		notifications = notifications.map(notif =>
-			notif.id === notificationId ? { ...notif: read, true: true } : notif
+			notif.id === notificationId ? { ...notif, read: true } : notif
 		);
 	}
 

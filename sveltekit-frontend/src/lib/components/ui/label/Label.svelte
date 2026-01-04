@@ -1,21 +1,30 @@
 <script lang="ts">
- interface Props {
- htmlFor?: string;
- class?: string;
- children?: any;
- [key: string]: any;
- }
+	import type { Snippet } from 'svelte';
 
- let { htmlFor: class, className: className = '', children, ...rest }: Props = $props();
+	interface Props {
+		htmlFor?: string;
+		class?: string;
+		children?: Snippet;
+		[key: string]: any;
+	}
+
+	let {
+		htmlFor,
+		class: className = '',
+		children,
+		...rest
+	}: Props = $props();
 </script>
 
 <label
- for={htmlFor}
- class={`
- text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
- ${className}
- `}
- {...rest}
+	for={htmlFor}
+	class={`
+		text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
+		${className}
+	`}
+	{...rest}
 >
- {@render children?.()}
+	{#if children}
+		{@render children()}
+	{/if}
 </label>

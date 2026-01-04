@@ -1,10 +1,9 @@
-import { createEventDispatcher } from 'svelte';
 <script lang="ts">
- import type { Badge } from '$lib/components/ui/badge';
- import type { Button } from '$lib/components/ui/button';
- import type { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
- import type { Dialog, DialogContent } from '$lib/components/ui/dialog';
- import type { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
+ import { Badge } from '$lib/components/ui/badge';
+ import { Button } from '$lib/components/ui/button';
+ import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+ import { Dialog, DialogContent } from '$lib/components/ui/dialog';
+ import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
  import { Camera, ChevronLeft, ChevronRight, Download, Eye, X, ZoomIn, ZoomOut } from "lucide-svelte";
  // Migrated from createEventDispatcher to callback props;
 

@@ -13,15 +13,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"runtime"
 	"sync"
 	"time"
 
 	"github.com/bytedance/sonic"
 	"github.com/fasthttp/router"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/minio/simdjson-go"
+	"github.com/redis/go-redis/v9"
 	"github.com/valyala/fasthttp"
 )
 
@@ -64,6 +69,8 @@ type SIMDJSONOptimizer struct {
 	sonicEncoder *sonic.Encoder
 	pool         sync.Pool
 	ctx          context.Context
+	minioClient  *minio.Client
+	redisClient  *redis.Client
 }
 
 // NewSIMDJSONOptimizer creates a new SIMD JSON optimizer
@@ -71,12 +78,45 @@ func NewSIMDJSONOptimizer() *SIMDJSONOptimizer {
 	// Initialize SIMD parser
 	simdParser := &simdjson.ParsedJson{}
 
+	// Initialize MinIO
+	minioEndpoint := os.Getenv("MINIO_ENDPOINT")
+	if minioEndpoint == "" {
+		minioEndpoint = "localhost:9000"
+	}
+	minioAccessKey := os.Getenv("MINIO_ACCESS_KEY")
+	if minioAccessKey == "" {
+		minioAccessKey = "minioadmin"
+	}
+	minioSecretKey := os.Getenv("MINIO_SECRET_KEY")
+	if minioSecretKey == "" {
+		minioSecretKey = "minioadmin"
+	}
+
+	minioClient, err := minio.New(minioEndpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(minioAccessKey, minioSecretKey, ""),
+		Secure: false,
+	})
+	if err != nil {
+		log.Printf("⚠️ Warning: Failed to initialize MinIO: %v", err)
+	}
+
+	// Initialize Redis
+	redisAddr := os.Getenv("REDIS_URL")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
+	}
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: redisAddr,
+	})
+
 	optimizer := &SIMDJSONOptimizer{
 		metrics: &PerformanceMetrics{
 			MinParseTime: time.Hour, // Set high initial value
 		},
-		simdParser: simdParser,
-		ctx:        context.Background(),
+		simdParser:  simdParser,
+		ctx:         context.Background(),
+		minioClient: minioClient,
+		redisClient: redisClient,
 	}
 
 	// Initialize object pool for request/response reuse
@@ -343,6 +383,86 @@ func (s *SIMDJSONOptimizer) BenchmarkHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetBody(respData)
 }
 
+// ParseMinIODocument handles streaming, parsing, and caching of large JSON docs from MinIO
+func (s *SIMDJSONOptimizer) ParseMinIODocument(ctx *fasthttp.RequestCtx) {
+	bucket := string(ctx.QueryArgs().Peek("bucket"))
+	key := string(ctx.QueryArgs().Peek("key"))
+
+	if bucket == "" || key == "" {
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		ctx.SetBodyString(`{"error": "Missing bucket or key parameters"}`)
+		return
+	}
+
+	cacheKey := fmt.Sprintf("doc:%s:%s:parsed", bucket, key)
+
+	// 1. Check Redis Cache
+	if s.redisClient != nil {
+		val, err := s.redisClient.Get(s.ctx, cacheKey).Result()
+		if err == nil {
+			ctx.SetContentType("application/json")
+			ctx.SetHeader("X-Cache", "HIT")
+			ctx.SetBodyString(val)
+			return
+		}
+	}
+
+	// 2. Stream from MinIO
+	if s.minioClient == nil {
+		ctx.SetStatusCode(fasthttp.StatusServiceUnavailable)
+		ctx.SetBodyString(`{"error": "MinIO client not initialized"}`)
+		return
+	}
+
+	obj, err := s.minioClient.GetObject(s.ctx, bucket, key, minio.GetObjectOptions{})
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		ctx.SetBodyString(fmt.Sprintf(`{"error": "MinIO object not found: %v"}`, err))
+		return
+	}
+	defer obj.Close()
+
+	// Read content (SIMD requires byte slice)
+	data, err := io.ReadAll(obj)
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		ctx.SetBodyString(fmt.Sprintf(`{"error": "Failed to read object: %v"}`, err))
+		return
+	}
+
+	// 3. Parse with SIMD
+	start := time.Now()
+	pj, err := simdjson.Parse(data, nil)
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		ctx.SetBodyString(fmt.Sprintf(`{"error": "SIMD parse error: %v"}`, err))
+		return
+	}
+	parseTime := time.Since(start)
+
+	// 4. Re-serialize (or extract specific fields)
+	// For now, we just validate it's valid JSON and return it (or a subset)
+	// To be useful, we might want to return the raw JSON but now we know it's valid
+	// Or maybe we want to extract specific fields.
+	// Assuming the goal is just to serve the file fast with validation/caching:
+
+	// If we want to return the whole thing, we already have `data`.
+	// But maybe we want to minify it? Sonic can do that.
+	// Or maybe we just return `data` but cache it.
+
+	// Let's assume we return the raw data but cache it in Redis for faster access than MinIO
+	// (Redis is in-memory, MinIO is disk/network).
+
+	if s.redisClient != nil {
+		s.redisClient.Set(s.ctx, cacheKey, data, 24*time.Hour)
+	}
+
+	ctx.SetContentType("application/json")
+	ctx.SetHeader("X-Cache", "MISS")
+	ctx.SetHeader("X-Parse-Time-Us", fmt.Sprintf("%.2f", float64(parseTime.Nanoseconds())/1e3))
+	ctx.SetBody(data)
+}
+
 func min(a, b int) int {
 	if a < b {
 		return a
@@ -363,6 +483,9 @@ func main() {
 
 	// Main processing endpoint
 	r.POST("/v1/completions", optimizer.ProcessLegalAIRequest)
+
+	// MinIO Document Parser
+	r.GET("/doc/parse", optimizer.ParseMinIODocument)
 
 	// Metrics and monitoring
 	r.GET("/metrics", optimizer.MetricsHandler)

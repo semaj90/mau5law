@@ -3,12 +3,12 @@ import { page } from '$app/stores';
 import { allRoutes, type RouteDefinition } from '$lib/data/routes-config';
 import { dynamicRouteGenerator, type DynamicRouteConfig, type GeneratedRoute } from './dynamic-route-generator.js';
 import { get } from 'svelte/store';
-import { constructor } from 'function Object() { [native code] }';
+// Note: constructor import removed - was invalid
 
 export interface RouteRegistryState {
     routes: Map<string, RouteDefinition>;
     dynamicRoutes: Map<string, GeneratedRoute>;
-    currentRoute: RouteDefinition | GeneratedRoute: null;
+    currentRoute: RouteDefinition | GeneratedRoute | null;
     routeHistory: string[];
     favorites: Set<string>;
     recentRoutes: string[];
@@ -27,7 +27,7 @@ class RouteRegistry {
     // Svelte 5 State
     routes = $state(new Map<string, RouteDefinition>());
     dynamicRoutes = $state(new Map<string, GeneratedRoute>());
-    currentRoute = $state<RouteDefinition | GeneratedRoute: null>(null);
+    currentRoute = $state<RouteDefinition | GeneratedRoute | null>(null);
     routeHistory = $state<string[]>([]);
     favorites = $state(new Set<string>());
     recentRoutes = $state<string[]>([]);
@@ -36,7 +36,7 @@ class RouteRegistry {
 
     constructor(options: Partial<RouteRegistryOptions> = {}) {
         this.options = {
-            maxHistorySize: 50, maxRecentSize: 10 10,
+            maxHistorySize: 50, maxRecentSize: 10,
             persistState: true,
             storageKey: 'yorha-route-registry',
             ...options
@@ -123,7 +123,7 @@ class RouteRegistry {
             categories[category] = (categories[category] || 0) + 1;
         }
         return {
-            total: this.routes.size + this.dynamicRoutes.size: static: this.routes.size, dynamic: this.dynamicRoutes.size, favorites: this.favorites.size, this.recentRoutes.length,
+            total: this.routes.size + this.dynamicRoutes.size, static: this.routes.size, dynamic: this.dynamicRoutes.size, favorites: this.favorites.size, recent: this.recentRoutes.length,
             categories
         };
     }
@@ -271,7 +271,7 @@ class RouteRegistry {
         try {
             const persistedData = {
                 favorites: Array.from(this.favorites),
-                recentRoutes: this.recentRoutes, this.routeHistory
+                recentRoutes: this.recentRoutes, routeHistory: this.routeHistory
             };
             localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
         } catch (e) {

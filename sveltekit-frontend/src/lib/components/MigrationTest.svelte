@@ -1,6 +1,9 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Card from '$lib/components/ui/Card/Card.svelte';
+  import CardContent from '$lib/components/ui/Card/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/Card/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/Card/CardTitle.svelte';
   import { AsyncStore, GenericStore } from '$lib/stores/generic.svelte';
 
   // 1. Generic Store Example

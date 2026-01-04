@@ -1,632 +1,232 @@
 <script lang="ts">
-	/**
-	 * ═══════════════════════════════════════════════════════════════════════
-	 * Error Cards View
-	 * ═══════════════════════════════════════════════════════════════════════
-	 * Task: 13.1 - Create admin route structure
-	 * Route: /command-center/codebase/errors
-	 * Purpose: Browse and filter all error cards from phase90_error_cards
-	 */
-	import { Card, CardContent } from '$lib/components/ui';
-	import { Button } from '$lib/components/ui/button';
-	import {
-	  AlertTriangle,
-	  ArrowLeft,
-	  ChevronDown,
-	  Code,
-	  FileCode,
-	  Filter,
-	  Layers,
-	  RefreshCw,
-	  Search,
-	  X
-	} from 'lucide-svelte';
-	import { onMount } from 'svelte';
+    import type { PageData } from './$types';
 
-	// Types
-	interface ErrorCard {
-		id: string;
-		kind: string;
-		tool: string;
-		errorCode: string;
-		severity: string;
-		filePath: string;
-		line: number;
-		col: number;
-		message: string;
-		signature: string;
-		surface: string[];
-		tech: string[];
-		clusterId: string | null;
-		runId: string;
-		timestamp: string;
-	}
+    let { data }: { data: PageData } = $props();
 
-	// State
-	let isLoading = $state(true);
-	let errors = $state<ErrorCard[]>([]);
-	let totalCount = $state(0);
-	let page = $state(1);
-	let pageSize = $state(50);
+    let selectedErrorCode = $state(data.filters.errorCode);
+    let selectedSurface = $state(data.filters.surface);
+    let selectedTech = $state(data.filters.tech);
+    let searchQuery = $state('');
 
-	// Filters
-	let searchQuery = $state('');
-	let selectedErrorCode = $state<string | null>(null);
-	let selectedSurface = $state<string | null>(null);
-	let selectedTech = $state<string | null>(null);
-	let selectedTool = $state<string | null>(null);
-	let showFilters = $state(false);
+    const filteredErrors = $derived(() => {
+        if (!searchQuery) return data.errors;
+        const q = searchQuery.toLowerCase();
+        return data.errors.filter(err =>
+            err.filePath.toLowerCase().includes(q) ||
+            err.message.toLowerCase().includes(q) ||
+            err.errorCode.toLowerCase().includes(q)
+        );
+    });
 
-	// Available filter options
-	let errorCodes = $state<string[]>([]);
-	let surfaces = $state<string[]>([]);
-	let techs = $state<string[]>([]);
-	let tools = $state<string[]>(['tsc', 'svelte-check', 'eslint']);
+    function applyFilters() {
+        const params = new URLSearchParams();
+        if (selectedErrorCode) params.set('errorCode', selectedErrorCode);
+        if (selectedSurface) params.set('surface', selectedSurface);
+        if (selectedTech) params.set('tech', selectedTech);
+        window.location.search = params.toString();
+    }
 
-	onMount(async () => {
-		await Promise.all([loadErrors(), loadFilterOptions()]);
-	});
+    function clearFilters() {
+        selectedErrorCode = '';
+        selectedSurface = '';
+        selectedTech = '';
+        window.location.search = '';
+    }
 
-	async function loadErrors() {
-		isLoading = true;
-		try {
-			const params = new URLSearchParams({
-				page: page.toString(),
-				pageSize: pageSize.toString()
-			});
+    function getRiskColor(errorCode: string): string {
+        if (errorCode.startsWith('SYNTAX')) return 'text-red-400';
+        if (errorCode.startsWith('TS2304')) return 'text-orange-400';
+        if (errorCode.startsWith('TS2307')) return 'text-yellow-400';
+        return 'text-blue-400';
+    }
 
-			if (searchQuery) params.set('search', searchQuery);
-			if (selectedErrorCode) params.set('errorCode', selectedErrorCode);
-			if (selectedSurface) params.set('surface', selectedSurface);
-			if (selectedTech) params.set('tech', selectedTech);
-			if (selectedTool) params.set('tool', selectedTool);
-
-			const response = await fetch(`/api/codebase-index/errors?${params}`);
-			if (response.ok) {
-				const data = await response.json();
-				errors = data.errors || [];
-				totalCount = data.total || 0;
-			}
-		} catch (error) {
-			console.error('Failed to load errors:', error);
-		} finally {
-			isLoading = false;
-		}
-	}
-
-	async function loadFilterOptions() {
-		try {
-			const response = await fetch('/api/codebase-index/error-filters');
-			if (response.ok) {
-				const data = await response.json();
-				errorCodes = data.errorCodes || [];
-				surfaces = data.surfaces || [];
-				techs = data.techs || [];
-			}
-		} catch (error) {
-			console.error('Failed to load filter options:', error);
-		}
-	}
-
-	function clearFilters() {
-		searchQuery = '';
-		selectedErrorCode = null;
-		selectedSurface = null;
-		selectedTech = null;
-		selectedTool = null;
-		page = 1;
-		loadErrors();
-	}
-
-	function applyFilters() {
-		page = 1;
-		loadErrors();
-	}
-
-	function getErrorCodeColor(code: string): string {
-		if (code.startsWith('TS1')) return 'text-red-400 bg-red-500/20';
-		if (code.startsWith('TS2')) return 'text-orange-400 bg-orange-500/20';
-		if (code.startsWith('TS7')) return 'text-yellow-400 bg-yellow-500/20';
-		return 'text-blue-400 bg-blue-500/20';
-	}
-
-	function getSeverityColor(severity: string): string {
-		return severity === 'error'
-			? 'text-red-400 bg-red-500/20'
-			: 'text-yellow-400 bg-yellow-500/20';
-	}
-
-	function getSurfaceColor(surface: string): string {
-		const colors: Record<string, string> = {
-			routes: 'bg-purple-500/20 text-purple-300',
-			components: 'bg-blue-500/20 text-blue-300',
-			stores: 'bg-green-500/20 text-green-300',
-			services: 'bg-orange-500/20 text-orange-300',
-			api: 'bg-cyan-500/20 text-cyan-300',
-			evidence: 'bg-red-500/20 text-red-300',
-			admin: 'bg-yellow-500/20 text-yellow-300',
-			ui: 'bg-pink-500/20 text-pink-300'
-		};
-		return colors[surface] || 'bg-gray-500/20 text-gray-300';
-	}
-
-	function formatFilePath(path: string): string {
-		// Shorten long paths
-		const parts = path.split('/');
-		if (parts.length > 4) {
-			return `.../${parts.slice(-3).join('/')}`;
-		}
-		return path;
-	}
-
-	let hasActiveFilters = $derived(
-		!!searchQuery || !!selectedErrorCode || !!selectedSurface || !!selectedTech || !!selectedTool
-	);
-
-	let totalPages = $derived(Math.ceil(totalCount / pageSize));
+    function getSeverityBadge(severity: string): string {
+        if (severity === 'error') return 'bg-red-500/20 text-red-300 border-red-500/30';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+    }
 </script>
 
 <svelte:head>
-	<title>Error Cards - Codebase Intelligence</title>
+    <title>Error Cards | Command Center</title>
 </svelte:head>
 
-<div class="errors-page">
-	<!-- Header -->
-	<header class="page-header">
-		<div class="header-left">
-			<a href="/command-center/codebase" class="back-link">
-				<ArrowLeft class="h-4 w-4" />
-				Back to Dashboard
-			</a>
-			<h1 class="page-title">
-				<AlertTriangle class="h-6 w-6 text-red-400" />
-				Error Cards
-			</h1>
-			<p class="page-subtitle">{totalCount.toLocaleString()} errors in codebase</p>
-		</div>
-		<div class="header-actions">
-			<Button variant="outline" onclick={() => showFilters = !showFilters}>
-				<Filter class="h-4 w-4 mr-2" />
-				Filters
-				{#if hasActiveFilters}
-					<span class="filter-badge">Active</span>
-				{/if}
-				<ChevronDown class={`h-4 w-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-			</Button>
-			<Button variant="outline" onclick={loadErrors} disabled={isLoading}>
-				<RefreshCw class={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-				Refresh
-			</Button>
-		</div>
-	</header>
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">🔬 Error Cards</h1>
+        <p class="text-slate-400">Browse and filter {data.totalErrors.toLocaleString()} diagnostic cards from Phase 90 pipeline</p>
+    </div>
 
-	<!-- Filters Panel -->
-	{#if showFilters}
-		<Card class="filters-panel">
-			<CardContent class="filters-content">
-				<div class="filter-row">
-					<div class="filter-group">
-						<label class="filter-label">Search</label>
-						<div class="search-box">
-							<Search class="h-4 w-4 search-icon" />
-							<input
-								type="text"
-								placeholder="Search messages, files..."
-								bind:value={searchQuery}
-								class="filter-input search-input"
-							/>
-						</div>
-					</div>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
+            <div class="text-3xl font-bold text-white">{data.totalErrors.toLocaleString()}</div>
+            <div class="text-slate-400 text-sm">Total Errors</div>
+        </div>
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
+            <div class="text-3xl font-bold text-blue-400">{Object.keys(data.errorCodeCounts).length}</div>
+            <div class="text-slate-400 text-sm">Error Patterns</div>
+        </div>
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
+            <div class="text-3xl font-bold text-emerald-400">{Object.keys(data.surfaceCounts).length}</div>
+            <div class="text-slate-400 text-sm">Surface Areas</div>
+        </div>
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
+            <div class="text-3xl font-bold text-purple-400">{Object.keys(data.techCounts).length}</div>
+            <div class="text-slate-400 text-sm">Tech Stacks</div>
+        </div>
+    </div>
 
-					<div class="filter-group">
-						<label class="filter-label">Error Code</label>
-						<select bind:value={selectedErrorCode} class="filter-select">
-							<option value={null}>All Codes</option>
-							{#each errorCodes as code}
-								<option value={code}>{code}</option>
-							{/each}
-						</select>
-					</div>
+    <!-- Filters -->
+    <div class="bg-slate-800/40 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 mb-8">
+        <div class="flex flex-wrap gap-4 items-end">
+            <!-- Search -->
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm text-slate-400 mb-2">Search</label>
+                <input
+                    type="text"
+                    bind:value={searchQuery}
+                    placeholder="Search by file, message, or code..."
+                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
 
-					<div class="filter-group">
-						<label class="filter-label">Surface</label>
-						<select bind:value={selectedSurface} class="filter-select">
-							<option value={null}>All Surfaces</option>
-							{#each surfaces as surface}
-								<option value={surface}>{surface}</option>
-							{/each}
-						</select>
-					</div>
+            <!-- Error Code Filter -->
+            <div class="min-w-[150px]">
+                <label class="block text-sm text-slate-400 mb-2">Error Code</label>
+                <select
+                    bind:value={selectedErrorCode}
+                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">All Codes</option>
+                    {#each Object.entries(data.errorCodeCounts).sort((a, b) => b[1] - a[1]) as [code, count]}
+                        <option value={code}>{code} ({count})</option>
+                    {/each}
+                </select>
+            </div>
 
-					<div class="filter-group">
-						<label class="filter-label">Technology</label>
-						<select bind:value={selectedTech} class="filter-select">
-							<option value={null}>All Tech</option>
-							{#each techs as tech}
-								<option value={tech}>{tech}</option>
-							{/each}
-						</select>
-					</div>
+            <!-- Surface Filter -->
+            <div class="min-w-[150px]">
+                <label class="block text-sm text-slate-400 mb-2">Surface</label>
+                <select
+                    bind:value={selectedSurface}
+                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">All Surfaces</option>
+                    {#each Object.entries(data.surfaceCounts).sort((a, b) => b[1] - a[1]) as [s, count]}
+                        <option value={s}>{s} ({count})</option>
+                    {/each}
+                </select>
+            </div>
 
-					<div class="filter-group">
-						<label class="filter-label">Tool</label>
-						<select bind:value={selectedTool} class="filter-select">
-							<option value={null}>All Tools</option>
-							{#each tools as tool}
-								<option value={tool}>{tool}</option>
-							{/each}
-						</select>
-					</div>
-				</div>
+            <!-- Tech Filter -->
+            <div class="min-w-[150px]">
+                <label class="block text-sm text-slate-400 mb-2">Tech</label>
+                <select
+                    bind:value={selectedTech}
+                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">All Tech</option>
+                    {#each Object.entries(data.techCounts).sort((a, b) => b[1] - a[1]) as [t, count]}
+                        <option value={t}>{t} ({count})</option>
+                    {/each}
+                </select>
+            </div>
 
-				<div class="filter-actions">
-					<Button variant="outline" onclick={clearFilters}>
-						<X class="h-4 w-4 mr-2" />
-						Clear
-					</Button>
-					<Button onclick={applyFilters}>
-						Apply Filters
-					</Button>
-				</div>
-			</CardContent>
-		</Card>
-	{/if}
+            <!-- Buttons -->
+            <button
+                onclick={applyFilters}
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+            >
+                Apply
+            </button>
+            <button
+                onclick={clearFilters}
+                class="px-6 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-medium transition-colors"
+            >
+                Clear
+            </button>
+        </div>
+    </div>
 
-	<!-- Error List -->
-	{#if isLoading}
-		<div class="loading-state">
-			<RefreshCw class="h-8 w-8 animate-spin text-cyan-400" />
-			<p>Loading errors...</p>
-		</div>
-	{:else if errors.length === 0}
-		<div class="empty-state">
-			<Code class="h-12 w-12 text-green-400" />
-			<h3>No Errors Found</h3>
-			<p>
-				{#if hasActiveFilters}
-					No errors match your filters. Try adjusting your criteria.
-				{:else}
-					Your codebase is error-free! 🎉
-				{/if}
-			</p>
-		</div>
-	{:else}
-		<div class="errors-list">
-			{#each errors as error}
-				<Card class="error-card">
-					<CardContent class="error-content">
-						<div class="error-header">
-							<div class="error-badges">
-								<span class={`badge ${getErrorCodeColor(error.errorCode)}`}>
-									{error.errorCode}
-								</span>
-								<span class={`badge ${getSeverityColor(error.severity)}`}>
-									{error.severity}
-								</span>
-								<span class="badge bg-gray-500/20 text-gray-300">
-									{error.tool}
-								</span>
-							</div>
-							{#if error.clusterId}
-								<a
-									href="/command-center/codebase/clusters/{error.clusterId}"
-									class="cluster-link"
-								>
-									<Layers class="h-4 w-4" />
-									View Cluster
-								</a>
-							{/if}
-						</div>
+    <!-- Error Cards Grid -->
+    {#if data.error}
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center">
+            <p class="text-red-400">⚠️ {data.error}</p>
+            <p class="text-slate-400 text-sm mt-2">Make sure Qdrant is running and the phase90 pipeline has completed.</p>
+        </div>
+    {:else if filteredErrors().length === 0}
+        <div class="bg-slate-800/40 rounded-xl p-12 text-center">
+            <p class="text-slate-400 text-lg">No errors found matching your filters.</p>
+        </div>
+    {:else}
+        <div class="space-y-3">
+            {#each filteredErrors() as error}
+                <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50 hover:border-blue-500/30 transition-colors">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <!-- Error Code & Message -->
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class={`font-mono font-bold ${getRiskColor(error.errorCode)}`}>
+                                    {error.errorCode}
+                                </span>
+                                <span class={`px-2 py-0.5 text-xs rounded-full border ${getSeverityBadge(error.severity)}`}>
+                                    {error.severity}
+                                </span>
+                                {#if error.clusterId}
+                                    <a
+                                        href="/command-center/codebase/clusters/{error.clusterId}"
+                                        class="px-2 py-0.5 text-xs bg-purple-500/20 text-purple-300 rounded-full hover:bg-purple-500/30"
+                                    >
+                                        {error.clusterId}
+                                    </a>
+                                {/if}
+                            </div>
 
-						<div class="error-file">
-							<FileCode class="h-4 w-4" />
-							<span class="file-path">{formatFilePath(error.filePath)}</span>
-							<span class="file-location">:{error.line}:{error.col}</span>
-						</div>
+                            <!-- File Path -->
+                            <div class="font-mono text-sm text-slate-300 truncate mb-1">
+                                📄 {error.filePath}:{error.line}:{error.col}
+                            </div>
 
-						<p class="error-message">{error.message}</p>
+                            <!-- Message -->
+                            <div class="text-slate-400 text-sm line-clamp-2">
+                                {error.message}
+                            </div>
 
-						<div class="error-tags">
-							{#each error.surface as surface}
-								<span class={`tag ${getSurfaceColor(surface)}`}>{surface}</span>
-							{/each}
-							{#each error.tech as tech}
-								<span class="tag bg-gray-500/20 text-gray-300">{tech}</span>
-							{/each}
-						</div>
-					</CardContent>
-				</Card>
-			{/each}
-		</div>
+                            <!-- Tags -->
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                {#each error.surface || [] as s}
+                                    <span class="px-2 py-0.5 text-xs bg-emerald-500/20 text-emerald-300 rounded-full">
+                                        {s}
+                                    </span>
+                                {/each}
+                                {#each error.tech || [] as t}
+                                    <span class="px-2 py-0.5 text-xs bg-blue-500/20 text-blue-300 rounded-full">
+                                        {t}
+                                    </span>
+                                {/each}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {/each}
+        </div>
 
-		<!-- Pagination -->
-		{#if totalPages > 1}
-			<div class="pagination">
-				<Button
-					variant="outline"
-					disabled={page === 1}
-					onclick={() => { page--; loadErrors(); }}
-				>
-					Previous
-				</Button>
-				<span class="page-info">
-					Page {page} of {totalPages}
-				</span>
-				<Button
-					variant="outline"
-					disabled={page === totalPages}
-					onclick={() => { page++; loadErrors(); }}
-				>
-					Next
-				</Button>
-			</div>
-		{/if}
-	{/if}
+        {#if data.hasNextPage}
+            <div class="mt-6 text-center">
+                <button class="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg">
+                    Load More
+                </button>
+            </div>
+        {/if}
+    {/if}
 </div>
 
 <style>
-	.errors-page {
-		padding: 2rem;
-		max-width: 1200px;
-		margin: 0 auto;
-	}
-
-	.page-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 1.5rem;
-	}
-
-	.back-link {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		color: rgba(255, 255, 255, 0.6);
-		text-decoration: none;
-		font-size: 0.875rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.back-link:hover {
-		color: #00d4ff;
-	}
-
-	.page-title {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		font-size: 1.5rem;
-		font-weight: 600;
-		color: white;
-	}
-
-	.page-subtitle {
-		color: rgba(255, 255, 255, 0.6);
-		font-size: 0.875rem;
-		margin-top: 0.25rem;
-	}
-
-	.header-actions {
-		display: flex;
-		gap: 0.75rem;
-	}
-
-	.filter-badge {
-		background: #00d4ff;
-		color: #0f0f23;
-		font-size: 0.65rem;
-		padding: 0.1rem 0.4rem;
-		border-radius: 4px;
-		margin-left: 0.5rem;
-		font-weight: 600;
-	}
-
-	.filters-panel {
-		margin-bottom: 1.5rem;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.filters-content {
-		padding: 1.5rem;
-	}
-
-	.filter-row {
-		display: grid;
-		grid-template-columns: 2fr repeat(4, 1fr);
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	.filter-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.filter-label {
-		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.6);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.filter-input,
-	.filter-select {
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 6px;
-		padding: 0.5rem 0.75rem;
-		color: white;
-		font-size: 0.875rem;
-	}
-
-	.filter-input:focus,
-	.filter-select:focus {
-		outline: none;
-		border-color: rgba(0, 212, 255, 0.5);
-	}
-
-	.search-box {
-		position: relative;
-	}
-
-	.search-icon {
-		position: absolute;
-		left: 0.75rem;
-		top: 50%;
-		transform: translateY(-50%);
-		color: rgba(255, 255, 255, 0.4);
-	}
-
-	.search-input {
-		padding-left: 2.5rem;
-		width: 100%;
-	}
-
-	.filter-actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 0.75rem;
-	}
-
-	.loading-state,
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 4rem;
-		gap: 1rem;
-		color: rgba(255, 255, 255, 0.6);
-		text-align: center;
-	}
-
-	.empty-state h3 {
-		font-size: 1.25rem;
-		color: white;
-		margin: 0;
-	}
-
-	.errors-list {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.error-card {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 8px;
-		transition: border-color 0.2s ease;
-	}
-
-	.error-card:hover {
-		border-color: rgba(255, 255, 255, 0.15);
-	}
-
-	.error-content {
-		padding: 1rem 1.25rem;
-	}
-
-	.error-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 0.75rem;
-	}
-
-	.error-badges {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.badge {
-		font-size: 0.7rem;
-		padding: 0.2rem 0.5rem;
-		border-radius: 4px;
-		font-family: 'JetBrains Mono', monospace;
-	}
-
-	.cluster-link {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.75rem;
-		color: #00d4ff;
-		text-decoration: none;
-	}
-
-	.cluster-link:hover {
-		text-decoration: underline;
-	}
-
-	.error-file {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-		color: rgba(255, 255, 255, 0.7);
-		font-size: 0.875rem;
-	}
-
-	.file-path {
-		font-family: 'JetBrains Mono', monospace;
-	}
-
-	.file-location {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
-	.error-message {
-		color: rgba(255, 255, 255, 0.9);
-		font-size: 0.875rem;
-		line-height: 1.5;
-		margin-bottom: 0.75rem;
-	}
-
-	.error-tags {
-		display: flex;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-	}
-
-	.tag {
-		font-size: 0.65rem;
-		padding: 0.15rem 0.4rem;
-		border-radius: 4px;
-	}
-
-	.pagination {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 1rem;
-		margin-top: 2rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.page-info {
-		color: rgba(255, 255, 255, 0.6);
-		font-size: 0.875rem;
-	}
-
-	@media (max-width: 1024px) {
-		.filter-row {
-			grid-template-columns: 1fr 1fr;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.page-header {
-			flex-direction: column;
-			gap: 1rem;
-		}
-
-		.filter-row {
-			grid-template-columns: 1fr;
-		}
-	}
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
