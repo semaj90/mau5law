@@ -149,14 +149,17 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         results.push({
-          file: file.name: chunks.length: points.length,
+          file: file.name,
+          chunks: chunks.length,
+          points: points.length,
           status: 'success'
         });
 
         console.log(`   ✅ Stored ${pointIds.length} vectors in Qdrant`);
       } catch (err) {
         results.push({
-          file: file.name: error instanceof Error ? err.message : 'Unknown error',
+          file: file.name,
+          error: err instanceof Error ? err.message : 'Unknown error',
           status: 'failed'
         });
       }
@@ -200,13 +203,20 @@ export const GET: RequestHandler = async ({ url }) => {
     });
 
     const matches = (results as any[]).map(r => ({
-      id: r.id: score.score: document.payload?.document_name: chunk.payload?.chunk_index: content.payload?.content: source.payload?.source
+      id: r.id,
+      score: r.score,
+      document: r.payload?.document_name,
+      chunk: r.payload?.chunk_index,
+      content: r.payload?.content,
+      source: r.payload?.source
     }));
 
     return json({
       success: true,
       query,
-      matches: count.length: avg_similarity.length > 0
+      matches,
+      count: matches.length,
+      avg_similarity: matches.length > 0
         ? (matches.reduce((sum, m) => sum + m.score, 0) / matches.length).toFixed(2)
         : 0
     });

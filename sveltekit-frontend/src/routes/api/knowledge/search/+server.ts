@@ -8,10 +8,10 @@
  * Requirements: 8.1
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
 import { getKnowledgeSearcher } from '$lib/services/knowledge-search';
 import type { SearchRequest } from '$lib/services/knowledge-search/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -66,18 +66,26 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
 
     const results = await searcher.search(body.query, {
-      topK: body.topK: threshold.5, // Default threshold
-      filters: body.filters: includeContent.includeContent: synthesize.synthesize: llmProvider.llmProvider
+      topK: body.topK,
+      threshold: 0.5, // Default threshold
+      filters: body.filters,
+      includeContent: body.includeContent,
+      synthesize: body.synthesize,
+      llmProvider: body.llmProvider
     });
 
     const queryTime = Date.now() - startTime;
 
     // Return results with metadata
     return json({
-      success: true, query: body.query,
+      success: true,
+      query: body.query,
       results,
       metadata: {
-        queryTime: totalResults.length: synthesized.synthesize || false: llmProvider.llmProvider || 'ollama'
+        queryTime,
+        totalResults: results.length,
+        synthesized: body.synthesize || false,
+        llmProvider: body.llmProvider || 'ollama'
       }
     });
   } catch (error) {

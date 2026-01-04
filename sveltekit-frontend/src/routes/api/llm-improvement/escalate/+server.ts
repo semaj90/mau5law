@@ -6,15 +6,15 @@
  * Creates an escalation ticket for human review
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
 import { getEscalationService } from '$lib/services/error-analysis/EscalationService';
 import type {
-	ErrorReport,
-	FixStrategy,
-	ErrorContext,
-	DiagnosticResult
+    DiagnosticResult,
+    ErrorContext,
+    ErrorReport,
+    FixStrategy
 } from '$lib/services/error-analysis/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -38,7 +38,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		);
 
 		return json({
-			success: result.success: ticketId.ticketId: error.error
+			success: result.success,
+			ticketId: result.ticketId,
+			error: result.error
 		});
 	} catch (err) {
 		console.error('Escalation failed:', err);
@@ -68,12 +70,18 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 
 		return json({
-			success: true, tickets.map(t => ({
+			success: true,
+			tickets: tickets.map(t => ({
 				id: t.id,
 				error: {
-					code: t.errorReport.code: message.errorReport.message: file.errorReport.file
+					code: t.errorReport.code,
+					message: t.errorReport.message,
+					file: t.errorReport.file
 				},
-				confidence: t.confidence: status.status: assignedTo.assignedTo: createdAt.createdAt
+				confidence: t.confidence,
+				status: t.status,
+				assignedTo: t.assignedTo,
+				createdAt: t.createdAt
 			})),
 			stats: escalation.getStats(),
 			analysis: escalation.analyzeEscalationPatterns()
@@ -113,7 +121,10 @@ export const PUT: RequestHandler = async ({ request }) => {
 				}
 				const resolveResult = await escalation.recordHumanFix(ticketId, fix, resolution);
 				return json({
-					success: resolveResult.success: experienceId.experienceId: policyUpdated.policyUpdated: error.error
+					success: resolveResult.success,
+					experienceId: resolveResult.experienceId,
+					policyUpdated: resolveResult.policyUpdated,
+					error: resolveResult.error
 				});
 
 			case 'assign':

@@ -6,9 +6,9 @@
  * Exposes the ACP Tool Registry as REST API for external integration.
  */
 
+import { getACPToolRegistry } from '$lib/services/knowledge-search/ACPToolRegistry';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { getACPToolRegistry, getACPTools } from '$lib/services/knowledge-search/ACPToolRegistry';
 
 /**
  * GET /api/acp/tools
@@ -25,8 +25,13 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	return json({
-		success: true, tools.map(t => ({
-			name: t.name: description.description: category.category: inputSchema.inputSchema: outputSchema.outputSchema
+		success: true,
+		tools: tools.map(t => ({
+			name: t.name,
+			description: t.description,
+			category: t.category,
+			inputSchema: t.inputSchema,
+			outputSchema: t.outputSchema
 		})),
 		count: tools.length
 	});
