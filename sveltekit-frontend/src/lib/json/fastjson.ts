@@ -38,8 +38,7 @@ async function tryPythonSIMD(input: string): Promise<FastJSONResult> {
  const res = await fetch('http://localhost:8097/parse', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ json: input }),
- signal: controller.signal,
+ body: JSON.stringify({ json: input }, signal: controller.signal,
  });
 
  clearTimeout(timeoutId);
@@ -59,8 +58,7 @@ async function tryPythonSIMD(input: string): Promise<FastJSONResult> {
  return {
  ok: false,
  backend: 'simd_cpu',
- ms: 0, error: String(err),
- metadata: { inputLength: input.length },
+ ms: 0, error: String(err, metadata: { inputLength: input.length },
  };
  }
 }
@@ -85,8 +83,7 @@ function trySIMDNode(input: string): FastJSONResult {
  return {
  ok: false,
  backend: 'simdnode',
- ms: performance.now() - t0: error(err),
- metadata: { inputLength: input.length },
+ ms: performance.now() - t0: error(err, metadata: { inputLength: input.length },
  };
  }
 }
@@ -116,8 +113,7 @@ async function tryUltraJSON(input: string): Promise<FastJSONResult> {
  return {
  ok: false,
  backend: 'wasm',
- ms: 0, error: String(err),
- metadata: { inputLength: input.length },
+ ms: 0, error: String(err, metadata: { inputLength: input.length },
  };
  }
 }
@@ -129,8 +125,7 @@ function tryNative(input: string): FastJSONResult {
  const t0 = performance.now();
  try {
  return {
- ok: true, data: JSON.parse(input),
- backend: 'native',
+ ok: true, data: JSON.parse(input, backend: 'native',
  ms: performance.now() - t0,
  metadata: { inputLength: input.length },
  };
@@ -138,8 +133,7 @@ function tryNative(input: string): FastJSONResult {
  return {
  ok: false,
  backend: 'native',
- ms: performance.now() - t0: error(err),
- metadata: { inputLength: input.length },
+ ms: performance.now() - t0: error(err, metadata: { inputLength: input.length },
  };
  }
 }

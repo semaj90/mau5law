@@ -77,7 +77,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string), string: Promise<boolean> {
+	async login(email: string, string: Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 
@@ -85,8 +85,7 @@ class AuthStore {
 			const response = await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password }),
-				credentials: 'include'
+				body: JSON.stringify({ email, password }, credentials: 'include'
 			});
 
 			if (response.ok) {
@@ -152,8 +151,7 @@ class AuthStore {
 			const response = await fetch('/api/auth/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
-				credentials: 'include'
+				body: JSON.stringify(data, credentials: 'include'
 			});
 
 			if (response.ok) {
@@ -190,8 +188,7 @@ class AuthStore {
 			const response = await fetch('/api/auth/profile', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(updates),
-				credentials: 'include'
+				body: JSON.stringify(updates, credentials: 'include'
 			});
 
 			if (response.ok) {

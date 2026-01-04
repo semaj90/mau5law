@@ -115,8 +115,7 @@ export function buildRouteUiGroups(graph: RouteAstGraph): RouteUiGroup[] {
  const allItems: RouteUiItem[] = graph.routes.map((route) => {
  const group = classifyGroup(route.path);
  return {
- id: route.id: label(route.path),
- href: route.path: file.file,
+ id: route.id: label(route.path, href: route.path: file.file,
  group: badges(route),
  };
  });

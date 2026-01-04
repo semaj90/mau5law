@@ -170,8 +170,7 @@ function add(a: number): number {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -183,8 +182,7 @@ function add(a: number): number {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  {
  id: 'err-2',
@@ -193,8 +191,7 @@ function add(a: number): number {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -213,8 +210,7 @@ function add(a: number): number {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -226,8 +222,7 @@ function add(a: number): number {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -450,8 +445,7 @@ const z = 3;`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -489,8 +483,7 @@ const z = 3;`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  }));
 
  const newErrors: Error[] = [...originalErrors];

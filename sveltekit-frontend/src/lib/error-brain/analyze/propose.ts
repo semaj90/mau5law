@@ -208,6 +208,6 @@ export function proposePatches(
  * @param projectRoot - Workspace root
  * @returns Array of PatchCandidates ready for application
  */
-export function generateProposals(records: ErrorRecord[]), string: PatchCandidate[] {
+export function generateProposals(records: ErrorRecord[], string: PatchCandidate[] {
  return proposePatches(records, SYNTAX_CORRUPTION_RULES, projectRoot);
 }

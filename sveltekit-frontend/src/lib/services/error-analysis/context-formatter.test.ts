@@ -46,8 +46,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [
@@ -79,8 +78,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const codeSnippet = 'const x: string = 123;';
@@ -98,8 +96,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const context = 'Error context here';
@@ -137,8 +134,7 @@ Change the type annotation from string to number to match the assigned value.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [
@@ -176,8 +172,7 @@ Change the type annotation from string to number to match the assigned value.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const context = await formatter.formatErrorContext(error, []);
@@ -264,8 +259,7 @@ Some notes here.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  await expect(formatter.formatErrorContext(error, null as any)).rejects.toThrow();
@@ -279,8 +273,7 @@ Some notes here.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  await expect(formatter.formatPrompt(error, '')).rejects.toThrow('Invalid input');
@@ -311,8 +304,7 @@ Some notes here.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const patterns: Pattern[] = [
@@ -340,8 +332,7 @@ Some notes here.`;
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const context = 'Error context';

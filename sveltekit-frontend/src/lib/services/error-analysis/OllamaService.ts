@@ -171,8 +171,7 @@ export class OllamaService {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						model: this.config.embeddingModel, text
-					}),
-					signal: controller.signal
+					}, signal: controller.signal
 				});
 
 				clearTimeout(timeoutId);
@@ -250,8 +249,7 @@ export class OllamaService {
 					body: JSON.stringify({
 						model: this.config.generationModel,
 						prompt: system
-					}),
-					signal: controller.signal
+					}, signal: controller.signal
 				});
 
 				clearTimeout(timeoutId);

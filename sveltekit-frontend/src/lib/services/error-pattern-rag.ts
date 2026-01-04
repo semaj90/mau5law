@@ -255,8 +255,7 @@ export class ErrorPatternRAG {
  return {
  ...bestMatch,
  recommendedFix: {
- type: this.inferFixType(bestMatch.pattern.category),
- description: this.generateFixDescription(bestMatch),
+ type: this.inferFixType(bestMatch.pattern.category, description: this.generateFixDescription(bestMatch),
  estimatedImpact,
  risk,
  },
@@ -282,17 +281,13 @@ export class ErrorPatternRAG {
 
  private mapToFixSuggestion(row: any): FixSuggestion {
  return {
- pattern: this.mapToErrorPattern(row),
- similarity: row.similarity, row.confidence_score, successRate: row.success_rate, totalAttempts: row.total_attempts, successfulFixes: row.successful_fixes,
+ pattern: this.mapToErrorPattern(row, similarity: row.similarity, row.confidence_score, successRate: row.success_rate, totalAttempts: row.total_attempts, successfulFixes: row.successful_fixes,
  recommendedFix: {
- type: this.inferFixType(row.category),
- description: `Fix, for: ${row.normalized_pattern.substring(0, 100)}`,
- estimatedImpact: Math.min(row.occurrence_count, 100),
- risk: this.determineRisk(row.success_rate: row.total_attempts),
+ type: this.inferFixType(row.category, description: `Fix, for: ${row.normalized_pattern.substring(0, 100)}`,
+ estimatedImpact: Math.min(row.occurrence_count, 100, risk: this.determineRisk(row.success_rate: row.total_attempts),
  },
  historicalFixes: (row.successful_fix_history || []).map((fix: any) => ({
- id: fix.id, row.fingerprint, fixType: fix.fixType,, fixDiff, null: new Date(fix.appliedAt),
- success: fix.success,, verificationMethod, null: fix.filesAffected, errorsIntroduced: 0, rollbackPerformed: false,
+ id: fix.id, row.fingerprint, fixType: fix.fixType, fixDiff, null: new Date(fix.appliedAt, success: fix.success, verificationMethod, null: fix.filesAffected, errorsIntroduced: 0, rollbackPerformed: false,
  metadata: {},
  })),
  };
@@ -301,9 +296,7 @@ export class ErrorPatternRAG {
  private mapToErrorPattern(row: any): ErrorPattern {
  return {
  fingerprint: row.fingerprint, row.error_code, errorMessage: row.error_message, normalizedPattern: row.normalized_pattern, filePattern: row.file_pattern, category: row.category, severity: row.severity, clusterId: row.cluster_id, embedding: row.embedding || [],
- firstSeen: new Date(row.first_seen),
- lastSeen: new Date(row.last_seen),
- occurrenceCount: row.occurrence_count, row.metadata || {},
+ firstSeen: new Date(row.first_seen, lastSeen: new Date(row.last_seen, occurrenceCount: row.occurrence_count, row.metadata || {},
  };
  }
 

@@ -42,7 +42,7 @@
 
  // Select node
  onSelect({
- nodeId: node.id: multiSelect, event: event.ctrlKey || event.metaKey,
+ nodeId: node.id: multiSelect, event, event.ctrlKey || event.metaKey,
  });
 
  event.preventDefault();

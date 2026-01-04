@@ -194,10 +194,8 @@ export function createUIStore() {
 
  function addTypewriterPrompt(caseId: string, caseName) {
  const prompt: TypewriterPrompt = {
- id: crypto.randomUUID(),
- text: `What about Case #${caseId}... "${caseName}"?`,
- caseId: caseName Date(),
- isTyping: false,
+ id: crypto.randomUUID(, text: `What about Case #${caseId}... "${caseName}"?`,
+ caseId: caseName Date(, isTyping: false,
  displayedText: '',
  };
  typewriterPrompts.update((prompts) => [...prompts, prompt]);
@@ -248,10 +246,7 @@ export function createUIStore() {
 
  function addUploadedFile(file: File): string {
  const uploadedFile: UploadedFile = {
- id: crypto.randomUUID(),
- name: file.name, type: detectFileType(file),
- size: file.size, uploadedAt: new Date(),
- status: 'uploading',
+ id: crypto.randomUUID(, name: file.name, type: detectFileType(file, size: file.size, uploadedAt: new Date(, status: 'uploading',
  progress: 0,
  };
  uploadedFiles.update((files) => [...files, uploadedFile]);
@@ -266,7 +261,7 @@ export function createUIStore() {
  uploadedFiles.update((files) => files.map((f) => (f.id === fileId ? { ...f, status } : f)));
  }
 
- function updateFileMetadata(fileId: string, metadata), AIMetadata: void {
+ function updateFileMetadata(fileId: string, metadata, AIMetadata: void {
  uploadedFiles.update((files) =>
  files.map((f) => (f.id === fileId ? { ...f, metadata, status: 'analyzed' } : f))
  );
@@ -281,7 +276,7 @@ export function createUIStore() {
  uploadedFiles.update((files) => files.filter((f) => f.id !== fileId));
  }
 
- function setAutoPopulatedForm(formId: string, form), AutoPopulatedForm: void {
+ function setAutoPopulatedForm(formId: string, form, AutoPopulatedForm: void {
  autoPopulatedForms.update((forms) => {
  forms.set(formId, form);
  return new Map(forms);
@@ -305,7 +300,7 @@ export function createUIStore() {
  return newScene.id;
  }
 
- function validateScene(sceneId: string, validatedBy), string: void {
+ function validateScene(sceneId: string, validatedBy, string: void {
  markdownScenes.update((scenes) =>
  scenes.map((s) =>
  s.id === sceneId ? { ...s, validated: true, validatedBy: new Date() } : s
@@ -317,7 +312,7 @@ export function createUIStore() {
  activeSceneId.set(sceneId);
  }
 
- function updateSceneMarkdown(sceneId: string, markdown), string: void {
+ function updateSceneMarkdown(sceneId: string, markdown, string: void {
  markdownScenes.update((scenes) =>
  scenes.map((s) => (s.id === sceneId ? { ...s, markdown } : s))
  );

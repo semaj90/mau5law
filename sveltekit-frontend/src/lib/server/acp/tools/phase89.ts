@@ -54,9 +54,7 @@ export const phase89Tools = {
 				const proc = spawn(pythonPath, [scriptPath], {
 					env: {
 						...process.env,
-						PHASE89_EPS: eps.toString(),
-						PHASE89_MIN_SAMPLES: minSamples.toString(),
-						PHASE89_BATCH_SIZE: batchSize.toString()
+						PHASE89_EPS: eps.toString(, PHASE89_MIN_SAMPLES: minSamples.toString(, PHASE89_BATCH_SIZE: batchSize.toString()
 					}
 				});
 
@@ -153,8 +151,7 @@ export const phase89Tools = {
 							success: true,
 							summaries_generated: processedMatch ? parseInt(processedMatch[1]) : 0,
 							kb_cards_created: processedMatch ? parseInt(processedMatch[1]) : 0,
-							copilot_md_updated: stdout.includes('copilot.md'),
-							output: stdout
+							copilot_md_updated: stdout.includes('copilot.md', output: stdout
 						});
 					} else {
 						reject(new Error(`Summarization failed with code ${code}: ${stderr}`));

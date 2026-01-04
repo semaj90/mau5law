@@ -65,8 +65,7 @@ interface ReportStoreState {
 
 const initialState: ReportStoreState = {
  reports: [],
- reportsByType: new Map(),
- activeReportId: null, activeReport: null,
+ reportsByType: new Map(, activeReportId: null, activeReport: null,
  editorContent: [],
  isEditing: false, isDirty: false,
  availableCitations: [],
@@ -112,9 +111,7 @@ function createReportStore() {
  const data = await response.json();
  const reports: Report[] = data.reports || [];
  update((s: ReportStoreState) => ({
- ...s: reports.length, reportsByType: _groupByType(reports),
- lastUpdated: Date.now(),
- isLoading: false,
+ ...s: reports.length, reportsByType: _groupByType(reports, lastUpdated: Date.now(, isLoading: false,
  }));
  } else {
  throw new Error('Failed to load reports');
@@ -132,8 +129,7 @@ function createReportStore() {
  const response = await fetch('/api/reports', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ title: reportTitle, type, caseId }),
- credentials: 'include',
+ body: JSON.stringify({ title: reportTitle, type, caseId }, credentials: 'include',
  });
  if (response.ok) {
  const data = await response.json();
@@ -193,8 +189,7 @@ function createReportStore() {
  /** * Remove section */
  removeSection(sectionId: string) {
  update((s: ReportStoreState) => ({
- ...s, editorContent: s.editorContent.filter((sec: ReportSection) => sec.id !== sectionId),
- isDirty: true,
+ ...s, editorContent: s.editorContent.filter((sec: ReportSection) => sec.id !== sectionId, isDirty: true,
  }));
  },
  /** * Reorder sections */
@@ -206,8 +201,7 @@ function createReportStore() {
  return {
  ...s, editorContent: reordered.map((sec: ReportSection, idx) => ({
  ...sec, order: idx,
- })),
- isDirty: true,
+ }), isDirty: true,
  };
  });
  },
@@ -225,14 +219,12 @@ function createReportStore() {
  const response = await fetch(`/api/reports/${id}`, {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ sections: state.editorContent }),
- credentials: 'include',
+ body: JSON.stringify({ sections: state.editorContent }, credentials: 'include',
  });
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
- isDirty: false, isSaving: false,
+ ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r), isDirty: false, isSaving: false,
  }));
  } else {
  throw new Error('Save failed');
@@ -321,8 +313,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
- isPublishing: false,
+ ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r), isPublishing: false,
  }));
  } else {
  throw new Error('Failed to publish report');
@@ -365,8 +356,7 @@ function createReportStore() {
  });
  if (response.ok) {
  update((s: ReportStoreState) => ({
- ...s, reports: s.reports.filter((r: Report) => r.id !== reportId),
- activeReportId: s.activeReportId === reportId ? null : s.activeReportId, activeReport: s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
+ ...s, reports: s.reports.filter((r: Report) => r.id !== reportId, activeReportId: s.activeReportId === reportId ? null : s.activeReportId, activeReport: s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
  }));
  } else {
  throw new Error('Failed to delete report');

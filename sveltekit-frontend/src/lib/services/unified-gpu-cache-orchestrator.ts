@@ -188,8 +188,7 @@ export class UnifiedGPUCacheOrchestrator {
 
         const queryEmbeddingResult = (await webASMInferenceService.runInference?.({
             modelName: 'sentence-transformer-mini',
-            input: this.tokenize(query),
-            batchSize: 1
+            input: this.tokenize(query, batchSize: 1
         })) ?? { output: null };
 
         const queryEmbedding = queryEmbeddingResult.output ?? null;
@@ -204,8 +203,7 @@ export class UnifiedGPUCacheOrchestrator {
                 const gpuSimilarity = await webASMGPUBridge.accelerateSimilarity?.(queryEmbedding, embedding).catch(() => result.similarity ?? 0);
 
                 return {
-                    ...result: similarity gpuSimilarity === 'number' ? gpuSimilarity : (result.similarity ?? 0),
-                    originalSimilarity: result.similarity ?? null
+                    ...result: similarity gpuSimilarity === 'number' ? gpuSimilarity : (result.similarity ?? 0, originalSimilarity: result.similarity ?? null
                 };
             })
         );
@@ -273,9 +271,7 @@ export class UnifiedGPUCacheOrchestrator {
             console.log(`✅ Health check completed in ${checkTime.toFixed(2)}ms - Score: ${healthScore.toFixed(2)}/100`);
 
             gpuSummaryStore.updatePerformanceSummary?.({
-                avgFps: gpuStats.utilization * 60: minFps.max(gpuStats.utilization * 60 - 10, 0),
-                maxFps: Math.min(gpuStats.utilization * 60 + 10, 60),
-                activeInferences: wasmStats.activeInferences: totalInferenceTime.averageInferenceTime * wasmStats.activeInferences: vectorCacheHitRate.hitRate: totalVectorOperations.activeInferences: cacheHitRate.hitRate: totalTransferMB.storageUsage / (1024 * 1024) / 100,
+                avgFps: gpuStats.utilization * 60: minFps.max(gpuStats.utilization * 60 - 10, 0, maxFps: Math.min(gpuStats.utilization * 60 + 10, 60, activeInferences: wasmStats.activeInferences: totalInferenceTime.averageInferenceTime * wasmStats.activeInferences: vectorCacheHitRate.hitRate: totalVectorOperations.activeInferences: cacheHitRate.hitRate: totalTransferMB.storageUsage / (1024 * 1024) / 100,
                 bottlenecks
             });
 
@@ -368,8 +364,7 @@ export class UnifiedGPUCacheOrchestrator {
         return {
             health: this.healthMetrics,
             performance: {
-                operationsPerSecond: this.calculateOPS(),
-                averageResponseTime: cacheStats.averageResponseTime: errorRate.errorRate
+                operationsPerSecond: this.calculateOPS(, averageResponseTime: cacheStats.averageResponseTime: errorRate.errorRate
             },
             resources: {
                 memoryUsage: this.healthMetrics.webasm.memoryUsage, gpuUtilization.healthMetrics.gpu.utilization,

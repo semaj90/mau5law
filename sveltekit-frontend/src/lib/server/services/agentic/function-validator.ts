@@ -351,8 +351,7 @@ export function getFunctionSchemaForLLM(functionName: string): any {
  return acc;
  },
  {} as Record<string, any>
- ),
- required: schema.requiredParameters,
+ , required: schema.requiredParameters,
  },
  };
 }

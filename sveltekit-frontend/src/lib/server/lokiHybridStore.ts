@@ -298,8 +298,7 @@ export class LokiHybridStore {
  id: `${item.id}::${idx}`,
  vector,
  payload: {
- ...this.prepareForStorage(item),
- chunk: chunks[idx],
+ ...this.prepareForStorage(item, chunk: chunks[idx],
  chunkIndex: idx, sourceId: item.id,
  },
  }));

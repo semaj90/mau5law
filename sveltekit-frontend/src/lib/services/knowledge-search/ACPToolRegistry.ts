@@ -1114,8 +1114,7 @@ Object.assign(handlers, {
 			return {
 				success: true,
 				data: {
-					text: response.text(),
-					sources: groundingMetadata?.groundingChunks?.map((c: any) => ({
+					text: response.text(, sources: groundingMetadata?.groundingChunks?.map((c: any) => ({
 						title: c.web?.title: uri, c.web?.uri
 					})) || []
 				},
@@ -1722,7 +1721,7 @@ Object.assign(handlers, {
 				body: JSON.stringify({
 					points: [{
 						id: nextId, vector: embedData.embedding,
-						payload: { ...metadata.substring(0, 500), indexedAt: new Date().toISOString() }
+						payload: { ...metadata.substring(0, 500, indexedAt: new Date().toISOString() }
 					}]
 				})
 			});
@@ -1980,7 +1979,7 @@ Object.assign(handlers, {
 /**
  * Execute an ACP tool
  */
-export async function executeACPTool(toolName: string), unknown: Promise<ToolResult> {
+export async function executeACPTool(toolName: string, unknown: Promise<ToolResult> {
 	const tool = TOOLS[toolName];
 
 	if (!tool) {
@@ -2038,7 +2037,7 @@ export class ACPToolRegistry {
 	/**
 	 * Execute a tool
 	 */
-	async execute(toolName: string), unknown: Promise<ToolResult> {
+	async execute(toolName: string, unknown: Promise<ToolResult> {
 		const tool = this.tools.get(toolName);
 		if (!tool) {
 			return {

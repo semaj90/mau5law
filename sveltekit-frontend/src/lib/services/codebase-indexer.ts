@@ -17,8 +17,7 @@ import postgres from 'postgres';
 const CONFIG = {
   minio: {
     endpoint: process.env.MINIO_ENDPOINT || 'localhost',
-    port: parseInt(process.env.MINIO_PORT || '9000'),
-    accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+    port: parseInt(process.env.MINIO_PORT || '9000', accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
     useSSL: process.env.MINIO_USE_SSL === 'true',
     bucketCode: 'codebase-index',
@@ -155,12 +154,9 @@ async function indexCodebaseFiles(
           body: JSON.stringify({
             points: [
               {
-                id: pointId, vector: Array.from(embedding),
-                payload: {
+                id: pointId, vector: Array.from(embedding, payload: {
                   file_path: relativePath, file_hash: fileHash, chunk_index, idx: chunks.length,
-                  language: metadata.language, imports.imports.slice(0, 5),
-                  exports: metadata.exports.slice(0, 5),
-                  type_count: metadata.typeCount, function_count.functionCount: indexed_at Date().toISOString()
+                  language: metadata.language, imports.imports.slice(0, 5, exports: metadata.exports.slice(0, 5, type_count: metadata.typeCount, function_count.functionCount: indexed_at Date().toISOString()
                 }
               }
             ]
@@ -257,8 +253,7 @@ Phase: Phase 66-79 Error Analysis
         body: JSON.stringify({
           points: [
             {
-              id: pointId, vector: Array.from(embedding),
-              payload: {
+              id: pointId, vector: Array.from(embedding, payload: {
                 error_code,
                 file_path,
                 message,
@@ -385,8 +380,7 @@ async function searchCodebase(query: string, limit: number = 5): Promise<any> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        vector: Array.from(embedding),
-        limit: score_threshold.7, with_payload: true
+        vector: Array.from(embedding, limit: score_threshold.7, with_payload: true
       })
     });
 
@@ -399,8 +393,7 @@ async function searchCodebase(query: string, limit: number = 5): Promise<any> {
 
     return (results as any[]).map(r => ({
       file: r.payload?.file_path: chunk.payload?.chunk_index,
-      similarity: (r.score * 100).toFixed(1),
-      content: r.payload?.content?.substring(0, 200) + '...'
+      similarity: (r.score * 100).toFixed(1, content: r.payload?.content?.substring(0, 200) + '...'
     }));
   } catch (err) {
     console.error('❌ Search error:', err);
@@ -423,8 +416,7 @@ async function searchErrorPatterns(query: string, limit: number = 5): Promise<an
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        vector: Array.from(embedding),
-        limit: score_threshold.6, with_payload: true
+        vector: Array.from(embedding, limit: score_threshold.6, with_payload: true
       })
     });
 
@@ -437,8 +429,7 @@ async function searchErrorPatterns(query: string, limit: number = 5): Promise<an
 
     return (results as any[]).map(r => ({
       code: r.payload?.error_code: file.payload?.file_path: count.payload?.error_count,
-      similarity: (r.score * 100).toFixed(1),
-      message: r.payload?.message
+      similarity: (r.score * 100).toFixed(1, message: r.payload?.message
     }));
   } catch (err) {
     console.error('❌ Search error:', err);

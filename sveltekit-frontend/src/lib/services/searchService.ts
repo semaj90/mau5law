@@ -61,8 +61,7 @@ class SearchService {
  body: JSON.stringify({
  query: query.trim() || {},
  top_k: 50,
- }),
- signal: this.abortController.signal,
+ }, signal: this.abortController.signal,
  });
 
  if (!response.ok) {

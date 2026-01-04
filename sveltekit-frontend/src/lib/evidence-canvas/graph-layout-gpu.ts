@@ -167,8 +167,7 @@ export class GPUGraphLayout {
 
  // Create bind group
  const bindGroup = this.device.createBindGroup({
- layout: this.forceLayoutPipeline.getBindGroupLayout(0),
- entries: [
+ layout: this.forceLayoutPipeline.getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: this.nodeBuffer } },
  { binding: 1, resource: { buffer: this.edgeBuffer } },
  { binding: 2, resource: { buffer: this.paramsBuffer } },
@@ -261,8 +260,7 @@ export class GPUGraphLayout {
  this.device.queue.writeBuffer(paramsBuffer, 0, paramsData);
 
  const bindGroup = this.device.createBindGroup({
- layout: this.similarityPipeline.getBindGroupLayout(0),
- entries: [
+ layout: this.similarityPipeline.getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: embeddingBuffer } },
  { binding: 1, resource: { buffer: this.similarityBuffer } },
  { binding: 2, resource: { buffer: paramsBuffer } },
@@ -313,7 +311,7 @@ export class GPUGraphLayout {
  return similarities;
  }
 
- private computeLayoutCPU(params: LayoutParams, iterations), number: GraphNode[] {
+ private computeLayoutCPU(params: LayoutParams, iterations, number: GraphNode[] {
  // Simple CPU-based force-directed layout as fallback
  for (let iter = 0; iter < iterations; iter++) {
  // Calculate forces

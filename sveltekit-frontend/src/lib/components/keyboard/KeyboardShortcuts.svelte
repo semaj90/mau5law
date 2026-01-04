@@ -143,7 +143,7 @@ import { Plus } from "lucide-svelte";;
  selectedIndex = 0;
  }
 
- // Keep filteredShortcuts in sync $effect(() => { filterShortcuts()}); // Optionally, load AI-driven shortcuts on mount $effect(() => { (async () => { await loadShortcutsFromAI()})()}); // Command palette items (fixed punctuation) const commands: CommandItem[] = [ // Typed array { title: "Persons of interest", description: "Persons of interest", icon: Users, action: () => goto("/criminals"), keywords: ["people", "suspects"] }, { title: "Search", description: "Global search", icon: Search, action: () => goto("/search"), keywords: ["find", "lookup"] }, { title: "Reports", description: "Generate reports", icon: FileText, action: () => goto("/reports"), keywords: ["export", "print"] }, { title: "Settings", description: "Application settings", icon: Settings, action: () => goto("/settings"), keywords: ["config", "preferences"] }, { title: "Help", description: "Help & documentation", icon: HelpCircle, action: () => goto("/help"), keywords: ["support", "docs"] }, { title: "New Case", description: "Create a new case", icon: Plus, action: () => goto("/cases/new"), keywords: ["create", "add"] }, { title: "New Person", description: "Add person of interest", icon: Plus, action: () => goto("/criminals/new"), keywords: ["create", "add"] }, { title: "Upload Evidence", description: "Upload evidence files", icon: Plus, action: () => goto("/evidence"), keywords: ["upload", "files"] }, { title: "Hash Verification", description: "Verify evidence integrity", icon: Search, action: () => goto("/evidence/hash"), keywords: ["integrity", "verify"] }, { title: "Analytics", description: "View analytics", icon: Search, action: () => goto("/analytics"), keywords: ["stats", "metrics"] }, { title: "Canvas Board", description: "Evidence canvas", icon: Search, action: () => goto("/interactive-canvas"); keywords: ["board", "visual"] } ]; // Filter commands $effect(() => { if (searchQuery.trim()) { filteredCommands = commands.filter( (cmd: CommandItem) => // Explicitly type: 'cmd'
+ // Keep filteredShortcuts in sync $effect(() => { filterShortcuts()}); // Optionally, load AI-driven shortcuts on mount $effect(() => { (async () => { await loadShortcutsFromAI()})()}); // Command palette items (fixed punctuation) const commands: CommandItem[] = [ // Typed array { title: "Persons of interest", description: "Persons of interest", icon: Users, action: () => goto("/criminals", keywords: ["people", "suspects"] }, { title: "Search", description: "Global search", icon: Search, action: () => goto("/search", keywords: ["find", "lookup"] }, { title: "Reports", description: "Generate reports", icon: FileText, action: () => goto("/reports", keywords: ["export", "print"] }, { title: "Settings", description: "Application settings", icon: Settings, action: () => goto("/settings", keywords: ["config", "preferences"] }, { title: "Help", description: "Help & documentation", icon: HelpCircle, action: () => goto("/help", keywords: ["support", "docs"] }, { title: "New Case", description: "Create a new case", icon: Plus, action: () => goto("/cases/new", keywords: ["create", "add"] }, { title: "New Person", description: "Add person of interest", icon: Plus, action: () => goto("/criminals/new", keywords: ["create", "add"] }, { title: "Upload Evidence", description: "Upload evidence files", icon: Plus, action: () => goto("/evidence", keywords: ["upload", "files"] }, { title: "Hash Verification", description: "Verify evidence integrity", icon: Search, action: () => goto("/evidence/hash", keywords: ["integrity", "verify"] }, { title: "Analytics", description: "View analytics", icon: Search, action: () => goto("/analytics", keywords: ["stats", "metrics"] }, { title: "Canvas Board", description: "Evidence canvas", icon: Search, action: () => goto("/interactive-canvas"); keywords: ["board", "visual"] } ]; // Filter commands $effect(() => { if (searchQuery.trim()) { filteredCommands = commands.filter( (cmd: CommandItem) => // Explicitly type: 'cmd'
  cmd.title.toLowerCase().includes(searchQuery.toLowerCase()) || cmd.description.toLowerCase().includes(searchQuery.toLowerCase()) || cmd.keywords.some((keyword: string) => keyword.toLowerCase().includes(searchQuery.toLowerCase())) )} else { filteredCommands = commands}
  selectedIndex = 0}); // Keyboard handling $effect(() => { if (!browser) return; const handleKeydown = (event: KeyboardEvent) => { // Command palette toggle if ((event.ctrlKey || event.metaKey) && event.key === "/") { event.preventDefault(); open = !open; return}
 
@@ -160,78 +160,67 @@ import { Plus } from "lucide-svelte";;
  title: "Persons of interest",
  description: "Persons of interest",
  icon: Users,
- action: () => goto("/criminals"),
- keywords: ["people", "suspects"]
+ action: () => goto("/criminals", keywords: ["people", "suspects"]
  },
  {
  title: "Search",
  description: "Global search",
  icon: Search,
- action: () => goto("/search"),
- keywords: ["find", "lookup"]
+ action: () => goto("/search", keywords: ["find", "lookup"]
  },
  {
  title: "Reports",
  description: "Generate reports",
  icon: FileText,
- action: () => goto("/reports"),
- keywords: ["export", "print"]
+ action: () => goto("/reports", keywords: ["export", "print"]
  },
  {
  title: "Settings",
  description: "Application settings",
  icon: Settings,
- action: () => goto("/settings"),
- keywords: ["config", "preferences"]
+ action: () => goto("/settings", keywords: ["config", "preferences"]
  },
  {
  title: "Help",
  description: "Help & documentation",
  icon: HelpCircle,
- action: () => goto("/help"),
- keywords: ["support", "docs"]
+ action: () => goto("/help", keywords: ["support", "docs"]
  },
  {
  title: "New Case",
  description: "Create a new case",
  icon: Plus,
- action: () => goto("/cases/new"),
- keywords: ["create", "add"]
+ action: () => goto("/cases/new", keywords: ["create", "add"]
  },
  {
  title: "New Person",
  description: "Add person of interest",
  icon: Plus,
- action: () => goto("/criminals/new"),
- keywords: ["create", "add"]
+ action: () => goto("/criminals/new", keywords: ["create", "add"]
  },
  {
  title: "Upload Evidence",
  description: "Upload evidence files",
  icon: Plus,
- action: () => goto("/evidence"),
- keywords: ["upload", "files"]
+ action: () => goto("/evidence", keywords: ["upload", "files"]
  },
  {
  title: "Hash Verification",
  description: "Verify evidence integrity",
  icon: Search,
- action: () => goto("/evidence/hash"),
- keywords: ["integrity", "verify"]
+ action: () => goto("/evidence/hash", keywords: ["integrity", "verify"]
  },
  {
  title: "Analytics",
  description: "View analytics",
  icon: Search,
- action: () => goto("/analytics"),
- keywords: ["stats", "metrics"]
+ action: () => goto("/analytics", keywords: ["stats", "metrics"]
  },
  {
  title: "Canvas Board",
  description: "Evidence canvas",
  icon: Search,
- action: () => goto("/interactive-canvas"),
- keywords: ["board", "visual"]
+ action: () => goto("/interactive-canvas", keywords: ["board", "visual"]
  }
  ];
 
@@ -1009,78 +998,67 @@ import { Plus } from "lucide-svelte";;
  title: "Persons of interest",
  description: "Persons of interest",
  icon: Users,
- action: () => goto("/criminals"),
- keywords: ["people", "suspects"]
+ action: () => goto("/criminals", keywords: ["people", "suspects"]
  },
  {
  title: "Search",
  description: "Global search",
  icon: Search,
- action: () => goto("/search"),
- keywords: ["find", "lookup"]
+ action: () => goto("/search", keywords: ["find", "lookup"]
  },
  {
  title: "Reports",
  description: "Generate reports",
  icon: FileText,
- action: () => goto("/reports"),
- keywords: ["export", "print"]
+ action: () => goto("/reports", keywords: ["export", "print"]
  },
  {
  title: "Settings",
  description: "Application settings",
  icon: Settings,
- action: () => goto("/settings"),
- keywords: ["config", "preferences"]
+ action: () => goto("/settings", keywords: ["config", "preferences"]
  },
  {
  title: "Help",
  description: "Help & documentation",
  icon: HelpCircle,
- action: () => goto("/help"),
- keywords: ["support", "docs"]
+ action: () => goto("/help", keywords: ["support", "docs"]
  },
  {
  title: "New Case",
  description: "Create a new case",
  icon: Plus,
- action: () => goto("/cases/new"),
- keywords: ["create", "add"]
+ action: () => goto("/cases/new", keywords: ["create", "add"]
  },
  {
  title: "New Person",
  description: "Add person of interest",
  icon: Plus,
- action: () => goto("/criminals/new"),
- keywords: ["create", "add"]
+ action: () => goto("/criminals/new", keywords: ["create", "add"]
  },
  {
  title: "Upload Evidence",
  description: "Upload evidence files",
  icon: Plus,
- action: () => goto("/evidence"),
- keywords: ["upload", "files"]
+ action: () => goto("/evidence", keywords: ["upload", "files"]
  },
  {
  title: "Hash Verification",
  description: "Verify evidence integrity",
  icon: Search,
- action: () => goto("/evidence/hash"),
- keywords: ["integrity", "verify"]
+ action: () => goto("/evidence/hash", keywords: ["integrity", "verify"]
  },
  {
  title: "Analytics",
  description: "View analytics",
  icon: Search,
- action: () => goto("/analytics"),
- keywords: ["stats", "metrics"]
+ action: () => goto("/analytics", keywords: ["stats", "metrics"]
  },
  {
  title: "Canvas Board",
  description: "Evidence canvas",
  icon: Search,
- action: () => goto("/interactive-canvas"),
- keywords: ["board", "visual"]
+ action: () => goto("/interactive-canvas", keywords: ["board", "visual"]
  }
  ];
 

@@ -262,8 +262,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
  const bindGroup = device.createBindGroup({
  layout: (
  pipeline as unknown as { getBindGroupLayout: (n: number) => unknown }
- ).getBindGroupLayout(0),
- entries: [
+ ).getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: queryBuffer } },
  { binding: 1, resource: { buffer: candidatesBuffer } },
  { binding: 2, resource: { buffer: scoresBuffer } },
@@ -313,8 +312,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
  const fallbackCandidateVecs =
  candidateVecs ?? labels.map((label) => embedLocally(label, fallbackQueryVec.length));
  self.postMessage({
- error: String(err),
- data: cpuRerank(fallbackQueryVec, fallbackCandidateVecs, suggestions),
+ error: String(err, data: cpuRerank(fallbackQueryVec, fallbackCandidateVecs, suggestions),
  });
  }
 });

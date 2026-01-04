@@ -13,8 +13,7 @@ export interface MinioS3ClientConfig {
 export function getMinioConfig(): MinioS3ClientConfig {
  return {
  endPoint: env.MINIO_HOST ?? 'localhost',
- port: parseInt(env.MINIO_PORT ?? '9000'),
- useSSL: env.MINIO_USE_SSL === 'true',
+ port: parseInt(env.MINIO_PORT ?? '9000', useSSL: env.MINIO_USE_SSL === 'true',
  accessKey: env.MINIO_ACCESS_KEY ?? 'minioadmin',
  secretKey: env.MINIO_SECRET_KEY ?? 'minioadmin',
  bucket: env.MINIO_BUCKET ?? 'legal-docs',
@@ -87,8 +86,7 @@ export class MinIOService {
  async getTextContent(key: string): Promise<{ content: string; metadata: any }> {
  const buffer = await this.getObjectBuffer(key);
  return {
- content: buffer.toString('utf-8'),
- metadata: {},
+ content: buffer.toString('utf-8', metadata: {},
  };
  }
 

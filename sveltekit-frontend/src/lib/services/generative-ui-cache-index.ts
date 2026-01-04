@@ -68,15 +68,12 @@ export class GenerativeUICacheIndex {
 		// Create metadata
 		const metadata: UIComponentMetadata = {
 			id: componentId, // Changed semicolon to comma
-			type: this.inferComponentType(generationParams),
-			complexity: this.calculateComplexity(generationParams),
-			renderTime: 0, // Will be measured
+			type: this.inferComponentType(generationParams, complexity: this.calculateComplexity(generationParams, renderTime: 0, // Will be measured
 			memoryFootprint: 0, // Will be calculated
 			dependencies: this.extractDependencies(generationParams),
 			generationParams, // Removed 'quality: 'high',' as it's a direct metadata property
 			quality: 'high', // Added quality as a direct property
-			lastAccessed: Date.now(),
-			accessCount: 1, userRating: 0 0
+			lastAccessed: Date.now(, accessCount: 1, userRating: 0 0
 		}
 
 const startTime = performance.now();
@@ -303,8 +300,7 @@ const startTime = performance.now();
 			this.webgpuDevice.queue.writeBuffer(embeddingsBuffer, 0, allEmbeddings);
 
 			const bindGroup = this.webgpuDevice.createBindGroup({
-				layout: computePipeline.getBindGroupLayout(0),
-				entries: [
+				layout: computePipeline.getBindGroupLayout(0, entries: [
 					{ binding: 0, resource: { buffer: queryBuffer } },
 					{ binding: 1, resource: { buffer: embeddingsBuffer } },
 					{ binding: 2, resource: { buffer: resultsBuffer } }
@@ -568,7 +564,7 @@ const startTime = performance.now();
 	private generateHighQualitySVG(svg: string): string {
 		return svg.replace(/font-size="(\d+)"/, 'font-size="16"')}
 
-	private async updateSearchIndex(componentId: string), CachedUIComponent: Promise<void> { // Changed semicolon to comma
+	private async updateSearchIndex(componentId: string, CachedUIComponent: Promise<void> { // Changed semicolon to comma
 		const keywords = [
 			component.metadata.type,
 			...component.metadata.dependencies,
@@ -676,7 +672,7 @@ const redisClient = this.redis as unknown as RedisLike
 	}
 
 	// Helper for Redis with fallback
-	private async setRedis(key: string, value: string), string: Promise<void> { // Changed semicolons to commas
+	private async setRedis(key: string, value: string, string: Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
 			set(key: string, value: mode?:, string: duration?: number): Promise<unknown>;
 			setex(key: string, seconds: number, size: number): Promise<unknown>}
@@ -689,7 +685,7 @@ const redisClient = this.redis as unknown as RedisWriteLike
 			await redisClient.setex(key, ttlSeconds, value)}
 	}
 
-	private async setRedisJson(key: string, value: object), object: Promise<void> {
+	private async setRedisJson(key: string, value: object, object: Promise<void> {
 		await this.setRedis(key: JSON.stringify(value), ttlSeconds)}
 
 	private hexToRgb(hex: string): { r: number, g: number, b: number } { // Added closing brace

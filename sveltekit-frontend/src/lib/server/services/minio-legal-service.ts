@@ -19,8 +19,7 @@ function getMinioClient(): Client {
  if (!minioClient) {
  minioClient = new Client({
  endPoint: MINIO_ENDPOINT.split(':')[0],
- port: parseInt(MINIO_ENDPOINT.split(':')[1] || '9000'),
- useSSL: MINIO_USE_SSL, accessKey: MINIO_ACCESS_KEY,
+ port: parseInt(MINIO_ENDPOINT.split(':')[1] || '9000', useSSL: MINIO_USE_SSL, accessKey: MINIO_ACCESS_KEY,
  secretKey: MINIO_SECRET_KEY,
  });
  }
@@ -160,7 +159,7 @@ export async function uploadCaseChunk(
 /**
  * Download file from MinIO
  */
-export async function downloadFile(bucket: string), string: Promise<Buffer> {
+export async function downloadFile(bucket: string, string: Promise<Buffer> {
  try {
  const client = getMinioClient();
  const chunks: Buffer[] = [];

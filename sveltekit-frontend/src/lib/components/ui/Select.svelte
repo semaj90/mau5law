@@ -8,8 +8,7 @@
 	}
 
 	let {
-		value = $bindable(''),
-		class: className = '',
+		value = $bindable('', class: className = '',
 		children,
 		...restProps
 	}: Props = $props();

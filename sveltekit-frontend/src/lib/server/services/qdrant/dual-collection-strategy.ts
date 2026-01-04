@@ -198,7 +198,7 @@ export class DualQdrantStrategy {
  };
 
  return await this.searchAccurate(
- { full768: new Array(768).fill(0), small256: new Array(256).fill(0) },
+ { full768: new Array(768).fill(0, small256: new Array(256).fill(0) },
  limit,
  filter
  );

@@ -42,7 +42,7 @@ export class GamingEvolutionManager {
             // optional nested settings kept minimal to satisfy
             nesSettings: { strictPalette: true, enableScanlines: true, pixelScale: 2 },
             snesSettings: { enableGradients: true, enableMode7Colors: true, layerCount: 4 },
-            n64Settings: { ...(N64_TEXTURE_PRESETS?.balanced ?? {}), enableRealTimeReflections: false, textureQuality: 'standard' },
+            n64Settings: { ...(N64_TEXTURE_PRESETS?.balanced ?? {}, enableRealTimeReflections: false, textureQuality: 'standard' },
             yorhaIntegration: true,
             bitsUICompatibility: true,
             ...config
@@ -117,12 +117,9 @@ export class GamingEvolutionManager {
         const capabilities: DeviceCapabilities = {
             memory: typeof nav.deviceMemory === 'number' ? nav.deviceMemory : 4,
             cores: typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 2,
-            gpu: await this.detectGPUCapability(),
-            connection: this.detectConnectionSpeed(),
-            screenSize: { width: window.innerWidth, height: window.innerHeight },
-            pixelRatio: window.devicePixelRatio || 1,
-            webgl: this.hasWebGL(),
-            webgpu: await this.hasWebGPU()
+            gpu: await this.detectGPUCapability(, connection: this.detectConnectionSpeed(, screenSize: { width: window.innerWidth, height: window.innerHeight },
+            pixelRatio, window.devicePixelRatio || 1,
+            webgl: this.hasWebGL(, webgpu: await this.hasWebGPU()
         };
         this.capabilities = capabilities;
         // lightweight logging for diagnostics

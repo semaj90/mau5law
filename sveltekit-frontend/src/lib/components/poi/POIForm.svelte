@@ -8,24 +8,13 @@
 
  // Form schema
  const poiSchema = z.object({
- name: z.string().min(1, 'Name is required'),
- dateOfBirth: z.string().optional(),
- email: z.string().email('Invalid email').optional().or(z.literal('')),
- phone: z.string().optional(),
- address: z.string().optional(),
- status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']),
- priority: z.enum(['low', 'medium', 'high', 'critical']),
- threatLevel: z.enum(['low', 'medium', 'high', 'extreme']),
- occupation: z.string().optional(),
- lastKnownLocation: z.string().optional(),
- physicalDescription: z.string().optional()
+ name: z.string().min(1, 'Name is required', dateOfBirth: z.string().optional(, email: z.string().email('Invalid email').optional().or(z.literal(''), phone: z.string().optional(, address: z.string().optional(, status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant'], priority: z.enum(['low', 'medium', 'high', 'critical'], threatLevel: z.enum(['low', 'medium', 'high', 'extreme'], occupation: z.string().optional(, lastKnownLocation: z.string().optional(, physicalDescription: z.string().optional()
  });
 
  const { form, errors, enhance, submitting } = superForm(
  poi || {},
  {
- validators: zod(...)poiSchema),
- onSubmit: async ({ formData }) => {
+ validators: zod(...)poiSchema, onSubmit: async ({ formData }) => {
  if (onSubmit) {
  await onSubmit(formData);
  }
@@ -262,7 +251,7 @@
  transition: border-color 0.2s;
  }
 
- input: focus, select: focus: focus,
+ input: focus, select: focus,
  textarea:focus {
  outline: none;
  border-color: #dc2626;

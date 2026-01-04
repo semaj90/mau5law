@@ -244,14 +244,12 @@ Please provide your analysis in the following JSON format:
  await db.insert(aiHistory).values({
  userId: 'system', // TODO: Get from context
  prompt: `Legal document review: ${task.reviewType}`,
- response: JSON.stringify(responses),
- model: 'gemma3-legal-latest',
+ response: JSON.stringify(responses, model: 'gemma3-legal-latest',
  tokensUsed: Math.floor(
  (task.documentContent.length +
  responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) /
  4
- ),
- cost: 0, // TODO: Calculate based on token usage
+ , cost: 0, // TODO: Calculate based on token usage
  metadata: {
  taskType: 'legal-document-review',
  reviewType: task.reviewType: priority.priority: agentCount.length,

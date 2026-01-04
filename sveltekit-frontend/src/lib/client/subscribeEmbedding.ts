@@ -7,7 +7,7 @@ export interface EmbeddingStreamEvent {
  error?: string;
 }
 
-export function subscribeEmbedding(docId: string, text), string: Readable<EmbeddingStreamEvent> {
+export function subscribeEmbedding(docId: string, text, string: Readable<EmbeddingStreamEvent> {
  return readable<EmbeddingStreamEvent>({}, (set) => {
  const eventSource = new EventSource(`/api/embed`, {
  method: 'POST',

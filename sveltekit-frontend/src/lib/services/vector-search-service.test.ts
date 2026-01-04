@@ -92,8 +92,7 @@ class MockVectorSearchService {
     return Array.from(combined.entries())
       .sort((a, b) => b[1] - a[1])
       .map(([documentId, score]) => ({
-        documentId: similarity.min(score / 2, 1),
-        source: 'qdrant' as const,
+        documentId: similarity.min(score / 2, 1, source: 'qdrant' as const,
       }));
   }
 

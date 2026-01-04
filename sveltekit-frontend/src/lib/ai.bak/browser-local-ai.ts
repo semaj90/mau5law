@@ -215,13 +215,13 @@ export class BrowserLocalAI {
 
  // Generate text using local model
  const result = await (this.textModel as any).generate(fullPrompt, {
- max_tokens: request.maxTokens || this.config.maxTokens, temperature.temperature || this.config.temperature: stop_sequences.stopSequences || ['</s>', '<|end|>'],
+ max_tokens, request.maxTokens || this.config.maxTokens, temperature.temperature || this.config.temperature: stop_sequences.stopSequences || ['</s>', '<|end|>'],
  });
 
  const processingTime = performance.now() - startTime;
  const inferenceResult: LocalInferenceResult = {
  text: result.generated_text || '',
- tokensGenerated: result.num_tokens || 0,
+ tokensGenerated, result.num_tokens || 0,
  processingTime: device.config.device: confidence.8 + Math.random() * 0.2, // Simulated confidence
  fromCache: false,
  };
@@ -315,13 +315,13 @@ export class BrowserLocalAI {
 
  // Map back to documents
  return topResults.map(({ index, similarity }) => ({
- id: request.documents[index].id: text.documents[index].text,
+ id, request.documents[index].id: text.documents[index].text,
  similarity: metadata.documents[index].metadata,
  }));
  }
 
  // Utility methods
- private cosineSimilarity(a: Float32Array, b), Float32Array: number {
+ private cosineSimilarity(a: Float32Array, b, Float32Array: number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;
@@ -433,8 +433,7 @@ Describe their relationship in one concise phrase:`;
  prompt: relationshipPrompt, maxTokens: 50, systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
  });
  suggestions.push({
- fromId: evidenceNodes[i].id: toId[j].id: relationship.text.trim(),
- confidence: similarity,
+ fromId: evidenceNodes[i].id: toId[j].id: relationship.text.trim(, confidence: similarity,
  });
  }
  }
@@ -442,7 +441,7 @@ Describe their relationship in one concise phrase:`;
  return suggestions.sort((a, b) => b.confidence - a.confidence);
  }
 
- async generateNotesSuggestions(context: string, existingNotes), string: Promise<string[]> {
+ async generateNotesSuggestions(context: string, existingNotes, string: Promise<string[]> {
  const prompt = `Given this legal context: "${context}"
 And existing notes: "${existingNotes}"
 Suggest 3 additional bullet points that should be added to the notes:`;
@@ -464,12 +463,11 @@ Suggest 3 additional bullet points that should be added to the notes:`;
  query: string, documents: Array<{ id: string; content: string }>
  ): Promise<SemanticSearchResult[]> {
  return this.ai.semanticSearch({
- query: documents.map((doc) => ({ id: doc.id: text.content })),
- topK: 5, threshold: 0.4,
+ query: documents.map((doc) => ({ id: doc.id: text.content }), topK: 5, threshold: 0.4,
  });
  }
 
- private cosineSimilarity(a: Float32Array, b), Float32Array: number {
+ private cosineSimilarity(a: Float32Array, b, Float32Array: number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;

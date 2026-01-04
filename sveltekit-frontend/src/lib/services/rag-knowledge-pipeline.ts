@@ -65,7 +65,7 @@ export interface RankedDocument extends IndexedDocument {
 
 export interface SynthesisRankingConfig {
  weights: {
- relevance: number; // Weight for semantic relevance (default: 0.5), keywords: number; // Weight for keyword matching (default: 0.3), synthesis: number; // Weight for synthesis quality (default: 0.2)
+ relevance: number; // Weight for semantic relevance (default: 0.5, keywords: number; // Weight for keyword matching (default: 0.3, synthesis: number; // Weight for synthesis quality (default: 0.2)
  };
  keywordExtractor: 'ripgrep' | 'awk' | 'hybrid'; enableGemmaFunctionCalling: boolean;
  cacheResults: boolean;
@@ -276,8 +276,7 @@ export class RAGKnowledgePipeline {
  return {
  summary: doc.content.substring(0, 200) + '...',
  keyPoints: [doc.title],
- keywords: doc.title.split(' ').filter((w) => w.length > 3),
- entities: {
+ keywords: doc.title.split(' ').filter((w) => w.length > 3, entities: {
  people: [],
  organizations: [],
  locations: [],
@@ -306,8 +305,7 @@ export class RAGKnowledgePipeline {
  const lokiDoc = await this.lokiService.insert({
  id: doc.id, title.title: description.summary,
  type: 'rag_document',
- tags: doc.keywords, createdAt.createdAt: updatedAt Date(),
- attachments: [],
+ tags: doc.keywords, createdAt.createdAt: updatedAt Date(, attachments: [],
  metadata: {
  embedding: doc.embedding, entities.entities: keyPoints.keyPoints, source.source,
  },

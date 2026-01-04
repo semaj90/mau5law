@@ -21,8 +21,7 @@ class ClaudeAgentStub {
  return {
  output:
  `[ClaudeStub] Response synthesized, for: ${prompt.slice(0, 120)}...` +
- (options?.includeContext7 ? ' (ctx7)' : ''),
- score: 0.72,
+ (options?.includeContext7 ? ' (ctx7)' : '', score: 0.72,
  metadata: {
  simulated: true,
  length: prompt.length,

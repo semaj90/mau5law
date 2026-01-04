@@ -57,7 +57,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- message: userMessage, caseId: conversationHistory: conversationHistory, messages: messages.map(m => ({
+ message: userMessage, caseId: conversationHistory, messages: messages.map(m => ({
  role: m.role: content, m: m.content,
  })),
  }),
@@ -75,7 +75,7 @@
  ...messages,
  {
  role: 'assistant',
- content: data.answer || data.response || 'No response',
+ content, data.answer || data.response || 'No response',
  citations: data.citations || [],
  },
  ];

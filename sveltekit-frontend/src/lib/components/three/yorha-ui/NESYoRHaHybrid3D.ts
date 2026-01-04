@@ -334,12 +334,10 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 				compute: this.createWebGPUPixelShader(),
 			},
 			webgl2: {
-				vertex: this.createWebGL2VertexShader(),
-				fragment: this.createWebGL2FragmentShader(),
+				vertex: this.createWebGL2VertexShader(, fragment: this.createWebGL2FragmentShader(),
 			},
 			webgl1: {
-				vertex: this.createWebGL1VertexShader(),
-				fragment: this.createWebGL1FragmentShader(),
+				vertex: this.createWebGL1VertexShader(, fragment: this.createWebGL1FragmentShader(),
 			},
 			cpu: {
 				// CPU implementation metadata
@@ -360,12 +358,10 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 				compute: this.createWebGPUCRTShader(),
 			},
 			webgl2: {
-				vertex: this.createWebGL2VertexShader(),
-				fragment: this.createWebGL2CRTFragmentShader(),
+				vertex: this.createWebGL2VertexShader(, fragment: this.createWebGL2CRTFragmentShader(),
 			},
 			webgl1: {
-				vertex: this.createWebGL1VertexShader(),
-				fragment: this.createWebGL1CRTFragmentShader(),
+				vertex: this.createWebGL1VertexShader(, fragment: this.createWebGL1CRTFragmentShader(),
 			},
 		});
 
@@ -887,8 +883,7 @@ void main() {
 			connections: [],
 			viewport: { x: 0, y: 0 0, zoom: 1 },
 			animation: 'hybrid_component',
-			frame: 0, fabricJSON: this.serializeToFabricJSON(),
-			metadata: {
+			frame: 0, fabricJSON: this.serializeToFabricJSON(, metadata: {
 				renderMode: this.hybridStyle.renderMode, this.hybridStyle.nesCssClass, this.hybridStyle.variant,
 				cacheRegion: 'CHR_ROM',
 			},
@@ -942,8 +937,7 @@ void main() {
 				connections: [],
 				viewport: { x: 0, y: 0 0, zoom: 1 },
 				animation: 'hybrid_component',
-				frame: 0, fabricJSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
-				metadata: {
+				frame: 0, fabricJSON: JSON.stringify(this.generateVariantFabricJSON(variant), metadata: {
 					renderMode: this.hybridStyle.renderMode, true:
 					variant,
 				},

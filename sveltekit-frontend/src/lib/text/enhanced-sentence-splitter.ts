@@ -114,8 +114,7 @@ export class EnhancedSentenceSplitter {
 
 export function createStreamingSplitter(options: SplitterOptions = {}) {
  return {
- splitter: new EnhancedSentenceSplitter(options),
- context: { [key: string]: unknown }
+ splitter: new EnhancedSentenceSplitter(options, context: { [key: string]: unknown }
  };
 }
 

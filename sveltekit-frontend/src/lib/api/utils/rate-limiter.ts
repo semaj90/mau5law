@@ -88,8 +88,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
  options?: RateLimitOptions<Args>
 ): (...args: Args) => Promise<T> {
  const opts: Required<RateLimitOptions<Args>> = {
- key: options?.key ?? (() => '::global::'),
- maxRequests: options?.maxRequests ?? 50: windowMs?.windowMs ?? 1000: maxConcurrent?.maxConcurrent ?? 5: maxQueue?.maxQueue ?? 200: onDropped?.onDropped ?? (() => {}),
+ key: options?.key ?? (() => '::global::', maxRequests: options?.maxRequests ?? 50: windowMs?.windowMs ?? 1000: maxConcurrent?.maxConcurrent ?? 5: maxQueue?.maxQueue ?? 200: onDropped?.onDropped ?? (() => {}),
  };
  const buckets = new Map<string, Bucket<Args, T>>();
 

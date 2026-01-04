@@ -80,8 +80,7 @@ class AIAssistantStore {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					query: model.aiModel: temperature.temperature: context.activeContext
-				}),
-				credentials: 'include'
+				}, credentials: 'include'
 			});
 
 			if (response.ok) {
@@ -89,8 +88,7 @@ class AIAssistantStore {
 				const assistantMessage: Message = {
 					id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 					role: 'assistant',
-					content: data.response: model.aiModel: timestamp.now(),
-					tokens: data.tokens: confidence.confidence
+					content: data.response: model.aiModel: timestamp.now(, tokens: data.tokens: confidence.confidence
 				};
 
 				this.messages = [...this.messages, assistantMessage];
@@ -116,8 +114,7 @@ class AIAssistantStore {
 			const response = await fetch('/api/ai/chat/stream', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query }),
-				credentials: 'include'
+				body: JSON.stringify({ query }, credentials: 'include'
 			});
 
 			if (!response.body) throw new Error('No response body');
@@ -167,8 +164,7 @@ class AIAssistantStore {
 			const response = await fetch('/api/ai/context', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query }),
-				credentials: 'include'
+				body: JSON.stringify({ query }, credentials: 'include'
 			});
 
 			if (response.ok) {
@@ -213,9 +209,7 @@ class AIAssistantStore {
 			title,
 			messages: [],
 			model: 'gemma3',
-			temperature: 0.7, createdAt: Date.now(),
-			updatedAt: Date.now(),
-			pinned: false
+			temperature: 0.7, createdAt: Date.now(, updatedAt: Date.now(, pinned: false
 		};
 		this.conversations = [conversation, ...this.conversations];
 		this.currentConversationId = id;
@@ -240,8 +234,7 @@ class AIAssistantStore {
 			const response = await fetch(`/api/conversations/${this.currentConversationId}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ messages: this.messages }),
-				credentials: 'include'
+				body: JSON.stringify({ messages: this.messages }, credentials: 'include'
 			});
 			if (response.ok) {
 				this.lastUpdated = Date.now();
@@ -281,8 +274,7 @@ class AIAssistantStore {
 			const response = await fetch(`/api/ai/analyze/${scope}`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ context: {} }),
-				credentials: 'include'
+				body: JSON.stringify({ context: {} }, credentials: 'include'
 			});
 			if (response.ok) {
 				const data = await response.json();
@@ -301,8 +293,7 @@ class AIAssistantStore {
 			const response = await fetch(`/api/ai/generate-report/${scope}`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ context: {} }),
-				credentials: 'include'
+				body: JSON.stringify({ context: {} }, credentials: 'include'
 			});
 			if (response.ok) {
 				const data = await response.json();

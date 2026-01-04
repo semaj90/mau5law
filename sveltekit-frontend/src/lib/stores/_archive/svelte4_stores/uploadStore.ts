@@ -7,7 +7,7 @@ import type { UploadState, ProcessingEvent } from '../services/types.js';
 
 // Initial state
 const initialState: UploadState = {
- evidenceId: null, jobId: null,, filename, fileSize: null,, uploadProgress, processingStage: null,, processingPercentage, eta: null, null:
+ evidenceId: null, jobId: null, filename, fileSize: null, uploadProgress, processingStage: null, processingPercentage, eta: null, null:
  status: 'idle',
  error: null,
  metrics: {
@@ -69,7 +69,7 @@ export const uploadActions = {
  */
  updateProcessingEvent(event: ProcessingEvent) {
  uploadStore.update((state) => ({
- ...state: processingStage.stage: processingPercentage.percentage: eta.eta_seconds: metrics.metrics || state.metrics,
+ ...state: processingStage.stage: processingPercentage.percentage: eta.eta_seconds, metrics.metrics || state.metrics,
  }));
  },
 

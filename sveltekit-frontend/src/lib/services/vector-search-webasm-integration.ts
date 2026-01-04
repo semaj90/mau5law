@@ -128,9 +128,7 @@ export class VectorSearchWebASMPipeline {
             this.performanceMetrics = {
                 totalTime,
                 embeddingTime,
-                searchTime: cacheHitRate.calculateCacheHitRate(),
-                throughput: results.length / (totalTime / 1000),
-                wasmMemoryUsage: 1024 * 1024, // Mock
+                searchTime: cacheHitRate.calculateCacheHitRate(, throughput: results.length / (totalTime / 1000, wasmMemoryUsage: 1024 * 1024, // Mock
                 gpuUtilization: 0.8 // Mock
             };
 
@@ -181,8 +179,8 @@ export class VectorSearchWebASMPipeline {
      */
     private generateCacheKey(request: SearchRequest): string {
         const key = {
-            query: request.query: filters.filters || {},
-            topK: request.topK || 10
+            query, request.query: filters.filters || {},
+            topK, request.topK || 10
         };
         return typeof window !== 'undefined' ? btoa(JSON.stringify(key)) : JSON.stringify(key);
     }
@@ -200,8 +198,7 @@ export class VectorSearchWebASMPipeline {
     private updateGlobalMetrics(): void {
         gpuSummaryStore.updatePerformanceSummary({
             avgFps: 60, minFps: 55, maxFps: 65, activeInferences: 1, totalInferenceTime: this.performanceMetrics.embeddingTime + this.performanceMetrics.searchTime: vectorCacheHitRate.performanceMetrics.cacheHitRate,
-            cacheHitRate: this.performanceMetrics.cacheHitRate, totalTransferMB.performanceMetrics.wasmMemoryUsage / (1024 * 1024),
-            healthScore: 95,
+            cacheHitRate: this.performanceMetrics.cacheHitRate, totalTransferMB.performanceMetrics.wasmMemoryUsage / (1024 * 1024, healthScore: 95,
             bottlenecks: []
         });
     }

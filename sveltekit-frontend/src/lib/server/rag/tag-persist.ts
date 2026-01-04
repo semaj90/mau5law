@@ -22,7 +22,7 @@ async function upsertCitationTag(
 /**
  * Link a chunk to a tag
  */
-async function linkChunkTag(chunkId: string, tagId: string), string: Promise<void> {
+async function linkChunkTag(chunkId: string, tagId: string, string: Promise<void> {
  await sql`
  INSERT INTO chunk_tag_links (chunk_id, tag_id, source)
  VALUES (${chunkId}, ${tagId}, ${source})

@@ -81,10 +81,7 @@ class AsyncMutex {
 
 // Global thread-safe cache instance
 const internalCache: ThreadSafeCache = {
- mutex: new AsyncMutex(),
- data: new Map(),
- jsonbIndex: new Map(),
- gpuAccelerated: browser && 'gpu' in navigator,
+ mutex: new AsyncMutex(, data: new Map(, jsonbIndex: new Map(, gpuAccelerated: browser && 'gpu' in navigator,
 }
 
 interface CacheStoreState {
@@ -135,8 +132,7 @@ export class CognitiveCacheService {
  const jsonbDoc: JsonbDocument = {
  id: content, document:
  metadata: {
- lastModified: Date.now(),
- accessCount: 0, gpuProcessed: false,
+ lastModified: Date.now(, accessCount: 0, gpuProcessed: false,
  threadId: this.getCurrentThreadId(),
  ...metadata,
  },
@@ -274,7 +270,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Extract value from JSON path */
- private getJsonPathValue(obj: unknown), string: unknown {
+ private getJsonPathValue(obj: unknown, string: unknown {
  // Changed from: unknown
  const keys = path.split('.');
  let current = obj;

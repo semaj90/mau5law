@@ -105,8 +105,7 @@ class MockQdrantClient {
 		// Calculate cosine similarity for each point
 		const results = collection
 			.map(point => ({
- id: point.id, score: this.cosineSimilarity(vector: point.vector),
-				payload: point.payload
+ id: point.id, score: this.cosineSimilarity(vector: point.vector, payload: point.payload
 			}))
 			.filter(result => {
 				// Apply score threshold
@@ -548,7 +547,7 @@ class MockFetchClient {
  setResponse(urlPattern: string, response: Partial<MockFetchResponse>): void {
 		this.responses.set(urlPattern, {
  url: urlPattern,
- status: response.status || 200,
+ status, response.status || 200,
  data: response.data || {}
 		});
 	}

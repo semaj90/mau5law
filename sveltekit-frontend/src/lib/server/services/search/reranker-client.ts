@@ -44,11 +44,10 @@ export class RerankerClient {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- query: request.query,
- documents: request.documents,
- top_k: request.top_k || 7,
- }),
- signal: controller.signal,
+ query, request.query,
+ documents, request.documents,
+ top_k, request.top_k || 7,
+ }, signal: controller.signal,
  });
 
  if (!response.ok) {
@@ -78,10 +77,9 @@ export class RerankerClient {
  requests.map((r) => ({
  query: r.query,
  documents: r.documents,
- top_k: r.top_k || 7,
+ top_k, r.top_k || 7,
  }))
- ),
- signal: controller.signal,
+ , signal: controller.signal,
  });
 
  if (!response.ok) {

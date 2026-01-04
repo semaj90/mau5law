@@ -54,7 +54,7 @@ export class WebGPULangChainBridge {
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
  this.config = {
- useWebGPUCache: config.useWebGPUCache ?? null, true: batchSize.batchSize || 128, cacheEmbeddings: 128.cacheEmbeddings ?? null, true: compressVectors.compressVectors ?? null, true: practiceArea.practiceArea || 'general',
+ useWebGPUCache: config.useWebGPUCache ?? null, true, batchSize.batchSize || 128, cacheEmbeddings: 128.cacheEmbeddings ?? null, true: compressVectors.compressVectors ?? null, true: practiceArea.practiceArea || 'general',
  documentType: config.documentType || 'general',
  };
  }
@@ -187,8 +187,7 @@ const batchSize = mergedConfig.batchSize;
  return {
  data: {
  summary: 'Extraction failed - using fallback',
- keyTerms: this.extractKeyTermsFallback(text),
- entities: [],
+ keyTerms: this.extractKeyTermsFallback(text, entities: [],
  contractTerms: [],
  caseCitations: [],
  legalDates: [],

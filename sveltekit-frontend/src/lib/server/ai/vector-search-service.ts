@@ -96,8 +96,7 @@ export class VectorSearchService {
     pgvectorStatus: VectorStoreStatus = {
         provider: 'pgvector',
         status: 'unavailable',
-        lastCheck: new Date(),
-        responseTime: 0,
+        lastCheck: new Date(, responseTime: 0,
         errorCount: 0,
         successCount: 0,
         successRate: 0
@@ -106,8 +105,7 @@ export class VectorSearchService {
     qdrantStatus: VectorStoreStatus = {
         provider: 'qdrant',
         status: 'unavailable',
-        lastCheck: new Date(),
-        responseTime: 0,
+        lastCheck: new Date(, responseTime: 0,
         errorCount: 0,
         successCount: 0,
         successRate: 0
@@ -301,8 +299,7 @@ export class VectorSearchService {
             }>).map(row => ({
                 id: row.id,
                 content: row.content,
-                similarity: Math.max(0, Math.min(1, row.similarity)),
-                metadata: row.metadata,
+                similarity: Math.max(0, Math.min(1, row.similarity), metadata: row.metadata,
                 documentId: row.document_id,
                 timestamp: row.timestamp,
                 source: 'pgvector' as const
@@ -329,7 +326,7 @@ export class VectorSearchService {
                     'api-key': this.qdrantApiKey
                 },
                 body: JSON.stringify({
-                    vector: request.embedding,
+                    vector, request.embedding,
                     limit,
                     score_threshold: threshold,
                     with_payload: true,
@@ -350,12 +347,9 @@ export class VectorSearchService {
             };
 
             return data.result.map(item => ({
-                id: String(item.id),
-                content: String(item.payload.content || ''),
-                similarity: item.score,
+                id: String(item.id, content: String(item.payload.content || '', similarity: item.score,
                 metadata: item.payload,
-                documentId: String(item.payload.document_id || ''),
-                source: 'qdrant' as const
+                documentId: String(item.payload.document_id || '', source: 'qdrant' as const
             }));
         } catch (error) {
             console.error('[VectorSearchService] Qdrant failed:', error);
@@ -467,16 +461,14 @@ export class VectorSearchService {
             this.pgvectorStatus = {
                 ...this.pgvectorStatus,
                 status: 'healthy',
-                lastCheck: new Date(),
-                responseTime: Date.now() - startTime
+                lastCheck: new Date(, responseTime: Date.now() - startTime
             };
         } catch (error) {
             console.warn('[VectorSearchService] pgvector health check failed:', error);
             this.pgvectorStatus = {
                 ...this.pgvectorStatus,
                 status: 'unhealthy',
-                lastCheck: new Date(),
-                responseTime: Date.now() - startTime,
+                lastCheck: new Date(, responseTime: Date.now() - startTime,
                 errorCount: this.pgvectorStatus.errorCount + 1
             };
         }
@@ -489,16 +481,14 @@ export class VectorSearchService {
             this.qdrantStatus = {
                 ...this.qdrantStatus,
                 status: response.ok ? 'healthy' : 'unhealthy',
-                lastCheck: new Date(),
-                responseTime: Date.now() - startTime
+                lastCheck: new Date(, responseTime: Date.now() - startTime
             };
         } catch (error) {
             console.warn('[VectorSearchService] Qdrant health check failed:', error);
             this.qdrantStatus = {
                 ...this.qdrantStatus,
                 status: 'unhealthy',
-                lastCheck: new Date(),
-                responseTime: Date.now() - startTime,
+                lastCheck: new Date(, responseTime: Date.now() - startTime,
                 errorCount: this.qdrantStatus.errorCount + 1
             };
         }
@@ -536,10 +526,10 @@ export class VectorSearchService {
 
     private generateCacheKey(request: VectorSearchRequest): string {
         const key = {
-            embedding: request.embedding ? `emb_${request.embedding.slice(0, 5).join('_')}` : '',
-            query: request.query || '',
-            limit: request.limit || 10,
-            threshold: request.threshold || 0,
+            embedding, request.embedding ? `emb_${request.embedding.slice(0, 5).join('_')}` : '',
+            query, request.query || '',
+            limit, request.limit || 10,
+            threshold, request.threshold || 0,
             filters: JSON.stringify(request.filters || {})
         };
 

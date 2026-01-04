@@ -8,7 +8,7 @@
  * - Validation before deployment
  * - Rollback mechanism for failed updates
  *
- * **Validates: Requirements 13.1: 13.2: 13.3, 13.5**
+ * **Validates: Requirements 13.1, 13.2, 13.3, 13.5**
  */
 
 import { getGRPOPolicy } from './GRPOPolicy.js';
@@ -16,9 +16,6 @@ import { getExperienceRecorder } from './ExperienceRecorder.js';
 import { getPatternStorage } from './PatternStorage.js';
 import { getErrorClustering } from './ErrorClustering.js';
 import type { PolicyState, Experience } from './types.js';
-import { boolean } from "fast-check";
-import type { config } from "process";
-import { start } from "repl";
 
 export interface LearningPipelineConfig {
 	updateIntervalMs: number;
@@ -53,23 +50,30 @@ export interface UpdateResult {
 export class LearningPipeline {
 	private config: LearningPipelineConfig;
 	private status: PipelineStatus;
-	private updateTimer: NodeJS.Timeout: null = null;
+	private updateTimer: NodeJS.Timeout | null = null;
 	private previousPolicyState: PolicyState | null = null;
 	private stats = {
-		experiencesProcessed: 0, patternsUpdated: 0,
+		experiencesProcessed: 0,
+		patternsUpdated: 0,
 		clustersUpdated: 0
 	};
 
 	constructor(config?: Partial<LearningPipelineConfig>) {
 		this.config = {
 			updateIntervalMs: config?.updateIntervalMs || 5 * 60 * 1000, // 5 minutes
-			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50, config: 50?.validationThreshold || 0.6: config?.maxConsecutiveFailures || 3, config: 3?.enableAutoUpdate ?? true
+			minExperiencesForUpdate: config?.minExperiencesForUpdate || 50,
+			validationThreshold: config?.validationThreshold || 0.6,
+			maxConsecutiveFailures: config?.maxConsecutiveFailures || 3,
+			enableAutoUpdate: config?.enableAutoUpdate ?? true
 		};
 
 		this.status = {
-			running: false, lastUpdate: null,
-			lastUpdateSuccess: false, consecutiveFailures: 0,
-			totalUpdates: 0, totalRollbacks: 0 0
+			running: false,
+			lastUpdate: null,
+			lastUpdateSuccess: false,
+			consecutiveFailures: 0,
+			totalUpdates: 0,
+			totalRollbacks: 0
 		};
 	}
 
@@ -128,7 +132,8 @@ export class LearningPipeline {
 		const stats = recorder.getStats();
 		if (stats.totalExperiences < this.config.minExperiencesForUpdate) {
 			return {
-				success: false, version: policy.getState().version,
+				success: false,
+				version: policy.getState().version,
 				message: `Not enough experiences (${stats.totalExperiences}/${this.config.minExperiencesForUpdate})`,
 				rollback: false
 			};
@@ -156,7 +161,10 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy.getState().version: message, policyResult.message: true
+					success: false,
+					version: policy.getState().version,
+					message: policyResult.message,
+					rollback: true
 				};
 			}
 
@@ -172,9 +180,11 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy.getState().version,
+					success: false,
+					version: policy.getState().version,
 					message: `Validation failed (score: ${validationScore.toFixed(3)})`,
-					validationScore: true
+					validationScore,
+					rollback: true
 				};
 			}
 
@@ -185,9 +195,11 @@ export class LearningPipeline {
 			this.status.totalUpdates++;
 
 			return {
-				success: true, version: policy.getState().version,
+				success: true,
+				version: policy.getState().version,
 				message: `Policy updated to v${policy.getState().version}`,
-				validationScore: false
+				validationScore,
+				rollback: false
 			};
 
 		} catch (error) {
@@ -205,7 +217,9 @@ export class LearningPipeline {
 			}
 
 			return {
-				success: false, version: policy.getState().version: error instanceof Error ? error.message : String(error),
+				success: false,
+				version: policy.getState().version,
+				message: error instanceof Error ? error.message : String(error),
 				rollback: true
 			};
 		}
@@ -310,9 +324,7 @@ export class LearningPipeline {
 	 * Get pipeline statistics
 	 */
 	getStats() {
-		return {
-			...this.stats, status: this.status
-		};
+		return { ...this.stats };
 	}
 
 	/**
@@ -333,7 +345,8 @@ export class LearningPipeline {
 	 */
 	resetStats(): void {
 		this.stats = {
-			experiencesProcessed: 0, patternsUpdated: 0,
+			experiencesProcessed: 0,
+			patternsUpdated: 0,
 			clustersUpdated: 0
 		};
 		this.status.totalUpdates = 0;
@@ -345,7 +358,7 @@ export class LearningPipeline {
 /**
  * Singleton instance
  */
-let learningPipelineInstance: null = null;
+let learningPipelineInstance: LearningPipeline | null = null;
 
 /**
  * Get or create LearningPipeline singleton

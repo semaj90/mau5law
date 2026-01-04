@@ -7,9 +7,7 @@
  status: 'active',
  priority: 'high',
  assignee: 'Detective A2',
- created: new Date('2024-01-15'),
- updated: new Date(),
- evidenceCount: 1247, progress: 75
+ created: new Date('2024-01-15', updated: new Date(, evidenceCount: 1247, progress: 75
  description: 'Investigation into financial irregularities at TechCorp Inc.'
  },
  {
@@ -18,9 +16,7 @@
  status: 'active',
  priority: 'medium',
  assignee: 'Detective B7',
- created: new Date('2024-01-20'),
- updated: new Date(Date.now() - 86400000),
- evidenceCount: 892, progress: 45
+ created: new Date('2024-01-20', updated: new Date(Date.now() - 86400000, evidenceCount: 892, progress: 45
  description: 'Patent infringement case involving software algorithms.'
  },
  {
@@ -29,9 +25,7 @@
  status: 'review',
  priority: 'low',
  assignee: 'Detective C3',
- created: new Date('2024-01-10'),
- updated: new Date(Date.now() - 7200000),
- evidenceCount: 567, progress: 90
+ created: new Date('2024-01-10', updated: new Date(Date.now() - 7200000, evidenceCount: 567, progress: 90
  description: 'Analysis of contractual obligations and breach claims.'
  },
  {
@@ -40,9 +34,7 @@
  status: 'active',
  priority: 'high',
  assignee: 'Detective D9',
- created: new Date('2024-01-25'),
- updated: new Date(Date.now() - 3600000),
- evidenceCount: 2156, progress: 30
+ created: new Date('2024-01-25', updated: new Date(Date.now() - 3600000, evidenceCount: 2156, progress: 30
  description: 'GDPR compliance investigation and data breach analysis.'
  }
  ];

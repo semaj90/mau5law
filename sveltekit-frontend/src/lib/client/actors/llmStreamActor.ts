@@ -20,8 +20,7 @@ export function createLLMStreamActor({
  const prompt = input.prompt || '';
  const res = await fetch(url, {
  method: 'POST',
- body: JSON.stringify({ prompt }),
- headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ prompt }, headers: { 'Content-Type': 'application/json' },
  });
 
  if (!res.body) {
@@ -43,8 +42,7 @@ export function createLLMStreamActor({
  }
  isDone = streamDone;
  }
- }),
- onDone: 'idle', // Transition back to idle when streaming is complete
+ }, onDone: 'idle', // Transition back to idle when streaming is complete
  onError: 'idle', // Transition back to idle if an error occurs during streaming
  },
  on: {

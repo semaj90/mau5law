@@ -150,8 +150,7 @@ export class BrowserRAGChain {
 
  return {
  answer: sources,
- confidence: this.calculateConfidence(relevantDocs),
- tokensGenerated: maxTokens, duration: endTime - startTime,
+ confidence: this.calculateConfidence(relevantDocs, tokensGenerated: maxTokens, duration: endTime - startTime,
  };
  }
 

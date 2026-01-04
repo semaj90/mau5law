@@ -43,8 +43,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'error' as const,
  code: 'TS2322',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  {
  id: 'test-2',
@@ -56,8 +55,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'warning' as const,
  code: 'TS6133',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -85,8 +83,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'svelte' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -113,8 +110,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'error' as const,
  code: 'TS2304',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -141,8 +137,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'error' as const,
  code: 'TS1234',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  {
  id: 'test-2',
@@ -154,8 +149,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'warning' as const,
  code: 'TS5678',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -184,8 +178,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'error' as const,
  code: 'TS1234',
  status: 'new' as const,
- createdAt: new Date('2025-12-15'),
- updatedAt: new Date('2025-12-15'),
+ createdAt: new Date('2025-12-15', updatedAt: new Date('2025-12-15'),
  };
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
@@ -213,8 +206,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  severity: 'error' as const,
  code: 'TS2322',
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -237,8 +229,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'svelte' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -263,8 +254,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'typescript' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -288,8 +278,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'typescript' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ] as const;
 
@@ -314,8 +303,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'svelte' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const tsError = {
@@ -327,8 +315,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  type: 'typescript' as const,
  severity: 'error' as const,
  status: 'new' as const,
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([svelteError]);

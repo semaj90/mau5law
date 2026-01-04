@@ -100,7 +100,5 @@ export const loki = {
  lokiStore.set(mock);
  console.log('[loki] initialized mock data');
  },
- evidence: makeCollection('evidence'),
- notes: makeCollection('notes'),
- canvasStates: makeCollection('canvasStates'),
+ evidence: makeCollection('evidence', notes: makeCollection('notes', canvasStates: makeCollection('canvasStates'),
 };

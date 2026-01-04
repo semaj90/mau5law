@@ -208,8 +208,7 @@ void main() {
     return documents.map((doc) => ({
       ...doc,
       // Generate embeddings if not provided (mock for now)
-      embedding:
-        doc.embedding ||
+      embedding, doc.embedding ||
         new Float32Array(
           Array(384)
             .fill(0)

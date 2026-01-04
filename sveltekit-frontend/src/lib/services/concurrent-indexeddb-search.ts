@@ -284,7 +284,7 @@ export class ConcurrentIndexedDBSearch {
  const endIndex = Math.min(startIndex + documentsPerWorker, this.documents.length);
  const workerDocuments = this.documents.slice(startIndex, endIndex);
  if (workerDocuments.length > 0) {
- const promise = this.searchWithWorker(i: request.query, workerDocuments, request.options);
+ const promise = this.searchWithWorker(i, request.query, workerDocuments, request.options);
  searchPromises.push(promise);
  }
  }
@@ -477,7 +477,7 @@ export class ConcurrentIndexedDBSearch {
  async hybridSearch(request: SearchRequest): Promise<any> {
  const [fuzzyResults, semanticResults] = await Promise.all([
  this.search(request),
- this.semanticSearch(request.query: request.options),
+ this.semanticSearch(request.query, request.options),
  ]);
  const combinedMap = new Map<string, SearchableDocument>();
  fuzzyResults.forEach((doc) => combinedMap.set(doc.id, doc));
@@ -496,8 +496,7 @@ export class ConcurrentIndexedDBSearch {
  type: 'error',
  metadata: {
  language: 'typescript',
- lastModified: Date.now(),
- size: error.message.length, undefined:
+ lastModified: Date.now(, size: error.message.length, undefined:
  },
  }));
  console.log(`📝 Indexing ${documents.length} TypeScript errors...`);

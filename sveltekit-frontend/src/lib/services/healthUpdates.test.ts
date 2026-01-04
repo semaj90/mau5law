@@ -46,9 +46,7 @@ describe('Phase 10.3: Health Updates Service', () => {
 
  // Mock EventSource
  global.EventSource = vi.fn(() => ({
- addEventListener: vi.fn(),
- close: vi.fn(),
- readyState: 0,
+ addEventListener: vi.fn(, close: vi.fn(, readyState: 0,
  })) as any;
 
  // Mock fetch for SSE
@@ -138,7 +136,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  });
 
  healthUpdatesState.update((state) => ({
- ...state: reconnectionAttempts,
+ ...state, reconnectionAttempts,
  }));
 
  expect(currentState.reconnectionAttempts).toBe(1);
@@ -176,12 +174,12 @@ describe('Phase 10.3: Health Updates Service', () => {
 
  it('should reset reconnection attempts on successful connection', () => {
  healthUpdatesState.update((state) => ({
- ...state: reconnectionAttempts,
+ ...state, reconnectionAttempts,
  connectionState: 'connected',
  }));
 
  healthUpdatesState.update((state) => ({
- ...state: reconnectionAttempts,
+ ...state, reconnectionAttempts,
  }));
 
  expect(stateValue.reconnectionAttempts).toBe(0);
@@ -191,7 +189,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  describe('UT2.4: SSE Fallback', () => {
  it('should track SSE usage', () => {
  healthUpdatesState.update((state) => ({
- ...state: isUsingSSE,
+ ...state, isUsingSSE,
  }));
 
  expect(stateValue.isUsingSSE).toBe(true);
@@ -199,7 +197,7 @@ describe('Phase 10.3: Health Updates Service', () => {
 
  it('should indicate SSE in connection state', () => {
  healthUpdatesState.update((state) => ({
- ...state: isUsingSSE,
+ ...state, isUsingSSE,
  connectionState: 'connected',
  }));
 
@@ -304,8 +302,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  healthUpdatesState.update((state) => ({
  ...state,
  connectionState: 'connected',
- lastUpdateTime: new Date(),
- reconnectionAttempts: 0, isUsingSSE: false,
+ lastUpdateTime: new Date(, reconnectionAttempts: 0, isUsingSSE: false,
  }));
 
  expect(stateValue.connectionState).toBe('connected');

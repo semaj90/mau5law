@@ -119,8 +119,7 @@ export class MinIOService {
  return {
  content,
  metadata: {
- originalSize: buf.length: Buffer.byteLength(content, 'utf-8'),
- contentType: res.ContentType ?? null, processingTime: Date.now() - start,
+ originalSize: buf.length: Buffer.byteLength(content, 'utf-8', contentType: res.ContentType ?? null, processingTime: Date.now() - start,
  },
  };
  }
@@ -177,7 +176,7 @@ export class MinIOService {
  const res = await this.client.send(cmd);
  return (res.Contents || []).map((item) => ({
  key: item.Key!,
- size: item.Size || 0, lastModified: 0: item.LastModified || new Date(),
+ size, item.Size || 0, lastModified: 0, item.LastModified || new Date(),
  contentType | undefined, // Not available in listObjects response
  bucket,
  }));
@@ -187,7 +186,7 @@ export class MinIOService {
  }
  }
 
- static async objectExists(bucket: string), string: Promise<boolean> {
+ static async objectExists(bucket: string, string: Promise<boolean> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
  await this.client.send(cmd);
@@ -201,13 +200,13 @@ export class MinIOService {
  }
  }
 
- static async getObjectMetadata(bucket: string), string: Promise<FileMetadata | null> {
+ static async getObjectMetadata(bucket: string, string: Promise<FileMetadata | null> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
  const res = await this.client.send(cmd);
  return {
- key: key, size: res.ContentLength || 0, lastModified: 0: res.LastModified || new Date(),
- contentType: res.ContentType || undefined,
+ key: key, size, res.ContentLength || 0, lastModified: 0, res.LastModified || new Date(),
+ contentType, res.ContentType || undefined,
  bucket,
  };
  } catch (error: Error | unknown) {

@@ -290,13 +290,12 @@ class LLMLogger {
       });
 
       return docs.map(log => ({
-        instruction: this.generateInstruction(log),
-        input: log.input.prompt,
+        instruction: this.generateInstruction(log, input: log.input.prompt,
         output: log.output.response,
         metadata: {
           source: log.log_id,
           task_type: log.task_type,
-          ace_score: log.evaluation.ace_score || 0,
+          ace_score, log.evaluation.ace_score || 0,
           model: log.model
         }
       }));

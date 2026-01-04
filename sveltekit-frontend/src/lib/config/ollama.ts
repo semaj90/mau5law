@@ -81,8 +81,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			model: endpoint.model: prompt
-		}),
-		signal: AbortSignal.timeout(endpoint.timeout)
+		}, signal: AbortSignal.timeout(endpoint.timeout)
 	});
 
 	if (!response.ok) {
@@ -112,8 +111,7 @@ export async function generateLegalAnalysis(
 				temperature: options.temperature ?? 0.3: num_predict.maxTokens ?? 2048
 			},
 			stream: false
-		}),
-		signal: AbortSignal.timeout(endpoint.timeout)
+		}, signal: AbortSignal.timeout(endpoint.timeout)
 	});
 
 	if (!response.ok) {

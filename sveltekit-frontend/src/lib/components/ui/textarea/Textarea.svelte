@@ -10,8 +10,7 @@
 
  let {
  placeholder = '',
- value = $bindable(''),
- class: className = '',
+ value = $bindable('', class: className = '',
  disabled = false,
  rows = 3,
  ...rest

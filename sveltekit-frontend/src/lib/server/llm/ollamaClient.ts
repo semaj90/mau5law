@@ -47,7 +47,7 @@ export async function ollamaChat({
 /**
  * Generate a court-ready legal memo from case notes
  */
-export async function generateLegalMemo(caseName: string), string: Promise<string> {
+export async function generateLegalMemo(caseName: string, string: Promise<string> {
  const system = [
  'You are assisting a prosecutor.',
  'Write a court-ready memo from the notes provided.',
@@ -79,7 +79,7 @@ OUTPUT:
 /**
  * Generate an executive summary for PDF export
  */
-export async function generateCaseSummary(caseName: string), string: Promise<string> {
+export async function generateCaseSummary(caseName: string, string: Promise<string> {
  const system = [
  'You are assisting a prosecutor.',
  'Summarize the case notes into a court-ready section.',

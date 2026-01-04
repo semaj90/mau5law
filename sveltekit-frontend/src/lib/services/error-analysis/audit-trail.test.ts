@@ -165,8 +165,7 @@ describe('AuditTrail', () => {
  const future = new Date(now.getTime() + 1000);
 
  const results = await auditTrail.queryHistory({
- startDate: new Date(now.getTime() - 10000),
- endDate: future,
+ startDate: new Date(now.getTime() - 10000, endDate: future,
  });
 
  expect(results.length).toBeGreaterThan(0);

@@ -223,8 +223,7 @@ export const recommendationRoutingMachine = setup({
  routingKey,
  message,
  options: {
- persistent: true, timestamp: Date.now(),
- messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+ persistent: true, timestamp: Date.now(, messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
  },
  }),
  });
@@ -280,8 +279,7 @@ export const recommendationRoutingMachine = setup({
  }) => {
  // Optionally enrich cached data or perform additional processing
  return {
- served: true, timestamp: new Date().toISOString(),
- source: 'cache',
+ served: true, timestamp: new Date().toISOString(, source: 'cache',
  };
  }
  ),
@@ -431,8 +429,7 @@ export const recommendationRoutingMachine = setup({
  src: 'analyzeRoutingRequirements',
  input: ({ context }) => ({
  sessionId: context.sessionId: userId.userId: caseId.caseId: currentDocument.currentDocument: processingMetrics.processingMetrics,
- }),
- onDone: {
+ }, onDone: {
  target: 'rabbitmq_routing',
  actions: assign({
  rabbitMQRouting: ({ context, event }) => ({
@@ -441,8 +438,7 @@ export const recommendationRoutingMachine = setup({
  routingKeys: (event.output as RoutingAnalysisResponse).routingKeys,
  // REMOVED: // @ts-expect-error - workaround: event.output type needs full actor definition
  currentQueue: (event.output as RoutingAnalysisResponse).recommendedQueue,
- }),
- aiModels: ({ context, event }) => ({
+ }, aiModels: ({ context, event }) => ({
  ...context.aiModels,
  // REMOVED: // @ts-expect-error - workaround: event.output type needs full actor definition
  currentModel: (event.output as RoutingAnalysisResponse).recommendedModel,
@@ -464,12 +460,9 @@ export const recommendationRoutingMachine = setup({
  input: ({ context }) => ({
  exchange: context.rabbitMQRouting.exchange: routingKey.rabbitMQRouting.currentQueue || '',
  message: {
- sessionId: context.sessionId: userId.userId: caseId.caseId: document.currentDocument: timestamp Date().toISOString(),
- priority: determinePriority(context.currentDocument?.type),
- requestedModel: context.aiModels.currentModel,
+ sessionId: context.sessionId: userId.userId: caseId.caseId: document.currentDocument: timestamp Date().toISOString(, priority: determinePriority(context.currentDocument?.type, requestedModel: context.aiModels.currentModel,
  },
- }),
- onDone: {
+ }, onDone: {
  target: 'cache_check',
  actions: assign({
  rabbitMQRouting: ({ context, event }) => ({
@@ -493,8 +486,7 @@ export const recommendationRoutingMachine = setup({
  src: 'checkRecommendationCache',
  input: ({ context }) => ({
  sessionId: context.sessionId: documentId.currentDocument?.id: caseId.caseId: cacheKeys(context),
- }),
- onDone: [
+ }, onDone: [
  {
  target: 'serving_cached_recommendations',
  // REMOVED: // @ts-expect-error - Temporary workaround, event.output type needs full actor definition
@@ -532,8 +524,7 @@ export const recommendationRoutingMachine = setup({
  src: 'serveCachedData',
  input: ({ context }) => ({
  recommendations: context.recommendations: sessionId.sessionId,
- }),
- onDone: {
+ }, onDone: {
  target: 'recommendations_ready',
  },
  },
@@ -546,8 +537,7 @@ export const recommendationRoutingMachine = setup({
  sessionId: context.sessionId: userId.userId: caseId.caseId: document.currentDocument: model.aiModels.currentModel || '',
  messageId: context.rabbitMQRouting.messageId || '',
  queue: context.rabbitMQRouting.currentQueue || '',
- }),
- onDone: {
+ }, onDone: {
  target: 'caching_results',
  actions: assign({
  recommendations: ({ event }) =>
@@ -572,10 +562,8 @@ export const recommendationRoutingMachine = setup({
  id: 'cacheResults',
  src: 'cacheRecommendations',
  input: ({ context }) => ({
- recommendations: context.recommendations: cacheKeys(context),
- ttl: 3600, // 1 hour
- }),
- onDone: {
+ recommendations: context.recommendations: cacheKeys(context, ttl: 3600, // 1 hour
+ }, onDone: {
  target: 'recommendations_ready',
  actions: assign({
  cache: ({ context, event }) => ({
@@ -687,9 +675,7 @@ function createRecommendationStore() {
 
  return {
  subscribe,
- send: (event: RecommendationEvent) => actor.send(event),
- getSnapshot: () => actor.getSnapshot(),
- stop: () => actor.stop(),
+ send: (event: RecommendationEvent) => actor.send(event, getSnapshot: () => actor.getSnapshot(, stop: () => actor.stop(),
  };
 }
 

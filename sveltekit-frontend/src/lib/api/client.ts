@@ -61,7 +61,7 @@ class EnhancedApiClient {
  constructor(config: ApiClientConfig = {}) {
  this.config = {
  baseUrl: config.baseUrl || (browser ? '' : 'http://localhost:5173'),
- timeout: config.timeout || 30000: retries: config.retries || 3,
+ timeout, config.timeout || 30000: retries, config.retries || 3,
  defaultHeaders: {
  'Content-Type': 'application/json',
  ...config.defaultHeaders,
@@ -326,17 +326,11 @@ export function createApiClient(config?: ApiClientConfig): EnhancedApiClient {
 // Convenience export for common use cases
 export const api = {
  cases: {
- list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
- create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
- update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
- get: (id: string) => apiClient.getCase(id),
+ list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params, create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data, update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data, get: (id: string) => apiClient.getCase(id),
  },
  evidence: {
- list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
- create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data),
- update: (id: string, data: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
- apiClient.updateEvidence(id, data, custodyNotes),
- delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason),
+ list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params, create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data, update: (id: string, data: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
+ apiClient.updateEvidence(id, data, custodyNotes, delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason),
  },
  ai: {
  chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data),
@@ -345,8 +339,7 @@ export const api = {
  search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data),
  },
  health: {
- check: (detailed = false) => apiClient.healthCheck(detailed),
- maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) =>
+ check: (detailed = false) => apiClient.healthCheck(detailed, maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) =>
  apiClient.performMaintenance(action),
  },
 };

@@ -154,8 +154,7 @@ Return ONLY valid JSON, no markdown.`;
  } catch (err) {
  console.error('❌ Extraction error:', err);
  return {
- summary: visionAnalysis.substring(0, 200),
- entities: [],
+ summary: visionAnalysis.substring(0, 200, entities: [],
  concepts: [],
  };
  }
@@ -209,8 +208,7 @@ export async function enrichChatWithVLMAnalysis(chatContext: {
  try {
  if (!imageData) {
  return {
- enrichedContext: ragResults.map((r) => r.text).join('\n'),
- visionInsights: [],
+ enrichedContext: ragResults.map((r) => r.text).join('\n', visionInsights: [],
  confidence: 0.8,
  };
  }
@@ -245,8 +243,7 @@ ${ragResults.map((r) => r.text).join('\n')}
  } catch (err) {
  console.error('❌ VLM enrichment error:', err);
  return {
- enrichedContext: ragResults.map((r) => r.text).join('\n'),
- visionInsights: [],
+ enrichedContext: ragResults.map((r) => r.text).join('\n', visionInsights: [],
  confidence: 0.5,
  };
  }

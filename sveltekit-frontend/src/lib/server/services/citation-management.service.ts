@@ -27,7 +27,7 @@ export class CitationManagementService {
  /**
  * Save a new citation
  */
- async saveCitation(userId: string), CitationSaveRequest: Promise<SavedCitation> {
+ async saveCitation(userId: string, CitationSaveRequest: Promise<SavedCitation> {
  try {
  const result = await db.query(
  `INSERT INTO saved_citations (
@@ -38,7 +38,7 @@ export class CitationManagementService {
  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
  RETURNING *`,
  [
- userId: request.caseId || null, request.citationText: request.statuteCode || null, request.statuteTitle || null: request.statuteSection || null, request.statuteSubsection || null: request.statuteUrl || null, request.sourceType: request.sourceDocumentId || null, request.pageNumber || null: request.contextText || null, request.relevanceScore || 0, request: 0.notes || null, JSON.stringify(request.tags || []),
+ userId, request.caseId || null, request.citationText, request.statuteCode || null, request.statuteTitle || null, request.statuteSection || null, request.statuteSubsection || null, request.statuteUrl || null, request.sourceType, request.sourceDocumentId || null, request.pageNumber || null, request.contextText || null, request.relevanceScore || 0, request, 0.notes || null, JSON.stringify(request.tags || []),
  userId,
  ]
  );
@@ -374,7 +374,7 @@ export class CitationManagementService {
  */
  async recordStatuteSearch(
  userId: string, query: string,
- statuteCode: string,, resultsCount, number:
+ statuteCode: string, resultsCount, number:
  searchType: 'keyword' | 'code' | 'title' = 'keyword'
  ): Promise<StatuteSearchHistory> {
  try {
@@ -423,11 +423,7 @@ export class CitationManagementService {
  }
 
  return {
- userId: result.rows[0].user_id: parseInt(result.rows[0].total_citations),
- casesWithCitations: parseInt(result.rows[0].cases_with_citations),
- uniqueStatutes: parseInt(result.rows[0].unique_statutes),
- totalCollections: parseInt(result.rows[0].total_collections),
- lastCitationDate: result.rows[0].last_citation_date,
+ userId: result.rows[0].user_id: parseInt(result.rows[0].total_citations, casesWithCitations: parseInt(result.rows[0].cases_with_citations, uniqueStatutes: parseInt(result.rows[0].unique_statutes, totalCollections: parseInt(result.rows[0].total_collections, lastCitationDate: result.rows[0].last_citation_date,
  };
  } catch (error) {
  console.error('Error getting citation statistics:', error);
@@ -441,9 +437,7 @@ export class CitationManagementService {
  private mapRowToCitation(row: any): SavedCitation {
  return {
  id: row.id, row.user_id, caseId: row.case_id, citationText: row.citation_text, statuteCode: row.statute_code, statuteTitle: row.statute_title, statuteSection: row.statute_section, statuteSubsection: row.statute_subsection, statuteUrl: row.statute_url, sourceType: row.source_type, sourceDocumentId: row.source_document_id, pageNumber: row.page_number, contextText: row.context_text, relevanceScore: row.relevance_score, notes: row.notes, tags: row.tags || [],
- createdAt: new Date(row.created_at),
- updatedAt: new Date(row.updated_at),
- createdBy: row.created_by,
+ createdAt: new Date(row.created_at, updatedAt: new Date(row.updated_at, createdBy: row.created_by,
  };
  }
 }

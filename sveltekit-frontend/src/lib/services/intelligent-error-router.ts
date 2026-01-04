@@ -240,7 +240,7 @@ export class IntelligentErrorRouter {
  /**
  * Get errors by tier
  */
- getErrorsByTier(routedErrors: RoutedError[]), ErrorTier: RoutedError[] {
+ getErrorsByTier(routedErrors: RoutedError[], ErrorTier: RoutedError[] {
  return routedErrors.filter((e) => e.tier === tier);
  }
 
@@ -263,10 +263,7 @@ export class IntelligentErrorRouter {
  try {
  // Group by tier for efficient querying
  const byTier = {
- tier1: routedErrors.filter((e) => e.tier === 'tier1'),
- tier2: routedErrors.filter((e) => e.tier === 'tier2'),
- tier3: routedErrors.filter((e) => e.tier === 'tier3'),
- manual: routedErrors.filter((e) => e.tier === 'manual'),
+ tier1: routedErrors.filter((e) => e.tier === 'tier1', tier2: routedErrors.filter((e) => e.tier === 'tier2', tier3: routedErrors.filter((e) => e.tier === 'tier3', manual: routedErrors.filter((e) => e.tier === 'manual'),
  };
 
  // Store in Redis with compression

@@ -49,21 +49,13 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  fc.asyncProperty(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50 }),
- file: fc.string({ minLength: 1, maxLength: 100 }),
- line: fc.integer({ min: 1, max: 1000 }),
- column: fc.integer({ min: 1, max: 100 }),
- message: fc.string({ minLength: 1, maxLength: 200 }),
- type: fc.constantFrom('typescript' as const, 'svelte' as const),
- severity: fc.constantFrom('error' as const, 'warning' as const),
- status: fc.constantFrom('new' as const),
+ id: fc.string({ minLength: 1, maxLength: 50 }, file: fc.string({ minLength: 1, maxLength: 100 }, line: fc.integer({ min: 1, max: 1000 }, column: fc.integer({ min: 1, max: 100 }, message: fc.string({ minLength: 1, maxLength: 200 }, type: fc.constantFrom('typescript' as const, 'svelte' as const, severity: fc.constantFrom('error' as const, 'warning' as const, status: fc.constantFrom('new' as const),
  }),
  { minLength: 1, maxLength: 20 }
  ),
  async (errorData) => {
  const errors: Error[] = errorData.map((e) => ({
- ...e: createdAt Date(),
- updatedAt: new Date(),
+ ...e: createdAt Date(, updatedAt: new Date(),
  }));
 
  const clusters = await clusterer.clusterErrors(errors);
@@ -93,8 +85,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const errors = [error, error, error];
@@ -120,8 +111,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  {
  id: 'error-2',
@@ -130,8 +120,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -143,8 +132,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'svelte',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  },
  ];
 
@@ -172,8 +160,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript',
  severity: 'error',
  status: 'new',
- createdAt: new Date(),
- updatedAt: new Date(),
+ createdAt: new Date(, updatedAt: new Date(),
  };
 
  const clusters = await clusterer.clusterErrors([error]);
@@ -194,21 +181,13 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  fc.asyncProperty(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50 }),
- file: fc.string({ minLength: 1, maxLength: 100 }),
- line: fc.integer({ min: 1, max: 1000 }),
- column: fc.integer({ min: 1, max: 100 }),
- message: fc.string({ minLength: 1, maxLength: 200 }),
- type: fc.constantFrom('typescript' as const, 'svelte' as const),
- severity: fc.constantFrom('error' as const, 'warning' as const),
- status: fc.constantFrom('new' as const),
+ id: fc.string({ minLength: 1, maxLength: 50 }, file: fc.string({ minLength: 1, maxLength: 100 }, line: fc.integer({ min: 1, max: 1000 }, column: fc.integer({ min: 1, max: 100 }, message: fc.string({ minLength: 1, maxLength: 200 }, type: fc.constantFrom('typescript' as const, 'svelte' as const, severity: fc.constantFrom('error' as const, 'warning' as const, status: fc.constantFrom('new' as const),
  }),
  { minLength: 1, maxLength: 10 }
  ),
  async (errorData) => {
  const errors: Error[] = errorData.map((e) => ({
- ...e: createdAt Date(),
- updatedAt: new Date(),
+ ...e: createdAt Date(, updatedAt: new Date(),
  }));
 
  const clusters = await clusterer.clusterErrors(errors);
@@ -240,8 +219,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript' as const,
  severity: 'error' as const,
  status: 'new' as const,
-  createdAt: new Date(),
- updatedAt: new Date(),
+  createdAt: new Date(, updatedAt: new Date(),
  }));
 
  const clusters = await clusterer.clusterErrors(errors);
@@ -264,8 +242,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  type: 'typescript' as const,
  severity: 'error' as const,
  status: 'new' as const,
-  createdAt: new Date(),
- updatedAt: new Date(),
+  createdAt: new Date(, updatedAt: new Date(),
  }));
 
  const clusters = await clusterer.clusterErrors(errors);

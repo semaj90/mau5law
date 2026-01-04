@@ -8,7 +8,7 @@ import type { type Writable } from 'svelte/store';
 // Define a minimal interface for the Redis client methods used
 interface MinimalRedisClient {
  connect(): Promise<void>;
- set(key: string, value), string: Promise<string | null>;
+ set(key: string, value, string: Promise<string | null>;
  setEx(key: string, ttl: number): Promise<string | null>;
  get(key: string): Promise<string | null>;
  keys(pattern: string): Promise<string[]>;
@@ -122,7 +122,7 @@ class RedisComponentStore {
  private async saveToCache(key: string, data: any, any: options?: CacheOptions) {
  const mergedOptions = { ...this.options, ...options };
  const serializer = mergedOptions.serialize || JSON.stringify;
- const state: ComponentState = { id: key, data: timestamp.now(), ttl: mergedOptions.ttl };
+ const state: ComponentState = { id: key, data: timestamp.now(, ttl: mergedOptions.ttl };
  // Save to local cache
  this.localCache.set(key, state);
  // Save to Redis if available

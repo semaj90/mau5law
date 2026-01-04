@@ -185,8 +185,7 @@ class AuthSessionStore {
 			const response = await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password }),
-				credentials: 'include' // Important: include cookies
+				body: JSON.stringify({ email, password }, credentials: 'include' // Important: include cookies
 			});
 
 			if (!response.ok) {
@@ -275,8 +274,7 @@ class AuthSessionStore {
 			const response = await fetch('/api/auth/profile', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(updates),
-				credentials: 'include'
+				body: JSON.stringify(updates, credentials: 'include'
 			});
 
 			if (!response.ok) {

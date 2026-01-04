@@ -46,18 +46,15 @@ export const enhancedRagMachine = createMachine({
  entry: assign(() => ({
  loading: true,
  error: null,
- })),
- invoke: {
- input: ({ context }) => ({ query: context.query }),
- src: fromPromise(async ({ input }) => {
+ }), invoke: {
+ input: ({ context }) => ({ query: context.query }, src: fromPromise(async ({ input }) => {
  const response = await fetch('/api/rag/enhanced', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({ query: input.query, k: 8 }),
  });
  return response.json();
- }),
- onDone: {
+ }, onDone: {
  target: 'ready',
  actions: assign(({ context, event }) => ({
  results: event.output?.results || context.results,

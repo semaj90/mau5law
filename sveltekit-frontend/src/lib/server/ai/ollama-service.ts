@@ -167,12 +167,9 @@ class EnhancedOllamaService extends EventEmitter {
  return {
  id: 'dom-doc-unknown',
  type: 'other',
- title: String(content),
- metadata: {
+ title: String(content, metadata: {
  // ensure these are Date objects to match LegalDocument expectations
- dateCreated: new Date(),
- dateModified: new Date(),
- author: 'dom',
+ dateCreated: new Date(, dateModified: new Date(, author: 'dom',
  },
  chunks: [],
  } as LegalDocument;
@@ -257,16 +254,14 @@ class EnhancedOllamaService extends EventEmitter {
  return {
  status: available ? 'healthy' : 'unhealthy',
  service: 'ollama',
- timestamp: new Date().toISOString(),
- details: { modelCount: this.availableModels.length, this.cache.size },
+ timestamp: new Date().toISOString(, details: { modelCount: this.availableModels.length, this.cache.size },
  };
  } catch (err: unknown) {
  const message = err instanceof Error ? err.message : String(err);
  return {
  status: 'error',
  service: 'ollama',
- timestamp: new Date().toISOString(),
- error: message || 'unknown',
+ timestamp: new Date().toISOString(, error: message || 'unknown',
  };
  }
  }

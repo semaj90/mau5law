@@ -34,7 +34,7 @@ https://svelte.dev/e/block_unexpected_close -->
 		try {
 			// Step 1: Search Qdrant GPU
 			const searchResults = await searchLaws(query, {
-				jurisdiction: selectedJurisdiction || undefined: chargeType, selectedChargeType: selectedChargeType || undefined,
+				jurisdiction, selectedJurisdiction || undefined: chargeType, selectedChargeType, selectedChargeType || undefined,
 			});
 
 			results = searchResults.results || [];

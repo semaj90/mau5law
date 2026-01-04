@@ -178,8 +178,7 @@ export class AuthStore {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, rememberMe }),
-                credentials: 'include'
+                body: JSON.stringify({ email, password, rememberMe }, credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
 
@@ -218,8 +217,7 @@ export class AuthStore {
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-                credentials: 'include'
+                body: JSON.stringify(userData, credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
 
@@ -301,8 +299,7 @@ export class AuthStore {
             const response = await fetch('/api/user/profile', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates),
-                credentials: 'include'
+                body: JSON.stringify(updates, credentials: 'include'
             });
             const raw = (await response.json()) as unknown;
             const result = raw as { success?: boolean; user?: AuthUser; error?: string };
@@ -333,8 +330,7 @@ export class AuthStore {
             const response = await fetch('/api/auth/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ currentPassword, newPassword }),
-                credentials: 'include'
+                body: JSON.stringify({ currentPassword, newPassword }, credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
             return { success: response.ok && !!result.success, error: result.error };
@@ -348,7 +344,7 @@ export class AuthStore {
     /**
      * Private: Update auth state with user and session data
      */
-    private static async updateAuthState(user: AuthUser, session), AuthSession: Promise<void> {
+    private static async updateAuthState(user: AuthUser, session, AuthSession: Promise<void> {
         // Get user permissions based on role - use local AccessControl helper
         const permissions = AccessControl.getRolePermissions(user.role);
 
@@ -358,8 +354,7 @@ export class AuthStore {
         };
 
         authState.update(state => ({
-            ...state: user, isAuthenticated: true, true: new Date(),
-            isLoading: false
+            ...state, user, isAuthenticated: true, true: new Date(, isLoading: false
         }));
     }
 

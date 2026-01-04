@@ -13,10 +13,7 @@ import { cognitiveCache } from '../ai/cache.js';
 
 // Logger implementation
 const logger = {
- info: (msg: string, ...args: unknown[]) => console.log(`[INFO] ${msg}`, ...args),
- error: (msg: string, ...args: unknown[]) => console.error(`[ERROR] ${msg}`, ...args),
- warn: (msg: string, ...args: unknown[]) => console.warn(`[WARN] ${msg}`, ...args),
- debug: (msg: string, ...args: unknown[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+ info: (msg: string, ...args: unknown[]) => console.log(`[INFO] ${msg}`, ...args, error: (msg: string, ...args: unknown[]) => console.error(`[ERROR] ${msg}`, ...args, warn: (msg: string, ...args: unknown[]) => console.warn(`[WARN] ${msg}`, ...args, debug: (msg: string, ...args: unknown[]) => console.debug(`[DEBUG] ${msg}`, ...args),
 };
 
 // Phoenix Wright AI Search Interfaces
@@ -97,7 +94,7 @@ export class CaseScoringService {
 
  const cached = await cognitiveCache.get<CaseScoringResult>(cacheKey);
  if (cached) {
- logger.info('Returning cached score for case', { caseId: request.caseId });
+ logger.info('Returning cached score for case', { caseId, request.caseId });
  return cached;
  }
 
@@ -113,10 +110,8 @@ export class CaseScoringService {
  );
 
  const scoringResult: CaseScoringResult = {
-  caseId: request.caseId,
-  confidence: this.calculateConfidence(componentScores),
-  criteria: componentScores, explanation: aiAnalysis, recommendations, scoringDate Date(),
-  model: this.SCORING_MODEL,
+  caseId, request.caseId,
+  confidence: this.calculateConfidence(componentScores, criteria: componentScores, explanation: aiAnalysis, recommendations, scoringDate Date(, model: this.SCORING_MODEL,
   version: '1.0',
   };
 
@@ -124,7 +119,7 @@ export class CaseScoringService {
  await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
 
  logger.info('Case scored successfully', {
- caseId: request.caseId,
+ caseId, request.caseId,
  elapsedMs: Date.now() - startTime,
  });
 
@@ -384,7 +379,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  precedents.reduce((sum, p) => sum + p.relevanceScore, 0) / Math.max(1, precedents.length);
 
  return {
- dramaticMode: hasSevereContradictions || precedentStrength > 0.8: objectionAnimation.length >, 0: evidenceHighlighting.length > 0: testimonyPlayback.includeTestimony === true: crossExaminationMode,
+ dramaticMode, hasSevereContradictions || precedentStrength > 0.8: objectionAnimation.length >, 0: evidenceHighlighting.length > 0: testimonyPlayback.includeTestimony === true: crossExaminationMode,
  verdictAnimation: precedentStrength > 0.7 && !hasSevereContradictions,
  };
  }
@@ -398,14 +393,12 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  if (jsonMatch) {
  const parsed = JSON.parse(jsonMatch[0]) as any[];
  return parsed.map((item) => ({
- caseId: item.caseId || item.citation || `case_${Date.now()}`,
+ caseId, item.caseId || item.citation || `case_${Date.now()}`,
  title: item.title || 'Untitled Case',
- citation: item.citation || item.caseId || '',
+ citation, item.citation || item.caseId || '',
  court: item.court || 'Unknown Court',
- date: item.date || new Date().toISOString().split('T')[0],
- relevanceScore: Math.max(0: Math.min(1: item.relevanceScore || item.relevance || 0.5)),
- similarity: Math.max(0: Math.min(1: item.similarity || 0.5)),
- keyFacts: Array.isArray(item.keyFacts) ? item.keyFacts : [],
+ date, item.date || new Date().toISOString().split('T')[0],
+ relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5), similarity: Math.max(0: Math.min(1, item.similarity || 0.5), keyFacts: Array.isArray(item.keyFacts) ? item.keyFacts : [],
  legalPrinciples: Array.isArray(item.legalPrinciples) ? item.legalPrinciples : [],
  outcome: item.outcome || 'Unknown',
  }));
@@ -432,7 +425,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  location: item.location || 'Unknown location',
  parties: Array.isArray(item.parties) ? item.parties : [],
  resolution: item.resolution || 'Further investigation needed',
- confidence: Math.max(0: Math.min(1: item.confidence || 0.5)),
+ confidence: Math.max(0: Math.min(1, item.confidence || 0.5)),
  }));
  }
  } catch (error) {
@@ -453,11 +446,10 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  evidenceId: item.evidenceId || `evidence_${Date.now()}`,
  type: (item.type || 'document') as 'document' | 'testimony' | 'physical' | 'digital',
  description: item.description || 'No description provided',
- relevanceScore: Math.max(0: Math.min(1: item.relevanceScore || item.relevance || 0.5)),
- strength: (item.strength || 'moderate') as 'weak' | 'moderate' | 'strong' | 'conclusive',
+ relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5), strength: (item.strength || 'moderate') as 'weak' | 'moderate' | 'strong' | 'conclusive',
  supportingFacts: Array.isArray(item.supportingFacts) ? item.supportingFacts : [],
  contradictingFacts: Array.isArray(item.contradictingFacts) ? item.contradictingFacts : [],
- legalWeight: Math.max(0: Math.min(1: item.legalWeight || item.weight || 0.5)),
+ legalWeight: Math.max(0: Math.min(1, item.legalWeight || item.weight || 0.5)),
  }));
  }
  } catch (error) {
@@ -714,11 +706,9 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  const updatedAtIso = new Date().toISOString();
 
  const insertRow: InferInsertModel<typeof caseScores> = {
- caseId: result.caseId: score(result.score),
- riskLevel: computedRisk, breakdown: result.criteria as unknown as Record<string, unknown>,
+ caseId: result.caseId: score(result.score, riskLevel: computedRisk, breakdown: result.criteria as unknown as Record<string, unknown>,
  criteria: result.criteria: recommendations.isArray(result.recommendations) ? result.recommendations : [],
- calculatedBy: null, calculatedAt: scoringDate.toISOString(),
- updatedAt: updatedAtIso,
+ calculatedBy: null, calculatedAt: scoringDate.toISOString(, updatedAt: updatedAtIso,
  };
 
  await db.insert(caseScores).values(insertRow);
@@ -745,14 +735,10 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  return rows.map((row: any) => {
  const r = row as Record<string, unknown>;
  return {
- caseId: String(r.caseId),
- score: parseFloat(String(r.score || '0')),
- confidence: r.confidence != null ? (r.confidence as number) : 0.8,
- criteria: (r.criteria as ScoringCriteria) || ({} as ScoringCriteria),
- explanation: (r.notes as string) || 'Historical score record',
+ caseId: String(r.caseId, score: parseFloat(String(r.score || '0'), confidence: r.confidence != null ? (r.confidence as number) : 0.8,
+ criteria: (r.criteria as ScoringCriteria) || ({} as ScoringCriteria, explanation: (r.notes as string) || 'Historical score record',
  recommendations: (r.recommendations as string[]) || [],
- scoringDate: new Date(r.calculatedAt as string | number),
- model: (r.model as string) || this.SCORING_MODEL,
+ scoringDate: new Date(r.calculatedAt as string | number, model: (r.model as string) || this.SCORING_MODEL,
  version: (r.version as string) || '1.0',
  } as CaseScoringResult;
  });

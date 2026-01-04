@@ -49,8 +49,7 @@ export const autoTaggingMachine = createMachine(
  content: context.selectedNode?.content,
  fileName: context.selectedNode?.name,
  fileType: context.selectedNode?.type,
- }),
- onDone: {
+ }, onDone: {
  target: 'complete',
  actions: assign({
  aiTags: ({ event }) => event.output,

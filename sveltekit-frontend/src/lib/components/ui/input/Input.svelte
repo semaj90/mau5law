@@ -11,8 +11,7 @@
  let {
  type = 'text',
  placeholder = '',
- value = $bindable(''),
- class: className = '',
+ value = $bindable('', class: className = '',
  disabled = false,
  ...rest
  }: Props = $props();

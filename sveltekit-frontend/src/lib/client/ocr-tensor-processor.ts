@@ -459,7 +459,7 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
 const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
  embeddings: new Float32Array(data.embedding),
- fromCache: data.fromCache || false,
+ fromCache, data.fromCache || false,
  model: data?.model || 'unknown'
  };
  } catch (error) {
@@ -475,8 +475,7 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
  embeddings: embeddings, dimensions: embeddings.length,
  metadata: {
  source: 'ocr',
- processed_at: Date.now(),
- tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+ processed_at: Date.now(, tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
  confidence: 0.8,
  },
  };
@@ -515,12 +514,10 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
  resultBuffer.unmap();
 
  return {
- embeddings: processedData.slice(),
- dimensions: processedData.length,
+ embeddings: processedData.slice(, dimensions: processedData.length,
  metadata: {
  source: 'ocr',
- processed_at: Date.now(),
- tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+ processed_at: Date.now(, tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
  confidence: 0.9,
  },
  };
@@ -530,8 +527,7 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
  embeddings: embeddings, dimensions: embeddings.length,
  metadata: {
  source: 'ocr',
- processed_at: Date.now(),
- tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+ processed_at: Date.now(, tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
  confidence: 0.8,
  },
  };
@@ -771,13 +767,11 @@ const cleanup = () => {
  body: JSON.stringify({
  results: results.map((r) => ({
  text: r.ocr.text,
- embeddings: Array.from(r.embeddings.embeddings),
- dimensions: r.embeddings.dimensions,
+ embeddings: Array.from(r.embeddings.embeddings, dimensions: r.embeddings.dimensions,
  confidence: r.ocr.confidence,
  tensor_id: r.embeddings.metadata.tensor_id,
  search_index: Array.from(r.searchIndex)
- })),
- metadata: { ...metadata, processed_at: Date.now(), batch_size: results.length },
+ }), metadata: { ...metadata, processed_at: Date.now(, batch_size: results.length },
  }),
  });
 

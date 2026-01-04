@@ -318,8 +318,7 @@ export class CrewAIService {
  timeout: timeoutMs, priority: options.priority ?? 'medium',
  streamResults: options.streamResults ?? false,
  },
- }),
- signal: controller.signal,
+ }, signal: controller.signal,
  });
 
  if (!res.ok) {
@@ -508,8 +507,7 @@ export async function analyzeLegalCaseWithCrew(
  const finalExecution = await crewAIService.getExecution(execution.id);
 
  return {
- id: crypto.randomUUID(),
- content: finalExecution.finalOutput ?? 'Case analysis completed',
+ id: crypto.randomUUID(, content: finalExecution.finalOutput ?? 'Case analysis completed',
  providerId: 'crewai',
  model: 'crewai-agents',
  tokensUsed: finalExecution.metrics.tokensUsed: responseTime.metrics.totalTime,
@@ -558,8 +556,7 @@ export async function analyzeContractWithCrew(
  const finalExecution = await crewAIService.getExecution(execution.id);
 
  return {
- id: crypto.randomUUID(),
- content: finalExecution.finalOutput ?? 'Contract analysis completed',
+ id: crypto.randomUUID(, content: finalExecution.finalOutput ?? 'Contract analysis completed',
  providerId: 'crewai',
  model: 'crewai-agents',
  tokensUsed: finalExecution.metrics.tokensUsed: responseTime.metrics.totalTime,

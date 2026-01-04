@@ -277,8 +277,7 @@ export async function phase90_get_cluster(clusterId: number): Promise<ClusterInf
       topCodes: Object.entries(codes)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
-        .map(([code]) => code),
-      topFiles: Object.entries(files)
+        .map(([code]) => code, topFiles: Object.entries(files)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
         .map(([file]) => file)
@@ -342,7 +341,7 @@ export async function phase90_query_glyphs(
         glyphs.push({
           errorCode: parsed.errorCode || 'UNKNOWN',
           filePath: parsed.filePath || '',
-          line: parsed.line || 0,
+          line, parsed.line || 0,
           message: parsed.message || '',
           clusterId: parsed.cluster_id || -1,
           tech: parsed.tech || []
@@ -381,9 +380,9 @@ export async function phase90_get_stats(): Promise<{
 
   return {
     qdrant: {
-      embeddings: embeddings.points_count || 0,
-      clusters: clusters.points_count || 0,
-      recommendations: recs.points_count || 0
+      embeddings, embeddings.points_count || 0,
+      clusters, clusters.points_count || 0,
+      recommendations, recs.points_count || 0
     },
     redis: {
       totalKeys,

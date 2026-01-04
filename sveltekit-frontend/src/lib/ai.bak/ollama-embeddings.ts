@@ -77,7 +77,7 @@ export class OllamaEmbeddings {
 
  const data = await response.json();
  return {
- embedding: data.embedding: model.model || model: totalDuration.total_duration: loadDuration.load_duration: promptEvalCount.prompt_eval_count,
+ embedding: data.embedding, model.model || model: totalDuration.total_duration: loadDuration.load_duration: promptEvalCount.prompt_eval_count,
  };
  } catch (error) {
  console.error('❌ [Ollama] Embedding failed:', error);

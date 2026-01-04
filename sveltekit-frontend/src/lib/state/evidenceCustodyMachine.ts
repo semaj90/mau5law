@@ -150,10 +150,8 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
 
   // Create initial custody event
   const custodyEvent = {
-    id: crypto.randomUUID(),
-    eventType: 'intake' as const,
-    timestamp: new Date().toISOString(),
-    userId: input.userId,
+    id: crypto.randomUUID(, eventType: 'intake' as const,
+    timestamp: new Date().toISOString(, userId: input.userId,
     details: {
       evidenceId: input.evidenceId,
       originalHash: input.originalHash,
@@ -162,8 +160,7 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
     signature: await generateEventSignature({
       evidenceId: input.evidenceId,
       userId: input.userId,
-      timestamp: new Date().toISOString(),
-      eventType: 'intake',
+      timestamp: new Date().toISOString(, eventType: 'intake',
     }),
   };
 
@@ -181,10 +178,7 @@ const integrityVerificationService = fromPromise(
     // Multi-layer integrity verification
     const verificationResults = {
       hashMatch: input.currentHash === input.originalHash,
-      metadataIntact: await verifyMetadataIntegrity(input.evidenceData!),
-      timestampValid: await verifyTimestamp(input.evidenceData!),
-      digitalSignatureValid: await verifyDigitalSignature(input.evidenceData!),
-      aiAnalysisScore: 0,
+      metadataIntact: await verifyMetadataIntegrity(input.evidenceData!, timestampValid: await verifyTimestamp(input.evidenceData!, digitalSignatureValid: await verifyDigitalSignature(input.evidenceData!, aiAnalysisScore: 0,
       riskAssessment: 'pending',
     };
 
@@ -224,10 +218,8 @@ const integrityVerificationService = fromPromise(
 
     // Create verification event
     const custodyEvent = {
-      id: crypto.randomUUID(),
-      eventType: 'verification' as const,
-      timestamp: new Date().toISOString(),
-      userId: input.userId,
+      id: crypto.randomUUID(, eventType: 'verification' as const,
+      timestamp: new Date().toISOString(, userId: input.userId,
       details: {
         verificationResults,
         integrityStatus,
@@ -236,8 +228,7 @@ const integrityVerificationService = fromPromise(
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
-        timestamp: new Date().toISOString(),
-        eventType: 'verification',
+        timestamp: new Date().toISOString(, eventType: 'verification',
       }),
     };
 
@@ -280,9 +271,9 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
 
   // Structure the AI analysis for custody workflow
   const aiAnalysis = {
-    authenticity: analysisResult.authenticityScore || 0.8,
-    completeness: analysisResult.completenessScore || 0.9,
-    relevance: analysisResult.relevanceScore || 0.85,
+    authenticity, analysisResult.authenticityScore || 0.8,
+    completeness, analysisResult.completenessScore || 0.9,
+    relevance, analysisResult.relevanceScore || 0.85,
     riskLevel: (analysisResult.riskLevel || 'medium') as 'low' | 'medium' | 'high' | 'critical',
     recommendations: analysisResult.recommendations || [],
     flaggedAnomalies: analysisResult.anomalies || [],
@@ -290,10 +281,8 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
 
   // Create analysis event
   const custodyEvent = {
-    id: crypto.randomUUID(),
-    eventType: 'analysis' as const,
-    timestamp: new Date().toISOString(),
-    userId: input.userId,
+    id: crypto.randomUUID(, eventType: 'analysis' as const,
+    timestamp: new Date().toISOString(, userId: input.userId,
     details: {
       aiAnalysis,
       analysisMethod: 'multi-agent-pipeline',
@@ -302,8 +291,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
     signature: await generateEventSignature({
       evidenceId: input.evidenceId,
       userId: input.userId,
-      timestamp: new Date().toISOString(),
-      eventType: 'analysis',
+      timestamp: new Date().toISOString(, eventType: 'analysis',
     }),
   };
 
@@ -334,10 +322,8 @@ const custodyTransferService = fromPromise(
     console.log(`Transferring custody from ${input.currentCustodian} to ${input.newCustodian}`);
 
     const custodyEvent = {
-      id: crypto.randomUUID(),
-      eventType: 'transfer' as const,
-      timestamp: new Date().toISOString(),
-      userId: input.userId,
+      id: crypto.randomUUID(, eventType: 'transfer' as const,
+      timestamp: new Date().toISOString(, userId: input.userId,
       details: {
         previousCustodian: input.currentCustodian,
         newCustodian: input.newCustodian,
@@ -346,8 +332,7 @@ const custodyTransferService = fromPromise(
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
-        timestamp: new Date().toISOString(),
-        eventType: 'transfer',
+        timestamp: new Date().toISOString(, eventType: 'transfer',
         previousCustodian: input.currentCustodian,
         newCustodian: input.newCustodian,
       }),
@@ -366,10 +351,8 @@ const finalizationService = fromPromise(async ({ input }: { input: EvidenceCusto
   console.log(`Finalizing custody workflow for evidence: ${input.evidenceId}`);
 
   const custodyEvent = {
-    id: crypto.randomUUID(),
-    eventType: 'finalization' as const,
-    timestamp: new Date().toISOString(),
-    userId: input.userId,
+    id: crypto.randomUUID(, eventType: 'finalization' as const,
+    timestamp: new Date().toISOString(, userId: input.userId,
     details: {
       finalStatus: input.integrityStatus,
       totalStages: Object.keys(input.stageTimes).length,
@@ -379,8 +362,7 @@ const finalizationService = fromPromise(async ({ input }: { input: EvidenceCusto
     signature: await generateEventSignature({
       evidenceId: input.evidenceId,
       userId: input.userId,
-      timestamp: new Date().toISOString(),
-      eventType: 'finalization',
+      timestamp: new Date().toISOString(, eventType: 'finalization',
     }),
   };
 
@@ -424,9 +406,7 @@ export const evidenceCustodyMachine = createMachine({
             userId: ({ event }) => event.userId,
             originalHash: ({ event }) => event.originalHash,
             currentCustodian: ({ event }) => event.userId,
-            startTime: () => Date.now(),
-            stageStartTime: () => Date.now(),
-            workflowStage: () => 'intake',
+            startTime: () => Date.now(, stageStartTime: () => Date.now(, workflowStage: () => 'intake',
             progress: () => 10,
           }),
         },
@@ -449,8 +429,7 @@ export const evidenceCustodyMachine = createMachine({
             stageTimes: ({ context }) => ({
               ...context.stageTimes,
               intake: Date.now() - context.stageStartTime,
-            }),
-            stageStartTime: () => Date.now(),
+            }, stageStartTime: () => Date.now(),
           }),
         },
         onError: {
@@ -479,8 +458,7 @@ export const evidenceCustodyMachine = createMachine({
             stageTimes: ({ context }) => ({
               ...context.stageTimes,
               verification: Date.now() - context.stageStartTime,
-            }),
-            stageStartTime: () => Date.now(),
+            }, stageStartTime: () => Date.now(),
           }),
         },
         onError: {
@@ -508,8 +486,7 @@ export const evidenceCustodyMachine = createMachine({
             stageTimes: ({ context }) => ({
               ...context.stageTimes,
               analysis: Date.now() - context.stageStartTime,
-            }),
-            stageStartTime: () => Date.now(),
+            }, stageStartTime: () => Date.now(),
           }),
         },
         onError: {
@@ -603,8 +580,7 @@ export const evidenceCustodyMachine = createMachine({
           ...context,
           newCustodian: (event as any).newCustodian,
           reason: (event as any).reason,
-        }),
-        onDone: {
+        }, onDone: {
           target: 'approval',
           actions: assign({
             previousCustodian: ({ event }) => event.output.previousCustodian,

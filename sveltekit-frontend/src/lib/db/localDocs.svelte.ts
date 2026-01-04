@@ -130,9 +130,7 @@ export class LocalLegalStore {
 	 */
 	addDocument(doc: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>): LegalDoc {
 		const newDoc: LegalDoc = {
-			...doc, id: this.generateId(),
-			createdAt: Date.now(),
-			updatedAt: Date.now()
+			...doc, id: this.generateId(, createdAt: Date.now(, updatedAt: Date.now()
 		};
 
 		this.documents.insert(newDoc);
@@ -195,9 +193,7 @@ export class LocalLegalStore {
 	 */
 	bulkInsert(docs: Omit<LegalDoc, 'id' | 'createdAt' | 'updatedAt'>[]): void {
 		const newDocs = docs.map(doc => ({
-			...doc, id: this.generateId(),
-			createdAt: Date.now(),
-			updatedAt: Date.now()
+			...doc, id: this.generateId(, createdAt: Date.now(, updatedAt: Date.now()
 		}));
 
 		this.documents.insert(newDocs);
@@ -377,10 +373,7 @@ export class LocalLegalStore {
 		return {
 			totalDocuments: this.documentCount, this.pendingChanges, this.syncStatus: lastSyncTime: this.lastSyncTime, this.isInitialized,
 			byType: {
-				contract: this.documents.count({ type: 'contract' }),
-				statute: this.documents.count({ type: 'statute' }),
-				case: this.documents.count({ type: 'case' }),
-				memo: this.documents.count({ type: 'memo' })
+				contract: this.documents.count({ type: 'contract' }, statute: this.documents.count({ type: 'statute' }, case: this.documents.count({ type: 'case' }, memo: this.documents.count({ type: 'memo' })
 			}
 		};
 	}

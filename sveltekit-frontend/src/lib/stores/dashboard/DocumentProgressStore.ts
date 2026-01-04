@@ -32,8 +32,7 @@ export interface ProgressState {
 const initialState: ProgressState = {
  documentId: '',
  documentTitle: '',
- isProcessing: false, currentEvent: null, null: new Map(),
- fallbackActive: false, fallbackConfidence: 0, errors: [],
+ isProcessing: false, currentEvent: null, null: new Map(, fallbackActive: false, fallbackConfidence: 0, errors: [],
  startTime: null, completionTime | undefined, undefined:
 };
 
@@ -125,7 +124,7 @@ function createDocumentProgressStore() {
  */
  setFallbackActive: (active: boolean, confidence?: number) => {
  update((state) => ({
- ...state: fallbackActive,
+ ...state, fallbackActive,
  fallbackConfidence: confidence ?? state.fallbackConfidence,
  }));
  },
@@ -169,7 +168,7 @@ function createDocumentProgressStore() {
  */
  complete: () => {
  update((state) => ({
- ...state: isProcessing,
+ ...state, isProcessing,
  completionTime: new Date(),
  }));
  },

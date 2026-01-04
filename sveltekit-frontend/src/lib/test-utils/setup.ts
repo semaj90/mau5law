@@ -116,8 +116,7 @@ export async function initializeQdrantMocks(): Promise<void> {
   await mockQdrant.upsert('codemod_memories', {
     points: [
       {
-        id: 1, vector: Array(384).fill(0.5),
-        payload: {
+        id: 1, vector: Array(384).fill(0.5, payload: {
           title: 'Svelte 5 Runes',
           content: '$state and $derived are the new reactive primitives',
           url: 'https://svelte.dev/docs/runes',
@@ -125,8 +124,7 @@ export async function initializeQdrantMocks(): Promise<void> {
         },
       },
       {
-        id: 2, vector: Array(384).fill(0.6),
-        payload: {
+        id: 2, vector: Array(384).fill(0.6, payload: {
           title: 'Svelte 5 Migration',
           content: 'Replace export let with $props()',
           url: 'https://svelte.dev/docs/migration',
@@ -166,7 +164,7 @@ export async function initializeOllamaMocks(): Promise<void> {
 
   mockOllama.setResponse(
     'How to migrate to Svelte 5?',
-    'Replace export let with $props(), on:click with onclick, and $: with $derived.'
+    'Replace export let with $props(, on:click with onclick, and $: with $derived.'
   );
 }
 
@@ -367,12 +365,10 @@ export function registerTestHooks(options?: Parameters<typeof setupTest>[0]): vo
  */
 export function createTestCase(overrides: Partial<any> = {}): any {
 	return {
-		id: Math.floor(Math.random() * 10000),
-		title: 'Test Case',
+		id: Math.floor(Math.random() * 10000, title: 'Test Case',
 		description: 'Test case description',
 		status: 'active',
-		created_at: new Date().toISOString(),
-		updated_at: new Date().toISOString(),
+		created_at: new Date().toISOString(, updated_at: new Date().toISOString(),
 		...overrides
 	};
 }
@@ -382,8 +378,7 @@ export function createTestCase(overrides: Partial<any> = {}): any {
  */
 export function createTestEvidence(overrides: Partial<any> = {}): any {
 	return {
-		id: Math.floor(Math.random() * 10000),
-		case_id: 1,
+		id: Math.floor(Math.random() * 10000, case_id: 1,
 		title: 'Test Evidence',
 		type: 'document',
 		content: 'Test evidence content',
@@ -397,8 +392,7 @@ export function createTestEvidence(overrides: Partial<any> = {}): any {
  */
 export function createTestSearchResult(overrides: Partial<any> = {}): any {
 	return {
-		id: Math.floor(Math.random() * 10000),
-		title: 'Test Result',
+		id: Math.floor(Math.random() * 10000, title: 'Test Result',
 		content: 'Test result content',
 		score: 0.85,
 		url: 'https://example.com/test',

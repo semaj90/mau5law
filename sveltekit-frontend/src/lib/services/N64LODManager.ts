@@ -84,8 +84,7 @@ export class N64LODManager {
  const chunk: TextureChunk = {
  assetId,
  lodLevel: targetLOD,
- data: await this.generateTextureData(assetId, lodLevel),
- format: targetLOD <= 1 ? 'rgba8unorm' : 'bc1-rgba-unorm',
+ data: await this.generateTextureData(assetId, lodLevel, format: targetLOD <= 1 ? 'rgba8unorm' : 'bc1-rgba-unorm',
  timestamp: Date.now()
  };
 

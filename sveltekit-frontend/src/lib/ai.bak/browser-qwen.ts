@@ -188,7 +188,7 @@ export class BrowserQwen {
  });
  }
 
- async answerLegalQuestion(question: string, context), string: Promise<string> {
+ async answerLegalQuestion(question: string, context, string: Promise<string> {
  return this.generate(
  `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
  {

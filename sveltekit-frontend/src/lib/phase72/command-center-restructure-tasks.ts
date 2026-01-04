@@ -243,8 +243,7 @@ export function formatTaskForModal(task: (typeof phase6_72_restructure_tasks)[nu
  badge: `Phase ${task.phase}`,
  priority: task.priority,
  intent: task.intent,
- tags: task.tags.map((t) => `[${t}]`).join(' '),
- actions:
+ tags: task.tags.map((t) => `[${t}]`).join(' ', actions:
  task.actions?.map((a) => ({
  label: a.label,
  command: a.command,
@@ -258,17 +257,12 @@ export function formatTaskForModal(task: (typeof phase6_72_restructure_tasks)[nu
  * Group tasks by tab for command center
  */
 export const tasksByTab = {
- system: phase6_72_restructure_tasks.filter((t) => t.tab === 'system'),
- evidence: phase6_72_restructure_tasks.filter((t) => t.tab === 'evidence'),
- routes: phase6_72_restructure_tasks.filter((t) => t.tab === 'routes'),
+ system: phase6_72_restructure_tasks.filter((t) => t.tab === 'system', evidence: phase6_72_restructure_tasks.filter((t) => t.tab === 'evidence', routes: phase6_72_restructure_tasks.filter((t) => t.tab === 'routes'),
 };
 
 /**
  * Get tasks by priority
  */
 export const tasksByPriority = {
- high: phase6_72_restructure_tasks.filter((t) => t.priority === 'high'),
- medium: phase6_72_restructure_tasks.filter((t) => t.priority === 'medium'),
- active: phase6_72_restructure_tasks.filter((t) => t.priority === 'active'),
- complete: phase6_72_restructure_tasks.filter((t) => t.priority === 'complete'),
+ high: phase6_72_restructure_tasks.filter((t) => t.priority === 'high', medium: phase6_72_restructure_tasks.filter((t) => t.priority === 'medium', active: phase6_72_restructure_tasks.filter((t) => t.priority === 'active', complete: phase6_72_restructure_tasks.filter((t) => t.priority === 'complete'),
 };

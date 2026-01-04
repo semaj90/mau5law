@@ -33,8 +33,8 @@ export class YOLOService {
 
  constructor(config: YOLOConfig = {}) {
  this.config = {
- modelPath: config.modelPath || path.join(process.cwd(), 'models', 'yolo-doc.onnx'),
- confidence: config.confidence || 0.5, iouThreshold.iouThreshold || 0.45,
+ modelPath, config.modelPath || path.join(process.cwd(), 'models', 'yolo-doc.onnx'),
+ confidence, config.confidence || 0.5, iouThreshold.iouThreshold || 0.45,
  ...config,
  };
  }
@@ -62,8 +62,7 @@ export class YOLOService {
  const processingTime = Date.now() - startTime;
 
  return {
- text: this.extractTextFromRegions(yoloData.regions || []),
- layout: {
+ text: this.extractTextFromRegions(yoloData.regions || [], layout: {
  regions: yoloData.regions || [],
  },
  objects: yoloData.objects || [],

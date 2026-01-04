@@ -111,7 +111,7 @@ export class CacheService {
 	 * @param hash - SHA-256 hash
 	 * @returns Cached result or null if not found
 	 */
-	async checkCache(filePath: string), string: Promise<CachedResult | null> {
+	async checkCache(filePath: string, string: Promise<CachedResult | null> {
 		if (!this.redisAvailable || !this.redis) {
 			return null;
 		}
@@ -184,7 +184,7 @@ export class CacheService {
 	 * @param currentHash - Current SHA-256 hash
 	 * @returns true if file has changed, false if unchanged
 	 */
-	async hasFileChanged(filePath: string), string: Promise<boolean> {
+	async hasFileChanged(filePath: string, string: Promise<boolean> {
 		if (!this.redisAvailable || !this.redis) {
 			// If Redis unavailable, assume file has changed
 			return true;

@@ -63,8 +63,7 @@
     (async () => {
       // Initialize worker pool
       const workerConfig = {
-        maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
-        workerTimeout: 60000,
+        maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8, workerTimeout: 60000,
         queueLimit: 100,
         enableSIMD: true,
         redisCache: true,

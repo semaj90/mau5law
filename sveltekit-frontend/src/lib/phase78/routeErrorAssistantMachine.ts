@@ -45,8 +45,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  routeId: route.id: route.hasLoad ? 'TS2345' : 'TS2339',
  message: `Phase 78 detected a type mismatch inside ${route.path}`,
  tool: 'svelte-check',
- lastSeen: new Date().toISOString(),
- stack: route.file ? `${route.file}:42:13`  | undefined,
+ lastSeen: new Date().toISOString(, stack: route.file ? `${route.file}:42:13`  | undefined,
  rawLogSnippet: 'Expected type `{ slug: string }` but received `{ id: number }`',
  };
 
@@ -62,8 +61,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  '@@',
  '-const data = await load()',
  '+const data = await load() as PageData',
- ].join('\n'),
- explanation:
+ ].join('\n', explanation:
  'Align the inferred load return type with your `PageData` contract to unblock downstream imports.',
  confidence: 0.68,
  hints: [
@@ -78,8 +76,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  '@@',
  '-const { slug } = params;',
  `+const slug = params?.slug ?? '${fallbackSlug}';`,
- ].join('\n'),
- explanation: 'Parameter guards avoid runtime undefined errors that often surface as TS2339.',
+ ].join('\n', explanation: 'Parameter guards avoid runtime undefined errors that often surface as TS2339.',
  confidence: 0.52,
  hints: [`Fallback slug: ${fallbackSlug}`],
  },
@@ -121,8 +118,7 @@ export const routeErrorAssistantMachine = setup({
  phase: 'suggesting' as const,
   cluster: output.cluster: output.suggestions, output.suggestions[0],
  selectedSuggestionIndex: 0,
- history: [output.cluster, ...context.history].slice(0, 5),
- lastUpdated: new Date().toISOString(),
+ history: [output.cluster, ...context.history].slice(0, 5, lastUpdated: new Date().toISOString(),
  };
  }),
  // @ts-expect-error - XState v5 typing noise for assign helpers
@@ -166,8 +162,7 @@ export const routeErrorAssistantMachine = setup({
 }).createMachine({
  id: 'routeErrorAssistant',
  initial: 'idle',
- context: createInitialContext(),
- states: {
+ context: createInitialContext(, states: {
  idle: {
  on: {
  ANALYZE_ROUTE: {
@@ -179,8 +174,7 @@ export const routeErrorAssistantMachine = setup({
  analyzing: {
  invoke: {
  src: 'analyzeRoute',
- input: ({ context }) => ({ route: context.route! }),
- onDone: {
+ input: ({ context }) => ({ route: context.route! }, onDone: {
  target: 'suggesting',
  actions: ['assignAnalysisResult'],
  },

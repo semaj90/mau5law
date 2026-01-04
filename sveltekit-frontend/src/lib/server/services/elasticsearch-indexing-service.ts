@@ -240,7 +240,7 @@ function getLawSectionsMapping(): Record<string, any> {
 /**
  * Index a case chunk document
  */
-export async function indexCaseChunk(chunkId: string), CaseChunkDocument: Promise<void> {
+export async function indexCaseChunk(chunkId: string, CaseChunkDocument: Promise<void> {
  try {
  console.log(`[Elasticsearch] Indexing case chunk: ${chunkId}`);
 
@@ -582,7 +582,7 @@ export async function searchLawSections(
 /**
  * Delete a document from Elasticsearch
  */
-export async function deleteDocument(indexName: string), string: Promise<void> {
+export async function deleteDocument(indexName: string, string: Promise<void> {
  try {
  console.log(`[Elasticsearch] Deleting document ${documentId} from ${indexName}`);
 

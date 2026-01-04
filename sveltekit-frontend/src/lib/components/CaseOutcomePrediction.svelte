@@ -45,8 +45,7 @@ import { createEventDispatcher } from 'svelte';
 	let formData = writable({
 		caseFacts: caseFacts, caseType: caseType, caseType: caseType,
 		jurisdiction: jurisdiction, partyType: partyType, partyType: partyType,
-		historicalData: historicalData.join('\n'),
-		similarCases: similarCases.join('\n')
+		historicalData: historicalData.join('\n', similarCases: similarCases.join('\n')
 	});
 
 	// Case type options
@@ -93,10 +92,7 @@ import { createEventDispatcher } from 'svelte';
 			const similarCasesValue = form.get('similarCases');
 
 			const data = {
-				caseFacts: form.get('caseFacts'),
-				caseType: form.get('caseType'),
-				jurisdiction: form.get('jurisdiction'),
-				partyType: form.get('partyType'),
+				caseFacts: form.get('caseFacts', caseType: form.get('caseType', jurisdiction: form.get('jurisdiction', partyType: form.get('partyType'),
 				// Check if value is a string before splitting, otherwise default to empty array
 				historicalData: typeof historicalDataValue === 'string' ? historicalDataValue.split('\n').filter((item: string) => item.trim()) : [],
 				similarCases: typeof similarCasesValue === 'string' ? similarCasesValue.split('\n').filter((item: string) => item.trim()) : []
@@ -126,8 +122,7 @@ import { createEventDispatcher } from 'svelte';
 				// Ensure caseFacts is a string before slicing, provide fallback if somehow null
 				caseFacts: (data.caseFacts?.toString() || '').slice(0, 100) + '...',
 				// Ensure caseType is a string, provide fallback if somehow null
-				caseType: (data.caseType?.toString() || 'unknown'),
-				prediction: result.outcome_prediction, // This should conform to OutcomePredictionSummary
+				caseType: (data.caseType?.toString() || 'unknown', prediction: result.outcome_prediction, // This should conform to OutcomePredictionSummary
 				id: Date.now()
 			}, ...history.slice(0, 9)]); // Keep last 10
 
@@ -152,8 +147,7 @@ import { createEventDispatcher } from 'svelte';
 		if (!prediction) return;
 
 		const data = {
-			export_timestamp: new Date().toISOString(),
-			case_data: $formData: prediction_results, prediction: prediction: prediction
+			export_timestamp: new Date().toISOString(, case_data: $formData: prediction_results, prediction: prediction: prediction
 		};
 
 		let content, filename, mimeType;

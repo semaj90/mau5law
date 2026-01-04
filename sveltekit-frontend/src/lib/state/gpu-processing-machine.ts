@@ -126,11 +126,9 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
  status: 'completed',
  result: {
  extractedText: `Processed: ${document.content.substring(0, 100)}...`,
- embeddings: Array.from({ length: 768 }, () => Math.random()),
- analysis: { sentiment: Math.random(), complexity: Math.random() * 10 },
+ embeddings: Array.from({ length: 768 }, () => Math.random(), analysis: { sentiment: Math.random(, complexity: Math.random() * 10 },
  metadata: {
- processedAt: new Date().toISOString(),
- type: document.options?.processType,
+ processedAt: new Date().toISOString(, type: document.options?.processType,
  },
  },
  processingTime: Math.random() * 5000 + 1000, // 1-6 seconds
@@ -233,8 +231,7 @@ export const gpuProcessingMachine = setup({
  initial: 'idle',
  context: {
  processingQueue: [],
- activeProcessing: new Map(),
- completedDocuments: [],
+ activeProcessing: new Map(, completedDocuments: [],
  errorDocuments: [],
  serviceHealth: {
  gpu: 'healthy',

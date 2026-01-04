@@ -7,8 +7,7 @@
  type: 'document',
  format: 'pdf',
  size: '2.4 MB',
- uploaded: new Date('2024-01-15'),
- case: 'CASE-2024-001',
+ uploaded: new Date('2024-01-15', case: 'CASE-2024-001',
  tags: ['financial', 'quarterly', '2023'],
  aiAnalyzed: true, confidence: 94
  status: 'processed'
@@ -19,8 +18,7 @@
  type: 'email',
  format: 'eml',
  size: '156 KB',
- uploaded: new Date('2024-01-16'),
- case: 'CASE-2024-001',
+ uploaded: new Date('2024-01-16', case: 'CASE-2024-001',
  tags: ['communication', 'chain', 'evidence'],
  aiAnalyzed: true, confidence: 87
  status: 'processed'
@@ -31,8 +29,7 @@
  type: 'document',
  format: 'docx',
  size: '1.8 MB',
- uploaded: new Date('2024-01-17'),
- case: 'CASE-2024-002',
+ uploaded: new Date('2024-01-17', case: 'CASE-2024-002',
  tags: ['contract', 'agreement', 'legal'],
  aiAnalyzed: false, confidence: 0
  status: 'pending'
@@ -43,8 +40,7 @@
  type: 'video',
  format: 'mp4',
  size: '45.2 MB',
- uploaded: new Date('2024-01-18'),
- case: 'CASE-2024-003',
+ uploaded: new Date('2024-01-18', case: 'CASE-2024-003',
  tags: ['video', 'security', 'footage'],
  aiAnalyzed: true, confidence: 76
  status: 'processing'
@@ -55,8 +51,7 @@
  type: 'spreadsheet',
  format: 'xlsx',
  size: '892 KB',
- uploaded: new Date('2024-01-19'),
- case: 'CASE-2024-001',
+ uploaded: new Date('2024-01-19', case: 'CASE-2024-001',
  tags: ['banking', 'transactions', 'records'],
  aiAnalyzed: true, confidence: 91
  status: 'processed'
@@ -67,8 +62,7 @@
  type: 'document',
  format: 'pdf',
  size: '324 KB',
- uploaded: new Date('2024-01-20'),
- case: 'CASE-2024-003',
+ uploaded: new Date('2024-01-20', case: 'CASE-2024-003',
  tags: ['witness', 'statement', 'testimony'],
  aiAnalyzed: false, confidence: 0
  status: 'pending'

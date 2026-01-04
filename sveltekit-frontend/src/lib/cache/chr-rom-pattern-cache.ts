@@ -55,15 +55,13 @@ export class CHRROMPatternCache {
  redisConfig || {
  host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379'),
- password: process.env.REDIS_PASSWORD || undefined,
+ password, process.env.REDIS_PASSWORD || undefined,
  }
  );
  this.cache = {
- patterns: new Map(),
- banks: Array(this.MAX_BANKS)
+ patterns: new Map(, banks: Array(this.MAX_BANKS)
  .fill(null)
- .map(() => new ArrayBuffer(this.BANK_SIZE)),
- hotPatterns: [],
+ .map(() => new ArrayBuffer(this.BANK_SIZE), hotPatterns: [],
  metrics: {
  cacheHits: 0, cacheMisses: 0,
  totalRequests: 0, averageResponseTime: 0,
@@ -191,8 +189,7 @@ export class CHRROMPatternCache {
  documentType: options.documentType,
  riskLevel: options.riskLevel,
  cacheHits: 0,
- lastAccessed: Date.now(),
- compressionRatio: this.calculateCompressionRatio(tileData),
+ lastAccessed: Date.now(, compressionRatio: this.calculateCompressionRatio(tileData),
  },
  renderData,
  };
@@ -229,10 +226,7 @@ export class CHRROMPatternCache {
  const tileData = new Uint8Array(this.PATTERN_SIZE);
  // Base patterns for different document types
  const basePatterns = {
- contract: this.generateContractPattern(_options.riskLevel),
- evidence: this.generateEvidencePattern(_options.riskLevel),
- brief: this.generateBriefPattern(_options.riskLevel),
- citation: this.generateCitationPattern(_options.riskLevel),
+ contract: this.generateContractPattern(_options.riskLevel, evidence: this.generateEvidencePattern(_options.riskLevel, brief: this.generateBriefPattern(_options.riskLevel, citation: this.generateCitationPattern(_options.riskLevel),
  };
 
  let basePattern = basePatterns[_options.documentType];

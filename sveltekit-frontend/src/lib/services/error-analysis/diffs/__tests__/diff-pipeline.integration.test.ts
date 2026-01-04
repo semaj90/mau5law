@@ -48,8 +48,7 @@ describe('Diff Pipeline Integration', () => {
  try {
  redis = new Redis({
  host: process.env.REDIS_HOST || '127.0.0.1',
- port: parseInt(process.env.REDIS_PORT || '4005'),
- db: 15, // Use separate DB for tests
+ port: parseInt(process.env.REDIS_PORT || '4005', db: 15, // Use separate DB for tests
  lazyConnect: true, maxRetriesPerRequest: 1, retryStrategy: () => null,
  });
  await redis.connect();

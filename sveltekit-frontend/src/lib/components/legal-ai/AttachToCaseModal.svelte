@@ -83,7 +83,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  statute_code: statuteCode, citation_id: citationId, citationId: citationId,
- link_type: linkType, notes: notes, notes: notes || undefined,
+ link_type: linkType, notes: notes, notes, notes || undefined,
  }),
  });
 

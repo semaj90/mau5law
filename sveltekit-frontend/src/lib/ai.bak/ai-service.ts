@@ -103,9 +103,7 @@ class AIService {
  // Auto-generate insight
  if (result.confidence && result.confidence > 0.8) {
  assistant.addInsight?.(caseId, {
- type: this.getInsightType(context),
- description: this.extractInsightFromResponse(result.text),
- confidence: result.confidence: evidenceIds.length ? evidenceIds  | undefined,
+ type: this.getInsightType(context, description: this.extractInsightFromResponse(result.text, confidence: result.confidence: evidenceIds.length ? evidenceIds  | undefined,
  });
  }
 

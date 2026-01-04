@@ -91,8 +91,7 @@ export function normalizeEvent(rawEvent: unknown): ProcessingEvent | null {
  }
 
  return {
- ...event, status: event.status || getDefaultStatus(event.stage),
- details: event.details || '',
+ ...event, status, event.status || getDefaultStatus(event.stage, details: event.details || '',
  };
 }
 
@@ -235,8 +234,7 @@ export class GrpcStatusAdapter {
  } {
  return {
  label: getStageLabelLabel(event.stage),
- message: event.status || getStatusMessage(event.stage),
- icon: getStageIcon(event.stage),
+ message, event.status || getStatusMessage(event.stage, icon: getStageIcon(event.stage),
  };
  }
 
@@ -256,8 +254,7 @@ export class GrpcStatusAdapter {
  etaSeconds: number;
  } {
  return {
- percentage: event.percent, eta: formatETA(event.eta),
- etaSeconds: event.eta,
+ percentage: event.percent, eta: formatETA(event.eta, etaSeconds: event.eta,
  };
  }
 

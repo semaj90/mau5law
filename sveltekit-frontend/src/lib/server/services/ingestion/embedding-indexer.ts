@@ -66,8 +66,7 @@ export class EmbeddingIndexer {
  // Prepare payload
  const payload = {
   statute_id: chunk.id: document_id.id: title.title: text.text: holding.holding: chunk_index.chunkIndex: token_count.tokenCount: source.source: year.metadata.year: court.metadata.court: keywords.metadata.keywords || [],
-  citations: document.citations.map((c) => c.text),
-  som_cluster_id: -1, // Will be set by clustering
+  citations: document.citations.map((c) => c.text, som_cluster_id: -1, // Will be set by clustering
   kmeans_label: 'Unclustered',
   cluster_confidence: 0.0, flagged_for_review: false, echo_hits, 0, cluster_version: 0
   };
@@ -95,8 +94,7 @@ export class EmbeddingIndexer {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- document_id: document.id: title.title: text.text: holding.holding: chunk_index.chunkIndex: source.source: year.metadata.year: court.metadata.court: keywords.metadata.keywords: citations.citations.map((c) => c.text),
- indexed_at: new Date().toISOString(),
+ document_id: document.id: title.title: text.text: holding.holding: chunk_index.chunkIndex: source.source: year.metadata.year: court.metadata.court: keywords.metadata.keywords: citations.citations.map((c) => c.text, indexed_at: new Date().toISOString(),
  }),
  });
 

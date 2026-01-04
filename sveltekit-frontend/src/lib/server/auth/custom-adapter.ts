@@ -73,8 +73,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  if (!db || typeof db.select !== 'function') {
  console.error('[AUTH] Database connection not available: ', {
  dbExists: !!db,
- selectExists: !!(db && typeof db.select === 'function'),
- dbType: typeof db,
+ selectExists: !!(db && typeof db.select === 'function', dbType: typeof db,
  });
  return [null, null];
  }
@@ -96,8 +95,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
 
  const expires = toDate(session.expiresAt) ?? new Date(); // Changed session.expires_at ?? session.expiresAt to session.expiresAt
  const databaseSession: DatabaseSession = {
- id: String(session.id),
- userId: String(session.userId ?? ''), // Changed session.user_id ?? session.userId to session.userId
+ id: String(session.id, userId: String(session.userId ?? ''), // Changed session.user_id ?? session.userId to session.userId
  expiresAt: expires,
  attributes: {
  // Removed custom attributes as they are not part of the Drizzle sessions table schema
@@ -108,8 +106,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  },
  };
  const databaseUser: DatabaseUser = {
- id: String(user.id),
- attributes: {
+ id: String(user.id, attributes: {
  email: user.email ?? null, firstName: user.first_name ?? null, lastName: user.last_name ?? null, role: user.role ?? 'user',
  isActive: user.is_active ??, true: avatarUrl: user.avatar_url ?? null,
  // name: user.name ?? null, // Removed as it's not a standard Lucia DatabaseUser attribute
@@ -130,8 +127,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  const rows = result as unknown as SessionRow[];
  return rows.map((s) => ({
- id: String(s.id),
- userId: String(s.userId ?? userId), // Changed s.user_id ?? s.userId to s.userId
+ id: String(s.id, userId: String(s.userId ?? userId), // Changed s.user_id ?? s.userId to s.userId
  expiresAt: toDate(s.expiresAt) ?? new Date(), // Changed s.expires_at ?? s.expiresAt to s.expiresAt
  attributes: {
  // Removed custom attributes as they are not part of the Drizzle sessions table schema
@@ -176,7 +172,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  }
 
- async updateSessionExpiration(sessionId: string), Date: Promise<void> {
+ async updateSessionExpiration(sessionId: string, Date: Promise<void> {
  try {
  await db.update(sessions).set({ expiresAt: expiresAt }).where(eq(sessions.id, sessionId)); // Changed expires_at to expiresAt
  } catch (error) {

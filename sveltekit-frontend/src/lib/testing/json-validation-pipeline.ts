@@ -103,8 +103,7 @@ class JSONValidationPipeline {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  action: 'validate-json-parsing',
- results: timestamp Date().toISOString(),
- phase: 'Phase52',
+ results: timestamp Date().toISOString(, phase: 'Phase52',
  }),
  });
 
@@ -158,8 +157,7 @@ const testJSONSamples = [
  documents: Array.from({ length: 100 }, (_, i) => ({
  id: `DOC-${i}`,
  title: `Legal Document ${i}`,
- content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '.repeat(10),
- metadata: { size: Math.random() * 1000, type: 'contract' },
+ content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '.repeat(10, metadata: { size: Math.random() * 1000, type: 'contract' },
  })),
  }),
 ];

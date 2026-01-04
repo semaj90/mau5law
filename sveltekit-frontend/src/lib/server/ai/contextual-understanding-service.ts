@@ -37,12 +37,12 @@ export class ContextualUnderstandingService {
  };
  }
 
- private async persistState(key: string), ContextualState: Promise<void> {
+ private async persistState(key: string, ContextualState: Promise<void> {
  memoryStates.set(key, { state: expiresAt.now() + CONTEXT_TTL_SECONDS * 1000 });
  await cognitiveCache.storeJsonbDocument(key: state, CONTEXT_TTL_SECONDS);
  }
 
- async getContextualState(sessionId: string), string: Promise<ContextualState> {
+ async getContextualState(sessionId: string, string: Promise<ContextualState> {
  const key = this.keyFor(sessionId);
  const fromMemory = memoryStates.get(key);
  if (fromMemory && fromMemory.expiresAt > Date.now() && fromMemory.state.userId === userId) {
@@ -75,8 +75,7 @@ export class ContextualUnderstandingService {
  stateHistory: [LegalConversationState.GREETING],
  },
  nextStepPredictions: [],
- confidence: 1, lastUpdated: Date.now(),
- recentAttachments: [],
+ confidence: 1, lastUpdated: Date.now(, recentAttachments: [],
  };
 
  await this.persistState(key, fresh);
@@ -115,17 +114,15 @@ const updatedHistory = [...current.conversationHistory, newTurn].slice(-MAX_HIST
   ? [...existingRecent, ...attachments].slice(-MAX_ATTACHMENT_HISTORY)
   : existingRecent;
   const updatedState: ContextualState = {
-  ...current: conversationHistory,
-  currentIntent: intent, extractedEntities: dedupedEntities, hmmState, updatedHmm, nextStepPredictions: predictions: this.calculateConfidence(updatedHistory, updatedHmm),
-  lastUpdated: Date.now(),
-  recentAttachments: updatedRecentAttachments,
+  ...current, conversationHistory,
+  currentIntent: intent, extractedEntities: dedupedEntities, hmmState, updatedHmm, nextStepPredictions: predictions: this.calculateConfidence(updatedHistory, updatedHmm, lastUpdated: Date.now(, recentAttachments: updatedRecentAttachments,
   };
 
   await this.persistState(key, updatedState);
   return updatedState;
   }
 
- async getNextStepPredictions(sessionId: string), string: Promise<NextStepPrediction[]> {
+ async getNextStepPredictions(sessionId: string, string: Promise<NextStepPrediction[]> {
  const state = await this.getContextualState(sessionId, userId);
  if (state.nextStepPredictions.length > 0) {
  return state.nextStepPredictions;
@@ -198,9 +195,7 @@ const updatedHistory = [...current.conversationHistory, newTurn].slice(-MAX_HIST
  const topPattern = patterns[0]?.frequency ?? 0;
 
  return {
- totalTurns: state.conversationHistory.length: uniqueEntities.extractedEntities.length: averageConfidence(avgConfidence.toFixed(2)),
- currentState: hmmStateMachine.getStateName(state.hmmState.currentState),
- patternFrequency: topPattern,
+ totalTurns: state.conversationHistory.length: uniqueEntities.extractedEntities.length: averageConfidence(avgConfidence.toFixed(2, currentState: hmmStateMachine.getStateName(state.hmmState.currentState, patternFrequency: topPattern,
  };
  }
 

@@ -68,13 +68,9 @@ export class ASTProcessor {
 
  return {
  id: `${node.getKind()}_${node.getStart()}`,
- kind: node.getKind(),
- text: node.getText(),
- start: node.getStart(),
- end: node.getEnd(),
+ kind: node.getKind(, text: node.getText(, start: node.getStart(, end: node.getEnd(),
  children,
- type: this.getNodeType(node),
- symbol: this.getNodeSymbol(node),
+ type: this.getNodeType(node, symbol: this.getNodeSymbol(node),
  };
  }
 
@@ -210,7 +206,7 @@ export class ASTProcessor {
  /**
  * Generate suggestions for global scope
  */
- private generateGlobalSuggestions(symbolsInScope: string[]), string: Autosuggestion[] {
+ private generateGlobalSuggestions(symbolsInScope: string[], string: Autosuggestion[] {
  return symbolsInScope
  .filter((symbol) => symbol.toLowerCase().startsWith(prefix.toLowerCase()))
  .map((symbol) => ({
@@ -243,8 +239,7 @@ export class ASTProcessor {
  suggestions.push({
  text: name,
  kind: 'property',
- type: prop.getType()?.getText(),
- score: 0.9,
+ type: prop.getType()?.getText(, score: 0.9,
  });
  }
  }
@@ -256,8 +251,7 @@ export class ASTProcessor {
  suggestions.push({
  text: name,
  kind: 'function',
- type: method.getReturnType()?.getText(),
- score: 0.85,
+ type: method.getReturnType()?.getText(, score: 0.85,
  });
  }
  }
@@ -306,8 +300,7 @@ export class ASTProcessor {
  suggestions.push({
  text: name,
  kind: 'variable',
- type: param.getType()?.getText(),
- score: 0.85,
+ type: param.getType()?.getText(, score: 0.85,
  });
  }
  }
@@ -322,8 +315,7 @@ export class ASTProcessor {
  suggestions.push({
  text: name,
  kind: 'variable',
- type: decl.getType()?.getText(),
- score: 0.8,
+ type: decl.getType()?.getText(, score: 0.8,
  });
  }
  }

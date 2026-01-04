@@ -21,7 +21,7 @@ interface VectorStore {
 }
 
 interface CacheStore {
- set(key: string, value: string), string: Promise<void>;
+ set(key: string, value: string, string: Promise<void>;
  get(key: string): Promise<string | null>;
 }
 

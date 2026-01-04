@@ -57,15 +57,14 @@ export class IBMVisionService {
 
  // Initialize IBM Watson Visual Recognition
  this.visualRecognition = new IBMWatsonSDK.VisualRecognitionV4({
- authenticator: new IamAuthenticator({ apikey: config.apiKey }),
- serviceUrl: config.serviceUrl: version.version || '2021-06-22',
+ authenticator: new IamAuthenticator({ apikey: config.apiKey }, serviceUrl: config.serviceUrl: version.version || '2021-06-22',
  });
  }
 
  /**
  * Analyze image with IBM Vision
  */
- async analyzeImage(imageBuffer: Buffer), string: Promise<IBMVisionResult> {
+ async analyzeImage(imageBuffer: Buffer, string: Promise<IBMVisionResult> {
  const startTime = Date.now();
 
  try {
@@ -103,8 +102,7 @@ export class IBMVisionService {
  }> {
  const params = {
  images_file: {
- value: Buffer.from(imageBase64, 'base64'),
- options: {
+ value: Buffer.from(imageBase64, 'base64', options: {
  filename: 'image.jpg',
  contentType: 'image/jpeg',
  },
@@ -136,8 +134,7 @@ export class IBMVisionService {
  ): Promise<Array<{ class: string; confidence: number }>> {
  const params = {
  images_file: {
- value: Buffer.from(imageBase64, 'base64'),
- options: {
+ value: Buffer.from(imageBase64, 'base64', options: {
  filename: 'image.jpg',
  contentType: 'image/jpeg',
  },
@@ -171,8 +168,7 @@ export class IBMVisionService {
  > {
  const params = {
  images_file: {
- value: Buffer.from(imageBase64, 'base64'),
- options: {
+ value: Buffer.from(imageBase64, 'base64', options: {
  filename: 'image.jpg',
  contentType: 'image/jpeg',
  },

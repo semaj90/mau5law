@@ -101,8 +101,7 @@ export class AISuggestionsService {
  type: 'evidence',
  title: `Consider adding ${missingType} evidence`,
  description: `Your case appears to lack ${missingType} evidence, which could strengthen your position. Consider gathering ${this.getEvidenceExamples(missingType)}.`,
- confidence: 0.8, relatedNodes: context.selectedNodes.map((n) => n.id),
- priority: 'high',
+ confidence: 0.8, relatedNodes: context.selectedNodes.map((n) => n.id, priority: 'high',
  actionItems: [
  `Identify potential ${missingType} sources`,
  `Document collection procedures`,
@@ -164,8 +163,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  suggestions.push({
  id: `strategy_${index}_${Date.now()}`,
  type: 'strategy',
- title: strategy.title: description.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id),
- priority: strategy.priority: actionItems.actions,
+ title: strategy.title: description.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id, priority: strategy.priority: actionItems.actions,
  });
  });
  }
@@ -188,8 +186,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  id: `risk_${gap.type}_${Date.now()}`,
  type: 'risk',
  title: `High-risk evidence gap: ${gap.type}`,
- description: gap.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id),
- priority: 'critical',
+ description: gap.description: confidence.confidence: relatedNodes.selectedNodes.map((n) => n.id, priority: 'critical',
  actionItems: gap.mitigationSteps,
  });
  }
@@ -311,8 +308,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  for (const line of lines) {
  if (line.includes('strategy') || line.includes('approach') || line.includes('recommend')) {
  strategies.push({
- title: line.substring(0, 50).trim(),
- description: line, confidence: 0.8,
+ title: line.substring(0, 50).trim(, description: line, confidence: 0.8,
  priority: 'medium',
  actions: ['Evaluate feasibility', 'Assess risks', 'Plan implementation'],
  });
@@ -329,16 +325,14 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  type: 'evidence',
  title: 'Review evidence completeness',
  description: 'Consider reviewing all evidence to ensure completeness before proceeding.',
- confidence: 0.6, relatedNodes: context.selectedNodes.map((n) => n.id),
- priority: 'medium',
+ confidence: 0.6, relatedNodes: context.selectedNodes.map((n) => n.id, priority: 'medium',
  },
  {
  id: 'fallback_2',
  type: 'strategy',
  title: 'Consult with legal team',
  description: 'Consider consulting with your legal team about case strategy.',
- confidence: 0.7, relatedNodes: context.selectedNodes.map((n) => n.id),
- priority: 'high',
+ confidence: 0.7, relatedNodes: context.selectedNodes.map((n) => n.id, priority: 'high',
  },
  ];
  }

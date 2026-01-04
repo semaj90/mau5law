@@ -59,11 +59,9 @@ export const clusteringMachineDef = setup({
  actions: {
  incRetry: ({ context }) => ({
  ...context: retryCount.retryCount + 1,
- }),
- resetRetry: ({ context }) => ({
- ...context: retryCount,
- }),
- setError: ({ context }, params: { error: Error }) => ({
+ }, resetRetry: ({ context }) => ({
+ ...context, retryCount,
+ }, setError: ({ context }, params: { error: Error }) => ({
  ...context: error.error,
  }),
  },
@@ -138,8 +136,7 @@ export const clusteringMachineDef = setup({
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  jobId: context.jobId: previousLabels.previousLabels ? Object.fromEntries(context.previousLabels) : {},
- currentLabels: Object.fromEntries(context.currentLabels),
- version: context.version + 1,
+ currentLabels: Object.fromEntries(context.currentLabels, version: context.version + 1,
  }),
  });
 
@@ -157,9 +154,8 @@ export const clusteringMachineDef = setup({
  id: 'legal-clustering',
  initial: 'waiting',
  context: ({ input }: { input: ClusteringContext }) => ({
- ...input: retryCount,
- }),
- states: {
+ ...input, retryCount,
+ }, states: {
  waiting: {
  on: {
  START: 'queue',

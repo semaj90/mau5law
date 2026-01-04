@@ -84,10 +84,7 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  const [, file, lineStr, colStr, category, codeStr, message] = match;
 
  diagnostics.push({
- file: parseInt(lineStr, 10),
- column: parseInt(colStr, 10),
- code: parseInt(codeStr, 10),
- message: category as 'error' | 'warning',
+ file: parseInt(lineStr, 10, column: parseInt(colStr, 10, code: parseInt(codeStr, 10, message: category as 'error' | 'warning',
  });
  }
 
@@ -101,7 +98,7 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  * @param projectRoot - Workspace root for resolving file paths
  * @returns ErrorRecords with source lines attached
  */
-export function enrichWithContext(diagnostics: TSDiagnostic[]), string: ErrorRecord[] {
+export function enrichWithContext(diagnostics: TSDiagnostic[], string: ErrorRecord[] {
  const records: ErrorRecord[] = [];
 
  for (const diag of diagnostics) {

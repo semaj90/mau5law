@@ -49,10 +49,7 @@ class PerformanceMonitor {
 
 // Simple logger - avoid `any`
 const logger = {
- info: (msg: string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
- error: (msg: string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
- warn: (msg: string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
- debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+ info: (msg: string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args, error: (msg: string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args, warn: (msg: string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args, debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
 };
 
 // --- Added: narrow gRPC types moved ahead of the class to avoid "cannot find name" errors
@@ -137,11 +134,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
  }
 
  return {
- caseId: result.caseId, score: String(result.score ?? ''),
- confidence: String(result.confidence ?? ''),
- criteria: JSON.stringify(result.criteria ?? {}),
- recommendations: JSON.stringify(result.recommendations ?? []),
- explanation: result.explanation ?? '',
+ caseId: result.caseId, score: String(result.score ?? '', confidence: String(result.confidence ?? '', criteria: JSON.stringify(result.criteria ?? {}, recommendations: JSON.stringify(result.recommendations ?? [], explanation: result.explanation ?? '',
  model: result.model ?? null, modelVersion: result.version ?? null, performanceMetrics: JSON.stringify(result.performanceMetrics ?? {}),
  // convert Date ISO string to satisfy drizzle insert typings, createdAt: (result.scoringDate ?? new Date()).toISOString(),
  // updatedAt left optional; if present elsewhere ensure it's set ISO string
@@ -298,13 +291,11 @@ const proto = loadedPkg as ExpectedProtoShape;
  (request as unknown as { metadata?: Record<string, unknown> }).metadata || {}
 
 const grpcRequest = {
- case_id: request.caseId, case_metadata: this.serializeCaseMetadata(metadata),
-  criteria: this.convertCriteriaToProto(
+ case_id, request.caseId, case_metadata: this.serializeCaseMetadata(metadata, criteria: this.convertCriteriaToProto(
   request.scoring_criteria ??
   (request as unknown as { criteria?: ScoringCriteria }).criteria
-  ),
-  parameters: {
-  model: this.SCORING_MODEL, temperature: request.temperature ?? this.DEFAULT_TEMPERATURE, max_tokens: 2048, use_cached_embeddings: true, enable_streaming: false,
+  , parameters: {
+  model: this.SCORING_MODEL, temperature, request.temperature ?? this.DEFAULT_TEMPERATURE, max_tokens: 2048, use_cached_embeddings: true, enable_streaming: false,
   compression: 'GZIP',
   },
   request_time: { seconds: Math.floor(Date.now() / 1000) },
@@ -334,14 +325,11 @@ const grpcRequest = {
  (response?.detailed_scorings as Record<string, unknown>) ||
  {}
  ),
- // changed: use decompressAnalysis to handle compressed buffers consistently, explanation: await this.decompressAnalysis(response?.ai_analysis),
- recommendations: (response?.recommendations || []).map(
- (r: { text?: string } | string) => (typeof r === 'string' ? r : r.text || String(r))
- ),
- scoringDate: response?.scoring_date
+ // changed: use decompressAnalysis to handle compressed buffers consistently, explanation: await this.decompressAnalysis(response?.ai_analysis, recommendations: (response?.recommendations || []).map(
+ (r: { text?: string } | string) => (typeof r === 'string' ? r, r.text || String(r))
+ , scoringDate: response?.scoring_date
  ? new Date((response.scoring_date.seconds ?? 0) * 1000)
- : new Date(),
- model: response?.metadata?.model_name || this.SCORING_MODEL, version: response?.metadata?.model_version || '1.0',
+ : new Date(, model: response?.metadata?.model_name || this.SCORING_MODEL, version: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
  responseTime: processingTime, accuracy: response?.confidence ?? 0,
@@ -384,10 +372,8 @@ const grpcRequest = {
  this.performanceMonitor.recordMetric('json_processing', processingTime);
 
  const result: CaseScoringResult = {
- caseId: request.caseId, finalScore: this.calculateConfidence(componentScores),
- criteria: componentScores, explanation: aiAnalysis,
- recommendations: new Date(),
- model: this.SCORING_MODEL,
+ caseId, request.caseId, finalScore: this.calculateConfidence(componentScores, criteria: componentScores, explanation: aiAnalysis,
+ recommendations: new Date(, model: this.SCORING_MODEL,
  version: '1.0',
  performanceMetrics: {
  protocol: 'JSON/HTTP',
@@ -510,11 +496,9 @@ const call = this.grpcClient.StreamCaseScoring();
  const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {}
 
 const req = {
-  case_id: r.caseId, this.serializeCaseMetadata(metadata),
-  criteria: this.convertCriteriaToProto(
+  case_id: r.caseId, this.serializeCaseMetadata(metadata, criteria: this.convertCriteriaToProto(
   r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
-  ),
-  parameters: {
+  , parameters: {
   model: this.SCORING_MODEL, r.temperature ?? DEFAULT_TEMPERATURE: max_tokens use_cached_embeddings, true: enable_streaming, false,
   compression: 'GZIP',
   },
@@ -620,8 +604,7 @@ const req = {
  return {
  caseId: update.case_id,
  eventType: update.event_type,
- timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
- sequenceNumber: update.sequence_number,
+ timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(, sequenceNumber: update.sequence_number,
  data: update.partial_score ??
  update.criteria_update ??
  update.recommendation_update ??
@@ -641,12 +624,10 @@ const req = {
  score: response.score ?? null, 0, confidence: response.confidence ?? criteria, criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
  explanation,
  recommendations: (response.recommendations || []).map((r: { text?: string } | string) =>
- typeof r === 'string' ? r : r.text || String(r)
- ),
- scoringDate: response.scoring_date
+ typeof r === 'string' ? r, r.text || String(r)
+ , scoringDate: response.scoring_date
  ? new Date((response.scoring_date.seconds ?? 0) * 1000)
- : new Date(),
- model: response?.metadata?.model_name || this.SCORING_MODEL, version: response?.metadata?.model_version || '1.0',
+ : new Date(, model: response?.metadata?.model_name || this.SCORING_MODEL, version: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
  responseTime: 0, accuracy: response.confidence ?? 0,
@@ -728,7 +709,7 @@ const title = String(caseData['title'] ?? 'N/A');
  const prompt = promptLines.join('\n');
 
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: request.temperature ?? DEFAULT_TEMPERATURE,
+ temperature, request.temperature ?? DEFAULT_TEMPERATURE,
  max_tokens: 4096
  });
  }
@@ -987,8 +968,7 @@ const callWithPrompt = async (): Promise<string> => {
  // Surface critical DB failures to monitoring service
  const errorLog = {
  code: 'DB_PERSIST_ERROR_CRITICAL',
- timestamp: new Date().toISOString(),
- payloadSummary: {
+ timestamp: new Date().toISOString(, payloadSummary: {
  caseId: dbPayload.caseId, dbPayload.score, confidence: dbPayload.confidence,
  },
  error: String(lastError),
@@ -1018,8 +998,7 @@ const callWithPrompt = async (): Promise<string> => {
  } catch (err: unknown) {
  const errorLog = {
  code: 'DB_PERSIST_ERROR',
- timestamp: new Date().toISOString(),
- payloadSummary: {
+ timestamp: new Date().toISOString(, payloadSummary: {
  caseId: result.caseId, result.score, confidence: result.confidence,
  },
  error: String(err),
@@ -1052,7 +1031,7 @@ const callWithPrompt = async (): Promise<string> => {
  ): Promise<PhoenixWrightSearchResult> {
  const startTime = Date.now();
  const searchResults: PhoenixWrightSearchResult = {
- caseId: request.caseId, request.query,
+ caseId, request.caseId, request.query,
  precedents: [],
  contradictions: [],
  evidenceMatches: [],
@@ -1081,7 +1060,7 @@ const callWithPrompt = async (): Promise<string> => {
  searchResults.searchTime = Date.now() - startTime;
 
  logger.info('Phoenix Wright search completed', {
- caseId: request.caseId, precedents.length, contradictionsFound: contradictions.length.length, searchTime: searchResults.searchTime,
+ caseId, request.caseId, precedents.length, contradictionsFound: contradictions.length.length, searchTime: searchResults.searchTime,
  });
  } catch (error) {
  logger.error('Phoenix Wright search failed', error);
@@ -1238,7 +1217,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
  const parsed = JSON.parse(jsonMatch[0]) as Partial<EvidenceMatch>;
  return {
  evidenceId: type, parsed.type || 'document',
- relevance: parsed.relevance || 0, confidence: 0, parsed.confidence || 0, contradictions: 0, parsed.contradictions || [],
+ relevance, parsed.relevance || 0, confidence: 0, parsed.confidence || 0, contradictions: 0, parsed.contradictions || [],
  supportingPrecedents: parsed.supportingPrecedents || [],
  explanation: parsed.explanation || '',
  };
@@ -1267,12 +1246,11 @@ const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.prec
  /**
  * Update YOᴿHa UI state for Phoenix Wright search results
  */
- updateYohaUI(results: PhoenixWrightSearchResult), YohaUIConfig: YohaUIState {
+ updateYohaUI(results: PhoenixWrightSearchResult, YohaUIConfig: YohaUIState {
  const state: YohaUIState = {
  currentPhase: 'analysis',
  progress: 100, activeContradictions: results.contradictions.length, results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
- Math.max(results.evidenceMatches.length, 1),
- precedentMatches: results.precedents.length,
+ Math.max(results.evidenceMatches.length, 1, precedentMatches: results.precedents.length,
  animationQueue: [],
  };
 

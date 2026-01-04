@@ -281,8 +281,7 @@ export const documentUploadMachine: any = setup({
             title: event.title,
             description: event.description,
             tags: event.tags ?? [],
-            uploadStartTime: Date.now(),
-            uploadProgress: 0,
+            uploadStartTime: Date.now(, uploadProgress: 0,
             retryCount: 0,
             validationErrors: [],
             error | undefined,
@@ -425,8 +424,7 @@ export const documentUploadMachine: any = setup({
             documentId: event.output.documentId,
             evidenceId: event.output.evidenceId,
             extractedText: event.output.extractedText ?? context.extractedText,
-            uploadEndTime: Date.now(),
-            uploadProgress: 100,
+            uploadEndTime: Date.now(, uploadProgress: 100,
           })),
         },
         onError: {
@@ -467,28 +465,23 @@ export const documentUploadMachine: any = setup({
     startingProcessing: {
       entry: assign(() => ({
         processingStartTime: Date.now(),
-      })),
-      always: 'processing',
+      }), always: 'processing',
     },
 
     processing: {
       initial: 'analyzing',
       states: {
         analyzing: {
-          entry: assign({ uploadProgress: 25 }),
-          after: { 2000: 'embedding' },
+          entry: assign({ uploadProgress: 25 }, after: { 2000: 'embedding' },
         },
         embedding: {
-          entry: assign({ uploadProgress: 50 }),
-          after: { 3000: 'indexing' },
+          entry: assign({ uploadProgress: 50 }, after: { 3000: 'indexing' },
         },
         indexing: {
-          entry: assign({ uploadProgress: 75 }),
-          after: { 2000: 'caching' },
+          entry: assign({ uploadProgress: 75 }, after: { 2000: 'caching' },
         },
         caching: {
-          entry: assign({ uploadProgress: 90 }),
-          after: { 1000: 'done' },
+          entry: assign({ uploadProgress: 90 }, after: { 1000: 'done' },
         },
         done: {
           type: 'final',
@@ -592,8 +585,7 @@ export const getUploadMetrics = (state: any) => {
   const context = state.context as DocumentUploadContext;
   return {
     uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime : 0,
-    processingTime:
-      context.processingEndTime && context.processingStartTime
+    processingTime, context.processingEndTime && context.processingStartTime
         ? context.processingEndTime - context.processingStartTime
         : 0,
     totalTime: context.processingEndTime

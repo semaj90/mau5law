@@ -94,10 +94,10 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  const results = await semanticSearch(options.query);
  // Transform to our result format
  return results.map((result: SemanticSearchResult, index) => ({
- content: result.content || result.text || String(result),
- relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
+ content, result.content || result.text || String(result),
+ relevanceScore, result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',
- filePath: result.file || result.path: lineNumber: result.line,
+ filePath, result.file || result.path: lineNumber: result.line,
  context: {
  caseId: options.caseId: options.query: new Date().toISOString(),
  ...result.metadata}}))} catch (error: Error | unknown) {
@@ -138,8 +138,7 @@ export class Context7AgentOrchestrator {
  this.triggers.set(trigger.todoId, completedTrigger);
  // Log the completion
  this.logAuditEntry({
- timestamp: new Date().toISOString(),
- step: `agent_trigger_${trigger.action}`,
+ timestamp: new Date().toISOString(, step: `agent_trigger_${trigger.action}`,
  status: 'ok',
  message: `Agent completed ${trigger.action} for ${trigger.todoId}`,
  agentTriggered: true});
@@ -147,8 +146,7 @@ export class Context7AgentOrchestrator {
  const failedTrigger: AgentTrigger = { ...trigger, status: 'done', result: `Error: ${error}` };
  this.triggers.set(trigger.todoId, failedTrigger);
  this.logAuditEntry({
- timestamp: new Date().toISOString(),
- step: `agent_trigger_${trigger.action}`,
+ timestamp: new Date().toISOString(, step: `agent_trigger_${trigger.action}`,
  status: 'error',
  message: `Agent failed ${trigger.action} for ${trigger.todoId}: ${error}`,
  agentTriggered: true});

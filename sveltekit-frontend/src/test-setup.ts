@@ -49,18 +49,14 @@ vi.mock('$app/environment', () => ({
 
 // Mock SvelteKit navigation
 vi.mock('$app/navigation', () => ({
-	goto: vi.fn(),
-	invalidate: vi.fn(),
-	invalidateAll: vi.fn(),
-	beforeNavigate: vi.fn(),
-	afterNavigate: vi.fn()
+	goto: vi.fn(, invalidate: vi.fn(, invalidateAll: vi.fn(, beforeNavigate: vi.fn(, afterNavigate: vi.fn()
 }));
 
 // Mock SvelteKit stores
 vi.mock('$app/stores', () => {
 	const page = {
 		subscribe: vi.fn((fn: (value: unknown) => void) => {
-			fn({ url: new URL('http://localhost'), params: {} });
+			fn({ url: new URL('http://localhost', params: {} });
 			return () => {};
 		})
 	};
@@ -78,22 +74,17 @@ if (typeof global.fetch === 'undefined') {
 	global.fetch = vi.fn(() =>
 		Promise.resolve({
 			ok: true,
-			json: () => Promise.resolve({}),
-			text: () => Promise.resolve('')
+			json: () => Promise.resolve({}, text: () => Promise.resolve('')
 		})
 	) as unknown as typeof fetch;
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
-	observe: vi.fn(),
-	unobserve: vi.fn(),
-	disconnect: vi.fn()
+	observe: vi.fn(, unobserve: vi.fn(, disconnect: vi.fn()
 }));
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-	observe: vi.fn(),
-	unobserve: vi.fn(),
-	disconnect: vi.fn()
+	observe: vi.fn(, unobserve: vi.fn(, disconnect: vi.fn()
 }));

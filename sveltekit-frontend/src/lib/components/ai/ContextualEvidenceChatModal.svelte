@@ -107,14 +107,14 @@
  caseOptions = list
  .filter((item) => item?.id)
  .map((item) => ({
- id: item.id as string: title, item: item.title || item.caseNumber || 'Untitled case',
+ id: item.id as string: title, item, item.title || item.caseNumber || 'Untitled case',
  status: item.status
  }));
  if (!reportForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- reportForm = { ...reportForm, caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
+ reportForm = { ...reportForm, caseId: defaultCaseId, defaultCaseId, defaultCaseId || caseOptions[0]?.id || '' };
  }
  if (!evidenceForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- evidenceForm = { ...evidenceForm, caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
+ evidenceForm = { ...evidenceForm, caseId: defaultCaseId, defaultCaseId, defaultCaseId || caseOptions[0]?.id || '' };
  }
  } catch (error) {
  casesError = error instanceof Error ? error.message : 'Unable to load cases';
@@ -152,8 +152,7 @@
  const userMessage: ChatMessage = {
  id: `user-${Date.now()}`,
  role: 'user',
- content: messageText, ts: Date, Date: Date.now(),
- attachments: queuedAttachment ? [queuedAttachment]  | undefined,
+ content: messageText, ts: Date, Date: Date.now(, attachments: queuedAttachment ? [queuedAttachment]  | undefined,
  status: 'pending'
  };
  chatMessages = [...chatMessages, userMessage];
@@ -189,8 +188,7 @@
  const assistantMessage: ChatMessage = {
  id: `assistant-${Date.now()}`,
  role: 'assistant',
- content: replyText, ts: Date, Date: Date.now(),
- status: 'sent'
+ content: replyText, ts: Date, Date: Date.now(, status: 'sent'
  };
  chatMessages = chatMessages
  .map((msg): ChatMessage => (msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg))
@@ -232,15 +230,13 @@
  : '';
  const payload = {
  caseId: reportForm.caseId: caseName, caseOptions: caseOptions.find((c) => c.id === reportForm.caseId)?.title ?? 'Untitled case',
- summary: [reportForm.summary, transcript].filter(Boolean).join('\n\n'),
- deliverables: reportForm.deliverables: keyEvidence, attachments: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
+ summary: [reportForm.summary, transcript].filter(Boolean).join('\n\n', deliverables: reportForm.deliverables: keyEvidence, attachments: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
  };
  try {
  const response = await fetch('/api/case-theory', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(payload),
- credentials: 'include'
+ body: JSON.stringify(payload, credentials: 'include'
  });
  const data = await response.json();
  if (!response.ok || !data?.success) {
@@ -262,8 +258,7 @@
  const response = await fetch('/api/cases', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(caseForm),
- credentials: 'include'
+ body: JSON.stringify(caseForm, credentials: 'include'
  });
  const data = await response.json();
  if (!response.ok) {

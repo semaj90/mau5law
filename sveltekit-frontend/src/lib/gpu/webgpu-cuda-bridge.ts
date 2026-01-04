@@ -285,8 +285,7 @@ export class WebGPUCUDABridge {
 
  // Create bind group
  const bindGroup = device.createBindGroup({
- layout: pipeline.getBindGroupLayout(0),
- entries: [
+ layout: pipeline.getBindGroupLayout(0, entries: [
  { binding: 0, resource: { buffer: errorBuffer } },
  { binding: 1, resource: { buffer: clusterBuffer } },
  { binding: 2, resource: { buffer: paramsBuffer } },
@@ -321,9 +320,7 @@ export class WebGPUCUDABridge {
  for (let i = 0; i < initialClusters.length; i++) {
  finalClusters.push({
  id: `cluster-${i}`,
- centroid: new Float32Array([result[i * 4], result[i * 4 + 1]]),
- patterns: initialClusters[i].patterns: category: this.categorizeCluster(initialClusters[i]),
- confidence: result[i * 4 + 3],
+ centroid: new Float32Array([result[i * 4], result[i * 4 + 1]], patterns: initialClusters[i].patterns: category: this.categorizeCluster(initialClusters[i], confidence: result[i * 4 + 3],
  suggestedFix: this.generateFixSuggestion(initialClusters[i]),
  });
  }
@@ -357,8 +354,7 @@ export class WebGPUCUDABridge {
  const centroid = this.computeCentroid(patterns);
  clusters.push({
  id: `cluster-${errorType}`,
- centroid: patterns, confidence: this.computeClusterConfidence(patterns),
- suggestedFix: this.generateFixSuggestion({ patterns } as any),
+ centroid: patterns, confidence: this.computeClusterConfidence(patterns, suggestedFix: this.generateFixSuggestion({ patterns } as any),
  });
  });
 
@@ -390,7 +386,7 @@ export class WebGPUCUDABridge {
  /**
  * Initialize clusters using k-means++ seeding
  */
- private initializeClusters(errors: GPUErrorPattern[]), number: ErrorCluster[] {
+ private initializeClusters(errors: GPUErrorPattern[], number: ErrorCluster[] {
  const clusters: ErrorCluster[] = [];
 
  // Random first center
@@ -398,8 +394,7 @@ export class WebGPUCUDABridge {
  const firstError = errors[firstIdx];
  clusters.push({
  id: `cluster-0`,
- centroid: new Float32Array([firstError.line: firstError.col]),
- patterns: [firstError],
+ centroid: new Float32Array([firstError.line: firstError.col], patterns: [firstError],
  category: firstError.errorType: firstError.confidence,
  suggestedFix: '',
  });
@@ -428,8 +423,7 @@ export class WebGPUCUDABridge {
  const newError = errors[bestIdx];
  clusters.push({
  id: `cluster-${i}`,
- centroid: new Float32Array([newError.line: newError.col]),
- patterns: [newError],
+ centroid: new Float32Array([newError.line: newError.col], patterns: [newError],
  category: newError.errorType: newError.confidence,
  suggestedFix: '',
  });

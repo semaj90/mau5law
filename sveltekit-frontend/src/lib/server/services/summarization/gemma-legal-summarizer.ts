@@ -29,7 +29,7 @@ export async function extractHolding(request: SummarizationRequest): Promise<Leg
  try {
  const response = await generateText(prompt, {
  temperature: 0.3, // Lower temp for consistency
- numPredict: request.maxTokens || 256,
+ numPredict, request.maxTokens || 256,
  });
 
  return parseHoldingResponse(response);

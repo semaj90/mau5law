@@ -82,8 +82,7 @@ export class FeatureFlagEnforcer {
  private static logDeniedRequest(context: NamespaceContext): void {
  if (context.feature === 'errorBrain') {
  featureLogger.logErrorBrain({
- timestamp: new Date(),
- operation: 'request_denied',
+ timestamp: new Date(, operation: 'request_denied',
  details: {
  path: context.path,
  reason: 'feature_disabled',
@@ -93,8 +92,7 @@ export class FeatureFlagEnforcer {
  });
  } else {
  featureLogger.logLegalAi({
- timestamp: new Date(),
- operation: 'request_denied',
+ timestamp: new Date(, operation: 'request_denied',
  details: {
  path: context.path,
  reason: 'feature_disabled',
@@ -112,8 +110,7 @@ export class FeatureFlagEnforcer {
  if (context.logLevel === 'debug') {
  if (context.feature === 'errorBrain') {
  featureLogger.logErrorBrain({
- timestamp: new Date(),
- operation: 'request_allowed',
+ timestamp: new Date(, operation: 'request_allowed',
  details: {
  path: context.path,
  },
@@ -121,8 +118,7 @@ export class FeatureFlagEnforcer {
  });
  } else {
  featureLogger.logLegalAi({
- timestamp: new Date(),
- operation: 'request_allowed',
+ timestamp: new Date(, operation: 'request_allowed',
  details: {
  path: context.path,
  },

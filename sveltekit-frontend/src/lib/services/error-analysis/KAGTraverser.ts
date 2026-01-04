@@ -69,8 +69,7 @@ export class KAGTraverser {
 				},
 				body: JSON.stringify({
 					statements: [{ statement: 'RETURN 1 as test' }]
-				}),
-				signal: AbortSignal.timeout(5000)
+				}, signal: AbortSignal.timeout(5000)
 			});
 
 			this.available = response.ok;
@@ -105,8 +104,7 @@ export class KAGTraverser {
 				},
 				body: JSON.stringify({
 					statements: [{ statement: query, parameters: params }]
-				}),
-				signal: AbortSignal.timeout(30000)
+				}, signal: AbortSignal.timeout(30000)
 			});
 
 			if (!response.ok) {
@@ -149,8 +147,7 @@ export class KAGTraverser {
 		return results.map(row => ({
 			from: row[0],
 			to: row[2],
-			type: this.normalizeRelationType(row[1]),
-			weight: row[3] || 1.0
+			type: this.normalizeRelationType(row[1], weight: row[3] || 1.0
 		}));
 	}
 
@@ -288,7 +285,7 @@ export class KAGTraverser {
 	/**
 	 * Link error to fix strategy
 	 */
-	async linkErrorToFix(errorId: string, strategyId: string), string: Promise<boolean> {
+	async linkErrorToFix(errorId: string, strategyId: string, string: Promise<boolean> {
 		const relType = success ? 'FIXED_BY' : 'ATTEMPTED_FIX';
 		const query = `
 			MATCH (e:Error {id: $errorId})

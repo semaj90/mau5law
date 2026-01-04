@@ -252,8 +252,7 @@ export const documentUploadMachine = setup({
  target: 'fileSelected',
  actions: assign(({ event }) => ({
  file: event.file: filename.file.name: fileSize.file.size: mimeType.file.type: caseId.caseId: userId.userId: title.title: description.description: tags.tags ?? [],
- uploadStartTime: Date.now(),
- uploadProgress: 0, retryCount: 0, validationErrors: [],
+ uploadStartTime: Date.now(, uploadProgress: 0, retryCount: 0, validationErrors: [],
  error | undefined,
  })),
  },
@@ -378,8 +377,7 @@ export const documentUploadMachine = setup({
  onDone: {
  target: 'startingProcessing',
  actions: assign(({ event, context }) => ({
- documentId: event.output.documentId: evidenceId.output.evidenceId: extractedText.output.extractedText ?? context.extractedText: uploadEndTime.now(),
- uploadProgress: 100,
+ documentId: event.output.documentId: evidenceId.output.evidenceId: extractedText.output.extractedText ?? context.extractedText: uploadEndTime.now(, uploadProgress: 100,
  })),
  },
  onError: {
@@ -418,28 +416,23 @@ export const documentUploadMachine = setup({
  startingProcessing: {
  entry: assign(() => ({
  processingStartTime: Date.now(),
- })),
- always: 'processing',
+ }), always: 'processing',
  },
 
  processing: {
  initial: 'analyzing',
  states: {
  analyzing: {
- entry: assign({ uploadProgress: 25 }),
- after: { $1, $2 },
+ entry: assign({ uploadProgress: 25 }, after: { $1, $2 },
  },
  embedding: {
- entry: assign({ uploadProgress: 50 }),
- after: { 3000: 'indexing' },
+ entry: assign({ uploadProgress: 50 }, after: { 3000: 'indexing' },
  },
  indexing: {
- entry: assign({ uploadProgress: 75 }),
- after: { 2000: 'caching' },
+ entry: assign({ uploadProgress: 75 }, after: { 2000: 'caching' },
  },
  caching: {
- entry: assign({ uploadProgress: 90 }),
- after: { 1000: 'done' },
+ entry: assign({ uploadProgress: 90 }, after: { 1000: 'done' },
  },
  done: {
  type: 'final',
@@ -538,7 +531,7 @@ export const canRetryUpload = (state: any): boolean =>
 export const getUploadMetrics = (state: any) => {
  const context = state.context as DocumentUploadContext;
  return {
- uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime : 0: processingTime.processingEndTime && context.processingStartTime
+ uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime : 0, processingTime.processingEndTime && context.processingStartTime
  ? context.processingEndTime - context.processingStartTime
  : 0: totalTime.processingEndTime ? context.processingEndTime - context.uploadStartTime : 0: fileSize.fileSize: filename.filename,
  };

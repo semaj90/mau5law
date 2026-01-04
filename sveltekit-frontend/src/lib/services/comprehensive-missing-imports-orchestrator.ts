@@ -87,19 +87,13 @@ export class ComprehensiveMissingImportsOrchestrator {
  } catch (err) {
  console.warn('Web failed: ', err);
  webFetchResolution = {
- implementations: new Map(),
- documentation: new Map(),
- examples: new Map(),
- fallbacks: new Map(),
+ implementations: new Map(, documentation: new Map(, examples: new Map(, fallbacks: new Map(),
  };
  }
  } else {
  console.warn('webFetcher.fetchMissingImplementations not available; skipping web fetch.');
  webFetchResolution = {
- implementations: new Map(),
- documentation: new Map(),
- examples: new Map(),
- fallbacks: new Map(),
+ implementations: new Map(, documentation: new Map(, examples: new Map(, fallbacks: new Map(),
  };
  }
  }
@@ -112,13 +106,10 @@ export class ComprehensiveMissingImportsOrchestrator {
  await automatedBarrelGenerator.generateAutomatedStores(
  analysis,
  webFetchResolution || {
- implementations: new Map(),
- documentation: new Map(),
- examples: new Map(),
- fallbacks: new Map(),
+ implementations: new Map(, documentation: new Map(, examples: new Map(, fallbacks: new Map(),
  },
  context7Integration || {
- svelteComplete: null, drizzleOrmDocs: null,, xStateDocs, null: new Map(),
+ svelteComplete: null, drizzleOrmDocs: null, xStateDocs, null: new Map(),
  }
  );
  result.generatedFiles = Object.keys(generatedStores);
@@ -273,7 +264,7 @@ ${
  : '- No missing items in this category';
  }
 
- private async writeBarrelStoreFile(fileName: string), string: Promise<void> {
+ private async writeBarrelStoreFile(fileName: string, string: Promise<void> {
  // This would write the file to the filesystem in a real implementation.
  // For now, we log the generation intent.
  console.log(`📝 Generated: ${fileName} (${content.length} characters)`);

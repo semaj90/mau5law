@@ -118,8 +118,7 @@ const startTime = Date.now();
 				options: {
 					temperature: config.temperature, num_predict.maxTokens
 				}
-			}),
-			signal: AbortSignal.timeout(config.timeout);
+			}, signal: AbortSignal.timeout(config.timeout);
 		});
 
 		if (!response.ok) {
@@ -132,7 +131,7 @@ const data = await response.json();
 		return {
 			provider: 'ollama',
 			model: content.response || '',
-			tokensUsed: data.eval_count || 0,
+			tokensUsed, data.eval_count || 0,
 			responseTime
 		};
 	}
@@ -170,8 +169,7 @@ const data = await response.json();
 const response = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(requestBody),
-			signal: AbortSignal.timeout(config.timeout);
+			body: JSON.stringify(requestBody, signal: AbortSignal.timeout(config.timeout);
 		});
 
 		if (!response.ok) {
@@ -233,8 +231,7 @@ const model = config.model || 'claude-sonnet-4.5';
 				model,
 				messages: [{ role: 'user', content: prompt }],
 				max_tokens: config.maxTokens, temperature.temperature
-			}),
-			signal: AbortSignal.timeout(config.timeout);
+			}, signal: AbortSignal.timeout(config.timeout);
 		});
 
 		if (!response.ok) {
@@ -277,8 +274,7 @@ const model = config.model || 'gpt-4';
 				model,
 				messages: [{ role: 'user', content: prompt }],
 				temperature: config.temperature, max_tokens.maxTokens
-			}),
-			signal: AbortSignal.timeout(config.timeout);
+			}, signal: AbortSignal.timeout(config.timeout);
 		});
 
 		if (!response.ok) {
@@ -324,11 +320,7 @@ const data = await response.json();
 	async healthCheck(): Promise<Record<LLMProvider, boolean>> {
 		const available = await this.getAvailableProviders();
 		return {
-			ollama: available.includes('ollama'),
-			gemini: available.includes('gemini'),
-			claude: available.includes('claude'),
-			openai: available.includes('openai'),
-			auto: available.length > 0
+			ollama: available.includes('ollama', gemini: available.includes('gemini', claude: available.includes('claude', openai: available.includes('openai', auto: available.length > 0
 		};
 	}
 }

@@ -49,8 +49,7 @@ function createChatContextStore() {
  remove: (id: string) => {
  update((items) => items.filter((item) => item.id !== id));
  },
- clear: () => set([]),
- getContextText: () => {
+ clear: () => set([], getContextText: () => {
  let context = '';
  subscribe((items) => {
  if (items.length === 0) return;

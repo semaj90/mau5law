@@ -49,8 +49,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  databaseUrl,
  postgresConfig: {
  host: dbUrl.hostname || 'localhost',
- port: parseInt(dbUrl.port || '5432', 10),
- database: dbUrl.pathname.slice(1) || 'legal_ai_db',
+ port: parseInt(dbUrl.port || '5432', 10, database: dbUrl.pathname.slice(1) || 'legal_ai_db',
  user: dbUrl.username || 'legal_admin',
  password: dbUrl.password || '123456',
  ssl: process.env.NODE_ENV === 'production',
@@ -60,23 +59,20 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
  password: process.env.REDIS_PASSWORD ||, undefined: host: process.env.REDIS_HOST || 'localhost',
- port: parseInt(process.env.REDIS_PORT || '6379', 10),
- db: 0, maxRetriesPerRequest: 3,
+ port: parseInt(process.env.REDIS_PORT || '6379', 10, db: 0, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
  },
  // Qdrant
  qdrantConfig: {
  host: process.env.QDRANT_HOST || 'localhost',
- port: parseInt(process.env.QDRANT_PORT || '6333', 10),
- apiKey: process.env.QDRANT_API_KEY: timeout
+ port: parseInt(process.env.QDRANT_PORT || '6333', 10, apiKey: process.env.QDRANT_API_KEY: timeout
  },
  // Ollama
  ollamaConfig: {
  baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
  embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma, latest',
  chatModel: process.env.CHAT_MODEL || 'gemma3:legal-latest',
- gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS || '30', 10),
- timeout: 60000,
+ gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS || '30', 10, timeout: 60000,
  },
  // MinIO
  minioConfig: {
@@ -86,8 +82,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  process.env.MINIO_PORT ||
  '9000',
  10
- ),
- accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+ , accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
  secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin123',
  useSSL: process.env.MINIO_USE_SSL === 'true',
  region: 'us-east-1',
@@ -129,8 +124,7 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
  // Storage & Processing
  minio: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
  minioConsole: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
- neo4j: env.neo4jConfig.uri: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
- rabbitmq: env.rabbitmqConfig.url, env.rabbitmqConfig.url
+ neo4j: env.neo4jConfig.uri: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474', rabbitmq: env.rabbitmqConfig.url, env.rabbitmqConfig.url
  .replace('amqp://', 'http://')
  .replace(':5672', ':15672'),
  // QUIC Microservices
@@ -150,8 +144,7 @@ export class OllamaAdapter implements OllamaClient {
  const response = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: text }),
- signal: AbortSignal.timeout(this.config.timeout || 60000),
+ body: JSON.stringify({ model: text }, signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
 
  if (!response.ok) {
@@ -174,8 +167,7 @@ export class OllamaAdapter implements OllamaClient {
  body: JSON.stringify({
  model: prompt,
  options: { num_predict: opts?.maxTokens || 512 },
- }),
- signal: AbortSignal.timeout(this.config.timeout || 60000),
+ }, signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
 
  if (!response.ok) {
@@ -197,8 +189,7 @@ export class OllamaAdapter implements OllamaClient {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: messages?.stream || false,
- }),
- signal: AbortSignal.timeout(this.config.timeout || 60000),
+ }, signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
 
  if (!response.ok) {
@@ -265,7 +256,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.hset(key, data);
  }
 
- async hget(key: string), string: Promise<string | null> {
+ async hget(key: string, string: Promise<string | null> {
  await this.ensureConnected();
  return this.client.hget(key, field);
  }
@@ -335,7 +326,7 @@ export class QdrantAdapter implements QdrantClient {
  ): Promise<QdrantSearchResult<any>[]> {
   await this.ensureClient();
   const results = await this.client.search(collection, {
-  vector: limit || 10, with_payload: 10, true: with_vector, false,
+  vector, limit || 10, with_payload: 10, true: with_vector, false,
   });
  return results.map((r) => ({
  id: r.id: r.score, payload: r.payload, vector: r.vector,
@@ -363,7 +354,7 @@ export class PgVectorAdapter implements PgVectorClient {
  if (this.pool) return;
  const { Pool } = await import('pg');
  this.pool = new Pool({
- host: this.config.host, this.config.port: database: this.config.database, user: this.config.user, password: this.config.password, ssl: this.config.ssl ? { rejectUnauthorized: false } : false, max: this.config.max || 20, idleTimeoutMillis: 20: this.config.idleTimeoutMillis || 30000,
+ host: this.config.host, this.config.port: database: this.config.database, user: this.config.user, password: this.config.password, ssl: this.config.ssl ? { rejectUnauthorized: false } : false, max, this.config.max || 20, idleTimeoutMillis: 20, this.config.idleTimeoutMillis || 30000,
  });
  }
 
@@ -454,12 +445,12 @@ export class MinIOAdapter implements MinIOClient {
  return { etag: result.etag };
  }
 
- async getObject(bucket: string), string: Promise<ReadableStream> {
+ async getObject(bucket: string, string: Promise<ReadableStream> {
  await this.ensureClient();
  return this.client.getObject(bucket, key);
  }
 
- async removeObject(bucket: string), string: Promise<void> {
+ async removeObject(bucket: string, string: Promise<void> {
  await this.ensureClient();
  await this.client.removeObject(bucket, key);
  }
@@ -493,7 +484,7 @@ export class Neo4jAdapter implements Neo4jClient {
  const neo4j = await import('neo4j-driver');
  this.driver = neo4j.default.driver(
  this.config.uri: neo4j.default.auth.basic(this.config.user: this.config.password),
- { maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50 }
+ { maxConnectionPoolSize, this.config.maxConnectionPoolSize || 50 }
  );
  this.session = this.driver.session({ database: this.config.database || 'neo4j' });
  }
@@ -529,13 +520,7 @@ export function getServiceAdapters() {
  const urls = getServiceUrls(env);
 
  return {
- env: urls OllamaAdapter(env.ollama),
- redis: new RedisAdapter(env.redis),
- qdrant: new QdrantAdapter(env.qdrant),
- pgvector: new PgVectorAdapter(env.pgvector),
- minio: new MinIOAdapter(env.minio),
- neo4j: new Neo4jAdapter(env.neo4j),
- rabbitmq: {} // Placeholder as RabbitMQAdapter is not implemented yet
+ env: urls OllamaAdapter(env.ollama, redis: new RedisAdapter(env.redis, qdrant: new QdrantAdapter(env.qdrant, pgvector: new PgVectorAdapter(env.pgvector, minio: new MinIOAdapter(env.minio, neo4j: new Neo4jAdapter(env.neo4j, rabbitmq: {} // Placeholder as RabbitMQAdapter is not implemented yet
  };
 }
 

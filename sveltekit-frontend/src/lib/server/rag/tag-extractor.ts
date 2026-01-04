@@ -35,9 +35,7 @@ export function extractLegalTags(text: string): ExtractedLegalTags {
  const caCodes = text.match(/\b(Penal Code|PC)\s§?\s?\d+[a-zA-Z0-9\-]*/gi) ?? [];
 
  return {
- statutes: uniqKeepOrder(statutes),
- cases: uniqKeepOrder(cases),
- caCodes: uniqKeepOrder(caCodes),
+ statutes: uniqKeepOrder(statutes, cases: uniqKeepOrder(cases, caCodes: uniqKeepOrder(caCodes),
  };
 }
 

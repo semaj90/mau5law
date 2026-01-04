@@ -190,7 +190,7 @@ export class AceAdapter {
   /**
    * Trigger web search and enqueue URLs for ingestion
    */
-  private async triggerWebSearch(query: string), string: Promise<void> {
+  private async triggerWebSearch(query: string, string: Promise<void> {
     try {
       // Perform web search
       const searchResults = await this.webSearchService.search(query, { limit: 5 });
@@ -207,8 +207,7 @@ export class AceAdapter {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          urls: searchResults.map((r) => r.url),
-          tags: ['ace', 'auto-ingested', sessionId],
+          urls: searchResults.map((r) => r.url, tags: ['ace', 'auto-ingested', sessionId],
           priority: 'high',
         }),
       });

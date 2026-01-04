@@ -185,8 +185,7 @@ export class VectorSearchClient {
 					'Content-Type': 'application/json',
 					'Accept': 'application/json'
 				},
-				body: JSON.stringify(request),
-				signal: AbortSignal.timeout(this.timeout)
+				body: JSON.stringify(request, signal: AbortSignal.timeout(this.timeout)
 			});
 
 			if (!response.ok) {
@@ -223,8 +222,7 @@ export class VectorSearchClient {
 					'Content-Type': 'application/json',
 					'Accept': 'application/json'
 				},
-				body: JSON.stringify(batchRequest),
-				signal: AbortSignal.timeout(this.timeout * 2)
+				body: JSON.stringify(batchRequest, signal: AbortSignal.timeout(this.timeout * 2)
 			});
 
 			if (!response.ok) {
@@ -251,8 +249,7 @@ export class VectorSearchClient {
 					const fallbackRequest: VectorSearchRequest = {
 						...request,
 						params: {
-							...request.params, limit: Math.min(request.params?.limit || 10, 5),
-							include_embeddings: false
+							...request.params, limit: Math.min(request.params?.limit || 10, 5, include_embeddings: false
 						}
 					};
 					return await this.searchJson(fallbackRequest);

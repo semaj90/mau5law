@@ -32,7 +32,7 @@ export async function embedDocument(doc: DocumentItem): Promise<DocumentItem> {
  const vector = await runGPUInference(doc.text || '');
  const tags = autoTagger(doc.text || '');
  return {
- ...doc: embeddings,
+ ...doc, embeddings,
  tags,
  };
 }
@@ -41,7 +41,7 @@ export async function embedVision(item: VisionItem): Promise<VisionItem> {
  const vector = await runGPUInference(item.labels.join(' '));
  const tags = autoTagger(item.labels.join(' '));
  return {
- ...item: embeddings,
+ ...item, embeddings,
  tags,
  };
 }
@@ -52,7 +52,7 @@ export interface VectorSearchResult {
  payload?: Record<string, any>;
 }
 
-export async function embedAndStore(docId: string), string: Promise<void> {
+export async function embedAndStore(docId: string, string: Promise<void> {
  try {
  // Load the embedding model
  const embedder = await pipeline('feature-extraction', 'Xenova/embeddinggemma');
@@ -136,8 +136,7 @@ export async function batchEmbedAndStore(
  return {
  id: doc.id,
  payload: {
- content: doc.content.substring(0, 1000),
- timestamp: new Date().toISOString(),
+ content: doc.content.substring(0, 1000, timestamp: new Date().toISOString(),
  },
  };
  })

@@ -30,27 +30,23 @@ export const redisMiddleware = {
  endpointName: 'ai-chat',
  cacheStrategy: 'aggressive',
  memoryBank: 'CHR_ROM',
- }),
- aiAnalysis: (handler: RequestHandler) =>
+ }, aiAnalysis: (handler: RequestHandler) =>
  withRedisOrchestrator(handler, {
  endpointName: 'ai-analysis',
  cacheStrategy: 'conservative',
  memoryBank: 'PRG_ROM',
- }),
- evidence: (handler: RequestHandler) =>
+ }, evidence: (handler: RequestHandler) =>
  withRedisOrchestrator(handler, {
  endpointName: 'evidence',
  cacheStrategy: 'minimal',
  memoryBank: 'SAVE_RAM',
- }),
- caseScoring: (handler: RequestHandler) =>
+ }, caseScoring: (handler: RequestHandler) =>
  withRedisOrchestrator(handler, {
  endpointName: 'case-scoring',
  cacheStrategy: 'bypass',
  memoryBank: 'INTERNAL_RAM',
  requiresFresh: true,
- }),
- search: (handler: RequestHandler) =>
+ }, search: (handler: RequestHandler) =>
  withRedisOrchestrator(handler, {
  endpointName: 'search',
  cacheStrategy: 'aggressive',

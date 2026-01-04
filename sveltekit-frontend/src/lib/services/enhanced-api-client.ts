@@ -558,51 +558,19 @@ export const apiClient = new LegalAIApiClient();
 
 // Export Zod schemas for form validation
 export const CreateCaseSchema = z.object({
- title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
- description: z.string().optional(),
- caseNumber: z.string().max(100, 'Case number too long').optional(),
- status: z.enum(['open', 'closed', 'pending', 'archived']).default('open'),
- priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
- category: z.string().optional(),
- metadata: z.record(z.unknown()).optional(),
+ title: z.string().min(1, 'Title is required').max(255, 'Title too long', description: z.string().optional(, caseNumber: z.string().max(100, 'Case number too long').optional(, status: z.enum(['open', 'closed', 'pending', 'archived']).default('open', priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium', category: z.string().optional(, metadata: z.record(z.unknown()).optional(),
 });
 
 export const CreateEvidenceSchema = z.object({
- caseId: z.string().uuid('Invalid case ID'),
- title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
- evidenceType: z.string().min(1, 'Evidence type is required'),
- description: z.string().optional(),
- fileUrl: z.string().url('Invalid file URL').optional(),
- fileName: z.string().optional(),
- fileSize: z.number().int().nonnegative('File size must be non-negative').optional(),
- mimeType: z.string().optional(),
- hash: z.string().optional(),
- tags: z.array(z.string()).optional().default([]),
- chainOfCustody: z.array(z.unknown()).optional().default([]),
- aiSummary: z.string().optional(),
- summary: z.string().optional(),
- isAdmissible: z.boolean().optional(),
- confidentialityLevel: z.string().optional(),
+ caseId: z.string().uuid('Invalid case ID', title: z.string().min(1, 'Title is required').max(255, 'Title too long', evidenceType: z.string().min(1, 'Evidence type is required', description: z.string().optional(, fileUrl: z.string().url('Invalid file URL').optional(, fileName: z.string().optional(, fileSize: z.number().int().nonnegative('File size must be non-negative').optional(, mimeType: z.string().optional(, hash: z.string().optional(, tags: z.array(z.string()).optional().default([], chainOfCustody: z.array(z.unknown()).optional().default([], aiSummary: z.string().optional(, summary: z.string().optional(, isAdmissible: z.boolean().optional(, confidentialityLevel: z.string().optional(),
 });
 
 export const CreateReportSchema = z.object({
- title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
- description: z.string().optional(),
- reportType: z.string().min(1, 'Report type is required'),
- caseId: z.string().uuid('Invalid case ID').optional(),
- content: z.string().optional(),
- status: z.string().optional(),
- metadata: z.record(z.unknown()).optional(),
+ title: z.string().min(1, 'Title is required').max(255, 'Title too long', description: z.string().optional(, reportType: z.string().min(1, 'Report type is required', caseId: z.string().uuid('Invalid case ID').optional(, content: z.string().optional(, status: z.string().optional(, metadata: z.record(z.unknown()).optional(),
 });
 
 export const CreatePersonOfInterestSchema = z.object({
- name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
- description: z.string().optional(),
- riskLevel: z.string().min(1, 'Risk level is required'),
- caseId: z.string().uuid('Invalid case ID').optional(),
- contactInfo: z.record(z.unknown()).optional(),
- aliases: z.array(z.string()).optional().default([]),
- metadata: z.record(z.unknown()).optional(),
+ name: z.string().min(1, 'Name is required').max(255, 'Name too long', description: z.string().optional(, riskLevel: z.string().min(1, 'Risk level is required', caseId: z.string().uuid('Invalid case ID').optional(, contactInfo: z.record(z.unknown()).optional(, aliases: z.array(z.string()).optional().default([], metadata: z.record(z.unknown()).optional(),
 });
 
 // Type exports for forms
