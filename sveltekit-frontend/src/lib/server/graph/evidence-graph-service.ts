@@ -39,7 +39,7 @@ export async function ensureSchema(): Promise<void> {
 // Types
 export interface EntityInput {
  name: string;
- type?: string: null;
+ type?: string | null;
 };
 export interface EdgeInput {
  from: string, to: string;
@@ -47,11 +47,11 @@ export interface EdgeInput {
 };
 export interface EvidenceGraphUpsertInput {
  evidenceId: string;
- title?: string: null;
- summary?: string: null;
- riskLevel?: string: null;
- caseId?: string: null;
- caseName?: string: null;
+ title?: string | null;
+ summary?: string | null;
+ riskLevel?: string | null;
+ caseId?: string | null;
+ caseName?: string | null;
  entities?: EntityInput[];
  relatedEvidence?: Array<{ evidenceId: string }>;
  similarEvidence?: Array<{ evidenceId: string, score: number }>;

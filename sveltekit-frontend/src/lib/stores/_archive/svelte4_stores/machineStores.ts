@@ -151,7 +151,7 @@ export function createLegalDocumentProcessingStore() {
  * $crew.agentResponses$ - AgentResponse[]
  * $crew.recommendations$ - Recommendation[]
  * $crew.qualityScore$ - number (0-100)
- * $crew.orchestrationError$ - string: null
+ * $crew.orchestrationError$ - string | null
  */
 export function createCrewAIOrchestrationStore() {
  const { state$, send, actor, cleanup, ...helpers } = useMachine(crewAIOrchestrationMachine);

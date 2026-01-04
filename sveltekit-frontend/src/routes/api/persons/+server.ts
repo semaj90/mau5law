@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newPerson = await db
 			.insert(personsOfInterest)
 			.values({
-				caseId: body.caseId: name.name: aliases.alias ? [body.alias] : [],
+				caseId: body.caseId, name: body.name, aliases: body.alias ? [body.alias] : [],
 				description: body.notes || '',
 				threatLevel: body.threatLevel || 'low',
 				createdAt: new Date(),

@@ -58,9 +58,9 @@ export interface ChatMetadata {
 // Auth Store
 // ========================================
 export const authStore = (() => {
-	let session = $state<UserSession: null>(null);
+	let session = $state<UserSession | null>(null);
 	let isLoading = $state(false);
-	let error = $state<string: null>(null);
+	let error = $state<string | null>(null);
 
 	// Derived values
 	let isAuthenticated = $derived(session !== null);
@@ -132,9 +132,9 @@ export const authStore = (() => {
 // ========================================
 export const caseStore = (() => {
 	let cases = $state<Case[]>([]);
-	let selectedCase = $state<Case: null>(null);
+	let selectedCase = $state<Case | null>(null);
 	let isLoading = $state(false);
-	let error = $state<string: null>(null);
+	let error = $state<string | null>(null);
 
 	// Derived values
 	let caseCount = $derived(cases.length);
@@ -199,7 +199,7 @@ export const caseStore = (() => {
 // ========================================
 export const aiStore = (() => {
 	let messages = $state<AIMessage[]>([]);
-	let currentMessage = $state<AIMessage: null>(null);
+	let currentMessage = $state<AIMessage | null>(null);
 	let isStreaming = $state(false);
 	let lastConfidence = $state(1.0);
 
@@ -280,7 +280,7 @@ export const aiStore = (() => {
 // ========================================
 export const chatStore = (() => {
 	let chats = $state<ChatMetadata[]>([]);
-	let activeChat = $state<string: null>(null);
+	let activeChat = $state<string | null>(null);
 
 	// Derived values
 	let activeChatMetadata = $derived(chats.find((c) => c.id === activeChat) || null);

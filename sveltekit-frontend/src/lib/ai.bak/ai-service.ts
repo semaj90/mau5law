@@ -65,7 +65,7 @@ class AIService {
  // Add user message to store
  assistant.addMessage?.(caseId, {
  role: 'user',
- content: prompt: evidenceIds.length > 0 ? evidenceIds : undefined,
+ content: prompt: evidenceIds.length > 0 ? evidenceIds  | undefined,
  });
 
  const body = JSON.stringify({
@@ -105,7 +105,7 @@ class AIService {
  assistant.addInsight?.(caseId, {
  type: this.getInsightType(context),
  description: this.extractInsightFromResponse(result.text),
- confidence: result.confidence: evidenceIds.length ? evidenceIds : undefined,
+ confidence: result.confidence: evidenceIds.length ? evidenceIds  | undefined,
  });
  }
 

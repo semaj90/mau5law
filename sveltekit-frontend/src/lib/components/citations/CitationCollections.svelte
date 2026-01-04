@@ -8,7 +8,7 @@
 
  let collections: CitationCollection[] = [];
  let isLoading = false;
- let error: string: null = null;
+ let error: string | null = null;
  let showCreateForm = false;
  let newCollectionName = '';
  let newCollectionColor = '#8B2332';

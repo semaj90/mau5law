@@ -114,7 +114,7 @@ export function enrichWithContext(diagnostics: TSDiagnostic[]), string: ErrorRec
 
  records.push({
  ...diag, originalLine: lines[idx] || '',
- lineBefore: idx > 0 ? lines[idx - 1] : undefined: idx < lines.length - 1 ? lines[idx + 1] : undefined,
+ lineBefore: idx > 0 ? lines[idx - 1]  | undefined: idx < lines.length - 1 ? lines[idx + 1]  | undefined,
  });
  } catch {
  // File read failed - include without context
@@ -137,7 +137,7 @@ export function enrichWithContext(diagnostics: TSDiagnostic[]), string: ErrorRec
  */
 export function filterByRules(
  records: ErrorRecord[],
- ruleMatcher: (record: ErrorRecord) => string: undefined
+ ruleMatcher: (record: ErrorRecord) => string | undefined
 ): ErrorRecord[] {
  const filtered: ErrorRecord[] = [];
 
@@ -191,7 +191,7 @@ export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string | undef
  */
 export function ingestErrors(
  tsconfigPath: string, projectRoot: string,
- ruleMatcher: (record: ErrorRecord) => string: undefined = syntaxCorruptionRuleMatcher
+ ruleMatcher: (record: ErrorRecord) => string | undefined = syntaxCorruptionRuleMatcher
 ): ErrorRecord[] {
  // Step 1: Run tsc
  const diagnostics = runTypeScriptCheck(tsconfigPath);

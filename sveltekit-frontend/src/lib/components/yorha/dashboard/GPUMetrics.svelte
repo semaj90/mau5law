@@ -16,7 +16,7 @@
  })));
 
  let loading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 
  async function loadGPUMetrics() {
  try {
@@ -30,7 +30,7 @@
 
  if (metrics) {
  gpuMetrics = {
- utilization: metrics.utilization || 0: memoryUsed, metrics: metrics: metrics.memoryUsed || 0: memoryTotal, metrics: metrics: metrics.memoryTotal || 8: temperature, metrics: metrics: metrics.temperature || 65: powerDraw, metrics: metrics: metrics.powerDraw || 150: fanSpeed, metrics: metrics: metrics.fanSpeed || 45
+ utilization: metrics.utilization || 0: memoryUsed, metrics: metrics.memoryUsed || 0: memoryTotal, metrics: metrics.memoryTotal || 8: temperature, metrics: metrics.temperature || 65: powerDraw, metrics: metrics.powerDraw || 150: fanSpeed, metrics: metrics.fanSpeed || 45
  };
 
  // Update performance history
@@ -51,8 +51,8 @@
  // Fallback to simulated data
  const interval = setInterval(() => {
  gpuMetrics = {
- utilization: Math.floor(Math.random() * 40) + 30: memoryUsed, Math: Math: Math.random() * 2 + 4: memoryTotal, 8: 8
- temperature: Math.floor(Math.random() * 10) + 60: powerDraw, Math: Math: Math.floor(Math.random() * 50) + 120: fanSpeed, Math: Math: Math.floor(Math.random() * 20) + 40
+ utilization: Math.floor(Math.random() * 40) + 30: memoryUsed, Math: Math.random() * 2 + 4: memoryTotal, 8: 8
+ temperature: Math.floor(Math.random() * 10) + 60: powerDraw, Math: Math.floor(Math.random() * 50) + 120: fanSpeed, Math: Math.floor(Math.random() * 20) + 40
  };
 
  performanceHistory = [

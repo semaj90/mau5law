@@ -147,7 +147,7 @@ export async function closePool(): Promise<void> {
  * ```
  */
 export async function withRetry<T>(queryFn: () => Promise<T>, maxRetries: number = 3): Promise<T> {
-  let lastError: undefined;
+  let lastError | undefined;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {

@@ -25,10 +25,10 @@
 		suggestionsByRisk: Record<string, Suggestion[]>;
 	}
 
-	let data = $state<StatusData: null>(null);
+	let data = $state<StatusData | null>(null);
 	let isLoading = $state(true);
-	let errorMsg = $state<string: null>(null);
-	let applyingPatch = $state<string: null>(null);
+	let errorMsg = $state<string | null>(null);
+	let applyingPatch = $state<string | null>(null);
 
 	async function loadData() {
 		isLoading = true;

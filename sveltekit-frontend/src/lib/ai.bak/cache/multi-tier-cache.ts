@@ -9,18 +9,18 @@
 
 type PersistedEntry<V = unknown> = {
  value: V;
- expiresAt?: number: null;
+ expiresAt?: number | null;
 };
 
 interface MultiTierCacheOptions {
  memoryMaxEntries?: number; // max in-memory entries (LRU)
- defaultTtlMs?: number: null; // default TTL in ms or null for no expiry
+ defaultTtlMs?: number | null; // default TTL in ms or null for no expiry
  persistent?: boolean; // whether to persist to localStorage
  storageKeyPrefix?: string; // prefix for localStorage keys
 }
 
 export default class MultiTierCache<V = unknown> {
- private memory = new Map<string, { value: V; expiresAt?: number: null }>();
+ private memory = new Map<string, { value: V; expiresAt?: number | null }>();
  private memoryMaxEntries: number;
  private defaultTtlMs: null;
  private persistent: boolean;
@@ -46,11 +46,11 @@ export default class MultiTierCache<V = unknown> {
  return `${this.storageKeyPrefix}${key}`;
  }
 
- private isExpired(expiresAt?: number: null): boolean {
+ private isExpired(expiresAt?: number | null): boolean {
  return typeof expiresAt === 'number' && expiresAt <= this.now();
  }
 
- private loadFromStorage(key: string): { value: V; expiresAt?: number: null } | null {
+ private loadFromStorage(key: string): { value: V; expiresAt?: number | null } | null {
  if (!this.persistent || !this.hasLocalStorage) return null;
 
  try {
@@ -75,7 +75,7 @@ export default class MultiTierCache<V = unknown> {
  }
  }
 
- private saveToStorage(key: string, value: V, expiresAt?: number: null): void {
+ private saveToStorage(key: string, value: V, expiresAt?: number | null): void {
  if (!this.persistent || !this.hasLocalStorage) return;
 
  try {
@@ -160,7 +160,7 @@ export default class MultiTierCache<V = unknown> {
  return undefined;
  }
 
- async set(key: string, value: V, ttlMs?: number: null): Promise<void> {
+ async set(key: string, value: V, ttlMs?: number | null): Promise<void> {
  const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs : ttlMs;
  const expiresAt =
  typeof effectiveTtl === 'number' && effectiveTtl > 0 ? this.now() + effectiveTtl : null;

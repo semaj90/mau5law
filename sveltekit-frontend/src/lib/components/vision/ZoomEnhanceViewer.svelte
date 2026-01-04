@@ -1,6 +1,6 @@
 <script lang="ts">
  interface Props {
- zoomSrc?: string: null;
+ zoomSrc?: string | null;
  }
 
  let { zoomSrc = $bindable(null) }: Props = $props();

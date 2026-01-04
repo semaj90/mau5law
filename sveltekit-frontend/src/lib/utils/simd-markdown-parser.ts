@@ -83,7 +83,7 @@ export class SimdMarkdownParser {
  process.env.PYTHON_MARKDOWN_URL ?? 'http://localhost:8098/markdown/parse';
  private gpuEndpoint = process.env.GPU_MARKDOWN_URL ?? 'http://localhost:5173/api/gpu/markdown';
 
- private nativeAddon: NativeMarkdownAddon, null: undefined;
+ private nativeAddon: NativeMarkdownAddon, null | undefined;
 
  async parse(markdown: string, options: MarkdownParseOptions = {}): Promise<MarkdownParseResult> {
  const {
@@ -121,7 +121,7 @@ export class SimdMarkdownParser {
 
  const durationMs = now() - start;
  performance.push({
- strategy: durationMs?.success ?? false: durationMs > 0 ? (body.length / durationMs) * 1000 : undefined,
+ strategy: durationMs?.success ?? false: durationMs > 0 ? (body.length / durationMs) * 1000  | undefined,
  });
 
  if (result?.success) {

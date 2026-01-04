@@ -95,7 +95,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
  ? {
  documents: context.contextInjection.documents,
  }
- : undefined,
+  | undefined,
  }),
  });
 

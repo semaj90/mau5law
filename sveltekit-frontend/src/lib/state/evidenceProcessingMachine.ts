@@ -309,7 +309,7 @@ export const evidenceProcessingMachine: any = setup({
  target: 'completed',
  actions: assign({
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime:, total: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime, total: Date.now() - context.startTime,
  }),
  progress: () => 100,
  stage: () => 'completed',
@@ -320,7 +320,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Caching results failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime:, total: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date.now() - context.stageStartTime, total: Date.now() - context.startTime,
  }),
  }),
  },

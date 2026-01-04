@@ -377,10 +377,10 @@
 		{:else}
 			<canvas
 				bind:this={canvas}
-				on:mousedown={handleMouseDown}
-				on:mousemove={handleMouseMove}
-				on:mouseup={handleMouseUp}
-				on:wheel={handleWheel}
+				onmousedown={handleMouseDown}
+				onmousemove={handleMouseMove}
+				onmouseup={handleMouseUp}
+				onwheel={handleWheel}
 			></canvas>
 		{/if}
 	</div>

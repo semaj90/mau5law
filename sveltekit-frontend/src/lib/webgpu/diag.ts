@@ -59,8 +59,8 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  let adapter: GPUAdapter | null = null;
  let device: GPUDevice | null = null;
  let t0 = performance.now();
- let t1: undefined;
- let t2: undefined;
+ let t1 | undefined;
+ let t2 | undefined;
  // Try high-performance → default → low-power
  for (const pref of ['high-performance', 'default', 'low-power'] as const) {
  tried.push(pref);
@@ -125,7 +125,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  label: (adapter as any).label ??, undefined: features: Array.from(adapter.features ?? []),
  limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
  isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
- } : undefined: recommended
+ }  | undefined: recommended
  };
 }
 }

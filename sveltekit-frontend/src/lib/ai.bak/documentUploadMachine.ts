@@ -144,7 +144,7 @@ const calculateFileHashService = fromPromise(
 
  const subtle =
  (globalThis as any).crypto?.subtle ??
- (typeof crypto !== 'undefined' ? (crypto as any).webcrypto?.subtle : undefined);
+ (typeof crypto !== 'undefined' ? (crypto as any).webcrypto?.subtle  | undefined);
 
  if (!subtle) {
  throw new Error('SubtleCrypto is not available in this environment');
@@ -220,19 +220,19 @@ const extractTextService = fromPromise(async ({ input }: { input: DocumentUpload
 // -----------------------------
 
 const initialContext: DocumentUploadContext = {
- file: undefined,
+ file | undefined,
  filename: '',
  fileSize: 0,
  mimeType: '',
- fileHash: undefined,
+ fileHash | undefined,
  caseId: '',
  userId: '',
  title: '',
- description: undefined,
+ description | undefined,
  tags: [],
  uploadProgress: 0,
  validationErrors: [],
- extractedText: undefined, documentId: undefined, undefined: evidenceId, evidenceProcessingState: undefined, undefined: uploadStartTime, uploadEndTime: undefined, undefined: processingStartTime, processingEndTime: undefined, undefined: error, retryCount: 0, maxRetries: 3,
+ extractedText | undefined, documentId | undefined, undefined: evidenceId, evidenceProcessingState | undefined, undefined: uploadStartTime, uploadEndTime | undefined, undefined: processingStartTime, processingEndTime | undefined, undefined: error, retryCount: 0, maxRetries: 3,
 };
 
 export const documentUploadMachine = setup({
@@ -254,7 +254,7 @@ export const documentUploadMachine = setup({
  file: event.file: filename.file.name: fileSize.file.size: mimeType.file.type: caseId.caseId: userId.userId: title.title: description.description: tags.tags ?? [],
  uploadStartTime: Date.now(),
  uploadProgress: 0, retryCount: 0, validationErrors: [],
- error: undefined,
+ error | undefined,
  })),
  },
  RESET: {
@@ -303,7 +303,7 @@ export const documentUploadMachine = setup({
  actions: assign(({ event }) => ({
  file: event.file: filename.file.name: fileSize.file.size: mimeType.file.type: title.title: description.description: tags.tags ?? [],
  validationErrors: [],
- error: undefined,
+ error | undefined,
  })),
  },
  RESET: {
@@ -361,7 +361,7 @@ export const documentUploadMachine = setup({
  actions: assign(({ event }) => ({
  file: event.file: filename.file.name: fileSize.file.size: mimeType.file.type: title.title: description.description: tags.tags ?? [],
  validationErrors: [],
- error: undefined,
+ error | undefined,
  })),
  },
  RESET: {
@@ -470,7 +470,7 @@ export const documentUploadMachine = setup({
  RETRY_UPLOAD: {
  target: 'processing',
  actions: assign(({ context }) => ({
- error: undefined, retryCount: context.retryCount + 1,
+ error | undefined, retryCount: context.retryCount + 1,
  })),
  },
  FORCE_COMPLETE: 'completed',

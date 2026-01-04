@@ -16,7 +16,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  let connections: YoRHaEvidenceConnection[] = [];
  let selectedNode: YoRHaEvidenceNode: null = null;
  let isLoading = true;
- let error: string: null = null;
+ let error: string | null = null;
  let svgElement: SVGSVGElement;
 
  const CANVAS_WIDTH = 1200;
@@ -101,7 +101,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  method: 'PATCH',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- position_x: node.position_x: position_y, node: node: node.position_y,
+ position_x: node.position_x: position_y, node: node.position_y,
  }),
  });
  } catch (err) {

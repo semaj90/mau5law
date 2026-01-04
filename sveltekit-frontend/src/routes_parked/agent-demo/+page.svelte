@@ -40,7 +40,7 @@
  let patches = $state<Patch[]>([]);
 
  let isAgentRunning = $state(false);
- let currentAgentTask = $state<Task: null>(null);
+ let currentAgentTask = $state<Task | null>(null);
  let agentProgress = $state(0);
  let agentStatus = $state<'idle' | 'working'>('idle');
 

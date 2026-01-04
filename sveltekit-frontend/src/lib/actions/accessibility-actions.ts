@@ -474,7 +474,7 @@ export const compositeActions = {
  const ariaAction = ariaState(element, {
  role: 'dialog',
  label: options.title,
- describedby: options.description ? descId : undefined,
+ describedby: options.description ? descId  | undefined,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: { Escape: options.onClose },

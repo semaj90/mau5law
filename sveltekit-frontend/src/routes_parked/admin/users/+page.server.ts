@@ -2,7 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types.js';
 import type { db } from '$lib/db/index.js';
 import type { users, profileTable } from '$lib/db/schema.js';
-import type { eq, desc, like, or } from 'drizzle-orm';
+import { eq, desc, like, or } from 'drizzle-orm';
 import type { hash } from '@node-rs/argon2';
 import type { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ url, locals }) => {

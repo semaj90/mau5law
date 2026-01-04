@@ -42,10 +42,10 @@ export interface AuditLogEntry {
 export function createLegalCaseStore() {
  // State using Svelte, 5 runes
  let cases: LegalCase[] = $state([]);
- let selectedCase = $state<LegalCase: null>(null); // Changed to 'let'
+ let selectedCase = $state<LegalCase | null>(null); // Changed to 'let'
  const aiInsights = $state<Record<string, AIInsights>>({});
  let auditLog: AuditLogEntry[] = $state([]);
- let currentUser = $state<User: null>({
+ let currentUser = $state<User | null>({
  // Changed to 'let', id: 'demo-user-001',
  clearanceLevel: 3,
  role: 'legal-analyst',

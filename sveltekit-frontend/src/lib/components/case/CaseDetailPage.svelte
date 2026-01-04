@@ -12,7 +12,7 @@
  let similarCases: SimilarCase[] = [];
  let isLoading = false;
  let isGenerating = false;
- let error: string: null = null;
+ let error: string | null = null;
 
  onMount(() => {
  (async () => {

@@ -7,13 +7,13 @@ export namespace legal {
  /** Properties of a User. */
  interface IUser {
  /** User id */
- id?: string: null;
+ id?: string | null;
 
  /** User email */
- email?: string: null;
+ email?: string | null;
 
  /** User name */
- name?: string: null;
+ name?: string | null;
 
  /** User roles */
  roles?: string[] | null;
@@ -144,16 +144,16 @@ export namespace legal {
  /** Properties of a UserPreferences. */
  interface IUserPreferences {
  /** UserPreferences theme */
- theme?: string: null;
+ theme?: string | null;
 
  /** UserPreferences language */
- language?: string: null;
+ language?: string | null;
 
  /** UserPreferences notificationsEnabled */
- notificationsEnabled?: boolean: null;
+ notificationsEnabled?: boolean | null;
 
  /** UserPreferences analyticsOptIn */
- analyticsOptIn?: boolean: null;
+ analyticsOptIn?: boolean | null;
  }
 
  /** Represents a UserPreferences. */
@@ -271,16 +271,16 @@ export namespace legal {
  /** Properties of an AuthRequest. */
  interface IAuthRequest {
  /** AuthRequest email */
- email?: string: null;
+ email?: string | null;
 
  /** AuthRequest password */
- password?: string: null;
+ password?: string | null;
 
  /** AuthRequest rememberMe */
- rememberMe?: boolean: null;
+ rememberMe?: boolean | null;
 
  /** AuthRequest clientInfo */
- clientInfo?: string: null;
+ clientInfo?: string | null;
  }
 
  /** Represents an AuthRequest. */
@@ -396,16 +396,16 @@ export namespace legal {
  /** Properties of an AuthResponse. */
  interface IAuthResponse {
  /** AuthResponse success */
- success?: boolean: null;
+ success?: boolean | null;
 
  /** AuthResponse token */
- token?: string: null;
+ token?: string | null;
 
  /** AuthResponse user */
  user?: legal.api.IUser: null;
 
  /** AuthResponse errorMessage */
- errorMessage?: string: null;
+ errorMessage?: string | null;
 
  /** AuthResponse expiresAt */
  expiresAt?: number | Long: null;
@@ -527,16 +527,16 @@ export namespace legal {
  /** Properties of a LegalDocument. */
  interface ILegalDocument {
  /** LegalDocument id */
- id?: string: null;
+ id?: string | null;
 
  /** LegalDocument title */
- title?: string: null;
+ title?: string | null;
 
  /** LegalDocument content */
- content?: string: null;
+ content?: string | null;
 
  /** LegalDocument fileUrl */
- fileUrl?: string: null;
+ fileUrl?: string | null;
 
  /** LegalDocument type */
  type?: legal.api.DocumentType: null;
@@ -554,7 +554,7 @@ export namespace legal {
  updatedAt?: google.protobuf.ITimestamp: null;
 
  /** LegalDocument ownerId */
- ownerId?: string: null;
+ ownerId?: string | null;
 
  /** LegalDocument collaboratorIds */
  collaboratorIds?: string[] | null;
@@ -736,10 +736,10 @@ export namespace legal {
  /** Properties of a DocumentMetadata. */
  interface IDocumentMetadata {
  /** DocumentMetadata jurisdiction */
- jurisdiction?: string: null;
+ jurisdiction?: string | null;
 
  /** DocumentMetadata courtLevel */
- courtLevel?: string: null;
+ courtLevel?: string | null;
 
  /** DocumentMetadata parties */
  parties?: legal.api.IParty[] | null;
@@ -748,10 +748,10 @@ export namespace legal {
  practiceAreas?: string[] | null;
 
  /** DocumentMetadata confidenceScore */
- confidenceScore?: number: null;
+ confidenceScore?: number | null;
 
  /** DocumentMetadata riskLevel */
- riskLevel?: string: null;
+ riskLevel?: string | null;
 
  /** DocumentMetadata keyTerms */
  keyTerms?: string[] | null;
@@ -893,13 +893,13 @@ export namespace legal {
  /** Properties of a Party. */
  interface IParty {
  /** Party name */
- name?: string: null;
+ name?: string | null;
 
  /** Party role */
- role?: string: null;
+ role?: string | null;
 
  /** Party type */
- type?: string: null;
+ type?: string | null;
 
  /** Party contact */
  contact?: legal.api.IContactInfo: null;
@@ -1012,16 +1012,16 @@ export namespace legal {
  /** Properties of a ContactInfo. */
  interface IContactInfo {
  /** ContactInfo address */
- address?: string: null;
+ address?: string | null;
 
  /** ContactInfo phone */
- phone?: string: null;
+ phone?: string | null;
 
  /** ContactInfo email */
- email?: string: null;
+ email?: string | null;
 
  /** ContactInfo lawFirm */
- lawFirm?: string: null;
+ lawFirm?: string | null;
  }
 
  /** Represents a ContactInfo. */
@@ -1137,13 +1137,13 @@ export namespace legal {
  /** Properties of a LegalCitation. */
  interface ILegalCitation {
  /** LegalCitation citationText */
- citationText?: string: null;
+ citationText?: string | null;
 
  /** LegalCitation source */
- source?: string: null;
+ source?: string | null;
 
  /** LegalCitation url */
- url?: string: null;
+ url?: string | null;
 
  /** LegalCitation type */
  type?: legal.api.CitationType: null;
@@ -1270,10 +1270,10 @@ export namespace legal {
  /** Properties of a CaseInformation. */
  interface ICaseInformation {
  /** CaseInformation caseNumber */
- caseNumber?: string: null;
+ caseNumber?: string | null;
 
  /** CaseInformation courtName */
- courtName?: string: null;
+ courtName?: string | null;
 
  /** CaseInformation filingDate */
  filingDate?: google.protobuf.ITimestamp: null;
@@ -1413,28 +1413,28 @@ export namespace legal {
  /** Properties of a SearchRequest. */
  interface ISearchRequest {
  /** SearchRequest query */
- query?: string: null;
+ query?: string | null;
 
  /** SearchRequest filters */
  filters?: legal.api.ISearchFilter[] | null;
 
  /** SearchRequest limit */
- limit?: number: null;
+ limit?: number | null;
 
  /** SearchRequest offset */
- offset?: number: null;
+ offset?: number | null;
 
  /** SearchRequest type */
  type?: legal.api.SearchType: null;
 
  /** SearchRequest includeEmbeddings */
- includeEmbeddings?: boolean: null;
+ includeEmbeddings?: boolean | null;
 
  /** SearchRequest sort */
  sort?: legal.api.ISortOptions: null;
 
  /** SearchRequest userId */
- userId?: string: null;
+ userId?: string | null;
  }
 
  /** Represents a SearchRequest. */
@@ -1562,10 +1562,10 @@ export namespace legal {
  /** Properties of a SearchFilter. */
  interface ISearchFilter {
  /** SearchFilter field */
- field?: string: null;
+ field?: string | null;
 
  /** SearchFilter operator */
- operator?: string: null;
+ operator?: string | null;
 
  /** SearchFilter values */
  values?: string[] | null;
@@ -1681,10 +1681,10 @@ export namespace legal {
  /** Properties of a SortOptions. */
  interface ISortOptions {
  /** SortOptions field */
- field?: string: null;
+ field?: string | null;
 
  /** SortOptions descending */
- descending?: boolean: null;
+ descending?: boolean | null;
  }
 
  /** Represents a SortOptions. */
@@ -1806,16 +1806,16 @@ export namespace legal {
  results?: legal.api.ISearchResult[] | null;
 
  /** SearchResponse totalCount */
- totalCount?: number: null;
+ totalCount?: number | null;
 
  /** SearchResponse maxScore */
- maxScore?: number: null;
+ maxScore?: number | null;
 
  /** SearchResponse queryId */
- queryId?: string: null;
+ queryId?: string | null;
 
  /** SearchResponse processingTimeMs */
- processingTimeMs?: number: null;
+ processingTimeMs?: number | null;
 
  /** SearchResponse metadata */
  metadata?: legal.api.ISearchMetadata: null;
@@ -1945,7 +1945,7 @@ export namespace legal {
  document?: legal.api.ILegalDocument: null;
 
  /** SearchResult score */
- score?: number: null;
+ score?: number | null;
 
  /** SearchResult highlights */
  highlights?: string[] | null;
@@ -1954,7 +1954,7 @@ export namespace legal {
  similarity?: legal.api.IVectorSimilarity: null;
 
  /** SearchResult excerpt */
- excerpt?: string: null;
+ excerpt?: string | null;
 
  /** SearchResult relatedCitations */
  relatedCitations?: legal.api.ILegalCitation[] | null;
@@ -2079,16 +2079,16 @@ export namespace legal {
  /** Properties of a VectorSimilarity. */
  interface IVectorSimilarity {
  /** VectorSimilarity cosineSimilarity */
- cosineSimilarity?: number: null;
+ cosineSimilarity?: number | null;
 
  /** VectorSimilarity euclideanDistance */
- euclideanDistance?: number: null;
+ euclideanDistance?: number | null;
 
  /** VectorSimilarity embeddingDimension */
- embeddingDimension?: number: null;
+ embeddingDimension?: number | null;
 
  /** VectorSimilarity modelUsed */
- modelUsed?: string: null;
+ modelUsed?: string | null;
  }
 
  /** Represents a VectorSimilarity. */
@@ -2212,7 +2212,7 @@ export namespace legal {
  facets?: legal.api.ISearchFacet[] | null;
 
  /** SearchMetadata hasMoreResults */
- hasMoreResults?: boolean: null;
+ hasMoreResults?: boolean | null;
  }
 
  /** Represents a SearchMetadata. */
@@ -2327,7 +2327,7 @@ export namespace legal {
  /** Properties of a SearchFacet. */
  interface ISearchFacet {
  /** SearchFacet field */
- field?: string: null;
+ field?: string | null;
 
  /** SearchFacet values */
  values?: legal.api.IFacetValue[] | null;
@@ -2440,10 +2440,10 @@ export namespace legal {
  /** Properties of a FacetValue. */
  interface IFacetValue {
  /** FacetValue value */
- value?: string: null;
+ value?: string | null;
 
  /** FacetValue count */
- count?: number: null;
+ count?: number | null;
  }
 
  /** Represents a FacetValue. */
@@ -2553,16 +2553,16 @@ export namespace legal {
  /** Properties of a ChatMessage. */
  interface IChatMessage {
  /** ChatMessage id */
- id?: string: null;
+ id?: string | null;
 
  /** ChatMessage sessionId */
- sessionId?: string: null;
+ sessionId?: string | null;
 
  /** ChatMessage userId */
- userId?: string: null;
+ userId?: string | null;
 
  /** ChatMessage content */
- content?: string: null;
+ content?: string | null;
 
  /** ChatMessage type */
  type?: legal.api.MessageType: null;
@@ -2711,19 +2711,19 @@ export namespace legal {
  /** Properties of a MessageMetadata. */
  interface IMessageMetadata {
  /** MessageMetadata modelUsed */
- modelUsed?: string: null;
+ modelUsed?: string | null;
 
  /** MessageMetadata tokensUsed */
- tokensUsed?: number: null;
+ tokensUsed?: number | null;
 
  /** MessageMetadata processingTimeMs */
- processingTimeMs?: number: null;
+ processingTimeMs?: number | null;
 
  /** MessageMetadata sourceDocuments */
  sourceDocuments?: string[] | null;
 
  /** MessageMetadata confidenceScore */
- confidenceScore?: number: null;
+ confidenceScore?: number | null;
  }
 
  /** Represents a MessageMetadata. */
@@ -2844,13 +2844,13 @@ export namespace legal {
  /** Properties of a ChatRequest. */
  interface IChatRequest {
  /** ChatRequest sessionId */
- sessionId?: string: null;
+ sessionId?: string | null;
 
  /** ChatRequest userId */
- userId?: string: null;
+ userId?: string | null;
 
  /** ChatRequest message */
- message?: string: null;
+ message?: string | null;
 
  /** ChatRequest context */
  context?: legal.api.IChatContext: null;
@@ -2978,7 +2978,7 @@ export namespace legal {
  documentIds?: string[] | null;
 
  /** ChatContext caseId */
- caseId?: string: null;
+ caseId?: string | null;
 
  /** ChatContext previousMessageIds */
  previousMessageIds?: string[] | null;
@@ -3100,19 +3100,19 @@ export namespace legal {
  /** Properties of a ChatOptions. */
  interface IChatOptions {
  /** ChatOptions model */
- model?: string: null;
+ model?: string | null;
 
  /** ChatOptions temperature */
- temperature?: number: null;
+ temperature?: number | null;
 
  /** ChatOptions maxTokens */
- maxTokens?: number: null;
+ maxTokens?: number | null;
 
  /** ChatOptions stream */
- stream?: boolean: null;
+ stream?: boolean | null;
 
  /** ChatOptions includeSources */
- includeSources?: boolean: null;
+ includeSources?: boolean | null;
  }
 
  /** Represents a ChatOptions. */
@@ -3231,19 +3231,19 @@ export namespace legal {
  /** Properties of a ChatResponse. */
  interface IChatResponse {
  /** ChatResponse response */
- response?: string: null;
+ response?: string | null;
 
  /** ChatResponse sources */
  sources?: string[] | null;
 
  /** ChatResponse confidence */
- confidence?: number: null;
+ confidence?: number | null;
 
  /** ChatResponse modelUsed */
- modelUsed?: string: null;
+ modelUsed?: string | null;
 
  /** ChatResponse tokensUsed */
- tokensUsed?: number: null;
+ tokensUsed?: number | null;
 
  /** ChatResponse citations */
  citations?: legal.api.ILegalCitation[] | null;
@@ -3374,7 +3374,7 @@ export namespace legal {
  /** Properties of an ActionItem. */
  interface IActionItem {
  /** ActionItem description */
- description?: string: null;
+ description?: string | null;
 
  /** ActionItem priority */
  priority?: legal.api.ActionPriority: null;
@@ -3383,7 +3383,7 @@ export namespace legal {
  dueDate?: google.protobuf.ITimestamp: null;
 
  /** ActionItem assignedTo */
- assignedTo?: string: null;
+ assignedTo?: string | null;
  }
 
  /** Represents an ActionItem. */
@@ -3507,19 +3507,19 @@ export namespace legal {
  /** Properties of an Attachment. */
  interface IAttachment {
  /** Attachment filename */
- filename?: string: null;
+ filename?: string | null;
 
  /** Attachment contentType */
- contentType?: string: null;
+ contentType?: string | null;
 
  /** Attachment size */
  size?: number | Long: null;
 
  /** Attachment url */
- url?: string: null;
+ url?: string | null;
 
  /** Attachment checksum */
- checksum?: string: null;
+ checksum?: string | null;
  }
 
  /** Represents an Attachment. */
@@ -3638,7 +3638,7 @@ export namespace legal {
  /** Properties of an AnalysisRequest. */
  interface IAnalysisRequest {
  /** AnalysisRequest documentId */
- documentId?: string: null;
+ documentId?: string | null;
 
  /** AnalysisRequest type */
  type?: legal.api.AnalysisType: null;
@@ -3650,7 +3650,7 @@ export namespace legal {
  options?: legal.api.IAnalysisOptions: null;
 
  /** AnalysisRequest userId */
- userId?: string: null;
+ userId?: string | null;
  }
 
  /** Represents an AnalysisRequest. */
@@ -3781,16 +3781,16 @@ export namespace legal {
  /** Properties of an AnalysisOptions. */
  interface IAnalysisOptions {
  /** AnalysisOptions jurisdiction */
- jurisdiction?: string: null;
+ jurisdiction?: string | null;
 
  /** AnalysisOptions practiceAreas */
  practiceAreas?: string[] | null;
 
  /** AnalysisOptions confidenceThreshold */
- confidenceThreshold?: number: null;
+ confidenceThreshold?: number | null;
 
  /** AnalysisOptions includeRecommendations */
- includeRecommendations?: boolean: null;
+ includeRecommendations?: boolean | null;
  }
 
  /** Represents an AnalysisOptions. */
@@ -3908,7 +3908,7 @@ export namespace legal {
  /** Properties of an AnalysisResponse. */
  interface IAnalysisResponse {
  /** AnalysisResponse analysisId */
- analysisId?: string: null;
+ analysisId?: string | null;
 
  /** AnalysisResponse type */
  type?: legal.api.AnalysisType: null;
@@ -3917,7 +3917,7 @@ export namespace legal {
  results?: legal.api.IAnalysisResult[] | null;
 
  /** AnalysisResponse overallConfidence */
- overallConfidence?: number: null;
+ overallConfidence?: number | null;
 
  /** AnalysisResponse createdAt */
  createdAt?: google.protobuf.ITimestamp: null;
@@ -4047,13 +4047,13 @@ export namespace legal {
  /** Properties of an AnalysisResult. */
  interface IAnalysisResult {
  /** AnalysisResult category */
- category?: string: null;
+ category?: string | null;
 
  /** AnalysisResult finding */
- finding?: string: null;
+ finding?: string | null;
 
  /** AnalysisResult confidence */
- confidence?: number: null;
+ confidence?: number | null;
 
  /** AnalysisResult supportingText */
  supportingText?: string[] | null;
@@ -4194,10 +4194,10 @@ export namespace legal {
  /** Properties of a Recommendation. */
  interface IRecommendation {
  /** Recommendation title */
- title?: string: null;
+ title?: string | null;
 
  /** Recommendation description */
- description?: string: null;
+ description?: string | null;
 
  /** Recommendation type */
  type?: legal.api.RecommendationType: null;
@@ -4335,10 +4335,10 @@ export namespace legal {
  /** Properties of a HealthCheckRequest. */
  interface IHealthCheckRequest {
  /** HealthCheckRequest service */
- service?: string: null;
+ service?: string | null;
 
  /** HealthCheckRequest includeDetails */
- includeDetails?: boolean: null;
+ includeDetails?: boolean | null;
  }
 
  /** Represents a HealthCheckRequest. */
@@ -4452,10 +4452,10 @@ export namespace legal {
  /** Properties of a HealthCheckResponse. */
  interface IHealthCheckResponse {
  /** HealthCheckResponse healthy */
- healthy?: boolean: null;
+ healthy?: boolean | null;
 
  /** HealthCheckResponse status */
- status?: string: null;
+ status?: string | null;
 
  /** HealthCheckResponse details */
  details?: { [k: string]: string } | null;
@@ -4464,7 +4464,7 @@ export namespace legal {
  timestamp?: google.protobuf.ITimestamp: null;
 
  /** HealthCheckResponse version */
- version?: string: null;
+ version?: string | null;
  }
 
  /** Represents a HealthCheckResponse. */
@@ -4587,19 +4587,19 @@ export namespace legal {
  /** Properties of a SystemStatus. */
  interface ISystemStatus {
  /** SystemStatus serviceName */
- serviceName?: string: null;
+ serviceName?: string | null;
 
  /** SystemStatus operational */
- operational?: boolean: null;
+ operational?: boolean | null;
 
  /** SystemStatus cpuUsage */
- cpuUsage?: number: null;
+ cpuUsage?: number | null;
 
  /** SystemStatus memoryUsage */
- memoryUsage?: number: null;
+ memoryUsage?: number | null;
 
  /** SystemStatus activeConnections */
- activeConnections?: number: null;
+ activeConnections?: number | null;
 
  /** SystemStatus requestsPerMinute */
  requestsPerMinute?: number | Long: null;
@@ -4730,7 +4730,7 @@ export namespace legal {
  /** Properties of a BatchRequest. */
  interface IBatchRequest {
  /** BatchRequest batchId */
- batchId?: string: null;
+ batchId?: string | null;
 
  /** BatchRequest operations */
  operations?: legal.api.IBatchOperation[] | null;
@@ -4739,7 +4739,7 @@ export namespace legal {
  options?: legal.api.IBatchOptions: null;
 
  /** BatchRequest userId */
- userId?: string: null;
+ userId?: string | null;
  }
 
  /** Represents a BatchRequest. */
@@ -4855,10 +4855,10 @@ export namespace legal {
  /** Properties of a BatchOperation. */
  interface IBatchOperation {
  /** BatchOperation operationId */
- operationId?: string: null;
+ operationId?: string | null;
 
  /** BatchOperation type */
- type?: string: null;
+ type?: string | null;
 
  /** BatchOperation parameters */
  parameters?: { [k: string]: string } | null;
@@ -4976,16 +4976,16 @@ export namespace legal {
  /** Properties of a BatchOptions. */
  interface IBatchOptions {
  /** BatchOptions parallelExecution */
- parallelExecution?: boolean: null;
+ parallelExecution?: boolean | null;
 
  /** BatchOptions maxConcurrency */
- maxConcurrency?: number: null;
+ maxConcurrency?: number | null;
 
  /** BatchOptions timeoutSeconds */
- timeoutSeconds?: number: null;
+ timeoutSeconds?: number | null;
 
  /** BatchOptions continueOnError */
- continueOnError?: boolean: null;
+ continueOnError?: boolean | null;
  }
 
  /** Represents a BatchOptions. */
@@ -5101,7 +5101,7 @@ export namespace legal {
  /** Properties of a BatchResponse. */
  interface IBatchResponse {
  /** BatchResponse batchId */
- batchId?: string: null;
+ batchId?: string | null;
 
  /** BatchResponse status */
  status?: legal.api.BatchStatus: null;
@@ -5116,7 +5116,7 @@ export namespace legal {
  completedAt?: google.protobuf.ITimestamp: null;
 
  /** BatchResponse errorMessage */
- errorMessage?: string: null;
+ errorMessage?: string | null;
  }
 
  /** Represents a BatchResponse. */
@@ -5247,19 +5247,19 @@ export namespace legal {
  /** Properties of a BatchResult. */
  interface IBatchResult {
  /** BatchResult operationId */
- operationId?: string: null;
+ operationId?: string | null;
 
  /** BatchResult success */
- success?: boolean: null;
+ success?: boolean | null;
 
  /** BatchResult resultData */
- resultData?: string: null;
+ resultData?: string | null;
 
  /** BatchResult errorMessage */
- errorMessage?: string: null;
+ errorMessage?: string | null;
 
  /** BatchResult processingTimeMs */
- processingTimeMs?: number: null;
+ processingTimeMs?: number | null;
  }
 
  /** Represents a BatchResult. */
@@ -5387,7 +5387,7 @@ export namespace google {
  seconds?: number | Long: null;
 
  /** Timestamp nanos */
- nanos?: number: null;
+ nanos?: number | null;
  }
 
  /** Represents a Timestamp. */

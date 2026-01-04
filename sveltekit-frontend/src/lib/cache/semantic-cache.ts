@@ -95,7 +95,7 @@ export class SemanticCache {
  const exactMatchKey = generateEmbeddingHash(queryEmbedding);
 
  // 1) Try direct exact key hit
- let cachedEntry = await (cache as RedisCacheClient).get<SemanticCacheEntry | string: null>(exactMatchKey);
+ let cachedEntry = await (cache as RedisCacheClient).get<SemanticCacheEntry | string | null>(exactMatchKey);
  if (cachedEntry) {
  // some cache wrappers return serialized strings
  if (typeof cachedEntry === 'string') {
@@ -150,7 +150,7 @@ export class SemanticCache {
  // Skip exact key if already handled
  if (key === exactMatchKey) continue;
  try {
- let t = await (cache as RedisCacheClient).get<SemanticCacheEntry | string: null>(key);
+ let t = await (cache as RedisCacheClient).get<SemanticCacheEntry | string | null>(key);
  if (!t) continue;
  if (typeof t === 'string') {
  try {

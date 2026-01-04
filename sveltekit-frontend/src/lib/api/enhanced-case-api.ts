@@ -98,7 +98,7 @@ export class EnhancedCaseAPI {
  console.error('❌ Enhanced case creation failed: ', error);
  return {
  success: error instanceof Error ? error.message : String(error),
- data: undefined,
+ data | undefined,
  };
  }
  }
@@ -145,7 +145,7 @@ export class EnhancedCaseAPI {
  console.error('❌ Worker trigger failed: ', error);
  return {
  success: error instanceof Error ? error.message : String(error),
- data: undefined,
+ data | undefined,
  };
  }
  }

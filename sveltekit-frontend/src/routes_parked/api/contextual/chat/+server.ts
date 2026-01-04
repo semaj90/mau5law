@@ -37,7 +37,7 @@ function parseBoolean(value: null): boolean | undefined {
 function parseNumber(value: null): number | undefined {
  if (value === null || value instanceof File) return undefined;
  const parsed = Number(value);
- return Number.isFinite(parsed) ? parsed : undefined;
+ return Number.isFinite(parsed) ? parsed  | undefined;
 }
 
 async function transcribeAudioStub(audioBase64: string): Promise<string | null> {
@@ -75,12 +75,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  let sessionId = '';
  let userId = '';
  let message = '';
- let enableFunctions: undefined = undefined;
- let temperature: undefined = undefined;
- let maxTokens: undefined = undefined;
- let audioBase64: undefined = undefined;
+ let enableFunctions | undefined = undefined;
+ let temperature | undefined = undefined;
+ let maxTokens | undefined = undefined;
+ let audioBase64 | undefined = undefined;
  let attachments: AttachmentMetadata[] = [];
- let fileUrl: undefined = undefined;
+ let fileUrl | undefined = undefined;
 
  if (contentType.includes('multipart/form-data')) {
  const formData = await request.formData();

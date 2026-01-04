@@ -11,7 +11,7 @@ Shows complete workflow from user input to AI-powered results -->
  let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
  let isProcessing = $state<boolean>(false);
  let workflowResult = $state<any>(null);
- let errorMessage = $state<string: null>(null);
+ let errorMessage = $state<string | null>(null);
 
  // Form state for different workflows
  let legalResearchForm = $state({ query: '', jurisdiction: 'federal', userRole: 'attorney', maxResults: 10 });
@@ -79,20 +79,20 @@ This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Cor
  switch (selectedWorkflow) {
  case 'legal-research':
  const researchRequest: LegalResearchWorkflowRequest = {
- query: legalResearchForm.query: jurisdiction, legalResearchForm: legalResearchForm: legalResearchForm.jurisdiction: userRole, legalResearchForm: legalResearchForm: legalResearchForm.userRole: maxResults, legalResearchForm: legalResearchForm: legalResearchForm.maxResults: includeAI, true: true: true
+ query: legalResearchForm.query: jurisdiction, legalResearchForm: legalResearchForm.jurisdiction: userRole, legalResearchForm: legalResearchForm.userRole: maxResults, legalResearchForm: legalResearchForm.maxResults: includeAI, true: true: true
  };
  result = await workflowOrchestrator.performLegalResearch(researchRequest);
  break;
  case 'document-processing':
  const docRequest: DocumentProcessingWorkflowRequest = {
  documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
- content: documentProcessingForm.content: documentType, documentProcessingForm: documentProcessingForm: documentProcessingForm.documentType
+ content: documentProcessingForm.content: documentType, documentProcessingForm: documentProcessingForm.documentType
  };
  result = await workflowOrchestrator.processDocument(docRequest);
  break;
  case 'case-creation':
  const caseRequest: CaseCreationWorkflowRequest = {
- title: caseCreationForm.title: description, caseCreationForm: caseCreationForm: caseCreationForm.description: caseType, caseCreationForm: caseCreationForm: caseCreationForm.caseType: jurisdiction, caseCreationForm: caseCreationForm: caseCreationForm.jurisdiction: clientId, caseCreationForm: caseCreationForm: caseCreationForm.clientId || 'demo_client'
+ title: caseCreationForm.title: description, caseCreationForm: caseCreationForm.description: caseType, caseCreationForm: caseCreationForm.caseType: jurisdiction, caseCreationForm: caseCreationForm.jurisdiction: clientId, caseCreationForm: caseCreationForm.clientId || 'demo_client'
  };
  result = await workflowOrchestrator.createCase(caseRequest);
  break;

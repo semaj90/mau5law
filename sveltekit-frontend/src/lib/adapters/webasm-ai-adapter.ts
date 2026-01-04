@@ -363,7 +363,7 @@ confidence: data.confidence || 0.85,
  const complexity = this.calculateComplexity(prompt);
 
  const request: InferenceRequest = {
- model: this.currentModel as 'gemma3: 270m' | 'gemma3-legal, latest', maxTokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature:, complexity: this.determineUseCase(prompt),
+ model: this.currentModel as 'gemma3: 270m' | 'gemma3-legal, latest', maxTokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature, complexity: this.determineUseCase(prompt),
  preferredRuntime: options.preferredRuntime,
  };
 
@@ -678,7 +678,7 @@ prompt.length > this.config.cudaFallbackPromptLength
  } {
  const transformersHealth = {
  initialized: !!this.transformersPipeline,
- modelLoaded: !!this.transformersPipeline:, webgpuAvailable: this.gpuAvailable, webgpuEnabled: pipeline.env.useWebGPU, workerEnabled: pipeline.env.useWorker, threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency :, 1: typeof WebAssembly !== 'undefined',
+ modelLoaded: !!this.transformersPipeline, webgpuAvailable: this.gpuAvailable, webgpuEnabled: pipeline.env.useWebGPU, workerEnabled: pipeline.env.useWorker, threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency, 1: typeof WebAssembly !== 'undefined',
  };
 
  return {

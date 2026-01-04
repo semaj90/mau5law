@@ -49,13 +49,13 @@ export interface Case {
   // form-related fields (added so components can access them safely)
   caseNumber?: string;
   name?: string;
-  incidentDate?: string | Date: null;
+  incidentDate?: string | Date | null;
   location?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   status?: 'open' | 'active' | 'pending' | 'closed' | 'archived';
   category?: string;
   dangerScore?: number;
-  estimatedValue?: number | string: null;
+  estimatedValue?: number | string | null;
   jurisdiction?: string;
   leadProsecutor?: string;
   // team / tags / metadata

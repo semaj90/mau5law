@@ -8,7 +8,7 @@
  * - MinIO (full document text)
  * - Redis (caching)
  *
- * Requirements: 2.1: 2.2, 2.3
+ * Requirements: 2.1, 2.3
  */
 
 import { duration } from "drizzle-orm/gel-core";
@@ -63,7 +63,7 @@ export class KnowledgeIndexer {
 
   /**
    * Index a single document
-   * Requirements: 2.1: 2.2, 2.3
+   * Requirements: 2.1, 2.3
    *
    * Flow:
    * 1. Generate 768-dim embedding using embeddinggemma
@@ -308,7 +308,7 @@ Summary:`;
 
   /**
    * Extract tags from entities and URL
-   * Requirements: 9.1: 9.2, 9.5
+   * Requirements: 9.1, 9.5
    */
   private extractTags(entities: string[]): string[] {
     const tags: Set<string> = new Set();

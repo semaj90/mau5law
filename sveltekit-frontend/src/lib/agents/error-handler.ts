@@ -201,7 +201,7 @@ export async function withRetry<T>(
  fn: () => Promise<T>,
  context: string, maxAttempts: number = 3
 ): Promise<T> {
- let lastError: undefined;
+ let lastError | undefined;
 
  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
  try {

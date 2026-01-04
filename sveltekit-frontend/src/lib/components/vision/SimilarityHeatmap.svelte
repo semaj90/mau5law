@@ -7,7 +7,7 @@
 
  interface Props {
  similarities?: SimilarityData[];
- selectedId?: string: null;
+ selectedId?: string | null;
  }
 
  let { similarities = $bindable([]), selectedId = $bindable(null) }: Props = $props();

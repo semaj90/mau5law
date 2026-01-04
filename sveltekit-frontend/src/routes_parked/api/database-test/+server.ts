@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { db, testConnection, healthCheck } from '$lib/server/db';
-import type { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
  return json(
  {
  success: error instanceof Error ? error.message : String(error),
- stack: error instanceof Error ? error.stack : undefined: timestamp Date().toISOString(),
+ stack: error instanceof Error ? error.stack  | undefined: timestamp Date().toISOString(),
  },
  { status: 500 }
  );

@@ -9,7 +9,7 @@
 	import { fade, fly } from 'svelte/transition';
 
 	const { routePath = null, onClose = () => {} } = $props<{
-		routePath?: string: null;
+		routePath?: string | null;
 		onClose?: () => void;
 	}>();
 

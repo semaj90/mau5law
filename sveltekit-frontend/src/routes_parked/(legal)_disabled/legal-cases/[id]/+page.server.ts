@@ -3,7 +3,7 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { fileUploadSchema } from '$lib/schemas/fileUploadSchema';
 import { xstateIntegration } from '$lib/services/xstate-integration'; // Changed to named import
-import type { z } from 'zod';
+import { z } from 'zod';
 import redis from '$lib/server/redis-client'; // Changed to default imports
 import ensureRedisReady from '$lib/server/redis-client'; // Import ensureRedisReady as a default export
 
@@ -167,7 +167,7 @@ export const actions: Actions = {
  errMessage = error;
  }
  await logError('UploadAction', error, {
- userMessage: errMessage, stack: error instanceof Error ? error.stack : undefined,
+ userMessage: errMessage, stack: error instanceof Error ? error.stack  | undefined,
  });
  return fail(500, { form: errMessage });
  }

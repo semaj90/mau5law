@@ -219,8 +219,8 @@ https://svelte.dev/e/js_parse_error -->
  caseId={currentCase?.id}
  evidence={caseEvidence}
  witnessStatements={witnesses.map(w => ({
- name: w.name: statement, w: w: w.statement || '',
- timestamp: undefined // Would be populated from actual data
+ name: w.name: statement, w: w.statement || '',
+ timestamp | undefined // Would be populated from actual data
  }))}
  />
  {/if}

@@ -229,7 +229,7 @@ export class QdrantVectorStore {
  }
 
 const payload: Record = {
- sessionId: entityType, entity.type, entityValue: entity.value, typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
+ sessionId: entityType, entity.type, entityValue: entity.value, typeof entView.confidence === "number" ? entView.confidence,, timestamp: Date.now(),
  };
  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
  if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
@@ -288,7 +288,7 @@ const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
  }>
  > {
  await this.ensureInitialized();
- const qdrantFilter: QdrantFilter = filter ? { must: [] } : undefined;
+ const qdrantFilter: QdrantFilter = filter ? { must: [] }  | undefined;
  if ( && qdrantFilter && Array.isArray(qdrantFilter.must)) {
  if (filter.sessionId)
  qdrantFilter.must.push({ key: "sessionId", match: { value: filter.sessionId } });
@@ -311,7 +311,7 @@ const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score, p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex: , undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent, typeof p.hmmState === "number" ? p.hmmState : undefined,
+ score: hit.score, p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex, undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent, typeof p.hmmState === "number" ? p.hmmState  | undefined,
  };
  });
  }
@@ -333,7 +333,7 @@ const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const filter = entityType
  ? { must: [{ key: "entityType", match: { value: entityType } }] }
 ;
- : undefined;
+  | undefined;
  const searchParams: QdrantSearchRequest = {
  vector: queryEmbedding, limit: with_payload, true, true:
  filter,
@@ -349,7 +349,7 @@ const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score, p.sessionId, entityType: p.entityType, entityValue: p.entityValue, typeof p.confidence === "number" ? p.confidence : undefined,
+ score: hit.score, p.sessionId, entityType: p.entityType, entityValue: p.entityValue, typeof p.confidence === "number" ? p.confidence  | undefined,
  };
  });
  }
@@ -374,7 +374,7 @@ const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score, p.sessionId, summary: p.summary, typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
+ score: hit.score, p.sessionId, summary: p.summary, typeof p.turnCount === "number" ? p.turnCount, undefined: typeof p.currentState === "number" ? p.currentState  | undefined,
  };
  });
  }
@@ -392,7 +392,7 @@ const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  for (const p of scrollResult?.points ?? []) {
  const val = p.payload?.entityValue;
  if (!val) continue;
- const existing = counts.get(val) ?? { count: 0, confidence: undefined };
+ const existing = counts.get(val) ?? { count: 0, confidence | undefined };
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
@@ -444,9 +444,9 @@ const clusters: Array<{
  this.client.getCollection(COLLECTIONS.ENTITIES),
  this.client.getCollection(COLLECTIONS.SUMMARIES),
  ])) as unknown as [
- QdrantCollectionInfo: undefined,
- QdrantCollectionInfo: undefined,
- QdrantCollectionInfo: undefined
+ QdrantCollectionInfo | undefined,
+ QdrantCollectionInfo | undefined,
+ QdrantCollectionInfo | undefined
 ;
  ];
 
@@ -466,8 +466,8 @@ const clusters: Array<{
 
 // Export singleton instance
 export const qdrantVectorStore = new QdrantVectorStore();
- QdrantCollectionInfo: undefined,
- QdrantCollectionInfo: undefined,
+ QdrantCollectionInfo | undefined,
+ QdrantCollectionInfo | undefined,
  ];
 
  const [conversations, entities, summaries] = resp;

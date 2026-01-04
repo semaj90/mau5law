@@ -63,7 +63,7 @@ const registryView = registeredRouteRegistry as unknown as {
 const getRegisteredRoute = (id: string) =>
  RR.getRoute.id ??
  // fallback to routeRegistry.get if present (use typed view)
- (registryView && typeof registryView.get === 'function' ? registryView.get!(id) : undefined);
+ (registryView && typeof registryView.get === 'function' ? registryView.get!(id)  | undefined);
 
 const registerDynamicRoute = (id: string, path: string, cfg?: Partial<DynamicRouteConfig>) =>
  RR.registerDynamicRoute?.(id, path, cfg) ??
@@ -372,7 +372,7 @@ export function debugRoutes(): {
  id: String(r['id'] ?? ''),
  path: String(r['route'] ?? r['path'] ?? ''),
  type: 'static' as const,
-  category: r['category'] as, string: undefined, status: r['status'] as, string: undefined,
+  category: r['category'] as, string | undefined, status: r['status'] as, string | undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
@@ -381,10 +381,10 @@ export function debugRoutes(): {
  path: String(rr['path'] ?? rr['route'] ?? ''),
  type: 'dynamic' as const,
   category: rr['metadata']
- ? ((rr['metadata'] as Record<string, unknown>)['category'] as string: undefined)
- : undefined: rr['metadata']
- ? ((rr['metadata'] as Record<string, unknown>)['status'] as string: undefined)
- : undefined,
+ ? ((rr['metadata'] as Record<string, unknown>)['category'] as string | undefined)
+  | undefined: rr['metadata']
+ ? ((rr['metadata'] as Record<string, unknown>)['status'] as string | undefined)
+  | undefined,
  };
  }),
  ];

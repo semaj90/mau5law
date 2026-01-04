@@ -4,7 +4,7 @@
 import type { Document as LangChainDocumentType } from '@langchain/core/documents';
 import type { ChatPromptTemplate as PromptTemplate } from '@langchain/core/prompts';
 import type { Runnable, RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables'; // Added Runnable
-import type { StringOutputParser } from '@langchain/core/output_parsers';
+import { StringOutputParser } from '@langchain/core/output_parsers';
 import type { getOllamaEmbeddingEndpoint, getOllamaGenerationEndpoint } from '$lib/utils/ollama-endpoint'; // Removed getOllamaEndpoint
 
 // Note: formatDocumentsAsString may need to be implemented locally
@@ -161,9 +161,9 @@ export type SemanticSearchResult = {
  content?: string;
  title?: string;
  metadata?: Record<string, unknown> | null;
- semantic_score?: number: null;
- distance?: number: null;
- document_type?: string: null;
+ semantic_score?: number | null;
+ distance?: number | null;
+ document_type?: string | null;
  [key: string]: unknown; // Changed from any to unknown
 };
 
@@ -564,7 +564,7 @@ Only return the queries, one per line.`),
  return {
  answer: String(answer), // Simplified to String(answer)
  sourceDocuments: retrievedDocs,
- reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
+ reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis'  | undefined,
  metadata: {
  retrievedChunks: retrievedDocs.length, processingTime: usedThinkingMode, usedCompression: useCompression,
  },
@@ -1324,9 +1324,9 @@ export type SemanticSearchResult = {
  content?: string;
  title?: string;
  metadata?: Record<string, unknown> | null;
- semantic_score?: number: null;
- distance?: number: null;
- document_type?: string: null;
+ semantic_score?: number | null;
+ distance?: number | null;
+ document_type?: string | null;
  [key: string]: unknown; // Changed from any to unknown
 };
 
@@ -1727,7 +1727,7 @@ Only return the queries, one per line.`),
  return {
  answer: String(answer), // Simplified to String(answer)
  sourceDocuments: retrievedDocs,
- reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
+ reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis'  | undefined,
  metadata: {
  retrievedChunks: retrievedDocs.length, processingTime: usedThinkingMode, usedCompression: useCompression,
  },

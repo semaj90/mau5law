@@ -73,19 +73,19 @@ export interface DOMSyncData {
 
 export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 	protected hybridStyle: NESYoRHaHybridStyle;
-	protected domOverlay: undefined;
-	protected domSyncData: undefined;
-	protected pixelCanvas: undefined;
-	protected crtShader: THREE.ShaderMaterial: undefined;
+	protected domOverlay | undefined;
+	protected domSyncData | undefined;
+	protected pixelCanvas | undefined;
+	protected crtShader: THREE.ShaderMaterial | undefined;
 	protected nesStateCache: Map<string, InteractiveCanvasState> = new Map();
-	protected syncAnimationFrame: undefined;
-	protected hybridGPU: undefined;
+	protected syncAnimationFrame | undefined;
+	protected hybridGPU | undefined;
 	protected useGPUAcceleration = true;
-	protected gpuPixelBuffer: undefined;
+	protected gpuPixelBuffer | undefined;
 	protected activeBackend: GPUBackendType = 'cpu';
 	protected shaderResources: Map<string, ShaderResources> = new Map();
-	protected geometry: THREE.BufferGeometry: undefined;
-	protected material: THREE.Material: undefined;
+	protected geometry: THREE.BufferGeometry | undefined;
+	protected material: THREE.Material | undefined;
 
 	constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
 		const mergedStyle: NESYoRHaHybridStyle = {
@@ -239,14 +239,14 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 
 		// Animate scanlines
 		type NumericUniform = { value: number };
-		const uniforms = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform: undefined>;
+		const uniforms = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform | undefined>;
 
 		if (!uniforms.time) {
 			uniforms.time = { value: 0 };
 		}
 
 		this.addCustomAnimation('scanlines', (deltaTime: number) => {
-			const u = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform: undefined>;
+			const u = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform | undefined>;
 			if (u.time && typeof u.time.value === 'number') {
 				u.time.value += deltaTime;
 			} else {
@@ -904,7 +904,7 @@ void main() {
 		}
 	}
 
-	private colorToHex(color: number |, string: undefined, fallback = 'd4c5a9'): string {
+	private colorToHex(color: number |, string | undefined, fallback = 'd4c5a9'): string {
 		if (!color) return fallback;
 		if (typeof color === 'string') return color.replace('#', '');
 		return color.toString(16).padStart(6, '0');

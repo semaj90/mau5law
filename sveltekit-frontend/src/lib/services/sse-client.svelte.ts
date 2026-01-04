@@ -32,8 +32,8 @@ export class SSEClient {
 
   // Reactive state (Svelte 5 runes)
   isConnected = $state(false);
-  lastMessage = $state<SSEMessage: null>(null);
-  connectionError = $state<string: null>(null);
+  lastMessage = $state<SSEMessage | null>(null);
+  connectionError = $state<string | null>(null);
 
   // Configuration
   private config: Required<SSEConfig>;

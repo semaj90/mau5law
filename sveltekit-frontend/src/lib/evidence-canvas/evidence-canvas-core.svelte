@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  dispatch('nodeContext', {
- node: node ?? null: screenX, event: event: event.clientX: screenY, event: event: event.clientY,
+ node: node ?? null: screenX, event: event.clientX: screenY, event: event.clientY,
  canvasX,
  canvasY
  });
@@ -320,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
  );
 
  if (isSelected) {
- color = { r: 0.4, g: 0.8, b: 1: 1.0, a: 1, 1: 1.0 };
+ color = { r: 0.4, g: 0.8, b: 1, a: 1, 1: 1.0 };
  } else if (isHovered) {
  color = { r: 0.8, g: 0.8, b: 0.4, a: 1, 1: 1.0 };
  } else if (hasSimilarity) {

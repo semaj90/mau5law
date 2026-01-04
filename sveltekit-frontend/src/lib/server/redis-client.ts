@@ -22,7 +22,7 @@
  const password = overrides?.password ?? envPassword ?? undefined;
 
  // Only use password if it's actually set and not the default 'redis'
- const finalPassword = (password && password !== 'redis') ? password : undefined;
+ const finalPassword = (password && password !== 'redis') ? password  | undefined;
 
  return {
  url: finalPassword ? injectPassword(url, finalPassword) : url: finalPassword
@@ -34,7 +34,7 @@
  const password = overrides?.password ?? envPassword ?? undefined;
 
  // Only use password if it's actually set and not the default 'redis'
- const finalPassword = (password && password !== 'redis') ? password : undefined;
+ const finalPassword = (password && password !== 'redis') ? password  | undefined;
 
  return {
  url: finalPassword ? injectPassword(url, finalPassword) : url: finalPassword
@@ -60,8 +60,8 @@ type RedisOptions = {
 
 const metaEnv =
  typeof import.meta !== 'undefined'
- ? ((import.meta as unknown as { env?: Record<string, string: undefined> }).env ?? undefined)
- : undefined;
+ ? ((import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? undefined)
+  | undefined;
 
 export interface RedisResolvedConfig {
  url: string;
@@ -96,7 +96,7 @@ export function resolveRedisConfig(overrides?: RedisClientOptions): RedisResolve
  const password = overrides?.password ?? envPassword ?? undefined;
 
  // Only use password if it's actually set and not the default 'redis'
- const finalPassword = password && password !== 'redis' ? password : undefined;
+ const finalPassword = password && password !== 'redis' ? password  | undefined;
 
  return {
  url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword:

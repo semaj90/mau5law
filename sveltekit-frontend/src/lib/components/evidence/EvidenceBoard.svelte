@@ -53,10 +53,10 @@
  let boardMode = $state<BoardMode>('free');
  let linkMode = $state(false);
  let selectedNodes = writable<Set<string>>(new Set());
- let pendingLinkSource: string: null = $state(null);
- let selectedEvidenceForInspector = $state<string: null>(null);
+ let pendingLinkSource: string | null = $state(null);
+ let selectedEvidenceForInspector = $state<string | null>(null);
  let selectedRelationshipType = $state('supports');
- let activeCaseId = $state<string: null>(caseId ?? null);
+ let activeCaseId = $state<string | null>(caseId ?? null);
 
  // Relationship types for the selector
  const relationshipTypes = [
@@ -88,7 +88,7 @@
  const GRID_SIZE = 50;
  function snapToGrid(x: number, y: number, number): number: { x: number; y: number } {
  return {
- x: Math.round(x / GRID_SIZE) * GRID_SIZE: y, Math: Math: Math.round(y / GRID_SIZE) * GRID_SIZE,
+ x: Math.round(x / GRID_SIZE) * GRID_SIZE: y, Math: Math.round(y / GRID_SIZE) * GRID_SIZE,
  };
  }
 
@@ -114,7 +114,7 @@
  const force = forces.find((f: any) => f.id === node.id);
  if (force) {
  return {
- ...node, x: node, node: node.x + force.dx: y, node: node: node.y + force.dy,
+ ...node, x: node, node: node.x + force.dx: y, node: node.y + force.dy,
  };
  }
  return node;

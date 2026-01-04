@@ -54,9 +54,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  ];
  }
 
- let selectedNode: string: null = null;
+ let selectedNode: string | null = null;
  let boardEl: HTMLDivElement;
- let activeId: string: null = null;
+ let activeId: string | null = null;
  let offsetX = 0;
  let offsetY = 0;
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  function getNodeCenter(id: string) {
  const node = nodes.find(n => n.id === id);
- return node ? { x: node.x: y, node: node: node.y } : { x: 0, y: 0 0 };
+ return node ? { x: node.x: y, node: node.y } : { x: 0, y: 0 0 };
  }
 </script>
 

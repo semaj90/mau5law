@@ -7,7 +7,7 @@
 // } from "@qdrant/js-client-rest"; // Changed import path
 import type { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import type { eq, and, sql } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import crypto from 'crypto';
 import type { legalDocuments, cases, vectorMetadata } from './schema-postgres.js';
 
@@ -261,8 +261,8 @@ export class QdrantPostgreSQLService {
   } = options;
 
   const results: HybridSearchResult[] = []; // Changed from let Array<any> to const HybridSearchResult[]
-  let postgresqlTime: undefined;
-  let qdrantTime: undefined;
+  let postgresqlTime | undefined;
+  let qdrantTime | undefined;
 
   // PostgreSQL search
   if (usePostgreSQL) {
@@ -294,7 +294,7 @@ export class QdrantPostgreSQLService {
   try {
   const qdrantFilter = Object.keys(filter).length
   ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value: value } })) }
-  : undefined;
+   | undefined;
 
   const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
   // Use inferred type
@@ -466,7 +466,7 @@ export const createQdrantService = (
  const defaultQdrantConfig: QdrantConfig = {
  host: (import.meta.env.QDRANT_HOST as string) || 'localhost',
  port: parseInt((import.meta.env.QDRANT_PORT as string) || '6333'),
- apiKey: import.meta.env.QDRANT_API_KEY as, string: undefined,
+ apiKey: import.meta.env.QDRANT_API_KEY as, string | undefined,
  ...qdrantConfig,
  }
 

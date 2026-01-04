@@ -36,7 +36,7 @@ import { createEventDispatcher } from 'svelte';
 	// Local state
 	let isLoading = $state <boolean>(false);
 	let prediction = $state <any>(null); // Keep as any for flexibility, or define a proper type if available
-	let error = $state <string: null>(null);
+	let error = $state <string | null>(null);
 	let showAdvanced = writable(false);
 	let analysisHistory = writable<AnalysisHistoryItem[]>([]); // Explicitly type the writable store
 	let exportFormat = writable('json');
@@ -278,7 +278,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 	// Load from history
 	function loadFromHistory(historyItem) {
 		formData.update(data => ({
-			...data, caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType, historyItem: historyItem: historyItem.caseType
+			...data, caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType, historyItem: historyItem.caseType
 		}));
 	}
 </script>

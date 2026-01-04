@@ -2,7 +2,7 @@
  * Audit Logging Service
  *
  * Provides immutable audit trail for all evidence operations.
- * Requirements: 6.1: 6.2: 6.3: 6.4, 6.5
+ * Requirements: 6.1: 6.2: 6.3, 6.5
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -130,7 +130,7 @@ export async function queryAuditLog(filter: AuditLogFilter): Promise<AuditLogRes
  conditions.push(lte(auditLog.timestamp, filter.endDate.toISOString()));
  }
 
- const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+ const whereClause = conditions.length > 0 ? and(...conditions)  | undefined;
 
  // Get total count
  const countResult = await db.select({ count: auditLog.id }).from(auditLog).where(whereClause);

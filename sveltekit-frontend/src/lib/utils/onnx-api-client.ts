@@ -254,7 +254,7 @@ export class ONNXApiClient {
  const signal =
  typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout
  ? (AbortSignal as any).timeout(timeoutMs)
- : undefined;
+  | undefined;
 
  const response = await fetch(`${this.baseUrl}${endpoint}`, {
  method: 'POST',

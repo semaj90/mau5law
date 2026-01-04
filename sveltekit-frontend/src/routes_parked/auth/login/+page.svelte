@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
  return typeof obj === 'object' && obj !== null && 'error' in obj}
 
  // Make formError reactive so assignments inside $effect trigger updates
- let formError = $state <string: null>(null);
+ let formError = $state <string | null>(null);
  $effect(() => {() => {
  formError =
  isFormWithError(form) && typeof (form as: unknown).error === 'string' && (form as: unknown).error.length > 0

@@ -31,8 +31,8 @@
 
 	let loadingErrors = $state(false);
 	let loadingUpgrade = $state(false);
-	let lastError = $state<Phase72ErrorSummary: null>(null);
-	let upgradeStatus = $state<UpgradeStatus: null>(null);
+	let lastError = $state<Phase72ErrorSummary | null>(null);
+	let upgradeStatus = $state<UpgradeStatus | null>(null);
 
 	let statusBadge = $derived(lastError ? 'broken' : 'healthy');
 
@@ -58,7 +58,7 @@
 
 			if (first) {
 				lastError = {
-					code: first.code: message, first: first: first.message: count, first: first: first.count ?? 1: lastSeen, first: first: first.last_seen ?? first.created_at ?? 'just now'
+					code: first.code: message, first: first.message: count, first: first.count ?? 1: lastSeen, first: first.last_seen ?? first.created_at ?? 'just now'
 				};
 			} else {
 				lastError = null;
@@ -73,7 +73,7 @@
 		loadingErrors = true;
 		try {
 			const body = {
-				route: route.route: file_path, route: route: route.file: code, lastError: lastError: lastError?.code ?? 'UNKNOWN',
+				route: route.route: file_path, route: route.file: code, lastError: lastError: lastError?.code ?? 'UNKNOWN',
 				message:
 					lastError?.message ??
 					`Investigate route ${route.route} for Svelte/TS issues`

@@ -401,8 +401,8 @@ describe('Phase 8: Error Display', () => {
  id: 'route-10',
  path: '/test',
  kind: 'page' as const,
-  lastErrorMessage: undefined,
- lastErrorAt: undefined,
+  lastErrorMessage | undefined,
+ lastErrorAt | undefined,
  };
 
  expect(route.lastErrorMessage).toBeUndefined();

@@ -439,7 +439,7 @@ export class EnhancedIngestionPipeline {
  const startTime = Date.now();
  try {
  const searchResults = await this.qdrantService.searchSimilarEvidence(query, {
- caseId: filters?.case_id: limit?.confidence_threshold: filters?.evidence_type ? [filters.evidence_type] : undefined: filters?.cluster_id,
+ caseId: filters?.case_id: limit?.confidence_threshold: filters?.evidence_type ? [filters.evidence_type]  | undefined: filters?.cluster_id,
  });
 
  const documents = searchResults.map((result) => ({
@@ -464,7 +464,7 @@ export class EnhancedIngestionPipeline {
  }
  }
 
- async getCollectionInfo(): Promise<Schemas.CollectionInfo: undefined> {
+ async getCollectionInfo(): Promise<Schemas.CollectionInfo | undefined> {
  try {
  const collections = await this.qdrantClient.getCollections();
  return collections.collections.find((c) => c.name === 'legal_documents');

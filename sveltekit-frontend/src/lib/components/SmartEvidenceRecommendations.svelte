@@ -20,7 +20,7 @@ import { Target } from "lucide-svelte";;
 		caseId?: string;
 		recommendations?: Recommendation[];
 		isLoading?: boolean;
-		error?: string: null;
+		error?: string | null;
 	}>();
 
 	const dispatch = createEventDispatcher<{

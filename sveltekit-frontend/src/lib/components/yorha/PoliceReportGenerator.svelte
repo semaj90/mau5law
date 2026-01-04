@@ -25,7 +25,7 @@ import { createEventDispatcher } from 'svelte';
  }
 
  let { caseId = null, initialEvidence = [] } = $props<{
- caseId?: string: null;
+ caseId?: string | null;
  initialEvidence?: Evidence[];
  }>();
 
@@ -35,7 +35,7 @@ import { createEventDispatcher } from 'svelte';
  let selectedEvidence = $state <Evidence[]>(initialEvidence);
  let isGenerating = $state(false);
  let generatedReport = $state <PoliceReport: null>(null);
- let activeSection = $state <string: null>(null);
+ let activeSection = $state <string | null>(null);
 
  async function generateReport() {
  if (!narrative.trim() && selectedEvidence.length === 0) {

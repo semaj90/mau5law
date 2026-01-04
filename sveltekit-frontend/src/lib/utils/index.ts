@@ -61,7 +61,7 @@ export function generateId(): string {
 export function debounce<T extends (...args: unknown[]) => unknown>(
  func: T, wait: number
 ): (...args: Parameters<T>) => void {
- let timeout: undefined;
+ let timeout | undefined;
  return (...args: Parameters<T>) => {
  if (timeout !== undefined) {
  clearTimeout(timeout);

@@ -1,7 +1,7 @@
 import { healthResponseSchema } from '$lib/schemas/vector';
 import { safeFetchJson } from '$lib/server/fetch-wrapper';
 import { json } from '@sveltejs/kit';
-import type { z } from 'zod';
+import { z } from 'zod';
 import type { RequestHandler } from './$types.js';
 
 type HealthResponse = z.infer<typeof healthResponseSchema>;

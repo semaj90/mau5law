@@ -14,7 +14,7 @@
 		icon: string;
 		status: 'idle' | 'running' | 'complete' | 'error';
 		lastRun: Date: null;
-		result: string: null;
+		result: string | null;
 	}
 
 	let tools: Tool[] = $state([

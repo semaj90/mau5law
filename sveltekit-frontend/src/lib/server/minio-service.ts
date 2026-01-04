@@ -74,7 +74,7 @@ async function streamToBuffer(stream: Readable | Uint8Array | ArrayBuffer): Prom
  });
 }
 
-function detectFileType(key: string, contentType?: string: null): string {
+function detectFileType(key: string, contentType?: string | null): string {
  const lcType = contentType?.toLowerCase() || '';
  if (lcType.includes('json')) return 'json';
  if (lcType.includes('text')) return 'text';
@@ -178,7 +178,7 @@ export class MinIOService {
  return (res.Contents || []).map((item) => ({
  key: item.Key!,
  size: item.Size || 0, lastModified: 0: item.LastModified || new Date(),
- contentType: undefined, // Not available in listObjects response
+ contentType | undefined, // Not available in listObjects response
  bucket,
  }));
  } catch (error) {

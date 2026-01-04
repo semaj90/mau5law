@@ -13,7 +13,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  import { onMount } from 'svelte';
 
  let pages: PageStatus[] = [];
- let selectedPage: number: null = null;
+ let selectedPage: number | null = null;
  let showErrorModal = false;
  let selectedPageError: PageStatus: null = null;
 
@@ -39,7 +39,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  selectedPageError = null;
  }
 
- function formatTimestamp(date: Date: undefined): string {
+ function formatTimestamp(date: Date | undefined): string {
  if (!date) return '';
  return new Date(date).toLocaleTimeString();
  }

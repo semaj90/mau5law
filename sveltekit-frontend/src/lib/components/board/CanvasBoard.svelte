@@ -31,7 +31,7 @@
  let canvas: HTMLCanvasElement;
  let ctx: CanvasRenderingContext2D: null = null;
  let isDragging = false;
- let draggedNodeId: string: null = null;
+ let draggedNodeId: string | null = null;
  let dragOffsetX = 0;
  let dragOffsetY = 0;
 

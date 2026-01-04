@@ -15,7 +15,7 @@
  let isDragging = $state(false);
  let selectedFile: File: null = $state(null);
  let isUploading = $state(false);
- let uploadError: string: null = $state(null);
+ let uploadError: string | null = $state(null);
 
  const handleDragOver = (e: DragEvent) => {
  e.preventDefault();

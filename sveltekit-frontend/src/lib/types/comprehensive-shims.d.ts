@@ -117,7 +117,7 @@ declare namespace NodeJS {
  NEO4J_USER?: string;
  NEO4J_PASSWORD?: string;
  // Add other env keys used across the repo as optional strings
- [key: string]: string: undefined;
+ [key: string]: string | undefined;
  }
 }
 // -----------------------------

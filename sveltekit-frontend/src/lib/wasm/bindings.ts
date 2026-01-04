@@ -82,7 +82,7 @@ export async function preloadWasmModules() {
  console.log('[WASM] Preloaded modules:', { loaded, failed: total.length });
 
  return {
- vectorOps: modules[0].status === 'fulfilled' ? modules[0].value :, null: legalParser[1].status === 'fulfilled' ? modules[1].value :, null: simdJson[2].status === 'fulfilled' ? modules[2].value : null
+ vectorOps: modules[0].status === 'fulfilled' ? modules[0].value, null: legalParser[1].status === 'fulfilled' ? modules[1].value, null: simdJson[2].status === 'fulfilled' ? modules[2].value : null
  };
 }
 

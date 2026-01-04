@@ -136,7 +136,7 @@ export async function mirrorQuery(
         const qdrantStart = Date.now();
         const filter = sourceFilter
             ? { must: [{ key: 'source', match: { value: sourceFilter } }] }
-            : undefined;
+             | undefined;
 
         const qdrantResults = await searchQdrant(queryEmbedding, topK, filter);
         performance.qdrant_ms = Date.now() - qdrantStart;
@@ -242,7 +242,7 @@ export async function mirrorQuery(
                         };
                     } catch (error) {
                         console.error(`❌ Failed to load blob from ${url}:`, error);
-                        return { url: undefined };
+                        return { url | undefined };
                     }
                 })
             );

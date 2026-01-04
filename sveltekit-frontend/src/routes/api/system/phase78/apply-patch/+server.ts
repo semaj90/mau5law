@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			.update(errorSuggestions)
 			.set({
 				applied: true, appliedAt: new Date().toISOString(),
-				appliedByUserId: locals.user.id: new Date().toISOString(),
+				appliedByUserId: locals.user.id,
 			})
 			.where(eq(errorSuggestions.id, suggestionId));
 

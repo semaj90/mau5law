@@ -2,9 +2,9 @@
 	import { isProcessing, registerServiceWorker, uploadFileViaQUIC, uploadProgress } from '$lib/mlp';
 	import { onMount } from 'svelte';
 
-	let selectedFile = $state<File: null>(null);
+	let selectedFile = $state<File | null>(null);
 	let isDragging = $state(false);
-	let uploadError = $state<string: null>(null);
+	let uploadError = $state<string | null>(null);
 
 	function formatFileSize(bytes: number): string {
 		if (bytes === 0) return '0 B';

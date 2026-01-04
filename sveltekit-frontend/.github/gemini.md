@@ -746,9 +746,62 @@ async function indexCodebase() {
 
 ---
 
+## 🎯 Svelte 5 + bits-ui v2.x Migration (2025-01-25)
+
+### Stack Configuration
+| Package | Version | Notes |
+|---------|---------|-------|
+| bits-ui | v2.14.4 | Svelte 5 native (NO Melt UI) |
+| UnoCSS | v66.5.11 | YoRHa/NES themes configured |
+| lucide-svelte | v0.x | Default imports only |
+| Svelte | 5.x | Full runes support |
+
+### Runes Quick Reference
+```svelte
+// Props (replaces export let)
+let { prop1, prop2 = 'default' }: Props = $props();
+
+// State (replaces let x = value)
+let count = $state(0);
+let nullable = $state<string | null>(null);
+
+// Derived (replaces $: derived = ...)
+let doubled = $derived(count * 2);
+
+// Effect (replaces $: { sideEffect() })
+$effect(() => {
+  console.log('count is now:', count);
+});
+
+// Children (replaces <slot>)
+import type { Snippet } from 'svelte';
+interface Props { children?: Snippet; }
+{@render children?.()}
+```
+
+### Error Resolution Patterns
+| Error Code | Pattern | Fix |
+|------------|---------|-----|
+| `state_referenced_locally` | State in reactive block | Use `$effect()` wrapper |
+| Stub placeholder | Component not implemented | Rebuild with `$props()` |
+| a11y-interactive | Click without keyboard | Add `role`, `tabindex`, `onkeydown` |
+| D3 type errors | Module resolution | Cast to `any` |
+| lucide import | Named import fails | `import X from 'lucide-svelte/icons/x'` |
+
+### Template Files
+```
+src/lib/components/templates/
+├── Svelte5BitsDialog.svelte  # Dialog with bits-ui + runes
+├── Svelte5Card.svelte        # Card with NES theme
+├── Svelte5Button.svelte      # Button with variants
+└── index.ts                  # Barrel export with docs
+```
+
+---
+
 **Prepared For**: Google Gemini AI
-**Context Type**: Semantic clustering, embedding pipelines, knowledge base indexing
-**Model**: gemma:latest (Google Gemma 2B)
-**Last Updated**: 2025-12-18
-**Phase**: 72 (KAG Population + Semantic Error Analysis)
-**Status**: ✅ Redis KAG operational | ⏳ Qdrant pipeline pending
+**Context Type**: Semantic clustering, Svelte 5 migration, bits-ui integration
+**Model**: gemma3-legal:latest
+**Last Updated**: 2025-01-25
+**Phase**: 89+ (Svelte 5 Migration Complete)
+**Status**: ✅ 392 → 0 errors | ✅ Templates created | ✅ UnoCSS configured

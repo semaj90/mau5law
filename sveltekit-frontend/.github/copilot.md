@@ -352,6 +352,59 @@ netstat -ano | findstr :4005
 
 ---
 
-**Last Updated**: 2025-12-18
-**Phase**: 72 (KAG Population & Error Reduction)
-**Status**: ✅ Redis KAG operational, 2 fixes stored and verified
+## 🎯 Svelte 5 + bits-ui v2.x (Native Runes)
+
+### Key Architecture Decisions
+- **bits-ui v2.14.4**: Uses Svelte 5 runes natively (NO Melt UI dependency)
+- **UnoCSS v66.5.11**: Already configured with YoRHa/NES themes
+- **lucide-svelte**: Default imports only: `import Icon from "lucide-svelte/icons/icon-name"`
+
+### Runes Pattern Reference
+```svelte
+<script lang="ts">
+  import { Dialog } from 'bits-ui';
+
+  // Props with TypeScript
+  interface Props { title: string; class?: string; children?: Snippet; }
+  let { title, class: className = '', children }: Props = $props();
+
+  // State
+  let open = $state(false);
+  let count = $state<number | null>(null);
+
+  // Derived values
+  let doubled = $derived(count ? count * 2 : 0);
+
+  // Effects
+  $effect(() => { console.log('open changed:', open); });
+</script>
+
+<Dialog.Root bind:open>
+  <Dialog.Trigger class="nes-btn">{title}</Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Content class="nes-container is-rounded">
+      {@render children?.()}
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+### Template Files
+- `src/lib/components/templates/Svelte5BitsDialog.svelte` - Dialog with runes
+- `src/lib/components/templates/Svelte5Card.svelte` - Card with NES theme
+- `src/lib/components/templates/Svelte5Button.svelte` - Button variants
+- `src/lib/components/templates/index.ts` - Barrel export with docs
+
+### Common Fixes Applied
+| Issue | Solution |
+|-------|----------|
+| `state_referenced_locally` | Wrap in `$effect()` or use `$derived()` |
+| Stub placeholders | Rebuild with `$props()` and `{@render children()}` |
+| a11y interactive | Add `role="button"`, `tabindex="0"`, `onkeydown` |
+| D3 type errors | Cast to `any`: `(d3.drag() as any)` |
+
+---
+
+**Last Updated**: 2025-01-25
+**Phase**: 89+ (Svelte 5 + bits-ui Migration)
+**Status**: ✅ 392 → 0 errors, templates created, UnoCSS configured

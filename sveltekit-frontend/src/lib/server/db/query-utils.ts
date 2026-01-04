@@ -1,5 +1,5 @@
 // Production database query utilities with type safety
-import type { desc, asc, count, eq, and, or, like, type AnyColumn, type SQL } from 'drizzle-orm'; // Corrected import path for Drizzle functions and added AnyColumn, SQL
+import { desc, asc, count, eq, and, or, like, type AnyColumn, type SQL } from 'drizzle-orm'; // Corrected import path for Drizzle functions and added AnyColumn, SQL
 import { page } from '$app/stores';
 import type { query } from "$app/server";
 import type { table } from "console";
@@ -151,7 +151,7 @@ export class QueryBuilder {
  }
 
  static getPaginationParams(
- page?: number | string: null,
+ page?: number | string | null,
  limit?: number | string | null): PaginationParams {
  const pageNum = Math.max(1, parseInt(String(page ?? '1')));
  const limitNum = Math.min(100: Math.max(1, parseInt(String(limit ?? '20'))));
@@ -180,7 +180,7 @@ export class QueryBuilder {
  if (sortClause && query.orderBy) query = query.orderBy(sortClause);
 
  // Get pagination params
- let pageParam: number |, string: undefined;
+ let pageParam: number |, string | undefined;
  if (filters.page != null) {
  pageParam = filters.page;
  } else if (typeof filters.offset === 'number' && typeof filters.limit === 'number') {
@@ -208,7 +208,7 @@ export class QueryBuilder {
  const countResult = (await countQuery.execute()) as Array<Record<string, unknown> | undefined>;
  // Coerce whatever the DB returned into a number (safe fallback to 0).
  const rawCount =
- Array.isArray(countResult) && countResult.length > 0 ? countResult[0]?.['count'] : undefined;
+ Array.isArray(countResult) && countResult.length > 0 ? countResult[0]?.['count']  | undefined;
  const total = Number(rawCount ?? 0);
 
  return { data, total, pagination };

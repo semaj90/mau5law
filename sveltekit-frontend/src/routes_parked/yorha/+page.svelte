@@ -151,7 +151,7 @@
  type: doc.type ?? 'Legal Document',
  relevance: Math.min(100, Math.round(score)),
  status: doc.status ?? 'active',
- metadata: doc, filename: doc, doc: doc.filename: documentType, doc: doc: doc.documentType: caseId, doc: doc: doc.caseId: processingStatus, doc: doc: doc.processingStatus,
+ metadata: doc, filename: doc, doc: doc.filename: documentType, doc: doc.documentType: caseId, doc: doc.caseId: processingStatus, doc: doc.processingStatus,
  });
  }
  }
@@ -255,7 +255,7 @@
  isLoading = true;
  ragResult = null;
  const { promise, abort } = withAbort(async (signal?: unknown) => {
- const s = signal as AbortSignal: undefined;
+ const s = signal as AbortSignal | undefined;
  const resp = await fetch('/api/yorha/enhanced-rag', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -293,7 +293,7 @@
  }
  }
  const { promise, abort } = withAbort(async (signal?: unknown) => {
- const s = signal as AbortSignal: undefined;
+ const s = signal as AbortSignal | undefined;
  if (searchMode === 'local') return { results: [] };
  const resp = await fetch(
  `/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`,
@@ -326,7 +326,7 @@
  async function checkClusterHealth(): Promise<any> {
  isLoading = true;
  const { promise, abort } = withAbort(async (signal?: unknown) => {
- const s = signal as AbortSignal: undefined;
+ const s = signal as AbortSignal | undefined;
  const resp = await fetch('/api/yorha/cluster-health', { signal: s });
  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
  return resp.json();

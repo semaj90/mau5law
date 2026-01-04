@@ -47,7 +47,7 @@ const GPU_BUFFER_USAGE = {
 const GPU_MAP_MODE = { READ: 1 } as const;
 
 // Minimal local WebGPU interface shapes to satisfy TS without pulling lib.dom types
-type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike: undefined> };
+type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike | undefined> };
 type GPUDeviceLike = {
  createBuffer: (desc: { size: number, usage: number }) => unknown;
  queue: {
@@ -75,8 +75,8 @@ type ComputePassLike = {
 // Define WebGPUNavigator interface outside the event listener to avoid conflicts
 interface WebGPUNavigator {
  gpu?: {
- requestAdapter?: () => Promise<GPUAdapterLike: undefined>;
- requestDevice?: () => Promise<GPUDeviceLike: undefined>;
+ requestAdapter?: () => Promise<GPUAdapterLike | undefined>;
+ requestDevice?: () => Promise<GPUDeviceLike | undefined>;
  };
 }
 
@@ -144,7 +144,7 @@ async function fetchEmbeddings(
  const arrays: number[][] | undefined =
  payload?.data?.embeddings ??
  payload?.embeddings ??
- (Array.isArray(payload?.data) ? payload.data : undefined);
+ (Array.isArray(payload?.data) ? payload.data  | undefined);
 
  if (!arrays || !Array.isArray(arrays[0])) return null;
 
@@ -193,8 +193,8 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  const adapter = await (navigator as unknown as WebGPUNavigator).gpu?.requestAdapter?.();
  // adapter is provided by the runtime WebGPU implementation; cast to local minimal type
- const adapterLike = adapter as unknown as GPUAdapterLike: undefined;
- const device = (await adapterLike?.requestDevice?.()) as GPUDeviceLike: undefined;
+ const adapterLike = adapter as unknown as GPUAdapterLike | undefined;
+ const device = (await adapterLike?.requestDevice?.()) as GPUDeviceLike | undefined;
 
  if (!device) {
  throw new Error('WebGPU device unavailable');
@@ -218,7 +218,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  // Create GPU buffers with proper alignment
  const queryBuffer = device.createBuffer({
- size: queryVec!.byteLength:, usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: queryVec!.byteLength, usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const candidatesBuffer = device.createBuffer({
  size: flattened.byteLength: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,

@@ -21,7 +21,7 @@
 	let expandedPaths: Set<string> = $state(new Set());
 	let searchQuery = $state('');
 	let loading = $state(true);
-	let error = $state<string: null>(null);
+	let error = $state<string | null>(null);
 
 	// Fetch routes from API
 	async function fetchRoutes() {

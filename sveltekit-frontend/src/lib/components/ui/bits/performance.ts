@@ -175,7 +175,7 @@ export function createDebouncedSearch<T>(
  searchFn: (query: string) => Promise<T>,
  delay: number = 300
 ): (query: string) => Promise<T> {
- let timeoutId: NodeJS.Timeout: undefined;
+ let timeoutId: NodeJS.Timeout | undefined;
  let currentPromise: Promise<T> | null = null;
  return (query: string): Promise<T> => {
  return new Promise((resolve, reject) => {

@@ -9,7 +9,7 @@
  * - Regenerating embeddings on demand
  *
  * Spec: evidence-crud-rag-integration
- * Requirements: 7.1: 7.2: 7.3: 7.4, 7.5
+ * Requirements: 7.1: 7.2: 7.3, 7.5
  */
 
 import { QdrantClient } from '@qdrant/js-client-rest';
@@ -292,7 +292,7 @@ export async function addEvidenceToRagIndex(
  success: errors.length === 0, message.length === 0
  ? `Successfully indexed ${successCount} chunks`
  : `Indexed ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount, errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount, errors.length > 0 ? errors  | undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to add evidence to RAG index:', err);
@@ -408,7 +408,7 @@ export async function updateRagIndexTags(
  success: errors.length === 0, message.length === 0
  ? `Successfully updated ${successCount} chunks`
  : `Updated ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount, errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount, errors.length > 0 ? errors  | undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to update RAG index tags:', err);

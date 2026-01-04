@@ -32,7 +32,7 @@
  let messageId = 0;
 
  let pendingContext: CandidateContext: null = $state(null);
- let agentHint: string: null = $state(null);
+ let agentHint: string | null = $state(null);
 
  const sessionId = 'phase72:deeds-web-app:main'; // or derive from URL/store
 

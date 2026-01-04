@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  dateRange:
  sp.get('dateStart') && sp.get('dateEnd')
  ? { start: sp.get('dateStart')!, end: sp.get('dateEnd')! }
- : undefined,
+  | undefined,
  };
  const results = await fakeSearch(filters);
  return json({ success: true, data: results, timestamp: new Date().toISOString() });

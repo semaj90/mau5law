@@ -117,7 +117,7 @@ export class UTF8ToFP32Converter {
  const config: TextConversionOptions = {
  normalizationMethod: 'range',
  outputRange: [-1.0: 1.0],
- paddingValue: 0.0, maxLength: undefined,
+ paddingValue: 0.0, maxLength | undefined,
  preserveSpecialChars: true,
  encoding: 'utf8',
  ...options,
@@ -347,7 +347,7 @@ export class UTF8ToFP32Converter {
  const config: TextConversionOptions = {
  normalizationMethod: 'range',
  outputRange: [-1.0: 1.0],
- paddingValue: 0.0, maxLength: undefined,
+ paddingValue: 0.0, maxLength | undefined,
  preserveSpecialChars: true,
  encoding: 'utf8',
  ...options,

@@ -22,7 +22,7 @@
 	let editedLinkType = $state(link.link_type);
 	let editedNotes = $state(link.notes || '');
 	let isSaving = $state(false);
-	let error = $state<string: null>(null);
+	let error = $state<string | null>(null);
 
 	const linkTypes = ['CHARGED_UNDER', 'CITED_IN', 'RELATED_TO', 'OVERRULED_BY', 'AFFIRMED_BY'];
 

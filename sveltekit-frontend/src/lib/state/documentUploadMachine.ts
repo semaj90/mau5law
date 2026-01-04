@@ -146,7 +146,7 @@ const calculateFileHashService = fromPromise(
 
     const subtle =
       (globalThis as any).crypto?.subtle ??
-      (typeof crypto !== 'undefined' ? (crypto as any).webcrypto?.subtle : undefined);
+      (typeof crypto !== 'undefined' ? (crypto as any).webcrypto?.subtle  | undefined);
 
     if (!subtle) {
       throw new Error('SubtleCrypto is not available in this environment');
@@ -225,27 +225,27 @@ const extractTextService = fromPromise(async ({ input }: { input: DocumentUpload
 // -----------------------------
 
 const initialContext: DocumentUploadContext = {
-  file: undefined,
+  file | undefined,
   filename: '',
   fileSize: 0,
   mimeType: '',
-  fileHash: undefined,
+  fileHash | undefined,
   caseId: '',
   userId: '',
   title: '',
-  description: undefined,
+  description | undefined,
   tags: [],
   uploadProgress: 0,
   validationErrors: [],
-  extractedText: undefined,
-  documentId: undefined,
-  evidenceId: undefined,
-  evidenceProcessingState: undefined,
+  extractedText | undefined,
+  documentId | undefined,
+  evidenceId | undefined,
+  evidenceProcessingState | undefined,
   uploadStartTime: 0,
-  uploadEndTime: undefined,
-  processingStartTime: undefined,
-  processingEndTime: undefined,
-  error: undefined,
+  uploadEndTime | undefined,
+  processingStartTime | undefined,
+  processingEndTime | undefined,
+  error | undefined,
   retryCount: 0,
   maxRetries: 3,
 };
@@ -285,7 +285,7 @@ export const documentUploadMachine: any = setup({
             uploadProgress: 0,
             retryCount: 0,
             validationErrors: [],
-            error: undefined,
+            error | undefined,
           })),
         },
         RESET: {
@@ -341,7 +341,7 @@ export const documentUploadMachine: any = setup({
             description: event.description,
             tags: event.tags ?? [],
             validationErrors: [],
-            error: undefined,
+            error | undefined,
           })),
         },
         RESET: {
@@ -405,7 +405,7 @@ export const documentUploadMachine: any = setup({
             description: event.description,
             tags: event.tags ?? [],
             validationErrors: [],
-            error: undefined,
+            error | undefined,
           })),
         },
         RESET: {
@@ -449,7 +449,7 @@ export const documentUploadMachine: any = setup({
             guard: ({ context }) => context.retryCount < context.maxRetries,
             actions: assign(({ context }) => ({
               retryCount: context.retryCount + 1,
-              error: undefined,
+              error | undefined,
             })),
           },
           {
@@ -520,7 +520,7 @@ export const documentUploadMachine: any = setup({
         RETRY_UPLOAD: {
           target: 'processing',
           actions: assign(({ context }) => ({
-            error: undefined,
+            error | undefined,
             retryCount: context.retryCount + 1,
           })),
         },

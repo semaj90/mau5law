@@ -391,7 +391,7 @@ export const recommendationRoutingMachine = setup({
  redisKeys: [],
  hitRate: 0, lastUpdate: new Date(),
  },
- error: undefined,
+ error | undefined,
  },
  states: {
  idle: {
@@ -617,7 +617,7 @@ export const recommendationRoutingMachine = setup({
  RETRY: {
  target: 'session_active.routing_analysis',
  actions: assign({
- error: undefined,
+ error | undefined,
  }),
  },
  RESET: {
@@ -625,14 +625,14 @@ export const recommendationRoutingMachine = setup({
  actions: assign({
  sessionId: '',
  userId: '',
- caseId: undefined, currentDocument: undefined,
+ caseId | undefined, currentDocument | undefined,
  recommendations: {
  legal: [],
  documents: [],
  actions: [],
  risks: [],
  },
- error: undefined,
+ error | undefined,
  }),
  },
  },

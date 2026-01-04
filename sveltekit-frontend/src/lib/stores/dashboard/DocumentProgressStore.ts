@@ -34,7 +34,7 @@ const initialState: ProgressState = {
  documentTitle: '',
  isProcessing: false, currentEvent: null, null: new Map(),
  fallbackActive: false, fallbackConfidence: 0, errors: [],
- startTime: null, completionTime: undefined, undefined:
+ startTime: null, completionTime | undefined, undefined:
 };
 
 function createDocumentProgressStore() {
@@ -63,7 +63,7 @@ function createDocumentProgressStore() {
  fallbackConfidence: 0,
  errors: [],
  startTime: new Date(),
- completionTime: undefined,
+ completionTime | undefined,
  });
  },
 

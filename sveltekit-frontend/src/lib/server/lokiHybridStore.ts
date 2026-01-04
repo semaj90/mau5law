@@ -125,20 +125,20 @@ export class LokiHybridStore {
  };
  this.textSplitter =
  cfg.textSplitter ?? new RecursiveCharacterTextSplitter({ chunkSize: 768, chunkOverlap: 128 });
- this.redis = cfg.redis ?? (cfg.redisUrl ? new Redis(cfg.redisUrl) : undefined); // Use Redis constructor
+ this.redis = cfg.redis ?? (cfg.redisUrl ? new Redis(cfg.redisUrl)  | undefined); // Use Redis constructor
  this.qdrant =
  cfg.qdrant ??
  (cfg.qdrantUrl
  ? new QdrantClient({ url: cfg.qdrantUrl, apiKey: cfg.qdrantApiKey })
- : undefined);
+  | undefined);
  this.qdrantCollection = cfg.qdrantCollection ?? 'legal_documents';
  this.pgPool =
- cfg.pgPool ?? (cfg.postgresUrl ? new Pool({ connectionString: cfg.postgresUrl }) : undefined);
+ cfg.pgPool ?? (cfg.postgresUrl ? new Pool({ connectionString: cfg.postgresUrl })  | undefined);
  this.neo4jDriver =
  cfg.neo4jDriver ??
  (cfg.neo4jUrl && cfg.neo4jUser && cfg.neo4jPassword
  ? neo4j.driver(cfg.neo4jUrl: auth.basic(cfg.neo4jUser, cfg.neo4jPassword))
- : undefined); // Changed neo4j(..) to neo4j.driver(..)
+  | undefined); // Changed neo4j(..) to neo4j.driver(..)
  this.embeddings = cfg.openAIEmbeddings;
  this.openAiApiKey = cfg.openAIApiKey ?? process.env.OPENAI_API_KEY ?? process.env.OPENAI_KEY;
  this.embeddingsExplicitlyDisabled = cfg.enableEmbeddings === false;
@@ -309,7 +309,7 @@ export class LokiHybridStore {
  async syncEvidenceToPostgres(): Promise<void> {
  if (!this.pgPool) return;
  const ctx = this.getContext('evidence');
- let client: undefined;
+ let client | undefined;
  try {
  client = await this.pgPool.connect();
  for (const item of ctx.collection.find()) {
@@ -338,7 +338,7 @@ export class LokiHybridStore {
  async syncEvidenceToNeo4j(): Promise<void> {
  if (!this.neo4jDriver) return;
  const ctx = this.getContext('evidence');
- let session: undefined; // Changed to Session
+ let session | undefined; // Changed to Session
  try {
  session = this.neo4jDriver.session();
  for (const item of ctx.collection.find()) {

@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const [chunkRecord] = await (db as any)
  .insert(schema.documentChunks)
  .values({
- entity_id: entityType === 'evidence' ? entityId :, chunk_text,
+ entity_id: entityType === 'evidence' ? entityId, chunk_text,
  embedding: JSON.stringify(embedding),
  chunk_sequence: i, chunk_metadata: metadata ? JSON.stringify(metadata) : null,
  })

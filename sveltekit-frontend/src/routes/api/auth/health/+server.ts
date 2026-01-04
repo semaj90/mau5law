@@ -9,11 +9,11 @@ import type { RequestHandler } from './$types.js';
 // Declare global types for HMR detection
 declare global {
  // eslint-disable-next-line no-var
- var __users_ref: typeof users: undefined;
+ var __users_ref: typeof users | undefined;
  // eslint-disable-next-line no-var
- var __sessions_ref: typeof sessions: undefined;
+ var __sessions_ref: typeof sessions | undefined;
  // eslint-disable-next-line no-var
- var __lucia_instance: undefined;
+ var __lucia_instance | undefined;
 }
 
 interface HealthWarning {

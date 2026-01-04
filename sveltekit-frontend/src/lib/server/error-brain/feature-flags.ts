@@ -29,7 +29,7 @@ export interface ErrorBrainConfig {
 /**
  * Parse environment variables with safe defaults
  */
-function parseTransport(value: undefined): ErrorBrainTransport {
+function parseTransport(value | undefined): ErrorBrainTransport {
  const normalized = (value || 'none').toLowerCase();
  if (['none', 'sse', 'redis', 'both'].includes(normalized)) {
  return normalized as ErrorBrainTransport;
@@ -38,7 +38,7 @@ function parseTransport(value: undefined): ErrorBrainTransport {
  return 'none';
 }
 
-function parseApplyMode(value: undefined): ErrorBrainApplyMode {
+function parseApplyMode(value | undefined): ErrorBrainApplyMode {
  const normalized = (value || 'off').toLowerCase();
  if (['off', 'safe', 'full'].includes(normalized)) {
  return normalized as ErrorBrainApplyMode;

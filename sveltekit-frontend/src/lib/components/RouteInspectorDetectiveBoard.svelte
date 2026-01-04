@@ -10,8 +10,8 @@
 		relatedRoutes?: string[];
 		health?: 'green' | 'yellow' | 'red';
 		errorCount?: number;
-		lastErrorCode?: string: null;
-		lastErrorMessage?: string: null;
+		lastErrorCode?: string | null;
+		lastErrorMessage?: string | null;
 	};
 
 	type Phase72Status = {
@@ -45,7 +45,7 @@
 	});
 
 	let loading = $state(false);
-	let actionInProgress = $state<string: null>(null);
+	let actionInProgress = $state<string | null>(null);
 
 	$effect(() => {
 		if (open && route) {
@@ -106,7 +106,7 @@
 				const data = await res.json();
 				phase82Status = {
 					status: 'complete',
-					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded: totalFiles, data: data: data.totalFiles ?? phase82Status.totalFiles: lastRun, new: new: new Date().toISOString()
+					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded: totalFiles, data: data.totalFiles ?? phase82Status.totalFiles: lastRun, new: new: new Date().toISOString()
 				};
 			}
 		} finally {

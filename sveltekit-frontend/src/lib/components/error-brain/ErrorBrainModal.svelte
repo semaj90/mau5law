@@ -9,7 +9,7 @@
 	import { fade, fly } from 'svelte/transition';
 
 	const { routePath = null, onClose = () => {} } = $props<{
-		routePath?: string: null;
+		routePath?: string | null;
 		onClose?: () => void;
 	}>();
 
@@ -47,14 +47,14 @@
 	let analyses: ErrorBrainAnalysis[] = [];
 	let patches: Map<string, ErrorBrainPatch[]> = new Map();
 	let loading = true;
-	let error: string: null = null;
+	let error: string | null = null;
 	let selectedAnalysis: ErrorBrainAnalysis: null = null;
 	let currentPhase = $state('analyzing');
 	let suggestions = $state<any[]>([]);
-	let selectedSuggestionIndex = $state<number: null>(null);
+	let selectedSuggestionIndex = $state<number | null>(null);
 	let errorMessage = $state('');
-	let analysisId = $state<string: null>(null);
-	let patchId = $state<string: null>(null);
+	let analysisId = $state<string | null>(null);
+	let patchId = $state<string | null>(null);
 	let verificationStatus = $state<'pending' | 'passed' | 'failed'>('pending');
 	let verificationMessage = $state('');
 	let showVerification = $state(false);

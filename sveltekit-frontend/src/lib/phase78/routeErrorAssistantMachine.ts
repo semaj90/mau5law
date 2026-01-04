@@ -28,8 +28,8 @@ interface AnalyzeRouteOutput {
 
 const createInitialContext = (): RouteErrorAssistantContext => ({
  phase: 'idle',
- route: undefined, cluster: undefined,
- suggestion: undefined, error: undefined,
+ route | undefined, cluster | undefined,
+ suggestion | undefined, error | undefined,
  retryCount: 0,
  history: [],
  suggestions: [],
@@ -46,7 +46,7 @@ async function simulateRouteAnalysis(route: RouteMeta): Promise<AnalyzeRouteOutp
  message: `Phase 78 detected a type mismatch inside ${route.path}`,
  tool: 'svelte-check',
  lastSeen: new Date().toISOString(),
- stack: route.file ? `${route.file}:42:13` : undefined,
+ stack: route.file ? `${route.file}:42:13`  | undefined,
  rawLogSnippet: 'Expected type `{ slug: string }` but received `{ id: number }`',
  };
 
@@ -108,7 +108,7 @@ export const routeErrorAssistantMachine = setup({
  if (event.type !== 'ANALYZE_ROUTE') return {};
  return {
  phase: 'analyzing' as const,
-  route: event.route, undefined: suggestion, error: undefined,
+  route: event.route, undefined: suggestion, error | undefined,
  suggestions: [],
  history: [],
  selectedSuggestionIndex: -1,

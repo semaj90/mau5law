@@ -71,7 +71,7 @@ function asNumber(v: any, fallback = 0): number {
 }
 
 function asObject(v: any): Record<string, unknown> | undefined {
-    return v && typeof v === 'object' ? (v as Record<string, unknown>) : undefined;
+    return v && typeof v === 'object' ? (v as Record<string, unknown>)  | undefined;
 }
 
 export interface VectorSearchResult {
@@ -237,7 +237,7 @@ export async function searchSimilarMessages(
             id: asString(row.id),
             content: asString(row.content),
             similarity: asNumber(row.similarity),
-            metadata: includeMetadata ? asObject(row.metadata) : undefined,
+            metadata: includeMetadata ? asObject(row.metadata)  | undefined,
             documentType: 'chat_message'
         }));
     } catch (error: unknown) {
@@ -276,7 +276,7 @@ export async function searchSimilarEvidence(
                 evidenceType: asString(row.evidence_type),
                 caseId: asString(row.case_id),
                 ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
-            } : undefined,
+            }  | undefined,
             documentType: 'evidence'
         }));
     } catch (error: unknown) {

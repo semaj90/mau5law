@@ -154,3 +154,139 @@ if (!tableExists) {
 - `src/lib/server/db/index.ts` - DB client + exports
 - `drizzle.config.ts` - Drizzle Kit configuration
 - `drizzle/` - Migration files
+
+---
+
+## 🎨 Svelte 5 Native Component Library (2026-01-04)
+
+### Available Components
+Import from `$lib/components/ui/svelte5-index`:
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Svelte5Button` | Buttons | `variant`, `size`, `loading`, `disabled` |
+| `Svelte5Dialog` | Modals | `open`, `title`, `description`, `variant` |
+| `Svelte5Input` | Text input | `value`, `label`, `error`, `variant` |
+| `Svelte5Select` | Dropdown | `value`, `options`, `placeholder` |
+| `Svelte5Checkbox` | Boolean | `checked`, `indeterminate`, `variant` |
+| `Svelte5Switch` | Toggle | `checked`, `size`, `variant` |
+| `Svelte5Tabs` | Tab navigation | `value`, `tabs`, `variant` |
+| `Svelte5Tooltip` | Hover tooltip | `content`, `position`, `delay` |
+| `Svelte5Popover` | Click popover | `open`, `position`, `align` |
+| `Svelte5Alert` | Notifications | `variant`, `title`, `dismissible` |
+| `Svelte5Badge` | Status tags | `variant`, `pill`, `removable` |
+| `Svelte5Progress` | Progress bar | `value`, `max`, `indeterminate` |
+| `Svelte5Card` | Content box | `variant`, `padding`, `interactive` |
+| `Svelte5Accordion` | Collapsible | `type`, `items`, `collapsible` |
+| `Svelte5Avatar` | User image | `src`, `initials`, `status` |
+| `Svelte5Slider` | Range input | `value`, `min`, `max`, `showValue` |
+| `Svelte5RadioGroup` | Radio buttons | `value`, `options`, `variant` |
+| `Svelte5DropdownMenu` | Context menu | `items`, `align`, `side` |
+
+### Svelte 5 Runes Reference
+```typescript
+// Props
+let { value, variant = 'default' }: Props = $props();
+let open = $bindable(false);  // Two-way binding
+
+// Reactivity
+let count = $state(0);
+let doubled = $derived(count * 2);
+
+// Side effects
+$effect(() => {
+	console.log('Value changed:', value);
+	return () => cleanup();  // Cleanup function
+});
+```
+
+### Snippet Pattern (replaces slots)
+```svelte
+<script>
+interface Props { header?: Snippet; children?: Snippet; }
+let { header, children }: Props = $props();
+</script>
+
+{#if header}{@render header()}{/if}
+{@render children?.()}
+```
+
+### Event Handlers (new syntax)
+```svelte
+<!-- ❌ Old Svelte 4 -->
+<button on:click={handler}>
+
+<!-- ✅ New Svelte 5 -->
+<button onclick={handler}>
+```
+
+### Template Location
+`src/lib/components/ui/templates/Svelte5ComponentTemplate.svelte`
+
+---
+
+## 🎯 UnoCSS Configuration
+
+### Config File: `uno.config.ts`
+
+### Key Shortcuts
+| Shortcut | Description |
+|----------|-------------|
+| `nes-btn` | NES-style button |
+| `nes-panel` | NES bordered panel |
+| `nes-badge` | NES status badge |
+| `nes-input` | NES text input |
+| `glass` | Glassmorphism effect |
+| `btn-primary` | Primary button |
+| `btn-ghost` | Ghost button |
+
+### NES Theme Colors
+- `nes-bg`: #212529
+- `nes-accent`: #f8f4e3
+- `nes-accent2`: #ffcc66
+- `nes-success`: #4ade80
+- `nes-danger`: #ff5c5c
+- `nes-warning`: #fbbf24
+
+---
+
+## 🔍 Error Analysis (Current State: 70,914 errors)
+
+### Top Error Categories
+| Category | % | Fix Strategy |
+|----------|---|--------------|
+| Object literal corruption | 40% | AST repair / git restore |
+| `import type` misuse | 25% | Change to `import { z }` |
+| Svelte 4 event syntax | 10% | `node scripts/fix-svelte5-events.mjs` |
+| Module export errors | 10% | Fix barrel files |
+| Schema redeclarations | 5% | Deduplicate exports |
+| Svelte 5 runes | 5% | Use Svelte5 components |
+
+### Priority Files to Fix
+1. `src/lib/command-center-manifest.ts`
+2. `src/lib/polyfills.ts`
+3. `src/lib/utils/type-guards.ts`
+4. `src/lib/server/auth.ts`
+5. `src/lib/services/ollamaService.ts`
+
+### Error Analysis Location
+`logs/ERROR_ANALYSIS_RECOMMENDATIONS.md`
+`logs/svelte-check-top-1000.txt`
+
+---
+
+## 🛠️ Fix Scripts
+
+```bash
+# Event handler migration
+node scripts/fix-svelte5-events.mjs src
+
+# Format all files
+npx prettier --write "src/**/*.ts" "src/**/*.svelte"
+
+# Type check
+npm run check -- --threshold error
+
+# Clear caches
+rm -rf .svelte-kit node_modules/.vite
+```

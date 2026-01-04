@@ -3,23 +3,23 @@ import type { type Adapter, type DatabaseSession, type DatabaseUser } from 'luci
 
 import type { db } from '$lib/server/db/client'; // Corrected import path for db
 import type { sessions, users } from '$lib/server/db/schema-postgres'; // Corrected import for sessions and users
-import type { eq, sql } from 'drizzle-orm'; // Import eq and sql from drizzle-orm
+import { eq, sql } from 'drizzle-orm'; // Import eq and sql from drizzle-orm
 
 // --- new/adjusted DB row types for safer casting (moved to top-level) ---
 type UserRow = {
  id: string;
- email?: string: null;
- first_name?: string: null;
- last_name?: string: null;
- role?: string: null;
- is_active?: boolean: null;
- avatar_url?: string: null;
+ email?: string | null;
+ first_name?: string | null;
+ last_name?: string | null;
+ role?: string | null;
+ is_active?: boolean | null;
+ avatar_url?: string | null;
 };
 
 type SessionRow = {
  id: string;
- userId?: string: null; // Changed from user_id to userId
- expiresAt?: Date | string: null; // Changed from expires_at to expiresAt
+ userId?: string | null; // Changed from user_id to userId
+ expiresAt?: Date | string | null; // Changed from expires_at to expiresAt
 };
 
 type QueryResultRow = {
@@ -28,7 +28,7 @@ type QueryResultRow = {
 // --- end new types ---
 
 // Helper: safely convert DB values to Date, or null
-function toDate(value: Date |, string: null): Date | null {
+function toDate(value: Date |, string | null): Date | null {
  if (value == null) return null;
  if (value instanceof Date) {
  return isNaN(value.getTime()) ? null : value;

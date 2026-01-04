@@ -1,5 +1,5 @@
 import type { createMachine, fromPromise, assign } from 'xstate';
-import type { z } from 'zod';
+import { z } from 'zod';
 import type { ActorRefFrom, DoneActorEvent, ErrorActorEvent } from 'xstate';
 
 // Import schemas (assuming they exist)

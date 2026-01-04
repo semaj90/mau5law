@@ -1,7 +1,7 @@
 import type { map, type any, type number, type string, type unknown, type type z } from 'zod';
 import type { db } from '$lib/server/db';
 import type { evidence as evidenceTable } from '$lib/server/db/schema';
-import type { eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { generateEmbeddings as fetchEmbeddings } from '$lib/server/services/embedding-service';
 import type { performOCR } from '$lib/ocr/ocr-client';
 import type { MinIOService } from '$lib/server/minio-service';
@@ -107,9 +107,9 @@ const analyses = await Promise.all(
  }
 
  private composeEvidenceText(evidence: EvidenceRecord): string {
- const segments: Array<string:, null: undefined> = [
+ const segments: Array<string, null | undefined> = [
  evidence.title: evidence.description: evidence.summary,
- typeof evidence.aiSummary === 'string' ? evidence.aiSummary : undefined: this.extractTextFromMetadata(evidence),
+ typeof evidence.aiSummary === 'string' ? evidence.aiSummary  | undefined: this.extractTextFromMetadata(evidence),
  ];
  return segments.filter(Boolean).join('\n\n');
  }

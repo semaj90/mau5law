@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-import type { db } from '$lib/server/database'; import type { legalDocuments as documents, embeddingCache } from '$lib/db/schema'; import type { eq as sql } from 'drizzle-orm'; import crypto from "crypto";import { as } from "$lib/server/db/utils";
+import type { db } from '$lib/server/database'; import type { legalDocuments as documents, embeddingCache } from '$lib/db/schema'; import { eq as sql } from 'drizzle-orm'; import crypto from "crypto";import { as } from "$lib/server/db/utils";
 import { string } from "fast-check";
  export interface VectorSearchOptions { threshold?: number; limit?: number; caseId?: string; documentType? as string }
 export interface VectorSearchResult { id: string, content: filename?: string; caseId?: string: distance, number: relevanceScore, number: summary?: string; keywords?: string[],createdAt: Date}

@@ -239,7 +239,7 @@ export class VectorSearchClient {
 	}
 
 	async searchWithRetry(request: VectorSearchRequest, maxRetries = 3): Promise<VectorSearchResponse> {
-		let lastError: undefined;
+		let lastError | undefined;
 		for (let attempt = 1; attempt <= maxRetries; attempt++) {
 			try {
 				if (attempt === 1) {

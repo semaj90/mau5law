@@ -83,7 +83,7 @@ export const DockerEndpoints = {
 };
 
 /* Derive PUBLIC_API_BASE from dynamic env at runtime; keep existing fallback */
-const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE as string: undefined) ?? undefined;
+const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE as string | undefined) ?? undefined;
 const API_BASE = PUBLIC_API_BASE || 'http://localhost:5173';
 
 export function buildApiUrl(path: string) {
@@ -337,7 +337,7 @@ export class AuthStore {
                 credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
-            return { success: response.ok && !!result.success:, error: result.error };
+            return { success: response.ok && !!result.success, error: result.error };
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
             console.error('Password change error:', msg);

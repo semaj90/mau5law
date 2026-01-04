@@ -450,7 +450,7 @@ const startTime = performance.now();
 		`}
 
 	private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
-		const color = (params.color as string: undefined) || '#4A90E2';
+		const color = (params.color as string | undefined) || '#4A90E2';
 		return `.${metadata.type}-component { background: ${color}; padding: 1rem, border-radius: 4px}`}
 
 	private generateCHRROMPattern(svg: string): string { // Changed semicolon to comma

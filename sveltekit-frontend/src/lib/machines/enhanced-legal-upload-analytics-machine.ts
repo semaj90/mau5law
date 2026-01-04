@@ -1,6 +1,6 @@
 import type { createMachine, assign, createActor } from 'xstate';
 import type { AnyActorLogic } from 'xstate';
-import type { z } from 'zod'; // Enhanced Types for Legal AI Integration
+import { z } from 'zod'; // Enhanced Types for Legal AI Integration
 export interface UploadContext {
  files: File[]; uploadProgress: number;
  uploadResults: UploadResult[]; errors: string[];
@@ -176,7 +176,7 @@ export async function analyzeUserBehaviorService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- userAnalytics: input.userAnalytics, input.context:, legalContext: input.context.legalContext,
+ userAnalytics: input.userAnalytics, input.context, legalContext: input.context.legalContext,
  }),
  });
  if (!response.ok) {
@@ -184,7 +184,7 @@ export async function analyzeUserBehaviorService({
  }
  const result = (await response.json()) as AnalyzeBehaviorResponse;
  return {
- updatedAnalytics: result.analytics, result.insights:, behaviorScore: result.score,
+ updatedAnalytics: result.analytics, result.insights, behaviorScore: result.score,
  };
  } catch (error: unknown) {
  console.warn('Production behavior analysis unavailable, using fallback');
@@ -200,7 +200,7 @@ export async function analyzeUserBehaviorService({
  ...input.userAnalytics, behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate',
  },
  insights: {
- patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate:, legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
+ patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate, legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
  urgencyAwareness: input.context.legalContext?.urgency || 'medium',
  },
  behaviorScore: 0.75,
@@ -218,7 +218,7 @@ export async function generateContextualPromptsService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- context: input.context, input.timing:, model: input.context.ollamaConfig?.model || 'gemma3:270m',
+ context: input.context, input.timing, model: input.context.ollamaConfig?.model || 'gemma3:270m',
  legalContext: input.context.legalContext,
  }),
  });
@@ -291,7 +291,7 @@ export async function performAIAnalysisService({
  return {
  fileName: file.name, true: result.documentId,
  aiInsights: {
- summary: result.summary, result.entities:, suggestedTags: result.tags, confidenceScore: result.confidence, privileged: result.privileged, evidenceType: result.evidenceType,
+ summary: result.summary, result.entities, suggestedTags: result.tags, confidenceScore: result.confidence, privileged: result.privileged, evidenceType: result.evidenceType,
  },
  metadata: {
  fileId: result.documentId, result.hash ?? '',
@@ -363,7 +363,7 @@ export async function saveToDatabaseService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- documents: input.results, input.context.caseId:, userId: input.context.authSession?.userId, legalContext: input.context.legalContext,
+ documents: input.results, input.context.caseId, userId: input.context.authSession?.userId, legalContext: input.context.legalContext,
  metadata: {
  uploadSession: input.context.userAnalytics.sessionId, new Date().toISOString(),
  source: `legal_ai_upload`,
@@ -383,7 +383,7 @@ export async function saveToDatabaseService({
  JSON.stringify({
  results: input.results,
  context: {
- caseId: input.context.caseId, input.context.authSession?.userId:, legalContext: input.context.legalContext,
+ caseId: input.context.caseId, input.context.authSession?.userId, legalContext: input.context.legalContext,
  },
  timestamp: new Date().toISOString(),
  })
@@ -490,7 +490,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  },
  caseContext: {
  activeCases: [],
- currentCaseId: undefined,
+ currentCaseId | undefined,
  workflowStage: 'discovery',
  expertise: 'associate',
  },
@@ -506,7 +506,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  } as PipelineStatus,
  aiAnalysisResults: [] as AIAnalysisResult[],
  evidenceMetadata: [] as EvidenceMetadata[],
- // optional production integrations left: undefined, authSession: undefined as, AuthSession: undefined, dbConnection: undefined as, DatabaseConnection: undefined, ollamaConfig: undefined as, OllamaConfig: undefined, caseId: undefined as, string: undefined, legalContext: undefined as, LegalContext: undefined, riskAssessment: undefined as, RiskAssessment: undefined,
+ // optional production integrations left | undefined, authSession | undefined as, AuthSession | undefined, dbConnection | undefined as, DatabaseConnection | undefined, ollamaConfig | undefined as, OllamaConfig | undefined, caseId | undefined as, string | undefined, legalContext | undefined as, LegalContext | undefined, riskAssessment | undefined as, RiskAssessment | undefined,
  },
  states: {
  idle: {
@@ -572,7 +572,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  clickPatterns: [
  ...context.userAnalytics.interactionMetrics.clickPatterns,
  {
- x: event.x, event.y:, timestamp: Date.now(),
+ x: event.x, event.y, timestamp: Date.now(),
  element: event.element, event.legalContext,
  },
  ],

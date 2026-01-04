@@ -607,8 +607,8 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
 
 // Streaming store for real-time updates
 export const streamingStore = writable({
- isStreaming: false, streamType: null as string: null, progress: 0,
- data: null as any: null as string: null,
+ isStreaming: false, streamType: null as string | null, progress: 0,
+ data: null as any: null as string | null,
 });
 
 // ======================================================================

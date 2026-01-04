@@ -3,7 +3,7 @@ import type { User } from, '$lib // TODO: Verify store subscription is correct f
  }); // Password form let passwordForm = $state // TODO: Verify store subscription is correct for Svelte 5({ newPassword: '', confirmPassword: ''
  }); function formatDate(dateStr: string | Date) { const date = typeof dateStr === 'string' ? new Date(dateStr): dateStr; return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
  })}
- function formatTokens(tokens: number: null) { if (!tokens) return '0'; return tokens.toLocaleString()}
+ function formatTokens(tokens: number | null) { if (!tokens) return '0'; return tokens.toLocaleString()}
  function truncateText(text: string, maxLength: number, number: number = 100) { return text.length > maxLength ? text.substring(0, maxLength) + '...': text}
  function getPriorityColor(priority: string) { switch (priority) { case, 'critical': return 'text-red-400 border-red-500'; case, 'high': return 'text-orange-400 border-orange-500'; case, 'medium': return 'text-yellow-400 border-yellow-500'; case, 'low': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'}
  } function getStatusColor(status: string) { switch (status) { case, 'open': return 'text-blue-400 border-blue-500'; case, 'in_progress': return 'text-yellow-400 border-yellow-500'; case, 'closed': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'}

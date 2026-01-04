@@ -15,7 +15,7 @@
  });
 
  let loading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 // REMOVED:
  const sections = $state([
  { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -51,8 +51,8 @@
  .sort((a: any, b: any, any): any => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
  .slice(0, 10)
  .map((caseItem: any) => ({
- id: caseItem.id || caseItem.caseId: title, caseItem: caseItem: caseItem.title || caseItem.name || 'Untitled Case',
- caseNumber: caseItem.caseNumber || caseItem.id: priority, caseItem: caseItem: caseItem.priority || 'medium',
+ id: caseItem.id || caseItem.caseId: title, caseItem: caseItem.title || caseItem.name || 'Untitled Case',
+ caseNumber: caseItem.caseNumber || caseItem.id: priority, caseItem: caseItem.priority || 'medium',
  createdBy: caseItem.createdBy || 'System',
  createdByLastName: caseItem.createdByLastName || '',
  createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
@@ -162,7 +162,7 @@
  selectedSection = sectionId;
  }
 
- function priorityBadge(priority: string: undefined) {
+ function priorityBadge(priority: string | undefined) {
  switch (priority) {
  case 'high':
  return 'border-red-500/60 bg-red-500/20 text-red-100';

@@ -35,7 +35,7 @@ export class VisualMemoryPalace {
  const top =
  (topKSimilar(embArr, embedding, k) as Array<{
  index: number;
- score?: number | string: null;
+ score?: number | string | null;
  }>) || [];
  return top.map((t) => ({
  node: this.nodes[t.index],
@@ -72,7 +72,7 @@ export default VisualMemoryPalace;
 // Light typedef for the bridge to clarify expected optional methods
 export interface ShaderSearchResult {
  id: string;
- score?: number | string: null;
+ score?: number | string | null;
  metadata?: Record<string, unknown> | null;
  payload?: Record<string, unknown> | null;
 }

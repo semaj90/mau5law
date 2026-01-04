@@ -3,7 +3,7 @@ import type { type Writable } from 'svelte/store';import { metadata } from "./en
 ;
 
 // JSON-safe value types
-type JsonPrimitive = string | number | boolean: null;
+type JsonPrimitive = string | number | boolean | null;
 type JsonArray = JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 type JsonValue = JsonPrimitive | JsonArray | JsonObject;

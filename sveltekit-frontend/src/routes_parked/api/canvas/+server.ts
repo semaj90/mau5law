@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { canvasStates } from '$lib/server/db/schema-postgres';
-import type { eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { randomUUID } from 'node:crypto';
 import * as dbModule from '$lib/server/db/drizzle';
 const db = dbModule.default as any;

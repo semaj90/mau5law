@@ -47,8 +47,8 @@ import { createEventDispatcher } from 'svelte';
 
  let isSubmitting = $state(false);
  let plan = $state <CaseTheoryPlan: null>(null);
- let rawOutput = $state <string: null>(null);
- let errorMessage = $state <string: null>(null);
+ let rawOutput = $state <string | null>(null);
+ let errorMessage = $state <string | null>(null);
 
  const deliverableOptions = [
  { key: 'closingOutline', label: 'Closing Outline' },
@@ -106,7 +106,7 @@ import { createEventDispatcher } from 'svelte';
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId: form.caseId || undefined: caseName, form: form: form.caseName || undefined: summary, form: form: form.summary: prosecutionGoals, form: form: form.objectives: charges, listFromInput: listFromInput: listFromInput(form.charges),
+ caseId: form.caseId || undefined: caseName, form: form.caseName || undefined: summary, form: form.summary: prosecutionGoals, form: form.objectives: charges, listFromInput: listFromInput: listFromInput(form.charges),
  keyFacts: listFromInput(form.keyFacts),
  contestedFacts: listFromInput(form.contestedFacts),
  defenseAngles: listFromInput(form.defenseAngles),
@@ -115,7 +115,7 @@ import { createEventDispatcher } from 'svelte';
  witnessProfiles: witnessFromInput(form.witnessNotes),
  legalIssues: listFromInput(form.legalIssues),
  deliverables: selectedDeliverables(),
- tone: form.tone: preferredAudience, form: form: form.audience
+ tone: form.tone: preferredAudience, form: form.audience
  })
  });
 

@@ -18,7 +18,7 @@
  let cases: YoRHaCase[] = $state([]);
  let clusterHealth: ClusterHealth: null = $state(null);
  let isLoading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
  let refreshInterval: NodeJS.Timeout: null = null;
 
  /**

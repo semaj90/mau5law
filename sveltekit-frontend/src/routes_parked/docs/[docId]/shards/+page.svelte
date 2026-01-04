@@ -4,7 +4,7 @@
  import { onMount } from 'svelte';
 
  let shards = $state<ShardNode[]>([]);
- let selectedShard = $state<ShardNode: null>(null);
+ let selectedShard = $state<ShardNode | null>(null);
  let loading = $state(true);
  let error = $state('');
 

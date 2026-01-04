@@ -51,7 +51,7 @@ https://svelte.dev/e/expected_token -->
 	// Reactive state using $state for Svelte 5
 	let isAnalyzing = $state(false);
 	let analysis: AnalysisResult: null = $state(null); // Type analysis result
-	let error: string: null = $state(null); // Type error message
+	let error: string | null = $state(null); // Type error message
 
 	// Form action for pattern recognition
 	async function analyzePatterns() {

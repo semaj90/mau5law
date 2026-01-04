@@ -22,7 +22,7 @@
  }
 
  let { caseId = null } = $props<{
- caseId?: string: null;
+ caseId?: string | null;
  }>();
 
  let selectedEvidence: Evidence[] = $state([]);
@@ -43,7 +43,7 @@
  let riskScore = $state(48);
  let riskInsights = $state <{ message: string; delta: number; timestamp: string }[]>([]);
  let riskTrend = $state <'up' | 'down' | 'steady'>('steady');
- let lastCaseTheory = $state <string: null>(null);
+ let lastCaseTheory = $state <string | null>(null);
 
  // Predictive recommendations
  let didYouMean = $state <string[]>([]);

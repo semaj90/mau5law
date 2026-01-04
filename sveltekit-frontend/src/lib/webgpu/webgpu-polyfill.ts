@@ -52,7 +52,7 @@ export class WebGPUPolyfillService {
  async initialize(): Promise<boolean> {
  // Try WebGPU first
  const nav =
- typeof navigator !== 'undefined' ? (navigator as unknown as NavigatorWithGPU) : undefined;
+ typeof navigator !== 'undefined' ? (navigator as unknown as NavigatorWithGPU)  | undefined;
  if (nav?.gpu) {
  try {
  this.adapter =
@@ -67,7 +67,7 @@ export class WebGPUPolyfillService {
  try {
  // keep the import result as `unknown` and narrow safely
  const modUnknown: unknown = await import('./shader-cache-manager.js');
- let exported: undefined;
+ let exported | undefined;
 
  if (modUnknown && typeof modUnknown === 'object') {
  const modObj = modUnknown as Record<string, unknown>;
