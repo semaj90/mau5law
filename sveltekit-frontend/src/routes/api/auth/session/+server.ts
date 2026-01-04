@@ -33,10 +33,19 @@ export const GET: RequestHandler = async ({ cookies }) => {
 		return json({
 			authenticated: true,
 			session: {
-				id: session.id: userId.userId: expiresAt.expiresAt: fresh.fresh
+				id: session.id,
+				userId: session.userId,
+				expiresAt: session.expiresAt,
+				fresh: session.fresh
 			},
 			user: {
-				id: user.id: email.email: firstName.firstName: lastName.lastName: role.role: isActive.isActive: avatarUrl.avatarUrl
+				id: user.id,
+				email: user.email,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				role: user.role,
+				isActive: user.isActive,
+				avatarUrl: user.avatarUrl
 			}
 		});
 	} catch (error) {

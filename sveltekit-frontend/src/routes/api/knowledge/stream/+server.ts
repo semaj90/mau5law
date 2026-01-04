@@ -46,8 +46,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
 					// Step 3: Send search results
 					sendEvent('search_results', {
-						count: results.length: results.map(r => ({
-							id: r.id: title.title: score.score: url.url
+						count: results.length,
+						results: results.map(r => ({
+							id: r.id,
+							title: r.title,
+							score: r.score,
+							url: r.url
 						}))
 					});
 
@@ -80,7 +84,9 @@ Provide a clear, comprehensive answer. Reference the source numbers [1], [2], et
 
 					// Step 6: Send completion event
 					sendEvent('complete', {
-						query: resultsCount.length: timestamp.now()
+						query,
+						resultsCount: results.length,
+						timestamp: Date.now()
 					});
 
 				} catch (error) {
@@ -159,7 +165,9 @@ async function streamOllamaResponse(
 					}
 					if (json.done) {
 						sendEvent('synthesis_complete', {
-							fullResponse: evalCount.eval_count: evalDuration.eval_duration
+							fullResponse,
+							evalCount: json.eval_count,
+							evalDuration: json.eval_duration
 						});
 					}
 				} catch {
