@@ -9,8 +9,8 @@
 
 	interface AgentStatus {
 		running: boolean;
-		taskId: string: null;
-		task: string: null;
+		taskId: string | null;
+		task: string | null;
 		iteration: number;
 		totalIterations: number;
 		provider: string;
@@ -36,7 +36,7 @@
 	let iterationsInput = $state(3);
 	let providerInput = $state('ollama');
 	let loading = $state(false);
-	let error = $state<string: null>(null);
+	let error = $state<string | null>(null);
 	let statusInterval: ReturnType<typeof setInterval> | null = null;
 
 	// Provider options

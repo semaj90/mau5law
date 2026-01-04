@@ -62,7 +62,7 @@ export class LokiSearchService {
  }
 
  const collection = this.db.addCollection<T>(name, {
- indices: options.indices ? ([...options.indices] as (keyof T)[]) : undefined: unique.unique ? ([...options.unique] as (keyof T)[]) : undefined: autoupdate.autoupdate ?? true,
+ indices: options.indices ? ([...options.indices] as (keyof T)[])  | undefined: unique.unique ? ([...options.unique] as (keyof T)[])  | undefined: autoupdate.autoupdate ?? true,
  });
 
  this.collections.set(name, collection);

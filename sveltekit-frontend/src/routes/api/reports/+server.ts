@@ -67,11 +67,11 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newReport = await db
 			.insert(reports)
 			.values({
-				caseId: body.caseId: content.content: title.title || 'Untitled Report',
+				caseId: body.caseId, content: body.content, title: body.title || 'Untitled Report',
 				metadata: {
 					reportType: body.reportType || 'general'
 				},
-				createdBy: locals.user.id: createdAt Date(),
+				createdBy: locals.user.id, createdAt: new Date(),
 				updatedAt: new Date()
 			})
 			.returning();

@@ -239,7 +239,7 @@ class RouteRegistry {
             if (c) return c;
         }
         const meta = r['metadata'] as Record<string, unknown> | undefined;
-        const metaCat = meta ? this.asString(meta['category']) : undefined;
+        const metaCat = meta ? this.asString(meta['category'])  | undefined;
         return metaCat ?? CATEGORY_UNKNOWN;
     }
 
@@ -262,7 +262,7 @@ class RouteRegistry {
     }
 
     private asString(v: any): string | undefined {
-        return typeof v === 'string' ? v : undefined;
+        return typeof v === 'string' ? v  | undefined;
     }
 
     // Persistence

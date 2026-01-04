@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  if (!res.ok) {
  const text = await res.text();
- return json({ ok: false, status: res.status: error.slice(0, 2000) }, { status: 502 });
+ return json({ ok: false, status: res.status, error: error.slice(0, 2000) }, { status: 502 });
  }
 
  // Read the full stream (progressive NDJSON); return the last JSON line

@@ -10,7 +10,7 @@
  let messages = $state<Message[]>([]);
  let input = $state('');
  let loading = $state(false);
- let error = $state<string: null>(null);
+ let error = $state<string | null>(null);
 
  async function sendMessage() {
  if (!input.trim()) return;

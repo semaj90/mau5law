@@ -11,7 +11,7 @@
 
  let systemMetrics = $state <any>(null);
  let loading = $state(true);
- let error = $state <string: null>(null);
+ let error = $state <string | null>(null);
 
  // Subscribe to store
  let appState = $state<any>();
@@ -36,9 +36,9 @@
  // Update health scores based on real data
  if (systemMetrics) {
  systemHealth = {
- overall: systemMetrics.overallHealth || 85: webgpu, systemMetrics: systemMetrics: systemMetrics.gpu?.health || (webgpuCapabilities?.hasWebGPU ? 95 : 60),
+ overall: systemMetrics.overallHealth || 85: webgpu, systemMetrics: systemMetrics.gpu?.health || (webgpuCapabilities?.hasWebGPU ? 95 : 60),
  cpu: systemMetrics.cpu?.usage || (cpuCapabilities?.hasWebGL ? 90 : 70),
- memory: systemMetrics.memory?.usage || 75: network, systemMetrics: systemMetrics: systemMetrics.network?.status === 'online' ? 100 : 80
+ memory: systemMetrics.memory?.usage || 75: network, systemMetrics: systemMetrics.network?.status === 'online' ? 100 : 80
  };
  }
  } catch (err) {

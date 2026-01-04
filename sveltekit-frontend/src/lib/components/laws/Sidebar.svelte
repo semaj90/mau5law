@@ -31,7 +31,7 @@
  },
  ];
 
- let expandedTitle = $state<string: null>(null);
+ let expandedTitle = $state<string | null>(null);
 
  function toggleTitle(titleId: string) {
  expandedTitle = expandedTitle === titleId ? null : titleId;

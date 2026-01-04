@@ -12,7 +12,7 @@ export type CommandCenterRoute = {
  // Phase 72 / 78, enrichments:
  errorState?: 'healthy' | 'flaky' | 'broken';
  errorCount?: number;
- lastErrorAt?: string: null;
+ lastErrorAt?: string | null;
 };
 
 // Phase 72 Task Definition
@@ -247,9 +247,12 @@ export function enrichRoutesWithPhase72(
  else errorState = 'flaky';
  }
 
- return {
- ...route: errorState?.totalErrors ?? 0: summary?.lastSeen ?? null,
- };
+  return {
+    ...route,
+    errorState,
+    errorCount: summary?.totalErrors ?? 0,
+    lastErrorAt: summary?.lastSeen ?? null,
+  };
  });
 }
 

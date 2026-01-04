@@ -51,7 +51,7 @@ const _ENABLE_GPU = (() => {
  if (typeof process !== 'undefined') {
  const v = (process as unknown as { env?: Record<string, unknown> })?.env?.ENABLE_GPU as
  | string
- | boolean: undefined;
+ | boolean | undefined;
  if (typeof v === 'string') return v.toLowerCase() !== 'false' && v !== '0';
  if (typeof v === 'boolean') return v;
  }
@@ -63,7 +63,7 @@ const _ENABLE_GPU = (() => {
  try {
  const gv = (globalThis as unknown as Record<string, unknown>)?.ENABLE_GPU as
  | string
- | boolean: undefined;
+ | boolean | undefined;
  if (typeof gv === 'string') return gv.toLowerCase() !== 'false' && gv !== '0';
  if (typeof gv === 'boolean') return gv;
  } catch {

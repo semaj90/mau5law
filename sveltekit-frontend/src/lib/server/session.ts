@@ -152,7 +152,7 @@ export async function invalidateSession(sessionId: string): Promise<void> {
  // Example with Drizzle:
  // import type { db } from '$lib/server/db/client';
  // import * as schema from '$lib/server/db/schema-postgres';
- // import type { eq } from 'drizzle-orm';
+ // import { eq } from 'drizzle-orm';
  // await db.delete(schema.sessions).where(eq(schema.sessions.id, sessionId));
 }
 

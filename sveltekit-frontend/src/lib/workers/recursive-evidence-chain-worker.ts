@@ -231,8 +231,8 @@ export class RecursiveEvidenceChainProcessor {
 				correlations
 					.map((c): RelatedEvidence | null => {
 						const corr = c as CorrelationResult;
-						const a = typeof corr.evidenceA === 'string' ? corr.evidenceA : undefined;
-						const b = typeof corr.evidenceB === 'string' ? corr.evidenceB : undefined;
+						const a = typeof corr.evidenceA === 'string' ? corr.evidenceA  | undefined;
+						const b = typeof corr.evidenceB === 'string' ? corr.evidenceB  | undefined;
 						const corrType =
 							typeof corr.correlationType === 'string' ? corr.correlationType : 'unknown';
 						const strength = typeof corr.strength === 'number' ? corr.strength : 0;

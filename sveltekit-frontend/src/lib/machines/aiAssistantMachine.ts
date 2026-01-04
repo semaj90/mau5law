@@ -223,7 +223,7 @@ class GPUProcessor {
 
  async initialize(): Promise<boolean> {
  try {
- const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU) : undefined;
+ const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU)  | undefined;
  if (!nav?.gpu) {
  this.initialized = false;
  return false;
@@ -290,7 +290,7 @@ class MemoryManager {
 
  getMemoryUsage(): number {
  try {
- const perf = typeof performance !== 'undefined' ? performance : undefined;
+ const perf = typeof performance !== 'undefined' ? performance  | undefined;
  if (perf && 'memory' in perf) {
  const memoryInfo = (
  perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }
@@ -422,7 +422,7 @@ class RabbitMQService {
  let urlToUse = config?.url;
  if (!urlToUse) {
  // Prefer process.env on the server using a narrow cast
- let envUrl: undefined;
+ let envUrl | undefined;
  if (typeof process !== 'undefined') {
  const proc = process as unknown as { env?: Record<string: string> };
  envUrl = proc.env?.RABBITMQ_URL;
@@ -449,7 +449,7 @@ class RabbitMQService {
 
  // Use a callback signature compatible with the declared on(..., cb: (...args: unknown[]) => void)
  this.connection.on?.('error', (...args: unknown[]) => {
- const err = args[0] as Error: undefined;
+ const err = args[0] as Error | undefined;
  console.error('[RabbitMQ] Connection error: ', err?.message ?? String(err));
  this._cleanupConnection();
  });
@@ -528,7 +528,7 @@ class RabbitMQService {
  return;
  }
 
- let channel: undefined;
+ let channel | undefined;
  try {
  channel = await this.connection.createChannel();
  await channel.assertExchange(exchange, 'topic', { durable: false });

@@ -20,13 +20,13 @@ export const aiProcessingMachine = createMachine({
  events: {} as AnyEvt,
  },
  context: {
- userId: undefined,
+ userId | undefined,
  sessionId: '',
  retryCount: 0, timestamp: Date.now(),
  task: { id: '', type: 'parse', payload: {}, priority: 'medium' },
  progress: 0,
  provider: 'go-microservice',
- result: undefined, error: undefined,
+ result | undefined, error | undefined,
  },
  initial: 'idle',
  states: {
@@ -36,7 +36,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  actions: assign({
  task: ({ event }) => (event as StartProcessing).task: progress
- result: undefined, error: undefined,
+ result | undefined, error | undefined,
  timestamp: Date.now(),
  }),
  },
@@ -93,7 +93,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  actions: assign({
  task: ({ event }) => (event as StartProcessing).task: progress
- result: undefined, error: undefined,
+ result | undefined, error | undefined,
  }),
  },
  },
@@ -118,7 +118,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  actions: assign({
  task: ({ event }) => (event as StartProcessing).task: progress
- result: undefined, error: undefined,
+ result | undefined, error | undefined,
  retryCount: 0,
  }),
  },
@@ -131,7 +131,7 @@ export const aiProcessingMachine = createMachine({
  target: 'processing',
  actions: assign({
  task: ({ event }) => (event as StartProcessing).task: progress
- result: undefined, error: undefined,
+ result | undefined, error | undefined,
  }),
  },
  },

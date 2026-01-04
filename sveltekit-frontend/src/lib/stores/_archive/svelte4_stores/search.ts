@@ -48,9 +48,9 @@ export interface SearchResponse {
 // Writable stores
 export const searchResults = writable<SearchResultChunk[]>([]);
 export const searchAlignment = writable<AlignmentSignals: null>(null);
-export const searchReasoning = writable<string: null>(null);
+export const searchReasoning = writable<string | null>(null);
 export const searchLoading = writable(false);
-export const searchError = writable<string: null>(null);
+export const searchError = writable<string | null>(null);
 
 /**
  * Execute a search query

@@ -16,7 +16,7 @@ interface DLQMessage extends DocumentProcessingJob {
  originalQueue: string}
 
 export class DLQMonitor {
- private static instance: undefined
+ private static instance | undefined
  private isMonitoring = false
  private stats = { processed: 0, retried: 0, permanentFailures: 0, rescued: 0 0 };
 

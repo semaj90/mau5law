@@ -17,7 +17,7 @@ import { createEventDispatcher } from 'svelte';
 		depth?: string;
 		research: Research;
 		researchHistory?: ResearchHistoryItem[];
-		error?: string: null;
+		error?: string | null;
 	}>();
 
 	const dispatch = createEventDispatcher();
@@ -91,7 +91,7 @@ import { createEventDispatcher } from 'svelte';
 	// Reactive state
 	let isResearching = false;
 	let currentResearch: ResearchResult: null = null;
-	let currentError: string: null = null;
+	let currentError: string | null = null;
 	let includePrecedents = true;
 	let includeStatutes = true;
 

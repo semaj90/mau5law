@@ -8,7 +8,7 @@ export const noteFilters = writable<NoteFilters>({
  noteType: '',
  riskLevel: '',
  tags: [],
- caseId: undefined,
+ caseId | undefined,
 });
 
 // Derived stores
@@ -72,7 +72,7 @@ export async function loadLegalNotes(): Promise<void> {
  legalNotes.set(
  notes.map((note: any) => ({
  ...note: savedAt Date(note.savedAt),
- updatedAt: note.updatedAt ? new Date(note.updatedAt) : undefined,
+ updatedAt: note.updatedAt ? new Date(note.updatedAt)  | undefined,
  }))
  );
  }
@@ -128,7 +128,7 @@ export function clearNoteFilters(): void {
  noteType: '',
  riskLevel: '',
  tags: [],
- caseId: undefined,
+ caseId | undefined,
  });
 }
 

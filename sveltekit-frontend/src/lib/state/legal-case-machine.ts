@@ -333,7 +333,7 @@ const hasAIAnalysis = ({ context: _context }: { context: LegalCaseContext }) => 
 // });
 
 // const assignAISummary = assign({
-// aiSummary: ({ event }) => (event.output?.summary ?? null) as string: null,
+// aiSummary: ({ event }) => (event.output?.summary ?? null) as string | null,
 // aiAnalysisProgress: 100,
 // stats: ({ context, event }) => ({
 // ...context.stats,

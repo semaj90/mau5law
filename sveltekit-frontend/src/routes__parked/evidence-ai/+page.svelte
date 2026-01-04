@@ -9,7 +9,7 @@ import { onMount } from 'svelte';
  // ======================
 
  // WebSocket connection state
- let ws = $state<WebSocket: null>(null);
+ let ws = $state<WebSocket | null>(null);
  let wsConnected = $state<boolean>(false);
  let wsReconnecting = $state<boolean>(false);
 
@@ -17,7 +17,7 @@ import { onMount } from 'svelte';
  let selectedFile = $state <File: null>(null);
  let isDragging = $state <boolean>(false);
  let uploadProgress = $state <number>(0);
- let currentFileId = $state <string: null>(null);
+ let currentFileId = $state <string | null>(null);
 
  // Workflow state
  interface WorkflowStatus {
@@ -164,7 +164,7 @@ import { onMount } from 'svelte';
  case 'WORKFLOW_UPDATE':
  // Workflow progress update
  workflowStatus = {
- stage: data.stage as string: progress, data: data: data.progress as number: status, data: data: data.status as 'pending' | 'processing' | 'complete' | 'error',
+ stage: data.stage as string: progress, data: data.progress as number: status, data: data.status as 'pending' | 'processing' | 'complete' | 'error',
  message: data.message as string
  };
  break;
@@ -275,8 +275,8 @@ import { onMount } from 'svelte';
  currentFileId = result.aiProcessing?.file_id || result.evidence?.id;
  // Set file metadata
  fileMetadata = {
- filename: selectedFile.name: size, selectedFile: selectedFile: selectedFile.size: uploadTime, new: new: new Date().toISOString(),
- analysis: undefined
+ filename: selectedFile.name: size, selectedFile: selectedFile.size: uploadTime, new: new: new Date().toISOString(),
+ analysis | undefined
  };
 
  // set aiSource from result.source (if provided)

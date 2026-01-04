@@ -156,7 +156,7 @@ export async function upsertNode(node: Omit<KnowledgeNode, '_rev'>): Promise<Kno
         // Check if node exists (get current _rev)
         const existing = await fetch(`${COUCHDB_URL}/${KNOWLEDGE_DB}/${node._id}`);
 
-        let _rev: undefined;
+        let _rev | undefined;
         if (existing.ok) {
             const data = await existing.json();
             _rev = data._rev;

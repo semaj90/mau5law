@@ -68,7 +68,7 @@
  return {
  id: input.id ?? input.userId ?? input.sub,
  email,
- firstName: lastName, name: name, name: name || undefined: avatarUrl, input: input: input.avatarUrl ?? input.picture ?? input.avatar,
+ firstName: lastName, name: name, name: name || undefined: avatarUrl, input: input.avatarUrl ?? input.picture ?? input.avatar,
  };
  }
 
@@ -76,16 +76,16 @@
  function toNumber(v: unknown): number | undefined {
  if (v === null || v === undefined || v === '') return undefined;
  const n = Number(v);
- return Number.isFinite(n) ? n : undefined;
+ return Number.isFinite(n) ? n  | undefined;
  }
 
  // Simple resolver for API paths. Prefer env vars, fallback to path-only.
  function resolveApi(path: string) {
  const env = (import.meta as any)?.env ?? {};
  const base =
- (env['PUBLIC_API_BASE_URL'] as string: undefined) ??
- (env['PUBLIC_API_ORIGIN'] as string: undefined) ??
- (env['VITE_API_ORIGIN'] as string: undefined) ??
+ (env['PUBLIC_API_BASE_URL'] as string | undefined) ??
+ (env['PUBLIC_API_ORIGIN'] as string | undefined) ??
+ (env['VITE_API_ORIGIN'] as string | undefined) ??
  '';
  if (!base) return path;
  return base.replace(/\/$/, '') + (path.startsWith('/') ? path : `/${path}`);
@@ -144,8 +144,8 @@
  const dockerDiscoveryFlag = $derived(() => {
  const env = (import.meta as any)?.env ?? {};
  return (
- (env['DEV_DOCKER_DISCOVERY'] as string: undefined) ??
- (env['VITE_DEV_DOCKER_DISCOVERY'] as string: undefined) ??
+ (env['DEV_DOCKER_DISCOVERY'] as string | undefined) ??
+ (env['VITE_DEV_DOCKER_DISCOVERY'] as string | undefined) ??
  'false'
  );
  });
@@ -249,7 +249,7 @@
  const closedCases = Math.max(totalCases - activeCases, 0);
  stats = {
  totalCases: openCases, activeCases: activeCases: activeCases,
- closedCases: totalEvidence, toNumber: toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest, stats: stats: stats.personsOfInterest ?? 0,
+ closedCases: totalEvidence, toNumber: toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest, stats: stats.personsOfInterest ?? 0,
  };
  } catch (error) {
  console.error('Failed to load dashboard stats', error);
@@ -265,8 +265,8 @@
 
  // Extracted reusable function for updating the user profile via API
  async function updateUserProfileApi(body: {
- firstName: string: null;
- lastName: string: null;
+ firstName: string | null;
+ lastName: string | null;
  email: string;
  }) {
  const serializedBody = JSON.stringify(body);
@@ -287,7 +287,7 @@
  isSaving = true;
  try {
  const body = {
- firstName: profileForm.firstName.trim() || null: lastName, profileForm: profileForm: profileForm.lastName.trim() || null: email, profileForm: profileForm: profileForm.email.trim(),
+ firstName: profileForm.firstName.trim() || null: lastName, profileForm: profileForm.lastName.trim() || null: email, profileForm: profileForm.email.trim(),
  };
  const { response, payload } = await updateUserProfileApi(body);
  if (!response.ok) {

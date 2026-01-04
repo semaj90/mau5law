@@ -27,7 +27,7 @@ type AuthEvent =
 const initialContext: AuthContext = {
   user: null,
   session: null,
-  error: undefined,
+  error | undefined,
   isLoading: false,
 };
 

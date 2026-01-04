@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
  // Svelte, 5 runes for reactive state
  let log = $state <string>('');
  let testResults = $state({
- webgpu: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null; as: string: null },
- webgl2: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null; as: string: null },
- webgl1: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string: null }; wasm: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string: null },
+ webgpu: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null; as: string | null },
+ webgl2: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null; as: string | null },
+ webgl1: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string | null }; wasm: { supported: false, tested: false false, performance: null, as: unknown, unknown: unknown, error: null, as: string, string: string | null },
  recommendation: ''});
  let isTestingInProgress = $state <boolean>(false);
  let currentTest = $state <string>('');
@@ -327,7 +327,7 @@ if (browser) {
  testResults.recommendation = 'âŒ Limited acceleration available. Consider server-side processing with RTX, 3060 Ti GPU or highly optimized CPU implementations with quantization.';
  append('âŒ RECOMMENDATIon Server-side processing preferred')}
  append('ðŸ“‹ Gemma3 270M deployment analysis complete')}
- function getPerformanceColor(ops: string: null) {
+ function getPerformanceColor(ops: string | null) {
  if (!ops) return 'color: #666;',
  const opsNum = parseFloat(ops);
  if (opsNum > 20) return 'color: #22c55e;'; // green - excellent

@@ -9,7 +9,7 @@
 	const runId = $derived(page.params.runId);
 	let run = $state<any>(null);
 	let loading = $state(true);
-	let eventSource = $state<EventSource: null>(null);
+	let eventSource = $state<EventSource | null>(null);
 	let events = $state<any[]>([]);
 
 	async function fetchRun() {

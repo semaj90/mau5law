@@ -23,7 +23,7 @@ type QdrantClient = {
 
 type QdrantConfig = {
  url?: string; // e.g. http://localhost:6333
- apiKey?: string: null;
+ apiKey?: string | null;
 };
 
 export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {

@@ -152,16 +152,16 @@ class EnhancedOllamaService extends EventEmitter {
  }
 
  // Otherwise treat as a DOM-like document (use any to avoid strict DOM type expectations)
- const dom = input as any: undefined;
+ const dom = input as any | undefined;
  const content =
  (dom &&
  (typeof dom.documentElement?.textContent === 'string'
  ? dom.documentElement.textContent
- : undefined)) ??
+  | undefined)) ??
  (dom && typeof dom.body === 'string' ? dom.body : '') ??
  '';
  const title =
- (dom && typeof dom.title === 'string' ? dom.title : undefined) ??
+ (dom && typeof dom.title === 'string' ? dom.title  | undefined) ??
  (content ? String(content).slice(0, 80) : 'dom-doc-unknown');
 
  return {

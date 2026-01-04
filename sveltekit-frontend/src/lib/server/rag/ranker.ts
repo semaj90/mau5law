@@ -78,5 +78,5 @@ export function createQdrantFilter(opts: {
  conditions.push({ key: 'tag_ids', match: { any: opts.tagIds } });
  }
 
- return conditions.length > 0 ? { must: conditions } : undefined;
+ return conditions.length > 0 ? { must: conditions }  | undefined;
 }

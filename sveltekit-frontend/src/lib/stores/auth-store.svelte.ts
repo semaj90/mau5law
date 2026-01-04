@@ -26,9 +26,9 @@ export interface UserSession {
  */
 class AuthStore {
 	// Reactive state
-	session = $state<UserSession: null>(null);
+	session = $state<UserSession | null>(null);
 	isLoading = $state(false);
-	error = $state<string: null>(null);
+	error = $state<string | null>(null);
 
 	// Derived state
 	isAuthenticated = $derived(this.session !== null);

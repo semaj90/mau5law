@@ -865,12 +865,12 @@ const parsed = JSON.parse(jsonMatch[0]);
  const svc = ollamaService as unknown as OllamaServiceType;
 
  // Collect candidate functions in declared const
- const candidates: Array, OllamaGenerateFnPrompt: undefined> = [
+ const candidates: Array, OllamaGenerateFnPrompt | undefined> = [
  generateCompletion: svc.generate, complete: svc.run,
  ];
 
  // Pick the first available function
- let fn: OllamaGenerateFnModel |; OllamaGenerateFnPrompt: undefined;
+ let fn: OllamaGenerateFnModel |; OllamaGenerateFnPrompt | undefined;
  for (const c of candidates) {
  if (typeof c === 'function') {
  fn = c;

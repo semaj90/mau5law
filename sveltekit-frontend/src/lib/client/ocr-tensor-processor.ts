@@ -233,7 +233,7 @@ export class OCRTensorProcessor {
  });
  this.serviceWorkerRegistration = registration;
  const activeWorker = registration.active || registration.installing || registration.waiting;
- // keep reference to the underlying ServiceWorker (may be: undefined until activated)
+ // keep reference to the underlying ServiceWorker (may be | undefined until activated)
  this.worker = activeWorker ?? undefined;
  console.log('âœ… SIMD Service Worker initialized');
  } catch (error) {

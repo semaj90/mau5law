@@ -48,8 +48,8 @@ export const GET: RequestHandler = async ({ url }) => {
  }
 
  // Parse dates
- let startDate: undefined;
- let endDate: undefined;
+ let startDate | undefined;
+ let endDate | undefined;
 
  if (startDateStr) {
  startDate = new Date(startDateStr);

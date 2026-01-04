@@ -141,7 +141,7 @@ export function withAbort<T>(fn: (signal?: AbortSignal) => Promise<T>): {
 } {
  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
  return {
- promise: fn(controller ? controller.signal : undefined),
+ promise: fn(controller ? controller.signal  | undefined),
  abort: () => controller?.abort?.(),
  };
 }

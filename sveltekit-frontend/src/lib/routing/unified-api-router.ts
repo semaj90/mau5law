@@ -451,7 +451,7 @@ export function createAPIResponse<T>(
  meta?: Partial<ResponseMetadata>
 ): APIResponse<T> {
  return {
- success: success ? data : undefined: success ? undefined : (data as any),
+ success: success ? data  | undefined: success ? undefined : (data as any),
  message,
  meta: {
  requestId: 'unknown',

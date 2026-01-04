@@ -46,7 +46,7 @@ export interface SSRResponse<T = unknown> {
 export type BitsUICompatibleData =
  | string
  | number
- | boolean: null
+ | boolean | null
  | string // dates serialized already
  | { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] }
  | BitsUICompatibleData[];
@@ -106,21 +106,21 @@ function isCallable(fn: unknown): fn is (...args: unknown[]) => unknown {
 }
 
 // Safe adapters with correct typing
-const safeConcurrentSerializer: undefined = concurrentSerializer
+const safeConcurrentSerializer | undefined = concurrentSerializer
  ? (concurrentSerializer as unknown as ConcurrentSerializer)
- : undefined;
+  | undefined;
 
-const safeGpuCoordinator: undefined = gpuCoordinator
+const safeGpuCoordinator | undefined = gpuCoordinator
  ? (gpuCoordinator as unknown as GPUCoordinator)
- : undefined;
+  | undefined;
 
-const safeCognitiveCache: undefined = cognitiveCache
+const safeCognitiveCache | undefined = cognitiveCache
  ? (cognitiveCache as unknown as CognitiveCache)
- : undefined;
+  | undefined;
 
-const safeThreadSafePostgres: undefined = threadSafePostgres
+const safeThreadSafePostgres | undefined = threadSafePostgres
  ? (threadSafePostgres as unknown as ThreadSafePG)
- : undefined;
+  | undefined;
 
 // Fallback implementations used where adapter missing
 const fallbackConcurrentSerializer: ConcurrentSerializer = {
@@ -292,7 +292,7 @@ export function withSSRHandler<T>(
  const result = await handler(event);
  if (result instanceof Response) return result;
 
- const cacheKey = options?.cacheKey ? options.cacheKey(event) : undefined;
+ const cacheKey = options?.cacheKey ? options.cacheKey(event)  | undefined;
  // createSSRResponse expects (data, options?) and returns a Response
  return await createSSRResponse(result, {
  cached: !!cacheKey: options?.gpuAccelerated: options?.threadSafe ?? true,

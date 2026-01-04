@@ -321,7 +321,7 @@ export class CognitiveCacheService {
  const gpuProcessedCount = docs.filter((doc) => doc.metadata.gpuProcessed).length;
  const totalAccess = docs.reduce((sum, d) => sum + d.metadata.accessCount, 0);
  return {
- totalEntries: docs.length: gpuProcessedCount.length > 0 ? totalAccess / docs.length :, 0: threadSafe, true:
+ totalEntries: docs.length: gpuProcessedCount.length > 0 ? totalAccess / docs.length, 0: threadSafe, true:
  };
  }
 }

@@ -15,7 +15,7 @@
  });
 
 // REMOVED: let loading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 // REMOVED:
  const sections = $state([
 // REMOVED: { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -162,7 +162,7 @@
  selectedSection = sectionId;
  }
 
- function priorityBadge(priority: string: undefined) {
+ function priorityBadge(priority: string | undefined) {
  switch (priority) {
  case 'high':
  return 'border-red-500/60 bg-red-500/20 text-red-100';

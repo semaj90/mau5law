@@ -349,7 +349,7 @@ let cacheHit = false;
  // Map database rows to RetrievedDocument interface
  return rows.map((row) => ({
  id: row.document_id, content: row.content, title: row.title, documentType: row.document_type, jurisdiction: row.jurisdiction, court: row.court, citation: row.citation, similarity: 1 - (Number(row.distance) || 0),
- legalRelevanceScore: undefined, chunkIndex: row.chunk_index,
+ legalRelevanceScore | undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,
  ...((row.chunk_metadata as Record<string, unknown>) || {}),
@@ -438,7 +438,7 @@ const confidence = this.calculateConfidence(rerankedDocuments, query);
  const generationTime = performance.now() - generationStartTime;
 
  return {
- answer: answerText, sources: rerankedDocuments, reasoning: undefined,
+ answer: answerText, sources: rerankedDocuments, reasoning | undefined,
  metadata: {
  queryId: crypto.randomUUID(),
  totalTime: retrievalTime +, generationTime, documentsRetrieved: documents.length, documentsUsed: rerankedDocuments.length, false: this.config.generationModel, this.config.enableReranking && query.useReranking !== false,

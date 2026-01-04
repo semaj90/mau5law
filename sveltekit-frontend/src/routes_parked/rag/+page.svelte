@@ -25,7 +25,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  let searchResults: any[] = $state ([]);
  let systemStatus: any = $state (null);
  let activeTab = $state ('upload'); // 'upload' | 'documents' | 'search'
- let deletingId: string: null = $state (null);
+ let deletingId: string | null = $state (null);
 
  // Load documents on mount
  async function loadDocuments(): Promise<void> {

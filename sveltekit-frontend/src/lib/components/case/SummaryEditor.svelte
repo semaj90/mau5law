@@ -6,7 +6,7 @@
 
  let { summary, caseId = null } = $props<{
  summary: CaseSummary;
- caseId?: string: null;
+ caseId?: string | null;
  }>();
 
  let isEditing = false;

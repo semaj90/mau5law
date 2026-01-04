@@ -99,7 +99,7 @@ class RealTimeEvidenceStore {
  // Core stores
  public evidence = writable<Evidence[]>([]);
  public isLoading = writable(false);
- public error = writable<string: null>(null);
+ public error = writable<string | null>(null);
  public isConnected = writable(false);
 
  // Undo/Redo functionality
@@ -238,7 +238,7 @@ class RealTimeEvidenceStore {
  const { type, evidenceId, data, changes, userId } = message.data;
  switch (type) {
  case 'EVIDENCE_CREATED':
- // data is typed as Evidence: undefined; guard before calling
+ // data is typed as Evidence | undefined; guard before calling
  if (data) this.handleEvidenceCreated(data, userId);
  break;
  case 'EVIDENCE_UPDATED':

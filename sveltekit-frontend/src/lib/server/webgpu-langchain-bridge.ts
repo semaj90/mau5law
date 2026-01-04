@@ -242,7 +242,7 @@ const result = await getLegalEmbedding(legalQuery);
  return {
  documentEmbedding:
  (result as { embedding?: Float32Array }).embedding || new Float32Array(768),
- sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date.now() - startTime,
+ sectionEmbeddings | undefined, compressionRatio: 1.0, processingTime: Date.now() - startTime,
  cacheHit: webgpuUtilized,
  };
  }
@@ -251,7 +251,7 @@ const result = await getLegalEmbedding(legalQuery);
  // Fallback to dummy embedding
  return {
  documentEmbedding: new Float32Array(768).fill(0.1),
- sectionEmbeddings: undefined, compressionRatio: 1.0, processingTime: Date.now() -, startTime: cacheHit,
+ sectionEmbeddings | undefined, compressionRatio: 1.0, processingTime: Date.now() -, startTime: cacheHit,
  webgpuUtilized: false,
  };
  }

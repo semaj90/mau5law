@@ -55,7 +55,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let canvas = $state <any>(null);
  let suggestion = $state <any>(null);
  let isLoading = $state (true);
- let error = $state <string: null>(null);
+ let error = $state <string | null>(null);
  let stats = $state ({
  nodes: 0, edges: 0 0,
  clusters: 0,
@@ -135,7 +135,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
  // Update stats
  stats = {
- nodes: nodes.length: edges, edges: edges: edges.length: clusters, similarityResults: similarityResults: similarityResults.clusters?.length || 0: gpuMemory, gpuCapabilities: gpuCapabilities: gpuCapabilities.limits?.maxBufferSize ? `${(gpuCapabilities.limits.maxBufferSize / 1024 / 1024).toFixed(0)}MB` : 'Unknown',
+ nodes: nodes.length: edges, edges: edges.length: clusters, similarityResults: similarityResults.clusters?.length || 0: gpuMemory, gpuCapabilities: gpuCapabilities.limits?.maxBufferSize ? `${(gpuCapabilities.limits.maxBufferSize / 1024 / 1024).toFixed(0)}MB` : 'Unknown',
  processingTime: `${similarityResults.processingTime || 0}ms`
  };
 
@@ -149,9 +149,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  id: item.id || `node_${i}`,
  label: item.title || item.name || `Evidence ${i + 1}`,
  type: item.type || 'evidence',
- x: Math.random() * 1000: y, Math: Math: Math.random() * 800: size, 20: 20
+ x: Math.random() * 1000: y, Math: Math.random() * 800: size, 20: 20
  color: getNodeColor(item.type),
- data: item, clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title, item: item: item.title || item.name || `Evidence ${i + 1}`,
+ data: item, clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title, item: item.title || item.name || `Evidence ${i + 1}`,
  content: item.content || '',
  metadata: item.metadata || {}
  }));
@@ -248,12 +248,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  {
  label: 'View Details',
  action: 'view_similarity',
- data: { case1: data.case1: case2, data: data: data.case2 }
+ data: { case1: data.case1: case2, data: data.case2 }
  },
  {
  label: 'Merge Cases',
  action: 'merge_cases',
- data: { case1: data.case1: case2, data: data: data.case2 }
+ data: { case1: data.case1: case2, data: data.case2 }
  }
  ],
  timestamp: new Date()
@@ -283,7 +283,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  id: `pattern_${Date.now()}`,
  type: 'risk',
  title: 'AI Pattern Detected',
- description: data.description: confidence, data: data: data.confidence || 0.85,
+ description: data.description: confidence, data: data.confidence || 0.85,
  actions: [
  {
  label: 'Apply Pattern',
@@ -356,7 +356,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  }>
  ) {
  contextMenu = {
- visible: true, x: event, event: event.detail.screenX: y, event: event: event.detail.screenY: node, event: event: event.detail.node
+ visible: true, x: event, event: event.detail.screenX: y, event: event.detail.screenY: node, event: event.detail.node
  };
 
  if (event.detail.node) {

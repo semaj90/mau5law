@@ -41,14 +41,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  {
  relatedEvidenceId: 'evidence-002',
  correlationType: 'temporal' as const,
-  strength: 0: 0.78,
+  strength: 0,
  description: 'Similar timeframe and participants in both evidence items',
  sharedEntities: ['John Doe', 'Contract ABC'],
  },
  {
  relatedEvidenceId: 'evidence-003',
  correlationType: 'semantic' as const,
-  strength: 0: 0.65,
+  strength: 0,
  description: 'Common terminology and legal concepts',
  sharedEntities: ['Amendment', 'Termination'],
  },

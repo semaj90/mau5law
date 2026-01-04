@@ -10,7 +10,7 @@ https://svelte.dev/e/style_duplicate -->
  import type { goto } from '$app/navigation';
  import type { superForm } from 'sveltekit-superforms';
  import type { zod } from 'sveltekit-superforms/adapters';
- import type { z } from 'zod';
+ import { z } from 'zod';
 
  // Define the base Zod schema for client validation
  const baseRegisterSchema = z.object({
@@ -113,7 +113,7 @@ https://svelte.dev/e/style_duplicate -->
  type="email"
  bind:value={$form .email}
  placeholder="Enter your email address"
- aria-invalid={$errors .email ? 'true' : undefined}
+ aria-invalid={$errors .email ? 'true'  | undefined}
  class="form-input"
  required
  />
@@ -130,7 +130,7 @@ https://svelte.dev/e/style_duplicate -->
  type="password"
  bind:value={$form .password}
  placeholder="Create a strong password"
- aria-invalid={$errors .password ? 'true' : undefined}
+ aria-invalid={$errors .password ? 'true'  | undefined}
  class="form-input"
  required
  />
@@ -163,7 +163,7 @@ https://svelte.dev/e/style_duplicate -->
  type="password"
  bind:value={$form .confirmPassword}
  placeholder="Confirm your password"
- aria-invalid={$errors .confirmPassword ? 'true' : undefined}
+ aria-invalid={$errors .confirmPassword ? 'true'  | undefined}
  class="form-input"
  required
  />

@@ -67,7 +67,7 @@ const DEFAULT_TEST_ENV = {
 	NODE_ENV: 'test'
 };
 
-let originalEnv: Record<string, string: undefined> = {};
+let originalEnv: Record<string, string | undefined> = {};
 
 /**
  * Setup environment variables for testing

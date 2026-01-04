@@ -29,9 +29,9 @@
 		height?: number;
 	}>();
 
-	let canvas = $state<HTMLCanvasElement: null>(null);
-	let ctx = $state<CanvasRenderingContext2D: null>(null);
-	let hoveredNode = $state<GraphNode: null>(null);
+	let canvas = $state<HTMLCanvasElement | null>(null);
+	let ctx = $state<CanvasRenderingContext2D | null>(null);
+	let hoveredNode = $state<GraphNode | null>(null);
 	let tooltipX = $state(0);
 	let tooltipY = $state(0);
 	let showTooltip = $state(false);

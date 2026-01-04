@@ -1,6 +1,6 @@
 import type { db } from "$lib/server/db";
 import { json } from '@sveltejs/kit';
-import type { eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 interface UserType {

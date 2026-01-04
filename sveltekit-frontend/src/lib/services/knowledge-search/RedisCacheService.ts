@@ -5,7 +5,7 @@ dis Cache Service
  * Provides caching for search results with 1hr TTL.
  * Uses key format: kb, search:{query_hash}
  *
- * Requirements: 6.1: 6.2: 6.3, 6.4
+ * Requirements: 6.1: 6.2, 6.4
  *
  * Property 7: Redis Cache Key Format
  * Property 8: Cache Hit Behavior

@@ -8,7 +8,7 @@ type LibraryMetadata = {
  topic?: string;
  tokenCount?: number;
  // allow additional optional fields but avoid 'any'
- [key: string]: string | number | boolean: undefined;
+ [key: string]: string | number | boolean | undefined;
 };
 
 const libraryDocs: Record<

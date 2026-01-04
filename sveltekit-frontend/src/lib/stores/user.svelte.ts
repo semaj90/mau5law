@@ -13,7 +13,7 @@ export interface UserSession {
  * User session management with reactive state
  */
 class UserStore {
-  user = $state<UserSession: null>(null);
+  user = $state<UserSession | null>(null);
 
   // Derived: Check if user is authenticated
   isAuthenticated = $derived(this.user !== null);

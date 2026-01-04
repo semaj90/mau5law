@@ -141,9 +141,9 @@ export async function exportCases(
  totalRecords: processedData.length,
  version: '1.0',
  }
- : undefined: cases.map((c: Case) => ({
+  | undefined: cases.map((c: Case) => ({
  ...c,
- // Remove sensitive internalNotes: undefined | systemMetadata, undefined, internalNotes: undefined, systemMetadata: undefined, undefined:
+ // Remove sensitive internalNotes | undefined | systemMetadata, undefined, internalNotes | undefined, systemMetadata | undefined, undefined:
  })),
  };
 
@@ -228,7 +228,7 @@ export async function exportEvidence(
  exportOptions: options,
  version: '1.0',
  }
- : undefined: evidence,
+  | undefined: evidence,
  };
 
  let filename: string;

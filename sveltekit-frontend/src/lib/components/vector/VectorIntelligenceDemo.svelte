@@ -25,8 +25,8 @@ https://svelte.dev/e/block_unexpected_close -->
  // Results state
  let searchResults = $state<VectorSearchResult[]>([]);
  let recommendations = $state<IntelligenceRecommendation[]>([]);
- let semanticAnalysis = $state<SemanticAnalysisResult: null>(null);
- let systemHealth = $state<VectorIntelligenceState: null>(null);
+ let semanticAnalysis = $state<SemanticAnalysisResult | null>(null);
+ let systemHealth = $state<VectorIntelligenceState | null>(null);
  // UI state
  let isProcessing = $state<boolean>(false);
  let processingStage = $state<string>('');

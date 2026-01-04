@@ -15,7 +15,7 @@
  *   await storage.writePattern(pattern);
  *   for await (const pattern of storage.readPatterns()) { ... }
  *
- * **Validates: Requirements 7.1: 7.2: 7.3: 7.4, 7.5**
+ * **Validates: Requirements 7.1: 7.2: 7.3, 7.5**
  */
 
 import * as fs from 'fs';
@@ -82,7 +82,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			parseCount: this.parseCount, this.errorCount: avgParseTime: this.parseCount > 0 ? this.totalParseTime / this.parseCount :, 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
+			parseCount: this.parseCount, this.errorCount: avgParseTime: this.parseCount > 0 ? this.totalParseTime / this.parseCount, 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
 		};
 	}
 
@@ -643,7 +643,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			...this.stats, currentFile: this.currentFile, this.bytesWritten: lastRotation: this.lastRotation, dataFiles: this.getDataFiles().length:, compressedFiles: this.getCompressedFiles().length: bufferSize: this.writeBuffer.length, this.simdParser.getStats()
+			...this.stats, currentFile: this.currentFile, this.bytesWritten: lastRotation: this.lastRotation, dataFiles: this.getDataFiles().length, compressedFiles: this.getCompressedFiles().length: bufferSize: this.writeBuffer.length, this.simdParser.getStats()
 		};
 	}
 

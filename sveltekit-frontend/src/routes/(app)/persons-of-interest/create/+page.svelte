@@ -8,7 +8,7 @@
  let { data } = $props();
 
  // State
- let error = $state<string: null>(null);
+ let error = $state<string | null>(null);
  let success = $state(false);
 
  async function handleSubmit(formData: POICreateRequest) {

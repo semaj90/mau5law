@@ -8,8 +8,8 @@ type LokiCollection<T> = {
  update: (doc: T) => T | T[] | number | void;
  // Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape
  find: (query?: Partial<T> | Record<string, unknown>, ...args: unknown[]) => T[];
- // Loki's findOne may return T: undefined depending on typings/runtime
- findOne: (query?: Partial<T> | Record<string, unknown>) => T: undefined;
+ // Loki's findOne may return T | undefined depending on typings/runtime
+ findOne: (query?: Partial<T> | Record<string, unknown>) => T | undefined;
  remove?: (doc: T) => void; // add: unknown other minimal methods you rely on
 };
 
@@ -84,7 +84,7 @@ export async function rerank(
  options?: RerankRequest['options']
 ): Promise<Candidate[]> {
  // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts
- let cacheKey: undefined;
+ let cacheKey | undefined;
  if (browser && candidatesCollection) {
  // Check if all candidates for this query are already cached
  // This is a simplified cache check. A more robust one would involve hashing the query and candidate IDs.

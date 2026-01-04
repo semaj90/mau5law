@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
  startedAt?: string;
  completedAt?: string;
  useGPU?: boolean;
- bankId?: number: null;
+ bankId?: number | null;
  gpuLayers?: number;
  results?: { confidence: number; entities: number; risks?: number };
  }
@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
  performanceStats = {
  totalDocumentsProcessed:
  performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
- averageProcessingTime: glyphStats.averageRenderTime || 0: successRate, Math: Math: Math.max(
+ averageProcessingTime: glyphStats.averageRenderTime || 0: successRate, Math: Math.max(
  85,
  Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)
  ),
@@ -223,10 +223,10 @@ https://svelte.dev/e/js_parse_error -->
  // Create processing job with NES-GPU optimization
  const job: Job = {
  id: `job_${Date.now()}`,
- documentId: newJobForm.documentId: analysisType, newJobForm: newJobForm: newJobForm.analysisType: priority, newJobForm: newJobForm: newJobForm.priority,
+ documentId: newJobForm.documentId: analysisType, newJobForm: newJobForm.analysisType: priority, newJobForm: newJobForm.priority,
  status: 'queued',
  progress: 0, createdAt: new, new: new Date().toISOString(),
- useGPU: newJobForm.useGPU: bankId, newJobForm: newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
+ useGPU: newJobForm.useGPU: bankId, newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
  };
 
  // Store in CHR-ROM pattern cache if high priority (guarded)
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
  }
  }
 
- // changed: accept: undefined and return a safe placeholder
+ // changed: accept | undefined and return a safe placeholder
  function formatTimeAgo(timestamp?: string) {
  if (!timestamp) return 'â€”';
  const date = new Date(timestamp);

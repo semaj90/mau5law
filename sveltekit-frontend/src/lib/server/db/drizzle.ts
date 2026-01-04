@@ -1,6 +1,6 @@
 /** * Unified Drizzle + Vector + Storage utilities * Generates a small integration layer over the existing db client, qdrant and minio helpers */ /* eslint-disable @typescript-eslint/no-explicit-any */
 import qdrantClient from '$lib/services/qdrant-client'; // Corrected: qdrantClient is a default export
-import type { eq, sql } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
+import { eq, sql } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
 import type { Client } from 'minio'; // Corrected: MinioClient is not exported, use Client
 import lazyDb from './client.js'; // Note: SvelteKit will resolve to client.ts
 import * as schema from './schema-unified.js';
@@ -8,9 +8,9 @@ import * as schema from './schema-unified.js';
 const _CFG: unknown = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
 
 // Lazy-load project's cache/redis helper at runtime.
-// Returns: undefined when the module cannot be found or fails to import.
+// Returns | undefined when the module cannot be found or fails to import.
 let _cacheInitialized = false; // Removed $state , not allowed at module level
-let _cache: undefined = undefined; // Removed $state , not allowed at module level
+let _cache | undefined = undefined; // Removed $state , not allowed at module level
 
 async function getCache(): Promise<any | undefined> {
  // simple memoization to avoid repeated dynamic imports

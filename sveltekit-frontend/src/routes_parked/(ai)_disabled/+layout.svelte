@@ -54,7 +54,7 @@ import type { Document } from '$lib/types';
  // Register navigation handler. afterNavigate may be typed to return: void,
  // so cast via: unknown and treat as optional unsubscribe to avoid invalid cast.
  const maybeUnsub = afterNavigate((nav) => {
- // `to` may be: undefined in some cases; fallback to window.location
+ // `to` may be | undefined in some cases; fallback to window.location
  currentPath = nav?.to?.url?.pathname ?? window.location.pathname}) as: unknown as (() => void) | void
  // Return cleanup that only calls unsubscribe if it's actually a function.'
  return () => {

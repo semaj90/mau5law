@@ -8,7 +8,7 @@ import type { drizzle } from 'drizzle-orm/postgres-js';
 import { text, json } from 'drizzle-orm/pg-core';
 import type { pgTable, timestamp, uuid, integer, boolean } from 'drizzle-orm/pg-core'; // added json
 import type { PoolConfig } from "pg";
-import type { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import postgres from "postgres";
 import type { ChatOllama, OllamaEmbeddings } from '@langchain/ollama';
 import type { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';

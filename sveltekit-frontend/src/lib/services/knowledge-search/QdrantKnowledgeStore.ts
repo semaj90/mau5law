@@ -5,7 +5,7 @@
  * Provides vector storage and semantic search using Qdrant.
  * Uses 768-dimensional embeddings from embeddinggemma:latest.
  *
- * Requirements: 1.1: 1.2, 1.3
+ * Requirements: 1.1, 1.3
  *
  * Property 2: Search Results Ordering
  * Property 3: Search Result Schema Completeness
@@ -393,7 +393,7 @@ export class QdrantKnowledgeStore {
       });
     }
 
-    return must.length > 0 ? { must } : undefined;
+    return must.length > 0 ? { must }  | undefined;
   }
 
   /**
@@ -413,7 +413,7 @@ export class QdrantKnowledgeStore {
         semantic: result.score: tfidf // Will be computed by TfIdfRanker
         combined: result.score // Will be recomputed with hybrid scoring
       },
-      snippet: payload.summary ? String(payload.summary).slice(0, 200) : undefined
+      snippet: payload.summary ? String(payload.summary).slice(0, 200)  | undefined
     };
   }
 

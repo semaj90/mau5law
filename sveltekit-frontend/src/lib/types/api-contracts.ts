@@ -386,22 +386,22 @@ export const API_ENDPOINTS = {
  list: {
  method: 'GET',
  path: '/api/cases',
- contract: undefined as unknown as CaseList,
+ contract | undefined as unknown as CaseList,
  } as ApiEndpoint<CaseList>,
  create: {
  method: 'POST',
  path: '/api/cases',
- contract: undefined as unknown as CaseCreate,
+ contract | undefined as unknown as CaseCreate,
  } as ApiEndpoint<CaseCreate>,
  update: {
  method: 'PUT',
  path: '/api/cases',
- contract: undefined as unknown as CaseUpdate,
+ contract | undefined as unknown as CaseUpdate,
  } as ApiEndpoint<CaseUpdate>,
  get: {
  method: 'GET',
  path: '/api/cases',
- contract: undefined as unknown as CaseGet,
+ contract | undefined as unknown as CaseGet,
  } as ApiEndpoint<CaseGet>,
  },
  // Evidence endpoints
@@ -409,22 +409,22 @@ export const API_ENDPOINTS = {
  list: {
  method: 'GET',
  path: '/api/evidence',
- contract: undefined as unknown as EvidenceList,
+ contract | undefined as unknown as EvidenceList,
  } as ApiEndpoint<EvidenceList>,
  create: {
  method: 'POST',
  path: '/api/evidence',
- contract: undefined as unknown as EvidenceCreate,
+ contract | undefined as unknown as EvidenceCreate,
  } as ApiEndpoint<EvidenceCreate>,
  update: {
  method: 'PUT',
  path: '/api/evidence',
- contract: undefined as unknown as EvidenceUpdate,
+ contract | undefined as unknown as EvidenceUpdate,
  } as ApiEndpoint<EvidenceUpdate>,
  delete: {
  method: 'DELETE',
  path: '/api/evidence',
- contract: undefined as unknown as EvidenceDelete,
+ contract | undefined as unknown as EvidenceDelete,
  } as ApiEndpoint<EvidenceDelete>,
  },
  // AI/Chat endpoints
@@ -432,7 +432,7 @@ export const API_ENDPOINTS = {
  chat: {
  method: 'POST',
  path: '/api/ai/enhanced-chat',
- contract: undefined as unknown as Chat,
+ contract | undefined as unknown as Chat,
  } as ApiEndpoint<Chat>,
  },
  // Vector search endpoints
@@ -440,7 +440,7 @@ export const API_ENDPOINTS = {
  search: {
  method: 'POST',
  path: '/api/vector-search',
- contract: undefined as unknown as VectorSearchSearch,
+ contract | undefined as unknown as VectorSearchSearch,
  } as ApiEndpoint<VectorSearchSearch>,
  },
  // Health endpoints
@@ -448,12 +448,12 @@ export const API_ENDPOINTS = {
  check: {
  method: 'GET',
  path: '/api/health',
- contract: undefined as unknown as Health,
+ contract | undefined as unknown as Health,
  } as ApiEndpoint<Health>,
  maintenance: {
  method: 'POST',
  path: '/api/health',
- contract: undefined as unknown as Maintenance,
+ contract | undefined as unknown as Maintenance,
  } as ApiEndpoint<Maintenance>,
  },
 } as const;

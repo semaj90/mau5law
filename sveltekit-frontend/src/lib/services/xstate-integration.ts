@@ -65,7 +65,7 @@ try {
  },
  },
  status: 'active' as const,
-  output: undefined, error,
+  output | undefined, error,
  } as Snapshot<LegalAIContext>);
  }
 } catch (error) {
@@ -103,7 +103,7 @@ try {
  },
  },
  status: 'active' as const,
-  output: undefined, error,
+  output | undefined, error,
  } as Snapshot<LegalAIContext>);
 }
 
@@ -149,7 +149,7 @@ export const xstateIntegration = {
  },
  },
  status: 'active' as const,
-  output: undefined, error,
+  output | undefined, error,
  } as Snapshot<LegalAIContext>;
  }
  },

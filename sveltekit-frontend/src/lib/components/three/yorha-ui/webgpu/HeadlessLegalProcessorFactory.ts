@@ -289,7 +289,7 @@ export class HeadlessLegalProcessorFactory {
                     totalMemoryUsed: mipmapResult.totalMemoryUsed ?? 0,
                     generationTime: mipmapResult.totalGenerationTime,
                     rtxOptimized: mipmapResult.optimization.rtxAcceleration
-                } : undefined,
+                }  | undefined,
                 lodEntry: lodResult.lodEntry,
                 svgVisualizations: lodResult.lodEntry.svg_summaries,
                 legalAnalysis,

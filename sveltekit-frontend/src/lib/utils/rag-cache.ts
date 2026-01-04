@@ -154,8 +154,8 @@ export class RedisRAGCache {
  const pattern = `${this.config.keyPrefix}*`;
  const keys = await this.redis.keys(pattern);
 
- let oldestEntry: undefined;
- let newestEntry: undefined;
+ let oldestEntry | undefined;
+ let newestEntry | undefined;
 
  for (const key of keys.slice(0, 100)) {
  // Sample first 100 entries

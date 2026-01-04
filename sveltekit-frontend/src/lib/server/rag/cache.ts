@@ -80,7 +80,7 @@ export async function getCacheStats(): Promise<{
  } while (cursor !== '0');
 
  // Get memory info
- let memoryUsage: undefined;
+ let memoryUsage | undefined;
  try {
  const info = await redis.info('memory');
  const match = info.match(/used_memory_human:([^\r\n]+)/);

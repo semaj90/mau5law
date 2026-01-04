@@ -211,7 +211,7 @@ export async function phase90_search_errors(
   // In production, call Python embedding service
   const filter = clusterId !== undefined
     ? { must: [{ key: 'cluster_id', match: { value: clusterId } }] }
-    : undefined;
+     | undefined;
 
   const results = await client.scroll('phase90_cuda_embeddings', {
     limit: topK,

@@ -9,7 +9,7 @@
  let loading = $state(false);
  let chunks: any[] = $state([]);
  let alignment: any = $state(null);
- let reasoning: string: null = $state(null);
+ let reasoning: string | null = $state(null);
  let timeline: any[] = $state([]);
  let selectedChunk: any = $state(null);
 

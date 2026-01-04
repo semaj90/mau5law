@@ -10,12 +10,12 @@
 
  let { evidence, onAskAI, onDelete }: Props = $props();
 
- const formatDate = (date: Date: undefined) => {
+ const formatDate = (date: Date | undefined) => {
  if (!date) return 'Unknown';
  return formatDistanceToNow(new Date(date), { addSuffix: true });
  };
 
- const formatFileSize = (bytes: number: undefined) => {
+ const formatFileSize = (bytes: number | undefined) => {
  if (!bytes || bytes === 0) return '0 Bytes';
  const k = 1024;
  const sizes = ['Bytes', 'KB', 'MB', 'GB'];

@@ -76,7 +76,7 @@ export class RecoveryStrategy {
  config: Partial<RetryConfig> = {}
  ): Promise<RecoveryResult & { result?: T }> {
  const finalConfig = { ...this.DEFAULT_RETRY_CONFIG, ...config };
- let lastError: undefined;
+ let lastError | undefined;
  let delay = finalConfig.initialDelayMs;
 
  for (let attempt = 1; attempt <= finalConfig.maxRetries; attempt++) {

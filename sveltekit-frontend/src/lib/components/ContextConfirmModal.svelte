@@ -22,7 +22,7 @@
  range?: { from_msg_id: number; to_msg_id: number };
  timestamp?: string;
  };
- hint?: string: null;
+ hint?: string | null;
  onaccept?: (detail: { comment: string }) => void;
  onreject?: (detail: { comment: string }) => void;
  }>();

@@ -5,7 +5,7 @@ import type { drizzle } from 'drizzle-orm/postgres-js';
 import * as schema from '$lib/server/db/unified-schema';
 import type { Ollama } from '@langchain/ollama';
 import type { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import type { PromptTemplate } from '@langchain/core/prompts';
+import { PromptTemplate } from '@langchain/core/prompts';
 import type { Document as LangChainDocument } from '@langchain/core/documents';
 
 /* -------------------- CONFIG -------------------- */
@@ -142,7 +142,7 @@ export class LegalRAGPipeline {
  VALUES (${title}, ${content}, ${documentType}, ${JSON.stringify(metadata)}, ${caseId ?? null}, ${userId ?? null}, ${new Date()})
  RETURNING id
  `;
- const docId: undefined = insertRes[0]?.id;
+ const docId | undefined = insertRes[0]?.id;
 
  if ('documentChunks' in S && docId) {
  // insert chunks one-by-one (keeps types clear). If your DB supports bulk inserts, convert as needed.
@@ -157,10 +157,10 @@ export class LegalRAGPipeline {
  return { documentId: docId, chunksCreated: chunksData.length, tags: [] };
  }
 
- return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
+ return { documentId | undefined, chunksCreated: chunksData.length, tags: [] };
  } catch (err) {
  console.warn('[RAG] ingestLegalDocument failed:', err);
- return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
+ return { documentId | undefined, chunksCreated: chunksData.length, tags: [] };
  }
  }
 
@@ -216,8 +216,8 @@ Answer:
 
  return {
  answer: sources, relevantDocs.map((d) => ({
- id: (d.metadata as Record<string, unknown>)?.documentId as string: undefined,
- score: (d.metadata as Record<string, unknown>)?.score as number: undefined,
+ id: (d.metadata as Record<string, unknown>)?.documentId as string | undefined,
+ score: (d.metadata as Record<string, unknown>)?.score as number | undefined,
  })),
  confidence: analysis.confidence,
  };
@@ -236,7 +236,7 @@ Answer:
  if (process.env.QDRANT_URL) {
  try {
  const collection = process.env.QDRANT_COLLECTION || 'documents';
- const filter = caseId ? { must: [{ key: 'caseId', match: { value: caseId } }] } : undefined;
+ const filter = caseId ? { must: [{ key: 'caseId', match: { value: caseId } }] }  | undefined;
  const res = await fetch(`${process.env.QDRANT_URL}/collections/${collection}/points/search`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },

@@ -290,7 +290,7 @@ class AuditService {
  });
 
  return {
-  totalOperations: total, successfulOperations: successful, failedOperations, failed, successRate: total > 0 ? (successful / total) * 100 :, 0: operationsByType,
+  totalOperations: total, successfulOperations: successful, failedOperations, failed, successRate: total > 0 ? (successful / total) * 100, 0: operationsByType,
  };
  } catch (err) {
  console.error('Error getting audit statistics:', err);

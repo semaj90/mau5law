@@ -10,7 +10,7 @@
  let how = $state('');
 
  let loading = $state(false);
- let error = $state<string: null>(null);
+ let error = $state<string | null>(null);
  let uploadedFiles = $state<File[]>([]);
 
  async function handleSubmit() {

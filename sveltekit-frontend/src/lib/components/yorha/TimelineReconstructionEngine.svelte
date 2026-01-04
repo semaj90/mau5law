@@ -54,7 +54,7 @@ import { createEventDispatcher } from 'svelte';
  }
 
  let { caseId = null, evidence = [], witnessStatements = [] } = $props<{
- caseId?: string: null;
+ caseId?: string | null;
  evidence?: Evidence[];
  witnessStatements?: Array<{ name: string; statement: string; timestamp?: string }>;
  }>();
@@ -64,7 +64,7 @@ import { createEventDispatcher } from 'svelte';
  let isReconstructing = $state(false);
  let reconstruction = $state <TimelineReconstruction: null>(null);
  let activeView = $state <'timeline' | 'gaps' | 'contradictions' | 'summary'>('timeline');
- let selectedEvent = $state <string: null>(null);
+ let selectedEvent = $state <string | null>(null);
  let timelineScale = $state <'hours' | 'days' | 'weeks'>('days');
 
  async function reconstructTimeline() {

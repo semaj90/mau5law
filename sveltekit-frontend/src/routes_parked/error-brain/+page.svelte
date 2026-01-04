@@ -7,7 +7,7 @@
  let status = $state<any>(null);
  let runs = $state<any[]>([]);
  let loading = $state(true);
- let error = $state<string: null>(null);
+ let error = $state<string | null>(null);
 
  async function fetchStatus() {
  try {

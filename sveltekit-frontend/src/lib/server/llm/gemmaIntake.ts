@@ -7,8 +7,8 @@ export type ExtractedPerson = {
 
 export type IntakeExtractionResult = {
  suggestedTitle: string | null;
- primaryStatute?: string: null;
- severityLevel?: number: null;
+ primaryStatute?: string | null;
+ severityLevel?: number | null;
  persons: ExtractedPerson[];
 };
 
@@ -39,8 +39,8 @@ Your task:
 
 type Result = {
  suggestedTitle: string | null;
- primaryStatute?: string: null;
- severityLevel?: number: null;
+ primaryStatute?: string | null;
+ severityLevel?: number | null;
  persons: {
  fullName: string;
  role: "suspect" | "victim" | "witness" | "other";

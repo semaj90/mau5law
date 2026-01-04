@@ -156,7 +156,7 @@ export function createUIStore() {
  const autoPopulatedForms = writable(new Map<string, AutoPopulatedForm>());
 
  const markdownScenes = writable<MarkdownScene[]>([]);
- const activeSceneId = writable<string: null>(null);
+ const activeSceneId = writable<string | null>(null);
 
  const sidebarOpen = writable(true);
  const commandPaletteOpen = writable(false);

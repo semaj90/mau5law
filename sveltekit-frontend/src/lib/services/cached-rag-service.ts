@@ -98,7 +98,7 @@ export function getOllamaEndpoint(): string {
  const serverEnv =
  typeof process !== 'undefined' && typeof process.env !== 'undefined'
  ? process.env.OLLAMA_API_URL || process.env.OLLAMA_URL
- : undefined;
+  | undefined;
 
  // Vite / SvelteKit client runtime env (if available)
  let viteEnv: string | undefined;
@@ -172,7 +172,7 @@ export async function ollamaEmbed(
  return texts.map((_t, i) => (i === 0 ? { embedding: emb, model } : ({} as EmbeddingResult)));
  } else if (batchEmbeddings) {
  return (((body as Record<string, unknown>)['embeddings'] as unknown[]) ?? []).map((e) => ({
- embedding: Array.isArray(e) ? (e as unknown[]).map(Number) : undefined,
+ embedding: Array.isArray(e) ? (e as unknown[]).map(Number)  | undefined,
  model,
  }));
  }

@@ -4,9 +4,9 @@ export type RagSearchRequest = {
  query: string;
  limit?: number;
  scoreThreshold?: number;
- jurisdiction?: string: null;
+ jurisdiction?: string | null;
  tagIds?: string[];
- caseId?: string: null;
+ caseId?: string | null;
 };
 
 export type RagSearchResult = {
@@ -56,7 +56,7 @@ export type ChatCitation = {
  case_id?: string;
  file_name?: string;
  page_number?: number;
- url?: string: null;
+ url?: string | null;
  score: number;
  tags: Array<{
  namespace: string;

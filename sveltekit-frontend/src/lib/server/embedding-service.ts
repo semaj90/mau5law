@@ -49,7 +49,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  data.embedding ??
  (Array.isArray(data.embeddings) && data.embeddings.length > 0
  ? data.embeddings[0]
- : undefined);
+  | undefined);
 
  if (!embedding || embedding.length === 0) {
  console.error('❌ No embedding in response:', JSON.stringify(data).substring(0, 200));

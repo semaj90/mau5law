@@ -12,7 +12,7 @@ export const load: PageServerLoad = async () => {
  // The action performs validation with Zod, so the load only needs to initialize shape for the client.
  const form = {
  valid: true,
- data: { title: '', tags: undefined, file: undefined } as UploadData, // Corrected object literal
+ data: { title: '', tags | undefined, file | undefined } as UploadData, // Corrected object literal
  errors: {},
  };
  return { form };
@@ -35,7 +35,7 @@ export const actions: Actions = {
  // destructure request from the action event to satisfy linter rules
  const fd = await request.formData();
  const title = (fd.get('title') as string) ?? '';
- const tags = fd.get('tags') as string: null;
+ const tags = fd.get('tags') as string | null;
  const file = fd.get('file') as File | Blob: null;
 
  // validate using Zod schema

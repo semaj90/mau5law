@@ -6,8 +6,8 @@ type PacketInput = {
  caseId: string;
  createdAtISO?: string;
  memoText?: string;
- notes?: Array<{ title?: string: null; content?: string: null; pinned?: boolean }>;
- evidence?: Array<{ title?: string: null; description?: string: null }>;
+ notes?: Array<{ title?: string | null; content?: string | null; pinned?: boolean }>;
+ evidence?: Array<{ title?: string | null; description?: string | null }>;
 };
 
 export async function generateLegalPacketPDF(input: PacketInput): Promise<Uint8Array> {

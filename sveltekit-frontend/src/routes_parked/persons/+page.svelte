@@ -73,7 +73,7 @@
  let sortOrder = $state <'asc' | 'desc'>('desc');
  let isLoading = $state <boolean>(false);
  let showAddModal = $state <boolean>(false);
- let error = $state <string: null>(null);
+ let error = $state <string | null>(null);
 
  // Mock data - replace with API calls (fixed: object literal syntax)
  let persons = $state <PersonOfInterest[]>([

@@ -41,7 +41,7 @@ import { createEventDispatcher } from 'svelte';
  }
 
  let { caseId = null, evidence = [], charges = [], jurisdiction = 'federal' } = $props<{
- caseId?: string: null;
+ caseId?: string | null;
  evidence?: Evidence[];
  charges?: string[];
  jurisdiction?: 'federal' | 'state' | 'local';

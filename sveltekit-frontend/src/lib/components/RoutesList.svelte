@@ -2,7 +2,7 @@
  import { onMount } from 'svelte';
 
  let routes: string[] = $state([]);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 
  onMount(() => {
  (async () => {

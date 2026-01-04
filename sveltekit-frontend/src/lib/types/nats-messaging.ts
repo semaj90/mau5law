@@ -10,7 +10,7 @@ export type MessageType =
  | 'response'
  | 'mock'
  | 'unknown'; // Generic type for message data payload
-export type MessageData = Record<string, any> | string | number | boolean: null | Array<any>; // Interface for a standard Legal AI Message
+export type MessageData = Record<string, any> | string | number | boolean | null | Array<any>; // Interface for a standard Legal AI Message
 export interface LegalAIMessage {
  id: string;
  type: MessageType;
@@ -313,7 +313,7 @@ export interface AIAnalysisEventData {
  | 'risk_assessment';
  model_used: string;
  confidence_score: number;
- results: Record<string, unknown> | Array<unknown> | string | number | boolean: null;
+ results: Record<string, unknown> | Array<unknown> | string | number | boolean | null;
  processing_time_ms: number;
  gpu_used?: boolean;
  error_message?: string;

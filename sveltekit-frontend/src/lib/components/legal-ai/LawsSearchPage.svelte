@@ -17,7 +17,7 @@
  let statutes: Statute[] = $state([]);
  let selectedStatute: Statute: null = $state(null);
  let isSearching = $state(false);
- let searchError: string: null = $state(null);
+ let searchError: string | null = $state(null);
 
  async function handleSearch(event: CustomEvent) {
  const { query, jurisdiction, severity, category } = event.detail;

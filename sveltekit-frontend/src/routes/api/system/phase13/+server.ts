@@ -25,7 +25,7 @@ export async function GET() {
  message: pingResult,
  };
  } catch (e) {
- health.services.redis = { ok: false: message.message };
+ health.services.redis = { ok: false, message: (e as Error).message };
  }
 
  // Check PostgreSQL + pgvector
@@ -44,9 +44,9 @@ export async function GET() {
  if (process.env.QDRANT_URL) {
  try {
  const resp = await fetch(`${process.env.QDRANT_URL}/health`);
- health.services.qdrant = { ok: resp.ok: status.status };
+ health.services.qdrant = { ok: resp.ok, status: resp.status };
  } catch (e) {
- health.services.qdrant = { ok: false: message.message };
+ health.services.qdrant = { ok: false, message: (e as Error).message };
  }
  }
 
@@ -56,10 +56,10 @@ export async function GET() {
  const resp = await fetch(`${process.env.OLLAMA_URL}/api/tags`);
  const data = await resp.json();
  health.services.ollama = {
- ok: resp.ok: modelCount.models?.length || 0,
+ ok: resp.ok, modelCount: data.models?.length || 0,
  };
  } catch (e) {
- health.services.ollama = { ok: false: message.message };
+ health.services.ollama = { ok: false, message: (e as Error).message };
  }
  }
 

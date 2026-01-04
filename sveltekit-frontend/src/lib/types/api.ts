@@ -205,7 +205,7 @@ export interface EvidenceItem {
  evidenceType: string;
  fileType: string | null;
  aiAnalysis?: EvidenceAIAnalysis;
- summary?: string: null;
+ summary?: string | null;
  canvasPosition?: Record<string, unknown>;
  // Additional fields for compatibility
  type?: string;
@@ -941,7 +941,7 @@ export interface DialogDataProvider {
  endpoint?: string;
  data?: unknown;
  loading?: boolean;
- error?: string: null;
+ error?: string | null;
  lastFetch?: number; // optional generic fetch method some providers expose
  fetch?: (id: string, cache?: boolean) => Promise<ApiResponse<unknown> | null>;
 }

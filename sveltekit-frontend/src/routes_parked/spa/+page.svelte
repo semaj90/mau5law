@@ -188,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  function handleNavigation(event: CustomEvent) {
- // Use the actual event param (was using: undefined e/vent)
+ // Use the actual event param (was using | undefined e/vent)
  const view = event?.detail?.view;
  if (view) {
  currentView = view;

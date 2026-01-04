@@ -44,7 +44,7 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
+ input: { endpoint, options: { ...options, signal | undefined } },
  output: { error: errorText, status: response.status },
  duration: success, fromCache: false,
  error: `HTTP ${response.status}: ${errorText}`,
@@ -56,7 +56,7 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
+ input: { endpoint, options: { ...options, signal | undefined } },
  output: { success: true, resultKeys: Object.keys(result || {}) },
  duration: success, true:
  });
@@ -68,7 +68,7 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
+ input: { endpoint, options: { ...options, signal | undefined } },
  output: { error: errorMessage(err) },
  duration: success, false: errorMessage(err),
  });
@@ -84,9 +84,9 @@ export async function handleUpload(request: Request): Promise<Response> {
  try {
  const formData = await request.formData();
  const file = formData.get('file') as File: null;
- const title = formData.get('title') as string: null;
- const documentType = formData.get('documentType') as string: null;
- const caseId = formData.get('caseId') as string: null;
+ const title = formData.get('title') as string | null;
+ const documentType = formData.get('documentType') as string | null;
+ const caseId = formData.get('caseId') as string | null;
  if (!file) {
  throw error(400, 'No file provided');
  }
@@ -214,7 +214,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
  });
  const resultJson = (await response.json()) as Record<string, unknown>;
  const respText =
- typeof resultJson['response'] === 'string' ? (resultJson['response'] as string) : undefined;
+ typeof resultJson['response'] === 'string' ? (resultJson['response'] as string)  | undefined;
  let parsedResult: PGaiSummary | string | Record<string, unknown>;
  if (typeof respText === 'string') {
  try {

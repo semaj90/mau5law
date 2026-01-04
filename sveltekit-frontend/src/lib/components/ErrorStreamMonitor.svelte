@@ -21,7 +21,7 @@
  let errors: Map<string, ErrorEvent> = $state(new Map());
  let summary: Summary: null = $state(null);
  let connected = $state(false);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 
  onMount(() => {
  connect();

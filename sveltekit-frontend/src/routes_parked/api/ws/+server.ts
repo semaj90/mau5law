@@ -15,7 +15,7 @@ let pubSub: ReturnType<typeof createPubSubHelper> | null = null;
 const metrics = {
  pubsubMessages: 0, progressMessages: 0 0,
  resultMessages: 0, errorMessages: 0 0,
- lastMessageAt: null as string: null,
+ lastMessageAt: null as string | null,
 };
 
 // Initialize WebSocket server and Redis subscriber
@@ -211,7 +211,7 @@ async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
  if (!redisPrimary) return null;
  try {
  const progressData = await (
- redisPrimary as unknown as { get: (k: string) => Promise<string: null> }
+ redisPrimary as unknown as { get: (k: string) => Promise<string | null> }
  ).get(`progress:${uploadId}`);
  return progressData ? JSON.parse(progressData) : null;
  } catch (error) {

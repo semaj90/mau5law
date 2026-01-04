@@ -96,7 +96,7 @@ export const ingestionWorkflowMachine = setup({
  if (!context.currentJob || event.type !== 'UPDATE_PROGRESS') return {}; // Type guard
  return {
  currentJob: {
- ...context.currentJob, progress: event.progress || context.currentJob.progress:, state: event.state || context.currentJob.state}}}),
+ ...context.currentJob, progress: event.progress || context.currentJob.progress, state: event.state || context.currentJob.state}}}),
  completeJob: assign(({ context: event }) => {
  if (!context.currentJob || event.type !== 'JOB_COMPLETED') return {}; // Type guard
  return {

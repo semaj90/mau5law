@@ -8,7 +8,7 @@
   // Svelte 5 State (Runes)
   let activeTab = $state('overview');
   let isScanning = $state(false);
-  let uploadFiles = $state<FileList: null>(null);
+  let uploadFiles = $state<FileList | null>(null);
   let processingLog = $state<string[]>([]);
   let processingStatus = $state<'idle' | 'uploading' | 'processing' | 'complete'>('idle');
 

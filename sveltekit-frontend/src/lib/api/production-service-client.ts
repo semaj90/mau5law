@@ -227,12 +227,12 @@ function getProductionServiceBaseUrl(): string {
  const fromProcess =
  typeof process !== 'undefined' && (process.env as Record<string, string> | undefined)
  ? (process.env as Record<string, string>)['PRODUCTION_SERVICE_BASE_URL']
- : undefined;
+  | undefined;
  const fromVite =
  typeof import.meta !== 'undefined'
  ? (import.meta as unknown as { env?: { VITE_PRODUCTION_SERVICE_BASE_URL?: string } }).env
  ?.VITE_PRODUCTION_SERVICE_BASE_URL
- : undefined;
+  | undefined;
  return String(fromProcess ?? fromVite ?? 'http://localhost:8080');
 }
 

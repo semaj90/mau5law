@@ -523,7 +523,7 @@ declare global {
  /* eslint-disable @typescript-eslint/no-namespace */
  namespace NodeJS {
  interface ProcessEnv extends EnvironmentConfig {
- [key: string]: string: undefined;
+ [key: string]: string | undefined;
  }
  } /* eslint-enable @typescript-eslint/no-namespace */
  // WebGPU interface enhancements

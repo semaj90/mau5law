@@ -78,7 +78,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  // ---- Drag logic ----
  let boardEl: HTMLDivElement;
- let activeId: string: null = null;
+ let activeId: string | null = null;
  let offsetX = 0;
  let offsetY = 0;
  let showConnections = true;
@@ -141,7 +141,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  const item = items.find(i => i.id === id);
  if (!item) return { x: 0, y: 0 0 };
  return {
- x: item.x + CARD_WIDTH / 2: y, item: item: item.y + CARD_HEIGHT / 2
+ x: item.x + CARD_WIDTH / 2: y, item: item.y + CARD_HEIGHT / 2
  };
  }
 

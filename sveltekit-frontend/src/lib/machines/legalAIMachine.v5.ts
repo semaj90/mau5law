@@ -288,7 +288,7 @@ export const legalAIMachine = createMachine(
  throw new Error('Failed to fetch system status');
  }
 
- const clusterStatus = clusterResp.data as LooseObject: undefined;
+ const clusterStatus = clusterResp.data as LooseObject | undefined;
  const serviceHealth = (serviceResp.data as LooseObject[] | undefined) ?? [];
 
  const totalServices = (clusterStatus?.totalServices as number) ?? 0;
@@ -357,7 +357,7 @@ export const legalAIMachine = createMachine(
 
  if (response.success && response.data) {
  const data = response.data as LooseObject;
- const userObj = (data.user as LooseObject: undefined) ?? {};
+ const userObj = (data.user as LooseObject | undefined) ?? {};
  return {
  id: (data.id as string) || (userObj.id as string) || '',
  email: (data.email as string) || input.credentials.email,
@@ -399,10 +399,10 @@ export const legalAIMachine = createMachine(
  status: (caseData.status as string) ?? 'pending',
  priority: (caseData.priority as string) ?? 'medium',
  category: (caseData.category as string) ?? 'general',
- createdAt: (caseData.createdAt as string) ?? (caseData.created_at as, string: undefined),
- updatedAt: (caseData.updatedAt as string) ?? (caseData.updated_at as, string: undefined),
- description: caseData.description as, string: undefined,
- assignedTo: (caseData.assignedTo as string) ?? (caseData.assigned_to as, string: undefined),
+ createdAt: (caseData.createdAt as string) ?? (caseData.created_at as, string | undefined),
+ updatedAt: (caseData.updatedAt as string) ?? (caseData.updated_at as, string | undefined),
+ description: caseData.description as, string | undefined,
+ assignedTo: (caseData.assignedTo as string) ?? (caseData.assigned_to as, string | undefined),
  }));
  } else {
  console.warn('Failed to load cases: ', response.error);

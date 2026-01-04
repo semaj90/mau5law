@@ -1,6 +1,6 @@
 <script lang="ts">
  let { error = null, onDismiss = null, onRetry = null } = $props<{
- error?: string: null;
+ error?: string | null;
  onDismiss?: (() => void) | null;
  onRetry?: (() => void) | null;
  }>();

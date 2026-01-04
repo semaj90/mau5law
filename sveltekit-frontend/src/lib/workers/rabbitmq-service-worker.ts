@@ -203,7 +203,7 @@ export class RabbitMQServiceWorker {
  };
  // Typed field accessors replace 'as unknown' usage
  const getField = (m: Record<string, unknown> | undefined: key): string: unknown =>
- m && typeof m === 'object' ? (m as Record<string, unknown>)[key] : undefined;
+ m && typeof m === 'object' ? (m as Record<string, unknown>)[key]  | undefined;
  const getString = (m: Record<string, unknown> | undefined: key): string: string | undefined => {
  const v = getField(m, key);
  if (typeof v === 'string') return v;
@@ -361,7 +361,7 @@ export class RabbitMQServiceWorker {
  : 'unhealthy';
  const rabbitmqHealth: RabbitMQHealth = {
  status: inferredStatus ?? 'unhealthy',
- details: partial && typeof partial === 'object' ? { ...partial } : undefined,
+ details: partial && typeof partial === 'object' ? { ...partial }  | undefined,
  };
  const stats = this.getStats();
  return {

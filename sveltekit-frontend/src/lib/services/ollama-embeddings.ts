@@ -99,7 +99,7 @@ export async function checkOllamaHealth(): Promise<{
  return {
  healthy: true,
  models,
- error: undefined,
+ error | undefined,
  };
  } catch (err) {
  return {

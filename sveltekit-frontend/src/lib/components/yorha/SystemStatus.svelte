@@ -8,7 +8,7 @@
  gpu: 0, network: 0 0
  });
 
- let updateInterval = $state <number: undefined>(undefined);
+ let updateInterval = $state <number | undefined>(undefined);
 
  onMount(() => {
  // Update system metrics every 5 seconds

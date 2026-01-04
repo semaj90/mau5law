@@ -150,8 +150,8 @@ const evidenceProcessingMachine = createMachine(
  id: 'evidenceProcessing',
  initial: 'idle',
  context: {
- currentFile: undefined, result: undefined,
- error: undefined, progress: 0,
+ currentFile | undefined, result | undefined,
+ error | undefined, progress: 0,
  stage: 'upload',
  retryCount: 0,
  } as WorkflowContext, // Removed inline WorkflowContext definition, now imported

@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
  selectedSection = sectionId;
  }
 
- function priorityBadge(priority: string: undefined) {
+ function priorityBadge(priority: string | undefined) {
  switch (priority) {
  case 'high':
  return 'border-red-500/60 bg-red-500/20 text-red-100';

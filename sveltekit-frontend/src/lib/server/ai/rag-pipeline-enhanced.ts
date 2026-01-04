@@ -1,9 +1,9 @@
 import Redis from 'ioredis';
 import postgres, { type Notice } from 'postgres';
 import type { drizzle } from 'drizzle-orm/postgres-js';
-import type { PromptTemplate } from '@langchain/core/prompts';
-import type { RunnableSequence } from '@langchain/core/runnables';
-import type { StringOutputParser } from '@langchain/core/output_parsers';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { StringOutputParser } from '@langchain/core/output_parsers';
 import * as schema from '$lib/server/db/schema-postgres';
 import type { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config.js';
 import type { Record } from "neo4j-driver";
@@ -23,7 +23,7 @@ declare module '$lib/server/db/schema-postgres' {
  interface DrizzleTable<TName extends string, TColumns extends Record<string, any>> {
  _?: {
  name: TName; columns: TColumns;
- dialect: 'pg'; schema: undefined;
+ dialect: 'pg'; schema | undefined;
  };
  }
 
@@ -829,7 +829,7 @@ const processingTime = Date.now() - startTime;
  tags: tags.map((t: AutoTag) => t.tag),
  processingTime,
  success: true,
- errors: errors.length > 0 ? errors : undefined,
+ errors: errors.length > 0 ? errors  | undefined,
  metadata: {
  documentType,
  confidentialityLevel,
@@ -957,7 +957,7 @@ const processingTime = Date.now() - startTime;
  const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
  id: r.id, r.content,
  title: (r.title as string) || 'Untitled',
- documentId: r.document_id, score: typeof r.similarity === 'number' ? similarity:, 0: typeof r.text_rank === 'number' ? text_rank:, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
+ documentId: r.document_id, score: typeof r.similarity === 'number' ? similarity, 0: typeof r.text_rank === 'number' ? text_rank, 0: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
  confidentialityLevel: (r.confidentiality_level as string) || undefined, highlights: r.highlights,
  }));
  this.metrics.incrementCounter('searches_performed');
@@ -1217,8 +1217,8 @@ let parsed: unknown;
  for (const item of parsed) {
  if (item && typeof item === 'object') {
  const rec = item as Record<string, unknown>;
- const tag = typeof rec.tag === 'string' ? rec.tag.trim() : undefined;
- let confidence: undefined;
+ const tag = typeof rec.tag === 'string' ? rec.tag.trim()  | undefined;
+ let confidence | undefined;
  if (typeof rec.confidence === 'number') confidence = rec.confidence;
  else if (typeof rec.confidence === 'string') {
  const num = Number(rec.confidence);
@@ -1252,7 +1252,7 @@ let parsed: unknown;
  error:
  (result as PromiseSettledResult<unknown>).status === 'rejected'
  ? (result as PromiseRejectedResult).reason?.message
- : undefined,
+  | undefined,
  timestamp: new Date().toISOString(),
  }));
  }

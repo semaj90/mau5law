@@ -3,7 +3,7 @@ import { writable, derived, get } from 'svelte/store';
 export interface FormField<TValue = unknown> {
  name: string;
  value: TValue;
- error?: string: null;
+ error?: string | null;
  touched: boolean;
  required?: boolean;
  validator?: (value: TValue) => string | null;
@@ -21,7 +21,7 @@ export interface FormState<T extends Record<string, unknown>> {
 
 export interface FormOptions<T extends Record<string, unknown>> {
  initialValues?: T;
- validators?: { [K in keyof T]?: (value: T[K]) => string: null };
+ validators?: { [K in keyof T]?: (value: T[K]) => string | null };
  requiredFields?: (keyof T)[];
  onSubmit?: (values: T) => Promise<void> | void;
 }

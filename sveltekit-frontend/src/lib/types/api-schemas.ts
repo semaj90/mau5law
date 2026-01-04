@@ -187,9 +187,9 @@ export interface SearchResults<T = unknown> {
 }
 // Page Data Schemas for SSR
 export interface HomePageData {
- userId?: string: null;
- sessionId?: string: null;
- email?: string: null;
+ userId?: string | null;
+ sessionId?: string | null;
+ email?: string | null;
  isAuthenticated: boolean;
  health: SystemHealth | null;
  systemInfo: SystemInfo | null;

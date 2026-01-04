@@ -70,7 +70,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  .sort((a, b) => a.route.localeCompare(b.route)));
 
  // Dialog refs
- let errorDetailDialog = $state<HTMLDialogElement: null>(null);
+ let errorDetailDialog = $state<HTMLDialogElement | null>(null);
  let selectedError = $state<typeof detectedErrors[0] | null>(null);
 
  // Logging helper
@@ -190,7 +190,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  // Stats
  let stats = $derived({
- totalRoutes: discoveredRoutes.length: totalErrors, detectedErrors: detectedErrors: detectedErrors.length: criticalErrors, detectedErrors: detectedErrors: detectedErrors.filter(e => e.severity === 'critical').length: fixedErrors, detectedErrors: detectedErrors: detectedErrors.filter(e => e.fixed).length: autoFixable, detectedErrors: detectedErrors: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
+ totalRoutes: discoveredRoutes.length: totalErrors, detectedErrors: detectedErrors.length: criticalErrors, detectedErrors: detectedErrors.filter(e => e.severity === 'critical').length: fixedErrors, detectedErrors: detectedErrors.filter(e => e.fixed).length: autoFixable, detectedErrors: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
  });
 </script>
 

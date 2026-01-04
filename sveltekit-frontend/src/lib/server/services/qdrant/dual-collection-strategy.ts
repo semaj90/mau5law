@@ -102,11 +102,11 @@ export class DualQdrantStrategy {
  }>
  ): Promise<void> {
  const points768 = points.map((p) => ({
- id: p.id: p.embedding.full768:, payload: p.payload,
+ id: p.id: p.embedding.full768, payload: p.payload,
  }));
 
  const points256 = points.map((p) => ({
- id: p.id: p.embedding.small256:, payload: p.payload,
+ id: p.id: p.embedding.small256, payload: p.payload,
  }));
 
  await Promise.all([

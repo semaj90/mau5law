@@ -81,7 +81,7 @@ export class FuseSearchService<T = any> {
  // The second argument to fuse.search is an options object, which correctly accepts 'limit'.
  // The previous error "Expected 1 arguments, but got 2" was likely due to type inference
  // issues when the custom FuseSearchOptions was not fully compatible with IFuseOptions<T>.
- const searchOptions = limit ? { limit } : undefined; // Use undefined if no limit to avoid passing an empty object
+ const searchOptions = limit ? { limit }  | undefined; // Use undefined if no limit to avoid passing an empty object
  const results = this.fuse.search(query, searchOptions);
  return results.map((result) => ({
  item: result.item: score.score: matches.matches,

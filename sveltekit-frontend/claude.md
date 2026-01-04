@@ -170,3 +170,72 @@ if (!tableExists) {
 - `src/lib/server/db/index.ts` - DB client + exports
 - `drizzle.config.ts` - Drizzle Kit configuration
 - `drizzle/` - Migration files
+
+---
+
+## 🎨 Svelte 5 Component Library (2026-01-04)
+
+### Import Path
+```typescript
+import { Svelte5Button, Svelte5Dialog, Svelte5Input, ... } from '$lib/components/ui/svelte5-index';
+```
+
+### Components Available
+- **Form**: `Svelte5Input`, `Svelte5Select`, `Svelte5Checkbox`, `Svelte5Switch`, `Svelte5Slider`, `Svelte5RadioGroup`
+- **Navigation**: `Svelte5Tabs`, `Svelte5TabPanel`, `Svelte5DropdownMenu`
+- **Overlay**: `Dialog`, `Svelte5Tooltip`, `Svelte5Popover`
+- **Feedback**: `Svelte5Alert`, `Svelte5Badge`, `Svelte5Progress`
+- **Layout**: `Svelte5Card`, `Svelte5Accordion`
+- **Display**: `Svelte5Avatar`, `Svelte5Button`
+
+### Key Patterns
+```svelte
+<!-- Props with runes -->
+let { value, variant = 'default' }: Props = $props();
+
+<!-- Bindable for two-way -->
+let open = $bindable(false);
+
+<!-- Snippets replace slots -->
+{#if header}{@render header()}{/if}
+
+<!-- New event syntax -->
+<button onclick={handler}>
+```
+
+### Template
+`src/lib/components/ui/templates/Svelte5ComponentTemplate.svelte`
+
+---
+
+## 🔍 Error Analysis (70,914 errors)
+
+### Top Categories
+| Category | % | Fix |
+|----------|---|-----|
+| Object corruption | 40% | AST repair |
+| `import type` | 25% | `import { z }` |
+| Event syntax | 10% | `fix-svelte5-events.mjs` |
+| Module exports | 10% | Fix barrels |
+
+### Priority Files
+1. `src/lib/command-center-manifest.ts`
+2. `src/lib/server/auth.ts`
+3. `src/lib/services/ollamaService.ts`
+
+### Resources
+- `logs/ERROR_ANALYSIS_RECOMMENDATIONS.md`
+- `logs/svelte-check-top-1000.txt`
+
+---
+
+## 🎯 UnoCSS Shortcuts
+
+| Shortcut | Effect |
+|----------|--------|
+| `nes-btn` | NES button |
+| `nes-panel` | NES panel |
+| `nes-badge-*` | Status badges |
+| `glass` | Glassmorphism |
+
+Config: `uno.config.ts`

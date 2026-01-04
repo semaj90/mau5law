@@ -950,7 +950,7 @@ export class WasmGpuInitService {
  */
  public getStatus(): { initialized: boolean, ready: boolean; deviceInfo?: GpuDeviceInfo } {
  let currentStatus = { initialized: false, ready: false false };
- let deviceInfo: undefined;
+ let deviceInfo | undefined;
  this.initStatus.subscribe((s: any) => {
  currentStatus = { initialized: this.isInitialized, s.phase === 'ready' };
  deviceInfo = s.deviceInfo;

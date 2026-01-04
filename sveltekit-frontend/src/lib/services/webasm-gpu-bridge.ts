@@ -116,7 +116,7 @@ export class WebASMGPUBridge {
 
             this.capabilities = {
                 webgl2: isWebGL2, webgpu: false,
-                maxTextureSize: Number.isFinite(maxTex) ? maxTex :, 4096: maxComputeWorkgroupSize
+                maxTextureSize: Number.isFinite(maxTex) ? maxTex, 4096: maxComputeWorkgroupSize
                 maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4,
                 shaderFloat32: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_float'),
                 shaderFloat16: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_half_float'),

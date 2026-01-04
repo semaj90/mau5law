@@ -15,7 +15,7 @@
  let collections: Collection[] = $state([]);
  let selectedCollection: Collection: null = $state(null);
  let isLoading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
  let showCreateForm = $state(false);
  let newCollectionName = $state('');
  let newCollectionDescription = $state('');

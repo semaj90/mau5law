@@ -1,4 +1,4 @@
-import type { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import type { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { jsonb, text } from 'drizzle-orm/pg-core';
 

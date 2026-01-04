@@ -1,5 +1,5 @@
 import type { db } from '$lib/server/db/client.js';
-import type { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
 export async function getDatabaseHealth() {
  let postgresConnected = false;

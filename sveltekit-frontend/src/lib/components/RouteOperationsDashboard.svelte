@@ -2,10 +2,10 @@
 	import type { OperationReport } from '$lib/utils/route-operation-logger';
 	import { onMount } from 'svelte';
 
-	let report = $state<OperationReport: null>(null);
+	let report = $state<OperationReport | null>(null);
 	let loading = $state(true);
 	let filter = $state<'all' | 'phase72' | 'phase82' | 'high' | 'medium' | 'low'>('all');
-	let selectedCategory = $state<string: null>(null);
+	let selectedCategory = $state<string | null>(null);
 
 	onMount(() => {
  (async () => {

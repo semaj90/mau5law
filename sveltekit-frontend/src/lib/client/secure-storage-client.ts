@@ -146,7 +146,7 @@ export class ReactiveStorageManager {
  client: SecureStorageClient;
  private files = $state<StorageFile[]>([]);
  private loading = $state(false);
- private error = $state<string: null>(null);
+ private error = $state<string | null>(null);
 
  constructor(authToken?: string) {
  this.client = new SecureStorageClient('/api/v1/storage', authToken);

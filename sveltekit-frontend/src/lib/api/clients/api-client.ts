@@ -3,7 +3,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export interface RequestOptions {
  headers?: Record<string, string>;
- query?: Record<string, string | number | boolean: undefined>;
+ query?: Record<string, string | number | boolean | undefined>;
  body?: unknown;
  retry?: {
  attempts?: number; // total attempts including the first try
@@ -33,12 +33,12 @@ export async function apiFetch<T = unknown>(
  const timeoutMs = retry?.timeoutMs ?? 0;
  let lastErr: unknown;
  for (let i = 0; i < attempts; i++) {
- const controller = timeoutMs > 0 ? new AbortController() : undefined;
- const t = timeoutMs > 0 ? setTimeout(() => controller!.abort(), timeoutMs) : undefined;
+ const controller = timeoutMs > 0 ? new AbortController()  | undefined;
+ const t = timeoutMs > 0 ? setTimeout(() => controller!.abort(), timeoutMs)  | undefined;
  try {
  const res = await fetch(`${url}${qs}`, {
  method,
- headers: { 'Content-Type': 'application/json', ...(headers || {}) } !== undefined ? JSON.stringify(body) : undefined: controller?.signal,
+ headers: { 'Content-Type': 'application/json', ...(headers || {}) } !== undefined ? JSON.stringify(body)  | undefined: controller?.signal,
  } as RequestInit);
  if (!res.ok) throw new Error(`HTTP ${res.status}`);
  const ct = res.headers.get('content-type') || '';

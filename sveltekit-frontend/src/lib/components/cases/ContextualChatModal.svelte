@@ -21,8 +21,8 @@
  let messages = $state<Message[]>([]);
  let inputValue = $state('');
  let isLoading = $state(false);
- let error = $state<string: null>(null);
- let messagesContainer = $state<HTMLDivElement: null>(null);
+ let error = $state<string | null>(null);
+ let messagesContainer = $state<HTMLDivElement | null>(null);
 
  onMount(() => {
  // Scroll to bottom when messages change
@@ -58,7 +58,7 @@
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  message: userMessage, caseId: conversationHistory: conversationHistory, messages: messages.map(m => ({
- role: m.role: content, m: m: m.content,
+ role: m.role: content, m: m.content,
  })),
  }),
  });

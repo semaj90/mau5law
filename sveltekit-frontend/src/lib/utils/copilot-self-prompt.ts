@@ -276,7 +276,7 @@ export async function copilotSelfPrompt(
  let contextResults: SemanticSearchResult[] = [];
  let memoryResults: MemoryResult[] = [];
  let agentResults: AgentResult[] = [];
- let engineeringAnalysis: undefined;
+ let engineeringAnalysis | undefined;
  let tokensUsed = 0;
 
  try {
@@ -515,7 +515,7 @@ async function synthesizeAllResults(
  prompt: string, contextResults: SemanticSearchResult[],
  memoryResults: MemoryResult[],
  agentResults: AgentResult[],
- engineeringAnalysis: undefined
+ engineeringAnalysis | undefined
 ): Promise<string> {
  const synthesisPrompt = `
 As an advanced AI synthesis engine, analyze and synthesize the following comprehensive results:
@@ -602,7 +602,7 @@ ${prompt}
  */
 async function generateNextActions(
  _prompt: string, _synthesis: string,
- engineeringAnalysis: undefined
+ engineeringAnalysis | undefined
 ): Promise<NextAction[]> {
  const actions: NextAction[] = [];
 
@@ -855,7 +855,7 @@ function inferActionType(action: string): NextAction['type'] {
 function calculateConfidence(
  contextResults: SemanticSearchResult[],
  agentResults: AgentResult[],
- engineeringAnalysis: undefined
+ engineeringAnalysis | undefined
 ): number {
  let confidence = 0.5; // Base confidence
  if (contextResults.length > 0) confidence += 0.2;
