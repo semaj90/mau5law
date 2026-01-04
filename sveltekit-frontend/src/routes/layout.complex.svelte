@@ -24,9 +24,9 @@
 		toggleTheme: () => (theme = theme === 'dark' ? 'light' : 'dark'),
 	});
 
-	// Nav props object
+	// Nav props object - pass actual values, not functions
 	const navProps = $derived({
-		sidebarOpen: () => sidebarOpen,
+		sidebarOpen: sidebarOpen,
 		setSidebarOpen: (v: boolean) => (sidebarOpen = v),
 		toggleSidebar: () => (sidebarOpen = !sidebarOpen),
 	});

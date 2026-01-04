@@ -91,9 +91,14 @@
 	{:else}
 		<div class="summary-grid">
 			{#each filteredSummaries as summary}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					class="summary-item"
+					role="button"
+					tabindex="0"
 					onclick={() => selectedSummary = summary}
+					onkeydown={(e) => e.key === 'Enter' && (selectedSummary = summary)}
 				>
 					<div class="file-path">📄 {summary.file_path}</div>
 					<div class="summary-preview">{summary.summary.substring(0, 150)}...</div>
@@ -122,7 +127,11 @@
 
 	<!-- Detail Modal -->
 	{#if selectedSummary}
-		<div class="modal-overlay" onclick={() => selectedSummary = null}>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<div class="modal-overlay" role="dialog" aria-modal="true" tabindex="0" onclick={() => selectedSummary = null} onkeydown={(e) => e.key === 'Escape' && (selectedSummary = null)}>
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
 				<div class="modal-header">
 					<h3>{selectedSummary.file_path}</h3>
@@ -147,11 +156,13 @@
 						<div class="section">
 							<h4>Metadata</h4>
 							<table>
-								<tr><td>Language</td><td>{selectedSummary.metadata.language}</td></tr>
-								<tr><td>Lines of Code</td><td>{selectedSummary.metadata.lines_of_code}</td></tr>
-								<tr><td>Classes</td><td>{selectedSummary.metadata.classes.length}</td></tr>
-								<tr><td>Functions</td><td>{selectedSummary.metadata.functions.length}</td></tr>
-								<tr><td>Error Count</td><td>{selectedSummary.metadata.error_count}</td></tr>
+								<tbody>
+									<tr><td>Language</td><td>{selectedSummary.metadata.language}</td></tr>
+									<tr><td>Lines of Code</td><td>{selectedSummary.metadata.lines_of_code}</td></tr>
+									<tr><td>Classes</td><td>{selectedSummary.metadata.classes.length}</td></tr>
+									<tr><td>Functions</td><td>{selectedSummary.metadata.functions.length}</td></tr>
+									<tr><td>Error Count</td><td>{selectedSummary.metadata.error_count}</td></tr>
+								</tbody>
 							</table>
 						</div>
 					{/if}

@@ -8,6 +8,7 @@ https://svelte.dev/e/global_reference_invalid -->
 https://svelte.dev/e/global_reference_invalid -->
 <script lang="ts">
  import { goto } from '$app/navigation';
+ import { page } from '$app/state';
  import { onMount } from 'svelte';
 
  // Props interface
@@ -21,7 +22,7 @@ https://svelte.dev/e/global_reference_invalid -->
 
  // Local state
  let isMobile = $state(false);
- let currentPath = $derived($page.url.pathname);
+ let currentPath = $derived(page.url.pathname);
 
  // Navigation items
  const navItems = [
@@ -109,7 +110,11 @@ https://svelte.dev/e/global_reference_invalid -->
 
 <!-- Mobile Navigation Overlay -->
 {#if isMobile && sidebarOpen}
- <div class="mobile-nav-overlay" onclick={handleToggleSidebar}>
+ <!-- svelte-ignore a11y_no_static_element_interactions -->
+ <!-- svelte-ignore a11y_click_events_have_key_events -->
+ <div class="mobile-nav-overlay" role="dialog" aria-modal="true" tabindex="0" onclick={handleToggleSidebar} onkeydown={(e) => e.key === 'Escape' && handleToggleSidebar()}>
+ <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+ <!-- svelte-ignore a11y_click_events_have_key_events -->
  <nav class="mobile-nav" onclick={(e) => e.stopPropagation()}>
  <div class="mobile-nav-header">
  <h2>Navigation</h2>

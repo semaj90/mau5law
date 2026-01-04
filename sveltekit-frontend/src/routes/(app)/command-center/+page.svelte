@@ -1099,11 +1099,6 @@
 		color: white;
 	}
 
-	.nav-item.active .nav-link {
-		background: rgba(0, 212, 255, 0.2);
-		color: #00d4ff;
-	}
-
 	.dashboard-content {
 		flex: 1;
 	}
@@ -1285,11 +1280,6 @@
 		border-radius: 3px;
 		transition: all 0.2s ease;
 		opacity: 0;
-	}
-
-	.alert-item:hover .alert-dismiss {
-		opacity: 1;
-		color: rgba(255, 255, 255, 0.8);
 	}
 
 	.alert-dismiss:hover {

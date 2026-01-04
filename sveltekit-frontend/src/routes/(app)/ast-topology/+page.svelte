@@ -269,15 +269,15 @@
       <div class="view-toggle">
         <button
           class:active={viewMode === 'tree'}
-          on:click={() => viewMode = 'tree'}
+          onclick={() => viewMode = 'tree'}
         >🌳 Tree</button>
         <button
           class:active={viewMode === 'graph'}
-          on:click={() => viewMode = 'graph'}
+          onclick={() => viewMode = 'graph'}
         >🕸️ Graph</button>
         <button
           class:active={viewMode === 'list'}
-          on:click={() => viewMode = 'list'}
+          onclick={() => viewMode = 'list'}
         >📋 List</button>
       </div>
     </div>
@@ -314,7 +314,7 @@
               class="tree-node"
               class:selected={selectedNode === node.id}
               class:has-errors={node.errorCount > 0}
-              on:click={() => selectedNode = node.id}
+              onclick={() => selectedNode = node.id}
             >
               <span class="node-icon">
                 {#if node.type === 'directory'}📁{:else if node.type === 'error'}⚠️{:else}📄{/if}
@@ -333,7 +333,7 @@
         <div class="error-list">
           {#each filteredNodes.filter(n => n.errorCount > 0).sort((a, b) => b.errorCount - a.errorCount) as node (node.id)}
             <div class="error-item" class:selected={selectedNode === node.id}>
-              <div class="error-header" on:click={() => selectedNode = node.id}>
+              <div class="error-header" onclick={() => selectedNode = node.id}>
                 <span class="file-path">{node.id}</span>
                 <span class="error-count" style="color: {getStatusColor(node.status)}">
                   {node.errorCount} errors
@@ -341,7 +341,7 @@
               </div>
               {#if selectedNode === node.id}
                 <div class="error-actions">
-                  <button class="action-btn fix" on:click={() => triggerFix(node.id)}>
+                  <button class="action-btn fix" onclick={() => triggerFix(node.id)}>
                     🔧 Fix with Gemma3
                   </button>
                   <button class="action-btn view">

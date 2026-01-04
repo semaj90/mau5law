@@ -171,7 +171,7 @@ export const MinimalDesignSystem: DesignTokens = {
 };
 
 // Design System Application
-export function applyCustomDesign(element: HTMLElement, theme), DesignTokens: void {
+export function applyCustomDesign(element: HTMLElement, theme: DesignTokens): void {
  if (!element) return;
 
  const root = element;
@@ -245,29 +245,21 @@ export function createCustomTheme(theme: Partial<DesignTokens>): DesignTokens {
 }
 
 // Bits UI re-exports with enhanced styling
-import { Dialog,
-	Button,
-	Select,
-	Popover,
-	Tooltip,
-	Combobox,
- } from 'bits-ui';
-import DropdownMenu from 'bits-ui';
-import ContextMenu from 'bits-ui';
-import Toolbar from 'bits-ui';
-import Resizable from 'bits-ui';
+import {
+    Button,
+    Combobox,
+    default as ContextMenu,
+    Dialog,
+    default as DropdownMenu,
+    Popover,
+    default as Resizable,
+    Select,
+    default as Toolbar,
+    Tooltip,
+} from 'bits-ui';
 
 export {
-	Dialog,
-	Button,
-	Select,
-	Popover,
-	Tooltip,
-	Combobox,
-	DropdownMenu,
-	ContextMenu,
-	Toolbar,
-	Resizable,
+    Button, Combobox, ContextMenu, Dialog, DropdownMenu, Popover, Resizable, Select, Toolbar, Tooltip
 };
 // Enhanced-bits styling utilities are now defined in this file as placeholders.
 
@@ -279,7 +271,12 @@ export interface BitsUIEnhancedConfig {
 	animations?: boolean;
 }
 export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
-	return { component: config.component: theme.theme: variant.variant || 'nes', enhanced: true };
+	return {
+		component: config.component,
+		theme: config.theme,
+		variant: config.variant || 'nes',
+		enhanced: true
+	};
 }
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
@@ -290,10 +287,16 @@ export function createCompoundComponent<T>(
 }
 // Theme-aware component wrapper
 export function withEnhancedStyling(
-	Component: SvelteComponent, theme: DesignTokens, DesignTokens:
+	Component: SvelteComponent,
+	theme: DesignTokens,
 	variant: 'nes' | 'minimal' | 'custom' = 'nes'
 ) {
-	return { component: Component, theme, variant, apply: (element: HTMLElement) => applyCustomDesign(element, theme) };
+	return {
+		component: Component,
+		theme,
+		variant,
+		apply: (element: HTMLElement) => applyCustomDesign(element, theme)
+	};
 }
 // Legacy melt-ui migration helpers (for smooth transition)
 export const legacyMeltSupport = {

@@ -1,8 +1,8 @@
 import type { describe, it, expect } from 'vitest';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 import type {
- getBitsOverrides,
- registerOverride,
+  getBitsOverrides,
+  registerOverride,
 } from '../components/ui/wrappers/bits/bits-overrides.js';
 
 describe('Bits overrides registry', () => {
@@ -14,12 +14,12 @@ describe('Bits overrides registry', () => {
     await cleanupTest();
   });
 
- it('allows registering and retrieving an override', () => {
- const fake = { Button: { name: 'FakeButton' } };
- registerOverride('test-override', fake, {});
+  it('allows registering and retrieving an override', () => {
+    const fake = { Button: { name: 'FakeButton' } };
+    registerOverride('test-override', fake, {});
 
- const all = getBitsOverrides();
- expect(all['test-override']).toBeDefined();
- expect(all['test-override']).toEqual(fake);
- });
+    const all = getBitsOverrides();
+    expect(all['test-override']).toBeDefined();
+    expect(all['test-override']).toEqual(fake);
+  });
 });

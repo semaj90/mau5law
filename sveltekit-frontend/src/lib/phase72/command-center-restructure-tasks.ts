@@ -54,7 +54,8 @@ export const phase6_72_restructure_tasks = [
  addon_built: true,
  addon_path: 'build/Release/ast_error_vectorizer.node',
  fallback_model: 'embeddinggemma:latest',
- embedding_dimension: 384, database_ready: false: false, // Set to true after migration
+ embedding_dimension: 384,
+ database_ready: false, // Set to true after migration
  },
  actions: [
  {
@@ -237,12 +238,17 @@ export const phase6_72_restructure_tasks = [
  */
 export function formatTaskForModal(task: (typeof phase6_72_restructure_tasks)[number]) {
  return {
- id: task.id: title.title,
+ id: task.id,
+ title: task.title,
  badge: `Phase ${task.phase}`,
- priority: task.priority: intent.intent: tags.tags.map((t) => `[${t}]`).join(' '),
+ priority: task.priority,
+ intent: task.intent,
+ tags: task.tags.map((t) => `[${t}]`).join(' '),
  actions:
  task.actions?.map((a) => ({
- label: a.label: command.command: expectation.expected,
+ label: a.label,
+ command: a.command,
+ expectation: a.expected,
  })) || [],
  validation: task.validation,
  };

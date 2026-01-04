@@ -7,7 +7,7 @@
  interface Props {
  value: string | number;
  label: string;
- icon?: Snippet: null;
+ icon?: Snippet | null;
  variant?: Variant;
  size?: Size;
  hoverable?: boolean;

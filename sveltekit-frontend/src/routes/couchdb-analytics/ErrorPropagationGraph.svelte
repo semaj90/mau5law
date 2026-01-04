@@ -1,6 +1,9 @@
 <script lang="ts">
+	import * as d3Import from 'd3';
 	import { onMount } from 'svelte';
-	import * as d3 from 'd3';
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const d3 = d3Import as any;
 
 	interface Props {
 		apiBase: string;
@@ -16,7 +19,7 @@
 
 	let errorFiles = $state<ErrorNode[]>([]);
 	let loading = $state(true);
-	let graphContainer: HTMLDivElement;
+	let graphContainer = $state<HTMLDivElement | null>(null);
 	let selectedNode = $state<ErrorNode | null>(null);
 
 	async function loadErrorPropagation() {
@@ -104,7 +107,7 @@
 			.data(nodes)
 			.enter()
 			.append('g')
-			.call(d3.drag<any, any>()
+			.call((d3 as any).drag()
 				.on('start', dragstarted)
 				.on('drag', dragged)
 				.on('end', dragended)

@@ -12,16 +12,16 @@
 
 // Re-export bits-ui components that use named exports
 export {
- Avatar,
- Button,
- Checkbox,
- Combobox,
- DatePicker,
- Dialog,
- Popover,
- Select,
- Tabs,
- Tooltip,
+    Avatar,
+    Button,
+    Checkbox,
+    Combobox,
+    DatePicker,
+    Dialog,
+    Popover,
+    Select,
+    Tabs,
+    Tooltip
 } from 'bits-ui';
 
 // Export custom bits components
@@ -38,7 +38,12 @@ export { default as CardFooter } from './CardFooter.svelte';
 export { default as CardHeader } from './CardHeader.svelte';
 export { default as CardTitle } from './CardTitle.svelte';
 export { default as ChatMessage } from './ChatMessage.svelte';
-export { default as BitsDialog } from './Dialog.svelte';
+// BitsDialog removed - use Dialog from svelte5-index or Dialog compound component
+export { default as AIAssistantTest } from './AIAssistantTest.svelte';
+export { default as AIChatMessage } from './AIChatMessage.svelte';
+export { default as AIDialog } from './AIDialog.svelte';
+export { default as AIRecommendations } from './AIRecommendations.svelte';
+export { default as AISearchBar } from './AISearchBar.svelte';
 export { default as DialogWrapper } from './DialogWrapper.svelte';
 export { default as DocumentCard } from './DocumentCard.svelte';
 export { default as DraggableModal } from './DraggableModal.svelte';
@@ -93,11 +98,6 @@ export { default as WebAssemblyIntegrationDemo } from './WebAssemblyIntegrationD
 export { default as YoRHaHarvardButton } from './YoRHaHarvardButton.svelte';
 export { default as YoRHaHarvardCard } from './YoRHaHarvardCard.svelte';
 export { default as YoRHaSearchBar } from './YoRHaSearchBar.svelte';
-export { default as AIChatMessage } from './AIChatMessage.svelte';
-export { default as AIDialog } from './AIDialog.svelte';
-export { default as AIRecommendations } from './AIRecommendations.svelte';
-export { default as AISearchBar } from './AISearchBar.svelte';
-export { default as AIAssistantTest } from './AIAssistantTest.svelte';
 
 // Svelte 5 Runes-based components (new architecture)
 export { default as Svelte5Button } from './Svelte5Button.svelte';

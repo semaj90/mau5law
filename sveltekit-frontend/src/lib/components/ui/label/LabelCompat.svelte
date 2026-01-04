@@ -1,15 +1,35 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		for?: string;
+		htmlFor?: string;
+		class?: string;
+		children?: Snippet;
+		[key: string]: any;
+	}
+
+	let {
+		for: forProp,
+		htmlFor,
+		class: className = '',
+		children,
+		...rest
+	}: Props = $props();
+
+	// Support both 'for' and 'htmlFor' for compatibility - use $derived for reactive
+	let labelFor = $derived(htmlFor ?? forProp);
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<label
+	for={labelFor}
+	class={`
+		text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
+		${className}
+	`}
+	{...rest}
+>
+	{#if children}
+		{@render children()}
+	{/if}
+</label>

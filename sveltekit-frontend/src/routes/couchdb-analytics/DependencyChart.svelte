@@ -1,6 +1,9 @@
 <script lang="ts">
-	import * as d3 from 'd3';
+	import * as d3Import from 'd3';
 	import { onMount } from 'svelte';
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const d3 = d3Import as any;
 
 	interface Props {
 		apiBase: string;
@@ -15,7 +18,7 @@
 
 	let dependencies = $state<DependencyNode[]>([]);
 	let loading = $state(true);
-	let chartContainer: HTMLDivElement;
+	let chartContainer = $state<HTMLDivElement | null>(null);
 	let limit = $state(20);
 
 	async function loadDependencies() {

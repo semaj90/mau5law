@@ -12,30 +12,47 @@ import {
   type SourceValidatorProps
 } from '$lib/types/source-validation';
 
+// Type for confidence levels
+type ConfidenceLevel = 'high' | 'medium' | 'low' | 'marginal';
+
 // Svelte 5 props
 let {
 	caseId,
 	onValidationComplete,
-	initialQuery = ''
-}: SourceValidatorProps = $props();
+	initialQuery = '',
+	chunks = [],
+	isLoading = false,
+	onValidate,
+	onCancel
+}: SourceValidatorProps & {
+	chunks?: Array<{ chunk_id: string; confidence: ConfidenceLevel; source_title: string; score: number; text?: string; snippet?: string; source_type?: string; page_num?: number; has_table?: boolean; has_image?: boolean; related_entities: string[]; source_url?: string }>;
+	isLoading?: boolean;
+	onValidate?: (selectedIds: string[]) => void;
+	onCancel?: () => void;
+} = $props();
 
-// Svelte 5 reactive state
-let searchQuery = $state(initialQuery);
+// Svelte 5 reactive state - use $state.snapshot or make it reactive to prop changes
+let searchQuery = $state<string>('');
+$effect(() => {
+	if (initialQuery && searchQuery === '') {
+		searchQuery = initialQuery;
+	}
+});
 let searchResults = $state<KBSearchResult[]>([]);
 let isSearching = $state(false);
 let searchError = $state<string | null>(null);
 
-let selectedChunks = $state(new Set<string>());
+let selectedIds = $state(new Set<string>());
 let rejectedChunks = $state(new Set<string>());
 let validationNotes = $state('');
 let isValidating = $state(false);
 let validationError = $state<string | null>(null);
 
 // Derived state
-let hasSelection = $derived(selectedChunks.size > 0);
+let hasSelection = $derived(selectedIds.size > 0);
 let canValidate = $derived(hasSelection && !isValidating);
-let approvedCount = $derived(selectedChunks.size);
-let totalCount = $derived(searchResults.length);
+let approvedCount = $derived(selectedIds.size);
+let totalCount = $derived(chunks.length);
 
 // Functions
 function toggleChunk(chunkId: string) {

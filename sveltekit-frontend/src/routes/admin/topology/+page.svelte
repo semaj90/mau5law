@@ -429,7 +429,7 @@
 				</div>
 			{/if}
 
-			<button class="fix-button" on:click={() => alert('Fix with AI: ' + $selectedNode?.name)}>
+			<button class="fix-button" onclick={() => alert('Fix with AI: ' + $selectedNode?.name)}>
 				🤖 Fix with AI
 			</button>
 		</div>
