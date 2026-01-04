@@ -203,13 +203,13 @@
 		<div class="view-modes">
 			<button
 				class:active={$viewMode === 'tree'}
-				on:click={() => viewMode.set('tree')}
+				onclick={() => viewMode.set('tree')}
 			>
 				📁 Tree
 			</button>
 			<button
 				class:active={$viewMode === 'list'}
-				on:click={() => viewMode.set('list')}
+				onclick={() => viewMode.set('list')}
 			>
 				📋 List
 			</button>
@@ -241,7 +241,7 @@
 							class="route-item"
 							class:selected={$selectedRoute?.id === route.id}
 							class:has-errors={route.errors > 0}
-							on:click={() => selectRoute(route)}
+							onclick={() => selectRoute(route)}
 						>
 							<div class="route-icon">{route.type === 'page' ? '📄' : route.type === 'api' ? '🔌' : '⚙️'}</div>
 							<div class="route-info">
@@ -267,7 +267,7 @@
 			<div class="details-panel">
 				<div class="details-header">
 					<h2>{$selectedRoute.path}</h2>
-					<button class="fix-button" on:click={() => fixWithAgent($selectedRoute)}>
+					<button class="fix-button" onclick={() => fixWithAgent($selectedRoute)}>
 						🤖 Fix with Agent
 					</button>
 				</div>
@@ -363,7 +363,7 @@
 	<div class="tree-node">
 		<div
 			class="tree-node-header"
-			on:click={() => hasChildren && toggleExpanded(node.path)}
+			onclick={() => hasChildren && toggleExpanded(node.path)}
 		>
 			{#if hasChildren}
 				<span class="tree-icon">{isExpanded ? '📂' : '📁'}</span>
@@ -384,7 +384,7 @@
 						class="tree-route"
 						class:selected={selectedPath === route.path}
 						class:has-errors={route.errors > 0}
-						on:click={() => selectRoute(route)}
+						onclick={() => selectRoute(route)}
 					>
 						<span class="route-icon">{route.type === 'page' ? '📄' : '⚙️'}</span>
 						<span class="route-name">{route.path.split('/').pop()}</span>

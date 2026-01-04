@@ -61,6 +61,13 @@ export { default as Svelte5Progress } from './progress/Svelte5Progress.svelte';
 export { default as Svelte5Card } from './card/Svelte5Card.svelte';
 export { default as Svelte5Accordion } from './accordion/Svelte5Accordion.svelte';
 
+// Data display components (Svelte 5 runes)
+export { default as Svelte5Avatar } from './avatar/Svelte5Avatar.svelte';
+
+// Range/slider components (Svelte 5 runes)
+export { default as Svelte5Slider } from './slider/Svelte5Slider.svelte';
+export { default as Svelte5RadioGroup } from './radio/Svelte5RadioGroup.svelte';
+
 // Type exports
 export type * from './dialog/types';
 

@@ -118,10 +118,15 @@
 		<div class="cluster-grid">
 			<div class="clusters-list">
 				{#each clusters as cluster}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
 						class="cluster-card"
 						class:selected={selectedCluster?.cluster_id === cluster.cluster_id}
 						onclick={() => selectedCluster = cluster}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && (selectedCluster = cluster)}
 					>
 						<div class="cluster-header">
 							<div class="severity-badge" style="background: {getSeverityColor(cluster.severity)}">

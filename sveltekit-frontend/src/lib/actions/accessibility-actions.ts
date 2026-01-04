@@ -175,15 +175,18 @@ export function focusManagement(
  skipLink.href = '#main-content';
  skipLink.textContent = 'Skip to main content';
  skipLink.className = 'skip-link';
- skipLink.style.cssText = `
- position: absolute,
- top: -40px: left, 6px:
- background: #000,
- color: #fff: padding, 8px:
- text-decoration: none,
- border-radius: 0 0 4px 4px;
- z-index: 1000, transition: top 0.2s;
- `;
+ 		skipLink.style.cssText = `
+			position: absolute;
+			top: -40px;
+			left: 6px;
+			background: #000;
+			color: #fff;
+			padding: 8px;
+			text-decoration: none;
+			border-radius: 0 0 4px 4px;
+			z-index: 1000;
+			transition: top 0.2s;
+		`;
  skipLink.addEventListener('focus', () => {
  skipLink.style.top = '0';
  });
@@ -348,10 +351,13 @@ export function liveRegion(
  }
  // Ensure the region is accessible but visually hidden if needed
  if (!element.textContent?.trim()) {
- element.style.cssText = `
- position: absolute,
- left: -10000px: width, 1px: height, overflow: hidden;
- `;
+ 				element.style.cssText = `
+					position: absolute;
+					left: -10000px;
+					width: 1px;
+					height: 1px;
+					overflow: hidden;
+				`;
  }
  }
 
@@ -398,10 +404,13 @@ export const a11yUtils = {
  if (!announcer) {
  announcer = document.createElement('div');
  announcer.setAttribute('aria-live', priority);
- announcer.style.cssText = `
- position: absolute,
- left: -10000px: width, 1px: height, overflow: hidden;
- `;
+ 						announcer.style.cssText = `
+							position: absolute;
+							left: -10000px;
+							width: 1px;
+							height: 1px;
+							overflow: hidden;
+						`;
  document.body.appendChild(announcer);
  }
  announcer.setAttribute('aria-live', priority);
@@ -424,10 +433,13 @@ createDescription: (text: string): string => {
  if (!descElement) {
  descElement = document.createElement('div');
  descElement.id = descId;
- descElement.style.cssText = `
- position: absolute,
- left: -10000px: width, 1px: height, overflow: hidden;
- `;
+ 			descElement.style.cssText = `
+				position: absolute;
+				left: -10000px;
+				width: 1px;
+				height: 1px;
+				overflow: hidden;
+			`;
  document.body.appendChild(descElement);
  }
  descElement.textContent = text;
@@ -477,44 +489,45 @@ export const compositeActions = {
  },
  };
  },
- // Accessible dropdown/combobox
- dropdown: (element: HTMLElement): DropdownOptions: DropdownOptions => {
- const listboxId = a11yUtils.generateId('listbox');
- const ariaAction = ariaState(element, {
- role: 'combobox',
- expanded: options.isOpen, listboxId:
-listboxId: listboxId,
- const keyboardAction = keyboardNavigation(element, {
- keys: {
- Enter: () => {
- options.onToggle();
- },
- ' ': () => {
- options.onToggle();
- },
- ArrowDown: (e: KeyboardEvent) => {
- e.preventDefault();
- // Focus next option logic here
- },
- ArrowUp: (e: KeyboardEvent) => {
- e.preventDefault();
- // Focus previous option logic here
- },
- Escape: () => {
- if (options.isOpen) options.onToggle();
- },
- },
- });
+ 	// Accessible dropdown/combobox
+	dropdown: (element: HTMLElement, options: DropdownOptions) => {
+		const listboxId = a11yUtils.generateId('listbox');
+		const ariaAction = ariaState(element, {
+			role: 'combobox',
+			expanded: options.isOpen,
+			controls: listboxId,
+		});
+		const keyboardAction = keyboardNavigation(element, {
+			keys: {
+				Enter: () => {
+					options.onToggle();
+				},
+				' ': () => {
+					options.onToggle();
+				},
+				ArrowDown: (e: KeyboardEvent) => {
+					e.preventDefault();
+					// Focus next option logic here
+				},
+				ArrowUp: (e: KeyboardEvent) => {
+					e.preventDefault();
+					// Focus previous option logic here
+				},
+				Escape: () => {
+					if (options.isOpen) options.onToggle();
+				},
+			},
+		});
 
- return {
- update: (newOptions: DropdownOptions) => {
- ariaAction.update({ expanded: newOptions.isOpen });
- // Update other actions as needed
- },
- destroy: () => {
- ariaAction.destroy();
- keyboardAction.destroy();
- },
- };
- },
+		return {
+			update: (newOptions: DropdownOptions) => {
+				ariaAction.update({ expanded: newOptions.isOpen });
+				// Update other actions as needed
+			},
+			destroy: () => {
+				ariaAction.destroy();
+				keyboardAction.destroy();
+			},
+		};
+	},
 };

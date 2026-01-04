@@ -1,10 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/Button.svelte';
 	import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-	import Bot from 'lucide-svelte';
-	import Loader2 from 'lucide-svelte';
-	import Send from 'lucide-svelte';
-	import Users from 'lucide-svelte';
+	import { default as Bot, default as Loader2, default as Send, default as Users } from 'lucide-svelte';
 
  type ChatMessage = {
  id: string;
@@ -20,7 +17,7 @@
  let currentMessage = $state('');
  let isTyping = $state(false);
  let sessionId = $state('local-session-' + Date.now());
- let caseId = $state<string: null>(null);
+ let caseId = $state<string | null>(null);
 
  // Send message function
  async function sendMessage() {

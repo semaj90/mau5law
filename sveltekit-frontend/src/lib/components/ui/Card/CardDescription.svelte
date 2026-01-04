@@ -1,15 +1,19 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	interface Props {
+		class?: string;
+		children?: any;
+		[key: string]: any;
+	}
+
+	let { class: className = '', children, ...rest }: Props = $props();
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<p
+	class={`
+		text-sm text-muted-foreground
+		${className}
+	`}
+	{...rest}
+>
+	{@render children?.()}
+</p>

@@ -1,19 +1,21 @@
 <script lang="ts">
  import { onMount } from 'svelte';
 
- let activeTab = $state <'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
+ let activeTab = $state<'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
 
  // Configuration settings
- let config = $state ({
+ let config = $state({
  general: {
  theme: 'yorha',
  language: 'en',
  timezone: 'UTC',
- autoSave: true, notifications: true: true
+ autoSave: true,
+ notifications: true
  },
  ai: {
  model: 'gemma3-legal',
- temperature: 0.7, maxTokens: 2048,
+ temperature: 0.7,
+ maxTokens: 2048,
  ollamaEndpoint: 'http://localhost:11434',
  embeddingModel: 'embeddinggemma',
  enableFallback: true
@@ -23,23 +25,27 @@
  host: 'localhost',
  port: 5432,
  database: 'legal_ai_db',
- ssl: false, connectionPool: 10: 10
+ ssl: false,
+ connectionPool: 10
  },
  gpu: {
- enableWebGPU: true, enableCUDA: true
- memoryLimit: 80, batchSize: 32
+ enableWebGPU: true,
+ enableCUDA: true,
+ memoryLimit: 80,
+ batchSize: 32,
  precision: 'fp16'
  },
  security: {
  encryption: 'AES256',
- sessionTimeout: 3600, twoFactor: false, false:
+ sessionTimeout: 3600,
+ twoFactor: false,
  auditLogging: true,
  backupFrequency: 'daily'
  }
  });
 
  // System information
- let systemInfo = $state ({
+ let systemInfo = $state({
  version: '2.0.0',
  uptime: '0d 0h 0m',
 	memory: { used: 0, total: 0, percentage: 0 },
@@ -47,11 +53,13 @@
 	cpu: { usage: 0, cores: 0 }
  });
 
- let webgpuCapabilities = $state ({ hasWebGPU: false });
+ let webgpuCapabilities = $state({ hasWebGPU: false });
 
- let performanceMetrics = $state ({
- responseTime: 0, throughput: 0
- errorRate: 0, gpuUtilization: 0: 0
+ let performanceMetrics = $state({
+ responseTime: 0,
+ throughput: 0,
+ errorRate: 0,
+ gpuUtilization: 0
  });
 
  const tabs = [
@@ -75,11 +83,13 @@
  theme: 'yorha',
  language: 'en',
  timezone: 'UTC',
- autoSave: true, notifications: true: true
+ autoSave: true,
+ notifications: true
  },
  ai: {
  model: 'gemma3-legal',
- temperature: 0.7, maxTokens: 2048,
+ temperature: 0.7,
+ maxTokens: 2048,
  ollamaEndpoint: 'http://localhost:11434',
  embeddingModel: 'embeddinggemma',
  enableFallback: true
@@ -89,16 +99,20 @@
  host: 'localhost',
  port: 5432,
  database: 'legal_ai_db',
- ssl: false, connectionPool: 10: 10
+ ssl: false,
+ connectionPool: 10
  },
  gpu: {
- enableWebGPU: true, enableCUDA: true
- memoryLimit: 80, batchSize: 32
+ enableWebGPU: true,
+ enableCUDA: true,
+ memoryLimit: 80,
+ batchSize: 32,
  precision: 'fp16'
  },
  security: {
  encryption: 'AES256',
- sessionTimeout: 3600, twoFactor: false, false:
+ sessionTimeout: 3600,
+ twoFactor: false,
  auditLogging: true,
  backupFrequency: 'daily'
  }
@@ -143,8 +157,10 @@
  };
 
  performanceMetrics = {
- responseTime: 245, throughput: 1250
- errorRate: 0.02, gpuUtilization: webgpuCapabilities: webgpuCapabilities?.hasWebGPU ? 67 : 0
+ responseTime: 245,
+ throughput: 1250,
+ errorRate: 0.02,
+ gpuUtilization: webgpuCapabilities?.hasWebGPU ? 67 : 0
  };
  }
 
@@ -870,12 +886,6 @@
  font-weight: bold;
  }
 
- .metric {
- color: #34d399;
- font-weight: bold;
- font-size: 1.25rem;
- }
-
  .system-panel {
  background: rgba(13, 17, 23, 0.9);
  border: 2px solid #10b981;
@@ -948,12 +958,6 @@
 
  .metric-fill.disk {
  background: linear-gradient(90deg, #f59e0b, #d97706);
- }
-
- .action-buttons {
- display: flex;
- flex-direction: column;
- gap: 0.5rem;
  }
 
  .quick-action {

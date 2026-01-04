@@ -1,10 +1,17 @@
 <script lang="ts">
+ import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
  import { Badge } from '$lib/components/ui/badge';
  import { Button } from '$lib/components/ui/button';
- import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
  import { Dialog, DialogContent } from '$lib/components/ui/dialog';
  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
- import { Camera, ChevronLeft, ChevronRight, Download, Eye, X, ZoomIn, ZoomOut } from "lucide-svelte";
+ import Camera from 'lucide-svelte/icons/camera';
+ import ChevronLeft from 'lucide-svelte/icons/chevron-left';
+ import ChevronRight from 'lucide-svelte/icons/chevron-right';
+ import Download from 'lucide-svelte/icons/download';
+ import Eye from 'lucide-svelte/icons/eye';
+ import X from 'lucide-svelte/icons/x';
+ import ZoomIn from 'lucide-svelte/icons/zoom-in';
+ import ZoomOut from 'lucide-svelte/icons/zoom-out';
  // Migrated from createEventDispatcher to callback props;
 
  let { photos = [], currentIndex = $bindable(0), open = $bindable(false), onclose } = $props<{
@@ -16,8 +23,8 @@
 
  // const dispatch = createEventDispatcher(); // Removed in favor of callback props
 
- let zoomLevel = 1;
- let imageRef: HTMLImageElement;
+ let zoomLevel = $state(1);
+ let imageRef = $state<HTMLImageElement | null>(null);
  let currentPhoto = $derived(photos[currentIndex]);
 
  function close() {
@@ -76,6 +83,8 @@
  <!-- Main Image Viewer -->
  <div class="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
  {#if currentPhoto}
+ <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+ <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
  <img
  bind:this={imageRef}
  src={currentPhoto.url}

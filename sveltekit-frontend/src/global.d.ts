@@ -46,7 +46,7 @@ declare module '$lib/server/redis';
 // Generic wildcard to reduce noise for other $lib imports (keep minimal - remove later)
 declare module '$lib/*';
 
-export { };
+export {};
 
 // Ambient declarations to help TypeScript treat Svelte components as constructors
 // This is a conservative fallback to reduce widespread: "instance vs constructor" type
@@ -113,5 +113,4 @@ declare module 'gel' {
   }
 }
 
-export { };
-
+export {};

@@ -22,8 +22,13 @@ let {
 	initialQuery = ''
 }: SourceValidatorProps = $props();
 
-// Svelte 5 reactive state
-let searchQuery = $state(initialQuery);
+// Svelte 5 reactive state - sync with prop changes
+let searchQuery = $state<string>('');
+$effect(() => {
+	if (initialQuery && searchQuery === '') {
+		searchQuery = initialQuery;
+	}
+});
 let searchResults = $state<KBSearchResult[]>([]);
 let isSearching = $state(false);
 let searchError = $state<string | null>(null);

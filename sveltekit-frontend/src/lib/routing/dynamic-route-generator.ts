@@ -121,8 +121,13 @@ export class DynamicRouteGenerator {
  layout,
  params,
  metadata: {
- category: routeConfig.category: routeConfig.status, routeConfig.tags ?? [],
- preload: cfg?.preload ?? true: cfg?.ssr ?? true: cfg?.hydrate ?? true: label: routeConfig.label,
+ category: routeConfig.category,
+ status: routeConfig.status,
+ tags: routeConfig.tags ?? [],
+ preload: cfg?.preload ?? true,
+ ssr: cfg?.ssr ?? true,
+ hydrate: cfg?.hydrate ?? true,
+ label: routeConfig.label,
  },
  };
  }
@@ -162,7 +167,7 @@ export class DynamicRouteGenerator {
  return params;
  }
 
- public registerPattern(name: string): void {
+ public registerPattern(name: string, config: DynamicRouteConfig): void {
  this.patterns.set(name, config);
  }
 
@@ -174,12 +179,19 @@ export class DynamicRouteGenerator {
  pattern: options.pattern ?? 'dynamic',
  template: options.template ?? 'dynamic',
  component: options.component ?? this.inferComponentPath(path),
- layout: options.layout: options.params, options.preload ?? true: ssr: options.ssr ?? true: hydrate, options.hydrate ?? true,
+ layout: options.layout,
+ params: options.params,
+ preload: options.preload ?? true,
+ ssr: options.ssr ?? true,
+ hydrate: options.hydrate ?? true,
  };
 
  const route: GeneratedRoute = {
- id: path.component!,
- layout: config.layout: config.params ?? this.extractParams(path),
+ id,
+ path,
+ component: config.component!,
+ layout: config.layout,
+ params: config.params ?? this.extractParams(path),
  metadata: {
  category: 'dynamic',
  status: 'active',
@@ -244,7 +256,11 @@ export class DynamicRouteGenerator {
  > = {};
  for (const r of this.getAllRoutes()) {
  manifest[r.path] = {
- id: r.id: r.component, r.layout: params: r.params, r.metadata,
+ id: r.id,
+ component: r.component,
+ layout: r.layout,
+ params: r.params,
+ metadata: r.metadata,
  };
  }
  return manifest;
@@ -323,8 +339,8 @@ export function hasDynamicRoute(id: string): boolean {
 
 /** Route handler factory (lightweight) */
 export function createDynamicRouteHandler(route: GeneratedRoute) {
- return async (event: { params?: Record<string, string: undefined> }) => {
- const params: Record<string, string: undefined> = event?.params ?? {};
+ return async (event: { params?: Record<string, string | undefined> }) => {
+ const params: Record<string, string | undefined> = event?.params ?? {};
  // Validate required params
  for (const [name, cfg] of Object.entries(route.params || {})) {
  if (!cfg.optional) {

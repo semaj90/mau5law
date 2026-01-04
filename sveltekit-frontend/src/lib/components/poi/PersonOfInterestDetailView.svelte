@@ -159,7 +159,7 @@
  <Button
  variant="outline"
  size="sm"
- on:click={() => onEdit(poi)}
+ onclick={() => onEdit(poi)}
  class="bg-slate-700 border-slate-600 hover:bg-slate-600"
  >
  <Edit class="w-4 h-4 mr-2" />

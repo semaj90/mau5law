@@ -254,7 +254,7 @@
 					<input
 						type="text"
 						bind:value={searchQuery}
-						on:keydown={e => e.key === 'Enter' && search()}
+						onkeydown={e => e.key === 'Enter' && search()}
 						placeholder="Search files, errors, symbols..."
 						class="search-input"
 					/>

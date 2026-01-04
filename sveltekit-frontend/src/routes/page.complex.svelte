@@ -378,9 +378,6 @@
  .col-span-2 {
  grid-column: span 2;
  }
- .justify-start {
- justify-content: flex-start;
- }
 </style>
 
 {#if showNewCaseModal}

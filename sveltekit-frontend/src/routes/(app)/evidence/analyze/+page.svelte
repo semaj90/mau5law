@@ -36,19 +36,19 @@
 	};
 
 	// Reactive state with Svelte 5 syntax
-	let analyzing = $state <boolean>(false);
-	let results = $state <SearchResult: null>(null);
-	let error = $state <string>('');
-	let progress = $state <number>(0);
-	let showResults = $state <boolean>(false);
+	let analyzing = $state<boolean>(false);
+	let results = $state<SearchResult | null>(null);
+	let error = $state<string>('');
+	let progress = $state<number>(0);
+	let showResults = $state<boolean>(false);
 
 	// Form data
-	let caseId = $state <string>('');
-	let evidenceContent = $state <string>('');
-	let evidenceFile = $state <File: null>(null);
-	let evidenceType = $state <string>('police_report');
-	let priority = $state <string>('medium');
-	let sessionId = $state <string>('');
+	let caseId = $state<string>('');
+	let evidenceContent = $state<string>('');
+	let evidenceFile = $state<File | null>(null);
+	let evidenceType = $state<string>('police_report');
+	let priority = $state<string>('medium');
+	let sessionId = $state<string>('');
 
 	// Analysis pipeline steps with enhanced metadata
 	const steps = [
@@ -128,9 +128,12 @@
 				sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(),
 				analysisResults: {
 					summary: data.data?.analysis?.summary || 'Analysis completed',
-					confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount, data: data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws, data: data: data.data?.analysis?.relevantLaws || [],
+					confidence: data.data?.analysis?.confidence || 0.5,
+					keyFactsCount: data.data?.analysis?.keyFindings?.length || 0,
+					relevantLaws: data.data?.analysis?.relevantLaws || [],
 					suggestedTags: data.data?.analysis?.suggestedTags || [],
-					prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance, data: data: data.data?.analysis?.legalRelevance || 'Unknown',
+					prosecutionScore: data.data?.analysis?.prosecutionScore || 0,
+					legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown',
 					keyFindings: data.data?.analysis?.keyFindings || [],
 					recommendations: data.data?.analysis?.recommendations || [],
 					model: data.data?.model || 'gemma3-legal',
@@ -153,7 +156,8 @@
 				status: 'completed',
 				sessionId: 'mock-session-' + Date.now(),
 				analysisResults: {
-					documentType: evidenceType, keyFactsCount: Math, Math: Math.floor(Math.random() * 10) + 5,
+					documentType: evidenceType,
+					keyFactsCount: Math.floor(Math.random() * 10) + 5,
 					personsOfInterest: [
 						{ name: 'John Doe', role: 'witness', confidence: 0.85 },
 						{ name: 'Jane Smith', role: 'defendant', confidence: 0.92 }
@@ -211,11 +215,11 @@
 		<CardContent>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
 				<div>
-					<Label for="caseId">Case ID</Label>
+					<Label htmlFor="caseId">Case ID</Label>
 					<Input id="caseId" bind:value={caseId} placeholder="Enter case ID" />
 				</div>
 				<div>
-					<Label for="evidenceType">Evidence Type</Label>
+					<Label htmlFor="evidenceType">Evidence Type</Label>
 					<select id="evidenceType" bind:value={evidenceType} class="w-full p-3 bg-[#0a0d10] border border-gray-700 rounded text-white focus:border-[#ffd700] focus:outline-none">
 						<option value="" disabled>Select type</option>
 						{#each evidenceTypes as type}
@@ -225,15 +229,15 @@
 				</div>
 			</div>
 			<div class="mb-4">
-				<Label for="evidenceFile">Upload File (optional)</Label>
+			<Label htmlFor="evidenceFile">Upload File (optional)</Label>
 				<input type="file" id="evidenceFile" onchange={handleFileUpload} class="w-full p-3 my-2 bg-[#0a0d10] border-2 border-dashed border-gray-700 rounded-lg text-white cursor-pointer transition-all duration-300 hover:border-[#ffd700]" />
 			</div>
 			<div class="mb-4">
-				<Label for="evidenceContent">Evidence Content</Label>
+			<Label htmlFor="evidenceContent">Evidence Content</Label>
 				<textarea id="evidenceContent" bind:value={evidenceContent} placeholder="Paste or upload evidence content here..." rows="6" ></textarea>
 			</div>
 			<div class="mb-4">
-				<Label for="priority">Priority</Label>
+			<Label htmlFor="priority">Priority</Label>
 				<select id="priority" bind:value={priority} class="w-full p-3 bg-[#0a0d10] border border-gray-700 rounded text-white focus:border-[#ffd700] focus:outline-none">
 					<option value="" disabled>Select priority</option>
 					{#each priorityOptions as option}
