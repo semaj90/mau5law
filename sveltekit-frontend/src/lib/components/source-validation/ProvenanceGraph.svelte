@@ -20,8 +20,8 @@ let {
 	height = 600
 }: ProvenanceGraphProps = $props();
 
-// SVG container reference
-let svgContainer: SVGSVGElement;
+// SVG container reference - using $state for element binding in Svelte 5
+let svgContainer = $state<SVGSVGElement | undefined>(undefined);
 
 // ============================================================================
 // D3 Force Graph Rendering
@@ -148,8 +148,8 @@ onMount(() => {
 		nodeLabel.attr('x', (d: any) => d.x).attr('y', (d: any) => d.y);
 	});
 
-	// Drag behavior
-	function drag(simulation: d3.Simulation<any, any>) {
+	// Drag behavior - using any type to avoid d3 namespace issues
+	function drag(simulation: any) {
 		function dragstarted(event: any) {
 			if (!event.active) simulation.alphaTarget(0.3).restart();
 			event.subject.fx = event.subject.x;

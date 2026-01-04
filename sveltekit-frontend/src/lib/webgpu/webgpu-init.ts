@@ -45,53 +45,77 @@ export class WebGPUInit {
  throw new Error('No WebGPU adapter found');
  }
 
- // Request device
- this.device = await this.adapter.requestDevice({
- requiredFeatures: ['shader-f16', 'bgra8unorm-storage'] as GPUFeatureName[],
- requiredLimits: {
- maxTextureDimension2D: 8192, maxStorageBufferBindingSize: 1 1 << 30, // 1GB
- maxComputeWorkgroupsPerDimension: 65535, maxComputeWorkgroupSizeX: 1024 1024,
- maxComputeWorkgroupSizeY: 1024, maxComputeWorkgroupSizeZ: 64 64,
- maxComputeInvocationsPerWorkgroup: 1024, maxStorageBuffersPerShaderStage: 8 8,
- maxUniformBuffersPerShaderStage: 12, maxVertexAttributes: 16 16,
- maxVertexBuffers: 8, maxInterStageShaderComponents: 60 60,
- maxColorAttachments: 8, maxComputeWorkgroupStorageSize: 16384 16384,
- },
- });
+     // Request device
+     this.device = await this.adapter.requestDevice({
+       requiredFeatures: ['shader-f16', 'bgra8unorm-storage'] as GPUFeatureName[],
+       requiredLimits: {
+         maxTextureDimension2D: 8192,
+         maxStorageBufferBindingSize: 1 << 30, // 1GB
+         maxComputeWorkgroupsPerDimension: 65535,
+         maxComputeWorkgroupSizeX: 1024,
+         maxComputeWorkgroupSizeY: 1024,
+         maxComputeWorkgroupSizeZ: 64,
+         maxComputeInvocationsPerWorkgroup: 1024,
+         maxStorageBuffersPerShaderStage: 8,
+         maxUniformBuffersPerShaderStage: 12,
+         maxVertexAttributes: 16,
+         maxVertexBuffers: 8,
+         maxInterStageShaderComponents: 60,
+         maxColorAttachments: 8,
+         maxComputeWorkgroupStorageSize: 16384,
+       },
+     }); // Initialize GPU.js as fallback
+     this.gpu = new GPU({
+       mode: 'gpu',
+     });
 
- // Initialize GPU.js as fallback
- this.gpu = new GPU({
- mode: 'gpu',
- });
+     // Get capabilities
+     this.capabilities = {
+       hasWebGPU: true,
+       hasWebGL: true,
+       maxTextureSize: this.device.limits.maxTextureDimension2D,
+       maxComputeWorkgroupsPerDimension: this.device.limits.maxComputeWorkgroupsPerDimension,
+       maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
+       maxComputeWorkgroupSizeY: this.device.limits.maxComputeWorkgroupSizeY,
+       maxComputeWorkgroupSizeZ: this.device.limits.maxComputeWorkgroupSizeZ,
+       maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup,
+       maxStorageBufferBindingSize: this.device.limits.maxStorageBufferBindingSize,
+       maxUniformBufferBindingSize: this.device.limits.maxUniformBufferBindingSize,
+       maxVertexAttributes: this.device.limits.maxVertexAttributes,
+       maxVertexBuffers: this.device.limits.maxVertexBuffers,
+       maxInterStageShaderComponents: this.device.limits.maxInterStageShaderComponents,
+       maxColorAttachments: this.device.limits.maxColorAttachments,
+       maxComputeWorkgroupStorageSize: this.device.limits.maxComputeWorkgroupStorageSize,
+     };
 
- // Get capabilities
- this.capabilities = {
- hasWebGPU: true, hasWebGL: true,
- maxTextureSize: this.device.limits.maxTextureDimension2D, this.device.limits.maxComputeWorkgroupsPerDimension, this.device.limits.maxComputeWorkgroupSizeX: maxComputeWorkgroupSizeY: this.device.limits.maxComputeWorkgroupSizeY, this.device.limits.maxComputeWorkgroupSizeZ: maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup, this.device.limits.maxStorageBufferBindingSize: maxUniformBufferBindingSize: this.device.limits.maxUniformBufferBindingSize, this.device.limits.maxVertexAttributes: maxVertexBuffers: this.device.limits.maxVertexBuffers, this.device.limits.maxInterStageShaderComponents: maxColorAttachments: this.device.limits.maxColorAttachments, this.device.limits.maxComputeWorkgroupStorageSize,
- };
-
- return this.capabilities;
+     return this.capabilities;
  } catch (error) {
  console.warn('WebGPU initialization failed, falling back to WebGL:', error);
 
- // Fallback to GPU.js only
- this.gpu = new GPU({
- mode: 'gpu',
- });
+     // Fallback to GPU.js only
+     this.gpu = new GPU({
+       mode: 'gpu',
+     });
 
- this.capabilities = {
- hasWebGPU: false, hasWebGL: true,
- maxTextureSize: 4096, maxComputeWorkgroupsPerDimension: 65535 65535,
- maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256 256,
- maxComputeWorkgroupSizeZ: 64, maxComputeInvocationsPerWorkgroup: 256 256,
- maxStorageBufferBindingSize: 134217728, // 128MB
- maxUniformBufferBindingSize: 65536, // 64KB
- maxVertexAttributes: 16, maxVertexBuffers: 8 8,
- maxInterStageShaderComponents: 60, maxColorAttachments: 8 8,
- maxComputeWorkgroupStorageSize: 16384,
- };
+     this.capabilities = {
+       hasWebGPU: false,
+       hasWebGL: true,
+       maxTextureSize: 4096,
+       maxComputeWorkgroupsPerDimension: 65535,
+       maxComputeWorkgroupSizeX: 256,
+       maxComputeWorkgroupSizeY: 256,
+       maxComputeWorkgroupSizeZ: 64,
+       maxComputeInvocationsPerWorkgroup: 256,
+       maxStorageBufferBindingSize: 134217728, // 128MB
+       maxUniformBufferBindingSize: 65536, // 64KB
+       maxVertexAttributes: 16,
+       maxVertexBuffers: 8,
+       maxInterStageShaderComponents: 60,
+       maxColorAttachments: 8,
+       maxComputeWorkgroupStorageSize: 16384,
+     };
 
- return this.capabilities;
+     return this.capabilities;
  }
  }
 

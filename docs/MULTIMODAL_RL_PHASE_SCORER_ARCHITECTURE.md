@@ -386,16 +386,69 @@ for batch in dataloader:
 | Action accuracy | >80% | 🔄 Training |
 | Error reduction | >40% | 🔄 Testing |
 
----
 
 ## 🎯 **Next Steps**
-
 1. ✅ **Feature Extractor** - Complete (1024-d)
 2. ✅ **Go SIMD Service** - Ready (needs /phase/score endpoint)
-3. 🔄 **C++ Scorer** - Need to build
-4. 🔄 **Training Pipeline** - Collect data from Phase runs
-5. 🔄 **Integration** - Wire to FastMCP + ts-morph
+3. ✅ **Migration Metadata** - Enhanced Qdrant tags (svelte4→5, melt-ui→bits-ui, route consolidation)
+4. 🔄 **C++ Scorer** - Need to build
+5. 🔄 **Training Pipeline** - Collect data from Phase runs
+6. 🔄 **Integration** - Wire to FastMCP + ts-morph
 
----
+## 🏷️ **Enhanced Migration Metadata (Phase 89)**
+
+The code unit indexer now tracks migration flags for targeted fixes:
+
+**Svelte 4 → Svelte 5**
+- `svelte4_props` - Files using `export let`
+- `svelte4_events` - Files using `createEventDispatcher`
+- `svelte4_reactivity` - Files using `$:` reactive statements
+- `svelte4_module_context` - Files using `<script context="module">`
+
+**UI Library Migrations**
+- `melt_ui_legacy` - Files importing from `melt-ui` or `@melt-ui`
+- `bits_ui_v2` - Files already using Bits-UI v2
+- `unocss_classes` - Files using UnoCSS utility classes
+
+**Route Consolidation**
+- `route_consolidation_cases` - Cases route patterns
+- `route_consolidation_evidence` - Evidence route patterns
+- `route_consolidation_command` - Command center patterns
+
+**Modal Architecture**
+- `modal_card_component` - Components with Dialog/Modal patterns
+- `modal_card_structure` - Files in modals/ or dialogs/ directories
+
+### Query Migrations
+```bash
+# Find all Svelte 4 files
+node scripts/phase89-migration-query.mjs --svelte5
+
+# Find Melt-UI files
+node scripts/phase89-migration-query.mjs --bits-ui
+
+# Find route consolidation patterns
+node scripts/phase89-migration-query.mjs --routes
+
+# Run all queries
+node scripts/phase89-migration-query.mjs --all
+```
+
+### Qdrant Filters
+```javascript
+// Files needing Svelte 5 migration
+{
+  filter: {
+    must: [{ key: 'needs_svelte5_migration', match: { value: true } }]
+  }
+}
+
+// Files with specific migration flag
+{
+  filter: {
+    must: [{ key: 'migration_flags', match: { any: ['svelte4_props'] } }]
+  }
+}
+```
 
 **You now have a complete multi-modal RL/QLoRA phase scorer architecture!** 🎉

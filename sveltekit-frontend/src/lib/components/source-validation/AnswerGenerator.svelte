@@ -136,9 +136,15 @@ $effect(() => {
 	{:else if answer}
 		<div class="answer-content">
 			<!-- Generated Answer -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
 				class="answer-text p-6 bg-white border rounded-lg mb-6 prose max-w-none"
 				onclick={handleCitationClick}
+				onkeydown={(e) => { if (e.key === 'Enter') handleCitationClick(e as unknown as MouseEvent); }}
+				role="article"
+				tabindex="0"
+				aria-label="Generated answer with clickable citations"
 			>
 				{@html renderAnswerWithClickableCitations(answer)}
 			</div>

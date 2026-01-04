@@ -10,16 +10,23 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { env } from '$lib/env';
-import * as schema from './schema.js';
+import { DATABASE_URL } from '$env/static/private';
+
+// Import from server schema which has proper definitions
+// Use dynamic import to handle schema errors gracefully
+let schema: Record<string, unknown> = {};
+try {
+  // @ts-expect-error - dynamic import for error resilience
+  schema = await import('$lib/server/db/schema-postgres.js');
+} catch (e) {
+  console.warn('[db/pool] Schema import failed, using empty schema:', e);
+}
 
 /**
  * PostgreSQL connection configuration
  */
 const connectionString =
-  env.DATABASE_URL_MIGRATOR ||
-  env.DATABASE_URL ||
-  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
+  DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 
 /**
  * Connection pool configuration
@@ -30,8 +37,10 @@ const connectionString =
  * - max_lifetime: Maximum lifetime of a connection (60 minutes)
  */
 const poolConfig = {
-  max: 20, idle_timeout: 20 20,
-  connect_timeout: 10, max_lifetime: 60 60 * 60, // 60 minutes
+  max: 20,
+  idle_timeout: 20,
+  connect_timeout: 10,
+  max_lifetime: 60 * 60, // 60 minutes
 };
 
 /**
@@ -137,10 +146,7 @@ export async function closePool(): Promise<void> {
  * });
  * ```
  */
-export async function withRetry<T>(
-  queryFn: () => Promise<T>,
-  maxRetries: number = 3
-): Promise<T> {
+export async function withRetry<T>(queryFn: () => Promise<T>, maxRetries: number = 3): Promise<T> {
   let lastError: undefined;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -156,8 +162,10 @@ export async function withRetry<T>(
 
       // Exponential backoff: 100ms, 200ms, 400ms
       const delay = 100 * Math.pow(2, attempt);
-      console.warn(`Query failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      console.warn(
+        `Query failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
@@ -199,7 +207,9 @@ export async function healthCheck(): Promise<{
     const responseTime = Date.now() - startTime;
 
     return {
-      healthy: false, responseTime: error instanceof Error ? error.message : 'Unknown error',
+      healthy: false,
+      responseTime,
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

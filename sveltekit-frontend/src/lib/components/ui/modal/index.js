@@ -1,1 +1,2 @@
-export { Modal } from './Modal.svelte';
+// Modal component exports
+export { default as Modal } from './Modal.svelte';

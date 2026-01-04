@@ -1,15 +1,47 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+	import { getContext } from 'svelte';
+	import type { DropdownMenuContext, DropdownMenuTriggerProps } from './types';
+
+	interface Props extends DropdownMenuTriggerProps {
+		children?: Snippet;
+	}
+
+	let {
+		children,
+		class: className = '',
+		disabled = false,
+		asChild = false,
+	}: Props = $props();
+
+	const menuContext = getContext<DropdownMenuContext>('dropdown-menu');
+
+	function handleClick(e: MouseEvent) {
+		e.stopPropagation();
+		if (!disabled) {
+			menuContext?.toggle();
+		}
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') && !disabled) {
+			e.preventDefault();
+			menuContext?.setOpen(true);
+		}
+	}
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<button
+	type="button"
+	aria-haspopup="menu"
+	aria-expanded={menuContext?.open}
+	{disabled}
+	onclick={handleClick}
+	onkeydown={handleKeydown}
+	class="inline-flex items-center justify-center {className}"
+	data-state={menuContext?.open ? 'open' : 'closed'}
+>
+	{#if children}
+		{@render children()}
+	{/if}
+</button>

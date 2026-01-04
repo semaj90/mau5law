@@ -1,9 +1,7 @@
 <script lang="ts">
  import { goto } from '$app/navigation';
- import { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
  import appStore, { appActions } from '$lib/stores/app-store';
  import { onDestroy, onMount } from 'svelte';
- // YoRHaModalComponent is being replaced by bits-ui Dialog
 
  let selectedSection = $state('command-center');
  let showNewCaseModal = $state(false);
@@ -14,7 +12,7 @@
  });
 
  let loading = $state(true);
- let error: string: null = $state(null);
+ let error: string | null = $state(null);
 
  const sections = $state([
  { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -28,7 +26,7 @@
  let recentCases = $state([]);
 
  // Subscribe to store
- let appState = $state({});
+ let appState: { cases?: any[]; evidence?: any[] } = $state({});
  $effect(() => {
  const unsubscribe = appStore.subscribe(state => {
  appState = state;
@@ -47,11 +45,13 @@
  // Get cases from store and filter for recent ones
  const allCases = appState?.cases || [];
  recentCases = allCases
- .sort((a: any, b: any, any): any => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+ .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
  .slice(0, 10)
  .map((caseItem: any) => ({
- id: caseItem.id || caseItem.caseId: title, caseItem: caseItem: caseItem.title || caseItem.name || 'Untitled Case',
- caseNumber: caseItem.caseNumber || caseItem.id: priority, caseItem: caseItem: caseItem.priority || 'medium',
+ id: caseItem.id || caseItem.caseId,
+ title: caseItem.title || caseItem.name || 'Untitled Case',
+ caseNumber: caseItem.caseNumber || caseItem.id,
+ priority: caseItem.priority || 'medium',
  createdBy: caseItem.createdBy || 'System',
  createdByLastName: caseItem.createdByLastName || '',
  createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
@@ -101,7 +101,7 @@
  evidenceInsights = evidence
  .filter((item: any) => item.analysis || item.aiAnalyzed)
  .slice(0, 5)
- .map((item: any, index: number, number): number => ({
+ .map((item: any, index: number) => ({
  id: `insight-${item.id || index}`,
  label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
  summary: item.analysis || item.summary || 'AI analysis completed'
@@ -161,7 +161,7 @@
  selectedSection = sectionId;
  }
 
- function priorityBadge(priority: string: undefined) {
+ function priorityBadge(priority: string | undefined) {
  switch (priority) {
  case 'high':
  return 'border-red-500/60 bg-red-500/20 text-red-100';
@@ -331,21 +331,26 @@
 </div>
 
 {#if showNewCaseModal}
- <Root bind:open={showNewCaseModal}>
- <Overlay
- class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out
- data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
- />
- <Content
- class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4
- border border-slate-700 bg-black/60 p-6 shadow-lg duration-200 data-[state=open]:animate-in
- data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
- data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2
- data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2
- data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full"
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div
+ class="fixed inset-0 z-50 bg-black/80 animate-in fade-in-0"
+ onclick={cancelNewCase}
+ role="button"
+ tabindex="0"
+ aria-label="Close dialog"
+>
+ <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_noninteractive_element_interactions -->
+ <div
+ class="fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4
+ border border-slate-700 bg-slate-900 p-6 shadow-lg duration-200 animate-in fade-in-0 zoom-in-95 sm:rounded-lg md:w-full"
+ onclick={(e) => e.stopPropagation()}
+ role="dialog"
+ aria-modal="true"
+ aria-labelledby="dialog-title"
+ tabindex="-1"
  >
  <div class="space-y-4">
- <h2 class="text-xl font-semibold text-slate-100">Create New Case</h2>
+ <h2 id="dialog-title" class="text-xl font-semibold text-slate-100">Create New Case</h2>
  <p class="text-sm text-slate-300">
  Fill in the details for the new case.
  </p>
@@ -406,8 +411,11 @@
  </button>
  </div>
  </form>
- <Close
- class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+ <button
+ type="button"
+ class="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+ onclick={cancelNewCase}
+ aria-label="Close"
  >
  <svg
  xmlns="http://www.w3.org/2000/svg"
@@ -421,13 +429,13 @@
  stroke-linejoin="round"
  class="h-4 w-4"
  >
- <path d="M18 6L6 18" ></path>
- <path d="M6 6L18 18" ></path>
+ <path d="M18 6L6 18"></path>
+ <path d="M6 6L18 18"></path>
  </svg>
  <span class="sr-only">Close</span>
- </Close>
- </Content>
- </Root>
+ </button>
+ </div>
+</div>
 {/if}
 
 

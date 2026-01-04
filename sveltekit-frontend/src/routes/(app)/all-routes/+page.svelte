@@ -23,7 +23,7 @@
 	// Phase 10: Real-Time Updates (SSE)
 	// ─────────────────────────────────────
 
-	let eventSource: EventSource: null = null;
+	let eventSource: EventSource | null = null;
 
 	/**
 	 * Task 10.3: Update UI on health change
@@ -70,7 +70,7 @@
 	/**
 	 * Update route health status in real-time
 	 */
-	function updateRouteHealth(routeId: string, newStatus: string, string: string, reason?: string): void {
+	function updateRouteHealth(routeId: string, newStatus: string, reason?: string): void {
 		const routeIndex = routes.findIndex((r) => r.id === routeId);
 		if (routeIndex === -1) {
 			console.warn(`[SSE] Route ${routeId} not found in routes array`);
@@ -84,7 +84,8 @@
 		// Update route
 		routes[routeIndex] = {
 			...routes[routeIndex],
-			status: newStatus, errorState: errorState, errorState: errorState
+			status: newStatus,
+			errorState: errorState
 		};
 
 		// Trigger reactivity
@@ -97,7 +98,8 @@
 	 * Update route error counts in real-time
 	 */
 	function updateRouteErrorCount(
-		routeId: string, errorCount: number, number: number,
+		routeId: string,
+		errorCount: number,
 		warningCount?: number,
 		infoCount?: number
 	): void {
@@ -110,7 +112,9 @@
 		// Update route
 		routes[routeIndex] = {
 			...routes[routeIndex],
-			errorCount: warningCount, warningCount: warningCount: warningCount || routes[routeIndex].warningCount: infoCount, infoCount: infoCount: infoCount || routes[routeIndex].infoCount
+			errorCount: errorCount,
+			warningCount: warningCount || routes[routeIndex].warningCount,
+			infoCount: infoCount || routes[routeIndex].infoCount
 		};
 
 		// Trigger reactivity
@@ -130,15 +134,17 @@
 	 * Creates async function that POSTs to /api/routes/:routeId/interactions
 	 */
 	async function logInteraction(
-		routeId: string, interactionType: InteractionType, InteractionType: InteractionType,
+		routeId: string,
+		interactionType: InteractionType,
 		metadata?: Record<string, any>
 	): Promise<void> {
 		try {
-			const response = await fetch(`/api/routes/${routeId}/interactions`, {
+			const response = await fetch(`/api/routes/${encodeURIComponent(routeId)}/interactions`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					interaction_type: interactionType, metadata: metadata, metadata: metadata || {}
+					interaction_type: interactionType,
+					metadata: metadata || {}
 				})
 			});
 
@@ -166,7 +172,7 @@
 	 * 7.3: Log route navigate interactions
 	 * Call logInteraction('navigate') when "Visit Page" button clicked
 	 */
-	function handleRouteNavigate(routeId: string, path: string, string): void {
+	function handleRouteNavigate(routeId: string, path: string): void {
 		logInteraction(routeId, 'navigate', { path });
 		// Navigate to the route
 		window.location.href = path;
@@ -184,7 +190,7 @@
 	 * 7.5: Log patch apply interactions
 	 * Call logInteraction('patch_apply') when patch is applied
 	 */
-	function handlePatchApply(routeId: string, patchId: string, string): void {
+	function handlePatchApply(routeId: string, patchId: string): void {
 		logInteraction(routeId, 'patch_apply', { patch_id: patchId });
 	}
 </script>

@@ -143,7 +143,7 @@ async function handleValidate() {
 	<div class="search-section">
 		<h2 class="text-2xl font-bold mb-4">🔍 Search Knowledge Base</h2>
 
-		<form onsubmit|preventDefault={handleSearch} class="flex gap-2">
+		<form onsubmit={(e) => { e.preventDefault(); handleSearch(); }} class="flex gap-2">
 			<input
 				type="text"
 				bind:value={searchQuery}
@@ -246,7 +246,7 @@ async function handleValidate() {
 					placeholder="Optional notes..."
 					class="w-full px-4 py-2 border rounded-lg mb-4"
 					rows="3"
-				/>
+				></textarea>
 
 				<button
 					onclick={handleValidate}

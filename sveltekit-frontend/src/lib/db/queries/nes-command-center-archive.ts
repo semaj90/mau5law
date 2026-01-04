@@ -22,32 +22,33 @@ import { getDb } from '../pool.js';
  * @returns Paginated archived error clusters
  */
 export async function getArchivedErrorClusters(
-	routeId: string,
-	options: {
-		limit?: number;
-		offset?: number;
-		startDate?: Date;
-		endDate?: Date;
-	} = {}
+  routeId: string,
+  options: {
+    limit?: number;
+    offset?: number;
+    startDate?: Date;
+    endDate?: Date;
+  } = {}
 ) {
-	const db = getDb();
-	const { limit = 50, offset = 0, startDate, endDate } = options;
+  const db = getDb();
+  const { limit = 50, offset = 0, startDate, endDate } = options;
 
-	// Build WHERE conditions
-	const conditions = [sql`route_id = ${routeId}`];
+  // Build WHERE conditions
+  const conditions = [sql`route_id = ${routeId}`];
 
-	if (startDate) {
-		conditions.push(sql`archived_at >= ${startDate}`);
-	}
+  if (startDate) {
+    conditions.push(sql`archived_at >= ${startDate}`);
+  }
 
-	if (endDate) {
-		conditions.push(sql`archived_at <= ${endDate}`);
-	}
+  if (endDate) {
+    conditions.push(sql`archived_at <= ${endDate}`);
+  }
 
-	const whereClause = conditions.length > 1 ? sql`${sql.join(conditions, sql` AND `)}` : conditions[0];
+  const whereClause =
+    conditions.length > 1 ? sql`${sql.join(conditions, sql` AND `)}` : conditions[0];
 
-	// Query archived error clusters
-	const result = await db.execute(sql`
+  // Query archived error clusters
+  const result = await db.execute(sql`
     SELECT
       id,
       route_id,
@@ -77,21 +78,22 @@ export async function getArchivedErrorClusters(
     OFFSET ${offset}
   `);
 
-	// Get total count
-	const countResult = await db.execute(sql`
+  // Get total count
+  const countResult = await db.execute(sql`
     SELECT COUNT(*) as total
     FROM error_cluster_archive
     WHERE ${whereClause}
   `);
 
-	const total = Number(countResult.rows[0]?.total || 0);
+  const total = Number(countResult.rows[0]?.total || 0);
 
-	return {
-		data: result.rows,
-		total,
-		limit,
-		offset: hasMore + limit < total,
-	};
+  return {
+    data: result.rows,
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total,
+  };
 }
 
 /**
@@ -102,37 +104,38 @@ export async function getArchivedErrorClusters(
  * @returns Paginated archived interaction logs
  */
 export async function getArchivedInteractions(
-	routeId: string,
-	options: {
-		limit?: number;
-		offset?: number;
-		startDate?: Date;
-		endDate?: Date;
-		interactionType?: string;
-	} = {}
+  routeId: string,
+  options: {
+    limit?: number;
+    offset?: number;
+    startDate?: Date;
+    endDate?: Date;
+    interactionType?: string;
+  } = {}
 ) {
-	const db = getDb();
-	const { limit = 50, offset = 0, startDate, endDate, interactionType } = options;
+  const db = getDb();
+  const { limit = 50, offset = 0, startDate, endDate, interactionType } = options;
 
-	// Build WHERE conditions
-	const conditions = [sql`route_id = ${routeId}`];
+  // Build WHERE conditions
+  const conditions = [sql`route_id = ${routeId}`];
 
-	if (startDate) {
-		conditions.push(sql`archived_at >= ${startDate}`);
-	}
+  if (startDate) {
+    conditions.push(sql`archived_at >= ${startDate}`);
+  }
 
-	if (endDate) {
-		conditions.push(sql`archived_at <= ${endDate}`);
-	}
+  if (endDate) {
+    conditions.push(sql`archived_at <= ${endDate}`);
+  }
 
-	if (interactionType) {
-		conditions.push(sql`interaction_type = ${interactionType}`);
-	}
+  if (interactionType) {
+    conditions.push(sql`interaction_type = ${interactionType}`);
+  }
 
-	const whereClause = conditions.length > 1 ? sql`${sql.join(conditions, sql` AND `)}` : conditions[0];
+  const whereClause =
+    conditions.length > 1 ? sql`${sql.join(conditions, sql` AND `)}` : conditions[0];
 
-	// Query archived interactions
-	const result = await db.execute(sql`
+  // Query archived interactions
+  const result = await db.execute(sql`
     SELECT
       id,
       route_id,
@@ -156,21 +159,22 @@ export async function getArchivedInteractions(
     OFFSET ${offset}
   `);
 
-	// Get total count
-	const countResult = await db.execute(sql`
+  // Get total count
+  const countResult = await db.execute(sql`
     SELECT COUNT(*) as total
     FROM route_interaction_log_archive
     WHERE ${whereClause}
   `);
 
-	const total = Number(countResult.rows[0]?.total || 0);
+  const total = Number(countResult.rows[0]?.total || 0);
 
-	return {
-		data: result.rows,
-		total,
-		limit,
-		offset: hasMore + limit < total,
-	};
+  return {
+    data: result.rows,
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total,
+  };
 }
 
 /**
@@ -184,19 +188,19 @@ export async function getArchivedInteractions(
  * @returns Combined error clusters from both tables
  */
 export async function getCombinedErrorClusters(
-	routeId: string,
-	options: {
-		limit?: number;
-		offset?: number;
-		includeArchived?: boolean;
-	} = {}
+  routeId: string,
+  options: {
+    limit?: number;
+    offset?: number;
+    includeArchived?: boolean;
+  } = {}
 ) {
-	const db = getDb();
-	const { limit = 50, offset = 0, includeArchived = false } = options;
+  const db = getDb();
+  const { limit = 50, offset = 0, includeArchived = false } = options;
 
-	if (!includeArchived) {
-		// Only query main table
-		const result = await db.execute(sql`
+  if (!includeArchived) {
+    // Only query main table
+    const result = await db.execute(sql`
       SELECT
         id,
         route_id,
@@ -226,25 +230,26 @@ export async function getCombinedErrorClusters(
       OFFSET ${offset}
     `);
 
-		const countResult = await db.execute(sql`
+    const countResult = await db.execute(sql`
       SELECT COUNT(*) as total
       FROM error_cluster
       WHERE route_id = ${routeId}
         AND archived_at IS NULL
     `);
 
-		const total = Number(countResult.rows[0]?.total || 0);
+    const total = Number(countResult.rows[0]?.total || 0);
 
-		return {
-			data: result.rows,
-			total,
-			limit,
-			offset: hasMore + limit < total,
-		};
-	}
+    return {
+      data: result.rows,
+      total,
+      limit,
+      offset,
+      hasMore: offset + limit < total,
+    };
+  }
 
-	// Query both tables and combine
-	const result = await db.execute(sql`
+  // Query both tables and combine
+  const result = await db.execute(sql`
     (
       SELECT
         id,
@@ -302,22 +307,23 @@ export async function getCombinedErrorClusters(
     OFFSET ${offset}
   `);
 
-	// Get combined count
-	const countResult = await db.execute(sql`
+  // Get combined count
+  const countResult = await db.execute(sql`
     SELECT
       (SELECT COUNT(*) FROM error_cluster WHERE route_id = ${routeId} AND archived_at IS NULL) +
       (SELECT COUNT(*) FROM error_cluster_archive WHERE route_id = ${routeId})
       as total
   `);
 
-	const total = Number(countResult.rows[0]?.total || 0);
+  const total = Number(countResult.rows[0]?.total || 0);
 
-	return {
-		data: result.rows,
-		total,
-		limit,
-		offset: hasMore + limit < total,
-	};
+  return {
+    data: result.rows,
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total,
+  };
 }
 
 /**
@@ -331,19 +337,19 @@ export async function getCombinedErrorClusters(
  * @returns Combined interactions from both tables
  */
 export async function getCombinedInteractions(
-	routeId: string,
-	options: {
-		limit?: number;
-		offset?: number;
-		includeArchived?: boolean;
-	} = {}
+  routeId: string,
+  options: {
+    limit?: number;
+    offset?: number;
+    includeArchived?: boolean;
+  } = {}
 ) {
-	const db = getDb();
-	const { limit = 50, offset = 0, includeArchived = false } = options;
+  const db = getDb();
+  const { limit = 50, offset = 0, includeArchived = false } = options;
 
-	if (!includeArchived) {
-		// Only query main table
-		const result = await db.execute(sql`
+  if (!includeArchived) {
+    // Only query main table
+    const result = await db.execute(sql`
       SELECT
         id,
         route_id,
@@ -366,24 +372,25 @@ export async function getCombinedInteractions(
       OFFSET ${offset}
     `);
 
-		const countResult = await db.execute(sql`
+    const countResult = await db.execute(sql`
       SELECT COUNT(*) as total
       FROM route_interaction_log
       WHERE route_id = ${routeId}
     `);
 
-		const total = Number(countResult.rows[0]?.total || 0);
+    const total = Number(countResult.rows[0]?.total || 0);
 
-		return {
-			data: result.rows,
-			total,
-			limit,
-			offset: hasMore + limit < total,
-		};
-	}
+    return {
+      data: result.rows,
+      total,
+      limit,
+      offset,
+      hasMore: offset + limit < total,
+    };
+  }
 
-	// Query both tables and combine
-	const result = await db.execute(sql`
+  // Query both tables and combine
+  const result = await db.execute(sql`
     (
       SELECT
         id,
@@ -428,22 +435,23 @@ export async function getCombinedInteractions(
     OFFSET ${offset}
   `);
 
-	// Get combined count
-	const countResult = await db.execute(sql`
+  // Get combined count
+  const countResult = await db.execute(sql`
     SELECT
       (SELECT COUNT(*) FROM route_interaction_log WHERE route_id = ${routeId}) +
       (SELECT COUNT(*) FROM route_interaction_log_archive WHERE route_id = ${routeId})
       as total
   `);
 
-	const total = Number(countResult.rows[0]?.total || 0);
+  const total = Number(countResult.rows[0]?.total || 0);
 
-	return {
-		data: result.rows,
-		total,
-		limit,
-		offset: hasMore + limit < total,
-	};
+  return {
+    data: result.rows,
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total,
+  };
 }
 
 /**

@@ -1,15 +1,23 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+	import type { SelectLabelProps } from './types';
+
+	interface Props extends SelectLabelProps {
+		children?: Snippet;
+	}
+
+	let {
+		children,
+		class: className = '',
+	}: Props = $props();
+
+	const defaultClass = `
+		py-1.5 pl-8 pr-2 text-sm font-semibold
+	`.replace(/\s+/g, ' ').trim();
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<div class="{defaultClass} {className}">
+	{#if children}
+		{@render children()}
+	{/if}
+</div>

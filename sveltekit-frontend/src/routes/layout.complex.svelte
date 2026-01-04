@@ -1,35 +1,41 @@
 <script lang="ts">
- import Navigation from '$lib/components/Navigation.svelte';
- import { setContext } from 'svelte';
- import '../app.css';
- import '../lib/styles/modern-yorha-theme.css';
+	import Navigation from '$lib/components/Navigation.svelte';
+	import type { Snippet } from 'svelte';
+	import { setContext } from 'svelte';
+	import '../app.css';
+	import '../lib/styles/modern-yorha-theme.css';
 
- // Runes-mode reactive locals
- let theme = $state <'dark' | 'light'>('dark');
- let sidebarOpen = $state <boolean>(false);
+	interface Props {
+		children: Snippet;
+	}
+	let { children }: Props = $props();
 
- // Provide a small app context for other components/services
- setContext('app', {
- theme: () => theme,
- setTheme(v: 'dark' | 'light') { theme = v; }, // Changed to method shorthand syntax
- sidebarOpen: () => sidebarOpen,
- setSidebarOpen: (v: boolean) => (sidebarOpen = v),
- toggleSidebar: () => (sidebarOpen = !sidebarOpen),
- toggleTheme: () => (theme = theme === 'dark' ? 'light' : 'dark'),
- });
+	// Runes-mode reactive locals
+	let theme = $state<'dark' | 'light'>('dark');
+	let sidebarOpen = $state<boolean>(false);
 
- // Nav props object typed as any to avoid strict prop-type mismatch errors on the component
- const navProps: any = $derived ({ // Changed to $derived sidebarOpen: () => sidebarOpen,
- setSidebarOpen: (v: boolean) => (sidebarOpen = v),
- toggleSidebar: () => (sidebarOpen = !sidebarOpen),
- });
+	// Provide a small app context for other components/services
+	setContext('app', {
+		theme: () => theme,
+		setTheme(v: 'dark' | 'light') { theme = v; },
+		sidebarOpen: () => sidebarOpen,
+		setSidebarOpen: (v: boolean) => (sidebarOpen = v),
+		toggleSidebar: () => (sidebarOpen = !sidebarOpen),
+		toggleTheme: () => (theme = theme === 'dark' ? 'light' : 'dark'),
+	});
 
- $effect (() => {
- // Initialization side-effect
- console.log('Modern Dark YoRHa Legal AI Interface initialized');
- document.documentElement.setAttribute('data-theme', theme);
+	// Nav props object
+	const navProps = $derived({
+		sidebarOpen: () => sidebarOpen,
+		setSidebarOpen: (v: boolean) => (sidebarOpen = v),
+		toggleSidebar: () => (sidebarOpen = !sidebarOpen),
+	});
 
- // The navProps update logic is no longer needed here as it's now $derived });
+	$effect(() => {
+		// Initialization side-effect
+		console.log('Modern Dark YoRHa Legal AI Interface initialized');
+		document.documentElement.setAttribute('data-theme', theme);
+	});
 </script>
 
 <div class="app-layout golden-grid-holy-grail">
@@ -54,11 +60,11 @@
  </nav>
  </aside>
 
- <main class="app-main" style="grid-area: main;">
- <div class="container">
- {@render children}
- </div>
- </main>
+	<main class="app-main" style="grid-area: main;">
+		<div class="container">
+			{@render children()}
+		</div>
+	</main>
 
  <footer class="app-footer" style="grid-area: footer;">
  <div class="container p-golden-md">

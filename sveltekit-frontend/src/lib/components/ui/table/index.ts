@@ -1,25 +1,18 @@
-import Root from './Table.svelte.js';
-import Body from './TableBody.svelte.js';
-import Caption from './TableCaption.svelte.js';
-import Cell from './TableCell.svelte.js';
-import Head from './TableHead.svelte.js';
-import Header from './TableHeader.svelte.js';
-import Row from './TableRow.svelte.js';
+// Table component exports
+export { default as Table } from './Table.svelte';
+export { default as TableBody } from './TableBody.svelte';
+export { default as TableCaption } from './TableCaption.svelte';
+export { default as TableCell } from './TableCell.svelte';
+export { default as TableHead } from './TableHead.svelte';
+export { default as TableHeader } from './TableHeader.svelte';
+export { default as TableRow } from './TableRow.svelte';
 
-export {
- Root,
- Body,
- Caption,
- Cell,
- Head,
- Header,
- Row,
- // Aliases
- Root as Table,
- Body as TableBody,
- Caption as TableCaption,
- Cell as TableCell,
- Head as TableHead,
- Header as TableHeader,
- Row as TableRow,
-};
+// Aliases for shorthand
+export { default as Root } from './Table.svelte';
+export { default as Body } from './TableBody.svelte';
+export { default as Caption } from './TableCaption.svelte';
+export { default as Cell } from './TableCell.svelte';
+export { default as Head } from './TableHead.svelte';
+export { default as Header } from './TableHeader.svelte';
+export { default as Row } from './TableRow.svelte';
+

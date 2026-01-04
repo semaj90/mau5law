@@ -50,7 +50,8 @@ const CONFIG = {
   },
   ollama: {
     embeddingModel: 'embeddinggemma:latest',
-    chatModel: 'gemma3-legal:latest'
+    chatModel: 'gemma3-legal:latest',
+    retryCount: 3
   },
   python: process.env.PHASE72_PYTHON ||
           'C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe'
@@ -356,6 +357,79 @@ function parseCodeUnit(filePath) {
 }
 
 // =============================================================================
+// Migration Flags Detection
+// =============================================================================
+function detectMigrationFlags(filePath, content) {
+  const flags = [];
+
+  // Svelte 4 -> Svelte 5 patterns
+  if (content.includes('export let ') && !content.includes('$props')) {
+    flags.push('svelte4_props');
+  }
+  if (content.includes('createEventDispatcher')) {
+    flags.push('svelte4_events');
+  }
+  if (/\$:\s+/.test(content) && !content.includes('$derived')) {
+    flags.push('svelte4_reactivity');
+  }
+  if (content.includes('<script context="module">')) {
+    flags.push('svelte4_module_context');
+  }
+
+  // Melt-UI -> Bits-UI v2 migration
+  if (content.includes('melt-ui')) {
+    flags.push('melt_ui_legacy');
+  }
+  if (content.includes('@melt-ui')) {
+    flags.push('melt_ui_imports');
+  }
+
+  // Bits-UI patterns
+  if (content.includes('bits-ui')) {
+    flags.push('bits_ui_v2');
+  }
+
+  // UnoCSS detection
+  if (content.includes('uno:') || content.includes('class:uno-')) {
+    flags.push('unocss_classes');
+  }
+
+  // Legal-AI route consolidation patterns
+  if (filePath.includes('routes/(app)/cases')) {
+    flags.push('route_consolidation_cases');
+  }
+  if (filePath.includes('routes/(app)/evidence')) {
+    flags.push('route_consolidation_evidence');
+  }
+  if (filePath.includes('routes/(app)/command-center')) {
+    flags.push('route_consolidation_command');
+  }
+
+  // Modal card patterns
+  if (content.includes('Dialog') || content.includes('Modal')) {
+    flags.push('modal_card_component');
+  }
+  if (filePath.includes('modals/') || filePath.includes('dialogs/')) {
+    flags.push('modal_card_structure');
+  }
+
+  // API v2 patterns
+  if (content.includes('/api/v2/')) {
+    flags.push('api_v2_endpoint');
+  }
+
+  // Legacy patterns to migrate
+  if (content.includes('$app/stores') && content.includes('navigating')) {
+    flags.push('legacy_navigation_store');
+  }
+  if (content.includes('invalidateAll')) {
+    flags.push('legacy_invalidate_pattern');
+  }
+
+  return flags;
+}
+
+// =============================================================================
 // Feature Tag Inference
 // =============================================================================
 function inferFeatureTags(filePath) {
@@ -453,53 +527,128 @@ function generateSignatureText(unit) {
     lines.push(`LAYOUT_CHAIN: ${unit.layout_chain.length} layouts`);
   }
 
+  if (unit.migration_flags?.length > 0) {
+    lines.push(`MIGRATIONS: ${unit.migration_flags.join(', ')}`);
+  }
+
   return lines.join('\n');
 }
 
 // =============================================================================
-// Context Text Generator (Adaptive Chunks)
+// Context Text Generator (Adaptive Chunks with Validation)
 // =============================================================================
-function generateContextText(filePath) {
+function generateContextText(filePath, maxChars = 3000) {
   const content = readFileSync(filePath, 'utf-8');
 
-  // For now, take the first 2000 chars as a context slice
-  // In a real adaptive chunker, we'd use AST boundaries
-  return content.substring(0, 2000);
+  // Chunk at reasonable boundaries (prefer under 3k chars for stability)
+  if (content.length <= maxChars) {
+    return content;
+  }
+
+  // Try to chunk at function/component boundaries
+  const lines = content.split('\n');
+  let accumulated = '';
+
+  for (const line of lines) {
+    if ((accumulated + line).length > maxChars) {
+      break;
+    }
+    accumulated += line + '\n';
+  }
+
+  return accumulated || content.substring(0, maxChars);
 }
 
 // =============================================================================
-// Embedding with Cache
+// Embedding with Cache & Retry + Progress Validation
 // =============================================================================
-async function embedText(text, cachePrefix = 'sig') {
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+let embeddingSuccessCount = 0;
+let embeddingFailCount = 0;
+let lastProgressReport = Date.now();
+
+async function embedText(text, cachePrefix = 'sig', retryCount = CONFIG.ollama.retryCount) {
+  if (!text || text.trim().length === 0) return null;
+
   const hash = createHash('sha256').update(text).digest('hex').slice(0, 16);
   const cacheKey = `emb:${cachePrefix}:${hash}`;
 
   // Check cache
   if (redis?.isOpen) {
     const cached = await redis.get(cacheKey);
-    if (cached) return JSON.parse(cached);
-  }
-
-  try {
-    const response = await ollama.embed({
-      model: CONFIG.ollama.embeddingModel,
-      input: text
-    });
-
-    const embedding = response.embeddings?.[0] || response.embedding;
-
-    if (embedding && redis?.isOpen) {
-      await redis.set(cacheKey, JSON.stringify(embedding), { EX: 604800 }); // 7 days
+    if (cached) {
+      embeddingSuccessCount++;
+      reportProgress();
+      return JSON.parse(cached);
     }
-
-    return embedding;
-  } catch (e) {
-    console.warn(`   ⚠️  Embedding failed: ${e.message}`);
-    return null;
   }
+
+  // Adaptive truncation based on content type
+  // Signatures are usually short, context can be longer
+  const maxLength = cachePrefix === 'sig' ? 12000 : 24000;
+  const truncatedText = text.length > maxLength ? text.substring(0, maxLength) : text;
+
+  for (let attempt = 1; attempt <= retryCount; attempt++) {
+    try {
+      const response = await ollama.embed({
+        model: CONFIG.ollama.embeddingModel,
+        input: truncatedText,
+        options: {
+          num_ctx: 8192,
+          num_thread: 4,
+          num_batch: 512  // Add batch size for stability
+        }
+      });
+
+      const embedding = response.embeddings?.[0] || response.embedding;
+
+      if (embedding && embedding.length === 768) {
+        if (redis?.isOpen) {
+          await redis.set(cacheKey, JSON.stringify(embedding), { EX: 604800 }); // 7 days
+        }
+
+        embeddingSuccessCount++;
+        reportProgress();
+        return embedding;
+      } else {
+        throw new Error(`Invalid embedding dimension: ${embedding?.length || 0}`);
+      }
+    } catch (e) {
+      const isLastAttempt = attempt === retryCount;
+      const isTimeout = e.message.includes('timeout') || e.code === 'ETIMEDOUT';
+
+      if (isTimeout || e.message.includes('context length')) {
+        if (attempt === 1) {
+          console.warn(`   ⚠️  ${isTimeout ? 'Timeout' : 'Context error'} on attempt ${attempt}, retrying...`);
+        }
+      }
+
+      if (isLastAttempt) {
+        embeddingFailCount++;
+        reportProgress();
+        return null;
+      }
+
+      // Exponential backoff: 2s, 4s, 8s, 16s, 32s
+      const delay = 2000 * Math.pow(2, attempt - 1);
+      await sleep(delay);
+    }
+  }
+  return null;
 }
 
-// =============================================================================
+function reportProgress() {
+  const now = Date.now();
+  const total = embeddingSuccessCount + embeddingFailCount;
+
+  // Report every 100 embeddings or every 30 seconds
+  if (total % 100 === 0 || (now - lastProgressReport) > 30000) {
+    const successRate = total > 0 ? (embeddingSuccessCount / total * 100).toFixed(1) : 0;
+    console.log(`   📊 Embeddings: ${embeddingSuccessCount} success, ${embeddingFailCount} failed (${successRate}% success rate)`);
+    lastProgressReport = now;
+  }
+}// =============================================================================
 // Index Routes
 // =============================================================================
 async function indexRoutes() {
@@ -513,9 +662,11 @@ async function indexRoutes() {
 
   for (const route of routes) {
     try {
+      const content = readFileSync(route.file_path, 'utf-8');
       const parsed = parseCodeUnit(route.file_path);
       const featureTags = inferFeatureTags(route.file_path);
       const layoutChain = resolveLayoutChain(route.dir);
+      const migrationFlags = detectMigrationFlags(route.file_path, content);
 
       const unit = {
         unit_id: createHash('sha256').update(route.file_path).digest('hex').slice(0, 32),
@@ -524,6 +675,7 @@ async function indexRoutes() {
         route_id: route.route_id,
         layout_chain: layoutChain,
         feature_tags: featureTags,
+        migration_flags: migrationFlags,
         parsed,
         signature_text: ''
       };
@@ -566,8 +718,10 @@ async function indexComponents() {
 
   for (const component of components) {
     try {
+      const content = readFileSync(component.file_path, 'utf-8');
       const parsed = parseCodeUnit(component.file_path);
       const featureTags = inferFeatureTags(component.file_path);
+      const migrationFlags = detectMigrationFlags(component.file_path, content);
 
       const unit = {
         unit_id: createHash('sha256').update(component.file_path).digest('hex').slice(0, 32),
@@ -575,6 +729,7 @@ async function indexComponents() {
         unit_kind: 'component',
         component_name: component.component_name,
         feature_tags: featureTags,
+        migration_flags: migrationFlags,
         parsed,
         signature_text: ''
       };
@@ -616,8 +771,10 @@ async function indexModules() {
 
   for (const mod of modules) {
     try {
+      const content = readFileSync(mod.file_path, 'utf-8');
       const parsed = parseCodeUnit(mod.file_path);
       const featureTags = inferFeatureTags(mod.file_path);
+      const migrationFlags = detectMigrationFlags(mod.file_path, content);
 
       const unit = {
         unit_id: createHash('sha256').update(mod.file_path).digest('hex').slice(0, 32),
@@ -625,6 +782,7 @@ async function indexModules() {
         unit_kind: 'module',
         module_name: mod.module_name,
         feature_tags: featureTags,
+        migration_flags: migrationFlags,
         parsed,
         signature_text: ''
       };
@@ -782,9 +940,15 @@ async function uploadToQdrant(units) {
           file_path: unit.file_path,
           unit_kind: unit.unit_kind,
           route_id: unit.route_id || null,
-          feature_tags: unit.feature_tags,
+          feature_tags: unit.feature_tags || [],
+          migration_flags: unit.migration_flags || [],
           signature_text: unit.signature_text.substring(0, 1000),
-          indexed_at: new Date().toISOString()
+          indexed_at: new Date().toISOString(),
+          // Enhanced metadata for filtering
+          needs_svelte5_migration: (unit.migration_flags || []).some(f => f.startsWith('svelte4_')),
+          needs_bits_ui_migration: (unit.migration_flags || []).includes('melt_ui_legacy'),
+          is_modal_card: (unit.migration_flags || []).some(f => f.includes('modal_card')),
+          is_route_consolidated: (unit.migration_flags || []).some(f => f.startsWith('route_consolidation_'))
         }
       });
     }
@@ -840,7 +1004,14 @@ async function main() {
   console.log('═'.repeat(60));
 
   const args = process.argv.slice(2);
-  const command = args[0] || '--index';
+  const isRescue = args.includes('--rescue');
+  // Filter out flags to find the command
+  const command = args.find(a => a.startsWith('--') && a !== '--rescue') || '--index';
+
+  if (isRescue) {
+    console.log('   🚑 Rescue Mode Enabled: Increased retries (5) and timeout tolerance');
+    CONFIG.ollama.retryCount = 5;
+  }
 
   try {
     await connect();
@@ -887,7 +1058,10 @@ async function main() {
     console.log('\n' + '═'.repeat(60));
     console.log('✅ Code Unit Indexing Complete!\n');
     console.log('📊 Summary:');
-    console.log(`   Total units: ${allUnits.length}`);
+    console.log(`   Total units indexed: ${allUnits.length}`);
+    if (isRescue) {
+        console.log(`   Mode: Rescue (Retries: ${CONFIG.ollama.retryCount})`);
+    }
     console.log(`   Qdrant collection: ${CONFIG.qdrant.collections.codeUnits}`);
     console.log(`   Redis cache: emb:route:*, emb:comp:*, emb:mod:*`);
     console.log('\n');

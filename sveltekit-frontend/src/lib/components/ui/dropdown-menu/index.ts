@@ -1,3 +1,23 @@
-// Enhanced-Bits Dropdown Menu Components // Properly integrated with bits-ui and Svelte, 5 patterns export { default, as DropdownMenuRoot } from './DropdownMenuRoot.svelte'; export { default, as DropdownMenuTrigger } from './DropdownMenuTrigger.svelte'; export { default, as DropdownMenuContent } from './DropdownMenuContent.svelte'; export { default, as DropdownMenuItem } from './DropdownMenuItem.svelte'; // Re-export bits-ui components that don't need customization'
-// Avoid direct dependency on: 'bits-ui' runtime shape; provide a small adapter export import type { getBitsNamespace } from '$lib/utils/bits-ui-adapter'; export async function DropdownMenu(): Promise<any> { const ns = await getBitsNamespace(); return ns?.DropdownMenu ?? ns}
-// Export commonly used types export type { Snippet } from 'svelte';
+// DropdownMenu Component - Svelte 5 Native Implementation
+import DropdownMenu from './DropdownMenu.svelte';
+import DropdownMenuContent from './DropdownMenuContent.svelte';
+import DropdownMenuItem from './DropdownMenuItem.svelte';
+import DropdownMenuRoot from './DropdownMenuRoot.svelte';
+import DropdownMenuSeparator from './DropdownMenuSeparator.svelte';
+import DropdownMenuTrigger from './DropdownMenuTrigger.svelte';
+
+// Named exports
+export {
+    DropdownMenu, DropdownMenuContent,
+    DropdownMenuItem, DropdownMenuRoot, DropdownMenuSeparator, DropdownMenuTrigger
+};
+
+// Aliased exports for compound pattern
+    export {
+        DropdownMenuContent as Content,
+        DropdownMenuItem as Item, DropdownMenuRoot as Root, DropdownMenuSeparator as Separator, DropdownMenuTrigger as Trigger
+    };
+
+// Type exports
+    export type * from './types';
+

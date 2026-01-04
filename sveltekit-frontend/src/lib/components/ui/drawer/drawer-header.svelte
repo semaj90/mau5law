@@ -1,15 +1,23 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+	import type { DrawerHeaderProps } from './types';
+
+	interface Props extends DrawerHeaderProps {
+		children?: Snippet;
+	}
+
+	let {
+		class: className = '',
+		children,
+	}: Props = $props();
+
+	const defaultClass = `
+		flex flex-col space-y-2 text-center sm:text-left
+	`.replace(/\s+/g, ' ').trim();
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<div class="{defaultClass} {className}">
+	{#if children}
+		{@render children()}
+	{/if}
+</div>

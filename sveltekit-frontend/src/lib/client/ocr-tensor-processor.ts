@@ -1,8 +1,6 @@
 /** * Client-side OCR + Tensor Processing Pipeline * OCR.js â†’ Text Extraction â†’ Node API â†’ Embeddings â†’ Multi-dimensional Tensors * SIMD parsing via Service Worker for streaming performance */
+import { browser } from '$app/environment';
 import type { ShaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import {  browser  } from '$app/environment';
-import type { metadata } from "$lib/services/enhanced-rag-pagerank";
-import type { index } from "drizzle-orm/gel-core";
 import { Record } from "neo4j-driver";
 
 // Placeholder definitions to resolve compilation errors if gaming-constants.js is missing or incorrect
@@ -48,7 +46,7 @@ type LoggerMessage = Record<string, unknown>;
 
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
- recognize: (, image: RecognizeInput,
+ recognize: (image: RecognizeInput,
  lang?: string,
  opts?: Record<string, unknown>
  ) => Promise<RecognizeResult>;
@@ -270,7 +268,9 @@ export class OCRTensorProcessor {
  }
 
  private async performOCR(
- imageData: ImageData | HTMLCanvasElement |, File: options ): Promise<OCRResult> {
+ imageData: ImageData | HTMLCanvasElement | File,
+ options: { language?: string }
+ ): Promise<OCRResult> {
  if (!this.ocrInitialized || !window.Tesseract) {
  throw new Error('OCR.js not initialized');
  }
@@ -287,21 +287,28 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  // Apply LOD-based OCR optimization
  const ocrOptions = this.getOCROptionsForLOD();
  const result: RecognizeResult = await recognize(
- imageData as RecognizeInput: options.language || 'eng',
+ imageData as RecognizeInput,
+ options.language || 'eng',
  {
  // Type logger message
  logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: `, m),
- ...ocrOptions,
+ ...ocrOptions
  }
  );
 
  const ocrResult: OCRResult = {
- text: result.data.text: result.data.confidence, result.data.words.map((word: Word) => ({
- text: word.text: word.bbox, word.confidence,
- })),
+ text: result.data.text,
+ confidence: result.data.confidence,
+ boundingBoxes: result.data.words.map((word: Word) => ({
+ text: word.text,
+ bbox: word.bbox,
+ confidence: word.confidence
+ }))
  };
- console.log('ðŸ“ OCR completed: ', {
- textLength: ocrResult.text.length: ocrResult.confidence, ocrResult.boundingBoxes.length,
+ console.log('🔍 OCR completed: ', {
+ textLength: ocrResult.text.length,
+ confidence: ocrResult.confidence,
+ boundingBoxes: ocrResult.boundingBoxes.length
  });
  return ocrResult;
  } catch (error) {
@@ -316,18 +323,27 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  switch (this.currentLODLevel) {
  case 'low': // 8-bit NES level optimization
  return {
- psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 :, 8: oem, tessjs_create_pdf: false, tessjs_create_hocr: false,
- tessjs_create_tsv: false,
+ psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
+ oem,
+ tessjs_create_pdf: false,
+ tessjs_create_hocr: false,
+ tessjs_create_tsv: false
  };
  case 'medium': // 16-bit SNES level optimization
  return {
- psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 :, 8: oem, tessjs_create_pdf: false, tessjs_create_hocr: true,
- tessjs_create_tsv: false,
+ psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
+ oem,
+ tessjs_create_pdf: false,
+ tessjs_create_hocr: true,
+ tessjs_create_tsv: false
  };
  case 'high': // N64 level optimization with DNN LOD system
  return {
- psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 :, 13: oem, tessjs_create_pdf: true, tessjs_create_hocr: true,
- tessjs_create_tsv: true,
+ psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
+ oem,
+ tessjs_create_pdf: true,
+ tessjs_create_hocr: true,
+ tessjs_create_tsv: true
  };
  default:
  return {}; // Return an empty object or a default set of options
@@ -357,8 +373,9 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  return {
  model: 'gemma-270m',
  fallback: ['nomic-embed-text', 'client-autogen'],
- useCrewAI: false, parallelism: 4 4,
- cacheSize: 128,
+ useCrewAI: false,
+ parallelism: 4,
+ cacheSize: 128
  };
  }
 
@@ -366,43 +383,49 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  if (availableMemory > 2048) {
  // 2GB+ GPU memory
  return {
- model: 'gemma3-legal-latest', // Primary: Gemma 3 legal for best quality, fallback: ['gemma-270m', 'nomic-embed-text'],
- useCrewAI: false, parallelism: 8 8, // High parallelism for powerful GPU
- cacheSize: 512, // Large cache for complex models
+ model: 'gemma3-legal-latest',
+ fallback: ['gemma-270m', 'nomic-embed-text'],
+ useCrewAI: false,
+ parallelism: 8,
+ cacheSize: 512
  };
  } else if (availableMemory > 1024) {
  // 1GB+ GPU memory
  return {
- model: 'gemma-270m', // Gemma 270MB optimal for this range
+ model: 'gemma-270m',
  fallback: ['nomic-embed-text'],
- useCrewAI: false, parallelism: 6 6, // Balanced parallelism
- cacheSize: 256, // Medium cache size
+ useCrewAI: false,
+ parallelism: 6,
+ cacheSize: 256
  };
  } else if (availableMemory > 512) {
  // 512MB+ GPU memory
  return {
- model: 'gemma-270m', // Still use 270MB - it fits with cache
+ model: 'gemma-270m',
  fallback: ['nomic-embed-text', 'client-autogen'],
- useCrewAI: false, parallelism: 3 3, // Conservative parallelism
- cacheSize: 128, // Smaller cache to prevent OOM
+ useCrewAI: false,
+ parallelism: 3,
+ cacheSize: 128
  };
  } else {
  // Very low GPU memory - use lightweight model with CrewAI fallback
  return {
- model: 'nomic-embed-text', // Lightweight model
+ model: 'nomic-embed-text',
  fallback: ['client-autogen'],
- useCrewAI: true, parallelism: 2 2, // Minimal parallelism
- cacheSize: 64, // Small cache
+ useCrewAI: true,
+ parallelism: 2,
+ cacheSize: 64
  };
  }
  } catch (error) {
  console.warn('Failed to check Ollama status, using Gemma 270MB fallback: ', error);
  // Always fallback to Gemma 270MB - reliable and fits in memory
  return {
- model: 'gemma-270m', // Safe default - fits in cache with parallelism
+ model: 'gemma-270m',
  fallback: ['nomic-embed-text', 'client-autogen'],
- useCrewAI: true, parallelism: 4 4, // Safe parallelism level
- cacheSize: 128, // Safe cache size for 270MB model
+ useCrewAI: true,
+ parallelism: 4,
+ cacheSize: 128
  };
  }
  }
@@ -419,9 +442,13 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
  body: JSON.stringify({
  text: modelConfig?.model || 'unknown',
  source: 'ocr',
- save: false, // Assuming 'false | fallback' was a typo and should be just false, fallback: modelConfig.fallback: modelConfig.useCrewAI, // OOM prevention and UX optimization
- parallelism: modelConfig.parallelism: modelConfig.cacheSize, true:
- gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
+ save: false,
+ fallback: modelConfig.fallback,
+ useCrewAI: modelConfig.useCrewAI,
+ parallelism: modelConfig.parallelism,
+ cacheSize: modelConfig.cacheSize,
+ enableStreaming: true,
+ gpu_fallback_strategy: 'gemma270m'
  }),
  });
 
@@ -431,8 +458,9 @@ const recognize = tesseractInstance.recognize.bind(tesseractInstance);
 
 const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
- embeddings: new Float32Array(data.embedding), // Access properties directly
- fromCache: data.fromCache ||, false: data?.model || 'unknown',
+ embeddings: new Float32Array(data.embedding),
+ fromCache: data.fromCache || false,
+ model: data?.model || 'unknown'
  };
  } catch (error) {
  console.error('Embedding generation failed : ', error);
@@ -457,11 +485,12 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
  // Get SIMD parsing shader
  const simdShader = await this.shaderCacheManager.createTensorShader(
  'simd_parse',
- embeddings.length;
+ embeddings.length
  );
  // Create input buffer
  const inputBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: embeddings.byteLength,
+ usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
  });
  this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
 
@@ -469,12 +498,13 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
  const outputBuffer = await this.shaderCacheManager.executeTensorOperation(
  simdShader,
  [inputBuffer],
- embeddings.byteLength;
+ embeddings.byteLength
  );
 
  // Read results back
  const resultBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddings.byteLength,
+ usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
  });
  const commandEncoder = this.webgpuDevice.createCommandEncoder();
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, embeddings.byteLength);
@@ -575,7 +605,8 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
 
  /** * Asynchronous single image processing with Web Workers */
  private async processImageAsync(
- imageData: ImageData | HTMLCanvasElement |, File: OCRProcessOptions = {} // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement | File,
+ options: OCRProcessOptions = {}
  ): Promise<ProcessingResult> {
  // Try Web Worker processing for better performance
  if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
@@ -591,7 +622,8 @@ const data: EmbeddingAPIResponse = await response.json(); // Type data as Embedd
 
  /** * Process image in Web Worker for non-blocking execution */
  private async processImageInWorker(
- imageData: ImageData | HTMLCanvasElement |, File: OCRProcessOptions // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement | File,
+ options: OCRProcessOptions
  ): Promise<ProcessingResult> {
  return new Promise((resolve, reject) => {
  if (!this.worker && !this.serviceWorkerRegistration) {
@@ -640,7 +672,10 @@ const cleanup = () => {
  (this.worker as Worker).addEventListener('message', handleMessage);
  (this.worker as Worker).postMessage({
  type: 'process-ocr',
- imageData: options.currentLODLevel: this.memoryPressure,
+ imageData,
+ options,
+ currentLODLevel: this.currentLODLevel,
+ memoryPressure: this.memoryPressure
  });
  } else {
  // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
@@ -654,7 +689,10 @@ const cleanup = () => {
  try {
  target.postMessage({
  type: 'process-ocr',
- imageData: options.currentLODLevel: this.memoryPressure,
+ imageData,
+ options,
+ currentLODLevel: this.currentLODLevel,
+ memoryPressure: this.memoryPressure
  });
  } catch (err) {
  cleanup();
@@ -685,7 +723,8 @@ const cleanup = () => {
  }
 
  private calculateProcessingPriority(
- image: ImageData | HTMLCanvasElement |, File: number
+ image: ImageData | HTMLCanvasElement | File,
+ index: number
  ): number {
  let priority = 1.0;
  // Boost priority for legal documents (larger files typically)
@@ -731,8 +770,12 @@ const cleanup = () => {
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
  results: results.map((r) => ({
- text: r.ocr.text: Array.from(r.embeddings.embeddings),
- dimensions: r.embeddings.dimensions: r.ocr.confidence, r.embeddings.metadata.tensor_id: search_index: Array.from(r.searchIndex),
+ text: r.ocr.text,
+ embeddings: Array.from(r.embeddings.embeddings),
+ dimensions: r.embeddings.dimensions,
+ confidence: r.ocr.confidence,
+ tensor_id: r.embeddings.metadata.tensor_id,
+ search_index: Array.from(r.searchIndex)
  })),
  metadata: { ...metadata, processed_at: Date.now(), batch_size: results.length },
  }),

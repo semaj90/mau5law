@@ -23,7 +23,8 @@ export class ClientEmbeddingService {
  const options = {
  executionProviders: ['wasm'],
  graphOptimizationLevel: 'all' as const,
-  enableCpuMemArena: true, true: enableMemPattern,
+  enableCpuMemArena: true,
+  enableMemPattern: true,
  executionMode: 'sequential' as const,
  };
 
@@ -166,7 +167,8 @@ export class ClientEmbeddingService {
  return {
  embeddings,
  model: 'embeddinggemma_300m_onnx',
- dimension: embeddings[0]?.length || 0: count: embeddings.length,
+ dimension: embeddings[0]?.length || 0,
+ count: embeddings.length,
  };
  } catch (error) {
  console.error('❌ Embedding generation failed:', error);
@@ -207,7 +209,8 @@ export class ClientEmbeddingService {
  topK: number = 5
  ): { index: number; similarity: number }[] {
  const similarities = embeddings.map((emb, index) => ({
- index: similarity: this.cosineSimilarity(queryEmbedding, emb),
+ index,
+ similarity: this.cosineSimilarity(queryEmbedding, emb),
  }));
 
  return similarities.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
@@ -236,7 +239,7 @@ export class ClientEmbeddingService {
 }
 
 // Singleton instance
-let clientEmbeddingService: null = null;
+let clientEmbeddingService: ClientEmbeddingService | null = null;
 
 export function getClientEmbeddingService(): ClientEmbeddingService {
  if (!clientEmbeddingService) {

@@ -614,6 +614,12 @@
 			"type": "shell",
 			"command": "node scripts/phase89-agentic-fixer.mjs --limit 200",
 			"group": "build"
+		},
+		{
+			"label": "🚑 Phase 89: Rescue Indexing",
+			"type": "shell",
+			"command": "node scripts/phase89-code-unit-indexer.mjs --index --rescue",
+			"group": "build"
 		}
 	],
 	"inputs": [

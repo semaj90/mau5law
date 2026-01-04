@@ -1,25 +1,21 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { DialogHeaderProps } from './types';
 
-	interface Props {
+	interface Props extends DialogHeaderProps {
 		children?: Snippet;
-		class?: string;
 	}
 
-	let { children: class, className: className = '' }: Props = $props();
+	let {
+		children,
+		class: className = '',
+	}: Props = $props();
+
+	const defaultClass = 'flex flex-col space-y-1.5 text-center sm:text-left';
 </script>
 
-<div class="dialog-header {className}">
+<div class="{defaultClass} {className}" data-dialog-header="">
 	{#if children}
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.dialog-header {
-		display: flex;
-		flex-direction: column;
-		gap: 0.375rem;
-		padding: 1rem 1.5rem 0;
-	}
-</style>

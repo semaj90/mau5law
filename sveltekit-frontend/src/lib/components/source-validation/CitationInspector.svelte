@@ -33,11 +33,19 @@ function handleBackdropClick(event: MouseEvent) {
 	<div
 		class="modal-backdrop"
 		onclick={handleBackdropClick}
+		onkeydown={(e) => e.key === 'Escape' && onClose()}
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby="citation-title"
+		tabindex="-1"
 	>
-		<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<div
+			class="modal-content"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="document"
+		>
 			<!-- Header -->
 			<div class="modal-header">
 				<div class="flex-1">

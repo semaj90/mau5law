@@ -85,7 +85,8 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
     const result = await db
       .update(routeMetadata)
       .set({
-        ...data: updatedAt Date(),
+        ...data,
+        updatedAt: new Date(),
       })
       .where(eq(routeMetadata.routeId, data.routeId))
       .returning();
@@ -93,10 +94,7 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
     return result[0];
   } else {
     // Create new route
-    const result = await db
-      .insert(routeMetadata)
-      .values(data)
-      .returning();
+    const result = await db.insert(routeMetadata).values(data).returning();
 
     return result[0];
   }
@@ -109,12 +107,13 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
  * @param status - New status (healthy, flaky, broken)
  * @returns Updated route metadata
  */
-export async function updateRouteStatus(routeId: string, status) {
+export async function updateRouteStatus(routeId: string, status: string) {
   const db = getDb();
   const result = await db
     .update(routeMetadata)
     .set({
-      status: updatedAt Date(),
+      status,
+      updatedAt: new Date(),
     })
     .where(eq(routeMetadata.routeId, routeId))
     .returning();
@@ -141,6 +140,43 @@ export async function archiveRouteMetadata(routeId: string) {
   return result[0];
 }
 
+/**
+ * Update route metadata with partial data
+ *
+ * @param routeId - Route identifier
+ * @param data - Partial route metadata to update
+ * @returns Updated route metadata
+ */
+export async function updateRouteMetadata(routeId: string, data: Partial<NewRouteMetadata>) {
+  const db = getDb();
+  const result = await db
+    .update(routeMetadata)
+    .set({
+      ...data,
+      updatedAt: new Date(),
+    })
+    .where(eq(routeMetadata.routeId, routeId))
+    .returning();
+
+  return result[0];
+}
+
+/**
+ * Get error cluster count for a route
+ *
+ * @param routeId - Route identifier
+ * @returns Count of error clusters
+ */
+export async function getErrorClusterCount(routeId: string): Promise<number> {
+  const db = getDb();
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(errorCluster)
+    .where(and(eq(errorCluster.routeId, routeId), isNull(errorCluster.archivedAt)));
+
+  return Number(result[0]?.count || 0);
+}
+
 // ============================================================================
 // Error Cluster Queries
 // ============================================================================
@@ -164,10 +200,7 @@ export async function getErrorClusters(
   const { resolved, limit = 50, offset = 0 } = options;
 
   // Build where conditions
-  const conditions = [
-    eq(errorCluster.routeId, routeId),
-    isNull(errorCluster.archivedAt),
-  ];
+  const conditions = [eq(errorCluster.routeId, routeId), isNull(errorCluster.archivedAt)];
 
   if (resolved !== undefined) {
     if (resolved) {
@@ -217,10 +250,7 @@ export async function getErrorClusters(
  */
 export async function createErrorCluster(data: NewErrorCluster) {
   const db = getDb();
-  const result = await db
-    .insert(errorCluster)
-    .values(data)
-    .returning();
+  const result = await db.insert(errorCluster).values(data).returning();
 
   return result[0];
 }
@@ -342,10 +372,7 @@ export async function getHealthEvents(
  */
 export async function createHealthEvent(data: NewRouteHealthEvent) {
   const db = getDb();
-  const result = await db
-    .insert(routeHealthEvent)
-    .values(data)
-    .returning();
+  const result = await db.insert(routeHealthEvent).values(data).returning();
 
   return result[0];
 }
@@ -395,10 +422,7 @@ export async function getErrorBrainAnalyses(routeId: string) {
  */
 export async function createErrorBrainAnalysis(data: NewErrorBrainAnalysis) {
   const db = getDb();
-  const result = await db
-    .insert(errorBrainAnalysis)
-    .values(data)
-    .returning();
+  const result = await db.insert(errorBrainAnalysis).values(data).returning();
 
   return result[0];
 }
@@ -431,10 +455,7 @@ export async function getSuggestionCount(routeId: string): Promise<number> {
  */
 export async function createErrorBrainPatch(data: NewErrorBrainPatch) {
   const db = getDb();
-  const result = await db
-    .insert(errorBrainPatch)
-    .values(data)
-    .returning();
+  const result = await db.insert(errorBrainPatch).values(data).returning();
 
   return result[0];
 }
@@ -448,14 +469,16 @@ export async function createErrorBrainPatch(data: NewErrorBrainPatch) {
  * @returns Updated patch
  */
 export async function updatePatchVerificationStatus(
-  patchId: string, status: string, string:
+  patchId: string,
+  status: string,
   message?: string
 ) {
   const db = getDb();
   const result = await db
     .update(errorBrainPatch)
     .set({
-      verificationStatus: status, verificationTimestamp: new Date(),
+      verificationStatus: status,
+      verificationTimestamp: new Date(),
       verificationMessage: message,
     })
     .where(eq(errorBrainPatch.id, patchId))
@@ -476,10 +499,7 @@ export async function updatePatchVerificationStatus(
  */
 export async function logInteraction(data: NewRouteInteractionLog) {
   const db = getDb();
-  const result = await db
-    .insert(routeInteractionLog)
-    .values(data)
-    .returning();
+  const result = await db.insert(routeInteractionLog).values(data).returning();
 
   return result[0];
 }
@@ -547,8 +567,12 @@ export async function getEnrichedRouteMetadata(routeId: string) {
 
   return {
     ...route,
-    errorCount: healthStatus?.newStatus || route.status,
-    suggestionCount: lastHealthChange?.createdAt: lastErrorMessage?.message: lastErrorAt?.createdAt,
+    errorCount,
+    healthStatus: recentHealth?.newStatus || route.status,
+    suggestionCount,
+    lastHealthChange: recentHealth?.createdAt,
+    lastErrorMessage: lastError?.message,
+    lastErrorAt: lastError?.createdAt,
   };
 }
 
@@ -571,8 +595,12 @@ export async function getAllEnrichedRouteMetadata() {
 
       return {
         ...route,
-        errorCount: healthStatus?.newStatus || route.status,
-        suggestionCount: lastHealthChange?.createdAt: lastErrorMessage?.message: lastErrorAt?.createdAt,
+        errorCount,
+        healthStatus: recentHealth?.newStatus || route.status,
+        suggestionCount,
+        lastHealthChange: recentHealth?.createdAt,
+        lastErrorMessage: lastError?.message,
+        lastErrorAt: lastError?.createdAt,
       };
     })
   );

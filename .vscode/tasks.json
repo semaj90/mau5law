@@ -720,6 +720,198 @@
         "showReuseMessage": false,
         "clear": true
       }
+    },
+    // ============================================
+    // Phase 94: Unified AST Graph - Error Analysis & Fixing
+    // ============================================
+    {
+      "label": "🏥 Phase 94: System Health Check",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_fastmcp_registry.py",
+        "--tool",
+        "system_health_check"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📊 Phase 94: Redis Cache Stats",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_redis_glyph_query.py",
+        "--stats"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Phase 94: Query Cluster Errors",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_redis_glyph_query.py",
+        "--cluster",
+        "${input:clusterId}"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔧 Phase 94: List All FastMCP Tools",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_fastmcp_registry.py",
+        "--list"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🤖 Phase 94: Get AI Recommendation",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_fastmcp_registry.py",
+        "--tool",
+        "agentic_recommendation",
+        "--args",
+        "{\"language\": \"typescript\", \"error_type\": \"${input:errorType}\", \"context\": \"${fileBasename}\"}"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔎 Phase 94: Analyze Current File",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "backend\\scripts\\phase94_fastmcp_registry.py",
+        "--tool",
+        "unified_ast_query",
+        "--args",
+        "{\"file_path\": \"${relativeFile}\"}"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🚀 Phase 94: Batch Fix Cluster 0 (Dry-Run)",
+      "type": "shell",
+      "command": ".\\scripts\\phase94-cluster0-batch-fix.ps1",
+      "args": [
+        "-DryRun",
+        "-Verbose"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "✅ Phase 94: Validate Fix",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "svelte-check",
+        "--threshold",
+        "error",
+        "--tsconfig",
+        "./tsconfig.json"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "📖 Phase 94: Open How-To Guide",
+      "type": "shell",
+      "command": "code",
+      "args": [
+        "docs\\PHASE94_HOW_TO_GUIDE.md"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": []
     }
   ],
   "inputs": [
@@ -778,6 +970,26 @@
       "type": "promptString",
       "description": "Enter a Redis cache key",
       "default": "knowledge:graph"
+    },
+    {
+      "id": "clusterId",
+      "type": "promptString",
+      "description": "Enter cluster ID (0-11)",
+      "default": "0"
+    },
+    {
+      "id": "errorType",
+      "type": "pickString",
+      "description": "Select error type",
+      "options": [
+        "SYNTAX",
+        "TYPE",
+        "NULL_CHECK",
+        "IMPORT",
+        "EXPORT",
+        "UNDEFINED_VAR"
+      ],
+      "default": "SYNTAX"
     }
   ]
 }

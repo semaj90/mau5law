@@ -38,11 +38,13 @@
  }>;
  }
 
-	let stats = $state<MonitoringStats: null>(null);
+	let stats = $state<MonitoringStats | null>(null);
 	let isLoading = $state(true);
-	let error = $state<string: null>(null);
-	let lastUpdated = $state<Date: null>(null); async function loadStats() {
- isLoading = true;
+	let error = $state<string | null>(null);
+	let lastUpdated = $state<Date | null>(null);
+
+	async function loadStats() {
+		isLoading = true;
  error = null;
  try {
  const response = await fetch('/api/phase78/monitor');

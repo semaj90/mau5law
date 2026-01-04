@@ -186,28 +186,44 @@ class EmbeddingService:
         self.base_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
         self.model = "embeddinggemma:latest"
 
-    async def embed(self, text: str) -> List[float]:
-        """Generate 768d embedding"""
-        try:
-            async with aiohttp.ClientSession() as session:
-                payload = {
-                    "model": self.model,
-                    "prompt": text
-                }
+    async def embed(self, text: str, retry_count: int = 5) -> List[float]:
+        """Generate 768d embedding with retry and chunking"""
+        # Truncate to avoid context overflow (approx 24k chars)
+        if len(text) > 24000:
+            text = text[:24000]
 
-                async with session.post(
-                    f"{self.base_url}/api/embeddings",
-                    json=payload,
-                    timeout=aiohttp.ClientTimeout(total=10)
-                ) as resp:
-                    if resp.status == 200:
-                        data = await resp.json()
-                        return data.get("embedding", [])
-                    else:
+        for attempt in range(retry_count):
+            try:
+                async with aiohttp.ClientSession() as session:
+                    payload = {
+                        "model": self.model,
+                        "prompt": text,
+                        "options": {
+                            "num_ctx": 8192,
+                            "num_thread": 4
+                        }
+                    }
+
+                    async with session.post(
+                        f"{self.base_url}/api/embeddings",
+                        json=payload,
+                        timeout=aiohttp.ClientTimeout(total=60)
+                    ) as resp:
+                        if resp.status == 200:
+                            data = await resp.json()
+                            return data.get("embedding", [])
+
+                        if attempt < retry_count - 1:
+                            await asyncio.sleep(2 ** attempt)
+                            continue
                         return []
-        except Exception as e:
-            print(f"⚠️  Embedding failed: {e}")
-            return []
+            except Exception as e:
+                if attempt < retry_count - 1:
+                    await asyncio.sleep(2 ** attempt)
+                    continue
+                print(f"⚠️  Embedding failed: {e}")
+                return []
+        return []
 
 class AutoTagger:
     """Auto-tag file profiles based on content + deterministic heuristics"""

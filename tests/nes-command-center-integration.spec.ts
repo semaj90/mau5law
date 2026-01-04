@@ -328,7 +328,6 @@ test.describe('NES Command Center Integration Tests', () => {
   });
 
   test.describe('Phase 12.4: Interaction Logging', () => {
-
     test('should log view interaction', async ({ request }) => {
       // Create route
       await db.insert(routeMetadata).values({
@@ -336,7 +335,7 @@ test.describe('NES Command Center Integration Tests', () => {
         path: '/test/integration',
         kind: 'page',
         group: 'test',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       // Log view interaction
@@ -344,8 +343,8 @@ test.describe('NES Command Center Integration Tests', () => {
         data: {
           interaction_type: 'view',
           user_id: TEST_USER_ID,
-          metadata: { source: 'test' }
-        }
+          metadata: { source: 'test' },
+        },
       });
 
       expect(response.ok()).toBeTruthy();
@@ -355,7 +354,7 @@ test.describe('NES Command Center Integration Tests', () => {
         where: and(
           eq(routeInteractionLog.routeId, TEST_ROUTE_ID),
           eq(routeInteractionLog.interactionType, 'view')
-        )
+        ),
       });
 
       expect(interaction).toBeDefined();
@@ -369,7 +368,7 @@ test.describe('NES Command Center Integration Tests', () => {
         path: '/test/integration',
         kind: 'page',
         group: 'test',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       const interactionTypes = ['view', 'navigate', 'analyze', 'patch_apply'];
@@ -380,8 +379,8 @@ test.describe('NES Command Center Integration Tests', () => {
           data: {
             interaction_type: type,
             user_id: TEST_USER_ID,
-            metadata: { test: true }
-          }
+            metadata: { test: true },
+          },
         });
 
         expect(response.ok()).toBeTruthy();
@@ -389,12 +388,12 @@ test.describe('NES Command Center Integration Tests', () => {
 
       // Verify all logged
       const interactions = await db.query.routeInteractionLog.findMany({
-        where: eq(routeInteractionLog.routeId, TEST_ROUTE_ID)
+        where: eq(routeInteractionLog.routeId, TEST_ROUTE_ID),
       });
 
       expect(interactions).toHaveLength(4);
 
-      const types = interactions.map(i => i.interactionType);
+      const types = interactions.map((i: { interactionType: string }) => i.interactionType);
       expect(types).toContain('view');
       expect(types).toContain('navigate');
       expect(types).toContain('analyze');
@@ -408,7 +407,7 @@ test.describe('NES Command Center Integration Tests', () => {
         path: '/test/integration',
         kind: 'page',
         group: 'test',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       await db.insert(routeInteractionLog).values([
@@ -416,14 +415,14 @@ test.describe('NES Command Center Integration Tests', () => {
           routeId: TEST_ROUTE_ID,
           interactionType: 'view',
           userId: TEST_USER_ID,
-          metadata: {}
+          metadata: {},
         },
         {
           routeId: TEST_ROUTE_ID,
           interactionType: 'navigate',
           userId: TEST_USER_ID,
-          metadata: {}
-        }
+          metadata: {},
+        },
       ]);
 
       // Retrieve via API
@@ -437,7 +436,6 @@ test.describe('NES Command Center Integration Tests', () => {
   });
 
   test.describe('Phase 12.5: Real-Time Health Updates via SSE', () => {
-
     test('should broadcast health change via SSE', async ({ page, request }) => {
       // Create route
       await db.insert(routeMetadata).values({
@@ -445,7 +443,7 @@ test.describe('NES Command Center Integration Tests', () => {
         path: '/test/integration',
         kind: 'page',
         group: 'test',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       // Navigate to all-routes page
@@ -453,7 +451,6 @@ test.describe('NES Command Center Integration Tests', () => {
       await page.waitForLoadState('networkidle');
 
       // Set up SSE message listener
-      const sseMessages: any[] = [];
       await page.evaluate(() => {
         const eventSource = new EventSource('/api/routes/events');
         (window as any).sseMessages = [];
@@ -469,8 +466,8 @@ test.describe('NES Command Center Integration Tests', () => {
           code: 'TS2345',
           message: 'Test error',
           severity: 'error',
-          file_path: '/test/file.ts'
-        }
+          file_path: '/test/file.ts',
+        },
       });
 
       // Wait for SSE message
@@ -480,8 +477,9 @@ test.describe('NES Command Center Integration Tests', () => {
       const messages = await page.evaluate(() => (window as any).sseMessages);
       expect(messages.length).toBeGreaterThan(0);
 
-      const healthChange = messages.find(m =>
-        m.type === 'health_change' && m.routeId === TEST_ROUTE_ID
+      const healthChange = messages.find(
+        (m: { type: string; routeId: string; newStatus?: string }) =>
+          m.type === 'health_change' && m.routeId === TEST_ROUTE_ID
       );
       expect(healthChange).toBeDefined();
       expect(healthChange.newStatus).toBe('broken');
@@ -494,7 +492,7 @@ test.describe('NES Command Center Integration Tests', () => {
         path: '/test/integration',
         kind: 'page',
         group: 'test',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       // Navigate to all-routes page
@@ -512,8 +510,8 @@ test.describe('NES Command Center Integration Tests', () => {
           code: 'TS2345',
           message: 'Test error',
           severity: 'error',
-          file_path: '/test/file.ts'
-        }
+          file_path: '/test/file.ts',
+        },
       });
 
       // Wait for UI update (SSE should trigger update)

@@ -1,15 +1,25 @@
 <script lang="ts">
- // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		class?: string;
+		children?: Snippet;
+		[key: string]: any;
+	}
+
+	let {
+		class: className = '',
+		children,
+		...rest
+	}: Props = $props();
+
+	const defaultClass = `
+		border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted
+	`.replace(/\s+/g, ' ').trim();
 </script>
 
-<main class="page-repair">
- <h1>Page under reconstruction</h1>
- <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
- .page-repair {
- padding: 2rem;
- font-family: sans-serif;
- }
-</style>
+<tr class="{defaultClass} {className}" {...rest}>
+	{#if children}
+		{@render children()}
+	{/if}
+</tr>

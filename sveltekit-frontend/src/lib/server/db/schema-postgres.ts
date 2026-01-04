@@ -1290,7 +1290,7 @@ export const attachmentVerificationsRelations = relations(attachmentVerification
 
 export const canvasStatesRelations = relations(canvasStates, ({ one, many }) => ({
  case: one(cases, { fields: [canvasStates.caseId], references: [cases.id] }),
- user: one(users, { fields: [canvasStates.userId], references: [users.id] }),
+ user: one(users, { fields: [canvasStates.createdBy], references: [users.id] }),
  annotations: many(canvasAnnotations),
  autosaves: many(canvasAutosaves),
 }));

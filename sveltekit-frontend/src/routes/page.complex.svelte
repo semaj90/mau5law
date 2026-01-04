@@ -2,27 +2,25 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {
-	  AlertTriangle,
-	  BarChart3,
-	  Brain,
-	  CheckCircle2,
-	  ChevronRight,
-	  Clock,
-	  Cpu,
-	  Database,
-	  Eye,
-	  Folder,
-	  Monitor,
-	  Plus,
-	  Search,
-	  Settings,
-	  Terminal,
-	  TrendingUp,
-	  UserCheck,
-	  Users,
-	  Zap
-	} from 'lucide-svelte';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
+	import Brain from 'lucide-svelte/icons/brain';
+	import CheckCircle2 from 'lucide-svelte/icons/check-circle-2';
+	import ChevronRight from 'lucide-svelte/icons/chevron-right';
+	import Clock from 'lucide-svelte/icons/clock';
+	import Cpu from 'lucide-svelte/icons/cpu';
+	import Database from 'lucide-svelte/icons/database';
+	import Eye from 'lucide-svelte/icons/eye';
+	import Folder from 'lucide-svelte/icons/folder';
+	import Monitor from 'lucide-svelte/icons/monitor';
+	import Plus from 'lucide-svelte/icons/plus';
+	import Search from 'lucide-svelte/icons/search';
+	import Settings from 'lucide-svelte/icons/settings';
+	import Terminal from 'lucide-svelte/icons/terminal';
+	import TrendingUp from 'lucide-svelte/icons/trending-up';
+	import UserCheck from 'lucide-svelte/icons/user-check';
+	import Users from 'lucide-svelte/icons/users';
+	import Zap from 'lucide-svelte/icons/zap';
  // Import bits-ui Dialog components
 
 	// Dashboard data
