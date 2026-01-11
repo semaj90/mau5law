@@ -455,8 +455,7 @@ export class HeadlessLegalProcessorFactory {
         const contextAnchors = lodEntry.vector_metadata?.context_anchors?.join(', ') ?? '';
         const compressionRatio = lodEntry.cache_metadata?.compression_stats?.compression_ratio ?? 1;
 
-        return `Analyze this legal document for key entities, risk factors, and compliance issues:
-Context Keywords: ${contextAnchors}
+        return `Analyze this legal document for key entities, risk factors, and compliance issues: Context, Keywords: ${contextAnchors}
 Document Length: ${textContent.length} characters
 Compression Ratio: ${compressionRatio.toFixed(2)}:1
 

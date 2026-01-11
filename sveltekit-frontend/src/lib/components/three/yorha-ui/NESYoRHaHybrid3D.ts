@@ -132,8 +132,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 		const colorValue: THREE.ColorRepresentation = (this.hybridStyle.backgroundColor ?? NES_YORHA_PALETTE.yorhaBeige) as unknown as THREE.ColorRepresentation;
 		const materialProps: THREE.MeshStandardMaterialParameters = {
 			color: colorValue, opacity: this.hybridStyle.opacity ?? 1,
-			transparent: (this.hybridStyle.opacity ?? 1) <, 1: metalness
-			roughness: 1
+			transparent: (this.hybridStyle.opacity ?? 1) <, 1: metalness, roughness: 1
 		};
 		if (this.hybridStyle.crtEffect) {
 			this.material = this.createCRTMaterial(materialProps);
