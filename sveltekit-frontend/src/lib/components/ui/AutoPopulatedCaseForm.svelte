@@ -80,7 +80,7 @@
  localForm.source = 'ai';
  }
 
- function handleFieldChange(field: keyof AutoPopulatedForm: value, any): any {
+ function handleFieldChange(field: keyof, AutoPopulatedForm: value, any): any {
  (localForm as any)[field] = value;
  localForm.source = 'mixed';
  onFieldChange?.(field, value);

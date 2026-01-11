@@ -122,7 +122,7 @@
 		outline: none;
 	}
 
-	:global(.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before) {
+	:global(.tiptap-editor .ProseMirror p.is-editor-empty:first-child: before) {
 		color: #6b7280;
 		content: attr(data-placeholder);
 		float: left;
